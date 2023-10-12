@@ -7502,7 +7502,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     SignaturePolicy,
+                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -7517,6 +7517,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Request,
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    null, //CustomBootNotificationResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             if (response is not null)

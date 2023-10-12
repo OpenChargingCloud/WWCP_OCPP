@@ -20,8 +20,8 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public static class SignInfoExtensions
     {
 
-        #region (static) ToSignInfo(this KeyPair, Name = null, Description = null, Timestamp = null)
+        #region (static) ToSignInfo1(this KeyPair, Name          = null, Description          = null, Timestamp          = null)
 
         /// <summary>
         /// Convert the given key pair to a signature information.
@@ -43,20 +43,78 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Name">An optional name of a person or process signing the message.</param>
         /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
         /// <param name="Timestamp">An optional timestamp of the message signature.</param>
-        public static SignInfo ToSignInfo(this KeyPair  KeyPair,
-                                          String?       Name          = null,
-                                          I18NString?   Description   = null,
-                                          DateTime?     Timestamp     = null)
+        public static SignInfo ToSignInfo1(this KeyPair  KeyPair,
+                                           String?       Name          = null,
+                                           I18NString?   Description   = null,
+                                           DateTime?     Timestamp     = null)
 
             => new (KeyPair.Private,
                     KeyPair.Public,
                     KeyPair.Algorithm,
                     KeyPair.Serialization,
                     KeyPair.Encoding,
-                    Name,
-                    Description,
-                    Timestamp,
+                    Name        is not null ? () => Name            : null,
+                    Description is not null ? () => Description     : null,
+                    Timestamp.HasValue      ? () => Timestamp.Value : null,
                     KeyPair.CustomData);
+
+        #endregion
+
+        #region (static) ToSignInfo2(this KeyPair, NameGenerator = null, DescriptionGenerator = null, TimestampGenerator = null)
+
+        /// <summary>
+        /// Convert the given key pair to a signature information.
+        /// </summary>
+        /// <param name="KeyPair">The key pair.</param>
+        /// <param name="NameGenerator">An optional name of a person or process signing the message.</param>
+        /// <param name="DescriptionGenerator">An optional multi-language description or explanation for signing the message.</param>
+        /// <param name="TimestampGenerator">An optional timestamp of the message signature.</param>
+        public static SignInfo ToSignInfo2(this KeyPair       KeyPair,
+                                           Func<String>?      NameGenerator          = null,
+                                           Func<I18NString>?  DescriptionGenerator   = null,
+                                           Func<DateTime>?    TimestampGenerator     = null)
+
+            => new (KeyPair.Private,
+                    KeyPair.Public,
+                    KeyPair.Algorithm,
+                    KeyPair.Serialization,
+                    KeyPair.Encoding,
+                    NameGenerator,
+                    DescriptionGenerator,
+                    TimestampGenerator,
+                    KeyPair.CustomData);
+
+        #endregion
+
+        #region (static) ToSignInfo(this SignaturePolicyEntry)
+
+        /// <summary>
+        /// Convert the given key pair to a signature information.
+        /// </summary>
+        /// <param name="SignaturePolicyEntry">A signature policy entry.</param>
+        public static SignInfo? ToSignInfo(this SignaturePolicyEntry SignaturePolicyEntry)
+        {
+
+            if (SignaturePolicyEntry.KeyPair is KeyPair keyPair &&
+                keyPair.Private is not null &&
+                keyPair.Public  is not null)
+            {
+
+                return new (keyPair.Private,
+                            keyPair.Public,
+                            keyPair.Algorithm,
+                            keyPair.Serialization,
+                            keyPair.Encoding,
+                            SignaturePolicyEntry.UserIdGenerator,
+                            SignaturePolicyEntry.DescriptionGenerator,
+                            SignaturePolicyEntry.TimestampGenerator,
+                            SignaturePolicyEntry.CustomData);
+
+            }
+
+            return null;
+
+        }
 
         #endregion
 
@@ -76,19 +134,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional name of a person or process signing the message.
         /// </summary>
         [Optional]
-        public String?      Name           { get; }
+        public Func<String>?      Name           { get; }
 
         /// <summary>
         /// The optional multi-language description or explanation for signing the message.
         /// </summary>
         [Optional]
-        public I18NString?  Description    { get; }
+        public Func<I18NString>?  Description    { get; }
 
         /// <summary>
         /// The optional timestamp of the message signature.
         /// </summary>
         [Optional]
-        public DateTime?    Timestamp      { get; }
+        public Func<DateTime>?    Timestamp      { get; }
 
         #endregion
 
@@ -106,15 +164,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
         /// <param name="Timestamp">An optional timestamp of the message signature.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SignInfo(String       Private,
-                        String       Public,
-                        String?      Algorithm       = null,
-                        String?      Serialization   = null,
-                        String?      Encoding        = null,
-                        String?      Name            = null,
-                        I18NString?  Description     = null,
-                        DateTime?    Timestamp       = null,
-                        CustomData?  CustomData      = null)
+        public SignInfo(String             Private,
+                        String             Public,
+                        String?            Algorithm       = null,
+                        String?            Serialization   = null,
+                        String?            Encoding        = null,
+                        Func<String>?      Name            = null,
+                        Func<I18NString>?  Description     = null,
+                        Func<DateTime>?    Timestamp       = null,
+                        CustomData?        CustomData      = null)
 
             : base(Private,
                    Public,
@@ -153,14 +211,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (static) GenerateKeys(Algorithm = secp256r1)
 
-        public static SignInfo? GenerateKeys(String?      Algorithm     = "secp256r1",
-                                             String?      Name          = null,
-                                             I18NString?  Description   = null,
-                                             DateTime?    Timestamp     = null)
+        public static SignInfo? GenerateKeys(String?            Algorithm     = "secp256r1",
+                                             Func<String>?      Name          = null,
+                                             Func<I18NString>?  Description   = null,
+                                             Func<DateTime>?    Timestamp     = null)
 
-            => KeyPair.GenerateKeys(Algorithm)?.ToSignInfo(Name,
-                                                           Description,
-                                                           Timestamp);
+            => KeyPair.GenerateKeys(Algorithm)?.ToSignInfo2(Name,
+                                                            Description,
+                                                            Timestamp);
 
         #endregion
 
@@ -324,9 +382,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                Algorithm,
                                Serialization,
                                Encoding,
-                               Name,
-                               Description,
-                               Timestamp,
+                               Name        is not null ? () => Name            : null,
+                               Description is not null ? () => Description     : null,
+                               Timestamp.HasValue      ? () => Timestamp.Value : null,
                                CustomData
                            );
 
@@ -377,15 +435,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : new JProperty("encoding",        Encoding),
 
                            Name        is not null
-                               ? new JProperty("name",            Name)
+                               ? new JProperty("name",            Name())
                                : null,
 
                            Description is not null
-                               ? new JProperty("description",     Description)
+                               ? new JProperty("description",     Description())
                                : null,
 
-                           Timestamp.HasValue
-                               ? new JProperty("timestamp",       Timestamp.Value.ToIso8601())
+                           Timestamp   is not null
+                               ? new JProperty("timestamp",       Timestamp().ToIso8601())
                                : null,
 
                            CustomData  is not null
@@ -473,14 +531,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => SignInfo is not null &&
 
-             ((Name        is     null &&  SignInfo.Name        is     null) ||
-              (Name        is not null &&  SignInfo.Name        is not null && Name.                       Equals(SignInfo.Name)))        &&
+             ((Name        is     null && SignInfo.Name        is     null) ||
+              (Name        is not null && SignInfo.Name        is not null && Name.                   Equals(SignInfo.Name)))                    &&
 
-             ((Description is     null &&  SignInfo.Description is     null) ||
-              (Description is not null &&  SignInfo.Description is not null && Description.                Equals(SignInfo.Description))) &&
+             ((Description is     null && SignInfo.Description is     null) ||
+              (Description is not null && SignInfo.Description is not null && Description.            Equals(SignInfo.Description)))             &&
 
-            ((!Timestamp.  HasValue    && !SignInfo.Timestamp.  HasValue) ||
-              (Timestamp.  HasValue    &&  SignInfo.Timestamp.  HasValue    && Timestamp.Value.ToIso8601().Equals(SignInfo.Timestamp.Value.ToIso8601()))) &&
+             ((Timestamp   is     null && SignInfo.Timestamp   is     null) ||
+              (Timestamp   is not null && SignInfo.Timestamp   is not null && Timestamp().ToIso8601().Equals(SignInfo.Timestamp().ToIso8601()))) &&
 
                base.Equals(SignInfo);
 
@@ -511,16 +569,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     base.ToString(),
 
-                    Name        is not null && Name.       IsNotNullOrEmpty()
+                    Name        is not null && Name().       IsNotNullOrEmpty()
                         ? $", Name: '{Name}'"
                         : null,
 
-                    Description is not null && Description.IsNotNullOrEmpty()
+                    Description is not null && Description().IsNotNullOrEmpty()
                         ? $", Description: '{Description}'"
                         : null,
 
                     Timestamp is not null
-                        ? $", Timestamp: '{Timestamp.Value}'"
+                        ? $", Timestamp: '{Timestamp()}'"
                         : null
 
                );

@@ -1289,169 +1289,229 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region CSMS Messages
 
-        public CustomJObjectSerializerDelegate<ResetRequest>?                         CustomResetRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<ResetRequest>?                                        CustomResetRequestSerializer                           { get; set; }
 
-        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?                CustomUpdateFirmwareRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?                               CustomUpdateFirmwareRequestSerializer                  { get; set; }
 
-        public CustomJObjectSerializerDelegate<PublishFirmwareRequest>?               CustomPublishFirmwareRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<PublishFirmwareRequest>?                              CustomPublishFirmwareRequestSerializer                 { get; set; }
 
-        public CustomJObjectSerializerDelegate<UnpublishFirmwareRequest>?             CustomUnpublishFirmwareRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<UnpublishFirmwareRequest>?                            CustomUnpublishFirmwareRequestSerializer               { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetBaseReportRequest>?                 CustomGetBaseReportRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<GetBaseReportRequest>?                                CustomGetBaseReportRequestSerializer                   { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetReportRequest>?                     CustomGetReportRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<GetReportRequest>?                                    CustomGetReportRequestSerializer                       { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetLogRequest>?                        CustomGetLogRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<GetLogRequest>?                                       CustomGetLogRequestSerializer                          { get; set; }
 
-        public CustomJObjectSerializerDelegate<SetVariablesRequest>?                  CustomSetVariablesRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariablesRequest>?                                 CustomSetVariablesRequestSerializer                    { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetVariablesRequest>?                  CustomGetVariablesRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetVariablesRequest>?                                 CustomGetVariablesRequestSerializer                    { get; set; }
 
-        public CustomJObjectSerializerDelegate<SetMonitoringBaseRequest>?             CustomSetMonitoringBaseRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringBaseRequest>?                            CustomSetMonitoringBaseRequestSerializer               { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetMonitoringReportRequest>?           CustomGetMonitoringReportRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<GetMonitoringReportRequest>?                          CustomGetMonitoringReportRequestSerializer             { get; set; }
 
-        public CustomJObjectSerializerDelegate<SetMonitoringLevelRequest>?            CustomSetMonitoringLevelRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringLevelRequest>?                           CustomSetMonitoringLevelRequestSerializer              { get; set; }
 
-        public CustomJObjectSerializerDelegate<SetVariableMonitoringRequest>?         CustomSetVariableMonitoringRequestSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariableMonitoringRequest>?                        CustomSetVariableMonitoringRequestSerializer           { get; set; }
 
-        public CustomJObjectSerializerDelegate<ClearVariableMonitoringRequest>?       CustomClearVariableMonitoringRequestSerializer         { get; set; }
+        public CustomJObjectSerializerDelegate<ClearVariableMonitoringRequest>?                      CustomClearVariableMonitoringRequestSerializer         { get; set; }
 
-        public CustomJObjectSerializerDelegate<SetNetworkProfileRequest>?             CustomSetNetworkProfileRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<SetNetworkProfileRequest>?                            CustomSetNetworkProfileRequestSerializer               { get; set; }
 
-        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?            CustomChangeAvailabilityRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?                           CustomChangeAvailabilityRequestSerializer              { get; set; }
 
-        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                CustomTriggerMessageRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                               CustomTriggerMessageRequestSerializer                  { get; set; }
 
-        public CustomJObjectSerializerDelegate<DataTransferRequest>?                  CustomDataTransferRequestSerializer                    { get; set; }
-
-
-        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?             CustomCertificateSignedRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?            CustomInstallCertificateRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?    CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
-
-        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?             CustomDeleteCertificateRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<NotifyCRLRequest>?                     CustomNotifyCRLRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?                                 CustomDataTransferRequestSerializer                    { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?           CustomGetLocalListVersionRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?                            CustomCertificateSignedRequestSerializer               { get; set; }
 
-        public CustomJObjectSerializerDelegate<SendLocalListRequest>?                 CustomSendLocalListRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?                           CustomInstallCertificateRequestSerializer              { get; set; }
 
-        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                    CustomClearCacheRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?                   CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
 
+        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?                            CustomDeleteCertificateRequestSerializer               { get; set; }
 
-        public CustomJObjectSerializerDelegate<ReserveNowRequest>?                    CustomReserveNowRequestSerializer                      { get; set; }
-
-        public CustomJObjectSerializerDelegate<CancelReservationRequest>?             CustomCancelReservationRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<RequestStartTransactionRequest>?       CustomRequestStartTransactionRequestSerializer         { get; set; }
-
-        public CustomJObjectSerializerDelegate<RequestStopTransactionRequest>?        CustomRequestStopTransactionRequestSerializer          { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetTransactionStatusRequest>?          CustomGetTransactionStatusRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?            CustomSetChargingProfileRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetChargingProfilesRequest>?           CustomGetChargingProfilesRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?          CustomClearChargingProfileRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?          CustomGetCompositeScheduleRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<UpdateDynamicScheduleRequest>?         CustomUpdateDynamicScheduleRequestSerializer           { get; set; }
-
-        public CustomJObjectSerializerDelegate<NotifyAllowedEnergyTransferRequest>?   CustomNotifyAllowedEnergyTransferRequestSerializer     { get; set; }
-
-        public CustomJObjectSerializerDelegate<UsePriorityChargingRequest>?           CustomUsePriorityChargingRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?               CustomUnlockConnectorRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyCRLRequest>?                                    CustomNotifyCRLRequestSerializer                       { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<AFRRSignalRequest>?                    CustomAFRRSignalRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?                          CustomGetLocalListVersionRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<SendLocalListRequest>?                                CustomSendLocalListRequestSerializer                   { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                                   CustomClearCacheRequestSerializer                      { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<SetDisplayMessageRequest>?             CustomSetDisplayMessageRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<ReserveNowRequest>?                                   CustomReserveNowRequestSerializer                      { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetDisplayMessagesRequest>?            CustomGetDisplayMessagesRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CancelReservationRequest>?                            CustomCancelReservationRequestSerializer               { get; set; }
 
-        public CustomJObjectSerializerDelegate<ClearDisplayMessageRequest>?           CustomClearDisplayMessageRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<RequestStartTransactionRequest>?                      CustomRequestStartTransactionRequestSerializer         { get; set; }
 
-        public CustomJObjectSerializerDelegate<CostUpdatedRequest>?                   CustomCostUpdatedRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<RequestStopTransactionRequest>?                       CustomRequestStopTransactionRequestSerializer          { get; set; }
 
-        public CustomJObjectSerializerDelegate<CustomerInformationRequest>?           CustomCustomerInformationRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<GetTransactionStatusRequest>?                         CustomGetTransactionStatusRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?                           CustomSetChargingProfileRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetChargingProfilesRequest>?                          CustomGetChargingProfilesRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?                         CustomClearChargingProfileRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?                         CustomGetCompositeScheduleRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<UpdateDynamicScheduleRequest>?                        CustomUpdateDynamicScheduleRequestSerializer           { get; set; }
+
+        public CustomJObjectSerializerDelegate<NotifyAllowedEnergyTransferRequest>?                  CustomNotifyAllowedEnergyTransferRequestSerializer     { get; set; }
+
+        public CustomJObjectSerializerDelegate<UsePriorityChargingRequest>?                          CustomUsePriorityChargingRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?                              CustomUnlockConnectorRequestSerializer                 { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<AFRRSignalRequest>?                                   CustomAFRRSignalRequestSerializer                      { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<SetDisplayMessageRequest>?                            CustomSetDisplayMessageRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetDisplayMessagesRequest>?                           CustomGetDisplayMessagesRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearDisplayMessageRequest>?                          CustomClearDisplayMessageRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<CostUpdatedRequest>?                                  CustomCostUpdatedRequestSerializer                     { get; set; }
+
+        public CustomJObjectSerializerDelegate<CustomerInformationRequest>?                          CustomCustomerInformationRequestSerializer             { get; set; }
 
 
 
-        public CustomJObjectSerializerDelegate<BootNotificationResponse>?             CustomBootNotificationResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<BootNotificationResponse>?                            CustomBootNotificationResponseSerializer               { get; set; }
 
 
         #endregion
 
         #region Charging Station Messages
 
-        public CustomJObjectSerializerDelegate<CS.BootNotificationRequest>?           CustomBootNotificationRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CS.BootNotificationRequest>?                          CustomBootNotificationRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CS.FirmwareStatusNotificationRequest>?                CustomFirmwareStatusNotificationRequestSerializer      { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<CS.ResetResponse>?                     CustomResetResponseSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<StatusInfo>?                           CustomStatusInfoSerializer                             { get; set; }
+
+
+
+        public CustomJObjectSerializerDelegate<CS.ResetResponse>?                                    CustomResetResponseSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UpdateFirmwareResponse>?                           CustomUpdateFirmwareResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CS.PublishFirmwareResponse>?                          CustomPublishFirmwareResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UnpublishFirmwareResponse>?                        CustomUnpublishFirmwareResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetBaseReportResponse>?                            CustomGetBaseReportResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetReportResponse>?                                CustomGetReportResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetLogResponse>?                                   CustomGetLogResponseSerializer                         { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.SetVariablesResponse>?                             CustomSetVariablesResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetVariablesResponse>?                             CustomGetVariablesResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetMonitoringBaseResponse>?                        CustomSetMonitoringBaseResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetMonitoringReportResponse>?                      CustomGetMonitoringReportResponseSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetMonitoringLevelResponse>?                       CustomSetMonitoringLevelResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetVariableMonitoringResponse>?                    CustomSetVariableMonitoringResponseSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ClearVariableMonitoringResponse>?                  CustomClearVariableMonitoringResponseSerializer        { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetNetworkProfileResponse>?                        CustomSetNetworkProfileResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ChangeAvailabilityResponse>?                       CustomChangeAvailabilityResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CS.TriggerMessageResponse>?                           CustomTriggerMessageResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CS.DataTransferResponse>?                             CustomDataTransferResponseSerializer                   { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.CertificateSignedResponse>?                        CustomCertificateSignedResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CS.InstallCertificateResponse>?                       CustomInstallCertificateResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetInstalledCertificateIdsResponse>?               CustomGetInstalledCertificateIdsResponseSerializer     { get; set; }
+        public CustomJObjectSerializerDelegate<CS.DeleteCertificateResponse>?                        CustomDeleteCertificateResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyCRLResponse>?                                CustomNotifyCRLResponseSerializer                      { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.GetLocalListVersionResponse>?                      CustomGetLocalListVersionResponseSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SendLocalListResponse>?                            CustomSendLocalListResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ClearCacheResponse>?                               CustomClearCacheResponseSerializer                     { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.ReserveNowResponse>?                               CustomReserveNowResponseSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CS.CancelReservationResponse>?                        CustomCancelReservationResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CS.RequestStartTransactionResponse>?                  CustomRequestStartTransactionResponseSerializer        { get; set; }
+        public CustomJObjectSerializerDelegate<CS.RequestStopTransactionResponse>?                   CustomRequestStopTransactionResponseSerializer         { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetTransactionStatusResponse>?                     CustomGetTransactionStatusResponseSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetChargingProfileResponse>?                       CustomSetChargingProfileResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetChargingProfilesResponse>?                      CustomGetChargingProfilesResponseSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ClearChargingProfileResponse>?                     CustomClearChargingProfileResponseSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetCompositeScheduleResponse>?                     CustomGetCompositeScheduleResponseSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UpdateDynamicScheduleResponse>?                    CustomUpdateDynamicScheduleResponseSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyAllowedEnergyTransferResponse>?              CustomNotifyAllowedEnergyTransferResponseSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UsePriorityChargingResponse>?                      CustomUsePriorityChargingResponseSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UnlockConnectorResponse>?                          CustomUnlockConnectorResponseSerializer                { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.AFRRSignalResponse>?                               CustomAFRRSignalResponseSerializer                     { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.SetDisplayMessageResponse>?                        CustomSetDisplayMessageResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetDisplayMessagesResponse>?                       CustomGetDisplayMessagesResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ClearDisplayMessageResponse>?                      CustomClearDisplayMessageResponseSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<CS.CostUpdatedResponse>?                              CustomCostUpdatedResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.CustomerInformationResponse>?                      CustomCustomerInformationResponseSerializer            { get; set; }
 
         #endregion
 
         #region Data Structures
 
-        public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<Variable>?                                            CustomVariableSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<LogParameters>?                                       CustomLogParametersSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<SetVariableData>?                                     CustomSetVariableDataSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<GetVariableData>?                                     CustomGetVariableDataSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<SetMonitoringData>?                                   CustomSetMonitoringDataSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<NetworkConnectionProfile>?                            CustomNetworkConnectionProfileSerializer         { get; set; }
-        public CustomJObjectSerializerDelegate<VPNConfiguration>?                                    CustomVPNConfigurationSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<APNConfiguration>?                                    CustomAPNConfigurationSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<IdTokenInfo>?                                         CustomIdTokenInfoSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<MessageContent>?                                      CustomMessageContentSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer           { get; set; }
-        public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                                   { get; set; }
+        public CustomJObjectSerializerDelegate<Variable>?                                            CustomVariableSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<LogParameters>?                                       CustomLogParametersSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariableData>?                                     CustomSetVariableDataSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<GetVariableData>?                                     CustomGetVariableDataSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringData>?                                   CustomSetMonitoringDataSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<NetworkConnectionProfile>?                            CustomNetworkConnectionProfileSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<VPNConfiguration>?                                    CustomVPNConfigurationSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<APNConfiguration>?                                    CustomAPNConfigurationSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<IdTokenInfo>?                                         CustomIdTokenInfoSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<MessageContent>?                                      CustomMessageContentSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                                   { get; set; }
         
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                      { get; set; }
         
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer                { get; set; }
 
-        public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer         { get; set; }
-        public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                            { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<ChargingStation>?                                     CustomChargingStationSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingStation>?                                     CustomChargingStationSerializer                        { get; set; }
+
+        public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariableResult>?                                   CustomSetVariableResultSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<GetVariableResult>?                                   CustomGetVariableResultSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringResult>?                                 CustomSetMonitoringResultSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<ClearMonitoringResult>?                               CustomClearMonitoringResultSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CompositeSchedule>?                                   CustomCompositeScheduleSerializer                      { get; set; }
 
         #endregion
 
@@ -2124,8 +2184,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 //                                            Request.MeterType,
                 //                                            Request.MeterSerialNumber));
 
-                BootNotificationResponse? response = null;
-
                 if (!reachableChargingStations.ContainsKey(request.ChargingStationId))
                 {
 
@@ -2142,49 +2200,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
 
 
-                if (request.Signatures.Any() &&
-                    !CryptoUtils.VerifyRequestMessage(
-                            request,
-                            request.ToJSON(
-                                CustomBootNotificationRequestSerializer,
-                                CustomChargingStationSerializer,
-                                CustomSignatureSerializer,
-                                CustomCustomDataSerializer
-                            ),
-                            SignaturePolicy,
-                            out var errorResponse,
-                            AllMustBeValid: true
-                        ))
-                {
+                var response  = !CryptoUtils.VerifyRequestMessage(
+                                    request,
+                                    request.ToJSON(
+                                        CustomBootNotificationRequestSerializer,
+                                        CustomChargingStationSerializer,
+                                        CustomSignatureSerializer,
+                                        CustomCustomDataSerializer
+                                    ),
+                                    SignaturePolicy,
+                                    out var errorResponse,
+                                    AllMustBeValid: true
+                                )
 
-                    response = new BootNotificationResponse(
-                                    Request:  request,
-                                    Result:   Result.SignatureError(
-                                                    $"Invalid signature: {errorResponse}"
-                                                )
-                                );
+                                    ? new BootNotificationResponse(
+                                          Request:       request,
+                                          Result:        Result.SignatureError(
+                                                             $"Invalid signature(s): {errorResponse}"
+                                                         )
+                                      )
 
-                }
-                else
-                {
-
-                    response = new BootNotificationResponse(
-                                   Request:       request,
-                                   Status:        RegistrationStatus.Accepted,
-                                   CurrentTime:   Timestamp.Now,
-                                   Interval:      TimeSpan.FromMinutes(5),
-                                   StatusInfo:    null,
-                                   CustomData:    null
-                               );
-
-                }
+                                    : new BootNotificationResponse(
+                                          Request:       request,
+                                          Status:        RegistrationStatus.Accepted,
+                                          CurrentTime:   Timestamp.Now,
+                                          Interval:      TimeSpan.FromMinutes(5),
+                                          StatusInfo:    null,
+                                          CustomData:    null
+                                      );
 
 
 
-                if (request.Signatures.Any())
-                {
+                //if (request.Signatures.Any())
+                //{
 
-                    var signInfos = new[] { SignInfo.GenerateKeys()! };
+                //    var signInfos = new[] { SignInfo.GenerateKeys()! };
 
                     CryptoUtils.SignResponseMessage(
                         response,
@@ -2195,10 +2245,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                             CustomCustomDataSerializer
                         ),
                         SignaturePolicy,
-                        out var errorResponse2,
-                        signInfos.ToArray());
+                        out var errorResponse2);
+                        //signInfos.ToArray());
 
-                }
+                //}
 
 
                 #region Send OnBootNotificationResponse event
@@ -2297,10 +2347,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         reachableChargingStations[request.ChargingStationId] = new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
-                var response = new FirmwareStatusNotificationResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response  = !CryptoUtils.VerifyRequestMessage(
+                                    request,
+                                    request.ToJSON(
+                                        CustomFirmwareStatusNotificationRequestSerializer,
+                                        CustomSignatureSerializer,
+                                        CustomCustomDataSerializer
+                                    ),
+                                    SignaturePolicy,
+                                    out var errorResponse,
+                                    AllMustBeValid: true
+                                )
+
+                                    ? new FirmwareStatusNotificationResponse(
+                                          Request:      request,
+                                          Result:       Result.SignatureError(
+                                                            $"Invalid signature(s): {errorResponse}"
+                                                        )
+                                      )
+
+                                    : new FirmwareStatusNotificationResponse(
+                                          Request:      request,
+                                          CustomData:   null
+                                      );
+
+
+
+
 
 
                 #region Send OnFirmwareStatusNotificationResponse event
@@ -5369,12 +5443,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.UpdateFirmware(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomUpdateFirmwareRequestSerializer,
+                                          CustomFirmwareSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.UpdateFirmwareResponse(Request,
-                                                                Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.UpdateFirmware(Request)
+
+                                      : new CS.UpdateFirmwareResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.UpdateFirmwareResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomUpdateFirmwareResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnUpdateFirmwareResponse event
@@ -5432,12 +5540,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.PublishFirmware(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomPublishFirmwareRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.PublishFirmwareResponse(Request,
-                                                                 Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.PublishFirmware(Request)
+
+                                      : new CS.PublishFirmwareResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.PublishFirmwareResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomPublishFirmwareResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnPublishFirmwareResponse event
@@ -5495,12 +5636,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.UnpublishFirmware(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomUnpublishFirmwareRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.UnpublishFirmwareResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.UnpublishFirmware(Request)
+
+                                      : new CS.UnpublishFirmwareResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.UnpublishFirmwareResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomUnpublishFirmwareResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnUnpublishFirmwareResponse event
@@ -5558,12 +5731,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.GetBaseReport(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetBaseReportRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.GetBaseReportResponse(Request,
-                                                               Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.GetBaseReport(Request)
+
+                                      : new CS.GetBaseReportResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.GetBaseReportResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetBaseReportResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnGetBaseReportResponse event
@@ -5621,12 +5827,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.GetReport(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetReportRequestSerializer,
+                                          CustomComponentVariableSerializer,
+                                          CustomComponentSerializer,
+                                          CustomEVSESerializer,
+                                          CustomVariableSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.GetReportResponse(Request,
-                                                           Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.GetReport(Request)
+
+                                      : new CS.GetReportResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.GetReportResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetReportResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnGetReportResponse event
@@ -5684,12 +5927,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.GetLog(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetLogRequestSerializer,
+                                          CustomLogParametersSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.GetLogResponse(Request,
-                                                        Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.GetLog(Request)
+
+                                      : new CS.GetLogResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.GetLogResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetLogResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnGetLogResponse event
@@ -5748,12 +6025,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.SetVariables(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomSetVariablesRequestSerializer,
+                                          CustomSetVariableDataSerializer,
+                                          CustomComponentSerializer,
+                                          CustomEVSESerializer,
+                                          CustomVariableSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.SetVariablesResponse(Request,
-                                                              Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.SetVariables(Request)
+
+                                      : new CS.SetVariablesResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.SetVariablesResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSetVariablesResponseSerializer,
+                    CustomSetVariableResultSerializer,
+                    CustomComponentSerializer,
+                    CustomEVSESerializer,
+                    CustomVariableSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnSetVariablesResponse event
@@ -5811,12 +6129,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.GetVariables(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetVariablesRequestSerializer,
+                                          CustomGetVariableDataSerializer,
+                                          CustomComponentSerializer,
+                                          CustomEVSESerializer,
+                                          CustomVariableSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.GetVariablesResponse(Request,
-                                                              Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.GetVariables(Request)
+
+                                      : new CS.GetVariablesResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.GetVariablesResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetVariablesResponseSerializer,
+                    CustomGetVariableResultSerializer,
+                    CustomComponentSerializer,
+                    CustomEVSESerializer,
+                    CustomVariableSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnGetVariablesResponse event
@@ -5874,12 +6233,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.SetMonitoringBase(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomSetMonitoringBaseRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.SetMonitoringBaseResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.SetMonitoringBase(Request)
+
+                                      : new CS.SetMonitoringBaseResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.SetMonitoringBaseResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSetMonitoringBaseResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnSetMonitoringBaseResponse event
@@ -5937,12 +6329,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.GetMonitoringReport(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetMonitoringReportRequestSerializer,
+                                          CustomComponentVariableSerializer,
+                                          CustomComponentSerializer,
+                                          CustomEVSESerializer,
+                                          CustomVariableSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.GetMonitoringReportResponse(Request,
-                                                                     Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.GetMonitoringReport(Request)
+
+                                      : new CS.GetMonitoringReportResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.GetMonitoringReportResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetMonitoringReportResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnGetMonitoringReportResponse event
@@ -6000,12 +6429,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.SetMonitoringLevel(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomSetMonitoringLevelRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                               : new CS.SetMonitoringLevelResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.SetMonitoringLevel(Request)
+
+                                      : new CS.SetMonitoringLevelResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.SetMonitoringLevelResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSetMonitoringLevelResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnSetMonitoringLevelResponse event
@@ -6063,12 +6525,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.SetVariableMonitoring(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomSetVariableMonitoringRequestSerializer,
+                                          CustomSetMonitoringDataSerializer,
+                                          CustomComponentSerializer,
+                                          CustomEVSESerializer,
+                                          CustomVariableSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                               : new CS.SetVariableMonitoringResponse(Request,
-                                                                      Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.SetVariableMonitoring(Request)
+
+                                      : new CS.SetVariableMonitoringResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.SetVariableMonitoringResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSetVariableMonitoringResponseSerializer,
+                    CustomSetMonitoringResultSerializer,
+                    CustomComponentSerializer,
+                    CustomEVSESerializer,
+                    CustomVariableSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnSetVariableMonitoringResponse event
@@ -6126,12 +6629,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.ClearVariableMonitoring(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomClearVariableMonitoringRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.ClearVariableMonitoringResponse(Request,
-                                                                         Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.ClearVariableMonitoring(Request)
+
+                                      : new CS.ClearVariableMonitoringResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.ClearVariableMonitoringResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomClearVariableMonitoringResponseSerializer,
+                    CustomClearMonitoringResultSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnClearVariableMonitoringResponse event
@@ -6189,12 +6726,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.SetNetworkProfile(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomSetNetworkProfileRequestSerializer,
+                                          CustomNetworkConnectionProfileSerializer,
+                                          CustomVPNConfigurationSerializer,
+                                          CustomAPNConfigurationSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.SetNetworkProfileResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.SetNetworkProfile(Request)
+
+                                      : new CS.SetNetworkProfileResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.SetNetworkProfileResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSetNetworkProfileResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnSetNetworkProfileResponse event
@@ -6252,12 +6825,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.ChangeAvailability(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomChangeAvailabilityRequestSerializer,
+                                          CustomEVSESerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.ChangeAvailabilityResponse(Request,
-                                                                    Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.ChangeAvailability(Request)
+
+                                      : new CS.ChangeAvailabilityResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.ChangeAvailabilityResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomChangeAvailabilityResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnChangeAvailabilityResponse event
@@ -6315,12 +6922,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.TriggerMessage(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomTriggerMessageRequestSerializer,
+                                          CustomEVSESerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.TriggerMessageResponse(Request,
-                                                                Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.TriggerMessage(Request)
+
+                                      : new CS.TriggerMessageResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.TriggerMessageResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomTriggerMessageResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnTriggerMessageResponse event
@@ -6378,12 +7019,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.TransferData(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomDataTransferRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                               : new CS.DataTransferResponse(Request,
-                                                             Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.TransferData(Request)
+
+                                      : new CS.DataTransferResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.DataTransferResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomDataTransferResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnDataTransferResponse event
@@ -6442,12 +7116,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.SendSignedCertificate(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomCertificateSignedRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.CertificateSignedResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.SendSignedCertificate(Request)
+
+                                      : new CS.CertificateSignedResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.CertificateSignedResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomCertificateSignedResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnCertificateSignedResponse event
@@ -6505,12 +7212,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.InstallCertificate(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomInstallCertificateRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.InstallCertificateResponse(Request,
-                                                                    Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.InstallCertificate(Request)
+
+                                      : new CS.InstallCertificateResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.InstallCertificateResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomInstallCertificateResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnInstallCertificateResponse event
@@ -6568,12 +7308,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.GetInstalledCertificateIds(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetInstalledCertificateIdsRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.GetInstalledCertificateIdsResponse(Request,
-                                                                            Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.GetInstalledCertificateIds(Request)
+
+                                      : new CS.GetInstalledCertificateIdsResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.GetInstalledCertificateIdsResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetInstalledCertificateIdsResponseSerializer,
+                    CustomCertificateHashDataSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnGetInstalledCertificateIdsResponse event
@@ -6631,12 +7405,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.DeleteCertificate(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomDeleteCertificateRequestSerializer,
+                                          CustomCertificateHashDataSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.DeleteCertificateResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.DeleteCertificate(Request)
+
+                                      : new CS.DeleteCertificateResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.DeleteCertificateResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomDeleteCertificateResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnDeleteCertificateResponse event
@@ -6694,12 +7502,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.NotifyCRLAvailability(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomNotifyCRLRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.NotifyCRLResponse(Request,
-                                                           Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.NotifyCRLAvailability(Request)
+
+                                      : new CS.NotifyCRLResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.NotifyCRLResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyCRLResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnNotifyCRLResponse event
@@ -6758,12 +7598,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.GetLocalListVersion(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetLocalListVersionRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.GetLocalListVersionResponse(Request,
-                                                                     Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.GetLocalListVersion(Request)
+
+                                      : new CS.GetLocalListVersionResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.GetLocalListVersionResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetLocalListVersionResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnGetLocalListVersionResponse event
@@ -6821,12 +7693,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.SendLocalList(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomSendLocalListRequestSerializer,
+                                          CustomAuthorizationDataSerializer,
+                                          CustomIdTokenSerializer,
+                                          CustomAdditionalInfoSerializer,
+                                          CustomIdTokenInfoSerializer,
+                                          CustomMessageContentSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.SendLocalListResponse(Request,
-                                                               Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.SendLocalList(Request)
+
+                                      : new CS.SendLocalListResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.SendLocalListResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSendLocalListResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnSendLocalListResponse event
@@ -6884,12 +7794,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.ClearCache(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomClearCacheRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.ClearCacheResponse(Request,
-                                                            Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.ClearCache(Request)
+
+                                      : new CS.ClearCacheResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.ClearCacheResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomClearCacheResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnClearCacheResponse event
@@ -6948,12 +7891,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.ReserveNow(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomReserveNowRequestSerializer,
+                                          CustomIdTokenSerializer,
+                                          CustomAdditionalInfoSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.ReserveNowResponse(Request,
-                                                            Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.ReserveNow(Request)
+
+                                      : new CS.ReserveNowResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.ReserveNowResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomReserveNowResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnReserveNowResponse event
@@ -7011,12 +7989,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.CancelReservation(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomCancelReservationRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.CancelReservationResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.CancelReservation(Request)
+
+                                      : new CS.CancelReservationResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.CancelReservationResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomCancelReservationResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnCancelReservationResponse event
@@ -7074,12 +8085,70 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.StartCharging(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomRequestStartTransactionRequestSerializer,
+                                          CustomIdTokenSerializer,
+                                          CustomAdditionalInfoSerializer,
+                                          CustomChargingProfileSerializer,
+                                          CustomLimitBeyondSoCSerializer,
+                                          CustomChargingScheduleSerializer,
+                                          CustomChargingSchedulePeriodSerializer,
+                                          CustomV2XFreqWattEntrySerializer,
+                                          CustomV2XSignalWattEntrySerializer,
+                                          CustomSalesTariffSerializer,
+                                          CustomSalesTariffEntrySerializer,
+                                          CustomRelativeTimeIntervalSerializer,
+                                          CustomConsumptionCostSerializer,
+                                          CustomCostSerializer,
 
-                                : new CS.RequestStartTransactionResponse(Request,
-                                                                         Result.Server("Unknown or unreachable charging station!"));
+                                          CustomAbsolutePriceScheduleSerializer,
+                                          CustomPriceRuleStackSerializer,
+                                          CustomPriceRuleSerializer,
+                                          CustomTaxRuleSerializer,
+                                          CustomOverstayRuleListSerializer,
+                                          CustomOverstayRuleSerializer,
+                                          CustomAdditionalServiceSerializer,
+
+                                          CustomPriceLevelScheduleSerializer,
+                                          CustomPriceLevelScheduleEntrySerializer,
+
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.StartCharging(Request)
+
+                                      : new CS.RequestStartTransactionResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.RequestStartTransactionResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomRequestStartTransactionResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnRequestStartTransactionResponse event
@@ -7137,12 +8206,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.StopCharging(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomRequestStopTransactionRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.RequestStopTransactionResponse(Request,
-                                                                        Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.StopCharging(Request)
+
+                                      : new CS.RequestStopTransactionResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.RequestStopTransactionResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomRequestStopTransactionResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnRequestStopTransactionResponse event
@@ -7200,12 +8302,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.GetTransactionStatus(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetTransactionStatusRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.GetTransactionStatusResponse(Request,
-                                                                      Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.GetTransactionStatus(Request)
+
+                                      : new CS.GetTransactionStatusResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.GetTransactionStatusResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetTransactionStatusResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnGetTransactionStatusResponse event
@@ -7263,12 +8397,68 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.SetChargingProfile(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomSetChargingProfileRequestSerializer,
+                                          CustomChargingProfileSerializer,
+                                          CustomLimitBeyondSoCSerializer,
+                                          CustomChargingScheduleSerializer,
+                                          CustomChargingSchedulePeriodSerializer,
+                                          CustomV2XFreqWattEntrySerializer,
+                                          CustomV2XSignalWattEntrySerializer,
+                                          CustomSalesTariffSerializer,
+                                          CustomSalesTariffEntrySerializer,
+                                          CustomRelativeTimeIntervalSerializer,
+                                          CustomConsumptionCostSerializer,
+                                          CustomCostSerializer,
 
-                                : new CS.SetChargingProfileResponse(Request,
-                                                                    Result.Server("Unknown or unreachable charging station!"));
+                                          CustomAbsolutePriceScheduleSerializer,
+                                          CustomPriceRuleStackSerializer,
+                                          CustomPriceRuleSerializer,
+                                          CustomTaxRuleSerializer,
+                                          CustomOverstayRuleListSerializer,
+                                          CustomOverstayRuleSerializer,
+                                          CustomAdditionalServiceSerializer,
+
+                                          CustomPriceLevelScheduleSerializer,
+                                          CustomPriceLevelScheduleEntrySerializer,
+
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.SetChargingProfile(Request)
+
+                                      : new CS.SetChargingProfileResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.SetChargingProfileResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSetChargingProfileResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnSetChargingProfileResponse event
@@ -7326,12 +8516,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.GetChargingProfiles(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetChargingProfilesRequestSerializer,
+                                          CustomChargingProfileCriterionSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.GetChargingProfilesResponse(Request,
-                                                                     Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.GetChargingProfiles(Request)
+
+                                      : new CS.GetChargingProfilesResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.GetChargingProfilesResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetChargingProfilesResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnGetChargingProfilesResponse event
@@ -7389,12 +8613,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.ClearChargingProfile(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomClearChargingProfileRequestSerializer,
+                                          CustomClearChargingProfileSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.ClearChargingProfileResponse(Request,
-                                                                      Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.ClearChargingProfile(Request)
+
+                                      : new CS.ClearChargingProfileResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.ClearChargingProfileResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomClearChargingProfileResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnClearChargingProfileResponse event
@@ -7452,12 +8710,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.GetCompositeSchedule(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetCompositeScheduleRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.GetCompositeScheduleResponse(Request,
-                                                                      Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.GetCompositeSchedule(Request)
+
+                                      : new CS.GetCompositeScheduleResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.GetCompositeScheduleResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetCompositeScheduleResponseSerializer,
+                    CustomCompositeScheduleSerializer,
+                    CustomChargingSchedulePeriodSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnGetCompositeScheduleResponse event
@@ -7515,12 +8808,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.UpdateDynamicSchedule(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomUpdateDynamicScheduleRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.UpdateDynamicScheduleResponse(Request,
-                                                                       Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.UpdateDynamicSchedule(Request)
+
+                                      : new CS.UpdateDynamicScheduleResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.UpdateDynamicScheduleResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomUpdateDynamicScheduleResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnUpdateDynamicScheduleResponse event
@@ -7578,12 +8904,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.NotifyAllowedEnergyTransfer(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomNotifyAllowedEnergyTransferRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.NotifyAllowedEnergyTransferResponse(Request,
-                                                                             Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.NotifyAllowedEnergyTransfer(Request)
+
+                                      : new CS.NotifyAllowedEnergyTransferResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.NotifyAllowedEnergyTransferResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyAllowedEnergyTransferResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnNotifyAllowedEnergyTransferResponse event
@@ -7641,12 +9000,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.UsePriorityCharging(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomUsePriorityChargingRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                               : new CS.UsePriorityChargingResponse(Request,
-                                                                    Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.UsePriorityCharging(Request)
+
+                                      : new CS.UsePriorityChargingResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.UsePriorityChargingResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomUsePriorityChargingResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnUsePriorityChargingResponse event
@@ -7704,12 +9096,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.UnlockConnector(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomUnlockConnectorRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.UnlockConnectorResponse(Request,
-                                                                 Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.UnlockConnector(Request)
+
+                                      : new CS.UnlockConnectorResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.UnlockConnectorResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomUnlockConnectorResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnUnlockConnectorResponse event
@@ -7770,12 +9195,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.SendAFRRSignal(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomAFRRSignalRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                               : new CS.AFRRSignalResponse(Request,
-                                                           Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.SendAFRRSignal(Request)
+
+                                      : new CS.AFRRSignalResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.AFRRSignalResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomAFRRSignalResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnAFRRSignalResponse event
@@ -7834,12 +9292,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.SetDisplayMessage(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomSetDisplayMessageRequestSerializer,
+                                          CustomMessageInfoSerializer,
+                                          CustomMessageContentSerializer,
+                                          CustomComponentSerializer,
+                                          CustomEVSESerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.SetDisplayMessageResponse(Request,
-                                                                   Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.SetDisplayMessage(Request)
+
+                                      : new CS.SetDisplayMessageResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.SetDisplayMessageResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSetDisplayMessageResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnSetDisplayMessageResponse event
@@ -7897,12 +9392,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.GetDisplayMessages(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetDisplayMessagesRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.GetDisplayMessagesResponse(Request,
-                                                                    Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.GetDisplayMessages(Request)
+
+                                      : new CS.GetDisplayMessagesResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.GetDisplayMessagesResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetDisplayMessagesResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnGetDisplayMessagesResponse event
@@ -7960,12 +9488,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.ClearDisplayMessage(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomClearDisplayMessageRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.ClearDisplayMessageResponse(Request,
-                                                                     Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.ClearDisplayMessage(Request)
+
+                                      : new CS.ClearDisplayMessageResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.ClearDisplayMessageResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomClearDisplayMessageResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnClearDisplayMessageResponse event
@@ -8024,12 +9585,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.SendCostUpdated(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomCostUpdatedRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.CostUpdatedResponse(Request,
-                                                             Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.SendCostUpdated(Request)
+
+                                      : new CS.CostUpdatedResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.CostUpdatedResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomCostUpdatedResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnCostUpdatedResponse event
@@ -8088,12 +9681,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
 
-                                ? await centralSystem.Item1.RequestCustomerInformation(Request)
+                                ? CryptoUtils.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomCustomerInformationRequestSerializer,
+                                          CustomIdTokenSerializer,
+                                          CustomAdditionalInfoSerializer,
+                                          CustomCertificateHashDataSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      SignaturePolicy,
+                                      out var errorResponse
+                                  )
 
-                                : new CS.CustomerInformationResponse(Request,
-                                                                     Result.Server("Unknown or unreachable charging station!"));
+                                      ? await centralSystem.Item1.RequestCustomerInformation(Request)
+
+                                      : new CS.CustomerInformationResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.CustomerInformationResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomCustomerInformationResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnCustomerInformationResponse event

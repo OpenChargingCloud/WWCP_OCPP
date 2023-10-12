@@ -341,19 +341,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomClearChargingProfileSerializer = null, CustomStatusInfoSerializer = null, ...)
+        #region ToJSON(CustomClearChargingProfileResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomClearChargingProfileSerializer">A delegate to serialize custom clear charging profile responses.</param>
+        /// <param name="CustomClearChargingProfileResponseSerializer">A delegate to serialize custom clear charging profile responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileResponse>?  CustomClearChargingProfileSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?                    CustomStatusInfoSerializer             = null,
-                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer              = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer             = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ClearChargingProfileResponse>?  CustomClearChargingProfileResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                    CustomStatusInfoSerializer                     = null,
+                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer                      = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
             var json = JSONObject.Create(
@@ -376,8 +376,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                        );
 
-            return CustomClearChargingProfileSerializer is not null
-                       ? CustomClearChargingProfileSerializer(this, json)
+            return CustomClearChargingProfileResponseSerializer is not null
+                       ? CustomClearChargingProfileResponseSerializer(this, json)
                        : json;
 
         }

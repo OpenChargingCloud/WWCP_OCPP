@@ -30,10 +30,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 {
 
     /// <summary>
-    /// Unit tests for charging stations sending sending signed messages to the CSMS.
+    /// Unit tests for charging stations sending sending signed messages
+    /// based on a message signature policy to the CSMS.
     /// </summary>
     [TestFixture]
-    public class ChargingStation_signedMessages_Tests : AChargingStationTests
+    public class ChargingStation_withSignaturePolicy_Tests : AChargingStationTests
     {
 
         #region Init_Test()
@@ -97,32 +98,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var keyPair                  = KeyPair.GenerateKeys()!;
-                var signaturePolicy          = new SignaturePolicy();
-                signaturePolicy.AddVerificationRule(BootNotificationResponse.DefaultJSONLDContext);
+                var now                            = Timestamp.Now;
+                var keyPair                        = KeyPair.GenerateKeys()!;
+                chargingStation1.SignaturePolicy ??= new SignaturePolicy();
+                chargingStation1.SignaturePolicy.AddSigningRule     (BootNotificationRequest. DefaultJSONLDContext,
+                                                                     KeyPair:                 keyPair,
+                                                                     UserIdGenerator:         () => "ahzf",
+                                                                     DescriptionGenerator:    () => I18NString.Create("Just a test!"),
+                                                                     TimestampGenerator:      () => now);
+                chargingStation1.SignaturePolicy.AddVerificationRule(BootNotificationResponse.DefaultJSONLDContext);
 
-                var keyPair2                 = KeyPair.GenerateKeys()!;
-                testCSMS01.SignaturePolicy ??= new SignaturePolicy();
+                var keyPair2                       = KeyPair.GenerateKeys()!;
+                testCSMS01.SignaturePolicy       ??= new SignaturePolicy();
                 testCSMS01.SignaturePolicy.AddSigningRule(BootNotificationResponse.DefaultJSONLDContext, keyPair2);
 
 
-                var reason                   = BootReason.PowerUp;
-                var now                      = Timestamp.Now;
-                var response1                = await chargingStation1.SendBootNotification(
-                                                   BootReason:   reason,
-                                                   SignInfos:    new[] {
-                                                                     keyPair.ToSignInfo1(
-                                                                         "ahzf",
-                                                                         I18NString.Create("Just a test!"),
-                                                                         now
-                                                                     )
-                                                                 },
-                                                   CustomData:   null
-                                               );
+                var reason                         = BootReason.PowerUp;
+                var response1                      = await chargingStation1.SendBootNotification(
+                                                         BootReason:   reason,
+                                                         CustomData:   null
+                                                     );
 
                 Assert.AreEqual(ResultCodes.OK,                          response1.Result.ResultCode);
                 Assert.AreEqual(RegistrationStatus.Accepted,             response1.Status);
-
 
                 Assert.AreEqual(1,                                       bootNotificationRequests.Count);
                 Assert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().ChargingStationId);

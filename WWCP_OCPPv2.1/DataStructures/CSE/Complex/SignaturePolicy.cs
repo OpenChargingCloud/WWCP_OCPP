@@ -150,31 +150,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        public SignaturePolicy AddSigningRule(JSONLDContext  Context,
-                                              KeyPair        KeyPair)
+        public SignaturePolicy AddSigningRule(JSONLDContext      Context,
+                                              KeyPair            KeyPair,
+                                              Func<String>?      UserIdGenerator        = null,
+                                              Func<I18NString>?  DescriptionGenerator   = null,
+                                              Func<DateTime>?    TimestampGenerator     = null)
         {
 
             entries.Add(new SignaturePolicyEntry(
                             entries.Any() ? entries.Max(entry => entry.Priority) + 1 : 1,
                             Context,
                             SignaturePolicyAction.sign,
-                            KeyPair
+                            KeyPair,
+                            UserIdGenerator,
+                            DescriptionGenerator,
+                            TimestampGenerator
                         ));
 
             return this;
 
         }
 
-        public SignaturePolicy AddSigningRule(UInt32         Priority,
-                                              JSONLDContext  Context,
-                                              KeyPair        KeyPair)
+        public SignaturePolicy AddSigningRule(UInt32             Priority,
+                                              JSONLDContext      Context,
+                                              KeyPair            KeyPair,
+                                              Func<String>?      UserIdGenerator        = null,
+                                              Func<I18NString>?  DescriptionGenerator   = null,
+                                              Func<DateTime>?    TimestampGenerator     = null)
         {
 
             entries.Add(new SignaturePolicyEntry(
                             Priority,
                             Context,
                             SignaturePolicyAction.sign,
-                            KeyPair
+                            KeyPair,
+                            UserIdGenerator,
+                            DescriptionGenerator,
+                            TimestampGenerator
                         ));
 
             return this;
@@ -320,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"-";
+            => $"{Entries.Count()} / {KeyPairs.Count()} => Default: '{DefaultAction}'{(DefaultSigningKeyPair is not null ? " / defaultKey" : "")}";
 
         #endregion
 

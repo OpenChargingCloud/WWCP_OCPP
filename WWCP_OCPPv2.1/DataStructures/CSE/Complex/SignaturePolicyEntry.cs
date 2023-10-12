@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// An OCPP CSE cryptographic signature.
+    /// An OCPP CSE cryptographic signature entry.
     /// </summary>
     public class SignaturePolicyEntry : ACustomData,
                                         IEquatable<SignaturePolicyEntry>
@@ -35,47 +35,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Properties
 
-        public UInt32                 Priority    { get; }
-        public JSONLDContext          Context     { get; }
-        public SignaturePolicyAction  Action      { get; }
-        public KeyPair?               KeyPair     { get; }
+        /// <summary>
+        /// The priority of the cryptographic signature entry.
+        /// </summary>
+        public UInt32                 Priority               { get; }
+
+        /// <summary>
+        /// The context of the cryptographic signature entry.
+        /// </summary>
+        public JSONLDContext          Context                { get; }
+
+        /// <summary>
+        /// The context of the cryptographic signature action.
+        /// </summary>
+        public SignaturePolicyAction  Action                 { get; }
+
+        /// <summary>
+        /// An optional user identification generator for signing.
+        /// </summary>
+        public KeyPair?               KeyPair                { get; }
+
+        /// <summary>
+        /// An optional user identification generator for signing.
+        /// </summary>
+        public Func<String>?          UserIdGenerator        { get; }
+
+        /// <summary>
+        /// An optional multi-language description generator for signing.
+        /// </summary>
+        public Func<I18NString>?      DescriptionGenerator   { get; }
+
+        /// <summary>
+        /// An optional timestamp generator for signing.
+        /// </summary>
+        public Func<DateTime>?        TimestampGenerator     { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new OCPP CSE cryptographic signature.
+        /// Create a new OCPP CSE cryptographic signature entry.
         /// </summary>
-        /// <param name="KeyId">An unique key identification, e.g. a prefix of a public key.</param>
-        /// <param name="Value">A signature value.</param>
-        /// <param name="SigningMethod">An optional method used to create the digital signature.</param>
-        /// <param name="EncodingMethod">An optional encoding method.</param>
+        /// <param name="Priority">The priority of the cryptographic signature entry.</param>
+        /// <param name="Context">The context of the cryptographic signature entry.</param>
+        /// <param name="Action">The context of the cryptographic signature action.</param>
+        /// <param name="KeyPair">The optional cryptographic key pair for signing or verification.</param>
+        /// <param name="UserIdGenerator">An optional user identification generator for signing.</param>
+        /// <param name="DescriptionGenerator">An optional multi-language description generator for signing.</param>
+        /// <param name="TimestampGenerator">An optional timestamp generator for signing.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public SignaturePolicyEntry(UInt32                 Priority,
                                     JSONLDContext          Context,
                                     SignaturePolicyAction  Action,
-                                    KeyPair?               KeyPair      = null,
-                                    CustomData?            CustomData   = null)
+                                    KeyPair?               KeyPair                = null,
+                                    Func<String>?          UserIdGenerator        = null,
+                                    Func<I18NString>?      DescriptionGenerator   = null,
+                                    Func<DateTime>?        TimestampGenerator     = null,
+                                    CustomData?            CustomData             = null)
 
             : base(CustomData)
 
         {
 
-            this.Priority  = Priority;
-            this.Context   = Context;
-            this.Action    = Action;
-            this.KeyPair   = KeyPair;
+            this.Priority              = Priority;
+            this.Context               = Context;
+            this.Action                = Action;
+            this.KeyPair               = KeyPair;
+            this.UserIdGenerator       = UserIdGenerator;
+            this.DescriptionGenerator  = DescriptionGenerator;
+            this.TimestampGenerator    = TimestampGenerator;
 
             unchecked
             {
 
-                hashCode = Priority.GetHashCode()       * 11 ^
-                           Context. GetHashCode()       *  7 ^
-                           Action.  GetHashCode()       *  5 ^
-                          (KeyPair?.GetHashCode() ?? 0) *  3 ^
-
-                           base.    GetHashCode();
+                hashCode = Priority.             GetHashCode()       * 19 ^
+                           Context.              GetHashCode()       * 17 ^
+                           Action.               GetHashCode()       * 13 ^
+                          (KeyPair?.             GetHashCode() ?? 0) * 11 ^
+                          (UserIdGenerator?.     GetHashCode() ?? 0) *  7 ^
+                          (DescriptionGenerator?.GetHashCode() ?? 0) *  5 ^
+                          (TimestampGenerator?.  GetHashCode() ?? 0) *  3 ^
+                           base.                 GetHashCode();
 
             }
 
@@ -380,7 +421,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"-";
+            => $"{Context} => {Action} ({Priority})";
 
         #endregion
 

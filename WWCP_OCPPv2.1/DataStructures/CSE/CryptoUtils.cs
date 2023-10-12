@@ -116,17 +116,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         signInfos.AddRange(SignInfos);
 
                     if (SignableMessage.SignKeys  is not null && SignableMessage.SignKeys. Any())
-                        signInfos.AddRange(SignableMessage.SignKeys.Select(keyPair => keyPair.ToSignInfo()));
+                        signInfos.AddRange(SignableMessage.SignKeys.Select(keyPair => keyPair.ToSignInfo1()));
 
                     if (SignableMessage.SignInfos is not null && SignableMessage.SignInfos.Any())
                         signInfos.AddRange(SignableMessage.SignInfos);
 
-                    if (signaturePolicyEntries is not null && signaturePolicyEntries.Any())
+                    if (signaturePolicyEntries    is not null && signaturePolicyEntries.   Any())
                     {
                         foreach (var signaturePolicyEntry in signaturePolicyEntries)
                         {
-                            if (signaturePolicyEntry.KeyPair is not null)
-                                signInfos.Add(signaturePolicyEntry.KeyPair.ToSignInfo());
+
+                            var signInfo = signaturePolicyEntry.ToSignInfo();
+
+                            if (signInfo is not null)
+                                signInfos.Add(signInfo);
+
                         }
                     }
 
@@ -189,9 +193,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                          Algorithm:        signInfo.Algorithm,
                                                          SigningMethod:    null,
                                                          EncodingMethod:   signInfo.Encoding,
-                                                         Name:             signInfo.Name,
-                                                         Description:      signInfo.Description,
-                                                         Timestamp:        signInfo.Timestamp
+                                                         Name:             signInfo.Name?.       Invoke(),
+                                                         Description:      signInfo.Description?.Invoke(),
+                                                         Timestamp:        signInfo.Timestamp?.  Invoke()
                                                      ));
 
                     }
@@ -287,8 +291,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             if (!SignableMessage.Signatures.Any())
             {
+
+                if (SignaturePolicy is null)
+                {
+                    ErrorResponse = null;
+                    return true;
+                }
+
                 ErrorResponse = "The given message does not contain any signatures!";
                 return false;
+
             }
 
             try

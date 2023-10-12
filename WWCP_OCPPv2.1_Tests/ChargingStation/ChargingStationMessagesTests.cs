@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation3        is not null)
             {
 
-                var bootNotificationRequests= new ConcurrentList<CS.BootNotificationRequest>();
+                var bootNotificationRequests= new ConcurrentList<BootNotificationRequest>();
 
                 testCSMS01.OnBootNotificationRequest += (timestamp, sender, connection, bootNotificationRequest) => {
                     bootNotificationRequests.TryAdd(bootNotificationRequest);
