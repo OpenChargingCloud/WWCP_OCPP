@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The unique identification of this reservation.
         /// </summary>
         [Mandatory]
-        public Reservation_Id   Id    { get; }
+        public Reservation_Id   Id               { get; }
 
         /// <summary>
         /// The timestamp when the reservation ends.

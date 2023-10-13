@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public HashAlgorithms  HashAlgorithm          { get; }
 
         /// <summary>
-        /// The hashed value of the IssuerName [max 128]
+        /// The hashed value of the the issuers name [max 128]
         /// </summary>
         [Mandatory]
         public String          IssuerNameHash         { get; }
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create new certificate hash data.
         /// </summary>
         /// <param name="HashAlgorithm">The cryptographic hashing algorithm.</param>
-        /// <param name="IssuerNameHash">The hashed value of the IssuerName [max 128]</param>
+        /// <param name="IssuerNameHash">The hashed value of the the issuers name [max 128]</param>
         /// <param name="IssuerPublicKeyHash">The hashed value of the issuers public key [max 128]</param>
         /// <param name="SerialNumber">The serial number of the certificate [max 40].</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>

@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public OperationalStatus  OperationalStatus    { get; }
 
         /// <summary>
-        /// The optional identification of an EVSE/connector for which
+        /// The optional EVSE (EVSE/connector identifications) for which
         /// the operational status should be changed.
         /// </summary>
         [Optional]
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="OperationalStatus">A new operational status of the charging station or EVSE.</param>
-        /// <param name="EVSE">Optional identification of an EVSE/connector for which the operational status should be changed.</param>
+        /// <param name="EVSE">An optional EVSE (EVSE/connector identifications) for which the operational status should be changed.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>

@@ -2472,12 +2472,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region ProcessWebSocketTextFrame(frame)
+        #region ProcessWebSocketTextFrame(WebSocketFrame, WebSocketConnection)
 
-        public override async Task ProcessWebSocketTextFrame(WebSocketFrame frame)
+        public override async Task ProcessWebSocketTextFrame(WebSocketFrame             WebSocketFrame,
+                                                             WebSocketClientConnection  WebSocketConnection)
         {
 
-            var textPayload = frame.Payload.ToUTF8String();
+            var textPayload = WebSocketFrame.Payload.ToUTF8String();
 
             if (textPayload == "[]")
                 DebugX.Log(nameof(ChargingStationWSClient), " [] received!");
@@ -2550,6 +2551,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnResetDelegate)?.Invoke(Timestamp.Now,
                                                                                                                        this,
+                                                                                                                       WebSocketConnection,
                                                                                                                        request,
                                                                                                                        cancellationTokenSource.Token)).
                                                       ToArray();
@@ -2682,6 +2684,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnUpdateFirmwareDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                 this,
+                                                                                                                                WebSocketConnection,
                                                                                                                                 request,
                                                                                                                                 cancellationTokenSource.Token)).
                                                       ToArray();
@@ -2814,6 +2817,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnPublishFirmwareDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                  this,
+                                                                                                                                 WebSocketConnection,
                                                                                                                                  request,
                                                                                                                                  cancellationTokenSource.Token)).
                                                       ToArray();
@@ -2946,6 +2950,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnUnpublishFirmwareDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                    this,
+                                                                                                                                   WebSocketConnection,
                                                                                                                                    request,
                                                                                                                                    cancellationTokenSource.Token)).
                                                       ToArray();
@@ -3078,6 +3083,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnGetBaseReportDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                this,
+                                                                                                                               WebSocketConnection,
                                                                                                                                request,
                                                                                                                                cancellationTokenSource.Token)).
                                                       ToArray();
@@ -3210,6 +3216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnGetReportDelegate)?.Invoke(Timestamp.Now,
                                                                                                                            this,
+                                                                                                                           WebSocketConnection,
                                                                                                                            request,
                                                                                                                            cancellationTokenSource.Token)).
                                                       ToArray();
@@ -3342,6 +3349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnGetLogDelegate)?.Invoke(Timestamp.Now,
                                                                                                                         this,
+                                                                                                                        WebSocketConnection,
                                                                                                                         request,
                                                                                                                         cancellationTokenSource.Token)).
                                                       ToArray();
@@ -3474,6 +3482,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnSetVariablesDelegate)?.Invoke(Timestamp.Now,
                                                                                                                               this,
+                                                                                                                              WebSocketConnection,
                                                                                                                               request,
                                                                                                                               cancellationTokenSource.Token)).
                                                       ToArray();
@@ -3606,6 +3615,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnGetVariablesDelegate)?.Invoke(Timestamp.Now,
                                                                                                                               this,
+                                                                                                                              WebSocketConnection,
                                                                                                                               request,
                                                                                                                               cancellationTokenSource.Token)).
                                                       ToArray();
@@ -3738,6 +3748,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnSetMonitoringBaseDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                    this,
+                                                                                                                                   WebSocketConnection,
                                                                                                                                    request,
                                                                                                                                    cancellationTokenSource.Token)).
                                                       ToArray();
@@ -3870,6 +3881,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnGetMonitoringReportDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                      this,
+                                                                                                                                     WebSocketConnection,
                                                                                                                                      request,
                                                                                                                                      cancellationTokenSource.Token)).
                                                       ToArray();
@@ -4002,6 +4014,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnSetMonitoringLevelDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                     this,
+                                                                                                                                    WebSocketConnection,
                                                                                                                                     request,
                                                                                                                                     cancellationTokenSource.Token)).
                                                       ToArray();
@@ -4134,6 +4147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnSetVariableMonitoringDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                        this,
+                                                                                                                                       WebSocketConnection,
                                                                                                                                        request,
                                                                                                                                        cancellationTokenSource.Token)).
                                                       ToArray();
@@ -4266,6 +4280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnClearVariableMonitoringDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                          this,
+                                                                                                                                         WebSocketConnection,
                                                                                                                                          request,
                                                                                                                                          cancellationTokenSource.Token)).
                                                       ToArray();
@@ -4398,6 +4413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnSetNetworkProfileDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                    this,
+                                                                                                                                   WebSocketConnection,
                                                                                                                                    request,
                                                                                                                                    cancellationTokenSource.Token)).
                                                       ToArray();
@@ -4530,6 +4546,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnChangeAvailabilityDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                     this,
+                                                                                                                                    WebSocketConnection,
                                                                                                                                     request,
                                                                                                                                     cancellationTokenSource.Token)).
                                                       ToArray();
@@ -4662,6 +4679,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnTriggerMessageDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                 this,
+                                                                                                                                WebSocketConnection,
                                                                                                                                 request,
                                                                                                                                 cancellationTokenSource.Token)).
                                                       ToArray();
@@ -4794,6 +4812,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                       this,
+                                                                                                                                      WebSocketConnection,
                                                                                                                                       request,
                                                                                                                                       cancellationTokenSource.Token)).
                                                       ToArray();
@@ -4927,6 +4946,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnCertificateSignedDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                    this,
+                                                                                                                                   WebSocketConnection,
                                                                                                                                    request,
                                                                                                                                    cancellationTokenSource.Token)).
                                                       ToArray();
@@ -5059,6 +5079,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnInstallCertificateDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                     this,
+                                                                                                                                    WebSocketConnection,
                                                                                                                                     request,
                                                                                                                                     cancellationTokenSource.Token)).
                                                       ToArray();
@@ -5191,6 +5212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnGetInstalledCertificateIdsDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                             this,
+                                                                                                                                            WebSocketConnection,
                                                                                                                                             request,
                                                                                                                                             cancellationTokenSource.Token)).
                                                       ToArray();
@@ -5323,6 +5345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnDeleteCertificateDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                    this,
+                                                                                                                                   WebSocketConnection,
                                                                                                                                    request,
                                                                                                                                    cancellationTokenSource.Token)).
                                                       ToArray();
@@ -5455,6 +5478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnNotifyCRLDelegate)?.Invoke(Timestamp.Now,
                                                                                                                            this,
+                                                                                                                           WebSocketConnection,
                                                                                                                            request,
                                                                                                                            cancellationTokenSource.Token)).
                                                       ToArray();
@@ -5588,6 +5612,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnGetLocalListVersionDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                      this,
+                                                                                                                                     WebSocketConnection,
                                                                                                                                      request,
                                                                                                                                      cancellationTokenSource.Token)).
                                                       ToArray();
@@ -5720,6 +5745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnSendLocalListDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                this,
+                                                                                                                               WebSocketConnection,
                                                                                                                                request,
                                                                                                                                cancellationTokenSource.Token)).
                                                       ToArray();
@@ -5852,6 +5878,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnClearCacheDelegate)?.Invoke(Timestamp.Now,
                                                                                                                             this,
+                                                                                                                            WebSocketConnection,
                                                                                                                             request,
                                                                                                                             cancellationTokenSource.Token)).
                                                       ToArray();
@@ -5985,6 +6012,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)?.Invoke(Timestamp.Now,
                                                                                                                             this,
+                                                                                                                            WebSocketConnection,
                                                                                                                             request,
                                                                                                                             cancellationTokenSource.Token)).
                                                       ToArray();
@@ -6117,6 +6145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnCancelReservationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                    this,
+                                                                                                                                   WebSocketConnection,
                                                                                                                                    request,
                                                                                                                                    cancellationTokenSource.Token)).
                                                       ToArray();
@@ -6249,6 +6278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnRequestStartTransactionDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                          this,
+                                                                                                                                         WebSocketConnection,
                                                                                                                                          request,
                                                                                                                                          cancellationTokenSource.Token)).
                                                       ToArray();
@@ -6381,6 +6411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnRequestStopTransactionDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                         this,
+                                                                                                                                        WebSocketConnection,
                                                                                                                                         request,
                                                                                                                                         cancellationTokenSource.Token)).
                                                       ToArray();
@@ -6513,6 +6544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnGetTransactionStatusDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                       this,
+                                                                                                                                      WebSocketConnection,
                                                                                                                                       request,
                                                                                                                                       cancellationTokenSource.Token)).
                                                       ToArray();
@@ -6645,6 +6677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnSetChargingProfileDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                     this,
+                                                                                                                                    WebSocketConnection,
                                                                                                                                     request,
                                                                                                                                     cancellationTokenSource.Token)).
                                                       ToArray();
@@ -6777,6 +6810,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnGetChargingProfilesDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                      this,
+                                                                                                                                     WebSocketConnection,
                                                                                                                                      request,
                                                                                                                                      cancellationTokenSource.Token)).
                                                       ToArray();
@@ -6909,6 +6943,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnClearChargingProfileDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                       this,
+                                                                                                                                      WebSocketConnection,
                                                                                                                                       request,
                                                                                                                                       cancellationTokenSource.Token)).
                                                       ToArray();
@@ -7041,6 +7076,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnGetCompositeScheduleDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                       this,
+                                                                                                                                      WebSocketConnection,
                                                                                                                                       request,
                                                                                                                                       cancellationTokenSource.Token)).
                                                       ToArray();
@@ -7173,6 +7209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnUpdateDynamicScheduleDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                        this,
+                                                                                                                                       WebSocketConnection,
                                                                                                                                        request,
                                                                                                                                        cancellationTokenSource.Token)).
                                                       ToArray();
@@ -7305,6 +7342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnNotifyAllowedEnergyTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                              this,
+                                                                                                                                             WebSocketConnection,
                                                                                                                                              request,
                                                                                                                                              cancellationTokenSource.Token)).
                                                       ToArray();
@@ -7437,6 +7475,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnUsePriorityChargingDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                      this,
+                                                                                                                                     WebSocketConnection,
                                                                                                                                      request,
                                                                                                                                      cancellationTokenSource.Token)).
                                                       ToArray();
@@ -7569,6 +7608,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnUnlockConnectorDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                  this,
+                                                                                                                                 WebSocketConnection,
                                                                                                                                  request,
                                                                                                                                  cancellationTokenSource.Token)).
                                                       ToArray();
@@ -7702,6 +7742,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnAFRRSignalDelegate)?.Invoke(Timestamp.Now,
                                                                                                                             this,
+                                                                                                                            WebSocketConnection,
                                                                                                                             request,
                                                                                                                             cancellationTokenSource.Token)).
                                                       ToArray();
@@ -7835,6 +7876,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnSetDisplayMessageDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                    this,
+                                                                                                                                   WebSocketConnection,
                                                                                                                                    request,
                                                                                                                                    cancellationTokenSource.Token)).
                                                       ToArray();
@@ -7967,6 +8009,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnGetDisplayMessagesDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                     this,
+                                                                                                                                    WebSocketConnection,
                                                                                                                                     request,
                                                                                                                                     cancellationTokenSource.Token)).
                                                       ToArray();
@@ -8099,6 +8142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnClearDisplayMessageDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                      this,
+                                                                                                                                     WebSocketConnection,
                                                                                                                                      request,
                                                                                                                                      cancellationTokenSource.Token)).
                                                       ToArray();
@@ -8231,6 +8275,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnCostUpdatedDelegate)?.Invoke(Timestamp.Now,
                                                                                                                              this,
+                                                                                                                             WebSocketConnection,
                                                                                                                              request,
                                                                                                                              cancellationTokenSource.Token)).
                                                       ToArray();
@@ -8363,6 +8408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       GetInvocationList()?.
                                                       SafeSelect(subscriber => (subscriber as OnCustomerInformationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                      this,
+                                                                                                                                     WebSocketConnection,
                                                                                                                                      request,
                                                                                                                                      cancellationTokenSource.Token)).
                                                       ToArray();
@@ -8445,11 +8491,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 if (OCPPResponseJSON is not null)
                 {
 
-                    await SendText(new OCPP_WebSocket_ResponseMessage(
-                                       requestMessage.RequestId,
-                                       OCPPResponseJSON).
-                                       ToJSON().
-                                       ToString(JSONFormatting));
+                    await SendText(
+                              new OCPP_WebSocket_ResponseMessage(
+                                  requestMessage.RequestId,
+                                  OCPPResponseJSON
+                              ).
+                              ToJSON().
+                              ToString(JSONFormatting)
+                          );
 
                     #region OnTextMessageResponseSent
 
@@ -8458,7 +8507,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                         OnTextMessageResponseSent?.Invoke(Timestamp.Now,
                                                           this,
-                                                          frame,
+                                                          WebSocketFrame,
                                                           EventTracking_Id.New,
                                                           requestTimestamp,
                                                           requestJSON.     ToString(JSONFormatting),
@@ -8495,7 +8544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                             OnTextMessageResponseReceived?.Invoke(Timestamp.Now,
                                                                   this,
-                                                                  frame,
+                                                                  WebSocketFrame,
                                                                   EventTracking_Id.New,
                                                                   sendRequestState.Timestamp,
                                                                   sendRequestState.WSRequestMessage.ToJSON().ToString(JSONFormatting),
@@ -8518,7 +8567,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 }
             }
 
-            else if (OCPP_WebSocket_ErrorMessage.TryParse(textPayload, out var wsErrorMessage))
+            else if (OCPP_WebSocket_ErrorMessage.   TryParse(textPayload, out var wsErrorMessage))
             {
                 DebugX.Log(nameof(ChargingStationWSClient), " Received unknown OCPP error message: " + textPayload);
             }

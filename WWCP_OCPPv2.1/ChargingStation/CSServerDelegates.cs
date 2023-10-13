@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
@@ -50,10 +51,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<ResetResponse>
 
-        OnResetDelegate(DateTime            Timestamp,
-                        IEventSender        Sender,
-                        ResetRequest        Request,
-                        CancellationToken   CancellationToken);
+        OnResetDelegate(DateTime                    Timestamp,
+                        IEventSender                Sender,
+                        WebSocketClientConnection   Connection,
+                        ResetRequest                Request,
+                        CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -98,10 +100,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<UpdateFirmwareResponse>
 
-        OnUpdateFirmwareDelegate(DateTime                Timestamp,
-                                 IEventSender            Sender,
-                                 UpdateFirmwareRequest   Request,
-                                 CancellationToken       CancellationToken);
+        OnUpdateFirmwareDelegate(DateTime                    Timestamp,
+                                 IEventSender                Sender,
+                                 WebSocketClientConnection   Connection,
+                                 UpdateFirmwareRequest       Request,
+                                 CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -146,10 +149,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<PublishFirmwareResponse>
 
-        OnPublishFirmwareDelegate(DateTime                 Timestamp,
-                                  IEventSender             Sender,
-                                  PublishFirmwareRequest   Request,
-                                  CancellationToken        CancellationToken);
+        OnPublishFirmwareDelegate(DateTime                    Timestamp,
+                                  IEventSender                Sender,
+                                  WebSocketClientConnection   Connection,
+                                  PublishFirmwareRequest      Request,
+                                  CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -194,10 +198,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<UnpublishFirmwareResponse>
 
-        OnUnpublishFirmwareDelegate(DateTime                   Timestamp,
-                                    IEventSender               Sender,
-                                    UnpublishFirmwareRequest   Request,
-                                    CancellationToken          CancellationToken);
+        OnUnpublishFirmwareDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    UnpublishFirmwareRequest    Request,
+                                    CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -242,10 +247,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<GetBaseReportResponse>
 
-        OnGetBaseReportDelegate(DateTime               Timestamp,
-                                IEventSender           Sender,
-                                GetBaseReportRequest   Request,
-                                CancellationToken      CancellationToken);
+        OnGetBaseReportDelegate(DateTime                    Timestamp,
+                                IEventSender                Sender,
+                                WebSocketClientConnection   Connection,
+                                GetBaseReportRequest        Request,
+                                CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -290,10 +296,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<GetReportResponse>
 
-        OnGetReportDelegate(DateTime            Timestamp,
-                            IEventSender        Sender,
-                            GetReportRequest    Request,
-                            CancellationToken   CancellationToken);
+        OnGetReportDelegate(DateTime                    Timestamp,
+                            IEventSender                Sender,
+                            WebSocketClientConnection   Connection,
+                            GetReportRequest            Request,
+                            CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -338,10 +345,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<GetLogResponse>
 
-        OnGetLogDelegate(DateTime            Timestamp,
-                         IEventSender        Sender,
-                         GetLogRequest       Request,
-                         CancellationToken   CancellationToken);
+        OnGetLogDelegate(DateTime                    Timestamp,
+                         IEventSender                Sender,
+                         WebSocketClientConnection   Connection,
+                         GetLogRequest               Request,
+                         CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -386,10 +394,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SetVariablesResponse>
 
-        OnSetVariablesDelegate(DateTime              Timestamp,
-                               IEventSender          Sender,
-                               SetVariablesRequest   Request,
-                               CancellationToken     CancellationToken);
+        OnSetVariablesDelegate(DateTime                    Timestamp,
+                               IEventSender                Sender,
+                               WebSocketClientConnection   Connection,
+                               SetVariablesRequest         Request,
+                               CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -434,10 +443,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<GetVariablesResponse>
 
-        OnGetVariablesDelegate(DateTime              Timestamp,
-                               IEventSender          Sender,
-                               GetVariablesRequest   Request,
-                               CancellationToken     CancellationToken);
+        OnGetVariablesDelegate(DateTime                    Timestamp,
+                               IEventSender                Sender,
+                               WebSocketClientConnection   Connection,
+                               GetVariablesRequest         Request,
+                               CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -482,10 +492,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SetMonitoringBaseResponse>
 
-        OnSetMonitoringBaseDelegate(DateTime                   Timestamp,
-                                    IEventSender               Sender,
-                                    SetMonitoringBaseRequest   Request,
-                                    CancellationToken          CancellationToken);
+        OnSetMonitoringBaseDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    SetMonitoringBaseRequest    Request,
+                                    CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -532,6 +543,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetMonitoringReportDelegate(DateTime                     Timestamp,
                                       IEventSender                 Sender,
+                                      WebSocketClientConnection    Connection,
                                       GetMonitoringReportRequest   Request,
                                       CancellationToken            CancellationToken);
 
@@ -580,6 +592,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnSetMonitoringLevelDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
+                                     WebSocketClientConnection   Connection,
                                      SetMonitoringLevelRequest   Request,
                                      CancellationToken           CancellationToken);
 
@@ -628,6 +641,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnSetVariableMonitoringDelegate(DateTime                       Timestamp,
                                         IEventSender                   Sender,
+                                        WebSocketClientConnection      Connection,
                                         SetVariableMonitoringRequest   Request,
                                         CancellationToken              CancellationToken);
 
@@ -676,6 +690,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnClearVariableMonitoringDelegate(DateTime                         Timestamp,
                                           IEventSender                     Sender,
+                                          WebSocketClientConnection        Connection,
                                           ClearVariableMonitoringRequest   Request,
                                           CancellationToken                CancellationToken);
 
@@ -722,10 +737,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SetNetworkProfileResponse>
 
-        OnSetNetworkProfileDelegate(DateTime                   Timestamp,
-                                    IEventSender               Sender,
-                                    SetNetworkProfileRequest   Request,
-                                    CancellationToken          CancellationToken);
+        OnSetNetworkProfileDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    SetNetworkProfileRequest    Request,
+                                    CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -772,6 +788,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnChangeAvailabilityDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
+                                     WebSocketClientConnection   Connection,
                                      ChangeAvailabilityRequest   Request,
                                      CancellationToken           CancellationToken);
 
@@ -818,10 +835,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<TriggerMessageResponse>
 
-        OnTriggerMessageDelegate(DateTime                Timestamp,
-                                 IEventSender            Sender,
-                                 TriggerMessageRequest   Request,
-                                 CancellationToken       CancellationToken);
+        OnTriggerMessageDelegate(DateTime                    Timestamp,
+                                 IEventSender                Sender,
+                                 WebSocketClientConnection   Connection,
+                                 TriggerMessageRequest       Request,
+                                 CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -866,10 +884,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<DataTransferResponse>
 
-        OnIncomingDataTransferDelegate(DateTime                   Timestamp,
-                                       IEventSender               Sender,
-                                       CSMS.DataTransferRequest   Request,
-                                       CancellationToken          CancellationToken);
+        OnIncomingDataTransferDelegate(DateTime                    Timestamp,
+                                       IEventSender                Sender,
+                                       WebSocketClientConnection   Connection,
+                                       CSMS.DataTransferRequest    Request,
+                                       CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -915,10 +934,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<CertificateSignedResponse>
 
-        OnCertificateSignedDelegate(DateTime                   Timestamp,
-                                    IEventSender               Sender,
-                                    CertificateSignedRequest   Request,
-                                    CancellationToken          CancellationToken);
+        OnCertificateSignedDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    CertificateSignedRequest    Request,
+                                    CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -965,6 +985,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnInstallCertificateDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
+                                     WebSocketClientConnection   Connection,
                                      InstallCertificateRequest   Request,
                                      CancellationToken           CancellationToken);
 
@@ -1013,6 +1034,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetInstalledCertificateIdsDelegate(DateTime                            Timestamp,
                                              IEventSender                        Sender,
+                                             WebSocketClientConnection           Connection,
                                              GetInstalledCertificateIdsRequest   Request,
                                              CancellationToken                   CancellationToken);
 
@@ -1059,10 +1081,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<DeleteCertificateResponse>
 
-        OnDeleteCertificateDelegate(DateTime                   Timestamp,
-                                    IEventSender               Sender,
-                                    DeleteCertificateRequest   Request,
-                                    CancellationToken          CancellationToken);
+        OnDeleteCertificateDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    DeleteCertificateRequest    Request,
+                                    CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -1107,10 +1130,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<NotifyCRLResponse>
 
-        OnNotifyCRLDelegate(DateTime            Timestamp,
-                            IEventSender        Sender,
-                            NotifyCRLRequest    Request,
-                            CancellationToken   CancellationToken);
+        OnNotifyCRLDelegate(DateTime                    Timestamp,
+                            IEventSender                Sender,
+                            WebSocketClientConnection   Connection,
+                            NotifyCRLRequest            Request,
+                            CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -1158,6 +1182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetLocalListVersionDelegate(DateTime                     Timestamp,
                                       IEventSender                 Sender,
+                                      WebSocketClientConnection    Connection,
                                       GetLocalListVersionRequest   Request,
                                       CancellationToken            CancellationToken);
 
@@ -1204,10 +1229,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SendLocalListResponse>
 
-        OnSendLocalListDelegate(DateTime               Timestamp,
-                                IEventSender           Sender,
-                                SendLocalListRequest   Request,
-                                CancellationToken      CancellationToken);
+        OnSendLocalListDelegate(DateTime                    Timestamp,
+                                IEventSender                Sender,
+                                WebSocketClientConnection   Connection,
+                                SendLocalListRequest        Request,
+                                CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -1252,10 +1278,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<ClearCacheResponse>
 
-        OnClearCacheDelegate(DateTime            Timestamp,
-                             IEventSender        Sender,
-                             ClearCacheRequest   Request,
-                             CancellationToken   CancellationToken);
+        OnClearCacheDelegate(DateTime                    Timestamp,
+                             IEventSender                Sender,
+                             WebSocketClientConnection   Connection,
+                             ClearCacheRequest           Request,
+                             CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -1301,10 +1328,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<ReserveNowResponse>
 
-        OnReserveNowDelegate(DateTime            Timestamp,
-                             IEventSender        Sender,
-                             ReserveNowRequest   Request,
-                             CancellationToken   CancellationToken);
+        OnReserveNowDelegate(DateTime                    Timestamp,
+                             IEventSender                Sender,
+                             WebSocketClientConnection   Connection,
+                             ReserveNowRequest           Request,
+                             CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -1349,10 +1377,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<CancelReservationResponse>
 
-        OnCancelReservationDelegate(DateTime                   Timestamp,
-                                    IEventSender               Sender,
-                                    CancelReservationRequest   Request,
-                                    CancellationToken          CancellationToken);
+        OnCancelReservationDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    CancelReservationRequest    Request,
+                                    CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -1399,6 +1428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnRequestStartTransactionDelegate(DateTime                         Timestamp,
                                           IEventSender                     Sender,
+                                          WebSocketClientConnection        Connection,
                                           RequestStartTransactionRequest   Request,
                                           CancellationToken                CancellationToken);
 
@@ -1447,6 +1477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnRequestStopTransactionDelegate(DateTime                        Timestamp,
                                          IEventSender                    Sender,
+                                         WebSocketClientConnection       Connection,
                                          RequestStopTransactionRequest   Request,
                                          CancellationToken               CancellationToken);
 
@@ -1495,6 +1526,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetTransactionStatusDelegate(DateTime                      Timestamp,
                                        IEventSender                  Sender,
+                                       WebSocketClientConnection     Connection,
                                        GetTransactionStatusRequest   Request,
                                        CancellationToken             CancellationToken);
 
@@ -1543,6 +1575,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnSetChargingProfileDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
+                                     WebSocketClientConnection   Connection,
                                      SetChargingProfileRequest   Request,
                                      CancellationToken           CancellationToken);
 
@@ -1591,6 +1624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetChargingProfilesDelegate(DateTime                     Timestamp,
                                       IEventSender                 Sender,
+                                      WebSocketClientConnection    Connection,
                                       GetChargingProfilesRequest   Request,
                                       CancellationToken            CancellationToken);
 
@@ -1639,6 +1673,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnClearChargingProfileDelegate(DateTime                      Timestamp,
                                        IEventSender                  Sender,
+                                       WebSocketClientConnection     Connection,
                                        ClearChargingProfileRequest   Request,
                                        CancellationToken             CancellationToken);
 
@@ -1687,6 +1722,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetCompositeScheduleDelegate(DateTime                      Timestamp,
                                        IEventSender                  Sender,
+                                       WebSocketClientConnection     Connection,
                                        GetCompositeScheduleRequest   Request,
                                        CancellationToken             CancellationToken);
 
@@ -1735,6 +1771,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnUpdateDynamicScheduleDelegate(DateTime                       Timestamp,
                                         IEventSender                   Sender,
+                                        WebSocketClientConnection      Connection,
                                         UpdateDynamicScheduleRequest   Request,
                                         CancellationToken              CancellationToken);
 
@@ -1783,6 +1820,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnNotifyAllowedEnergyTransferDelegate(DateTime                             Timestamp,
                                               IEventSender                         Sender,
+                                              WebSocketClientConnection            Connection,
                                               NotifyAllowedEnergyTransferRequest   Request,
                                               CancellationToken                    CancellationToken);
 
@@ -1831,6 +1869,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnUsePriorityChargingDelegate(DateTime                     Timestamp,
                                       IEventSender                 Sender,
+                                      WebSocketClientConnection    Connection,
                                       UsePriorityChargingRequest   Request,
                                       CancellationToken            CancellationToken);
 
@@ -1877,10 +1916,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<UnlockConnectorResponse>
 
-        OnUnlockConnectorDelegate(DateTime                 Timestamp,
-                                  IEventSender             Sender,
-                                  UnlockConnectorRequest   Request,
-                                  CancellationToken        CancellationToken);
+        OnUnlockConnectorDelegate(DateTime                    Timestamp,
+                                  IEventSender                Sender,
+                                  WebSocketClientConnection   Connection,
+                                  UnlockConnectorRequest      Request,
+                                  CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -1926,10 +1966,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<AFRRSignalResponse>
 
-        OnAFRRSignalDelegate(DateTime            Timestamp,
-                             IEventSender        Sender,
-                             AFRRSignalRequest   Request,
-                             CancellationToken   CancellationToken);
+        OnAFRRSignalDelegate(DateTime                    Timestamp,
+                             IEventSender                Sender,
+                             WebSocketClientConnection   Connection,
+                             AFRRSignalRequest           Request,
+                             CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -1975,10 +2016,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SetDisplayMessageResponse>
 
-        OnSetDisplayMessageDelegate(DateTime                   Timestamp,
-                                    IEventSender               Sender,
-                                    SetDisplayMessageRequest   Request,
-                                    CancellationToken          CancellationToken);
+        OnSetDisplayMessageDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    SetDisplayMessageRequest    Request,
+                                    CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -2025,6 +2067,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnGetDisplayMessagesDelegate(DateTime                    Timestamp,
                                      IEventSender                Sender,
+                                     WebSocketClientConnection   Connection,
                                      GetDisplayMessagesRequest   Request,
                                      CancellationToken           CancellationToken);
 
@@ -2073,6 +2116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnClearDisplayMessageDelegate(DateTime                     Timestamp,
                                       IEventSender                 Sender,
+                                      WebSocketClientConnection    Connection,
                                       ClearDisplayMessageRequest   Request,
                                       CancellationToken            CancellationToken);
 
@@ -2119,10 +2163,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<CostUpdatedResponse>
 
-        OnCostUpdatedDelegate(DateTime             Timestamp,
-                              IEventSender         Sender,
-                              CostUpdatedRequest   Request,
-                              CancellationToken    CancellationToken);
+        OnCostUpdatedDelegate(DateTime                    Timestamp,
+                              IEventSender                Sender,
+                              WebSocketClientConnection   Connection,
+                              CostUpdatedRequest          Request,
+                              CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -2169,6 +2214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnCustomerInformationDelegate(DateTime                     Timestamp,
                                       IEventSender                 Sender,
+                                      WebSocketClientConnection    Connection,
                                       CustomerInformationRequest   Request,
                                       CancellationToken            CancellationToken);
 

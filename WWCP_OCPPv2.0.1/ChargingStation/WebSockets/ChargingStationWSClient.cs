@@ -2218,12 +2218,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
         #endregion
 
 
-        #region ProcessWebSocketTextFrame(frame)
+        #region ProcessWebSocketTextFrame(WebSocketFrame, WebSocketConnection)
 
-        public override async Task ProcessWebSocketTextFrame(WebSocketFrame frame)
+        public override async Task ProcessWebSocketTextFrame(WebSocketFrame             WebSocketFrame,
+                                                             WebSocketClientConnection  WebSocketConnection)
         {
 
-            var textPayload = frame.Payload.ToUTF8String();
+            var textPayload = WebSocketFrame.Payload.ToUTF8String();
 
             if (textPayload == "[]")
                 DebugX.Log(nameof(ChargingStationWSClient), " [] received!");
@@ -7543,7 +7544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
 
                         OnTextMessageResponseSent?.Invoke(Timestamp.Now,
                                                           this,
-                                                          frame,
+                                                          WebSocketFrame,
                                                           EventTracking_Id.New,
                                                           requestTimestamp,
                                                           requestJSON.     ToString(JSONFormatting),
@@ -7580,7 +7581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
 
                             OnTextMessageResponseReceived?.Invoke(Timestamp.Now,
                                                                   this,
-                                                                  frame,
+                                                                  WebSocketFrame,
                                                                   EventTracking_Id.New,
                                                                   sendRequestState.Timestamp,
                                                                   sendRequestState.WSRequestMessage.ToJSON().ToString(JSONFormatting),
@@ -7603,7 +7604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CS
                 }
             }
 
-            else if (OCPP_WebSocket_ErrorMessage.TryParse(textPayload, out var wsErrorMessage))
+            else if (OCPP_WebSocket_ErrorMessage.   TryParse(textPayload, out var wsErrorMessage))
             {
                 DebugX.Log(nameof(ChargingStationWSClient), " Received unknown OCPP error message: " + textPayload);
             }

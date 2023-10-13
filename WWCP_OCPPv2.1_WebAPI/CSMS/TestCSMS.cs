@@ -2373,10 +2373,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       );
 
 
-
-
-
-
                 #region Send OnFirmwareStatusNotificationResponse event
 
                 var responseLogger = OnFirmwareStatusNotificationResponse;

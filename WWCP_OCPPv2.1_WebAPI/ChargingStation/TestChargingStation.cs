@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The charging station identification.
         /// </summary>
-        public ChargingStation_Id             Id                          { get; }
+        public ChargingStation_Id       Id                          { get; }
 
         /// <summary>
         /// The charging station vendor identification.
@@ -507,8 +507,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // Responses
         public CustomJObjectSerializerDelegate<ResetResponse>?                                       CustomResetResponseSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateFirmwareResponse>?                              CustomUpdateFirmwareResponseSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<PublishFirmwareResponse>?                             CustomPublishFirmwareResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<UnpublishFirmwareResponse>?                           CustomUnpublishFirmwareResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetBaseReportResponse>?                               CustomGetBaseReportResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<GetReportResponse>?                                   CustomGetReportResponseSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<GetLogResponse>?                                      CustomGetLogResponseSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariablesResponse>?                                CustomSetVariablesResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<GetVariablesResponse>?                                CustomGetVariablesResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringBaseResponse>?                           CustomSetMonitoringBaseResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetMonitoringReportResponse>?                         CustomGetMonitoringReportResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringLevelResponse>?                          CustomSetMonitoringLevelResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariableMonitoringResponse>?                       CustomSetVariableMonitoringResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<ClearVariableMonitoringResponse>?                     CustomClearVariableMonitoringResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<SetNetworkProfileResponse>?                           CustomSetNetworkProfileResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<ChangeAvailabilityResponse>?                          CustomChangeAvailabilityResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<TriggerMessageResponse>?                              CustomTriggerMessageResponseSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
 
+        public CustomJObjectSerializerDelegate<CertificateSignedResponse>?                           CustomCertificateSignedResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<InstallCertificateResponse>?                          CustomInstallCertificateResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsResponse>?                  CustomGetInstalledCertificateIdsResponseSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteCertificateResponse>?                           CustomDeleteCertificateResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyCRLResponse>?                                   CustomNotifyCRLResponseSerializer                            { get; set; }
 
+        public CustomJObjectSerializerDelegate<GetLocalListVersionResponse>?                         CustomGetLocalListVersionResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<SendLocalListResponse>?                               CustomSendLocalListResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<ClearCacheResponse>?                                  CustomClearCacheResponseSerializer                           { get; set; }
+
+        public CustomJObjectSerializerDelegate<ReserveNowResponse>?                                  CustomReserveNowResponseSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<CancelReservationResponse>?                           CustomCancelReservationResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<RequestStartTransactionResponse>?                     CustomRequestStartTransactionResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<RequestStopTransactionResponse>?                      CustomRequestStopTransactionResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<GetTransactionStatusResponse>?                        CustomGetTransactionStatusResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<SetChargingProfileResponse>?                          CustomSetChargingProfileResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<GetChargingProfilesResponse>?                         CustomGetChargingProfilesResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<ClearChargingProfileResponse>?                        CustomClearChargingProfileResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<GetCompositeScheduleResponse>?                        CustomGetCompositeScheduleResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateDynamicScheduleResponse>?                       CustomUpdateDynamicScheduleResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyAllowedEnergyTransferResponse>?                 CustomNotifyAllowedEnergyTransferResponseSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<UsePriorityChargingResponse>?                         CustomUsePriorityChargingResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<UnlockConnectorResponse>?                             CustomUnlockConnectorResponseSerializer                      { get; set; }
+
+        public CustomJObjectSerializerDelegate<AFRRSignalResponse>?                                  CustomAFRRSignalResponseSerializer                           { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetDisplayMessageResponse>?                           CustomSetDisplayMessageResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetDisplayMessagesResponse>?                          CustomGetDisplayMessagesResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<ClearDisplayMessageResponse>?                         CustomClearDisplayMessageResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CostUpdatedResponse>?                                 CustomCostUpdatedResponseSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<CustomerInformationResponse>?                         CustomCustomerInformationResponseSerializer                  { get; set; }
 
         #endregion
 
@@ -590,8 +637,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<SignedMeterValue>?                                    CustomSignedMeterValueSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<UnitsOfMeasure>?                                      CustomUnitsOfMeasureSerializer                               { get; set; }
 
-
-
+        public CustomJObjectSerializerDelegate<SetVariableResult>?                                   CustomSetVariableResultSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<GetVariableResult>?                                   CustomGetVariableResultSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringResult>?                                 CustomSetMonitoringResultSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<ClearMonitoringResult>?                               CustomClearMonitoringResultSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<CompositeSchedule>?                                   CustomCompositeScheduleSerializer                            { get; set; }
 
         #endregion
 
@@ -1907,6 +1957,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             ChargingStationServer.OnReset += async (timestamp,
                                                     sender,
+                                                    connection,
                                                     request,
                                                     cancellationToken) => {
 
@@ -1942,23 +1993,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // ResetType
+
+                #region Check charging station identification
 
                 ResetResponse? response = null;
 
                 if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log(String.Concat($"ChargeBox[{Id}] Invalid reset request for charging station '{request.ChargingStationId}'!"));
-
                     response = new ResetResponse(
-                                   Request:      request,
-                                   Status:       ResetStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid reset request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
@@ -1983,32 +2036,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    );
 
                     }
+
+                #endregion
+
                     else
                     {
 
-                        DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming '{request.ResetType}'{(request.EVSEId.HasValue ? $" for EVSE Id {request.EVSEId}" : "")}reset request accepted."));
+                        DebugX.Log($"Charging station '{Id}': Incoming '{request.ResetType}' reset request{(request.EVSEId.HasValue ? $" for EVSE '{request.EVSEId}" : "")}'!");
 
-                        response = request.EVSEId.HasValue &&
-                                   !EVSEs.Any(evse => evse.Id == request.EVSEId)
+                        // ResetType
 
-                                       ? new ResetResponse(
-                                             Request:      request,
-                                             Status:       ResetStatus.Rejected,
-                                             StatusInfo:   null,
-                                             CustomData:   null
-                                         )
+                        // Reset entire charging station
+                        if (!request.EVSEId.HasValue)
+                        {
 
-                                       : new ResetResponse(
-                                             Request:      request,
-                                             Status:       ResetStatus.Accepted,
-                                             StatusInfo:   null,
-                                             CustomData:   null
-                                         );
+                            response = new ResetResponse(
+                                           Request:      request,
+                                           Status:       ResetStatus.Accepted,
+                                           StatusInfo:   null,
+                                           CustomData:   null
+                                       );
+
+                        }
+
+                        // Only reset the given EVSE
+                        else if (EVSEs.Any(evse => evse.Id == request.EVSEId))
+                        {
+
+                            response = new ResetResponse(
+                                           Request:      request,
+                                           Status:       ResetStatus.Accepted,
+                                           StatusInfo:   null,
+                                           CustomData:   null
+                                       );
+
+                        }
+
+                        // Unknown EVSE
+                        else
+                        {
+
+                            response = new ResetResponse(
+                                           Request:      request,
+                                           Status:       ResetStatus.Rejected,
+                                           StatusInfo:   null,
+                                           CustomData:   null
+                                       );
+
+                        }
 
                     }
 
                 }
 
+                #region Sign response message
 
                 CryptoUtils.SignResponseMessage(
                     response,
@@ -2020,6 +2101,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     ),
                     SignaturePolicy,
                     out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnResetResponse event
@@ -2064,10 +2147,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnUpdateFirmware
 
-            ChargingStationServer.OnUpdateFirmware += async (LogTimestamp,
-                                                             Sender,
-                                                             Request,
-                                                             CancellationToken) => {
+            ChargingStationServer.OnUpdateFirmware += async (timestamp,
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             cancellationToken) => {
 
                 #region Send OnUpdateFirmwareRequest event
 
@@ -2081,7 +2165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnUpdateFirmwareRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -2101,39 +2185,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // Firmware,
-                // UpdateFirmwareRequestId
-                // Retries
-                // RetryIntervals
+
+                #region Check charging station identification
 
                 UpdateFirmwareResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid UpdateFirmware request for charging station '{Request.ChargingStationId}'!");
-
                     response = new UpdateFirmwareResponse(
-                                   Request:      Request,
-                                   Status:       UpdateFirmwareStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid UpdateFirmware request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming UpdateFirmware request for '" + Request.Firmware.FirmwareURL + "'.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomUpdateFirmwareRequestSerializer,
+                                 CustomFirmwareSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new UpdateFirmwareResponse(
-                                   Request:      Request,
-                                   Status:       UpdateFirmwareStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                        response = new UpdateFirmwareResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming UpdateFirmware request ({request.UpdateFirmwareRequestId}) for '" + request.Firmware.FirmwareURL + "'.");
+
+                        // Firmware,
+                        // UpdateFirmwareRequestId
+                        // Retries
+                        // RetryIntervals
+
+                        response = new UpdateFirmwareResponse(
+                                       Request:      request,
+                                       Status:       UpdateFirmwareStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomUpdateFirmwareResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnUpdateFirmwareResponse event
@@ -2148,7 +2281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnUpdateFirmwareResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -2178,10 +2311,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnPublishFirmware
 
-            ChargingStationServer.OnPublishFirmware += async (LogTimestamp,
-                                                              Sender,
-                                                              Request,
-                                                              CancellationToken) => {
+            ChargingStationServer.OnPublishFirmware += async (timestamp,
+                                                              sender,
+                                                              connection,
+                                                              request,
+                                                              cancellationToken) => {
 
                 #region Send OnPublishFirmwareRequest event
 
@@ -2195,7 +2329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnPublishFirmwareRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -2215,40 +2349,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // PublishFirmwareRequestId
-                // DownloadLocation
-                // MD5Checksum
-                // Retries
-                // RetryInterval
+
+                #region Check charging station identification
 
                 PublishFirmwareResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid PublishFirmware request for charging station '{Request.ChargingStationId}'!");
-
                     response = new PublishFirmwareResponse(
-                                   Request:      Request,
-                                   Status:       GenericStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid PublishFirmware request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming PublishFirmware request for '" + Request.DownloadLocation + "'.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomPublishFirmwareRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new PublishFirmwareResponse(
-                                   Request:      Request,
-                                   Status:       GenericStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                        response = new PublishFirmwareResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming PublishFirmware request ({request.PublishFirmwareRequestId}) for '" + request.DownloadLocation + "'.");
+
+                        // PublishFirmwareRequestId
+                        // DownloadLocation
+                        // MD5Checksum
+                        // Retries
+                        // RetryInterval
+
+                        response = new PublishFirmwareResponse(
+                                       Request:      request,
+                                       Status:       GenericStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomPublishFirmwareResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnPublishFirmwareResponse event
@@ -2263,7 +2445,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnPublishFirmwareResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -2293,10 +2475,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnUnpublishFirmware
 
-            ChargingStationServer.OnUnpublishFirmware += async (LogTimestamp,
-                                                                Sender,
-                                                                Request,
-                                                                CancellationToken) => {
+            ChargingStationServer.OnUnpublishFirmware += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
 
                 #region Send OnUnpublishFirmwareRequest event
 
@@ -2310,7 +2493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnUnpublishFirmwareRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -2330,34 +2513,82 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // MD5Checksum
+
+                #region Check charging station identification
 
                 UnpublishFirmwareResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid UnpublishFirmware request for charging station '{Request.ChargingStationId}'!");
-
                     response = new UnpublishFirmwareResponse(
-                                   Request:      Request,
-                                   Status:       UnpublishFirmwareStatus.Unknown,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid UnpublishFirmware request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming UnpublishFirmware request for '" + Request.MD5Checksum + "'.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomUnpublishFirmwareRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new UnpublishFirmwareResponse(
-                                   Request:      Request,
-                                   Status:       UnpublishFirmwareStatus.Unpublished,
-                                   CustomData:   null
-                               );
+                        response = new UnpublishFirmwareResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming UnpublishFirmware request for '" + request.MD5Checksum + "'.");
+
+                        // MD5Checksum
+
+                        response = new UnpublishFirmwareResponse(
+                                       Request:      request,
+                                       Status:       UnpublishFirmwareStatus.Unpublished,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomUnpublishFirmwareResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnUnpublishFirmwareResponse event
@@ -2372,7 +2603,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnUnpublishFirmwareResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -2402,10 +2633,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetBaseReport
 
-            ChargingStationServer.OnGetBaseReport += async (LogTimestamp,
-                                                            Sender,
-                                                            Request,
-                                                            CancellationToken) => {
+            ChargingStationServer.OnGetBaseReport += async (timestamp,
+                                                            sender,
+                                                            connection,
+                                                            request,
+                                                            cancellationToken) => {
 
                 #region Send OnGetBaseReportRequest event
 
@@ -2419,7 +2651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnGetBaseReportRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -2439,37 +2671,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                                                 #endregion
 
-                // GetBaseReportRequestId
-                // ReportBase
+
+                #region Check charging station identification
 
                 GetBaseReportResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid GetBaseReport request for charging station '{Request.ChargingStationId}'!");
-
                     response = new GetBaseReportResponse(
-                                   Request:      Request,
-                                   Status:       GenericDeviceModelStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid GetBaseReport request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming GetBaseReport request accepted.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomGetBaseReportRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new GetBaseReportResponse(
-                                   Request:      Request,
-                                   Status:       GenericDeviceModelStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                        response = new GetBaseReportResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming GetBaseReport request ({request.GetBaseReportRequestId}) accepted.");
+
+                        // GetBaseReportRequestId
+                        // ReportBase
+
+                        response = new GetBaseReportResponse(
+                                       Request:      request,
+                                       Status:       GenericDeviceModelStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetBaseReportResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnGetBaseReportResponse event
@@ -2484,7 +2764,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnGetBaseReportResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -2514,10 +2794,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetReport
 
-            ChargingStationServer.OnGetReport += async (LogTimestamp,
-                                                        Sender,
-                                                        Request,
-                                                        CancellationToken) => {
+            ChargingStationServer.OnGetReport += async (timestamp,
+                                                        sender,
+                                                        connection,
+                                                        request,
+                                                        cancellationToken) => {
 
                 #region Send OnGetReportRequest event
 
@@ -2531,7 +2812,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnGetReportRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -2551,38 +2832,90 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // GetReportRequestId
-                // ComponentCriteria
-                // ComponentVariables
+
+                #region Check charging station identification
 
                 GetReportResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid GetReport request for charging station '{Request.ChargingStationId}'!");
-
                     response = new GetReportResponse(
-                                   Request:      Request,
-                                   Status:       GenericDeviceModelStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid GetReport request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming GetReport request accepted.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomGetReportRequestSerializer,
+                                 CustomComponentVariableSerializer,
+                                 CustomComponentSerializer,
+                                 CustomEVSESerializer,
+                                 CustomVariableSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new GetReportResponse(
-                                   Request:      Request,
-                                   Status:       GenericDeviceModelStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                        response = new GetReportResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming GetReport request ({request.GetReportRequestId}) accepted.");
+
+                        // GetReportRequestId
+                        // ComponentCriteria
+                        // ComponentVariables
+
+                        response = new GetReportResponse(
+                                       Request:      request,
+                                       Status:       GenericDeviceModelStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetReportResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnGetReportResponse event
@@ -2597,7 +2930,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnGetReportResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -2627,10 +2960,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetLog
 
-            ChargingStationServer.OnGetLog += async (LogTimestamp,
-                                                     Sender,
-                                                     Request,
-                                                     CancellationToken) => {
+            ChargingStationServer.OnGetLog += async (timestamp,
+                                                     sender,
+                                                     connection,
+                                                     request,
+                                                     cancellationToken) => {
 
                 #region Send OnGetLogRequest event
 
@@ -2644,7 +2978,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnGetLogRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -2664,40 +2998,89 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // LogType
-                // LogRequestId
-                // Log
-                // Retries
-                // RetryInterval
+
+                #region Check charging station identification
 
                 GetLogResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid GetLog request for charging station '{Request.ChargingStationId}'!");
-
                     response = new GetLogResponse(
-                                   Request:      Request,
-                                   Status:       LogStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid GetLog request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming GetLog request accepted.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomGetLogRequestSerializer,
+                                 CustomLogParametersSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new GetLogResponse(
-                                   Request:      Request,
-                                   Status:       LogStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                        response = new GetLogResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming GetLog request ({request.LogRequestId}) accepted.");
+
+                        // LogType
+                        // LogRequestId
+                        // Log
+                        // Retries
+                        // RetryInterval
+
+                        response = new GetLogResponse(
+                                       Request:      request,
+                                       Status:       LogStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetLogResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnGetLogResponse event
@@ -2712,7 +3095,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnGetLogResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -2742,10 +3125,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetVariables
 
-            ChargingStationServer.OnSetVariables += async (LogTimestamp,
-                                                           Sender,
-                                                           Request,
-                                                           CancellationToken) => {
+            ChargingStationServer.OnSetVariables += async (timestamp,
+                                                           sender,
+                                                           connection,
+                                                           request,
+                                                           cancellationToken) => {
 
                 #region Send OnSetVariablesRequest event
 
@@ -2759,7 +3143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnSetVariablesRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -2779,41 +3163,98 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // VariableData
+
+                #region Check charging station identification
 
                 SetVariablesResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid SetVariables request for charging station '{Request.ChargingStationId}'!");
-
                     response = new SetVariablesResponse(
-                                   Request:              Request,
-                                   SetVariableResults:   Array.Empty<SetVariableResult>(),
-                                   CustomData:           null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid SetVariables request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming SetVariables request accepted.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomSetVariablesRequestSerializer,
+                                 CustomSetVariableDataSerializer,
+                                 CustomComponentSerializer,
+                                 CustomEVSESerializer,
+                                 CustomVariableSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new SetVariablesResponse(
-                                   Request:              Request,
-                                   SetVariableResults:   Request.VariableData.Select(variableData => new SetVariableResult(
-                                                                                                         Status:                SetVariableStatus.Accepted,
-                                                                                                         Component:             variableData.Component,
-                                                                                                         Variable:              variableData.Variable,
-                                                                                                         AttributeType:         variableData.AttributeType,
-                                                                                                         AttributeStatusInfo:   null,
-                                                                                                         CustomData:            null
-                                                                                                     )),
-                                   CustomData:           null
-                               );
+                        response = new SetVariablesResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming SetVariables request accepted.");
+
+                        // VariableData
+
+                        response = new SetVariablesResponse(
+                                       Request:              request,
+                                       SetVariableResults:   request.VariableData.Select(variableData => new SetVariableResult(
+                                                                                                             Status:                SetVariableStatus.Accepted,
+                                                                                                             Component:             variableData.Component,
+                                                                                                             Variable:              variableData.Variable,
+                                                                                                             AttributeType:         variableData.AttributeType,
+                                                                                                             AttributeStatusInfo:   null,
+                                                                                                             CustomData:            null
+                                                                                                         )),
+                                       CustomData:           null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSetVariablesResponseSerializer,
+                        CustomSetVariableResultSerializer,
+                        CustomComponentSerializer,
+                        CustomEVSESerializer,
+                        CustomVariableSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnSetVariablesResponse event
@@ -2828,7 +3269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnSetVariablesResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -2858,10 +3299,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetVariables
 
-            ChargingStationServer.OnGetVariables += async (LogTimestamp,
-                                                           Sender,
-                                                           Request,
-                                                           CancellationToken) => {
+            ChargingStationServer.OnGetVariables += async (timestamp,
+                                                           sender,
+                                                           connection,
+                                                           request,
+                                                           cancellationToken) => {
 
                 #region Send OnGetVariablesRequest event
 
@@ -2875,7 +3317,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnGetVariablesRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -2895,42 +3337,99 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // VariableData
+
+                #region Check charging station identification
 
                 GetVariablesResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid GetVariables request for charging station '{Request.ChargingStationId}'!");
-
                     response = new GetVariablesResponse(
-                                   Request:      Request,
-                                   Results:      Array.Empty<GetVariableResult>(),
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid GetVariables request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming GetVariables request accepted.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomGetVariablesRequestSerializer,
+                                 CustomGetVariableDataSerializer,
+                                 CustomComponentSerializer,
+                                 CustomEVSESerializer,
+                                 CustomVariableSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new GetVariablesResponse(
-                                   Request:      Request,
-                                   Results:      Request.VariableData.Select(variableData => new GetVariableResult(
-                                                                                                 AttributeStatus:       GetVariableStatus.Accepted,
-                                                                                                 Component:             variableData.Component,
-                                                                                                 Variable:              variableData.Variable,
-                                                                                                 AttributeValue:        "",
-                                                                                                 AttributeType:         variableData.AttributeType,
-                                                                                                 AttributeStatusInfo:   null,
-                                                                                                 CustomData:            null
-                                                                                             )),
-                                   CustomData:   null
-                               );
+                        response = new GetVariablesResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming GetVariables request accepted.");
+
+                        // VariableData
+
+                        response = new GetVariablesResponse(
+                                       Request:      request,
+                                       Results:      request.VariableData.Select(variableData => new GetVariableResult(
+                                                                                                     AttributeStatus:       GetVariableStatus.Accepted,
+                                                                                                     Component:             variableData.Component,
+                                                                                                     Variable:              variableData.Variable,
+                                                                                                     AttributeValue:        "",
+                                                                                                     AttributeType:         variableData.AttributeType,
+                                                                                                     AttributeStatusInfo:   null,
+                                                                                                     CustomData:            null
+                                                                                                 )),
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetVariablesResponseSerializer,
+                        CustomGetVariableResultSerializer,
+                        CustomComponentSerializer,
+                        CustomEVSESerializer,
+                        CustomVariableSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnGetVariablesResponse event
@@ -2945,7 +3444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnGetVariablesResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -2975,10 +3474,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetMonitoringBase
 
-            ChargingStationServer.OnSetMonitoringBase += async (LogTimestamp,
-                                                                Sender,
-                                                                Request,
-                                                                CancellationToken) => {
+            ChargingStationServer.OnSetMonitoringBase += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
 
                 #region Send OnSetMonitoringBaseRequest event
 
@@ -2992,7 +3492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnSetMonitoringBaseRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -3012,36 +3512,84 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // MonitoringBase
+
+                #region Check charging station identification
 
                 SetMonitoringBaseResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid SetMonitoringBase request for charging station '{Request.ChargingStationId}'!");
-
                     response = new SetMonitoringBaseResponse(
-                                   Request:      Request,
-                                   Status:       GenericDeviceModelStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid SetMonitoringBase request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming SetMonitoringBase request accepted.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomSetMonitoringBaseRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new SetMonitoringBaseResponse(
-                                   Request:      Request,
-                                   Status:       GenericDeviceModelStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                        response = new SetMonitoringBaseResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringBase request accepted.");
+
+                        // MonitoringBase
+
+                        response = new SetMonitoringBaseResponse(
+                                       Request:      request,
+                                       Status:       GenericDeviceModelStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSetMonitoringBaseResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnSetMonitoringBaseResponse event
@@ -3056,7 +3604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnSetMonitoringBaseResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -3086,10 +3634,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetMonitoringReport
 
-            ChargingStationServer.OnGetMonitoringReport += async (LogTimestamp,
-                                                                  Sender,
-                                                                  Request,
-                                                                  CancellationToken) => {
+            ChargingStationServer.OnGetMonitoringReport += async (timestamp,
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
 
                 #region Send OnGetMonitoringReportRequest event
 
@@ -3103,7 +3652,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnGetMonitoringReportRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -3123,38 +3672,90 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // GetMonitoringReportRequestId
-                // MonitoringCriteria
-                // ComponentVariables
+
+                #region Check charging station identification
 
                 GetMonitoringReportResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid GetMonitoringReport request for charging station '{Request.ChargingStationId}'!");
-
                     response = new GetMonitoringReportResponse(
-                                   Request:      Request,
-                                   Status:       GenericDeviceModelStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid GetMonitoringReport request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming GetMonitoringReport request accepted.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomGetMonitoringReportRequestSerializer,
+                                 CustomComponentVariableSerializer,
+                                 CustomComponentSerializer,
+                                 CustomEVSESerializer,
+                                 CustomVariableSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new GetMonitoringReportResponse(
-                                   Request:      Request,
-                                   Status:       GenericDeviceModelStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                        response = new GetMonitoringReportResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming GetMonitoringReport request ({request.GetMonitoringReportRequestId}) accepted.");
+
+                        // GetMonitoringReportRequestId
+                        // MonitoringCriteria
+                        // ComponentVariables
+
+                        response = new GetMonitoringReportResponse(
+                                       Request:      request,
+                                       Status:       GenericDeviceModelStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetMonitoringReportResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnGetMonitoringReportResponse event
@@ -3169,7 +3770,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnGetMonitoringReportResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -3199,10 +3800,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetMonitoringLevel
 
-            ChargingStationServer.OnSetMonitoringLevel += async (LogTimestamp,
-                                                                 Sender,
-                                                                 Request,
-                                                                 CancellationToken) => {
+            ChargingStationServer.OnSetMonitoringLevel += async (timestamp,
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
 
                 #region Send OnSetMonitoringLevelRequest event
 
@@ -3216,7 +3818,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnSetMonitoringLevelRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -3236,36 +3838,84 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // Severity
+
+                #region Check charging station identification
 
                 SetMonitoringLevelResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid SetMonitoringLevel request for charging station '{Request.ChargingStationId}'!");
-
                     response = new SetMonitoringLevelResponse(
-                                   Request:      Request,
-                                   Status:       GenericStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid SetMonitoringLevel request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming SetMonitoringLevel request accepted.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomSetMonitoringLevelRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new SetMonitoringLevelResponse(
-                                   Request:      Request,
-                                   Status:       GenericStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                        response = new SetMonitoringLevelResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringLevel request accepted.");
+
+                        // Severity
+
+                        response = new SetMonitoringLevelResponse(
+                                       Request:      request,
+                                       Status:       GenericStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSetMonitoringLevelResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnSetMonitoringLevelResponse event
@@ -3280,7 +3930,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnSetMonitoringLevelResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -3310,10 +3960,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetVariableMonitoring
 
-            ChargingStationServer.OnSetVariableMonitoring += async (LogTimestamp,
-                                                                    Sender,
-                                                                    Request,
-                                                                    CancellationToken) => {
+            ChargingStationServer.OnSetVariableMonitoring += async (timestamp,
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    cancellationToken) => {
 
                 #region Send OnSetVariableMonitoringRequest event
 
@@ -3327,7 +3978,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnSetVariableMonitoringRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -3347,43 +3998,100 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // MonitoringData
+
+                #region Check charging station identification
 
                 SetVariableMonitoringResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid SetVariableMonitoring request for charging station '{Request.ChargingStationId}'!");
-
                     response = new SetVariableMonitoringResponse(
-                                   Request:                Request,
-                                   SetMonitoringResults:   Array.Empty<SetMonitoringResult>(),
-                                   CustomData:             null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid SetVariableMonitoring request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming SetVariableMonitoring request accepted.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomSetVariableMonitoringRequestSerializer,
+                                 CustomSetMonitoringDataSerializer,
+                                 CustomComponentSerializer,
+                                 CustomEVSESerializer,
+                                 CustomVariableSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new SetVariableMonitoringResponse(
-                                   Request:                Request,
-                                   SetMonitoringResults:   Request.MonitoringData.Select(setMonitoringData => new SetMonitoringResult(
-                                                                                                                  Status:                 SetMonitoringStatus.Accepted,
-                                                                                                                  MonitorType:            setMonitoringData.MonitorType,
-                                                                                                                  Severity:               setMonitoringData.Severity,
-                                                                                                                  Component:              setMonitoringData.Component,
-                                                                                                                  Variable:               setMonitoringData.Variable,
-                                                                                                                  VariableMonitoringId:   setMonitoringData.VariableMonitoringId,
-                                                                                                                  StatusInfo:             null,
-                                                                                                                  CustomData:             null
-                                                                                                              )),
-                                   CustomData:             null
-                               );
+                        response = new SetVariableMonitoringResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming SetMonitoringLevel request accepted.");
+
+                        // MonitoringData
+
+                        response = new SetVariableMonitoringResponse(
+                                       Request:                request,
+                                       SetMonitoringResults:   request.MonitoringData.Select(setMonitoringData => new SetMonitoringResult(
+                                                                                                                      Status:                 SetMonitoringStatus.Accepted,
+                                                                                                                      MonitorType:            setMonitoringData.MonitorType,
+                                                                                                                      Severity:               setMonitoringData.Severity,
+                                                                                                                      Component:              setMonitoringData.Component,
+                                                                                                                      Variable:               setMonitoringData.Variable,
+                                                                                                                      VariableMonitoringId:   setMonitoringData.VariableMonitoringId,
+                                                                                                                      StatusInfo:             null,
+                                                                                                                      CustomData:             null
+                                                                                                                  )),
+                                       CustomData:             null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSetVariableMonitoringResponseSerializer,
+                        CustomSetMonitoringResultSerializer,
+                        CustomComponentSerializer,
+                        CustomEVSESerializer,
+                        CustomVariableSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnSetVariableMonitoringResponse event
@@ -3398,7 +4106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnSetVariableMonitoringResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -3428,10 +4136,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnClearVariableMonitoring
 
-            ChargingStationServer.OnClearVariableMonitoring += async (LogTimestamp,
-                                                                      Sender,
-                                                                      Request,
-                                                                      CancellationToken) => {
+            ChargingStationServer.OnClearVariableMonitoring += async (timestamp,
+                                                                      sender,
+                                                                      connection,
+                                                                      request,
+                                                                      cancellationToken) => {
 
                 #region Send OnClearVariableMonitoringRequest event
 
@@ -3445,7 +4154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnClearVariableMonitoringRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -3465,39 +4174,89 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // VariableMonitoringIds
+
+                #region Check charging station identification
 
                 ClearVariableMonitoringResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid ClearVariableMonitoring request for charging station '{Request.ChargingStationId}'!");
-
                     response = new ClearVariableMonitoringResponse(
-                                   Request:                  Request,
-                                   ClearMonitoringResults:   Array.Empty<ClearMonitoringResult>(),
-                                   CustomData:               null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid ClearVariableMonitoring request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming ClearVariableMonitoring request accepted.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomClearVariableMonitoringRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new ClearVariableMonitoringResponse(
-                                   Request:                  Request,
-                                   ClearMonitoringResults:   Request.VariableMonitoringIds.Select(variableMonitoringId => new ClearMonitoringResult(
-                                                                                                                              Status:       ClearMonitoringStatus.Accepted,
-                                                                                                                              Id:           variableMonitoringId,
-                                                                                                                              StatusInfo:   null,
-                                                                                                                              CustomData:   null
-                                                                                                                          )),
-                                   CustomData:               null
-                               );
+                        response = new ClearVariableMonitoringResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming ClearVariableMonitoring request (VariableMonitoringIds: {request.VariableMonitoringIds.AggregateWith(", ")})");
+
+                        // VariableMonitoringIds
+
+                        response = new ClearVariableMonitoringResponse(
+                                       Request:                  request,
+                                       ClearMonitoringResults:   request.VariableMonitoringIds.Select(variableMonitoringId => new ClearMonitoringResult(
+                                                                                                                                  Status:       ClearMonitoringStatus.Accepted,
+                                                                                                                                  Id:           variableMonitoringId,
+                                                                                                                                  StatusInfo:   null,
+                                                                                                                                  CustomData:   null
+                                                                                                                              )),
+                                       CustomData:               null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomClearVariableMonitoringResponseSerializer,
+                        CustomClearMonitoringResultSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnClearVariableMonitoringResponse event
@@ -3512,7 +4271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnClearVariableMonitoringResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -3542,10 +4301,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetNetworkProfile
 
-            ChargingStationServer.OnSetNetworkProfile += async (LogTimestamp,
-                                                                Sender,
-                                                                Request,
-                                                                CancellationToken) => {
+            ChargingStationServer.OnSetNetworkProfile += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
 
                 #region Send OnSetNetworkProfileRequest event
 
@@ -3559,7 +4319,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnSetNetworkProfileRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -3579,37 +4339,87 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // ConfigurationSlot
-                // NetworkConnectionProfile
+
+                #region Check charging station identification
 
                 SetNetworkProfileResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid SetNetworkProfile request for charging station '{Request.ChargingStationId}'!");
-
                     response = new SetNetworkProfileResponse(
-                                   Request:      Request,
-                                   Status:       SetNetworkProfileStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid SetNetworkProfile request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming SetNetworkProfile request accepted.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomSetNetworkProfileRequestSerializer,
+                                 CustomNetworkConnectionProfileSerializer,
+                                 CustomVPNConfigurationSerializer,
+                                 CustomAPNConfigurationSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new SetNetworkProfileResponse(
-                                   Request:      Request,
-                                   Status:       SetNetworkProfileStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                        response = new SetNetworkProfileResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming SetNetworkProfile request for configuration slot {request.ConfigurationSlot}!");
+
+                        // ConfigurationSlot
+                        // NetworkConnectionProfile
+
+                        response = new SetNetworkProfileResponse(
+                                       Request:      request,
+                                       Status:       SetNetworkProfileStatus.Accepted,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSetNetworkProfileResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnSetNetworkProfileResponse event
@@ -3624,7 +4434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnSetNetworkProfileResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -3654,10 +4464,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnChangeAvailability
 
-            ChargingStationServer.OnChangeAvailability += async (LogTimestamp,
-                                                                 Sender,
-                                                                 Request,
-                                                                 CancellationToken) => {
+            ChargingStationServer.OnChangeAvailability += async (timestamp,
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
 
                 #region Send OnChangeAvailabilityRequest event
 
@@ -3671,7 +4482,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnChangeAvailabilityRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -3691,47 +4502,138 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // OperationalStatus
-                // EVSE
+
+                #region Check charging station identification
 
                 ChangeAvailabilityResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log(String.Concat($"Charging Station '{Id}': Invalid ChangeAvailability request for charging station '{Request.ChargingStationId}'!"));
-
                     response = new ChangeAvailabilityResponse(
-                                   Request,
-                                   ChangeAvailabilityStatus.Rejected
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid ChangeAvailability request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming ChangeAvailability '", Request.OperationalStatus, "' request for EVSE '", Request.EVSE?.Id.ToString() ?? "?", "'."));
-
-                    if (Request.EVSE is not null &&
-                        evses.ContainsKey(Request.EVSE.Id))
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomChangeAvailabilityRequestSerializer,
+                                 CustomEVSESerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
                     {
 
-                        evses[Request.EVSE.Id].AdminStatus = Request.OperationalStatus;
-
                         response = new ChangeAvailabilityResponse(
-                                       Request:      Request,
-                                       Status:       ChangeAvailabilityStatus.Accepted,
-                                       StatusInfo:   null,
-                                       CustomData:   null
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
                                    );
 
                     }
+
+                #endregion
+
                     else
-                        response = new ChangeAvailabilityResponse(
-                                       Request,
-                                       ChangeAvailabilityStatus.Rejected
-                                   );
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming ChangeAvailability request {request.OperationalStatus.AsText()}{(request.EVSE is not null ? $" for EVSE '{request.EVSE.Id}'{(request.EVSE.ConnectorId.HasValue ? $"/{request.EVSE.ConnectorId}" : "")}" : "")}!");
+
+                        // OperationalStatus
+                        // EVSE
+
+                        // Operational status of the entire charging station
+                        if (request.EVSE is null)
+                        {
+
+                            response = new ChangeAvailabilityResponse(
+                                           Request:      request,
+                                           Status:       ChangeAvailabilityStatus.Accepted,
+                                           CustomData:   null
+                                       );
+
+                        }
+
+                        // Operational status for an EVSE and maybe a connector
+                        else
+                        {
+
+                            var evse = EVSEs.FirstOrDefault(evse => evse.Id == request.EVSE.Id);
+
+                            if (evse is null)
+                            {
+
+                                // Unknown EVSE identification
+                                response = new ChangeAvailabilityResponse(
+                                               Request:      request,
+                                               Status:       ChangeAvailabilityStatus.Rejected,
+                                               CustomData:   null
+                                           );
+
+                            }
+                            else
+                            {
+
+                                if (request.EVSE.ConnectorId.HasValue &&
+                                   !evse.Connectors.Any(connector => connector.Id == request.EVSE.ConnectorId.Value))
+                                {
+
+                                    // Unknown connector identification
+                                    response = new ChangeAvailabilityResponse(
+                                                   Request:      request,
+                                                   Status:       ChangeAvailabilityStatus.Rejected,
+                                                   CustomData:   null
+                                               );
+
+                                }
+                                else
+                                {
+
+                                    response = new ChangeAvailabilityResponse(
+                                                   Request:      request,
+                                                   Status:       ChangeAvailabilityStatus.Accepted,
+                                                   CustomData:   null
+                                               );
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomChangeAvailabilityResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnChangeAvailabilityResponse event
@@ -3746,7 +4648,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnChangeAvailabilityResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -3776,10 +4678,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTriggerMessage
 
-            ChargingStationServer.OnTriggerMessage += async (LogTimestamp,
-                                                             Sender,
-                                                             Request,
-                                                             CancellationToken) => {
+            ChargingStationServer.OnTriggerMessage += async (timestamp,
+                                                             sender,
+                                                             connection,
+                                                             request,
+                                                             cancellationToken) => {
 
                 #region Send OnTriggerMessageRequest event
 
@@ -3793,7 +4696,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnTriggerMessageRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -3813,98 +4716,155 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // RequestedMessage
-                // EVSEId
+
+                #region Check charging station identification
 
                 TriggerMessageResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid TriggerMessage request for charging station '{Request.ChargingStationId}'!");
-
                     response = new TriggerMessageResponse(
-                                   Request,
-                                   TriggerMessageStatus.Rejected
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid TriggerMessage request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming TriggerMessage request for '" + Request.RequestedMessage + "' at EVSE '" + (Request.EVSE?.Id.ToString() ?? "-") + "'.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomTriggerMessageRequestSerializer,
+                                 CustomEVSESerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    _ = Task.Run(async () => {
+                        response = new TriggerMessageResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
 
-                        switch (Request.RequestedMessage) {
+                    }
 
-                            case MessageTriggers.BootNotification:
-                                await this.SendBootNotification(
-                                          BootReason:   BootReason.Triggered,
-                                          CustomData:   null
-                                      );
-                                break;
+                #endregion
 
-                            case MessageTriggers.Heartbeat:
-                                await this.SendHeartbeat(
-                                          CustomData:   null
-                                      );
-                                break;
+                    else
+                    {
 
-                            case MessageTriggers.StatusNotification:
-                                if (Request.EVSE is not null)
-                                    await this.SendStatusNotification(
-                                              EVSEId:        Request.EVSE.Id,
-                                              ConnectorId:   Connector_Id.Parse(1),
-                                              Timestamp:     Timestamp.Now,
-                                              Status:        evses[Request.EVSE.Id].Status,
-                                              CustomData:    null
+                        DebugX.Log($"Charging station '{Id}': Incoming TriggerMessage request for '{request.RequestedMessage.AsText()}'{(request.EVSE is not null ? $" at EVSE '{request.EVSE.Id}'" : "")}!");
+
+                        // RequestedMessage
+                        // EVSE
+
+                        _ = Task.Run(async () => {
+
+                            switch (request.RequestedMessage) {
+
+                                case MessageTriggers.BootNotification:
+                                    await this.SendBootNotification(
+                                              BootReason:   BootReason.Triggered,
+                                              CustomData:   null
                                           );
-                                break;
+                                    break;
 
-                        }
+                                // LogStatusNotification
+                                // DiagnosticsStatusNotification
+                                // FirmwareStatusNotification
 
-                    },
-                    CancellationToken.None);
+                                // Seems not to be allowed any more!
+                                //case MessageTriggers.Heartbeat:
+                                //    await this.SendHeartbeat(
+                                //              CustomData:   null
+                                //          );
+                                //    break;
 
+                                // MeterValues
+                                // SignChargingStationCertificate
 
+                                case MessageTriggers.StatusNotification:
+                                    if (request.EVSE is not null)
+                                        await this.SendStatusNotification(
+                                                  EVSEId:        request.EVSE.Id,
+                                                  ConnectorId:   Connector_Id.Parse(1),
+                                                  Timestamp:     Timestamp.Now,
+                                                  Status:        evses[request.EVSE.Id].Status,
+                                                  CustomData:    null
+                                              );
+                                    break;
 
-                    response = Request.RequestedMessage switch {
+                            }
 
-                                   MessageTriggers.BootNotification              or
-                                   MessageTriggers.LogStatusNotification         or
-                                   MessageTriggers.DiagnosticsStatusNotification or
-                                   MessageTriggers.FirmwareStatusNotification    or
-                                   MessageTriggers.Heartbeat                     or
-                                   MessageTriggers.SignChargingStationCertificate
-
-                                       => new TriggerMessageResponse(
-                                              Request,
-                                              TriggerMessageStatus.Accepted
-                                          ),
-
-
-                                   MessageTriggers.MeterValues or
-                                   MessageTriggers.StatusNotification
-
-                                       => Request.EVSE is not null
-                                              ? new TriggerMessageResponse(
-                                                    Request,
-                                                    TriggerMessageStatus.Accepted
-                                                )
-                                              : new TriggerMessageResponse(
-                                                    Request,
-                                                    TriggerMessageStatus.Rejected
-                                                ),
+                        },
+                        CancellationToken.None);
 
 
-                                   _   => new TriggerMessageResponse(
-                                              Request,
-                                              TriggerMessageStatus.Rejected
-                                          ),
+                        response = request.RequestedMessage switch {
 
-                               };
+                                       MessageTriggers.BootNotification              or
+                                       MessageTriggers.LogStatusNotification         or
+                                       MessageTriggers.DiagnosticsStatusNotification or
+                                       MessageTriggers.FirmwareStatusNotification    or
+                                       //MessageTriggers.Heartbeat                     or
+                                       MessageTriggers.SignChargingStationCertificate
+
+                                           => new TriggerMessageResponse(
+                                                  request,
+                                                  TriggerMessageStatus.Accepted
+                                              ),
+
+                                       MessageTriggers.MeterValues or
+                                       MessageTriggers.StatusNotification
+
+                                           => request.EVSE is not null
+                                                  ? new TriggerMessageResponse(
+                                                        request,
+                                                        TriggerMessageStatus.Accepted
+                                                    )
+                                                  : new TriggerMessageResponse(
+                                                        request,
+                                                        TriggerMessageStatus.Rejected
+                                                    ),
+
+                                       _   => new TriggerMessageResponse(
+                                                  request,
+                                                  TriggerMessageStatus.Rejected
+                                              ),
+
+                                   };
+
+                    }
+
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomTriggerMessageResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnTriggerMessageResponse event
@@ -3919,7 +4879,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnTriggerMessageResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -3949,10 +4909,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnIncomingDataTransfer
 
-            ChargingStationServer.OnIncomingDataTransfer += async (LogTimestamp,
-                                                                   Sender,
-                                                                   Request,
-                                                                   CancellationToken) => {
+            ChargingStationServer.OnIncomingDataTransfer += async (timestamp,
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   cancellationToken) => {
 
                 #region Send OnDataTransferRequest event
 
@@ -3966,7 +4927,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnIncomingDataTransferRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -3986,82 +4947,132 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // VendorId
-                // MessageId
-                // Data
+
+                #region Check charging station identification
 
                 DataTransferResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log(String.Concat($"Charging Station '{Id}': Invalid data transfer request for charging station '{Request.ChargingStationId}'!"));
-
                     response = new DataTransferResponse(
-                                   Request,
-                                   DataTransferStatus.Rejected
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid DataTransfer request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming data transfer request: ", Request.VendorId, ".", Request.MessageId ?? "-", ": ", Request.Data ?? "-"));
-
-                    var responseData = Request.Data;
-
-                    if (Request.Data is not null)
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomIncomingDataTransferRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
                     {
 
-                        if      (Request.Data.Type == JTokenType.String)
-                            responseData = Request.Data.ToString().Reverse();
-
-                        else if (Request.Data.Type == JTokenType.Object) {
-
-                            var responseObject = new JObject();
-
-                            foreach (var property in (Request.Data as JObject)!)
-                            {
-                                if (property.Value?.Type == JTokenType.String)
-                                    responseObject.Add(property.Key,
-                                                       property.Value.ToString().Reverse());
-                            }
-
-                            responseData = responseObject;
-
-                        }
-
-                        else if (Request.Data.Type == JTokenType.Array) {
-
-                            var responseArray = new JArray();
-
-                            foreach (var element in (Request.Data as JArray)!)
-                            {
-                                if (element?.Type == JTokenType.String)
-                                    responseArray.Add(element.ToString().Reverse());
-                            }
-
-                            responseData = responseArray;
-
-                        }
-
-                    }
-
-                    if (Request.VendorId.ToString() == "GraphDefined OEM")
-                    {
                         response = new DataTransferResponse(
-                                       Request,
-                                       DataTransferStatus.Accepted,
-                                       responseData
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
                                    );
+
                     }
+
+                #endregion
+
                     else
-                        response = new DataTransferResponse(
-                                       Request,
-                                       DataTransferStatus.Rejected
-                                   );
+                    {
+
+                        DebugX.Log($"Charging Station '{Id}': Incoming data transfer request: {request.VendorId}.{request.MessageId ?? "-"}: {request.Data ?? "-"}!");
+
+                        // VendorId
+                        // MessageId
+                        // Data
+
+                        var responseData = request.Data;
+
+                        if (request.Data is not null)
+                        {
+
+                            if      (request.Data.Type == JTokenType.String)
+                                responseData = request.Data.ToString().Reverse();
+
+                            else if (request.Data.Type == JTokenType.Object) {
+
+                                var responseObject = new JObject();
+
+                                foreach (var property in (request.Data as JObject)!)
+                                {
+                                    if (property.Value?.Type == JTokenType.String)
+                                        responseObject.Add(property.Key,
+                                                           property.Value.ToString().Reverse());
+                                }
+
+                                responseData = responseObject;
+
+                            }
+
+                            else if (request.Data.Type == JTokenType.Array) {
+
+                                var responseArray = new JArray();
+
+                                foreach (var element in (request.Data as JArray)!)
+                                {
+                                    if (element?.Type == JTokenType.String)
+                                        responseArray.Add(element.ToString().Reverse());
+                                }
+
+                                responseData = responseArray;
+
+                            }
+
+                        }
+
+                        if (request.VendorId.ToString() == "GraphDefined OEM")
+                        {
+                            response = new DataTransferResponse(
+                                           request,
+                                           DataTransferStatus.Accepted,
+                                           responseData
+                                       );
+                        }
+                        else
+                            response = new DataTransferResponse(
+                                           request,
+                                           DataTransferStatus.Rejected
+                                       );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomIncomingDataTransferResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnDataTransferResponse event
@@ -4076,7 +5087,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnIncomingDataTransferResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -4107,10 +5118,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnCertificateSigned
 
-            ChargingStationServer.OnCertificateSigned += async (LogTimestamp,
-                                                                Sender,
-                                                                Request,
-                                                                CancellationToken) => {
+            ChargingStationServer.OnCertificateSigned += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
 
                 #region Send OnCertificateSignedRequest event
 
@@ -4124,7 +5136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnCertificateSignedRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -4144,39 +5156,87 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // CertificateChain
-                // CertificateType
+
+                #region Check charging station identification
 
                 CertificateSignedResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log(String.Concat($"Charging Station '{Id}': Invalid CertificateSigned request for charging station '{Request.ChargingStationId}'!"));
-
                     response = new CertificateSignedResponse(
-                                   Request:      Request,
-                                   Status:       CertificateSignedStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid CertificateSigned request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming CertificateSigned request accepted."));
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomCertificateSignedRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new CertificateSignedResponse(
-                                   Request:      Request,
-                                   Status:       Request.CertificateChain.FirstOrDefault()?.Parsed is not null
-                                                     ? CertificateSignedStatus.Accepted
-                                                     : CertificateSignedStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                        response = new CertificateSignedResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming CertificateSigned request{(request.CertificateType.HasValue ? $"(certificate type: {request.CertificateType.Value.AsText()})" : "")}!");
+
+                        // CertificateChain
+                        // CertificateType
+
+                        response = new CertificateSignedResponse(
+                                       Request:      request,
+                                       Status:       request.CertificateChain.FirstOrDefault()?.Parsed is not null
+                                                         ? CertificateSignedStatus.Accepted
+                                                         : CertificateSignedStatus.Rejected,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomCertificateSignedResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnCertificateSignedResponse event
@@ -4191,7 +5251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnCertificateSignedResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -4221,10 +5281,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnInstallCertificate
 
-            ChargingStationServer.OnInstallCertificate += async (LogTimestamp,
-                                                                 Sender,
-                                                                 Request,
-                                                                 CancellationToken) => {
+            ChargingStationServer.OnInstallCertificate += async (timestamp,
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
 
                 #region Send OnInstallCertificateRequest event
 
@@ -4238,7 +5299,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnInstallCertificateRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -4258,43 +5319,91 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // CertificateType
-                // Certificate
+
+                #region Check charging station identification
 
                 InstallCertificateResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log(String.Concat($"Charging Station '{Id}': Invalid InstallCertificate request for charging station '{Request.ChargingStationId}'!"));
-
                     response = new InstallCertificateResponse(
-                                   Request:      Request,
-                                   Status:       CertificateStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid InstallCertificate request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming InstallCertificate request accepted."));
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomInstallCertificateRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    var success = certificates.AddOrUpdate(Request.CertificateType,
-                                                            a    => Request.Certificate,
-                                                           (b,c) => Request.Certificate);
+                        response = new InstallCertificateResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
 
-                    response = new InstallCertificateResponse(
-                                   Request:      Request,
-                                   Status:       Request.Certificate?.Parsed is not null
-                                                     ? CertificateStatus.Accepted
-                                                     : CertificateStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming InstallCertificate request (certificate type: {request.CertificateType.AsText()}!");
+
+                        // CertificateType
+                        // Certificate
+
+                        var success = certificates.AddOrUpdate(request.CertificateType,
+                                                                   a    => request.Certificate,
+                                                                  (b,c) => request.Certificate);
+
+                        response = new InstallCertificateResponse(
+                                       Request:      request,
+                                       Status:       request.Certificate?.Parsed is not null
+                                                         ? CertificateStatus.Accepted
+                                                         : CertificateStatus.Rejected,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomInstallCertificateResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnInstallCertificateResponse event
@@ -4309,7 +5418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnInstallCertificateResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -4339,10 +5448,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetInstalledCertificateIds
 
-            ChargingStationServer.OnGetInstalledCertificateIds += async (LogTimestamp,
-                                                                         Sender,
-                                                                         Request,
-                                                                         CancellationToken) => {
+            ChargingStationServer.OnGetInstalledCertificateIds += async (timestamp,
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         cancellationToken) => {
 
                 #region Send OnGetInstalledCertificateIdsRequest event
 
@@ -4356,7 +5466,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnGetInstalledCertificateIdsRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -4376,49 +5486,102 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // CertificateTypes
+
+                #region Check charging station identification
 
                 GetInstalledCertificateIdsResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-                    DebugX.Log(String.Concat($"Charging Station '{Id}': Invalid GetInstalledCertificateIds request for charging station '{Request.ChargingStationId}'!"));
-                    response = new GetInstalledCertificateIdsResponse(Request:                    Request,
-                                                                      Status:                     GetInstalledCertificateStatus.NotFound,
-                                                                      CertificateHashDataChain:   Array.Empty<CertificateHashData>(),
-                                                                      StatusInfo:                 null,
-                                                                      CustomData:                 null);
+                    response = new GetInstalledCertificateIdsResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid GetInstalledCertificateIds request for charging station '{request.ChargingStationId}'!"
+                                             )
+                               );
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming GetInstalledCertificateIds request accepted."));
-
-                    var certs = new List<CertificateHashData>();
-
-                    foreach (var certificateType in Request.CertificateTypes)
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomGetInstalledCertificateIdsRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
                     {
 
-                        if (certificates.TryGetValue(certificateType, out var cert))
-                            certs.Add(new CertificateHashData(
-                                          HashAlgorithm:         HashAlgorithms.SHA256,
-                                          IssuerNameHash:        cert.Parsed?.Issuer               ?? "-",
-                                          IssuerPublicKeyHash:   cert.Parsed?.GetPublicKeyString() ?? "-",
-                                          SerialNumber:          cert.Parsed?.SerialNumber         ?? "-",
-                                          CustomData:            null
-                                      ));
+                        response = new GetInstalledCertificateIdsResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
 
                     }
 
-                    response = new GetInstalledCertificateIdsResponse(
-                                   Request:                    Request,
-                                   Status:                     GetInstalledCertificateStatus.Accepted,
-                                   CertificateHashDataChain:   certs,
-                                   StatusInfo:                 null,
-                                   CustomData:                 null
-                               );
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming GetInstalledCertificateIds request for certificate types: {request.CertificateTypes.Select(certificateType => certificateType.AsText()).AggregateWith(", ")}!");
+
+                        // CertificateTypes
+
+                        var certs = new List<CertificateHashData>();
+
+                        foreach (var certificateType in request.CertificateTypes)
+                        {
+
+                            if (certificates.TryGetValue(certificateType, out var cert))
+                                certs.Add(new CertificateHashData(
+                                              HashAlgorithm:         HashAlgorithms.SHA256,
+                                              IssuerNameHash:        cert.Parsed?.Issuer               ?? "-",
+                                              IssuerPublicKeyHash:   cert.Parsed?.GetPublicKeyString() ?? "-",
+                                              SerialNumber:          cert.Parsed?.SerialNumber         ?? "-",
+                                              CustomData:            null
+                                          ));
+
+                        }
+
+                        response = new GetInstalledCertificateIdsResponse(
+                                       Request:                    request,
+                                       Status:                     GetInstalledCertificateStatus.Accepted,
+                                       CertificateHashDataChain:   certs,
+                                       StatusInfo:                 null,
+                                       CustomData:                 null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetInstalledCertificateIdsResponseSerializer,
+                        CustomCertificateHashDataSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnGetInstalledCertificateIdsResponse event
@@ -4433,7 +5596,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnGetInstalledCertificateIdsResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -4463,10 +5626,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnDeleteCertificate
 
-            ChargingStationServer.OnDeleteCertificate += async (LogTimestamp,
-                                                                Sender,
-                                                                Request,
-                                                                CancellationToken) => {
+            ChargingStationServer.OnDeleteCertificate += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
 
                 #region Send OnDeleteCertificateRequest event
 
@@ -4480,7 +5644,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnDeleteCertificateRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -4500,39 +5664,91 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // CertificateHashData
+
+                #region Check charging station identification
 
                 DeleteCertificateResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-                    DebugX.Log(String.Concat($"Charging Station '{Id}': Invalid DeleteCertificate request for charging station '{Request.ChargingStationId}'!"));
                     response = new DeleteCertificateResponse(
-                                   Request:      Request,
-                                   Status:       DeleteCertificateStatus.Failed,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid DeleteCertificate request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming DeleteCertificate request accepted."));
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomDeleteCertificateRequestSerializer,
+                                 CustomCertificateHashDataSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    var certKV  = certificates.FirstOrDefault(certificateKV => Request.CertificateHashData.SerialNumber == certificateKV.Value.Parsed?.SerialNumber);
+                        response = new DeleteCertificateResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
 
-                    var success = certificates.TryRemove(certKV);
+                    }
 
-                    response = new DeleteCertificateResponse(
-                                   Request:      Request,
-                                   Status:       success
-                                                     ? DeleteCertificateStatus.Accepted
-                                                     : DeleteCertificateStatus.NotFound,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming DeleteCertificate request!");
+
+                        // CertificateHashData
+
+                        var certKV  = certificates.FirstOrDefault(certificateKV => request.CertificateHashData.SerialNumber == certificateKV.Value.Parsed?.SerialNumber);
+
+                        var success = certificates.TryRemove(certKV);
+
+                        response = new DeleteCertificateResponse(
+                                       Request:      request,
+                                       Status:       success
+                                                         ? DeleteCertificateStatus.Accepted
+                                                         : DeleteCertificateStatus.NotFound,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomDeleteCertificateResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnDeleteCertificateResponse event
@@ -4547,7 +5763,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnDeleteCertificateResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -4577,10 +5793,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyCRL
 
-            ChargingStationServer.OnNotifyCRL += async (LogTimestamp,
-                                                        Sender,
-                                                        Request,
-                                                        CancellationToken) => {
+            ChargingStationServer.OnNotifyCRL += async (timestamp,
+                                                        sender,
+                                                        connection,
+                                                        request,
+                                                        cancellationToken) => {
 
                 #region Send OnNotifyCRLRequest event
 
@@ -4594,7 +5811,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnNotifyCRLRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -4614,35 +5831,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // NotifyCRLRequestId
-                // Availability
-                // Location
+
+                #region Check charging station identification
 
                 NotifyCRLResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log(String.Concat($"Charging Station '{Id}': Invalid NotifyCRL request for charging station '{Request.ChargingStationId}'!"));
-
-                    //Note: No proper error response is defined within OCPP!
                     response = new NotifyCRLResponse(
-                                   Request:      Request,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid NotifyCRL request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log(String.Concat($"Charging Station '{Id}': Incoming NotifyCRL request accepted."));
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomNotifyCRLRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new NotifyCRLResponse(
-                                   Request:      Request,
-                                   CustomData:   null
-                               );
+                        response = new NotifyCRLResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming NotifyCRL request!");
+
+                        // NotifyCRLRequestId
+                        // Availability
+                        // Location
+
+                        response = new NotifyCRLResponse(
+                                       Request:      request,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomNotifyCRLResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnNotifyCRLResponse event
@@ -4657,7 +5922,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnNotifyCRLResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -4688,10 +5953,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetLocalListVersion
 
-            ChargingStationServer.OnGetLocalListVersion += async (LogTimestamp,
-                                                                  Sender,
-                                                                  Request,
-                                                                  CancellationToken) => {
+            ChargingStationServer.OnGetLocalListVersion += async (timestamp,
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
 
                 #region Send OnGetLocalListVersionRequest event
 
@@ -4705,7 +5971,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnGetLocalListVersionRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -4725,32 +5991,82 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // none
+
+                #region Check charging station identification
 
                 GetLocalListVersionResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid GetLocalListVersion request for charging station '{Request.ChargingStationId}'!");
-
                     response = new GetLocalListVersionResponse(
-                                   Request,
-                                   0
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid GetLocalListVersion request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming GetLocalListVersion request.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomGetLocalListVersionRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new GetLocalListVersionResponse(
-                                   Request,
-                                   0
-                               );
+                        response = new GetLocalListVersionResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming GetLocalListVersion request!");
+
+                        // none
+
+                        response = new GetLocalListVersionResponse(
+                                       Request:         request,
+                                       VersionNumber:   0,
+                                       CustomData:      null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetLocalListVersionResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnGetLocalListVersionResponse event
@@ -4765,7 +6081,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnGetLocalListVersionResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -4795,10 +6111,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSendLocalList
 
-            ChargingStationServer.OnSendLocalList += async (LogTimestamp,
-                                                            Sender,
-                                                            Request,
-                                                            CancellationToken) => {
+            ChargingStationServer.OnSendLocalList += async (timestamp,
+                                                            sender,
+                                                            connection,
+                                                            request,
+                                                            cancellationToken) => {
 
                 #region Send OnSendLocalListRequest event
 
@@ -4812,7 +6129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnSendLocalListRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -4832,34 +6149,90 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // VersionNumber
-                // UpdateType
-                // LocalAuthorizationList
+
+                #region Check charging station identification
 
                 SendLocalListResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid SendLocalList request for charging station '{Request.ChargingStationId}'!");
-
                     response = new SendLocalListResponse(
-                                   Request,
-                                   SendLocalListStatus.NotSupported
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid SendLocalList request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming SendLocalList request: '" + Request.UpdateType + "' version '" + Request.VersionNumber + "'.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomSendLocalListRequestSerializer,
+                                 CustomAuthorizationDataSerializer,
+                                 CustomIdTokenSerializer,
+                                 CustomAdditionalInfoSerializer,
+                                 CustomIdTokenInfoSerializer,
+                                 CustomMessageContentSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new SendLocalListResponse(
-                                   Request,
-                                   SendLocalListStatus.Accepted
-                               );
+                        response = new SendLocalListResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming SendLocalList request: '{request.UpdateType.AsText()}' version '{request.VersionNumber}'!");
+
+                        // VersionNumber
+                        // UpdateType
+                        // LocalAuthorizationList
+
+                        response = new SendLocalListResponse(
+                                       Request:      request,
+                                       Status:       SendLocalListStatus.Accepted,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSendLocalListResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnSendLocalListResponse event
@@ -4874,7 +6247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnSendLocalListResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -4904,10 +6277,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnClearCache
 
-            ChargingStationServer.OnClearCache += async (LogTimestamp,
-                                                         Sender,
-                                                         Request,
-                                                         CancellationToken) => {
+            ChargingStationServer.OnClearCache += async (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) => {
 
                 #region Send OnClearCacheRequest event
 
@@ -4921,7 +6295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnClearCacheRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -4941,32 +6315,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // none
+
+                #region Check charging station identification
 
                 ClearCacheResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid ClearCache request for charging station '{Request.ChargingStationId}'!");
-
                     response = new ClearCacheResponse(
-                                   Request,
-                                   ClearCacheStatus.Rejected
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid ClearCache request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming ClearCache request.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomClearCacheRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new ClearCacheResponse(
-                                   Request,
-                                   ClearCacheStatus.Accepted
-                               );
+                        response = new ClearCacheResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming ClearCache request!");
+
+                        // none
+
+                        response = new ClearCacheResponse(
+                                       Request:      request,
+                                       Status:       ClearCacheStatus.Accepted,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomClearCacheResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnClearCacheResponse event
@@ -4981,7 +6406,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnClearCacheResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -5012,10 +6437,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnReserveNow
 
-            ChargingStationServer.OnReserveNow += async (LogTimestamp,
-                                                         Sender,
-                                                         Request,
-                                                         CancellationToken) => {
+            ChargingStationServer.OnReserveNow += async (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) => {
 
                 #region Send OnReserveNowRequest event
 
@@ -5029,7 +6455,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnReserveNowRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -5049,48 +6475,96 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // ReservationId
-                // ExpiryDate
-                // IdToken
-                // ConnectorType
-                // EVSEId
-                // GroupIdToken
+
+                #region Check charging station identification
 
                 ReserveNowResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid ReserveNow request for charging station '{Request.ChargingStationId}'!");
-
                     response = new ReserveNowResponse(
-                                   Request:      Request,
-                                   Status:       ReservationStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid ReserveNow request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    var success = reservations.TryAdd(Request.Id,
-                                                      Request.Id);
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomReserveNowRequestSerializer,
+                                 CustomIdTokenSerializer,
+                                 CustomAdditionalInfoSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming ReserveNow request " + (success
-                                                                                               ? "accepted"
-                                                                                               : "rejected") + ".");
+                        response = new ReserveNowResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
 
-                    response = new ReserveNowResponse(
-                                   Request:      Request,
-                                   Status:       success
-                                                     ? ReservationStatus.Accepted
-                                                     : ReservationStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming ReserveNow request (reservation id: {request.Id}, idToken: '{request.IdToken.Value}'{(request.EVSEId.HasValue ? $", evseId: '{request.EVSEId.Value}'" : "")})!");
+
+                        // ReservationId
+                        // ExpiryDate
+                        // IdToken
+                        // ConnectorType
+                        // EVSEId
+                        // GroupIdToken
+
+                        var success = reservations.TryAdd(request.Id,
+                                                          request.Id);
+
+                        response = new ReserveNowResponse(
+                                       Request:      request,
+                                       Status:       success
+                                                         ? ReservationStatus.Accepted
+                                                         : ReservationStatus.Rejected,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomReserveNowResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnReserveNowResponse event
@@ -5105,7 +6579,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnReserveNowResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -5135,10 +6609,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnCancelReservation
 
-            ChargingStationServer.OnCancelReservation += async (LogTimestamp,
-                                                                Sender,
-                                                                Request,
-                                                                CancellationToken) => {
+            ChargingStationServer.OnCancelReservation += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
 
                 #region Send OnCancelReservationRequest event
 
@@ -5152,7 +6627,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnCancelReservationRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -5172,44 +6647,90 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // ReservationId
+
+                #region Check charging station identification
 
                 CancelReservationResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid CancelReservation request for charging station '{Request.ChargingStationId}'!");
-
                     response = new CancelReservationResponse(
-                                   Request:      Request,
-                                   Status:       CancelReservationStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid CancelReservation request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    var success = reservations.ContainsKey(Request.ReservationId)
-                                      ? reservations.TryRemove(Request.ReservationId, out _)
-                                      : true;
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomCancelReservationRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming CancelReservation request " + (success
-                                                                                                           ? "accepted"
-                                                                                                           : "rejected") + ".");
+                        response = new CancelReservationResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
 
-                    response = new CancelReservationResponse(
-                                   Request:      Request,
-                                   Status:       success
-                                                     ? CancelReservationStatus.Accepted
-                                                     : CancelReservationStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        var success = reservations.ContainsKey(request.ReservationId)
+                                          ? reservations.TryRemove(request.ReservationId, out _)
+                                          : true;
+
+                        DebugX.Log($"Charging station '{Id}': Incoming CancelReservation request for reservation id '{request.ReservationId}': {(success ? "accepted" : "rejected")}!");
+
+                        // ReservationId
+
+                        response = new CancelReservationResponse(
+                                       Request:      request,
+                                       Status:       success
+                                                         ? CancelReservationStatus.Accepted
+                                                         : CancelReservationStatus.Rejected,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomCancelReservationResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnCancelReservationResponse event
@@ -5224,7 +6745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnCancelReservationResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -5254,10 +6775,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnRequestStartTransaction
 
-            ChargingStationServer.OnRequestStartTransaction += async (LogTimestamp,
-                                                                      Sender,
-                                                                      Request,
-                                                                      CancellationToken) => {
+            ChargingStationServer.OnRequestStartTransaction += async (timestamp,
+                                                                      sender,
+                                                                      connection,
+                                                                      request,
+                                                                      cancellationToken) => {
 
                 #region Send OnRequestStartTransactionRequest event
 
@@ -5271,7 +6793,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnRequestStartTransactionRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -5292,122 +6814,198 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
+                #region Check charging station identification
+
                 RequestStartTransactionResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid RequestStartTransaction request for charging station '{Request.ChargingStationId}'!");
-
                     response = new RequestStartTransactionResponse(
-                                   Request,
-                                   RequestStartStopStatus.Rejected
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid RequestStartTransaction request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming RequestStartTransaction for '" + (Request.EVSEId?.ToString() ?? "-") + "'.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
 
-                    // ToDo: lock(evses)
+                                 CustomRequestStartTransactionRequestSerializer,
+                                 CustomIdTokenSerializer,
+                                 CustomAdditionalInfoSerializer,
+                                 CustomChargingProfileSerializer,
+                                 CustomLimitBeyondSoCSerializer,
+                                 CustomChargingScheduleSerializer,
+                                 CustomChargingSchedulePeriodSerializer,
+                                 CustomV2XFreqWattEntrySerializer,
+                                 CustomV2XSignalWattEntrySerializer,
+                                 CustomSalesTariffSerializer,
+                                 CustomSalesTariffEntrySerializer,
+                                 CustomRelativeTimeIntervalSerializer,
+                                 CustomConsumptionCostSerializer,
+                                 CustomCostSerializer,
 
-                    if (Request.EVSEId.HasValue &&
-                        evses.TryGetValue(Request.EVSEId.Value, out var evse) &&
-                        !evse.IsCharging)
+                                 CustomAbsolutePriceScheduleSerializer,
+                                 CustomPriceRuleStackSerializer,
+                                 CustomPriceRuleSerializer,
+                                 CustomTaxRuleSerializer,
+                                 CustomOverstayRuleListSerializer,
+                                 CustomOverstayRuleSerializer,
+                                 CustomAdditionalServiceSerializer,
+
+                                 CustomPriceLevelScheduleSerializer,
+                                 CustomPriceLevelScheduleEntrySerializer,
+
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
                     {
 
-                        evse.IsCharging              = true;
-                        evse.TransactionId           = Transaction_Id.NewRandom;
-                        evse.RemoteStartId           = Request.RequestStartTransactionRequestId;
-
-                        evse.StartTimestamp          = Timestamp.Now;
-                        evse.MeterStartValue         = 0;
-                        evse.SignedStartMeterValue   = "0";
-
-                        evse.StopTimestamp           = null;
-                        evse.MeterStopValue          = null;
-                        evse.SignedStopMeterValue    = null;
-
-                        evse.IdToken                 = Request.IdToken;
-                        evse.GroupIdToken            = Request.GroupIdToken;
-                        evse.ChargingProfile         = Request.ChargingProfile;
-
-                        _ = Task.Run(async () => {
-
-                            await Task.Delay(500);
-
-                            await this.SendTransactionEvent(
-
-                                      EventType:            TransactionEvents.Started,
-                                      Timestamp:            evse.StartTimestamp.Value,
-                                      TriggerReason:        TriggerReasons.RemoteStart,
-                                      SequenceNumber:       1,
-                                      TransactionInfo:      new Transaction(
-                                                                TransactionId:       evse.TransactionId.Value,
-                                                                ChargingState:       ChargingStates.Charging,
-                                                                TimeSpentCharging:   TimeSpan.Zero,
-                                                                StoppedReason:       null,
-                                                                RemoteStartId:       Request.RequestStartTransactionRequestId,
-                                                                CustomData:          null
-                                                            ),
-
-                                      Offline:              false,
-                                      NumberOfPhasesUsed:   3,
-                                      CableMaxCurrent:      Ampere.Parse(32),
-                                      ReservationId:        evse.ReservationId,
-                                      IdToken:              evse.IdToken,
-                                      EVSE:                 new EVSE(
-                                                                Id:            evse.Id,
-                                                                ConnectorId:   evse.Connectors.First().Id,
-                                                                CustomData:    null
-                                                            ),
-                                      MeterValues:          new[] {
-                                                                new MeterValue(
-                                                                    Timestamp:       evse.StartTimestamp.Value,
-                                                                    SampledValues:   new[] {
-                                                                                         new SampledValue(
-                                                                                             Value:              evse.MeterStartValue.Value,
-                                                                                             Context:            ReadingContexts.TransactionBegin,
-                                                                                             Measurand:          Measurands.Current_Export,
-                                                                                             Phase:              null,
-                                                                                             Location:           MeasurementLocations.Outlet,
-                                                                                             SignedMeterValue:   new SignedMeterValue(
-                                                                                                                     SignedMeterData:   evse.SignedStartMeterValue,
-                                                                                                                     SigningMethod:     "secp256r1",
-                                                                                                                     EncodingMethod:    "base64",
-                                                                                                                     PublicKey:         "04cafebabe",
-                                                                                                                     CustomData:        null
-                                                                                                                 ),
-                                                                                             UnitOfMeasure:      null,
-                                                                                             CustomData:         null
-                                                                                         )
-                                                                                     }
-                                                                )
-                                                            },
-                                      CustomData:           null
-
-                                  );
-
-                        },
-                        CancellationToken.None);
-
                         response = new RequestStartTransactionResponse(
-                                       Request:         Request,
-                                       Status:          RequestStartStopStatus.Accepted,
-                                       TransactionId:   evse.TransactionId,
-                                       StatusInfo:      null,
-                                       CustomData:      null
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
                                    );
 
                     }
+
+                #endregion
+
                     else
-                        response = new RequestStartTransactionResponse(
-                                       Request,
-                                       RequestStartStopStatus.Rejected
-                                   );
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming RequestStartTransaction for '{(request.EVSEId?.ToString() ?? "-")}'!");
+
+                        // ToDo: lock(evses)
+
+                        if (request.EVSEId.HasValue &&
+                            evses.TryGetValue(request.EVSEId.Value, out var evse) &&
+                            !evse.IsCharging)
+                        {
+
+                            evse.IsCharging              = true;
+                            evse.TransactionId           = Transaction_Id.NewRandom;
+                            evse.RemoteStartId           = request.RequestStartTransactionRequestId;
+
+                            evse.StartTimestamp          = Timestamp.Now;
+                            evse.MeterStartValue         = 0;
+                            evse.SignedStartMeterValue   = "0";
+
+                            evse.StopTimestamp           = null;
+                            evse.MeterStopValue          = null;
+                            evse.SignedStopMeterValue    = null;
+
+                            evse.IdToken                 = request.IdToken;
+                            evse.GroupIdToken            = request.GroupIdToken;
+                            evse.ChargingProfile         = request.ChargingProfile;
+
+                            _ = Task.Run(async () => {
+
+                                await Task.Delay(500);
+
+                                await this.SendTransactionEvent(
+
+                                          EventType:            TransactionEvents.Started,
+                                          Timestamp:            evse.StartTimestamp.Value,
+                                          TriggerReason:        TriggerReasons.RemoteStart,
+                                          SequenceNumber:       1,
+                                          TransactionInfo:      new Transaction(
+                                                                    TransactionId:       evse.TransactionId.Value,
+                                                                    ChargingState:       ChargingStates.Charging,
+                                                                    TimeSpentCharging:   TimeSpan.Zero,
+                                                                    StoppedReason:       null,
+                                                                    RemoteStartId:       request.RequestStartTransactionRequestId,
+                                                                    CustomData:          null
+                                                                ),
+
+                                          Offline:              false,
+                                          NumberOfPhasesUsed:   3,
+                                          CableMaxCurrent:      Ampere.Parse(32),
+                                          ReservationId:        evse.ReservationId,
+                                          IdToken:              evse.IdToken,
+                                          EVSE:                 new EVSE(
+                                                                    Id:            evse.Id,
+                                                                    ConnectorId:   evse.Connectors.First().Id,
+                                                                    CustomData:    null
+                                                                ),
+                                          MeterValues:          new[] {
+                                                                    new MeterValue(
+                                                                        Timestamp:       evse.StartTimestamp.Value,
+                                                                        SampledValues:   new[] {
+                                                                                             new SampledValue(
+                                                                                                 Value:              evse.MeterStartValue.Value,
+                                                                                                 Context:            ReadingContexts.TransactionBegin,
+                                                                                                 Measurand:          Measurands.Current_Export,
+                                                                                                 Phase:              null,
+                                                                                                 Location:           MeasurementLocations.Outlet,
+                                                                                                 SignedMeterValue:   new SignedMeterValue(
+                                                                                                                         SignedMeterData:   evse.SignedStartMeterValue,
+                                                                                                                         SigningMethod:     "secp256r1",
+                                                                                                                         EncodingMethod:    "base64",
+                                                                                                                         PublicKey:         "04cafebabe",
+                                                                                                                         CustomData:        null
+                                                                                                                     ),
+                                                                                                 UnitOfMeasure:      null,
+                                                                                                 CustomData:         null
+                                                                                             )
+                                                                                         }
+                                                                    )
+                                                                },
+                                          CustomData:           null
+
+                                      );
+
+                            },
+                            CancellationToken.None);
+
+                            response = new RequestStartTransactionResponse(
+                                           Request:         request,
+                                           Status:          RequestStartStopStatus.Accepted,
+                                           TransactionId:   evse.TransactionId,
+                                           StatusInfo:      null,
+                                           CustomData:      null
+                                       );
+
+                        }
+                        else
+                            response = new RequestStartTransactionResponse(
+                                           request,
+                                           RequestStartStopStatus.Rejected
+                                       );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomRequestStartTransactionResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnRequestStartTransactionResponse event
@@ -5422,7 +7020,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnRequestStartTransactionResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -5452,10 +7050,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnRequestStopTransaction
 
-            ChargingStationServer.OnRequestStopTransaction += async (LogTimestamp,
-                                                                     Sender,
-                                                                     Request,
-                                                                     CancellationToken) => {
+            ChargingStationServer.OnRequestStopTransaction += async (timestamp,
+                                                                     sender,
+                                                                     connection,
+                                                                     request,
+                                                                     cancellationToken) => {
 
                 #region Send OnRequestStopTransactionRequest event
 
@@ -5469,7 +7068,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnRequestStopTransactionRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -5489,108 +7088,159 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // TransactionId
+
+                #region Check charging station identification
 
                 RequestStopTransactionResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid RequestStopTransaction request for charging station '{Request.ChargingStationId}'!");
-
                     response = new RequestStopTransactionResponse(
-                                   Request,
-                                   RequestStartStopStatus.Rejected
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid RequestStopTransaction request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming RequestStopTransaction for '" + Request.TransactionId + "'.");
-
-                    // ToDo: lock(evses)
-                    var evse = evses.Values.FirstOrDefault(evse => Request.TransactionId == evse.TransactionId);
-
-                    if (evse is not null)
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomRequestStopTransactionRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
                     {
 
-                        evse.IsCharging             = false;
-
-                        evse.StopTimestamp          = Timestamp.Now;
-                        evse.MeterStopValue         = 123;
-                        evse.SignedStopMeterValue   = "123";
-
-                        _ = Task.Run(async () => {
-
-                            await this.SendTransactionEvent(
-
-                                      EventType:            TransactionEvents.Ended,
-                                      Timestamp:            evse.StopTimestamp.Value,
-                                      TriggerReason:        TriggerReasons.RemoteStop,
-                                      SequenceNumber:       2,
-                                      TransactionInfo:      new Transaction(
-                                                                TransactionId:       evse.TransactionId!.Value,
-                                                                ChargingState:       ChargingStates.Idle,
-                                                                TimeSpentCharging:   evse.StopTimestamp - evse.StartTimestamp,
-                                                                StoppedReason:       StopTransactionReasons.Remote,
-                                                                RemoteStartId:       evse.RemoteStartId,
-                                                                CustomData:          null
-                                                            ),
-
-                                      Offline:              false,
-                                      NumberOfPhasesUsed:   3,
-                                      CableMaxCurrent:      Ampere.Parse(32),
-                                      ReservationId:        evse.ReservationId,
-                                      IdToken:              evse.IdToken,
-                                      EVSE:                 new EVSE(
-                                                                Id:            evse.Id,
-                                                                ConnectorId:   evse.Connectors.First().Id,
-                                                                CustomData:    null
-                                                            ),
-                                      MeterValues:          new[] {
-                                                                new MeterValue(
-                                                                    Timestamp:       evse.StopTimestamp.Value,
-                                                                    SampledValues:   new[] {
-                                                                                         new SampledValue(
-                                                                                             Value:              evse.MeterStopValue.Value,
-                                                                                             Context:            ReadingContexts.TransactionEnd,
-                                                                                             Measurand:          Measurands.Current_Export,
-                                                                                             Phase:              null,
-                                                                                             Location:           MeasurementLocations.Outlet,
-                                                                                             SignedMeterValue:   new SignedMeterValue(
-                                                                                                                     SignedMeterData:   evse.SignedStopMeterValue,
-                                                                                                                     SigningMethod:     "secp256r1",
-                                                                                                                     EncodingMethod:    "base64",
-                                                                                                                     PublicKey:         "04cafebabe",
-                                                                                                                     CustomData:        null
-                                                                                                                 ),
-                                                                                             UnitOfMeasure:      null,
-                                                                                             CustomData:         null
-                                                                                         )
-                                                                                     }
-                                                                )
-                                                            },
-                                      CustomData:           null
-
-                                  );
-
-                        },
-                        CancellationToken.None);
-
                         response = new RequestStopTransactionResponse(
-                                       Request,
-                                       RequestStartStopStatus.Accepted
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
                                    );
 
                     }
+
+                #endregion
+
                     else
-                        response = new RequestStopTransactionResponse(
-                                       Request,
-                                       RequestStartStopStatus.Rejected
-                                   );
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming RequestStopTransaction for '{request.TransactionId}'!");
+
+                        // TransactionId
+
+                        // ToDo: lock(evses)
+
+                        var evse = evses.Values.FirstOrDefault(evse => request.TransactionId == evse.TransactionId);
+
+                        if (evse is not null)
+                        {
+
+                            evse.IsCharging             = false;
+
+                            evse.StopTimestamp          = Timestamp.Now;
+                            evse.MeterStopValue         = 123;
+                            evse.SignedStopMeterValue   = "123";
+
+                            _ = Task.Run(async () => {
+
+                                await this.SendTransactionEvent(
+
+                                          EventType:            TransactionEvents.Ended,
+                                          Timestamp:            evse.StopTimestamp.Value,
+                                          TriggerReason:        TriggerReasons.RemoteStop,
+                                          SequenceNumber:       2,
+                                          TransactionInfo:      new Transaction(
+                                                                    TransactionId:       evse.TransactionId!.Value,
+                                                                    ChargingState:       ChargingStates.Idle,
+                                                                    TimeSpentCharging:   evse.StopTimestamp - evse.StartTimestamp,
+                                                                    StoppedReason:       StopTransactionReasons.Remote,
+                                                                    RemoteStartId:       evse.RemoteStartId,
+                                                                    CustomData:          null
+                                                                ),
+
+                                          Offline:              false,
+                                          NumberOfPhasesUsed:   3,
+                                          CableMaxCurrent:      Ampere.Parse(32),
+                                          ReservationId:        evse.ReservationId,
+                                          IdToken:              evse.IdToken,
+                                          EVSE:                 new EVSE(
+                                                                    Id:            evse.Id,
+                                                                    ConnectorId:   evse.Connectors.First().Id,
+                                                                    CustomData:    null
+                                                                ),
+                                          MeterValues:          new[] {
+                                                                    new MeterValue(
+                                                                        Timestamp:       evse.StopTimestamp.Value,
+                                                                        SampledValues:   new[] {
+                                                                                             new SampledValue(
+                                                                                                 Value:              evse.MeterStopValue.Value,
+                                                                                                 Context:            ReadingContexts.TransactionEnd,
+                                                                                                 Measurand:          Measurands.Current_Export,
+                                                                                                 Phase:              null,
+                                                                                                 Location:           MeasurementLocations.Outlet,
+                                                                                                 SignedMeterValue:   new SignedMeterValue(
+                                                                                                                         SignedMeterData:   evse.SignedStopMeterValue,
+                                                                                                                         SigningMethod:     "secp256r1",
+                                                                                                                         EncodingMethod:    "base64",
+                                                                                                                         PublicKey:         "04cafebabe",
+                                                                                                                         CustomData:        null
+                                                                                                                     ),
+                                                                                                 UnitOfMeasure:      null,
+                                                                                                 CustomData:         null
+                                                                                             )
+                                                                                         }
+                                                                    )
+                                                                },
+                                          CustomData:           null
+
+                                      );
+
+                            },
+                            CancellationToken.None);
+
+                            response = new RequestStopTransactionResponse(
+                                           request,
+                                           RequestStartStopStatus.Accepted
+                                       );
+
+                        }
+                        else
+                            response = new RequestStopTransactionResponse(
+                                           request,
+                                           RequestStartStopStatus.Rejected
+                                       );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomRequestStopTransactionResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnRequestStopTransactionResponse event
@@ -5605,7 +7255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnRequestStopTransactionResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -5635,10 +7285,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetTransactionStatus
 
-            ChargingStationServer.OnGetTransactionStatus += async (LogTimestamp,
-                                                                   Sender,
-                                                                   Request,
-                                                                   CancellationToken) => {
+            ChargingStationServer.OnGetTransactionStatus += async (timestamp,
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   cancellationToken) => {
 
                 #region Send OnGetTransactionStatusRequest event
 
@@ -5652,7 +7303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnGetTransactionStatusRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -5672,47 +7323,91 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // TransactionId
+
+                #region Check charging station identification
 
                 GetTransactionStatusResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid GetTransactionStatus request for charging station '{Request.ChargingStationId}'!");
-
                     response = new GetTransactionStatusResponse(
-                                   Request,
-                                   MessagesInQueue:    false,
-                                   OngoingIndicator:   true
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid GetTransactionStatus request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming GetTransactionStatus for '" + Request.TransactionId + "'.");
-
-                    if (Request.TransactionId.HasValue)
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomGetTransactionStatusRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
                     {
 
-                        var foundEVSE =  evses.Values.FirstOrDefault(evse => Request.TransactionId == evse.TransactionId);
+                        response = new GetTransactionStatusResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
 
-                        if (foundEVSE is not null)
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming GetTransactionStatus for '{request.TransactionId}'!");
+
+                        // TransactionId
+
+                        if (request.TransactionId.HasValue)
                         {
 
-                            response = new GetTransactionStatusResponse(
-                                           Request,
-                                           MessagesInQueue:    false,
-                                           OngoingIndicator:   true
-                                       );
+                            var foundEVSE =  evses.Values.FirstOrDefault(evse => request.TransactionId == evse.TransactionId);
+
+                            if (foundEVSE is not null)
+                            {
+
+                                response = new GetTransactionStatusResponse(
+                                               request,
+                                               MessagesInQueue:    false,
+                                               OngoingIndicator:   true
+                                           );
+
+                            }
+                            else
+                            {
+
+                                response = new GetTransactionStatusResponse(
+                                               request,
+                                               MessagesInQueue:    false,
+                                               OngoingIndicator:   true
+                                           );
+
+                            }
 
                         }
                         else
                         {
 
                             response = new GetTransactionStatusResponse(
-                                           Request,
+                                           request,
                                            MessagesInQueue:    false,
                                            OngoingIndicator:   true
                                        );
@@ -5720,18 +7415,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         }
 
                     }
-                    else
-                    {
-
-                        response = new GetTransactionStatusResponse(
-                                       Request,
-                                       MessagesInQueue:    false,
-                                       OngoingIndicator:   true
-                                   );
-
-                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetTransactionStatusResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnGetTransactionStatusResponse event
@@ -5746,7 +7445,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnGetTransactionStatusResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -5776,10 +7475,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetChargingProfile
 
-            ChargingStationServer.OnSetChargingProfile += async (LogTimestamp,
-                                                                 Sender,
-                                                                 Request,
-                                                                 CancellationToken) => {
+            ChargingStationServer.OnSetChargingProfile += async (timestamp,
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
 
                 #region Send OnSetChargingProfileRequest event
 
@@ -5793,7 +7493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnSetChargingProfileRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -5813,76 +7513,142 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // EVSEId
-                // ChargingProfile
+
+                #region Check charging station identification
 
                 SetChargingProfileResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid SetChargingProfile request for charging station '{Request.ChargingStationId}'!");
-
                     response = new SetChargingProfileResponse(
-                                   Request,
-                                   ChargingProfileStatus.Rejected
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid SetChargingProfile request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
-                else if (Request.ChargingProfile is null)
-                {
 
-                    response = new SetChargingProfileResponse(
-                                   Request,
-                                   ChargingProfileStatus.Rejected
-                               );
+                #endregion
 
-                }
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming SetChargingProfile for '" + Request.EVSEId + "'.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
 
-                    // ToDo: lock(connectors)
+                                 CustomSetChargingProfileRequestSerializer,
+                                 CustomChargingProfileSerializer,
+                                 CustomLimitBeyondSoCSerializer,
+                                 CustomChargingScheduleSerializer,
+                                 CustomChargingSchedulePeriodSerializer,
+                                 CustomV2XFreqWattEntrySerializer,
+                                 CustomV2XSignalWattEntrySerializer,
+                                 CustomSalesTariffSerializer,
+                                 CustomSalesTariffEntrySerializer,
+                                 CustomRelativeTimeIntervalSerializer,
+                                 CustomConsumptionCostSerializer,
+                                 CustomCostSerializer,
 
-                    if (Request.EVSEId.Value == 0)
+                                 CustomAbsolutePriceScheduleSerializer,
+                                 CustomPriceRuleStackSerializer,
+                                 CustomPriceRuleSerializer,
+                                 CustomTaxRuleSerializer,
+                                 CustomOverstayRuleListSerializer,
+                                 CustomOverstayRuleSerializer,
+                                 CustomAdditionalServiceSerializer,
+
+                                 CustomPriceLevelScheduleSerializer,
+                                 CustomPriceLevelScheduleEntrySerializer,
+
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
                     {
 
-                        foreach (var evse in evses.Values)
+                        response = new SetChargingProfileResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming SetChargingProfile for '{request.EVSEId}'!");
+
+                        // EVSEId
+                        // ChargingProfile
+
+                        // ToDo: lock(connectors)
+
+                        if (request.EVSEId.Value == 0)
                         {
 
-                            if (!Request.ChargingProfile.TransactionId.HasValue)
-                                evse.ChargingProfile = Request.ChargingProfile;
+                            foreach (var evse in evses.Values)
+                            {
 
-                            else if (evse.TransactionId == Request.ChargingProfile.TransactionId.Value)
-                                evse.ChargingProfile = Request.ChargingProfile;
+                                if (!request.ChargingProfile.TransactionId.HasValue)
+                                    evse.ChargingProfile = request.ChargingProfile;
+
+                                else if (evse.TransactionId == request.ChargingProfile.TransactionId.Value)
+                                    evse.ChargingProfile = request.ChargingProfile;
+
+                            }
+
+                            response = new SetChargingProfileResponse(
+                                           request,
+                                           ChargingProfileStatus.Accepted
+                                       );
 
                         }
+                        else if (evses.ContainsKey(request.EVSEId))
+                        {
 
-                        response = new SetChargingProfileResponse(
-                                       Request,
-                                       ChargingProfileStatus.Accepted
-                                   );
+                            evses[request.EVSEId].ChargingProfile = request.ChargingProfile;
+
+                            response = new SetChargingProfileResponse(
+                                           request,
+                                           ChargingProfileStatus.Accepted
+                                       );
+
+                        }
+                        else
+                            response = new SetChargingProfileResponse(
+                                           request,
+                                           ChargingProfileStatus.Rejected
+                                       );
 
                     }
-                    else if (evses.ContainsKey(Request.EVSEId))
-                    {
-
-                        evses[Request.EVSEId].ChargingProfile = Request.ChargingProfile;
-
-                        response = new SetChargingProfileResponse(
-                                       Request,
-                                       ChargingProfileStatus.Accepted
-                                   );
-
-                    }
-                    else
-                        response = new SetChargingProfileResponse(
-                                       Request,
-                                       ChargingProfileStatus.Rejected
-                                   );
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSetChargingProfileResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnSetChargingProfileResponse event
@@ -5897,7 +7663,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnSetChargingProfileResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -5927,10 +7693,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetChargingProfiles
 
-            ChargingStationServer.OnGetChargingProfiles += async (LogTimestamp,
-                                                                  Sender,
-                                                                  Request,
-                                                                  CancellationToken) => {
+            ChargingStationServer.OnGetChargingProfiles += async (timestamp,
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
 
                 #region Send OnGetChargingProfilesRequest event
 
@@ -5944,7 +7711,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnGetChargingProfilesRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -5964,39 +7731,97 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // GetChargingProfilesRequestId
-                // ChargingProfile
-                // EVSEId
+
+                #region Check charging station identification
 
                 GetChargingProfilesResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid GetChargingProfiles request for charging station '{Request.ChargingStationId}'!");
-
                     response = new GetChargingProfilesResponse(
-                                   Request,
-                                   GetChargingProfileStatus.Unknown
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid GetChargingProfiles request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
-                else if (Request.EVSEId.HasValue && evses.ContainsKey(Request.EVSEId.Value))
-                {
 
-                    //evses[Request.EVSEId.Value].ChargingProfile = Request.ChargingProfile;
+                #endregion
 
-                    response = new GetChargingProfilesResponse(
-                                   Request,
-                                   GetChargingProfileStatus.Accepted
-                               );
+                #region Check request signature(s)
 
-                }
                 else
-                   response = new GetChargingProfilesResponse(
-                                  Request,
-                                  GetChargingProfileStatus.Unknown
-                              );
+                {
+
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomGetChargingProfilesRequestSerializer,
+                                 CustomChargingProfileCriterionSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
+
+                        response = new GetChargingProfilesResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming GetChargingProfiles request ({request.GetChargingProfilesRequestId}) for '{request.EVSEId}'!");
+
+                        // GetChargingProfilesRequestId
+                        // ChargingProfile
+                        // EVSEId
+
+                        if (request.EVSEId.HasValue && evses.ContainsKey(request.EVSEId.Value))
+                        {
+
+                            //evses[Request.EVSEId.Value].ChargingProfile = Request.ChargingProfile;
+
+                            response = new GetChargingProfilesResponse(
+                                           request,
+                                           GetChargingProfileStatus.Accepted
+                                       );
+
+                        }
+                        else
+                           response = new GetChargingProfilesResponse(
+                                          request,
+                                          GetChargingProfileStatus.Unknown
+                                      );
+
+                            }
+
+                }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetChargingProfilesResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnGetChargingProfilesResponse event
@@ -6011,7 +7836,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnGetChargingProfilesResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -6041,10 +7866,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnClearChargingProfile
 
-            ChargingStationServer.OnClearChargingProfile += async (LogTimestamp,
-                                                                   Sender,
-                                                                   Request,
-                                                                   CancellationToken) => {
+            ChargingStationServer.OnClearChargingProfile += async (timestamp,
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   cancellationToken) => {
 
                 #region Send OnClearChargingProfileRequest event
 
@@ -6058,7 +7884,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnClearChargingProfileRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -6078,15 +7904,86 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // ChargingProfileId
-                // ChargingProfileCriteria
 
-                var response = new ClearChargingProfileResponse(
-                                   Request:      Request,
-                                   Status:       ClearChargingProfileStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                #region Check charging station identification
+
+                ClearChargingProfileResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new ClearChargingProfileResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid ClearChargingProfile request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomClearChargingProfileRequestSerializer,
+                                 CustomClearChargingProfileSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
+
+                        response = new ClearChargingProfileResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming ClearChargingProfile request for charging profile identification '{request.ChargingProfileId}'!");
+
+                        // ChargingProfileId
+                        // ChargingProfileCriteria
+
+                        response = new ClearChargingProfileResponse(
+                                       Request:      request,
+                                       Status:       ClearChargingProfileStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomClearChargingProfileResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnClearChargingProfileResponse event
@@ -6101,7 +7998,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnClearChargingProfileResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -6131,10 +8028,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetCompositeSchedule
 
-            ChargingStationServer.OnGetCompositeSchedule += async (LogTimestamp,
-                                                                   Sender,
-                                                                   Request,
-                                                                   CancellationToken) => {
+            ChargingStationServer.OnGetCompositeSchedule += async (timestamp,
+                                                                   sender,
+                                                                   connection,
+                                                                   request,
+                                                                   cancellationToken) => {
 
                 #region Send OnGetCompositeScheduleRequest event
 
@@ -6148,7 +8046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnGetCompositeScheduleRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -6168,17 +8066,90 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // Duration,
-                // EVSEId,
-                // ChargingRateUnit
 
-                var response = new GetCompositeScheduleResponse(
-                                   Request:      Request,
-                                   Status:       GenericStatus.Accepted,
-                                   Schedule:     null,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                #region Check charging station identification
+
+                GetCompositeScheduleResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new GetCompositeScheduleResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid GetCompositeSchedule request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomGetCompositeScheduleRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
+
+                        response = new GetCompositeScheduleResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming GetCompositeSchedule request for the next {request.Duration.TotalMinutes} minutes of EVSE '{request.EVSEId}'!");
+
+                        // Duration,
+                        // EVSEId,
+                        // ChargingRateUnit
+
+                        response = new GetCompositeScheduleResponse(
+                                       Request:      request,
+                                       Status:       GenericStatus.Accepted,
+                                       Schedule:     null,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetCompositeScheduleResponseSerializer,
+                        CustomCompositeScheduleSerializer,
+                        CustomChargingSchedulePeriodSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
+
 
                 #region Send OnGetCompositeScheduleResponse event
 
@@ -6192,7 +8163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnGetCompositeScheduleResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -6222,10 +8193,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnUpdateDynamicSchedule
 
-            ChargingStationServer.OnUpdateDynamicSchedule += async (LogTimestamp,
-                                                                    Sender,
-                                                                    Request,
-                                                                    CancellationToken) => {
+            ChargingStationServer.OnUpdateDynamicSchedule += async (timestamp,
+                                                                    sender,
+                                                                    connection,
+                                                                    request,
+                                                                    cancellationToken) => {
 
                 #region Send OnUpdateDynamicScheduleRequest event
 
@@ -6239,7 +8211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnUpdateDynamicScheduleRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -6259,30 +8231,100 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // ChargingProfileId
 
-                // Limit
-                // Limit_L2
-                // Limit_L3
+                #region Check charging station identification
 
-                // DischargeLimit
-                // DischargeLimit_L2
-                // DischargeLimit_L3
+                UpdateDynamicScheduleResponse? response = null;
 
-                // Setpoint
-                // Setpoint_L2
-                // Setpoint_L3
-
-                // SetpointReactive
-                // SetpointReactive_L2
-                // SetpointReactive_L3
-
-                var response = new UpdateDynamicScheduleResponse(
-                                   Request:      Request,
-                                   Status:       ChargingProfileStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                if (request.ChargingStationId != Id)
+                {
+                    response = new UpdateDynamicScheduleResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid UpdateDynamicSchedule request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomUpdateDynamicScheduleRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
+
+                        response = new UpdateDynamicScheduleResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming UpdateDynamicSchedule request for charging profile '{request.ChargingProfileId}'!");
+
+                        // ChargingProfileId
+
+                        // Limit
+                        // Limit_L2
+                        // Limit_L3
+
+                        // DischargeLimit
+                        // DischargeLimit_L2
+                        // DischargeLimit_L3
+
+                        // Setpoint
+                        // Setpoint_L2
+                        // Setpoint_L3
+
+                        // SetpointReactive
+                        // SetpointReactive_L2
+                        // SetpointReactive_L3
+
+                        response = new UpdateDynamicScheduleResponse(
+                                       Request:      request,
+                                       Status:       ChargingProfileStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomUpdateDynamicScheduleResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnUpdateDynamicScheduleResponse event
@@ -6297,7 +8339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnUpdateDynamicScheduleResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -6327,10 +8369,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyAllowedEnergyTransfer
 
-            ChargingStationServer.OnNotifyAllowedEnergyTransfer += async (LogTimestamp,
-                                                                          Sender,
-                                                                          Request,
-                                                                          CancellationToken) => {
+            ChargingStationServer.OnNotifyAllowedEnergyTransfer += async (timestamp,
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          cancellationToken) => {
 
                 #region Send OnNotifyAllowedEnergyTransferRequest event
 
@@ -6344,7 +8387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnNotifyAllowedEnergyTransferRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -6364,36 +8407,84 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // AllowedEnergyTransferModes
+
+                #region Check charging station identification
 
                 NotifyAllowedEnergyTransferResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid NotifyAllowedEnergyTransfer request for charging station '{Request.ChargingStationId}'!");
-
                     response = new NotifyAllowedEnergyTransferResponse(
-                                   Request:      Request,
-                                   Status:       NotifyAllowedEnergyTransferStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid NotifyAllowedEnergyTransfer request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming NotifyAllowedEnergyTransfer");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomNotifyAllowedEnergyTransferRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new NotifyAllowedEnergyTransferResponse(
-                                   Request:      Request,
-                                   Status:       NotifyAllowedEnergyTransferStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                        response = new NotifyAllowedEnergyTransferResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming NotifyAllowedEnergyTransfer request allowing energy transfer modes: '{request.AllowedEnergyTransferModes.Select(mode => mode.AsText()).AggregateWith(", ")}'!");
+
+                        // AllowedEnergyTransferModes
+
+                        response = new NotifyAllowedEnergyTransferResponse(
+                                       Request:      request,
+                                       Status:       NotifyAllowedEnergyTransferStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomNotifyAllowedEnergyTransferResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnNotifyAllowedEnergyTransferResponse event
@@ -6408,7 +8499,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnNotifyAllowedEnergyTransferResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -6438,10 +8529,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnUsePriorityCharging
 
-            ChargingStationServer.OnUsePriorityCharging += async (LogTimestamp,
-                                                                  Sender,
-                                                                  Request,
-                                                                  CancellationToken) => {
+            ChargingStationServer.OnUsePriorityCharging += async (timestamp,
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
 
                 #region Send OnUsePriorityChargingRequest event
 
@@ -6455,7 +8547,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnUsePriorityChargingRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -6475,15 +8567,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // TransactionId
-                // Activate
 
-                var response = new UsePriorityChargingResponse(
-                                   Request:      Request,
-                                   Status:       GenericStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                #region Check charging station identification
+
+                UsePriorityChargingResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new UsePriorityChargingResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid UsePriorityCharging request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomUsePriorityChargingRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
+
+                        response = new UsePriorityChargingResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming UsePriorityCharging request for transaction '{request.TransactionId}': {(request.Activate ? "active" : "disabled")}!");
+
+                        // TransactionId
+                        // Activate
+
+                        response = new UsePriorityChargingResponse(
+                                       Request:      request,
+                                       Status:       GenericStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomUsePriorityChargingResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnUsePriorityChargingResponse event
@@ -6498,7 +8660,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnUsePriorityChargingResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -6528,10 +8690,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnUnlockConnector
 
-            ChargingStationServer.OnUnlockConnector += async (LogTimestamp,
-                                                              Sender,
-                                                              Request,
-                                                              CancellationToken) => {
+            ChargingStationServer.OnUnlockConnector += async (timestamp,
+                                                              sender,
+                                                              connection,
+                                                              request,
+                                                              cancellationToken) => {
 
                 #region Send OnUnlockConnectorRequest event
 
@@ -6545,7 +8708,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnUnlockConnectorRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -6565,54 +8728,102 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // EVSEId
-                // ConnectorId
+
+                #region Check charging station identification
 
                 UnlockConnectorResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid UnlockConnector request for charging station '{Request.ChargingStationId}'!");
-
                     response = new UnlockConnectorResponse(
-                                   Request:      Request,
-                                   Status:       UnlockStatus.UnlockFailed,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid UnlockConnector request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming UnlockConnector for '" + Request.ConnectorId + "'.");
-
-                    // ToDo: lock(connectors)
-
-                    if (evses.TryGetValue    (Request.EVSEId,      out var evse) &&
-                        evse. TryGetConnector(Request.ConnectorId, out var connector))
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomUnlockConnectorRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
                     {
 
-                        // What to do here?!
-
                         response = new UnlockConnectorResponse(
-                                       Request:      Request,
-                                       Status:       UnlockStatus.Unlocked,
-                                       StatusInfo:   null,
-                                       CustomData:   null
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
                                    );
 
                     }
+
+                #endregion
+
                     else
-                        response = new UnlockConnectorResponse(
-                                       Request:      Request,
-                                       Status:       UnlockStatus.UnlockFailed,
-                                       StatusInfo:   null,
-                                       CustomData:   null
-                                   );
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming UnlockConnector request for EVSE '{request.EVSEId}' and connector '{request.ConnectorId}'!");
+
+                        // EVSEId
+                        // ConnectorId
+
+                        // ToDo: lock(connectors)
+
+                        if (evses.TryGetValue    (request.EVSEId,      out var evse) &&
+                            evse. TryGetConnector(request.ConnectorId, out var connector))
+                        {
+
+                            // What to do here?!
+
+                            response = new UnlockConnectorResponse(
+                                           Request:      request,
+                                           Status:       UnlockStatus.Unlocked,
+                                           StatusInfo:   null,
+                                           CustomData:   null
+                                       );
+
+                        }
+                        else
+                            response = new UnlockConnectorResponse(
+                                           Request:      request,
+                                           Status:       UnlockStatus.UnlockFailed,
+                                           StatusInfo:   null,
+                                           CustomData:   null
+                                       );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomUnlockConnectorResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnUnlockConnectorResponse event
@@ -6627,7 +8838,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnUnlockConnectorResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -6658,10 +8869,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnAFRRSignal
 
-            ChargingStationServer.OnAFRRSignal += async (LogTimestamp,
-                                                         Sender,
-                                                         Request,
-                                                         CancellationToken) => {
+            ChargingStationServer.OnAFRRSignal += async (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) => {
 
                 #region Send OnAFRRSignalRequest event
 
@@ -6675,7 +8887,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnAFRRSignalRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -6695,39 +8907,87 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // ActivationTimestamp
-                // Signal
+
+                #region Check charging station identification
 
                 AFRRSignalResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid AFRRSignal request for charging station '{Request.ChargingStationId}'!");
-
                     response = new AFRRSignalResponse(
-                                   Request:      Request,
-                                   Status:       GenericStatus.Rejected,
-                                   StatusInfo:   null,
-                                   CustomData:   null
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid AFRRSignal request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming AFRRSignal '{Request.Signal}' @ '{Request.ActivationTimestamp}'.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomAFRRSignalRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    response = new AFRRSignalResponse(
-                                   Request:      Request,
-                                   Status:       Request.ActivationTimestamp < Timestamp.Now - TimeSpan.FromDays(1)
-                                                     ? GenericStatus.Rejected
-                                                     : GenericStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+                        response = new AFRRSignalResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming AFRRSignal '{request.Signal}' for timestamp '{request.ActivationTimestamp}'!");
+
+                        // ActivationTimestamp
+                        // Signal
+
+                        response = new AFRRSignalResponse(
+                                       Request:      request,
+                                       Status:       request.ActivationTimestamp < Timestamp.Now - TimeSpan.FromDays(1)
+                                                         ? GenericStatus.Rejected
+                                                         : GenericStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomAFRRSignalResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnAFRRSignalResponse event
@@ -6742,7 +9002,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnAFRRSignalResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -6773,10 +9033,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSetDisplayMessage
 
-            ChargingStationServer.OnSetDisplayMessage += async (LogTimestamp,
-                                                                Sender,
-                                                                Request,
-                                                                CancellationToken) => {
+            ChargingStationServer.OnSetDisplayMessage += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
 
                 #region Send OnSetDisplayMessageRequest event
 
@@ -6790,7 +9051,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnSetDisplayMessageRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -6810,47 +9071,101 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // Message
+
+                #region Check charging station identification
 
                 SetDisplayMessageResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid SetDisplayMessage request for charging station '{Request.ChargingStationId}'!");
-
                     response = new SetDisplayMessageResponse(
-                                   Request:   Request,
-                                   Result:    Result.GenericError("")
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid SetDisplayMessage request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming SetDisplayMessage request.");
-
-                    if (displayMessages.TryAdd(Request.Message.Id,
-                                               Request.Message)) {
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomSetDisplayMessageRequestSerializer,
+                                 CustomMessageInfoSerializer,
+                                 CustomMessageContentSerializer,
+                                 CustomComponentSerializer,
+                                 CustomEVSESerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
                         response = new SetDisplayMessageResponse(
-                                       Request:      Request,
-                                       Status:       DisplayMessageStatus.Accepted,
-                                       StatusInfo:   null,
-                                       CustomData:   null
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
                                    );
 
                     }
 
+                #endregion
+
                     else
-                        response = new SetDisplayMessageResponse(
-                                       Request:      Request,
-                                       Status:       DisplayMessageStatus.Rejected,
-                                       StatusInfo:   null,
-                                       CustomData:   null
-                                   );
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming SetDisplayMessage '{request.Message.Message.Content}'!");
+
+                        // Message
+
+                        if (displayMessages.TryAdd(request.Message.Id,
+                                                   request.Message)) {
+
+                            response = new SetDisplayMessageResponse(
+                                           Request:      request,
+                                           Status:       DisplayMessageStatus.Accepted,
+                                           StatusInfo:   null,
+                                           CustomData:   null
+                                       );
+
+                        }
+
+                        else
+                            response = new SetDisplayMessageResponse(
+                                           Request:      request,
+                                           Status:       DisplayMessageStatus.Rejected,
+                                           StatusInfo:   null,
+                                           CustomData:   null
+                                       );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSetDisplayMessageResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnSetDisplayMessageResponse event
@@ -6865,7 +9180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnSetDisplayMessageResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -6895,10 +9210,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetDisplayMessages
 
-            ChargingStationServer.OnGetDisplayMessages += async (LogTimestamp,
-                                                                 Sender,
-                                                                 Request,
-                                                                 CancellationToken) => {
+            ChargingStationServer.OnGetDisplayMessages += async (timestamp,
+                                                                 sender,
+                                                                 connection,
+                                                                 request,
+                                                                 cancellationToken) => {
 
                 #region Send OnGetDisplayMessagesRequest event
 
@@ -6912,7 +9228,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnGetDisplayMessagesRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -6932,53 +9248,103 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // GetDisplayMessagesRequestId
-                // Ids
-                // Priority
-                // State
+
+                #region Check charging station identification
 
                 GetDisplayMessagesResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid GetDisplayMessages request for charging station '{Request.ChargingStationId}'!");
-
                     response = new GetDisplayMessagesResponse(
-                                   Request,
-                                   Result.GenericError("")
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid GetDisplayMessages request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming SetDisplayMessage request.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomGetDisplayMessagesRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
-                    _ = Task.Run(async () => {
+                        response = new GetDisplayMessagesResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
 
-                        var filteredDisplayMessages = displayMessages.Values.
-                                                          Where(displayMessage => Request.Ids is null || !Request.Ids.Any() || Request.Ids.Contains(displayMessage.Id)).
-                                                          Where(displayMessage => !Request.State.   HasValue || (displayMessage.State.HasValue && displayMessage.State.Value == Request.State.Value)).
-                                                          Where(displayMessage => !Request.Priority.HasValue || displayMessage.Priority == Request.Priority.Value).
-                                                          ToArray();
+                    }
 
-                        await this.NotifyDisplayMessages(
-                                  NotifyDisplayMessagesRequestId:   Request.GetDisplayMessagesRequestId,
-                                  MessageInfos:                     filteredDisplayMessages,
-                                  ToBeContinued:                    false,
-                                  CustomData:                       null
-                              );
+                #endregion
 
-                    },
-                    CancellationToken.None);
+                    else
+                    {
 
-                    response = new GetDisplayMessagesResponse(
-                                   Request,
-                                   GetDisplayMessagesStatus.Accepted
-                               );
+                        DebugX.Log($"Charging station '{Id}': Incoming GetDisplayMessages request ({request.GetDisplayMessagesRequestId})!");
+
+                        // GetDisplayMessagesRequestId
+                        // Ids
+                        // Priority
+                        // State
+
+                        _ = Task.Run(async () => {
+
+                            var filteredDisplayMessages = displayMessages.Values.
+                                                              Where(displayMessage =>  request.Ids is null || !request.Ids.Any() || request.Ids.Contains(displayMessage.Id)).
+                                                              Where(displayMessage => !request.State.   HasValue || (displayMessage.State.HasValue && displayMessage.State.Value == request.State.   Value)).
+                                                              Where(displayMessage => !request.Priority.HasValue ||  displayMessage.Priority                                     == request.Priority.Value).
+                                                              ToArray();
+
+                            await this.NotifyDisplayMessages(
+                                      NotifyDisplayMessagesRequestId:   request.GetDisplayMessagesRequestId,
+                                      MessageInfos:                     filteredDisplayMessages,
+                                      ToBeContinued:                    false,
+                                      CustomData:                       null
+                                  );
+
+                        },
+                        CancellationToken.None);
+
+                        response = new GetDisplayMessagesResponse(
+                                       request,
+                                       GetDisplayMessagesStatus.Accepted
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetDisplayMessagesResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnGetDisplayMessagesResponse event
@@ -6993,7 +9359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnGetDisplayMessagesResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -7023,10 +9389,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnClearDisplayMessage
 
-            ChargingStationServer.OnClearDisplayMessage += async (LogTimestamp,
-                                                                  Sender,
-                                                                  Request,
-                                                                  CancellationToken) => {
+            ChargingStationServer.OnClearDisplayMessage += async (timestamp,
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
 
                 #region Send OnClearDisplayMessageRequest event
 
@@ -7040,7 +9407,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnClearDisplayMessageRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -7060,43 +9427,93 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // DisplayMessageId
+
+                #region Check charging station identification
 
                 ClearDisplayMessageResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid ClearDisplayMessage request for charging station '{Request.ChargingStationId}'!");
-
                     response = new ClearDisplayMessageResponse(
-                                   Request,
-                                   Result.GenericError("")
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid ClearDisplayMessage request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming ClearDisplayMessage request.");
-
-                    if (displayMessages.TryGetValue(Request.DisplayMessageId, out var messageInfo) &&
-                        displayMessages.TryRemove(new KeyValuePair<DisplayMessage_Id, MessageInfo>(Request.DisplayMessageId, messageInfo))) {
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomClearDisplayMessageRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
                         response = new ClearDisplayMessageResponse(
-                                       Request,
-                                       ClearMessageStatus.Accepted
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
                                    );
 
                     }
 
+                #endregion
+
                     else
-                        response = new ClearDisplayMessageResponse(
-                                       Request,
-                                       ClearMessageStatus.Unknown
-                                   );
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming ClearDisplayMessage request ({request.DisplayMessageId})!");
+
+                        // DisplayMessageId
+
+                        if (displayMessages.TryGetValue(request.DisplayMessageId, out var messageInfo) &&
+                            displayMessages.TryRemove(new KeyValuePair<DisplayMessage_Id, MessageInfo>(request.DisplayMessageId, messageInfo))) {
+
+                            response = new ClearDisplayMessageResponse(
+                                           request,
+                                           ClearMessageStatus.Accepted
+                                       );
+
+                        }
+
+                        else
+                            response = new ClearDisplayMessageResponse(
+                                           request,
+                                           ClearMessageStatus.Unknown
+                                       );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomClearDisplayMessageResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnClearDisplayMessageResponse event
@@ -7111,7 +9528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnClearDisplayMessageResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -7141,10 +9558,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnCostUpdated
 
-            ChargingStationServer.OnCostUpdated += async (LogTimestamp,
-                                                          Sender,
-                                                          Request,
-                                                          CancellationToken) => {
+            ChargingStationServer.OnCostUpdated += async (timestamp,
+                                                          sender,
+                                                          connection,
+                                                          request,
+                                                          cancellationToken) => {
 
                 #region Send OnCostUpdatedRequest event
 
@@ -7158,7 +9576,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnCostUpdatedRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -7178,47 +9596,94 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // TotalCost
-                // TransactionId
+                #region Check charging station identification
 
                 CostUpdatedResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid CostUpdated request for charging station '{Request.ChargingStationId}'!");
-
                     response = new CostUpdatedResponse(
-                                   Request,
-                                   Result.GenericError("")
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid CostUpdated request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming CostUpdated request.");
-
-
-                    if (transactions.ContainsKey(Request.TransactionId)) {
-
-                        totalCosts.AddOrUpdate(Request.TransactionId,
-                                               Request.TotalCost,
-                                               (transactionId, totalCost) => Request.TotalCost);
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomCostUpdatedRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
 
                         response = new CostUpdatedResponse(
-                                       Request
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
                                    );
 
                     }
 
+                #endregion
+
                     else
-                        response = new CostUpdatedResponse(
-                                       Request,
-                                       Result.GenericError($"Unknown transaction identification '{Request.TransactionId}'!")
-                                   );
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming CostUpdated request '{request.TotalCost}' for transaction '{request.TransactionId}'!");
+
+                        // TotalCost
+                        // TransactionId
+
+                        if (transactions.ContainsKey(request.TransactionId)) {
+
+                            totalCosts.AddOrUpdate(request.TransactionId,
+                                                   request.TotalCost,
+                                                   (transactionId, totalCost) => request.TotalCost);
+
+                            response = new CostUpdatedResponse(
+                                           request
+                                       );
+
+                        }
+
+                        else
+                            response = new CostUpdatedResponse(
+                                           request,
+                                           Result.GenericError($"Unknown transaction identification '{request.TransactionId}'!")
+                                       );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomCostUpdatedResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnCostUpdatedResponse event
@@ -7233,7 +9698,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnCostUpdatedResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();
@@ -7263,10 +9728,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnCustomerInformation
 
-            ChargingStationServer.OnCustomerInformation += async (LogTimestamp,
-                                                                  Sender,
-                                                                  Request,
-                                                                  CancellationToken) => {
+            ChargingStationServer.OnCustomerInformation += async (timestamp,
+                                                                  sender,
+                                                                  connection,
+                                                                  request,
+                                                                  cancellationToken) => {
 
                 #region Send OnCustomerInformationRequest event
 
@@ -7280,7 +9746,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnCustomerInformationRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
-                                                                                                             Request)).
+                                                                                                             request)).
                                                            ToArray();
 
                     try
@@ -7300,58 +9766,126 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // CustomerInformationRequestId
-                // Report,
-                // Clear,
-                // CustomerIdentifier
-                // IdToken
-                // CustomerCertificate
+
+                #region Check charging station identification
 
                 CustomerInformationResponse? response = null;
 
-                if (Request.ChargingStationId != Id)
+                if (request.ChargingStationId != Id)
                 {
-
-                    DebugX.Log($"Charging Station '{Id}': Invalid CustomerInformation request for charging station '{Request.ChargingStationId}'!");
-
                     response = new CustomerInformationResponse(
-                                   Request,
-                                   Result.GenericError("")
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid CustomerInformation request for charging station '{request.ChargingStationId}'!"
+                                             )
                                );
-
                 }
+
+                #endregion
+
+                #region Check request signature(s)
+
                 else
                 {
 
-                    DebugX.Log($"Charging Station '{Id}': Incoming CustomerInformation request.");
+                    if (!CryptoUtils.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomCustomerInformationRequestSerializer,
+                                 CustomIdTokenSerializer,
+                                 CustomAdditionalInfoSerializer,
+                                 CustomCertificateHashDataSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             SignaturePolicy,
+                             out var errorResponse,
+                             AllMustBeValid: true
+                         ))
+                    {
+
+                        response = new CustomerInformationResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        var command   = new String[] {
+
+                                            request.Report
+                                                ? "report"
+                                                : "",
+
+                                            request.Clear
+                                                ? "clear"
+                                                : "",
+
+                                        }.Where(text => text.IsNotNullOrEmpty()).
+                                          AggregateWith(" and ");
+
+                        var customer  = request.IdToken is not null
+                                           ? $"IdToken: {request.IdToken.Value}"
+                                           : request.CustomerCertificate is not null
+                                                 ? $"certificate s/n: {request.CustomerCertificate.SerialNumber}"
+                                                 : request.CustomerIdentifier.HasValue
+                                                       ? $"customer identifier: {request.CustomerIdentifier.Value}"
+                                                       : "-";
 
 
-                    _ = Task.Run(async () => {
+                        DebugX.Log($"Charging station '{Id}': Incoming CustomerInformation request ({request.CustomerInformationRequestId}) to {command} for customer '{customer}'!");
 
-                        //var filteredDisplayMessages = displayMessages.Values.
-                        //                                  Where(displayMessage => Request.Ids is null || !Request.Ids.Any() || Request.Ids.Contains(displayMessage.Id)).
-                        //                                  Where(displayMessage => !Request.State.   HasValue || (displayMessage.State.HasValue && displayMessage.State.Value == Request.State.Value)).
-                        //                                  Where(displayMessage => !Request.Priority.HasValue || displayMessage.Priority == Request.Priority.Value).
-                        //                                  ToArray();
+                        // CustomerInformationRequestId
+                        // Report
+                        // Clear
+                        // CustomerIdentifier
+                        // IdToken
+                        // CustomerCertificate
 
-                        await this.NotifyCustomerInformation(
-                                  NotifyCustomerInformationRequestId:   Request.CustomerInformationRequestId,
-                                  Data:                                 "",
-                                  SequenceNumber:                       1,
-                                  GeneratedAt:                          Timestamp.Now,
-                                  ToBeContinued:                        false,
-                                  CustomData:                           null
-                              );
+                        _ = Task.Run(async () => {
 
-                    },
-                    CancellationToken.None);
+                            await this.NotifyCustomerInformation(
+                                      NotifyCustomerInformationRequestId:   request.CustomerInformationRequestId,
+                                      Data:                                 customer,
+                                      SequenceNumber:                       1,
+                                      GeneratedAt:                          Timestamp.Now,
+                                      ToBeContinued:                        false,
+                                      CustomData:                           null
+                                  );
 
-                    response = new CustomerInformationResponse(
-                                   Request,
-                                   CustomerInformationStatus.Accepted
-                               );
+                        },
+                        CancellationToken.None);
+
+                        response = new CustomerInformationResponse(
+                                       request,
+                                       CustomerInformationStatus.Accepted
+                                   );
+
+                    }
 
                 }
+
+                #region Sign response message
+
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomCustomerInformationResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnCustomerInformationResponse event
@@ -7366,7 +9900,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnCustomerInformationResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
-                                                                                                                Request,
+                                                                                                                request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
                                                               ToArray();

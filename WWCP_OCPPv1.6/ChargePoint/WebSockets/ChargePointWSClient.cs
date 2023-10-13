@@ -1279,7 +1279,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region ProcessWebSocketTextFrame(frame)
 
-        public override async Task ProcessWebSocketTextFrame(WebSocketFrame frame)
+        public override async Task ProcessWebSocketTextFrame(WebSocketFrame             frame,
+                                                             WebSocketClientConnection  WebSocketConnection)
         {
 
             var textPayload = frame.Payload.ToUTF8String();
