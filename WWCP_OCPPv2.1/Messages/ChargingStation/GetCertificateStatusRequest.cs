@@ -381,19 +381,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomGetCertificateStatusSerializer = null, CustomOCSPRequestDataSerializer = null, ...)
+        #region ToJSON(CustomGetCertificateStatusRequestSerializer = null, CustomOCSPRequestDataSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetCertificateStatusSerializer">A delegate to serialize custom GetCertificateStatus requests.</param>
+        /// <param name="CustomGetCertificateStatusRequestSerializer">A delegate to serialize custom GetCertificateStatus requests.</param>
         /// <param name="CustomOCSPRequestDataSerializer">A delegate to serialize custom OCSP request data.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCertificateStatusRequest>?  CustomGetCertificateStatusSerializer   = null,
-                              CustomJObjectSerializerDelegate<OCSPRequestData>?              CustomOCSPRequestDataSerializer        = null,
-                              CustomJObjectSerializerDelegate<Signature>?                    CustomSignatureSerializer              = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataSerializer             = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCertificateStatusRequest>?  CustomGetCertificateStatusRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<OCSPRequestData>?              CustomOCSPRequestDataSerializer               = null,
+                              CustomJObjectSerializerDelegate<Signature>?                    CustomSignatureSerializer                     = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                   CustomCustomDataSerializer                    = null)
         {
 
             var json = JSONObject.Create(
@@ -412,8 +412,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                        );
 
-            return CustomGetCertificateStatusSerializer is not null
-                       ? CustomGetCertificateStatusSerializer(this, json)
+            return CustomGetCertificateStatusRequestSerializer is not null
+                       ? CustomGetCertificateStatusRequestSerializer(this, json)
                        : json;
 
         }

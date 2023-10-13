@@ -193,9 +193,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                          Algorithm:        signInfo.Algorithm,
                                                          SigningMethod:    null,
                                                          EncodingMethod:   signInfo.Encoding,
-                                                         Name:             signInfo.Name?.       Invoke(),
-                                                         Description:      signInfo.Description?.Invoke(),
-                                                         Timestamp:        signInfo.Timestamp?.  Invoke()
+                                                         Name:             signInfo.SignerName?.       Invoke(SignableMessage),
+                                                         Description:      signInfo.Description?.Invoke(SignableMessage),
+                                                         Timestamp:        signInfo.Timestamp?.  Invoke(SignableMessage)
                                                      ));
 
                     }

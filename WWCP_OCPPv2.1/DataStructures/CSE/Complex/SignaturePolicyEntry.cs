@@ -38,37 +38,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The priority of the cryptographic signature entry.
         /// </summary>
-        public UInt32                 Priority               { get; }
+        public UInt32                               Priority                { get; }
 
         /// <summary>
         /// The context of the cryptographic signature entry.
         /// </summary>
-        public JSONLDContext          Context                { get; }
+        public JSONLDContext                        Context                 { get; }
 
         /// <summary>
         /// The context of the cryptographic signature action.
         /// </summary>
-        public SignaturePolicyAction  Action                 { get; }
+        public SignaturePolicyAction                Action                  { get; }
 
         /// <summary>
         /// An optional user identification generator for signing.
         /// </summary>
-        public KeyPair?               KeyPair                { get; }
+        public KeyPair?                             KeyPair                 { get; }
 
         /// <summary>
         /// An optional user identification generator for signing.
         /// </summary>
-        public Func<String>?          UserIdGenerator        { get; }
+        public Func<ISignableMessage, String>?      UserIdGenerator         { get; }
 
         /// <summary>
         /// An optional multi-language description generator for signing.
         /// </summary>
-        public Func<I18NString>?      DescriptionGenerator   { get; }
+        public Func<ISignableMessage, I18NString>?  DescriptionGenerator    { get; }
 
         /// <summary>
         /// An optional timestamp generator for signing.
         /// </summary>
-        public Func<DateTime>?        TimestampGenerator     { get; }
+        public Func<ISignableMessage, DateTime>?    TimestampGenerator      { get; }
 
         #endregion
 
@@ -85,14 +85,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="DescriptionGenerator">An optional multi-language description generator for signing.</param>
         /// <param name="TimestampGenerator">An optional timestamp generator for signing.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SignaturePolicyEntry(UInt32                 Priority,
-                                    JSONLDContext          Context,
-                                    SignaturePolicyAction  Action,
-                                    KeyPair?               KeyPair                = null,
-                                    Func<String>?          UserIdGenerator        = null,
-                                    Func<I18NString>?      DescriptionGenerator   = null,
-                                    Func<DateTime>?        TimestampGenerator     = null,
-                                    CustomData?            CustomData             = null)
+        public SignaturePolicyEntry(UInt32                               Priority,
+                                    JSONLDContext                        Context,
+                                    SignaturePolicyAction                Action,
+                                    KeyPair?                             KeyPair                = null,
+                                    Func<ISignableMessage, String>?      UserIdGenerator        = null,
+                                    Func<ISignableMessage, I18NString>?  DescriptionGenerator   = null,
+                                    Func<ISignableMessage, DateTime>?    TimestampGenerator     = null,
+                                    CustomData?                          CustomData             = null)
 
             : base(CustomData)
 

@@ -375,17 +375,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomLogStatusNotificationSerializer = null, CustomSignatureSerializer = null, ...)
+        #region ToJSON(CustomLogStatusNotificationRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomLogStatusNotificationSerializer">A delegate to serialize custom log status notification requests.</param>
+        /// <param name="CustomLogStatusNotificationRequestSerializer">A delegate to serialize custom log status notification requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<LogStatusNotificationRequest>?  CustomLogStatusNotificationSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer               = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer              = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<LogStatusNotificationRequest>?  CustomLogStatusNotificationRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer                      = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
             var json = JSONObject.Create(
@@ -407,8 +407,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                        );
 
-            return CustomLogStatusNotificationSerializer is not null
-                       ? CustomLogStatusNotificationSerializer(this, json)
+            return CustomLogStatusNotificationRequestSerializer is not null
+                       ? CustomLogStatusNotificationRequestSerializer(this, json)
                        : json;
 
         }

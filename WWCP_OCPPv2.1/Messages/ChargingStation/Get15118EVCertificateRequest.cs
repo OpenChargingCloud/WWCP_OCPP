@@ -456,17 +456,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomGet15118EVCertificateSerializer = null, CustomSignatureSerializer = null, ...)
+        #region ToJSON(CustomGet15118EVCertificateRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGet15118EVCertificateSerializer">A delegate to serialize custom Get15118EVCertificate requests.</param>
+        /// <param name="CustomGet15118EVCertificateRequestSerializer">A delegate to serialize custom Get15118EVCertificate requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer               = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer              = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer                      = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
             var json = JSONObject.Create(
@@ -494,8 +494,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                        );
 
-            return CustomGet15118EVCertificateSerializer is not null
-                       ? CustomGet15118EVCertificateSerializer(this, json)
+            return CustomGet15118EVCertificateRequestSerializer is not null
+                       ? CustomGet15118EVCertificateRequestSerializer(this, json)
                        : json;
 
         }

@@ -5325,7 +5325,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Reset the given charging station.
         /// </summary>
         /// <param name="Request">A Reset request.</param>
-        public async Task<CS.ResetResponse> Reset(ResetRequest Request)
+        public async Task<CS.ResetResponse>
+            Reset(ResetRequest Request)
+
         {
 
             #region Send OnResetRequest event
@@ -5421,7 +5423,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Initiate a firmware update of the given charging station.
         /// </summary>
         /// <param name="Request">An UpdateFirmware request.</param>
-        public async Task<CS.UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
+        public async Task<CS.UpdateFirmwareResponse>
+            UpdateFirmware(UpdateFirmwareRequest Request)
+
         {
 
             #region Send OnUpdateFirmwareRequest event
@@ -5518,7 +5522,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Publish a firmware onto a local controller.
         /// </summary>
         /// <param name="Request">A PublishFirmware request.</param>
-        public async Task<CS.PublishFirmwareResponse>  PublishFirmware(PublishFirmwareRequest Request)
+        public async Task<CS.PublishFirmwareResponse>
+            PublishFirmware(PublishFirmwareRequest Request)
+
         {
 
             #region Send OnPublishFirmwareRequest event
@@ -5614,7 +5620,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Unpublish a firmware from a local controller.
         /// </summary>
         /// <param name="Request">An UnpublishFirmware request.</param>
-        public async Task<CS.UnpublishFirmwareResponse> UnpublishFirmware(UnpublishFirmwareRequest Request)
+        public async Task<CS.UnpublishFirmwareResponse>
+            UnpublishFirmware(UnpublishFirmwareRequest Request)
+
         {
 
             #region Send OnUnpublishFirmwareRequest event
@@ -5709,7 +5717,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Retrieve the base report from the charging station.
         /// </summary>
         /// <param name="Request">A GetBaseReport request.</param>
-        public async Task<CS.GetBaseReportResponse> GetBaseReport(GetBaseReportRequest Request)
+        public async Task<CS.GetBaseReportResponse>
+            GetBaseReport(GetBaseReportRequest Request)
+
         {
 
             #region Send OnGetBaseReportRequest event
@@ -5805,7 +5815,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Retrieve reports from the charging station.
         /// </summary>
         /// <param name="Request">A GetReport request.</param>
-        public async Task<CS.GetReportResponse> GetReport(GetReportRequest Request)
+        public async Task<CS.GetReportResponse>
+            GetReport(GetReportRequest Request)
+
         {
 
             #region Send OnGetReportRequest event
@@ -5905,7 +5917,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Retrieve log files from the charging station.
         /// </summary>
         /// <param name="Request">A GetLog request.</param>
-        public async Task<CS.GetLogResponse> GetLog(GetLogRequest Request)
+        public async Task<CS.GetLogResponse>
+            GetLog(GetLogRequest Request)
+
         {
 
             #region Send OnGetLogRequest event
@@ -6003,7 +6017,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set variable data on a charging station.
         /// </summary>
         /// <param name="Request">A SetVariables request.</param>
-        public async Task<CS.SetVariablesResponse> SetVariables(SetVariablesRequest Request)
+        public async Task<CS.SetVariablesResponse>
+            SetVariables(SetVariablesRequest Request)
+
         {
 
             #region Send OnSetVariablesRequest event
@@ -6107,7 +6123,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Get variable data from a charging station.
         /// </summary>
         /// <param name="Request">A GetVariables request.</param>
-        public async Task<CS.GetVariablesResponse> GetVariables(GetVariablesRequest Request)
+        public async Task<CS.GetVariablesResponse>
+            GetVariables(GetVariablesRequest Request)
+
         {
 
             #region Send OnGetVariablesRequest event
@@ -6211,7 +6229,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the monitoring base of a charging station.
         /// </summary>
         /// <param name="Request">A SetMonitoringBase request.</param>
-        public async Task<CS.SetMonitoringBaseResponse> SetMonitoringBase(SetMonitoringBaseRequest Request)
+        public async Task<CS.SetMonitoringBaseResponse>
+            SetMonitoringBase(SetMonitoringBaseRequest Request)
+
         {
 
             #region Send OnSetMonitoringBaseRequest event
@@ -6307,7 +6327,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Get monitoring report from a charging station.
         /// </summary>
         /// <param name="Request">A GetMonitoringReport request.</param>
-        public async Task<CS.GetMonitoringReportResponse> GetMonitoringReport(GetMonitoringReportRequest Request)
+        public async Task<CS.GetMonitoringReportResponse>
+            GetMonitoringReport(GetMonitoringReportRequest Request)
+
         {
 
             #region Send OnGetMonitoringReportRequest event
@@ -6407,7 +6429,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the monitoring level on a charging station.
         /// </summary>
         /// <param name="Request">A SetMonitoringLevel request.</param>
-        public async Task<CS.SetMonitoringLevelResponse> SetMonitoringLevel(SetMonitoringLevelRequest Request)
+        public async Task<CS.SetMonitoringLevelResponse>
+            SetMonitoringLevel(SetMonitoringLevelRequest Request)
+
         {
 
             #region Send OnSetMonitoringLevelRequest event
@@ -6503,7 +6527,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set a variable monitoring on a charging station.
         /// </summary>
         /// <param name="Request">A SetVariableMonitoring request.</param>
-        public async Task<CS.SetVariableMonitoringResponse> SetVariableMonitoring(SetVariableMonitoringRequest Request)
+        public async Task<CS.SetVariableMonitoringResponse>
+            SetVariableMonitoring(SetVariableMonitoringRequest Request)
+
         {
 
             #region Send OnSetVariableMonitoringRequest event
@@ -6607,7 +6633,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Delete a variable monitoring on a charging station.
         /// </summary>
         /// <param name="Request">A ClearVariableMonitoring request.</param>
-        public async Task<CS.ClearVariableMonitoringResponse> ClearVariableMonitoring(ClearVariableMonitoringRequest Request)
+        public async Task<CS.ClearVariableMonitoringResponse>
+            ClearVariableMonitoring(ClearVariableMonitoringRequest Request)
+
         {
 
             #region Send OnClearVariableMonitoringRequest event
@@ -6704,7 +6732,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the network profile of a charging station.
         /// </summary>
         /// <param name="Request">A SetNetworkProfile request.</param>
-        public async Task<CS.SetNetworkProfileResponse> SetNetworkProfile(SetNetworkProfileRequest Request)
+        public async Task<CS.SetNetworkProfileResponse>
+            SetNetworkProfile(SetNetworkProfileRequest Request)
+
         {
 
             #region Send OnSetNetworkProfileRequest event
@@ -6803,7 +6833,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Change the availability of the given charge box.
         /// </summary>
         /// <param name="Request">A ChangeAvailability request.</param>
-        public async Task<CS.ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request)
+        public async Task<CS.ChangeAvailabilityResponse>
+            ChangeAvailability(ChangeAvailabilityRequest Request)
+
         {
 
             #region Send OnChangeAvailabilityRequest event
@@ -6900,7 +6932,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a trigger for the given message at the given charge box connector.
         /// </summary>
         /// <param name="Request">A TriggerMessage request.</param>
-        public async Task<CS.TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request)
+        public async Task<CS.TriggerMessageResponse>
+            TriggerMessage(TriggerMessageRequest Request)
+
         {
 
             #region Send OnTriggerMessageRequest event
@@ -6997,7 +7031,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Transfer the given data to the given charge box.
         /// </summary>
         /// <param name="Request">A DataTransfer request.</param>
-        public async Task<CS.DataTransferResponse> TransferData(DataTransferRequest Request)
+        public async Task<CS.DataTransferResponse>
+            TransferData(DataTransferRequest Request)
+
         {
 
             #region Send OnDataTransferRequest event
@@ -7094,7 +7130,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Send the signed certificate to the given charge box.
         /// </summary>
         /// <param name="Request">A CertificateSigned request.</param>
-        public async Task<CS.CertificateSignedResponse> SendSignedCertificate(CertificateSignedRequest Request)
+        public async Task<CS.CertificateSignedResponse>
+            SendSignedCertificate(CertificateSignedRequest Request)
+
         {
 
             #region Send OnCertificateSignedRequest event
@@ -7190,7 +7228,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Install the given certificate within the charging station.
         /// </summary>
         /// <param name="Request">A InstallCertificate request.</param>
-        public async Task<CS.InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request)
+        public async Task<CS.InstallCertificateResponse>
+            InstallCertificate(InstallCertificateRequest Request)
+
         {
 
             #region Send OnInstallCertificateRequest event
@@ -7286,7 +7326,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Retrieve a list of all installed certificates within the charging station.
         /// </summary>
         /// <param name="Request">A GetInstalledCertificateIds request.</param>
-        public async Task<CS.GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
+        public async Task<CS.GetInstalledCertificateIdsResponse>
+            GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
+
         {
 
             #region Send OnGetInstalledCertificateIdsRequest event
@@ -7383,7 +7425,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Delete the given certificate on the charging station.
         /// </summary>
         /// <param name="Request">A DeleteCertificate request.</param>
-        public async Task<CS.DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request)
+        public async Task<CS.DeleteCertificateResponse>
+            DeleteCertificate(DeleteCertificateRequest Request)
+
         {
 
             #region Send OnDeleteCertificateRequest event
@@ -7480,7 +7524,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Delete the given certificate on the charging station.
         /// </summary>
         /// <param name="Request">A NotifyCRLAvailability request.</param>
-        public async Task<CS.NotifyCRLResponse> NotifyCRLAvailability(NotifyCRLRequest Request)
+        public async Task<CS.NotifyCRLResponse>
+            NotifyCRLAvailability(NotifyCRLRequest Request)
+
         {
 
             #region Send OnNotifyCRLRequest event
@@ -7576,7 +7622,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Return the local white list of the given charge box.
         /// </summary>
         /// <param name="Request">A GetLocalListVersion request.</param>
-        public async Task<CS.GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
+        public async Task<CS.GetLocalListVersionResponse>
+            GetLocalListVersion(GetLocalListVersionRequest Request)
+
         {
 
             #region Send OnGetLocalListVersionRequest event
@@ -7671,7 +7719,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the local white liste at the given charge box.
         /// </summary>
         /// <param name="Request">A SendLocalList request.</param>
-        public async Task<CS.SendLocalListResponse> SendLocalList(SendLocalListRequest Request)
+        public async Task<CS.SendLocalListResponse>
+            SendLocalList(SendLocalListRequest Request)
+
         {
 
             #region Send OnSendLocalListRequest event
@@ -7772,7 +7822,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Clear the local white liste cache of the given charge box.
         /// </summary>
         /// <param name="Request">A ClearCache request.</param>
-        public async Task<CS.ClearCacheResponse> ClearCache(ClearCacheRequest Request)
+        public async Task<CS.ClearCacheResponse>
+            ClearCache(ClearCacheRequest Request)
+
         {
 
             #region Send OnClearCacheRequest event
@@ -7869,7 +7921,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a charging reservation of the given charge box connector.
         /// </summary>
         /// <param name="Request">A ReserveNow request.</param>
-        public async Task<CS.ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
+        public async Task<CS.ReserveNowResponse>
+            ReserveNow(ReserveNowRequest Request)
+
         {
 
             #region Send OnReserveNowRequest event
@@ -7967,7 +8021,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Cancel the given charging reservation at the given charge box.
         /// </summary>
         /// <param name="Request">A CancelReservation request.</param>
-        public async Task<CS.CancelReservationResponse> CancelReservation(CancelReservationRequest Request)
+        public async Task<CS.CancelReservationResponse>
+            CancelReservation(CancelReservationRequest Request)
+
         {
 
             #region Send OnCancelReservationRequest event
@@ -8063,7 +8119,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the charging profile of the given charge box connector.
         /// </summary>
         /// <param name="Request">A StartCharging request.</param>
-        public async Task<CS.RequestStartTransactionResponse> StartCharging(RequestStartTransactionRequest Request)
+        public async Task<CS.RequestStartTransactionResponse>
+            StartCharging(RequestStartTransactionRequest Request)
+
         {
 
             #region Send OnRequestStartTransactionRequest event
@@ -8184,7 +8242,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the charging profile of the given charge box connector.
         /// </summary>
         /// <param name="Request">A StopCharging request.</param>
-        public async Task<CS.RequestStopTransactionResponse> StopCharging(RequestStopTransactionRequest Request)
+        public async Task<CS.RequestStopTransactionResponse>
+            StopCharging(RequestStopTransactionRequest Request)
+
         {
 
             #region Send OnRequestStopTransactionRequest event
@@ -8280,7 +8340,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the charging profile of the given charge box connector.
         /// </summary>
         /// <param name="Request">A GetTransactionStatus request.</param>
-        public async Task<CS.GetTransactionStatusResponse> GetTransactionStatus(GetTransactionStatusRequest Request)
+        public async Task<CS.GetTransactionStatusResponse>
+            GetTransactionStatus(GetTransactionStatusRequest Request)
+
         {
 
             #region Send OnGetTransactionStatusRequest event
@@ -8375,7 +8437,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the charging profile of the given charge box connector.
         /// </summary>
         /// <param name="Request">A SetChargingProfile request.</param>
-        public async Task<CS.SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request)
+        public async Task<CS.SetChargingProfileResponse>
+            SetChargingProfile(SetChargingProfileRequest Request)
+
         {
 
             #region Send OnSetChargingProfileRequest event
@@ -8494,7 +8558,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set the charging profile of the given charge box connector.
         /// </summary>
         /// <param name="Request">A GetChargingProfiles request.</param>
-        public async Task<CS.GetChargingProfilesResponse> GetChargingProfiles(GetChargingProfilesRequest Request)
+        public async Task<CS.GetChargingProfilesResponse>
+            GetChargingProfiles(GetChargingProfilesRequest Request)
+
         {
 
             #region Send OnGetChargingProfilesRequest event
@@ -8591,7 +8657,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Remove the charging profile at the given charge box connector.
         /// </summary>
         /// <param name="Request">A ClearChargingProfile request.</param>
-        public async Task<CS.ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request)
+        public async Task<CS.ClearChargingProfileResponse>
+            ClearChargingProfile(ClearChargingProfileRequest Request)
+
         {
 
             #region Send OnClearChargingProfileRequest event
@@ -8688,7 +8756,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Return the charging schedule of the given charge box connector.
         /// </summary>
         /// <param name="Request">A GetCompositeSchedule request.</param>
-        public async Task<CS.GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request)
+        public async Task<CS.GetCompositeScheduleResponse>
+            GetCompositeSchedule(GetCompositeScheduleRequest Request)
+
         {
 
             #region Send OnGetCompositeScheduleRequest event
@@ -8786,7 +8856,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Update the dynamic charging schedule for the given charging profile.
         /// </summary>
         /// <param name="Request">A UpdateDynamicSchedule request.</param>
-        public async Task<CS.UpdateDynamicScheduleResponse> UpdateDynamicSchedule(UpdateDynamicScheduleRequest Request)
+        public async Task<CS.UpdateDynamicScheduleResponse>
+            UpdateDynamicSchedule(UpdateDynamicScheduleRequest Request)
+
         {
 
             #region Send OnUpdateDynamicScheduleRequest event
@@ -8882,7 +8954,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Unlock the given charge box connector.
         /// </summary>
         /// <param name="Request">A NotifyAllowedEnergyTransfer request.</param>
-        public async Task<CS.NotifyAllowedEnergyTransferResponse> NotifyAllowedEnergyTransfer(NotifyAllowedEnergyTransferRequest Request)
+        public async Task<CS.NotifyAllowedEnergyTransferResponse>
+            NotifyAllowedEnergyTransfer(NotifyAllowedEnergyTransferRequest Request)
+
         {
 
             #region Send OnNotifyAllowedEnergyTransferRequest event
@@ -8978,7 +9052,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Switch to the priority charging profile.
         /// </summary>
         /// <param name="Request">A UsePriorityCharging request.</param>
-        public async Task<CS.UsePriorityChargingResponse> UsePriorityCharging(UsePriorityChargingRequest Request)
+        public async Task<CS.UsePriorityChargingResponse>
+            UsePriorityCharging(UsePriorityChargingRequest Request)
+
         {
 
             #region Send OnUsePriorityChargingRequest event
@@ -9074,7 +9150,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Unlock the given charge box connector.
         /// </summary>
         /// <param name="Request">A UnlockConnector request.</param>
-        public async Task<CS.UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request)
+        public async Task<CS.UnlockConnectorResponse>
+            UnlockConnector(UnlockConnectorRequest Request)
+
         {
 
             #region Send OnUnlockConnectorRequest event
@@ -9173,7 +9251,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// from the v2xSignalWattCurve in the charging schedule period.
         /// </summary>
         /// <param name="Request">A AFRRSignal request.</param>
-        public async Task<CS.AFRRSignalResponse> SendAFRRSignal(AFRRSignalRequest Request)
+        public async Task<CS.AFRRSignalResponse>
+            SendAFRRSignal(AFRRSignalRequest Request)
+
         {
 
             #region Send OnAFRRSignalRequest event
@@ -9270,7 +9350,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A SetDisplayMessage request.</param>
-        public async Task<CS.SetDisplayMessageResponse> SetDisplayMessage(SetDisplayMessageRequest Request)
+        public async Task<CS.SetDisplayMessageResponse>
+            SetDisplayMessage(SetDisplayMessageRequest Request)
+
         {
 
             #region Send OnSetDisplayMessageRequest event
@@ -9370,7 +9452,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Get all display messages.
         /// </summary>
         /// <param name="Request">A GetDisplayMessages request.</param>
-        public async Task<CS.GetDisplayMessagesResponse> GetDisplayMessages(GetDisplayMessagesRequest Request)
+        public async Task<CS.GetDisplayMessagesResponse>
+            GetDisplayMessages(GetDisplayMessagesRequest Request)
+
         {
 
             #region Send OnGetDisplayMessagesRequest event
@@ -9466,7 +9550,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Remove a display message.
         /// </summary>
         /// <param name="Request">A ClearDisplayMessage request.</param>
-        public async Task<CS.ClearDisplayMessageResponse> ClearDisplayMessage(ClearDisplayMessageRequest Request)
+        public async Task<CS.ClearDisplayMessageResponse>
+            ClearDisplayMessage(ClearDisplayMessageRequest Request)
+
         {
 
             #region Send OnClearDisplayMessageRequest event
@@ -9562,7 +9648,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Send updated total costs.
         /// </summary>
         /// <param name="Request">A CostUpdated request.</param>
-        public async Task<CS.CostUpdatedResponse> SendCostUpdated(CostUpdatedRequest Request)
+        public async Task<CS.CostUpdatedResponse>
+            SendCostUpdated(CostUpdatedRequest Request)
+
         {
 
             #region Send OnCostUpdatedRequest event
@@ -9658,7 +9746,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Request customer information.
         /// </summary>
         /// <param name="Request">A CostUpdated request.</param>
-        public async Task<CS.CustomerInformationResponse> RequestCustomerInformation(CustomerInformationRequest Request)
+        public async Task<CS.CustomerInformationResponse>
+            RequestCustomerInformation(CustomerInformationRequest Request)
+
         {
 
             #region Send OnCustomerInformationRequest event

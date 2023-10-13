@@ -103,9 +103,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 chargingStation1.SignaturePolicy ??= new SignaturePolicy();
                 chargingStation1.SignaturePolicy.AddSigningRule     (BootNotificationRequest. DefaultJSONLDContext,
                                                                      KeyPair:                 keyPair,
-                                                                     UserIdGenerator:         () => "ahzf",
-                                                                     DescriptionGenerator:    () => I18NString.Create("Just a test!"),
-                                                                     TimestampGenerator:      () => now);
+                                                                     UserIdGenerator:         (signableMessage) => "ahzf",
+                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a test!"),
+                                                                     TimestampGenerator:      (signableMessage) => now);
                 chargingStation1.SignaturePolicy.AddVerificationRule(BootNotificationResponse.DefaultJSONLDContext);
 
                 var keyPair2                       = KeyPair.GenerateKeys()!;

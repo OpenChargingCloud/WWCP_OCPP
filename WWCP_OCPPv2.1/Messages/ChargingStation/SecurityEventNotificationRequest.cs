@@ -385,17 +385,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomSecurityEventNotificationSerializer = null, CustomSignatureSerializer = null, ...)
+        #region ToJSON(CustomSecurityEventNotificationRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSecurityEventNotificationSerializer">A delegate to serialize custom security event notification requests.</param>
+        /// <param name="CustomSecurityEventNotificationRequestSerializer">A delegate to serialize custom security event notification requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SecurityEventNotificationRequest>?  CustomSecurityEventNotificationSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                         CustomSignatureSerializer                   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SecurityEventNotificationRequest>?  CustomSecurityEventNotificationRequestSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                         CustomSignatureSerializer                          = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                         = null)
         {
 
             var json = JSONObject.Create(
@@ -419,8 +419,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                        );
 
-            return CustomSecurityEventNotificationSerializer is not null
-                       ? CustomSecurityEventNotificationSerializer(this, json)
+            return CustomSecurityEventNotificationRequestSerializer is not null
+                       ? CustomSecurityEventNotificationRequestSerializer(this, json)
                        : json;
 
         }

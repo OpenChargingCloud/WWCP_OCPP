@@ -383,167 +383,215 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region CSMS Messages
 
-        public CustomJObjectSerializerDelegate<CSMS.ResetRequest>?                         CustomResetRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.ResetRequest>?                                   CustomResetRequestSerializer                                 { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.UpdateFirmwareRequest>?                          CustomUpdateFirmwareRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.PublishFirmwareRequest>?                         CustomPublishFirmwareRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.UnpublishFirmwareRequest>?                       CustomUnpublishFirmwareRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetBaseReportRequest>?                           CustomGetBaseReportRequestSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetReportRequest>?                               CustomGetReportRequestSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetLogRequest>?                                  CustomGetLogRequestSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.SetVariablesRequest>?                            CustomSetVariablesRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetVariablesRequest>?                            CustomGetVariablesRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.SetMonitoringBaseRequest>?                       CustomSetMonitoringBaseRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetMonitoringReportRequest>?                     CustomGetMonitoringReportRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.SetMonitoringLevelRequest>?                      CustomSetMonitoringLevelRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.SetVariableMonitoringRequest>?                   CustomSetVariableMonitoringRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.ClearVariableMonitoringRequest>?                 CustomClearVariableMonitoringRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.SetNetworkProfileRequest>?                       CustomSetNetworkProfileRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.ChangeAvailabilityRequest>?                      CustomChangeAvailabilityRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.TriggerMessageRequest>?                          CustomTriggerMessageRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.DataTransferRequest>?                            CustomIncomingDataTransferRequestSerializer                  { get; set; }
 
-        public CustomJObjectSerializerDelegate<CSMS.UpdateFirmwareRequest>?                CustomUpdateFirmwareRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.CertificateSignedRequest>?                       CustomCertificateSignedRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.InstallCertificateRequest>?                      CustomInstallCertificateRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetInstalledCertificateIdsRequest>?              CustomGetInstalledCertificateIdsRequestSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.DeleteCertificateRequest>?                       CustomDeleteCertificateRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.NotifyCRLRequest>?                               CustomNotifyCRLRequestSerializer                             { get; set; }
 
-        public CustomJObjectSerializerDelegate<CSMS.PublishFirmwareRequest>?               CustomPublishFirmwareRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetLocalListVersionRequest>?                     CustomGetLocalListVersionRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.SendLocalListRequest>?                           CustomSendLocalListRequestSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.ClearCacheRequest>?                              CustomClearCacheRequestSerializer                            { get; set; }
 
-        public CustomJObjectSerializerDelegate<CSMS.UnpublishFirmwareRequest>?             CustomUnpublishFirmwareRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.ReserveNowRequest>?                              CustomReserveNowRequestSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.CancelReservationRequest>?                       CustomCancelReservationRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.RequestStartTransactionRequest>?                 CustomRequestStartTransactionRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.RequestStopTransactionRequest>?                  CustomRequestStopTransactionRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetTransactionStatusRequest>?                    CustomGetTransactionStatusRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.SetChargingProfileRequest>?                      CustomSetChargingProfileRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetChargingProfilesRequest>?                     CustomGetChargingProfilesRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.ClearChargingProfileRequest>?                    CustomClearChargingProfileRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetCompositeScheduleRequest>?                    CustomGetCompositeScheduleRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.UpdateDynamicScheduleRequest>?                   CustomUpdateDynamicScheduleRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.NotifyAllowedEnergyTransferRequest>?             CustomNotifyAllowedEnergyTransferRequestSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.UsePriorityChargingRequest>?                     CustomUsePriorityChargingRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.UnlockConnectorRequest>?                         CustomUnlockConnectorRequestSerializer                       { get; set; }
 
-        public CustomJObjectSerializerDelegate<CSMS.GetBaseReportRequest>?                 CustomGetBaseReportRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.AFRRSignalRequest>?                              CustomAFRRSignalRequestSerializer                            { get; set; }
 
-        public CustomJObjectSerializerDelegate<CSMS.GetReportRequest>?                     CustomGetReportRequestSerializer                       { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.GetLogRequest>?                        CustomGetLogRequestSerializer                          { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.SetVariablesRequest>?                  CustomSetVariablesRequestSerializer                    { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.GetVariablesRequest>?                  CustomGetVariablesRequestSerializer                    { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.SetMonitoringBaseRequest>?             CustomSetMonitoringBaseRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.GetMonitoringReportRequest>?           CustomGetMonitoringReportRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.SetMonitoringLevelRequest>?            CustomSetMonitoringLevelRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.SetVariableMonitoringRequest>?         CustomSetVariableMonitoringRequestSerializer           { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.ClearVariableMonitoringRequest>?       CustomClearVariableMonitoringRequestSerializer         { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.SetNetworkProfileRequest>?             CustomSetNetworkProfileRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.ChangeAvailabilityRequest>?            CustomChangeAvailabilityRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.TriggerMessageRequest>?                CustomTriggerMessageRequestSerializer                  { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.DataTransferRequest>?                  CustomDataTransferRequestSerializer                    { get; set; }
-
-
-        public CustomJObjectSerializerDelegate<CSMS.CertificateSignedRequest>?             CustomCertificateSignedRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.InstallCertificateRequest>?            CustomInstallCertificateRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.GetInstalledCertificateIdsRequest>?    CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.DeleteCertificateRequest>?             CustomDeleteCertificateRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.NotifyCRLRequest>?                     CustomNotifyCRLRequestSerializer                       { get; set; }
-
-
-        public CustomJObjectSerializerDelegate<CSMS.GetLocalListVersionRequest>?           CustomGetLocalListVersionRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.SendLocalListRequest>?                 CustomSendLocalListRequestSerializer                   { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.ClearCacheRequest>?                    CustomClearCacheRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.SetDisplayMessageRequest>?                       CustomSetDisplayMessageRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetDisplayMessagesRequest>?                      CustomGetDisplayMessagesRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.ClearDisplayMessageRequest>?                     CustomClearDisplayMessageRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.CostUpdatedRequest>?                             CustomCostUpdatedRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.CustomerInformationRequest>?                     CustomCustomerInformationRequestSerializer                   { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<CSMS.ReserveNowRequest>?                    CustomReserveNowRequestSerializer                      { get; set; }
+        // Responses
+        public CustomJObjectSerializerDelegate<CSMS.BootNotificationResponse>?                       CustomBootNotificationResponseSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.FirmwareStatusNotificationResponse>?             CustomFirmwareStatusNotificationResponseSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.PublishFirmwareStatusNotificationResponse>?      CustomPublishFirmwareStatusNotificationResponseSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.HeartbeatResponse>?                              CustomHeartbeatResponseSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.NotifyEventResponse>?                            CustomNotifyEventResponseSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.SecurityEventNotificationResponse>?              CustomSecurityEventNotificationResponseSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.NotifyReportResponse>?                           CustomNotifyReportResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.NotifyMonitoringReportResponse>?                 CustomNotifyMonitoringReportResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.LogStatusNotificationResponse>?                  CustomLogStatusNotificationResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.DataTransferResponse>?                           CustomDataTransferResponseSerializer                         { get; set; }
 
-        public CustomJObjectSerializerDelegate<CSMS.CancelReservationRequest>?             CustomCancelReservationRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.SignCertificateResponse>?                        CustomSignCertificateResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.Get15118EVCertificateResponse>?                  CustomGet15118EVCertificateResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetCertificateStatusResponse>?                   CustomGetCertificateStatusResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetCRLResponse>?                                 CustomGetCRLResponseSerializer                               { get; set; }
 
-        public CustomJObjectSerializerDelegate<CSMS.RequestStartTransactionRequest>?       CustomRequestStartTransactionRequestSerializer         { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.ReservationStatusUpdateResponse>?                CustomReservationStatusUpdateResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.AuthorizeResponse>?                              CustomAuthorizeResponseSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.NotifyEVChargingNeedsResponse>?                  CustomNotifyEVChargingNeedsResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.TransactionEventResponse>?                       CustomTransactionEventResponseSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.StatusNotificationResponse>?                     CustomStatusNotificationResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.MeterValuesResponse>?                            CustomMeterValuesResponseSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.NotifyChargingLimitResponse>?                    CustomNotifyChargingLimitResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.ClearedChargingLimitResponse>?                   CustomClearedChargingLimitResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.ReportChargingProfilesResponse>?                 CustomReportChargingProfilesResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.NotifyEVChargingScheduleResponse>?               CustomNotifyEVChargingScheduleResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.NotifyPriorityChargingResponse>?                 CustomNotifyPriorityChargingResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.PullDynamicScheduleUpdateResponse>?              CustomPullDynamicScheduleUpdateResponseSerializer            { get; set; }
 
-        public CustomJObjectSerializerDelegate<CSMS.RequestStopTransactionRequest>?        CustomRequestStopTransactionRequestSerializer          { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.GetTransactionStatusRequest>?          CustomGetTransactionStatusRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.SetChargingProfileRequest>?            CustomSetChargingProfileRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.GetChargingProfilesRequest>?           CustomGetChargingProfilesRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.ClearChargingProfileRequest>?          CustomClearChargingProfileRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.GetCompositeScheduleRequest>?          CustomGetCompositeScheduleRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.UpdateDynamicScheduleRequest>?         CustomUpdateDynamicScheduleRequestSerializer           { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.NotifyAllowedEnergyTransferRequest>?   CustomNotifyAllowedEnergyTransferRequestSerializer     { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.UsePriorityChargingRequest>?           CustomUsePriorityChargingRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.UnlockConnectorRequest>?               CustomUnlockConnectorRequestSerializer                 { get; set; }
-
-
-        public CustomJObjectSerializerDelegate<CSMS.AFRRSignalRequest>?                    CustomAFRRSignalRequestSerializer                      { get; set; }
-
-
-        public CustomJObjectSerializerDelegate<CSMS.SetDisplayMessageRequest>?             CustomSetDisplayMessageRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.GetDisplayMessagesRequest>?            CustomGetDisplayMessagesRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.ClearDisplayMessageRequest>?           CustomClearDisplayMessageRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.CostUpdatedRequest>?                   CustomCostUpdatedRequestSerializer                     { get; set; }
-
-        public CustomJObjectSerializerDelegate<CSMS.CustomerInformationRequest>?           CustomCustomerInformationRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.NotifyDisplayMessagesResponse>?                  CustomNotifyDisplayMessagesResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.NotifyCustomerInformationResponse>?              CustomNotifyCustomerInformationResponseSerializer            { get; set; }
 
         #endregion
 
         #region Charging Station Messages
 
-        public CustomJObjectSerializerDelegate<BootNotificationRequest>?                             CustomBootNotificationRequestSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<BootNotificationRequest>?                             CustomBootNotificationRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<FirmwareStatusNotificationRequest>?                   CustomFirmwareStatusNotificationRequestSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<PublishFirmwareStatusNotificationRequest>?            CustomPublishFirmwareStatusNotificationRequestSerializer     { get; set; }
+        public CustomJObjectSerializerDelegate<HeartbeatRequest>?                                    CustomHeartbeatRequestSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyEventRequest>?                                  CustomNotifyEventRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<SecurityEventNotificationRequest>?                    CustomSecurityEventNotificationRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyReportRequest>?                                 CustomNotifyReportRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyMonitoringReportRequest>?                       CustomNotifyMonitoringReportRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<LogStatusNotificationRequest>?                        CustomLogStatusNotificationRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
+
+        public CustomJObjectSerializerDelegate<SignCertificateRequest>?                              CustomSignCertificateRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<Get15118EVCertificateRequest>?                        CustomGet15118EVCertificateRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<GetCertificateStatusRequest>?                         CustomGetCertificateStatusRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<GetCRLRequest>?                                       CustomGetCRLRequestSerializer                                { get; set; }
+
+        public CustomJObjectSerializerDelegate<ReservationStatusUpdateRequest>?                      CustomReservationStatusUpdateRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizeRequest>?                                    CustomAuthorizeRequestSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyEVChargingNeedsRequest>?                        CustomNotifyEVChargingNeedsRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<TransactionEventRequest>?                             CustomTransactionEventRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<StatusNotificationRequest>?                           CustomStatusNotificationRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<MeterValuesRequest>?                                  CustomMeterValuesRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyChargingLimitRequest>?                          CustomNotifyChargingLimitRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<ClearedChargingLimitRequest>?                         CustomClearedChargingLimitRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<ReportChargingProfilesRequest>?                       CustomReportChargingProfilesRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyEVChargingScheduleRequest>?                     CustomNotifyEVChargingScheduleRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyPriorityChargingRequest>?                       CustomNotifyPriorityChargingRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<PullDynamicScheduleUpdateRequest>?                    CustomPullDynamicScheduleUpdateRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<NotifyDisplayMessagesRequest>?                        CustomNotifyDisplayMessagesRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyCustomerInformationRequest>?                    CustomNotifyCustomerInformationRequestSerializer             { get; set; }
 
 
+        // Responses
+        public CustomJObjectSerializerDelegate<ResetResponse>?                                       CustomResetResponseSerializer                                { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<ResetResponse>?                                       CustomResetResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                       { get; set; }
 
         #endregion
 
         #region Data Structures
 
-        public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<Variable>?                                            CustomVariableSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<LogParameters>?                                       CustomLogParametersSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<SetVariableData>?                                     CustomSetVariableDataSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<GetVariableData>?                                     CustomGetVariableDataSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<SetMonitoringData>?                                   CustomSetMonitoringDataSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<NetworkConnectionProfile>?                            CustomNetworkConnectionProfileSerializer         { get; set; }
-        public CustomJObjectSerializerDelegate<VPNConfiguration>?                                    CustomVPNConfigurationSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<APNConfiguration>?                                    CustomAPNConfigurationSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<IdTokenInfo>?                                         CustomIdTokenInfoSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<MessageContent>?                                      CustomMessageContentSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer           { get; set; }
-        public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
+        public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
+        public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                                     { get; set; }
+        public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                                         { get; set; }
+        public CustomJObjectSerializerDelegate<Variable>?                                            CustomVariableSerializer                                     { get; set; }
+        public CustomJObjectSerializerDelegate<LogParameters>?                                       CustomLogParametersSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariableData>?                                     CustomSetVariableDataSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<GetVariableData>?                                     CustomGetVariableDataSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringData>?                                   CustomSetMonitoringDataSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<NetworkConnectionProfile>?                            CustomNetworkConnectionProfileSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<VPNConfiguration>?                                    CustomVPNConfigurationSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<APNConfiguration>?                                    CustomAPNConfigurationSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                                      { get; set; }
+        public CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<IdTokenInfo>?                                         CustomIdTokenInfoSerializer                                  { get; set; }
+        public CustomJObjectSerializerDelegate<MessageContent>?                                      CustomMessageContentSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                                  { get; set; }
+        public CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                                         { get; set; }
         
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                                      { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                                 { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                            { get; set; }
         
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer                      { get; set; }
 
-        public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer         { get; set; }
-        public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                                  { get; set; }
 
 
 
-        public CustomJObjectSerializerDelegate<ChargingStation>?                                     CustomChargingStationSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingStation>?                                     CustomChargingStationSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<EventData>?                                           CustomEventDataSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<ReportData>?                                          CustomReportDataSerializer                                   { get; set; }
+        public CustomJObjectSerializerDelegate<VariableAttribute>?                                   CustomVariableAttributeSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<VariableCharacteristics>?                             CustomVariableCharacteristicsSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<MonitoringData>?                                      CustomMonitoringDataSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<VariableMonitoring>?                                  CustomVariableMonitoringSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<OCSPRequestData>?                                     CustomOCSPRequestDataSerializer                              { get; set; }
+
+        public CustomJObjectSerializerDelegate<ChargingNeeds>?                                       CustomChargingNeedsSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<ACChargingParameters>?                                CustomACChargingParametersSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<DCChargingParameters>?                                CustomDCChargingParametersSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<V2XChargingParameters>?                               CustomV2XChargingParametersSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<EVEnergyOffer>?                                       CustomEVEnergyOfferSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<EVPowerSchedule>?                                     CustomEVPowerScheduleSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<EVPowerScheduleEntry>?                                CustomEVPowerScheduleEntrySerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<EVAbsolutePriceSchedule>?                             CustomEVAbsolutePriceScheduleSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<EVAbsolutePriceScheduleEntry>?                        CustomEVAbsolutePriceScheduleEntrySerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<EVPriceRule>?                                         CustomEVPriceRuleSerializer                                  { get; set; }
+
+        public CustomJObjectSerializerDelegate<Transaction>?                                         CustomTransactionSerializer                                  { get; set; }
+        public CustomJObjectSerializerDelegate<MeterValue>?                                          CustomMeterValueSerializer                                   { get; set; }
+        public CustomJObjectSerializerDelegate<SampledValue>?                                        CustomSampledValueSerializer                                 { get; set; }
+        public CustomJObjectSerializerDelegate<SignedMeterValue>?                                    CustomSignedMeterValueSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<UnitsOfMeasure>?                                      CustomUnitsOfMeasureSerializer                               { get; set; }
+
+
+
 
         #endregion
 
@@ -1914,8 +1962,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (request.Signatures.Any() &&
-                        !CryptoUtils.VerifyRequestMessage(
+                    if (!CryptoUtils.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomResetRequestSerializer,
@@ -1963,24 +2010,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
 
 
-                if (request.Signatures.Any())
-                {
+                CryptoUtils.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomResetResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    SignaturePolicy,
+                    out var errorResponse2);
 
-                    var signInfos = new[] { SignInfo.GenerateKeys()! };
-
-                    CryptoUtils.SignResponseMessage(
-                        response,
-                        response.ToJSON(
-                            CustomResetResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
-                        ),
-                        SignaturePolicy,
-                        out var errorResponse2,
-                        signInfos.ToArray());
-
-                }
 
                 #region Send OnResetResponse event
 
@@ -7467,7 +7507,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Request">A boot notification request.</param>
         public async Task<CSMS.BootNotificationResponse>
-
             SendBootNotification(BootNotificationRequest Request)
 
         {
@@ -7518,11 +7557,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-
             CryptoUtils.VerifyResponseMessage(
                 response,
                 response.ToJSON(
-                    null, //CustomBootNotificationResponseSerializer,
+                    CustomBootNotificationResponseSerializer,
                     CustomStatusInfoSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
@@ -7533,31 +7571,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             );
 
 
-            if (response is not null)
+            switch (response.Status)
             {
-                switch (response.Status)
-                {
 
-                    case RegistrationStatus.Accepted:
-                        this.CSMSTime               = response.CurrentTime;
-                        this.SendHeartbeatEvery     = response.Interval >= TimeSpan.FromSeconds(5) ? response.Interval : TimeSpan.FromSeconds(5);
-                        this.SendHeartbeatTimer.Change(this.SendHeartbeatEvery, this.SendHeartbeatEvery);
-                        this.DisableSendHeartbeats  = false;
-                        break;
+                case RegistrationStatus.Accepted:
+                    this.CSMSTime               = response.CurrentTime;
+                    this.SendHeartbeatEvery     = response.Interval >= TimeSpan.FromSeconds(5) ? response.Interval : TimeSpan.FromSeconds(5);
+                    this.SendHeartbeatTimer.Change(this.SendHeartbeatEvery, this.SendHeartbeatEvery);
+                    this.DisableSendHeartbeats  = false;
+                    break;
 
-                    case RegistrationStatus.Pending:
-                        // Do not reconnect before: response.HeartbeatInterval
-                        break;
+                case RegistrationStatus.Pending:
+                    // Do not reconnect before: response.HeartbeatInterval
+                    break;
 
-                    case RegistrationStatus.Rejected:
-                        // Do not reconnect before: response.HeartbeatInterval
-                        break;
+                case RegistrationStatus.Rejected:
+                    // Do not reconnect before: response.HeartbeatInterval
+                    break;
 
-                }
             }
-
-            response ??= new CSMS.BootNotificationResponse(Request,
-                                                           Result.Server("Response is null!"));
 
 
             #region Send OnBootNotificationResponse event
@@ -7602,7 +7634,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.FirmwareStatusNotificationResponse>
-
             SendFirmwareStatusNotification(FirmwareStatusNotificationRequest Request)
 
         {
@@ -7627,13 +7658,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.FirmwareStatusNotificationResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.SendFirmwareStatusNotification(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomFirmwareStatusNotificationRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            response ??= new CSMS.FirmwareStatusNotificationResponse(Request,
-                                                                     Result.Server("Response is null!"));
+                                     ? await CSClient.SendFirmwareStatusNotification(Request)
+
+                                     : new CSMS.FirmwareStatusNotificationResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.FirmwareStatusNotificationResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomFirmwareStatusNotificationResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnFirmwareStatusNotificationResponse event
@@ -7679,7 +7739,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.PublishFirmwareStatusNotificationResponse>
-
             SendPublishFirmwareStatusNotification(PublishFirmwareStatusNotificationRequest Request)
 
         {
@@ -7704,13 +7763,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.PublishFirmwareStatusNotificationResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.SendPublishFirmwareStatusNotification(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomPublishFirmwareStatusNotificationRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            response ??= new CSMS.PublishFirmwareStatusNotificationResponse(Request,
-                                                                            Result.Server("Response is null!"));
+                                     ? await CSClient.SendPublishFirmwareStatusNotification(Request)
+
+                                     : new CSMS.PublishFirmwareStatusNotificationResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.PublishFirmwareStatusNotificationResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomPublishFirmwareStatusNotificationResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnPublishFirmwareStatusNotificationResponse event
@@ -7753,7 +7841,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.HeartbeatResponse>
-
             SendHeartbeat(HeartbeatRequest Request)
 
         {
@@ -7778,18 +7865,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.HeartbeatResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.SendHeartbeat(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomHeartbeatRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                this.CSMSTime = response.CurrentTime;
-            }
+                                     ? await CSClient.SendHeartbeat(Request)
 
-            response ??= new CSMS.HeartbeatResponse(Request,
-                                                    Result.Server("Response is null!"));
+                                     : new CSMS.HeartbeatResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.HeartbeatResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomHeartbeatResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnHeartbeatResponse event
@@ -7836,7 +7947,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyEventResponse>
-
             NotifyEvent(NotifyEventRequest Request)
 
         {
@@ -7861,18 +7971,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.NotifyEventResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.NotifyEvent(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomNotifyEventRequestSerializer,
+                                         CustomEventDataSerializer,
+                                         CustomComponentSerializer,
+                                         CustomEVSESerializer,
+                                         CustomVariableSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                
-            }
+                                     ? await CSClient.NotifyEvent(Request)
 
-            response ??= new CSMS.NotifyEventResponse(Request,
-                                                      Result.Server("Response is null!"));
+                                     : new CSMS.NotifyEventResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.NotifyEventResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyEventResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnNotifyEventResponse event
@@ -7918,7 +8056,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.SecurityEventNotificationResponse>
-
             SendSecurityEventNotification(SecurityEventNotificationRequest Request)
 
         {
@@ -7943,18 +8080,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.SecurityEventNotificationResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.SendSecurityEventNotification(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomSecurityEventNotificationRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                
-            }
+                                     ? await CSClient.SendSecurityEventNotification(Request)
 
-            response ??= new CSMS.SecurityEventNotificationResponse(Request,
-                                                                    Result.Server("Response is null!"));
+                                     : new CSMS.SecurityEventNotificationResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.SecurityEventNotificationResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSecurityEventNotificationResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnSecurityEventNotificationResponse event
@@ -8002,7 +8163,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyReportResponse>
-
             NotifyReport(NotifyReportRequest Request)
 
         {
@@ -8027,18 +8187,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.NotifyReportResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.NotifyReport(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomNotifyReportRequestSerializer,
+                                         CustomReportDataSerializer,
+                                         CustomComponentSerializer,
+                                         CustomEVSESerializer,
+                                         CustomVariableSerializer,
+                                         CustomVariableAttributeSerializer,
+                                         CustomVariableCharacteristicsSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                
-            }
+                                     ? await CSClient.NotifyReport(Request)
 
-            response ??= new CSMS.NotifyReportResponse(Request,
-                                                       Result.Server("Response is null!"));
+                                     : new CSMS.NotifyReportResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.NotifyReportResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyReportResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnNotifyReportResponse event
@@ -8086,8 +8276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyMonitoringReportResponse>
-
-            NotifyMonitoringReport(NotifyMonitoringReportRequest request)
+            NotifyMonitoringReport(NotifyMonitoringReportRequest Request)
 
         {
 
@@ -8100,7 +8289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnNotifyMonitoringReportRequest?.Invoke(startTime,
                                                         this,
-                                                        request);
+                                                        Request);
 
             }
             catch (Exception e)
@@ -8111,18 +8300,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.NotifyMonitoringReportResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.NotifyMonitoringReport(request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomNotifyMonitoringReportRequestSerializer,
+                                         CustomMonitoringDataSerializer,
+                                         CustomComponentSerializer,
+                                         CustomEVSESerializer,
+                                         CustomVariableSerializer,
+                                         CustomVariableMonitoringSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                
-            }
+                                     ? await CSClient.NotifyMonitoringReport(Request)
 
-            response ??= new CSMS.NotifyMonitoringReportResponse(request,
-                                                                 Result.Server("Response is null!"));
+                                     : new CSMS.NotifyMonitoringReportResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.NotifyMonitoringReportResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyMonitoringReportResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnNotifyMonitoringReportResponse event
@@ -8134,7 +8352,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 OnNotifyMonitoringReportResponse?.Invoke(endTime,
                                                          this,
-                                                         request,
+                                                         Request,
                                                          response,
                                                          endTime - startTime);
 
@@ -8167,7 +8385,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.LogStatusNotificationResponse>
-
             SendLogStatusNotification(LogStatusNotificationRequest Request)
 
         {
@@ -8192,18 +8409,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.LogStatusNotificationResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.SendLogStatusNotification(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomLogStatusNotificationRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                
-            }
+                                     ? await CSClient.SendLogStatusNotification(Request)
 
-            response ??= new CSMS.LogStatusNotificationResponse(Request,
-                                                                    Result.Server("Response is null!"));
+                                     : new CSMS.LogStatusNotificationResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.LogStatusNotificationResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomLogStatusNotificationResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnLogStatusNotificationResponse event
@@ -8249,7 +8490,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.DataTransferResponse>
-
             TransferData(DataTransferRequest Request)
 
         {
@@ -8274,13 +8514,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.DataTransferResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.TransferData(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomDataTransferRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            response ??= new CSMS.DataTransferResponse(Request,
-                                                       Result.Server("Response is null!"));
+                                     ? await CSClient.TransferData(Request)
+
+                                     : new CSMS.DataTransferResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.DataTransferResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomDataTransferResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnDataTransferResponse event
@@ -8326,7 +8596,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.SignCertificateResponse>
-
             SendCertificateSigningRequest(SignCertificateRequest Request)
 
         {
@@ -8351,18 +8620,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.SignCertificateResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.SendCertificateSigningRequest(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomSignCertificateRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                
-            }
+                                     ? await CSClient.SendCertificateSigningRequest(Request)
 
-            response ??= new CSMS.SignCertificateResponse(Request,
-                                                          Result.Server("Response is null!"));
+                                     : new CSMS.SignCertificateResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.SignCertificateResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSignCertificateResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnSignCertificateResponse event
@@ -8410,7 +8704,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.Get15118EVCertificateResponse>
-
             Get15118EVCertificate(Get15118EVCertificateRequest Request)
 
         {
@@ -8435,18 +8728,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.Get15118EVCertificateResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.Get15118EVCertificate(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomGet15118EVCertificateRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                
-            }
+                                     ? await CSClient.Get15118EVCertificate(Request)
 
-            response ??= new CSMS.Get15118EVCertificateResponse(Request,
-                                                                Result.Server("Response is null!"));
+                                     : new CSMS.Get15118EVCertificateResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.Get15118EVCertificateResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGet15118EVCertificateResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnGet15118EVCertificateResponse event
@@ -8490,7 +8808,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.GetCertificateStatusResponse>
-
             GetCertificateStatus(GetCertificateStatusRequest Request)
 
         {
@@ -8515,18 +8832,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.GetCertificateStatusResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.GetCertificateStatus(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomGetCertificateStatusRequestSerializer,
+                                         CustomOCSPRequestDataSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                
-            }
+                                     ? await CSClient.GetCertificateStatus(Request)
 
-            response ??= new CSMS.GetCertificateStatusResponse(Request,
-                                                               Result.Server("Response is null!"));
+                                     : new CSMS.GetCertificateStatusResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.GetCertificateStatusResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetCertificateStatusResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnGetCertificateStatusResponse event
@@ -8572,7 +8915,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.GetCRLResponse>
-
             GetCRL(GetCRLRequest Request)
 
         {
@@ -8597,18 +8939,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.GetCRLResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.GetCRL(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomGetCRLRequestSerializer,
+                                         CustomCertificateHashDataSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                
-            }
+                                     ? await CSClient.GetCRL(Request)
 
-            response ??= new CSMS.GetCRLResponse(Request,
-                                                 Result.Server("Response is null!"));
+                                     : new CSMS.GetCRLResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.GetCRLResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetCRLResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnGetCRLResponse event
@@ -8654,7 +9022,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.ReservationStatusUpdateResponse>
-
             SendReservationStatusUpdate(ReservationStatusUpdateRequest Request)
 
         {
@@ -8679,18 +9046,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.ReservationStatusUpdateResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.SendReservationStatusUpdate(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomReservationStatusUpdateRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                
-            }
+                                     ? await CSClient.SendReservationStatusUpdate(Request)
 
-            response ??= new CSMS.ReservationStatusUpdateResponse(Request,
-                                                                  Result.Server("Response is null!"));
+                                     : new CSMS.ReservationStatusUpdateResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.ReservationStatusUpdateResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomReservationStatusUpdateResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnReservationStatusUpdateResponse event
@@ -8736,7 +9127,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.AuthorizeResponse>
-
             Authorize(AuthorizeRequest Request)
 
         {
@@ -8761,13 +9151,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.AuthorizeResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.Authorize(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomAuthorizeRequestSerializer,
+                                         CustomIdTokenSerializer,
+                                         CustomAdditionalInfoSerializer,
+                                         CustomOCSPRequestDataSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            response ??= new CSMS.AuthorizeResponse(Request,
-                                                    Result.Server("Response is null!"));
+                                     ? await CSClient.Authorize(Request)
+
+                                     : new CSMS.AuthorizeResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.AuthorizeResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomAuthorizeResponseSerializer,
+                    CustomIdTokenInfoSerializer,
+                    CustomIdTokenSerializer,
+                    CustomAdditionalInfoSerializer,
+                    CustomMessageContentSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnAuthorizeResponse event
@@ -8814,7 +9240,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyEVChargingNeedsResponse>
-
             NotifyEVChargingNeeds(NotifyEVChargingNeedsRequest Request)
 
         {
@@ -8839,18 +9264,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.NotifyEVChargingNeedsResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.NotifyEVChargingNeeds(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomNotifyEVChargingNeedsRequestSerializer,
+                                         CustomChargingNeedsSerializer,
+                                         CustomACChargingParametersSerializer,
+                                         CustomDCChargingParametersSerializer,
+                                         CustomV2XChargingParametersSerializer,
+                                         CustomEVEnergyOfferSerializer,
+                                         CustomEVPowerScheduleSerializer,
+                                         CustomEVPowerScheduleEntrySerializer,
+                                         CustomEVAbsolutePriceScheduleSerializer,
+                                         CustomEVAbsolutePriceScheduleEntrySerializer,
+                                         CustomEVPriceRuleSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                
-            }
+                                     ? await CSClient.NotifyEVChargingNeeds(Request)
 
-            response ??= new CSMS.NotifyEVChargingNeedsResponse(Request,
-                                                                Result.Server("Response is null!"));
+                                     : new CSMS.NotifyEVChargingNeedsResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.NotifyEVChargingNeedsResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyEVChargingNeedsResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnNotifyEVChargingNeedsResponse event
@@ -8907,7 +9367,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.TransactionEventResponse>
-
             SendTransactionEvent(TransactionEventRequest Request)
 
         {
@@ -8932,13 +9391,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.TransactionEventResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.SendTransactionEvent(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomTransactionEventRequestSerializer,
+                                         CustomTransactionSerializer,
+                                         CustomIdTokenSerializer,
+                                         CustomAdditionalInfoSerializer,
+                                         CustomEVSESerializer,
+                                         CustomMeterValueSerializer,
+                                         CustomSampledValueSerializer,
+                                         CustomSignedMeterValueSerializer,
+                                         CustomUnitsOfMeasureSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            response ??= new CSMS.TransactionEventResponse(Request,
-                                                           Result.Server("Response is null!"));
+                                     ? await CSClient.SendTransactionEvent(Request)
+
+                                     : new CSMS.TransactionEventResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.TransactionEventResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomTransactionEventResponseSerializer,
+                    CustomIdTokenInfoSerializer,
+                    CustomIdTokenSerializer,
+                    CustomAdditionalInfoSerializer,
+                    CustomMessageContentSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnTransactionEventResponse event
@@ -8985,7 +9485,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.StatusNotificationResponse>
-
             SendStatusNotification(StatusNotificationRequest Request)
 
         {
@@ -9010,13 +9509,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.StatusNotificationResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.SendStatusNotification(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomStatusNotificationRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            response ??= new CSMS.StatusNotificationResponse(Request,
-                                                             Result.Server("Response is null!"));
+                                     ? await CSClient.SendStatusNotification(Request)
+
+                                     : new CSMS.StatusNotificationResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.StatusNotificationResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomStatusNotificationResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnStatusNotificationResponse event
@@ -9061,7 +9589,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.MeterValuesResponse>
-
             SendMeterValues(MeterValuesRequest Request)
 
         {
@@ -9086,13 +9613,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.MeterValuesResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.SendMeterValues(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomMeterValuesRequestSerializer,
+                                         CustomMeterValueSerializer,
+                                         CustomSampledValueSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            response ??= new CSMS.MeterValuesResponse(Request,
-                                                      Result.Server("Response is null!"));
+                                     ? await CSClient.SendMeterValues(Request)
+
+                                     : new CSMS.MeterValuesResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.MeterValuesResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomMeterValuesResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnMeterValuesResponse event
@@ -9138,7 +9696,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyChargingLimitResponse>
-
             NotifyChargingLimit(NotifyChargingLimitRequest Request)
 
         {
@@ -9163,18 +9720,66 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.NotifyChargingLimitResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.NotifyChargingLimit(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
 
-            if (response is not null)
-            {
-                
-            }
+                                         CustomNotifyChargingLimitRequestSerializer,
+                                         CustomChargingScheduleSerializer,
+                                         CustomLimitBeyondSoCSerializer,
+                                         CustomChargingSchedulePeriodSerializer,
+                                         CustomV2XFreqWattEntrySerializer,
+                                         CustomV2XSignalWattEntrySerializer,
+                                         CustomSalesTariffSerializer,
+                                         CustomSalesTariffEntrySerializer,
+                                         CustomRelativeTimeIntervalSerializer,
+                                         CustomConsumptionCostSerializer,
+                                         CustomCostSerializer,
 
-            response ??= new CSMS.NotifyChargingLimitResponse(Request,
-                                                              Result.Server("Response is null!"));
+                                         CustomAbsolutePriceScheduleSerializer,
+                                         CustomPriceRuleStackSerializer,
+                                         CustomPriceRuleSerializer,
+                                         CustomTaxRuleSerializer,
+                                         CustomOverstayRuleListSerializer,
+                                         CustomOverstayRuleSerializer,
+                                         CustomAdditionalServiceSerializer,
+
+                                         CustomPriceLevelScheduleSerializer,
+                                         CustomPriceLevelScheduleEntrySerializer,
+
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
+
+                                     ? await CSClient.NotifyChargingLimit(Request)
+
+                                     : new CSMS.NotifyChargingLimitResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.NotifyChargingLimitResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyChargingLimitResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnNotifyChargingLimitResponse event
@@ -9219,7 +9824,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.ClearedChargingLimitResponse>
-
             SendClearedChargingLimit(ClearedChargingLimitRequest Request)
 
         {
@@ -9244,18 +9848,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.ClearedChargingLimitResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.SendClearedChargingLimit(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomClearedChargingLimitRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                
-            }
+                                     ? await CSClient.SendClearedChargingLimit(Request)
 
-            response ??= new CSMS.ClearedChargingLimitResponse(Request,
-                                                               Result.Server("Response is null!"));
+                                     : new CSMS.ClearedChargingLimitResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.ClearedChargingLimitResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomClearedChargingLimitResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnClearedChargingLimitResponse event
@@ -9303,7 +9931,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.ReportChargingProfilesResponse>
-
             ReportChargingProfiles(ReportChargingProfilesRequest Request)
 
         {
@@ -9328,18 +9955,67 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.ReportChargingProfilesResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.ReportChargingProfiles(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
 
-            if (response is not null)
-            {
-                
-            }
+                                         CustomReportChargingProfilesRequestSerializer,
+                                         CustomChargingProfileSerializer,
+                                         CustomLimitBeyondSoCSerializer,
+                                         CustomChargingScheduleSerializer,
+                                         CustomChargingSchedulePeriodSerializer,
+                                         CustomV2XFreqWattEntrySerializer,
+                                         CustomV2XSignalWattEntrySerializer,
+                                         CustomSalesTariffSerializer,
+                                         CustomSalesTariffEntrySerializer,
+                                         CustomRelativeTimeIntervalSerializer,
+                                         CustomConsumptionCostSerializer,
+                                         CustomCostSerializer,
 
-            response ??= new CSMS.ReportChargingProfilesResponse(Request,
-                                                                 Result.Server("Response is null!"));
+                                         CustomAbsolutePriceScheduleSerializer,
+                                         CustomPriceRuleStackSerializer,
+                                         CustomPriceRuleSerializer,
+                                         CustomTaxRuleSerializer,
+                                         CustomOverstayRuleListSerializer,
+                                         CustomOverstayRuleSerializer,
+                                         CustomAdditionalServiceSerializer,
+
+                                         CustomPriceLevelScheduleSerializer,
+                                         CustomPriceLevelScheduleEntrySerializer,
+
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
+
+                                     ? await CSClient.ReportChargingProfiles(Request)
+
+                                     : new CSMS.ReportChargingProfilesResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.ReportChargingProfilesResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomReportChargingProfilesResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnReportChargingProfilesResponse event
@@ -9388,7 +10064,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyEVChargingScheduleResponse>
-
             NotifyEVChargingSchedule(NotifyEVChargingScheduleRequest Request)
 
         {
@@ -9413,18 +10088,67 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.NotifyEVChargingScheduleResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.NotifyEVChargingSchedule(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
 
-            if (response is not null)
-            {
-                
-            }
+                                         CustomNotifyEVChargingScheduleRequestSerializer,
+                                         CustomChargingScheduleSerializer,
+                                         CustomLimitBeyondSoCSerializer,
+                                         CustomChargingSchedulePeriodSerializer,
+                                         CustomV2XFreqWattEntrySerializer,
+                                         CustomV2XSignalWattEntrySerializer,
+                                         CustomSalesTariffSerializer,
+                                         CustomSalesTariffEntrySerializer,
+                                         CustomRelativeTimeIntervalSerializer,
+                                         CustomConsumptionCostSerializer,
+                                         CustomCostSerializer,
 
-            response ??= new CSMS.NotifyEVChargingScheduleResponse(Request,
-                                                                   Result.Server("Response is null!"));
+                                         CustomAbsolutePriceScheduleSerializer,
+                                         CustomPriceRuleStackSerializer,
+                                         CustomPriceRuleSerializer,
+                                         CustomTaxRuleSerializer,
+                                         CustomOverstayRuleListSerializer,
+                                         CustomOverstayRuleSerializer,
+                                         CustomAdditionalServiceSerializer,
+
+                                         CustomPriceLevelScheduleSerializer,
+                                         CustomPriceLevelScheduleEntrySerializer,
+
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
+
+                                     ? await CSClient.NotifyEVChargingSchedule(Request)
+
+                                     : new CSMS.NotifyEVChargingScheduleResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.NotifyEVChargingScheduleResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyEVChargingScheduleResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnNotifyEVChargingScheduleResponse event
@@ -9470,7 +10194,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyPriorityChargingResponse>
-
             NotifyPriorityCharging(NotifyPriorityChargingRequest Request)
 
         {
@@ -9495,18 +10218,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.NotifyPriorityChargingResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.NotifyPriorityCharging(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomNotifyPriorityChargingRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                
-            }
+                                     ? await CSClient.NotifyPriorityCharging(Request)
 
-            response ??= new CSMS.NotifyPriorityChargingResponse(Request,
-                                                                 Result.Server("Response is null!"));
+                                     : new CSMS.NotifyPriorityChargingResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.NotifyPriorityChargingResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyPriorityChargingResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnNotifyPriorityChargingResponse event
@@ -9551,7 +10298,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.PullDynamicScheduleUpdateResponse>
-
             PullDynamicScheduleUpdate(PullDynamicScheduleUpdateRequest Request)
 
         {
@@ -9576,18 +10322,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.PullDynamicScheduleUpdateResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.PullDynamicScheduleUpdate(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomPullDynamicScheduleUpdateRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            if (response is not null)
-            {
-                
-            }
+                                     ? await CSClient.PullDynamicScheduleUpdate(Request)
 
-            response ??= new CSMS.PullDynamicScheduleUpdateResponse(Request,
-                                                                    Result.Server("Response is null!"));
+                                     : new CSMS.PullDynamicScheduleUpdateResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.PullDynamicScheduleUpdateResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomPullDynamicScheduleUpdateResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnPullDynamicScheduleUpdateResponse event
@@ -9634,7 +10404,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyDisplayMessagesResponse>
-
             NotifyDisplayMessages(NotifyDisplayMessagesRequest Request)
 
         {
@@ -9659,13 +10428,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.NotifyDisplayMessagesResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.NotifyDisplayMessages(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomNotifyDisplayMessagesRequestSerializer,
+                                         CustomMessageInfoSerializer,
+                                         CustomMessageContentSerializer,
+                                         CustomComponentSerializer,
+                                         CustomEVSESerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            response ??= new CSMS.NotifyDisplayMessagesResponse(Request,
-                                                                Result.Server("Response is null!"));
+                                     ? await CSClient.NotifyDisplayMessages(Request)
+
+                                     : new CSMS.NotifyDisplayMessagesResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.NotifyDisplayMessagesResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyDisplayMessagesResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnNotifyDisplayMessagesResponse event
@@ -9713,7 +10515,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.NotifyCustomerInformationResponse>
-
             NotifyCustomerInformation(NotifyCustomerInformationRequest Request)
 
         {
@@ -9738,13 +10539,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            CSMS.NotifyCustomerInformationResponse? response = null;
+            var response = CSClient is not null
 
-            if (CSClient is not null)
-                response = await CSClient.NotifyCustomerInformation(Request);
+                               ? CryptoUtils.SignRequestMessage(
+                                     Request,
+                                     Request.ToJSON(
+                                         CustomNotifyCustomerInformationRequestSerializer,
+                                         CustomSignatureSerializer,
+                                         CustomCustomDataSerializer
+                                     ),
+                                     Request.SignaturePolicy ?? SignaturePolicy,
+                                     out var errorResponse
+                                 )
 
-            response ??= new CSMS.NotifyCustomerInformationResponse(Request,
-                                                                    Result.Server("Response is null!"));
+                                     ? await CSClient.NotifyCustomerInformation(Request)
+
+                                     : new CSMS.NotifyCustomerInformationResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.NotifyCustomerInformationResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            CryptoUtils.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomNotifyCustomerInformationResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                SignaturePolicy,
+                out errorResponse,
+                AllMustBeValid: true
+            );
 
 
             #region Send OnNotifyCustomerInformationResponse event

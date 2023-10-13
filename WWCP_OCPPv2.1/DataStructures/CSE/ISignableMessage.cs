@@ -30,23 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public interface ISignableMessage
     {
 
-
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
         [Mandatory]
         JSONLDContext           Context       { get; }
 
-
+        /// <summary>
+        /// The optional enumeration of keys to be used for signing the message.
+        /// </summary>
         [Optional]
         IEnumerable<KeyPair>    SignKeys      { get; }
 
-
+        /// <summary>
+        /// The optional enumeration of information to be used for signing the message.
+        /// </summary>
         [Optional]
         IEnumerable<SignInfo>   SignInfos     { get; }
 
         /// <summary>
-        /// The enumeration of all cryptographic signatures.
+        /// The optional enumeration of all cryptographic signatures.
         /// </summary>
         [Optional]
         IEnumerable<Signature>  Signatures    { get; }
@@ -58,6 +61,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Signature">A cryptographic signature.</param>
         void AddSignature(Signature Signature);
 
+
+    }
+
+    public class SignableMessage : ISignableMessage
+    {
+
+        public JSONLDContext Context
+            => JSONLDContext.Parse("none");
+
+        public IEnumerable<KeyPair> SignKeys
+            => Array.Empty<KeyPair>();
+
+        public IEnumerable<SignInfo> SignInfos
+            => Array.Empty<SignInfo>();
+
+        public IEnumerable<Signature> Signatures
+            => Array.Empty<Signature>();
+
+        public void AddSignature(Signature Signature)
+        { }
 
     }
 

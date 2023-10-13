@@ -324,16 +324,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomGetCRLSerializer = null, CustomCertificateHashDataSerializer = null, ...)
+        #region ToJSON(CustomGetCRLRequestSerializer = null, CustomCertificateHashDataSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetCRLSerializer">A delegate to serialize custom GetCRL requests.</param>
+        /// <param name="CustomGetCRLRequestSerializer">A delegate to serialize custom GetCRL requests.</param>
         /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash datas.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCRLRequest>?        CustomGetCRLSerializer                = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<GetCRLRequest>?        CustomGetCRLRequestSerializer         = null,
                               CustomJObjectSerializerDelegate<CertificateHashData>?  CustomCertificateHashDataSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
                               CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
@@ -356,8 +356,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                        );
 
-            return CustomGetCRLSerializer is not null
-                       ? CustomGetCRLSerializer(this, json)
+            return CustomGetCRLRequestSerializer is not null
+                       ? CustomGetCRLRequestSerializer(this, json)
                        : json;
 
         }

@@ -150,11 +150,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        public SignaturePolicy AddSigningRule(JSONLDContext      Context,
-                                              KeyPair            KeyPair,
-                                              Func<String>?      UserIdGenerator        = null,
-                                              Func<I18NString>?  DescriptionGenerator   = null,
-                                              Func<DateTime>?    TimestampGenerator     = null)
+        public SignaturePolicy AddSigningRule(JSONLDContext                        Context,
+                                              KeyPair                              KeyPair,
+                                              Func<ISignableMessage, String>?      UserIdGenerator        = null,
+                                              Func<ISignableMessage, I18NString>?  DescriptionGenerator   = null,
+                                              Func<ISignableMessage, DateTime>?    TimestampGenerator     = null)
         {
 
             entries.Add(new SignaturePolicyEntry(
@@ -171,12 +171,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         }
 
-        public SignaturePolicy AddSigningRule(UInt32             Priority,
-                                              JSONLDContext      Context,
-                                              KeyPair            KeyPair,
-                                              Func<String>?      UserIdGenerator        = null,
-                                              Func<I18NString>?  DescriptionGenerator   = null,
-                                              Func<DateTime>?    TimestampGenerator     = null)
+        public SignaturePolicy AddSigningRule(UInt32                               Priority,
+                                              JSONLDContext                        Context,
+                                              KeyPair                              KeyPair,
+                                              Func<ISignableMessage, String>?      UserIdGenerator        = null,
+                                              Func<ISignableMessage, I18NString>?  DescriptionGenerator   = null,
+                                              Func<ISignableMessage, DateTime>?    TimestampGenerator     = null)
         {
 
             entries.Add(new SignaturePolicyEntry(
