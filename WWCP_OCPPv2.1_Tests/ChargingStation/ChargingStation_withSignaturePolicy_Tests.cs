@@ -106,12 +106,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                                                      DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station test!"),
                                                                      TimestampGenerator:      (signableMessage) => now1);
                 chargingStation1.SignaturePolicy.AddVerificationRule(BootNotificationResponse.DefaultJSONLDContext,
-                                                                     VerificationPolicyAction.VerifyAll);
+                                                                     VerificationRuleAction.VerifyAll);
 
                 var now2                           = Timestamp.Now;
                 var keyPair2                       = KeyPair.GenerateKeys()!;
                 testCSMS01.SignaturePolicy.      AddVerificationRule(BootNotificationRequest. DefaultJSONLDContext,
-                                                                     VerificationPolicyAction.VerifyAll);
+                                                                     VerificationRuleAction.VerifyAll);
                 testCSMS01.SignaturePolicy.      AddSigningRule     (BootNotificationResponse.DefaultJSONLDContext,
                                                                      keyPair2,
                                                                      UserIdGenerator:         (signableMessage) => "csms001",

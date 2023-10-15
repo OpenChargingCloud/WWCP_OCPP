@@ -45,6 +45,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
+        private          readonly  HashSet<SignaturePolicy>                                                  signaturePolicies           = new();
+
         private          readonly  HashSet<ICSMSChannel>                                                     centralSystemServers        = new();
 
         private          readonly  ConcurrentDictionary<ChargingStation_Id, Tuple<ICSMSChannel, DateTime>>   reachableChargingStations   = new();
@@ -103,10 +105,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => centralSystemServers;
 
 
-        public SignaturePolicy  SignaturePolicy    { get; }
-
-
-
         public IEnumerable<ICSMSChannel> CSMSChannels
             => centralSystemServers;
 
@@ -118,6 +116,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         public Dictionary<String, Transaction_Id> TransactionIds = new ();
+
+        /// <summary>
+        /// The enumeration of all signature policies.
+        /// </summary>
+        public IEnumerable<SignaturePolicy>  SignaturePolicies
+            => signaturePolicies;
+
+        /// <summary>
+        /// The currently active signature policy.
+        /// </summary>
+        public SignaturePolicy               SignaturePolicy
+            => SignaturePolicies.First();
 
         #endregion
 
@@ -1524,11 +1534,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="CSMSId">The unique identification of this central system.</param>
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
-        public TestCSMS(CSMS_Id     Id,
-                        Boolean     RequireAuthentication   = true,
-                        TimeSpan?   DefaultRequestTimeout   = null,
-                        IPPort?     HTTPUploadPort          = null,
-                        DNSClient?  DNSClient               = null)
+        public TestCSMS(CSMS_Id           Id,
+                        Boolean           RequireAuthentication   = true,
+                        TimeSpan?         DefaultRequestTimeout   = null,
+                        IPPort?           HTTPUploadPort          = null,
+                        DNSClient?        DNSClient               = null,
+
+                        SignaturePolicy?  SignaturePolicy         = null)
+
         {
 
             if (Id.IsNullOrEmpty)
@@ -1584,7 +1597,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.DNSClient               = DNSClient ?? new DNSClient(SearchForIPv6DNSServers: false);
 
-            this.SignaturePolicy         = new SignaturePolicy();
+            this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
 
         }
 

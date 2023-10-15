@@ -192,6 +192,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
+        private readonly            HashSet<SignaturePolicy>    signaturePolicies           = new();
+
+
         /// <summary>
         /// The default time span between heartbeat requests.
         /// </summary>
@@ -220,13 +223,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Properties
 
-        public SignaturePolicy          SignaturePolicy             { get; }
-
-
         /// <summary>
         /// The client connected to a CSMS.
         /// </summary>
-        public IChargingStationClient?  CSClient                    { get; private set; }
+        public IChargingStationClient?   CSClient                    { get; private set; }
 
 
         public String? ClientCloseMessage
@@ -368,6 +368,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public HTTPClientLogger? HTTPLogger => throw new NotImplementedException();
 
         #endregion
+
+
+        /// <summary>
+        /// The enumeration of all signature policies.
+        /// </summary>
+        public IEnumerable<SignaturePolicy>  SignaturePolicies
+            => signaturePolicies;
+
+        /// <summary>
+        /// The currently active signature policy.
+        /// </summary>
+        public SignaturePolicy               SignaturePolicy
+            => SignaturePolicies.First();
+
 
 
         // Controlled by the CSMS!
@@ -1756,7 +1770,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SendHeartbeatEvery">The time span between heartbeat requests.</param>
         /// 
         /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
-        public TestChargingStation(ChargingStation_Id                       Id,
+        public TestChargingStation(ChargingStation_Id                 Id,
                                    String                             VendorName,
                                    String                             Model,
 
@@ -1779,7 +1793,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                    TimeSpan?                          DefaultRequestTimeout     = null,
                                    IHTTPAuthentication?               HTTPAuthentication        = null,
-                                   DNSClient?                         DNSClient                 = null)
+                                   DNSClient?                         DNSClient                 = null,
+
+                                   SignaturePolicy?                   SignaturePolicy           = null)
 
         {
 
@@ -1840,7 +1856,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.HTTPAuthentication       = HTTPAuthentication;
             this.DNSClient                = DNSClient;
 
-            this.SignaturePolicy          = new SignaturePolicy();
+            this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
 
         }
 

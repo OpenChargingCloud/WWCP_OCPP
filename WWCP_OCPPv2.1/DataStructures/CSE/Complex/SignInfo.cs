@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Convert the given key pair to a signature information.
         /// </summary>
         /// <param name="SignaturePolicyEntry">A signature policy entry.</param>
-        public static SignInfo? ToSignInfo(this SignaturePolicyEntry SignaturePolicyEntry)
+        public static SignInfo? ToSignInfo(this SigningRule SignaturePolicyEntry)
         {
 
             if (SignaturePolicyEntry.KeyPair is KeyPair keyPair &&

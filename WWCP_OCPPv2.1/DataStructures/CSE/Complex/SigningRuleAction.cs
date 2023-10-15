@@ -19,15 +19,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// An OCPP CSE cryptographic signature cerification policy action.
+    /// An OCPP CSE cryptographic signature policy action.
     /// </summary>
-    public enum VerificationPolicyAction
+    public enum SigningRuleAction
     {
 
         /// <summary>
-        /// Just accept the message without any further verification.
+        /// Just forward this message.
         /// </summary>
-        AcceptUnverified,
+        ForwardUnsigned,
 
         /// <summary>
         /// Silently drop this message.
@@ -40,16 +40,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         Reject,
 
         /// <summary>
-        /// Verify the signatures of the incoming message and
-        /// accept it if at least one signature is valid.
+        /// Sign this outgoing message.
         /// </summary>
-        VerifyAny,
-
-        /// <summary>
-        /// Verify the signatures of the incoming message and
-        /// accept it only if all signatures are valid.
-        /// </summary>
-        VerifyAll
+        Sign
 
     }
 

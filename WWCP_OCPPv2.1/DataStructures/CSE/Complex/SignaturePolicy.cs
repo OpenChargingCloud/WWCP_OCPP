@@ -43,111 +43,147 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        private readonly HashSet<SignaturePolicyEntry>     signaturePolicyEntries      = new();
-        private readonly HashSet<VerificationPolicyEntry>  verificationPolicyEntries   = new();
-        private readonly HashSet<KeyPair>                  keyPairs                    = new();
+        private        readonly HashSet<SigningRule>       signingRules           = new();
+        private        readonly HashSet<VerificationRule>  verificationRules      = new();
+        private        readonly HashSet<KeyPair>           keyPairs               = new();
 
-        private static readonly JsonConverter[] defaultJSONConverters = new[] {
-                                                                            new Newtonsoft.Json.Converters.IsoDateTimeConverter {
-                                                                                DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ"
-                                                                            }
-                                                                        };
+        private static readonly JsonConverter[]            defaultJSONConverters  = new[] {
+                                                                                        new Newtonsoft.Json.Converters.IsoDateTimeConverter {
+                                                                                            DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ"
+                                                                                        }
+                                                                                    };
 
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// The enumeration of signature policy policy entries.
+        /// The enumeration of signature policy entries.
         /// </summary>
         [Mandatory]
-        public IEnumerable<SignaturePolicyEntry>  Entries
-            => signaturePolicyEntries;
+        public IEnumerable<SigningRule>       SignaturePolicyEntries
+            => signingRules;
 
         /// <summary>
-        /// The enumeration of signature policy policy entries.
+        /// The enumeration of signature verification policy entries.
         /// </summary>
         [Mandatory]
-        public IEnumerable<KeyPair>               KeyPairs
+        public IEnumerable<VerificationRule>  VerificationPolicyEntries
+            => verificationRules;
+
+        /// <summary>
+        /// The enumeration of cryptographic key pairs.
+        /// </summary>
+        [Mandatory]
+        public IEnumerable<KeyPair>           KeyPairs
             => keyPairs;
 
-        /// <summary>
-        /// The default verification action.
-        /// </summary>
-        [Mandatory]
-        public VerificationPolicyAction           DefaultVerificationAction    { get; }
 
         /// <summary>
         /// The default signature action.
         /// </summary>
         [Mandatory]
-        public SignaturePolicyAction              DefaultSignatureAction       { get; }
+        public SigningRuleAction              DefaultSigningAction          { get; }
 
         /// <summary>
         /// The optional default cryptographic signing key pair.
         /// </summary>
         [Optional]
-        public KeyPair?                           DefaultSigningKeyPair        { get; }
+        public KeyPair?                       DefaultSigningKeyPair         { get; }
+
+
+        /// <summary>
+        /// The default verification action.
+        /// </summary>
+        [Mandatory]
+        public VerificationRuleAction         DefaultVerificationAction     { get; }
+
+        /// <summary>
+        /// The optional default cryptographic verification key pair.
+        /// </summary>
+        [Optional]
+        public KeyPair?                       DefaultVerificationKeyPair    { get; }
+
+
+        /// <summary>
+        /// The optional timestamp before which the signature policy should not be used.
+        /// </summary>
+        [Mandatory]
+        public DateTime                       NotBefore                     { get; }
+
+        /// <summary>
+        /// The optional timestamp after which the signature policy should not be used.
+        /// </summary>
+        [Optional]
+        public DateTime?                      NotAfter                      { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region SignaturePolicy(                DefaultAction,        DefaultSigningKeyPair,        CustomData = null)
-
         /// <summary>
         /// Create a new OCPP CSE cryptographic signature policy.
         /// </summary>
-        /// <param name="DefaultSignatureAction">The optional default action of this policy.</param>
-        /// <param name="DefaultSigningKeyPair">The optional default cryptographic signing key pair.</param>
+        /// <param name="SigningRules">An optional enumeration of cryptographic signing rules.</param>
+        /// <param name="DefaultSigningAction">An optional default signing action for this policy.</param>
+        /// <param name="DefaultSigningKeyPair">An optional default cryptographic signing key pair.</param>
+        /// 
+        /// <param name="VerificationRules">An optional enumeration of cryptographic verification rules.</param>
+        /// <param name="DefaultVerificationAction">An optional default verification action for this policy.</param>
+        /// <param name="DefaultSigningKeyPair">An optional default cryptographic signing key pair.</param>
+        /// 
+        /// <param name="NotBefore">An optional timestamp before which the signature policy should not be used.</param>
+        /// <param name="NotAfter">An optional timestamp after which the signature policy should not be used.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SignaturePolicy(VerificationPolicyAction?  DefaultVerificationAction,
-                               SignaturePolicyAction?     DefaultSignatureAction,
-                               KeyPair?                   DefaultSigningKeyPair,
-                               CustomData?                CustomData   = null)
+        public SignaturePolicy(IEnumerable<SigningRule>?       SigningRules                 = null,
+                               SigningRuleAction?              DefaultSigningAction         = null,
+                               KeyPair?                        DefaultSigningKeyPair        = null,
 
-            : this(null,
-                   DefaultVerificationAction,
-                   DefaultSignatureAction,
-                   DefaultSigningKeyPair,
-                   CustomData)
+                               IEnumerable<VerificationRule>?  VerificationRules            = null,
+                               VerificationRuleAction?         DefaultVerificationAction    = null,
+                               KeyPair?                        DefaultVerificationKeyPair   = null,
 
-        { }
+                               DateTime?                       NotBefore                    = null,
+                               DateTime?                       NotAfter                     = null,
 
-        #endregion
-
-        #region SignaturePolicy(Entries = null, DefaultAction = null, DefaultSigningKeyPair = null, CustomData = null)
-
-        /// <summary>
-        /// Create a new OCPP CSE cryptographic signature policy.
-        /// </summary>
-        /// <param name="Entries">An optional enumeration of cryptographic signature policy entries.</param>
-        /// <param name="DefaultSignatureAction">The optional default action of this policy.</param>
-        /// <param name="DefaultSigningKeyPair">The optional default cryptographic signing key pair.</param>
-        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SignaturePolicy(IEnumerable<SignaturePolicyEntry>?  Entries                     = null,
-                               VerificationPolicyAction?           DefaultVerificationAction   = null,
-                               SignaturePolicyAction?              DefaultSignatureAction      = null,
-                               KeyPair?                            DefaultSigningKeyPair       = null,
-                               CustomData?                         CustomData                  = null)
+                               CustomData?                     CustomData                   = null)
 
             : base(CustomData)
 
         {
 
-            if (Entries is not null)
-                foreach (var entry in Entries)
-                    signaturePolicyEntries.Add(entry);
+            if (SigningRules is not null)
+                foreach (var signingRule      in SigningRules)
+                    signingRules.   Add(signingRule);
 
-            this.DefaultVerificationAction  = DefaultVerificationAction ?? VerificationPolicyAction.AcceptUnverified;
-            this.DefaultSignatureAction     = DefaultSignatureAction    ?? SignaturePolicyAction.ForwardUnsigned;
-            this.DefaultSigningKeyPair      = DefaultSigningKeyPair;
+            this.DefaultSigningAction        = DefaultSigningAction      ?? SigningRuleAction.     ForwardUnsigned;
+            this.DefaultSigningKeyPair       = DefaultSigningKeyPair;
 
-            if (this.DefaultSignatureAction == SignaturePolicyAction.Sign &&
+            if (this.DefaultSigningAction == SigningRuleAction.Sign &&
                 this.DefaultSigningKeyPair is null)
             {
                 throw new ArgumentException("If the default action is 'sign', a default signing key pair must be provided!");
             }
+
+
+            if (VerificationRules is not null)
+                foreach (var verificationRule in VerificationRules)
+                    verificationRules.Add(verificationRule);
+
+            this.DefaultVerificationAction   = DefaultVerificationAction ?? VerificationRuleAction.AcceptUnverified;
+            this.DefaultVerificationKeyPair  = DefaultVerificationKeyPair;
+
+            if ((this.DefaultVerificationAction == VerificationRuleAction.VerifyAny ||
+                 this.DefaultVerificationAction == VerificationRuleAction.VerifyAll) &&
+                 this.DefaultVerificationKeyPair is null)
+            {
+                throw new ArgumentException("If the default action is 'VerifyAny' or 'VerifyAll', a default verification key pair must be provided!");
+            }
+
+
+            this.NotBefore                   = NotBefore ?? Timestamp.Now;
+            this.NotAfter                    = NotAfter;
 
             unchecked
             {
@@ -156,14 +192,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 //           Value.          GetHashCode()       *  7 ^
                 //          (SigningMethod?. GetHashCode() ?? 0) *  5 ^
                 //          (EncodingMethod?.GetHashCode() ?? 0) *  3 ^
-
                            base.           GetHashCode();
 
             }
 
         }
-
-        #endregion
 
         #endregion
 
@@ -175,6 +208,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        #region Signing...
+
+        #region AddSigningRule (...)
+
         public SignaturePolicy AddSigningRule(JSONLDContext                        Context,
                                               KeyPair                              KeyPair,
                                               Func<ISignableMessage, String>?      UserIdGenerator        = null,
@@ -182,19 +219,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                               Func<ISignableMessage, DateTime>?    TimestampGenerator     = null)
         {
 
-            signaturePolicyEntries.Add(new SignaturePolicyEntry(
-                                           signaturePolicyEntries.Any() ? signaturePolicyEntries.Max(entry => entry.Priority) + 1 : 1,
-                                           Context,
-                                           SignaturePolicyAction.Sign,
-                                           KeyPair,
-                                           UserIdGenerator,
-                                           DescriptionGenerator,
-                                           TimestampGenerator
-                                       ));
+            lock (signingRules)
+            {
 
-            return this;
+                signingRules.Add(new SigningRule(
+                                     signingRules.Any() ? signingRules.Max(entry => entry.Priority) + 1 : 1,
+                                     Context,
+                                     SigningRuleAction.Sign,
+                                     KeyPair,
+                                     UserIdGenerator,
+                                     DescriptionGenerator,
+                                     TimestampGenerator
+                                 ));
+
+                return this;
+
+            }
 
         }
+
+        #endregion
+
+        #region AddSigningRule (Priority, ...)
 
         public SignaturePolicy AddSigningRule(UInt32                               Priority,
                                               JSONLDContext                        Context,
@@ -204,71 +250,82 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                               Func<ISignableMessage, DateTime>?    TimestampGenerator     = null)
         {
 
-            signaturePolicyEntries.Add(new SignaturePolicyEntry(
-                                           Priority,
-                                           Context,
-                                           SignaturePolicyAction.Sign,
-                                           KeyPair,
-                                           UserIdGenerator,
-                                           DescriptionGenerator,
-                                           TimestampGenerator
-                                       ));
+            lock (signingRules)
+            {
 
-            return this;
+                signingRules.Add(new SigningRule(
+                                     Priority,
+                                     Context,
+                                     SigningRuleAction.Sign,
+                                     KeyPair,
+                                     UserIdGenerator,
+                                     DescriptionGenerator,
+                                     TimestampGenerator
+                                 ));
+
+                return this;
+
+            }
 
         }
 
-        public SignaturePolicy AddVerificationRule(JSONLDContext             Context,
-                                                   VerificationPolicyAction  Action   = VerificationPolicyAction.VerifyAll)
+        #endregion
+
+        #region AddSigningRules(...)
+
+        public SignaturePolicy AddSigningRules(IEnumerable<SigningRule> SigningRules)
         {
 
-            verificationPolicyEntries.Add(new VerificationPolicyEntry(
-                                              signaturePolicyEntries.Any() ? signaturePolicyEntries.Max(entry => entry.Priority) + 1 : 1,
-                                              Context,
-                                              Action
-                                          ));
+            lock (signingRules)
+            {
 
-            return this;
+                foreach (var signingRule in SigningRules)
+                    signingRules.Add(signingRule);
+
+                return this;
+
+            }
 
         }
 
-        public SignaturePolicy AddVerificationRule(UInt32                    Priority,
-                                                   JSONLDContext             Context,
-                                                   VerificationPolicyAction  Action   = VerificationPolicyAction.VerifyAll)
+        #endregion
+
+
+        #region GetSigningRules(...)
+
+        public IEnumerable<SigningRule> GetSigningRules(JSONLDContext Context)
         {
 
-            verificationPolicyEntries.Add(new VerificationPolicyEntry(
-                                              Priority,
-                                              Context,
-                                              Action
-                                          ));
+            var rules = signingRules.Where(signingRule => signingRule.Context == Context);
 
-            return this;
+            if (rules.Any())
+                return rules;
+
+            return new[] {
+                       new SigningRule(
+                           0,
+                           JSONLDContext.Parse("default"),
+                           DefaultSigningAction
+                       )
+                   };
 
         }
 
+        #endregion
 
-        public Boolean HasSingaturePolicy(JSONLDContext                          Context,
-                                          out IEnumerable<SignaturePolicyEntry>  SignaturePolicyEntries)
+        #region HasSigningRules(Context, out SigningRules)
+
+        public Boolean HasSigningRules(JSONLDContext                 Context,
+                                       out IEnumerable<SigningRule>  SigningRules)
         {
 
-            SignaturePolicyEntries = signaturePolicyEntries.Where(entry => entry.Context == Context);
+            SigningRules = signingRules.Where(signingRule => signingRule.Context == Context);
 
-            return SignaturePolicyEntries.Any();
-
-        }
-
-        public Boolean HasVerificationPolicy(JSONLDContext                             Context,
-                                             out IEnumerable<VerificationPolicyEntry>  VerificationPolicyEntries)
-        {
-
-            VerificationPolicyEntries = verificationPolicyEntries.Where(entry => entry.Context == Context);
-
-            return VerificationPolicyEntries.Any();
+            return SigningRules.Any();
 
         }
 
-
+        #endregion
 
 
         #region SignMessage        (SignableMessage, JSONMessage, out ErrorResponse, params SignInfos)
@@ -308,12 +365,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (JSONMessage["@context"] is null)
                     JSONMessage.AddFirst(new JProperty("@context", SignableMessage.Context.ToString()));
 
-                IEnumerable<SignaturePolicyEntry>? signaturePolicyEntries = null;
+                IEnumerable<SigningRule>? signaturePolicyEntries = null;
 
                 if ((SignInfos                 is not null && SignInfos.                Any()) ||
                     (SignableMessage.SignKeys  is not null && SignableMessage.SignKeys. Any()) ||
                     (SignableMessage.SignInfos is not null && SignableMessage.SignInfos.Any()) ||
-                     HasSingaturePolicy(SignableMessage.Context, out signaturePolicyEntries))
+                     HasSigningRules(SignableMessage.Context, out signaturePolicyEntries))
                 {
 
                     var signInfos = new List<SignInfo>();
@@ -470,26 +527,120 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #endregion
 
+        #region Verification...
 
+        #region AddVerificationRule (...)
 
-        public VerificationPolicyEntry GetHighestVerificationPolicy(JSONLDContext Context)
+        public SignaturePolicy AddVerificationRule(JSONLDContext           Context,
+                                                   VerificationRuleAction  Action   = VerificationRuleAction.VerifyAll)
         {
 
-            var verificationPolicyEntry = verificationPolicyEntries.
-                                              Where(entry => entry.Context == Context).
-                                              MaxBy(entry => entry.Priority);
+            lock (verificationRules)
+            {
 
-            if (verificationPolicyEntry is not null)
-                return verificationPolicyEntry;
+                verificationRules.Add(new VerificationRule(
+                                          verificationRules.Any() ? verificationRules.Max(entry => entry.Priority) + 1 : 1,
+                                          Context,
+                                          Action
+                                      ));
 
-            return new VerificationPolicyEntry(
+                return this;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AddVerificationRule (...)
+
+        public SignaturePolicy AddVerificationRule(UInt32                  Priority,
+                                                   JSONLDContext           Context,
+                                                   VerificationRuleAction  Action   = VerificationRuleAction.VerifyAll)
+        {
+
+            lock (verificationRules)
+            {
+
+                verificationRules.Add(new VerificationRule(
+                                          Priority,
+                                          Context,
+                                          Action
+                                      ));
+
+                return this;
+
+            }
+
+        }
+
+        #endregion
+
+        #region AddVerificationRules(...)
+
+        public SignaturePolicy AddVerificationRules(IEnumerable<VerificationRule> VerificationRules)
+        {
+
+            lock (verificationRules)
+            {
+
+                foreach (var verificationRule in VerificationRules)
+                    verificationRules.Add(verificationRule);
+
+                return this;
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region GetVerificationRules      (...)
+
+        public IEnumerable<VerificationRule> GetVerificationRules(JSONLDContext Context)
+        {
+
+            var rules = verificationRules.Where(verificationRule => verificationRule.Context == Context);
+
+            if (rules.Any())
+                return rules;
+
+            return new[] {
+                       new VerificationRule(
+                           0,
+                           JSONLDContext.Parse("default"),
+                           DefaultVerificationAction
+                       )
+                   };
+
+        }
+
+        #endregion
+
+        #region GetHighestVerificationRule(...)
+
+        public VerificationRule GetHighestVerificationRule(JSONLDContext Context)
+        {
+
+            var verificationRule = verificationRules.
+                                       Where(verificationRule => verificationRule.Context == Context).
+                                       MaxBy(verificationRule => verificationRule.Priority);
+
+            if (verificationRule is not null)
+                return verificationRule;
+
+            return new VerificationRule(
                        0,
                        JSONLDContext.Parse("default"),
                        DefaultVerificationAction
                    );
 
         }
+
+        #endregion
 
 
         #region VerifyMessage      (SignableMessage, JSONMessage, out ErrorResponse)
@@ -507,12 +658,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             ErrorResponse = null;
 
-            var verificationPolicyEntry = GetHighestVerificationPolicy(SignableMessage.Context);
+            var verificationPolicyEntry = GetHighestVerificationRule(SignableMessage.Context);
 
             if (!SignableMessage.Signatures.Any())
             {
 
-                if (DefaultVerificationAction == VerificationPolicyAction.AcceptUnverified)
+                if (DefaultVerificationAction == VerificationRuleAction.AcceptUnverified)
                     return true;
 
                 ErrorResponse = "The given message does not contain any signatures!";
@@ -534,17 +685,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 switch (verificationPolicyEntry.Action)
                 {
 
-                    case VerificationPolicyAction.AcceptUnverified:
+                    case VerificationRuleAction.AcceptUnverified:
                         foreach (var signature in SignableMessage.Signatures)
                             signature.Status = VerificationStatus.Unverified;
                         return true;
 
-                    case VerificationPolicyAction.Drop:
+                    case VerificationRuleAction.Drop:
                         foreach (var signature in SignableMessage.Signatures)
                             signature.Status = VerificationStatus.DropMessage;
                         return true;
 
-                    case VerificationPolicyAction.Reject:
+                    case VerificationRuleAction.Reject:
                         foreach (var signature in SignableMessage.Signatures)
                             signature.Status = VerificationStatus.RejectMessage;
                         return true;
@@ -575,7 +726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                             ? VerificationStatus.ValidSignature
                                             : VerificationStatus.InvalidSignature;
 
-                    if (verificationPolicyEntry?.Action == VerificationPolicyAction.VerifyAny &&
+                    if (verificationPolicyEntry?.Action == VerificationRuleAction.VerifyAny &&
                         signature.Status == VerificationStatus.ValidSignature)
                     {
                         return true;
@@ -636,6 +787,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  out ErrorResponse);
 
         }
+
+        #endregion
 
         #endregion
 
@@ -740,7 +893,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{Entries.Count()} / {KeyPairs.Count()} => Default: '{DefaultSignatureAction}'{(DefaultSigningKeyPair is not null ? " / defaultKey" : "")}";
+            => $"{SignaturePolicyEntries.Count()} / {KeyPairs.Count()} => Default: '{DefaultSigningAction}'{(DefaultSigningKeyPair is not null ? " / defaultKey" : "")}";
 
         #endregion
 
