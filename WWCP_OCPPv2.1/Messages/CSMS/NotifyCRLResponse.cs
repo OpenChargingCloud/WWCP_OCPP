@@ -66,19 +66,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public NotifyCRLResponse(CSMS.NotifyCRLRequest    Request,
 
-                                 IEnumerable<KeyPair>?    SignKeys          = null,
-                                 IEnumerable<SignInfo>?   SignInfos         = null,
-                                 SignaturePolicy?         SignaturePolicy   = null,
-                                 IEnumerable<Signature>?  Signatures        = null,
+                                 IEnumerable<KeyPair>?    SignKeys     = null,
+                                 IEnumerable<SignInfo>?   SignInfos    = null,
+                                 IEnumerable<Signature>?  Signatures   = null,
 
-                                 DateTime?                Timestamp         = null,
-                                 CustomData?              CustomData        = null)
+                                 DateTime?                Timestamp    = null,
+                                 CustomData?              CustomData   = null)
 
             : base(Request,
                    Result.OK(),
                    SignKeys,
                    SignInfos,
-                   SignaturePolicy,
                    Signatures,
                    Timestamp,
                    CustomData)
@@ -196,7 +194,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 NotifyCRLResponse = new NotifyCRLResponse(
                                         Request,
-                                        null,
                                         null,
                                         null,
                                         Signatures,

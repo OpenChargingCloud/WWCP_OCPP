@@ -1125,7 +1125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnUnpublishFirmware
+        #region OnUnpublishFirmware              (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever an UnpublishFirmware request was sent.
@@ -1139,7 +1139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnGetBaseReport
+        #region OnGetBaseReport                  (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a GetBaseReport request was sent.
@@ -1153,7 +1153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnGetReport
+        #region OnGetReport                      (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a GetReport request was sent.
@@ -1167,7 +1167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnGetLog
+        #region OnGetLog                         (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a GetLog request was sent.
@@ -1181,7 +1181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnSetVariables
+        #region OnSetVariables                   (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a SetVariables request was sent.
@@ -1195,7 +1195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnGetVariables
+        #region OnGetVariables                   (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a GetVariables request was sent.
@@ -1209,7 +1209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnSetMonitoringBase
+        #region OnSetMonitoringBase              (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a SetMonitoringBase request was sent.
@@ -1223,7 +1223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnGetMonitoringReport
+        #region OnGetMonitoringReport            (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a GetMonitoringReport request was sent.
@@ -1237,7 +1237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnSetMonitoringLevel
+        #region OnSetMonitoringLevel             (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a SetMonitoringLevel request was sent.
@@ -1251,7 +1251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnSetVariableMonitoring
+        #region OnSetVariableMonitoring          (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a SetVariableMonitoring request was sent.
@@ -1265,7 +1265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnClearVariableMonitoring
+        #region OnClearVariableMonitoring        (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a ClearVariableMonitoring request was sent.
@@ -1279,7 +1279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnSetNetworkProfile
+        #region OnSetNetworkProfile              (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a SetNetworkProfile request was sent.
@@ -1293,7 +1293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnChangeAvailability
+        #region OnChangeAvailability             (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a ChangeAvailability request was sent.
@@ -1307,7 +1307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnTriggerMessage
+        #region OnTriggerMessage                 (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a TriggerMessage request was sent.
@@ -1321,7 +1321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnDataTransfer
+        #region OnDataTransfer                   (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a DataTransfer request was sent.
@@ -1336,7 +1336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region OnCertificateSigned
+        #region OnCertificateSigned              (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a CertificateSigned request was sent.
@@ -1350,7 +1350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnInstallCertificate
+        #region OnInstallCertificate             (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever an InstallCertificate request was sent.
@@ -1364,7 +1364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnGetInstalledCertificateIds
+        #region OnGetInstalledCertificateIds     (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a GetInstalledCertificateIds request was sent.
@@ -1378,7 +1378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnDeleteCertificate
+        #region OnDeleteCertificate              (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a DeleteCertificate request was sent.
@@ -1392,7 +1392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnNotifyCRL
+        #region OnNotifyCRL                      (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a NotifyCRL request was sent.
@@ -1407,7 +1407,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region OnGetLocalListVersion
+        #region OnGetLocalListVersion            (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a GetLocalListVersion request was sent.
@@ -1421,7 +1421,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnSendLocalList
+        #region OnSendLocalList                  (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a SendLocalList request was sent.
@@ -1435,7 +1435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnClearCache
+        #region OnClearCache                     (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a ClearCache request was sent.
@@ -1450,7 +1450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region OnReserveNow
+        #region OnReserveNow                     (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a ReserveNow request was sent.
@@ -1464,7 +1464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnCancelReservation
+        #region OnCancelReservation              (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a CancelReservation request was sent.
@@ -1478,7 +1478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnRequestStartTransaction
+        #region OnRequestStartTransaction        (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a RequestStartTransaction request was sent.
@@ -1492,7 +1492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnRequestStopTransaction
+        #region OnRequestStopTransaction         (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a RequestStopTransaction request was sent.
@@ -1506,7 +1506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnGetTransactionStatus
+        #region OnGetTransactionStatus           (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a GetTransactionStatus request was sent.
@@ -1520,7 +1520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnSetChargingProfile
+        #region OnSetChargingProfile             (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a SetChargingProfile request was sent.
@@ -1534,7 +1534,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnGetChargingProfiles
+        #region OnGetChargingProfiles            (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a GetChargingProfiles request was sent.
@@ -1548,7 +1548,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnClearChargingProfile
+        #region OnClearChargingProfile           (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a ClearChargingProfile request was sent.
@@ -1562,7 +1562,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnGetCompositeSchedule
+        #region OnGetCompositeSchedule           (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was sent.
@@ -1576,7 +1576,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnUpdateDynamicSchedule
+        #region OnUpdateDynamicSchedule          (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a UpdateDynamicSchedule request was sent.
@@ -1604,7 +1604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnUsePriorityCharging
+        #region OnUsePriorityCharging            (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a UsePriorityCharging request was sent.
@@ -1618,7 +1618,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnUnlockConnector
+        #region OnUnlockConnector                (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever an UnlockConnector request was sent.
@@ -1633,7 +1633,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region OnAFRRSignal
+        #region OnAFRRSignal                     (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever an AFRR signal request was sent.
@@ -1648,7 +1648,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region OnSetDisplayMessage
+        #region OnSetDisplayMessage              (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a SetDisplayMessage request was sent.
@@ -1662,7 +1662,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnGetDisplayMessages
+        #region OnGetDisplayMessages             (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a GetDisplayMessages request was sent.
@@ -1676,7 +1676,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnClearDisplayMessage
+        #region OnClearDisplayMessage            (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a ClearDisplayMessage request was sent.
@@ -1690,7 +1690,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnCostUpdated
+        #region OnCostUpdated                    (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a CostUpdated request was sent.
@@ -1704,7 +1704,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnCustomerInformation
+        #region OnCustomerInformation            (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a CustomerInformation request was sent.
@@ -1715,6 +1715,93 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// An event sent whenever a response to a CustomerInformation request was sent.
         /// </summary>
         public event OnCustomerInformationResponseDelegate?    OnCustomerInformationResponse;
+
+        #endregion
+
+
+        // E2E Security Extensions
+
+        #region OnAddSignaturePolicy             (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a AddSignaturePolicy request was sent.
+        /// </summary>
+        public event OnAddSignaturePolicyRequestDelegate?     OnAddSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a AddSignaturePolicy request was sent.
+        /// </summary>
+        public event OnAddSignaturePolicyResponseDelegate?    OnAddSignaturePolicyResponse;
+
+        #endregion
+
+        #region OnUpdateSignaturePolicy          (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a UpdateSignaturePolicy request was sent.
+        /// </summary>
+        public event OnUpdateSignaturePolicyRequestDelegate?     OnUpdateSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a UpdateSignaturePolicy request was sent.
+        /// </summary>
+        public event OnUpdateSignaturePolicyResponseDelegate?    OnUpdateSignaturePolicyResponse;
+
+        #endregion
+
+        #region OnDeleteSignaturePolicy          (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a DeleteSignaturePolicy request was sent.
+        /// </summary>
+        public event OnDeleteSignaturePolicyRequestDelegate?     OnDeleteSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a DeleteSignaturePolicy request was sent.
+        /// </summary>
+        public event OnDeleteSignaturePolicyResponseDelegate?    OnDeleteSignaturePolicyResponse;
+
+        #endregion
+
+        #region OnAddUserRole                    (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a AddUserRole request was sent.
+        /// </summary>
+        public event OnAddUserRoleRequestDelegate?     OnAddUserRoleRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a AddUserRole request was sent.
+        /// </summary>
+        public event OnAddUserRoleResponseDelegate?    OnAddUserRoleResponse;
+
+        #endregion
+
+        #region OnUpdateUserRole                 (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a UpdateUserRole request was sent.
+        /// </summary>
+        public event OnUpdateUserRoleRequestDelegate?     OnUpdateUserRoleRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a UpdateUserRole request was sent.
+        /// </summary>
+        public event OnUpdateUserRoleResponseDelegate?    OnUpdateUserRoleResponse;
+
+        #endregion
+
+        #region OnDeleteUserRole                 (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a DeleteUserRole request was sent.
+        /// </summary>
+        public event OnDeleteUserRoleRequestDelegate?     OnDeleteUserRoleRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a DeleteUserRole request was sent.
+        /// </summary>
+        public event OnDeleteUserRoleResponseDelegate?    OnDeleteUserRoleResponse;
 
         #endregion
 
@@ -1876,160 +1963,174 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Custom JSON serializer delegates
 
-        #region CSMS Messages
+        #region CSMS Request Messages
 
-        public CustomJObjectSerializerDelegate<ResetRequest>?                         CustomResetRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<ResetRequest>?                                        CustomResetRequestSerializer                                 { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?                               CustomUpdateFirmwareRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<PublishFirmwareRequest>?                              CustomPublishFirmwareRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<UnpublishFirmwareRequest>?                            CustomUnpublishFirmwareRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<GetBaseReportRequest>?                                CustomGetBaseReportRequestSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<GetReportRequest>?                                    CustomGetReportRequestSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<GetLogRequest>?                                       CustomGetLogRequestSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariablesRequest>?                                 CustomSetVariablesRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<GetVariablesRequest>?                                 CustomGetVariablesRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringBaseRequest>?                            CustomSetMonitoringBaseRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<GetMonitoringReportRequest>?                          CustomGetMonitoringReportRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringLevelRequest>?                           CustomSetMonitoringLevelRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariableMonitoringRequest>?                        CustomSetVariableMonitoringRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<ClearVariableMonitoringRequest>?                      CustomClearVariableMonitoringRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<SetNetworkProfileRequest>?                            CustomSetNetworkProfileRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?                           CustomChangeAvailabilityRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                               CustomTriggerMessageRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
 
-        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?                CustomUpdateFirmwareRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?                            CustomCertificateSignedRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?                           CustomInstallCertificateRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?                   CustomGetInstalledCertificateIdsRequestSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?                            CustomDeleteCertificateRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyCRLRequest>?                                    CustomNotifyCRLRequestSerializer                             { get; set; }
 
-        public CustomJObjectSerializerDelegate<PublishFirmwareRequest>?               CustomPublishFirmwareRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?                          CustomGetLocalListVersionRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<SendLocalListRequest>?                                CustomSendLocalListRequestSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                                   CustomClearCacheRequestSerializer                            { get; set; }
 
-        public CustomJObjectSerializerDelegate<UnpublishFirmwareRequest>?             CustomUnpublishFirmwareRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<ReserveNowRequest>?                                   CustomReserveNowRequestSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<CancelReservationRequest>?                            CustomCancelReservationRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<RequestStartTransactionRequest>?                      CustomRequestStartTransactionRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<RequestStopTransactionRequest>?                       CustomRequestStopTransactionRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<GetTransactionStatusRequest>?                         CustomGetTransactionStatusRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?                           CustomSetChargingProfileRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetChargingProfilesRequest>?                          CustomGetChargingProfilesRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?                         CustomClearChargingProfileRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?                         CustomGetCompositeScheduleRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateDynamicScheduleRequest>?                        CustomUpdateDynamicScheduleRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyAllowedEnergyTransferRequest>?                  CustomNotifyAllowedEnergyTransferRequestSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<UsePriorityChargingRequest>?                          CustomUsePriorityChargingRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?                              CustomUnlockConnectorRequestSerializer                       { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetBaseReportRequest>?                 CustomGetBaseReportRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<AFRRSignalRequest>?                                   CustomAFRRSignalRequestSerializer                            { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetReportRequest>?                     CustomGetReportRequestSerializer                       { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetLogRequest>?                        CustomGetLogRequestSerializer                          { get; set; }
-
-        public CustomJObjectSerializerDelegate<SetVariablesRequest>?                  CustomSetVariablesRequestSerializer                    { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetVariablesRequest>?                  CustomGetVariablesRequestSerializer                    { get; set; }
-
-        public CustomJObjectSerializerDelegate<SetMonitoringBaseRequest>?             CustomSetMonitoringBaseRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetMonitoringReportRequest>?           CustomGetMonitoringReportRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<SetMonitoringLevelRequest>?            CustomSetMonitoringLevelRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<SetVariableMonitoringRequest>?         CustomSetVariableMonitoringRequestSerializer           { get; set; }
-
-        public CustomJObjectSerializerDelegate<ClearVariableMonitoringRequest>?       CustomClearVariableMonitoringRequestSerializer         { get; set; }
-
-        public CustomJObjectSerializerDelegate<SetNetworkProfileRequest>?             CustomSetNetworkProfileRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?            CustomChangeAvailabilityRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                CustomTriggerMessageRequestSerializer                  { get; set; }
-
-        public CustomJObjectSerializerDelegate<DataTransferRequest>?                  CustomDataTransferRequestSerializer                    { get; set; }
-
-
-        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?             CustomCertificateSignedRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?            CustomInstallCertificateRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?    CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
-
-        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?             CustomDeleteCertificateRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<NotifyCRLRequest>?                     CustomNotifyCRLRequestSerializer                       { get; set; }
-
-
-        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?           CustomGetLocalListVersionRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<SendLocalListRequest>?                 CustomSendLocalListRequestSerializer                   { get; set; }
-
-        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                    CustomClearCacheRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<SetDisplayMessageRequest>?                            CustomSetDisplayMessageRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<GetDisplayMessagesRequest>?                           CustomGetDisplayMessagesRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<ClearDisplayMessageRequest>?                          CustomClearDisplayMessageRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CostUpdatedRequest>?                                  CustomCostUpdatedRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<CustomerInformationRequest>?                          CustomCustomerInformationRequestSerializer                   { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<ReserveNowRequest>?                    CustomReserveNowRequestSerializer                      { get; set; }
+        // E2E Security Extensions
 
-        public CustomJObjectSerializerDelegate<CancelReservationRequest>?             CustomCancelReservationRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<RequestStartTransactionRequest>?       CustomRequestStartTransactionRequestSerializer         { get; set; }
-
-        public CustomJObjectSerializerDelegate<RequestStopTransactionRequest>?        CustomRequestStopTransactionRequestSerializer          { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetTransactionStatusRequest>?          CustomGetTransactionStatusRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?            CustomSetChargingProfileRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetChargingProfilesRequest>?           CustomGetChargingProfilesRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?          CustomClearChargingProfileRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?          CustomGetCompositeScheduleRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<UpdateDynamicScheduleRequest>?         CustomUpdateDynamicScheduleRequestSerializer           { get; set; }
-
-        public CustomJObjectSerializerDelegate<NotifyAllowedEnergyTransferRequest>?   CustomNotifyAllowedEnergyTransferRequestSerializer     { get; set; }
-
-        public CustomJObjectSerializerDelegate<UsePriorityChargingRequest>?           CustomUsePriorityChargingRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?               CustomUnlockConnectorRequestSerializer                 { get; set; }
-
-
-        public CustomJObjectSerializerDelegate<AFRRSignalRequest>?                    CustomAFRRSignalRequestSerializer                      { get; set; }
-
-
-        public CustomJObjectSerializerDelegate<SetDisplayMessageRequest>?             CustomSetDisplayMessageRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetDisplayMessagesRequest>?            CustomGetDisplayMessagesRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<ClearDisplayMessageRequest>?           CustomClearDisplayMessageRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<CostUpdatedRequest>?                   CustomCostUpdatedRequestSerializer                     { get; set; }
-
-        public CustomJObjectSerializerDelegate<CustomerInformationRequest>?           CustomCustomerInformationRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?                           CustomAddSignaturePolicyRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?                        CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteSignaturePolicyRequest>?                        CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<AddUserRoleRequest>?                                  CustomAddUserRoleRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?                               CustomUpdateUserRoleRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteUserRoleRequest>?                               CustomDeleteUserRoleRequestSerializer                        { get; set; }
 
         #endregion
 
-        #region Charging Station Messages
+        #region Charging Station Response Messages
+        public CustomJObjectSerializerDelegate<CS.ResetResponse>?                                    CustomResetResponseSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UpdateFirmwareResponse>?                           CustomUpdateFirmwareResponseSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<CS.PublishFirmwareResponse>?                          CustomPublishFirmwareResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UnpublishFirmwareResponse>?                        CustomUnpublishFirmwareResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetBaseReportResponse>?                            CustomGetBaseReportResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetReportResponse>?                                CustomGetReportResponseSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetLogResponse>?                                   CustomGetLogResponseSerializer                               { get; set; }
 
-        public CustomJObjectSerializerDelegate<CS.ResetResponse>?                     CustomResetResponseSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<StatusInfo>?                           CustomStatusInfoSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetVariablesResponse>?                             CustomSetVariablesResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetVariablesResponse>?                             CustomGetVariablesResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetMonitoringBaseResponse>?                        CustomSetMonitoringBaseResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetMonitoringReportResponse>?                      CustomGetMonitoringReportResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetMonitoringLevelResponse>?                       CustomSetMonitoringLevelResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetVariableMonitoringResponse>?                    CustomSetVariableMonitoringResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ClearVariableMonitoringResponse>?                  CustomClearVariableMonitoringResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetNetworkProfileResponse>?                        CustomSetNetworkProfileResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ChangeAvailabilityResponse>?                       CustomChangeAvailabilityResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CS.TriggerMessageResponse>?                           CustomTriggerMessageResponseSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<CS.DataTransferResponse>?                             CustomDataTransferResponseSerializer                         { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.CertificateSignedResponse>?                        CustomCertificateSignedResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.InstallCertificateResponse>?                       CustomInstallCertificateResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetInstalledCertificateIdsResponse>?               CustomGetInstalledCertificateIdsResponseSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<CS.DeleteCertificateResponse>?                        CustomDeleteCertificateResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyCRLResponse>?                                CustomNotifyCRLResponseSerializer                            { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.GetLocalListVersionResponse>?                      CustomGetLocalListVersionResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SendLocalListResponse>?                            CustomSendLocalListResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ClearCacheResponse>?                               CustomClearCacheResponseSerializer                           { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.ReserveNowResponse>?                               CustomReserveNowResponseSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<CS.CancelReservationResponse>?                        CustomCancelReservationResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.RequestStartTransactionResponse>?                  CustomRequestStartTransactionResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CS.RequestStopTransactionResponse>?                   CustomRequestStopTransactionResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetTransactionStatusResponse>?                     CustomGetTransactionStatusResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetChargingProfileResponse>?                       CustomSetChargingProfileResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetChargingProfilesResponse>?                      CustomGetChargingProfilesResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ClearChargingProfileResponse>?                     CustomClearChargingProfileResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetCompositeScheduleResponse>?                     CustomGetCompositeScheduleResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UpdateDynamicScheduleResponse>?                    CustomUpdateDynamicScheduleResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyAllowedEnergyTransferResponse>?              CustomNotifyAllowedEnergyTransferResponseSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UsePriorityChargingResponse>?                      CustomUsePriorityChargingResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UnlockConnectorResponse>?                          CustomUnlockConnectorResponseSerializer                      { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.AFRRSignalResponse>?                               CustomAFRRSignalResponseSerializer                           { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.SetDisplayMessageResponse>?                        CustomSetDisplayMessageResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetDisplayMessagesResponse>?                       CustomGetDisplayMessagesResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ClearDisplayMessageResponse>?                      CustomClearDisplayMessageResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CS.CostUpdatedResponse>?                              CustomCostUpdatedResponseSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<CS.CustomerInformationResponse>?                      CustomCustomerInformationResponseSerializer                  { get; set; }
 
         #endregion
 
         #region Data Structures
-
-        public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<Variable>?                                            CustomVariableSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<LogParameters>?                                       CustomLogParametersSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<SetVariableData>?                                     CustomSetVariableDataSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<GetVariableData>?                                     CustomGetVariableDataSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<SetMonitoringData>?                                   CustomSetMonitoringDataSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<NetworkConnectionProfile>?                            CustomNetworkConnectionProfileSerializer         { get; set; }
-        public CustomJObjectSerializerDelegate<VPNConfiguration>?                                    CustomVPNConfigurationSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<APNConfiguration>?                                    CustomAPNConfigurationSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<IdTokenInfo>?                                         CustomIdTokenInfoSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<MessageContent>?                                      CustomMessageContentSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer           { get; set; }
-        public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
+        public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
+        public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                                     { get; set; }
+        public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                                         { get; set; }
+        public CustomJObjectSerializerDelegate<Variable>?                                            CustomVariableSerializer                                     { get; set; }
+        public CustomJObjectSerializerDelegate<LogParameters>?                                       CustomLogParametersSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariableData>?                                     CustomSetVariableDataSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<GetVariableData>?                                     CustomGetVariableDataSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringData>?                                   CustomSetMonitoringDataSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<NetworkConnectionProfile>?                            CustomNetworkConnectionProfileSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<VPNConfiguration>?                                    CustomVPNConfigurationSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<APNConfiguration>?                                    CustomAPNConfigurationSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<CertificateHashData>?                                 CustomCertificateHashDataSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizationData>?                                   CustomAuthorizationDataSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<IdToken>?                                             CustomIdTokenSerializer                                      { get; set; }
+        public CustomJObjectSerializerDelegate<AdditionalInfo>?                                      CustomAdditionalInfoSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<IdTokenInfo>?                                         CustomIdTokenInfoSerializer                                  { get; set; }
+        public CustomJObjectSerializerDelegate<MessageContent>?                                      CustomMessageContentSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfile>?                                     CustomChargingProfileSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<LimitBeyondSoC>?                                      CustomLimitBeyondSoCSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedule>?                                    CustomChargingScheduleSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                              CustomChargingSchedulePeriodSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                                    CustomV2XFreqWattEntrySerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                                  CustomV2XSignalWattEntrySerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<SalesTariff>?                                         CustomSalesTariffSerializer                                  { get; set; }
+        public CustomJObjectSerializerDelegate<SalesTariffEntry>?                                    CustomSalesTariffEntrySerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                                         { get; set; }
         
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.TaxRule>?                  CustomTaxRuleSerializer                                      { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                                 { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                            { get; set; }
         
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer                      { get; set; }
 
-        public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer         { get; set; }
-        public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                                  { get; set; }
 
         #endregion
 
@@ -11132,6 +11233,549 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCustomerInformationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        // E2E Security Extensions
+
+        #region AddSignaturePolicy          (Request)
+
+        public async Task<AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request)
+        {
+
+            #region Send OnAddSignaturePolicyRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAddSignaturePolicyRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAddSignaturePolicyRequest));
+            }
+
+            #endregion
+
+
+            AddSignaturePolicyResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.EventTrackingId,
+                                                     Request.RequestId,
+                                                     Request.ChargingStationId,
+                                                     Request.Action,
+                                                     Request.ToJSON(
+                                                         //CustomAddSignaturePolicyRequestSerializer,
+                                                         //CustomMessageInfoSerializer,
+                                                         //CustomMessageContentSerializer,
+                                                         //CustomComponentSerializer,
+                                                         //CustomEVSESerializer,
+                                                         //CustomSignatureSerializer,
+                                                         //CustomCustomDataSerializer
+                                                     ),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
+
+                if (AddSignaturePolicyResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var setDisplayMessageResponse,
+                                                       out var errorResponse) &&
+                    setDisplayMessageResponse is not null)
+                {
+                    response = setDisplayMessageResponse;
+                }
+
+                response ??= new AddSignaturePolicyResponse(Request,
+                                                           Result.Format(errorResponse));
+
+            }
+
+            response ??= new AddSignaturePolicyResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnAddSignaturePolicyResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAddSignaturePolicyResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAddSignaturePolicyResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region UpdateSignaturePolicy          (Request)
+
+        public async Task<UpdateSignaturePolicyResponse> UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request)
+        {
+
+            #region Send OnUpdateSignaturePolicyRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateSignaturePolicyRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateSignaturePolicyRequest));
+            }
+
+            #endregion
+
+
+            UpdateSignaturePolicyResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.EventTrackingId,
+                                                     Request.RequestId,
+                                                     Request.ChargingStationId,
+                                                     Request.Action,
+                                                     Request.ToJSON(
+                                                         //CustomUpdateSignaturePolicyRequestSerializer,
+                                                         //CustomMessageInfoSerializer,
+                                                         //CustomMessageContentSerializer,
+                                                         //CustomComponentSerializer,
+                                                         //CustomEVSESerializer,
+                                                         //CustomSignatureSerializer,
+                                                         //CustomCustomDataSerializer
+                                                     ),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
+
+                if (UpdateSignaturePolicyResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var setDisplayMessageResponse,
+                                                       out var errorResponse) &&
+                    setDisplayMessageResponse is not null)
+                {
+                    response = setDisplayMessageResponse;
+                }
+
+                response ??= new UpdateSignaturePolicyResponse(Request,
+                                                           Result.Format(errorResponse));
+
+            }
+
+            response ??= new UpdateSignaturePolicyResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnUpdateSignaturePolicyResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateSignaturePolicyResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateSignaturePolicyResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region DeleteSignaturePolicy          (Request)
+
+        public async Task<DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request)
+        {
+
+            #region Send OnDeleteSignaturePolicyRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteSignaturePolicyRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDeleteSignaturePolicyRequest));
+            }
+
+            #endregion
+
+
+            DeleteSignaturePolicyResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.EventTrackingId,
+                                                     Request.RequestId,
+                                                     Request.ChargingStationId,
+                                                     Request.Action,
+                                                     Request.ToJSON(
+                                                         //CustomDeleteSignaturePolicyRequestSerializer,
+                                                         //CustomMessageInfoSerializer,
+                                                         //CustomMessageContentSerializer,
+                                                         //CustomComponentSerializer,
+                                                         //CustomEVSESerializer,
+                                                         //CustomSignatureSerializer,
+                                                         //CustomCustomDataSerializer
+                                                     ),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
+
+                if (DeleteSignaturePolicyResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var setDisplayMessageResponse,
+                                                       out var errorResponse) &&
+                    setDisplayMessageResponse is not null)
+                {
+                    response = setDisplayMessageResponse;
+                }
+
+                response ??= new DeleteSignaturePolicyResponse(Request,
+                                                           Result.Format(errorResponse));
+
+            }
+
+            response ??= new DeleteSignaturePolicyResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnDeleteSignaturePolicyResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteSignaturePolicyResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDeleteSignaturePolicyResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region AddUserRole          (Request)
+
+        public async Task<AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request)
+        {
+
+            #region Send OnAddUserRoleRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAddUserRoleRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAddUserRoleRequest));
+            }
+
+            #endregion
+
+
+            AddUserRoleResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.EventTrackingId,
+                                                     Request.RequestId,
+                                                     Request.ChargingStationId,
+                                                     Request.Action,
+                                                     Request.ToJSON(
+                                                         //CustomAddUserRoleRequestSerializer,
+                                                         //CustomMessageInfoSerializer,
+                                                         //CustomMessageContentSerializer,
+                                                         //CustomComponentSerializer,
+                                                         //CustomEVSESerializer,
+                                                         //CustomSignatureSerializer,
+                                                         //CustomCustomDataSerializer
+                                                     ),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
+
+                if (AddUserRoleResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var setDisplayMessageResponse,
+                                                       out var errorResponse) &&
+                    setDisplayMessageResponse is not null)
+                {
+                    response = setDisplayMessageResponse;
+                }
+
+                response ??= new AddUserRoleResponse(Request,
+                                                           Result.Format(errorResponse));
+
+            }
+
+            response ??= new AddUserRoleResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnAddUserRoleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAddUserRoleResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnAddUserRoleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region UpdateUserRole          (Request)
+
+        public async Task<UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request)
+        {
+
+            #region Send OnUpdateUserRoleRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateUserRoleRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateUserRoleRequest));
+            }
+
+            #endregion
+
+
+            UpdateUserRoleResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.EventTrackingId,
+                                                     Request.RequestId,
+                                                     Request.ChargingStationId,
+                                                     Request.Action,
+                                                     Request.ToJSON(
+                                                         //CustomUpdateUserRoleRequestSerializer,
+                                                         //CustomMessageInfoSerializer,
+                                                         //CustomMessageContentSerializer,
+                                                         //CustomComponentSerializer,
+                                                         //CustomEVSESerializer,
+                                                         //CustomSignatureSerializer,
+                                                         //CustomCustomDataSerializer
+                                                     ),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
+
+                if (UpdateUserRoleResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var setDisplayMessageResponse,
+                                                       out var errorResponse) &&
+                    setDisplayMessageResponse is not null)
+                {
+                    response = setDisplayMessageResponse;
+                }
+
+                response ??= new UpdateUserRoleResponse(Request,
+                                                           Result.Format(errorResponse));
+
+            }
+
+            response ??= new UpdateUserRoleResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnUpdateUserRoleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateUserRoleResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnUpdateUserRoleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region DeleteUserRole          (Request)
+
+        public async Task<DeleteUserRoleResponse> DeleteUserRole(DeleteUserRoleRequest Request)
+        {
+
+            #region Send OnDeleteUserRoleRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteUserRoleRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDeleteUserRoleRequest));
+            }
+
+            #endregion
+
+
+            DeleteUserRoleResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.EventTrackingId,
+                                                     Request.RequestId,
+                                                     Request.ChargingStationId,
+                                                     Request.Action,
+                                                     Request.ToJSON(
+                                                         //CustomDeleteUserRoleRequestSerializer,
+                                                         //CustomMessageInfoSerializer,
+                                                         //CustomMessageContentSerializer,
+                                                         //CustomComponentSerializer,
+                                                         //CustomEVSESerializer,
+                                                         //CustomSignatureSerializer,
+                                                         //CustomCustomDataSerializer
+                                                     ),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
+
+                if (DeleteUserRoleResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var setDisplayMessageResponse,
+                                                       out var errorResponse) &&
+                    setDisplayMessageResponse is not null)
+                {
+                    response = setDisplayMessageResponse;
+                }
+
+                response ??= new DeleteUserRoleResponse(Request,
+                                                           Result.Format(errorResponse));
+
+            }
+
+            response ??= new DeleteUserRoleResponse(Request,
+                                                       Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnDeleteUserRoleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteUserRoleResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDeleteUserRoleResponse));
             }
 
             #endregion

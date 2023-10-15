@@ -95,7 +95,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public IEnumerable<KeyPair>    SignKeys             { get; }
         public IEnumerable<SignInfo>   SignInfos            { get; }
-     //   public SignaturePolicy?        SignaturePolicy      { get; set; }
 
 
         /// <summary>
@@ -132,8 +131,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         IEnumerable<KeyPair>?    SignKeys            = null,
                         IEnumerable<SignInfo>?   SignInfos           = null,
-                 //       SignaturePolicy?         SignaturePolicy     = null,
                         IEnumerable<Signature>?  Signatures          = null,
+
                         CustomData?              CustomData          = null,
 
                         Request_Id?              RequestId           = null,
@@ -149,7 +148,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.SignKeys           = SignKeys  ?? Array.Empty<KeyPair>();
             this.SignInfos          = SignInfos ?? Array.Empty<SignInfo>();
-            //this.SignaturePolicy    = SignaturePolicy;
             this.signatures         = Signatures is not null && Signatures.Any()
                                           ? new HashSet<Signature>(Signatures)
                                           : new HashSet<Signature>();
@@ -193,7 +191,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public void AddSignature(Signature Signature)
         {
-            signatures.Add(Signature);
+            lock (signatures)
+            {
+                signatures.Add(Signature);
+            }
         }
 
 

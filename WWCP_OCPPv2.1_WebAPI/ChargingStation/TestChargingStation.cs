@@ -395,8 +395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Custom JSON serializer delegates
 
-        #region CSMS Messages
-
+        #region CSMS Request  Messages
         public CustomJObjectSerializerDelegate<CSMS.ResetRequest>?                                   CustomResetRequestSerializer                                 { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.UpdateFirmwareRequest>?                          CustomUpdateFirmwareRequestSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.PublishFirmwareRequest>?                         CustomPublishFirmwareRequestSerializer                       { get; set; }
@@ -449,7 +448,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CSMS.CustomerInformationRequest>?                     CustomCustomerInformationRequestSerializer                   { get; set; }
 
 
-        // Responses
+        // E2E Security Extensions
+        public CustomJObjectSerializerDelegate<CSMS.AddSignaturePolicyRequest>?                      CustomAddSignaturePolicyRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.UpdateSignaturePolicyRequest>?                   CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.DeleteSignaturePolicyRequest>?                   CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.AddUserRoleRequest>?                             CustomAddUserRoleRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.UpdateUserRoleRequest>?                          CustomUpdateUserRoleRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.DeleteUserRoleRequest>?                          CustomDeleteUserRoleRequestSerializer                        { get; set; }
+
+        #endregion
+
+        #region CSMS Response Messages
         public CustomJObjectSerializerDelegate<CSMS.BootNotificationResponse>?                       CustomBootNotificationResponseSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.FirmwareStatusNotificationResponse>?             CustomFirmwareStatusNotificationResponseSerializer           { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.PublishFirmwareStatusNotificationResponse>?      CustomPublishFirmwareStatusNotificationResponseSerializer    { get; set; }
@@ -484,8 +493,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region Charging Station Messages
 
+        #region Charging Station Request  Messages
         public CustomJObjectSerializerDelegate<BootNotificationRequest>?                             CustomBootNotificationRequestSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<FirmwareStatusNotificationRequest>?                   CustomFirmwareStatusNotificationRequestSerializer            { get; set; }
         public CustomJObjectSerializerDelegate<PublishFirmwareStatusNotificationRequest>?            CustomPublishFirmwareStatusNotificationRequestSerializer     { get; set; }
@@ -518,8 +527,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<NotifyDisplayMessagesRequest>?                        CustomNotifyDisplayMessagesRequestSerializer                 { get; set; }
         public CustomJObjectSerializerDelegate<NotifyCustomerInformationRequest>?                    CustomNotifyCustomerInformationRequestSerializer             { get; set; }
 
+        #endregion
 
-        // Responses
+        #region Charging Station Response Messages
         public CustomJObjectSerializerDelegate<ResetResponse>?                                       CustomResetResponseSerializer                                { get; set; }
         public CustomJObjectSerializerDelegate<UpdateFirmwareResponse>?                              CustomUpdateFirmwareResponseSerializer                       { get; set; }
         public CustomJObjectSerializerDelegate<PublishFirmwareResponse>?                             CustomPublishFirmwareResponseSerializer                      { get; set; }
@@ -571,7 +581,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CostUpdatedResponse>?                                 CustomCostUpdatedResponseSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<CustomerInformationResponse>?                         CustomCustomerInformationResponseSerializer                  { get; set; }
 
+
+        // E2E Security Extensions
+        public CustomJObjectSerializerDelegate<AddSignaturePolicyResponse>?                          CustomAddSignaturePolicyResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateSignaturePolicyResponse>?                       CustomUpdateSignaturePolicyResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteSignaturePolicyResponse>?                       CustomDeleteSignaturePolicyResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<AddUserRoleResponse>?                                 CustomAddUserRoleResponseSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateUserRoleResponse>?                              CustomUpdateUserRoleResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteUserRoleResponse>?                              CustomDeleteUserRoleResponseSerializer                        { get; set; }
+
         #endregion
+
 
         #region Data Structures
 
@@ -1064,52 +1084,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Charging Station <- CSMS
 
-        public event OnResetDelegate? OnReset;
-        public event OnUpdateFirmwareDelegate? OnUpdateFirmware;
-        public event OnPublishFirmwareDelegate? OnPublishFirmware;
-        public event OnUnpublishFirmwareDelegate? OnUnpublishFirmware;
-        public event OnGetBaseReportDelegate? OnGetBaseReport;
-        public event OnGetReportDelegate? OnGetReport;
-        public event OnGetLogDelegate? OnGetLog;
-        public event OnSetVariablesDelegate? OnSetVariables;
-        public event OnGetVariablesDelegate? OnGetVariables;
-        public event OnSetMonitoringBaseDelegate? OnSetMonitoringBase;
-        public event OnGetMonitoringReportDelegate? OnGetMonitoringReport;
-        public event OnSetMonitoringLevelDelegate? OnSetMonitoringLevel;
-        public event OnSetVariableMonitoringDelegate? OnSetVariableMonitoring;
-        public event OnClearVariableMonitoringDelegate? OnClearVariableMonitoring;
-        public event OnSetNetworkProfileDelegate? OnSetNetworkProfile;
-        public event OnChangeAvailabilityDelegate? OnChangeAvailability;
-        public event OnTriggerMessageDelegate? OnTriggerMessage;
-        public event OnIncomingDataTransferDelegate? OnIncomingDataTransfer;
-        public event OnCertificateSignedDelegate? OnCertificateSigned;
-        public event OnInstallCertificateDelegate? OnInstallCertificate;
-        public event OnGetInstalledCertificateIdsDelegate? OnGetInstalledCertificateIds;
-        public event OnDeleteCertificateDelegate? OnDeleteCertificate;
-        public event OnNotifyCRLDelegate? OnNotifyCRL;
-        public event OnGetLocalListVersionDelegate? OnGetLocalListVersion;
-        public event OnSendLocalListDelegate? OnSendLocalList;
-        public event OnClearCacheDelegate? OnClearCache;
-        public event OnReserveNowDelegate? OnReserveNow;
-        public event OnCancelReservationDelegate? OnCancelReservation;
-        public event OnRequestStartTransactionDelegate? OnRequestStartTransaction;
-        public event OnRequestStopTransactionDelegate? OnRequestStopTransaction;
-        public event OnGetTransactionStatusDelegate? OnGetTransactionStatus;
-        public event OnSetChargingProfileDelegate? OnSetChargingProfile;
-        public event OnGetChargingProfilesDelegate? OnGetChargingProfiles;
-        public event OnClearChargingProfileDelegate? OnClearChargingProfile;
-        public event OnGetCompositeScheduleDelegate? OnGetCompositeSchedule;
-        public event OnUpdateDynamicScheduleDelegate? OnUpdateDynamicSchedule;
-        public event OnNotifyAllowedEnergyTransferDelegate? OnNotifyAllowedEnergyTransfer;
-        public event OnUsePriorityChargingDelegate? OnUsePriorityCharging;
-        public event OnUnlockConnectorDelegate? OnUnlockConnector;
-        public event OnAFRRSignalDelegate? OnAFRRSignal;
-        public event OnSetDisplayMessageDelegate? OnSetDisplayMessage;
-        public event OnGetDisplayMessagesDelegate? OnGetDisplayMessages;
-        public event OnClearDisplayMessageDelegate? OnClearDisplayMessage;
-        public event OnCostUpdatedDelegate? OnCostUpdated;
-        public event OnCustomerInformationDelegate? OnCustomerInformation;
+        //ToDo: Are those events really required here?
+        public event OnResetDelegate?                           OnReset;
+        public event OnUpdateFirmwareDelegate?                  OnUpdateFirmware;
+        public event OnPublishFirmwareDelegate?                 OnPublishFirmware;
+        public event OnUnpublishFirmwareDelegate?               OnUnpublishFirmware;
+        public event OnGetBaseReportDelegate?                   OnGetBaseReport;
+        public event OnGetReportDelegate?                       OnGetReport;
+        public event OnGetLogDelegate?                          OnGetLog;
+        public event OnSetVariablesDelegate?                    OnSetVariables;
+        public event OnGetVariablesDelegate?                    OnGetVariables;
+        public event OnSetMonitoringBaseDelegate?               OnSetMonitoringBase;
+        public event OnGetMonitoringReportDelegate?             OnGetMonitoringReport;
+        public event OnSetMonitoringLevelDelegate?              OnSetMonitoringLevel;
+        public event OnSetVariableMonitoringDelegate?           OnSetVariableMonitoring;
+        public event OnClearVariableMonitoringDelegate?         OnClearVariableMonitoring;
+        public event OnSetNetworkProfileDelegate?               OnSetNetworkProfile;
+        public event OnChangeAvailabilityDelegate?              OnChangeAvailability;
+        public event OnTriggerMessageDelegate?                  OnTriggerMessage;
+        public event OnIncomingDataTransferDelegate?            OnIncomingDataTransfer;
 
+        public event OnCertificateSignedDelegate?               OnCertificateSigned;
+        public event OnInstallCertificateDelegate?              OnInstallCertificate;
+        public event OnGetInstalledCertificateIdsDelegate?      OnGetInstalledCertificateIds;
+        public event OnDeleteCertificateDelegate?               OnDeleteCertificate;
+        public event OnNotifyCRLDelegate?                       OnNotifyCRL;
+
+        public event OnGetLocalListVersionDelegate?             OnGetLocalListVersion;
+        public event OnSendLocalListDelegate?                   OnSendLocalList;
+        public event OnClearCacheDelegate?                      OnClearCache;
+
+        public event OnReserveNowDelegate?                      OnReserveNow;
+        public event OnCancelReservationDelegate?               OnCancelReservation;
+        public event OnRequestStartTransactionDelegate?         OnRequestStartTransaction;
+        public event OnRequestStopTransactionDelegate?          OnRequestStopTransaction;
+        public event OnGetTransactionStatusDelegate?            OnGetTransactionStatus;
+        public event OnSetChargingProfileDelegate?              OnSetChargingProfile;
+        public event OnGetChargingProfilesDelegate?             OnGetChargingProfiles;
+        public event OnClearChargingProfileDelegate?            OnClearChargingProfile;
+        public event OnGetCompositeScheduleDelegate?            OnGetCompositeSchedule;
+        public event OnUpdateDynamicScheduleDelegate?           OnUpdateDynamicSchedule;
+        public event OnNotifyAllowedEnergyTransferDelegate?     OnNotifyAllowedEnergyTransfer;
+        public event OnUsePriorityChargingDelegate?             OnUsePriorityCharging;
+        public event OnUnlockConnectorDelegate?                 OnUnlockConnector;
+
+        public event OnAFRRSignalDelegate?                      OnAFRRSignal;
+
+        public event OnSetDisplayMessageDelegate?               OnSetDisplayMessage;
+        public event OnGetDisplayMessagesDelegate?              OnGetDisplayMessages;
+        public event OnClearDisplayMessageDelegate?             OnClearDisplayMessage;
+        public event OnCostUpdatedDelegate?                     OnCostUpdated;
+        public event OnCustomerInformationDelegate?             OnCustomerInformation;
+
+        // E2E Security Extensions
+        public event OnAddSignaturePolicyDelegate?              OnAddSignaturePolicy;
+        public event OnUpdateSignaturePolicyDelegate?           OnUpdateSignaturePolicy;
+        public event OnDeleteSignaturePolicyDelegate?           OnDeleteSignaturePolicy;
+        public event OnAddUserRoleDelegate?                     OnAddUserRole;
+        public event OnUpdateUserRoleDelegate?                  OnUpdateUserRole;
+        public event OnDeleteUserRoleDelegate?                  OnDeleteUserRole;
 
 
         #region Reset
@@ -1744,6 +1777,93 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event fired whenever a response to a CustomerInformation request was received.
         /// </summary>
         public event OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
+
+        #endregion
+
+
+        // E2E Security Extensions
+
+        #region AddSignaturePolicy
+
+        /// <summary>
+        /// An event fired whenever a AddSignaturePolicy request will be sent to the charging station.
+        /// </summary>
+        public event OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a AddSignaturePolicy request was received.
+        /// </summary>
+        public event OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
+
+        #endregion
+
+        #region UpdateSignaturePolicy
+
+        /// <summary>
+        /// An event fired whenever a UpdateSignaturePolicy request will be sent to the charging station.
+        /// </summary>
+        public event OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a UpdateSignaturePolicy request was received.
+        /// </summary>
+        public event OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
+
+        #endregion
+
+        #region DeleteSignaturePolicy
+
+        /// <summary>
+        /// An event fired whenever a DeleteSignaturePolicy request will be sent to the charging station.
+        /// </summary>
+        public event OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a DeleteSignaturePolicy request was received.
+        /// </summary>
+        public event OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
+
+        #endregion
+
+        #region AddUserRole
+
+        /// <summary>
+        /// An event fired whenever a AddUserRole request will be sent to the charging station.
+        /// </summary>
+        public event OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a AddUserRole request was received.
+        /// </summary>
+        public event OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
+
+        #endregion
+
+        #region UpdateUserRole
+
+        /// <summary>
+        /// An event fired whenever a UpdateUserRole request will be sent to the charging station.
+        /// </summary>
+        public event OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a UpdateUserRole request was received.
+        /// </summary>
+        public event OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
+
+        #endregion
+
+        #region DeleteUserRole
+
+        /// <summary>
+        /// An event fired whenever a DeleteUserRole request will be sent to the charging station.
+        /// </summary>
+        public event OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a DeleteUserRole request was received.
+        /// </summary>
+        public event OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
 
         #endregion
 
@@ -9797,6 +9917,977 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         await HandleErrors(
                                   nameof(TestChargingStation),
                                   nameof(OnCustomerInformationResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            // E2E Security Extensions
+
+            #region OnAddSignaturePolicy
+
+            ChargingStationServer.OnAddSignaturePolicy += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnAddSignaturePolicyRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnAddSignaturePolicyRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnAddSignaturePolicyRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnAddSignaturePolicyRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check charging station identification
+
+                AddSignaturePolicyResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new AddSignaturePolicyResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid AddSignaturePolicy request for charging station '{request.ChargingStationId}'!"
+                                             )
+                               );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 //CustomAddSignaturePolicyRequestSerializer,
+                                 //CustomMessageInfoSerializer,
+                                 //CustomMessageContentSerializer,
+                                 //CustomComponentSerializer,
+                                 //CustomEVSESerializer,
+                                 //CustomSignatureSerializer,
+                                 //CustomCustomDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
+                    {
+
+                        response = new AddSignaturePolicyResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming AddSignaturePolicy!");
+
+                        // Message
+
+
+                            response = new AddSignaturePolicyResponse(
+                                           Request:      request,
+                                           Status:       GenericStatus.Accepted,
+                                           StatusInfo:   null,
+                                           CustomData:   null
+                                       );
+
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomAddSignaturePolicyResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnAddSignaturePolicyResponse event
+
+                var responseLogger = OnAddSignaturePolicyResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnAddSignaturePolicyResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnAddSignaturePolicyResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnUpdateSignaturePolicy
+
+            ChargingStationServer.OnUpdateSignaturePolicy += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnUpdateSignaturePolicyRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnUpdateSignaturePolicyRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnUpdateSignaturePolicyRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUpdateSignaturePolicyRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check charging station identification
+
+                UpdateSignaturePolicyResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new UpdateSignaturePolicyResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid UpdateSignaturePolicy request for charging station '{request.ChargingStationId}'!"
+                                             )
+                               );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 //CustomUpdateSignaturePolicyRequestSerializer,
+                                 //CustomMessageInfoSerializer,
+                                 //CustomMessageContentSerializer,
+                                 //CustomComponentSerializer,
+                                 //CustomEVSESerializer,
+                                 //CustomSignatureSerializer,
+                                 //CustomCustomDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
+                    {
+
+                        response = new UpdateSignaturePolicyResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming UpdateSignaturePolicy!");
+
+                        // Message
+
+                        response = new UpdateSignaturePolicyResponse(
+                                       Request:      request,
+                                       Status:       GenericStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomUpdateSignaturePolicyResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnUpdateSignaturePolicyResponse event
+
+                var responseLogger = OnUpdateSignaturePolicyResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnUpdateSignaturePolicyResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUpdateSignaturePolicyResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnDeleteSignaturePolicy
+
+            ChargingStationServer.OnDeleteSignaturePolicy += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnDeleteSignaturePolicyRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnDeleteSignaturePolicyRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnDeleteSignaturePolicyRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteSignaturePolicyRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check charging station identification
+
+                DeleteSignaturePolicyResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new DeleteSignaturePolicyResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid DeleteSignaturePolicy request for charging station '{request.ChargingStationId}'!"
+                                             )
+                               );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 //CustomDeleteSignaturePolicyRequestSerializer,
+                                 //CustomMessageInfoSerializer,
+                                 //CustomMessageContentSerializer,
+                                 //CustomComponentSerializer,
+                                 //CustomEVSESerializer,
+                                 //CustomSignatureSerializer,
+                                 //CustomCustomDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
+                    {
+
+                        response = new DeleteSignaturePolicyResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming DeleteSignaturePolicy!");
+
+                        // Message
+
+                        response = new DeleteSignaturePolicyResponse(
+                                       Request:      request,
+                                       Status:       GenericStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomDeleteSignaturePolicyResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnDeleteSignaturePolicyResponse event
+
+                var responseLogger = OnDeleteSignaturePolicyResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnDeleteSignaturePolicyResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteSignaturePolicyResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnAddUserRole
+
+            ChargingStationServer.OnAddUserRole += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnAddUserRoleRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnAddUserRoleRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnAddUserRoleRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnAddUserRoleRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check charging station identification
+
+                AddUserRoleResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new AddUserRoleResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid AddUserRole request for charging station '{request.ChargingStationId}'!"
+                                             )
+                               );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 //CustomAddUserRoleRequestSerializer,
+                                 //CustomMessageInfoSerializer,
+                                 //CustomMessageContentSerializer,
+                                 //CustomComponentSerializer,
+                                 //CustomEVSESerializer,
+                                 //CustomSignatureSerializer,
+                                 //CustomCustomDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
+                    {
+
+                        response = new AddUserRoleResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming AddUserRole!");
+
+                        // Message
+
+                        response = new AddUserRoleResponse(
+                                       Request:      request,
+                                       Status:       GenericStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomAddUserRoleResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnAddUserRoleResponse event
+
+                var responseLogger = OnAddUserRoleResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnAddUserRoleResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnAddUserRoleResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnUpdateUserRole
+
+            ChargingStationServer.OnUpdateUserRole += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnUpdateUserRoleRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnUpdateUserRoleRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnUpdateUserRoleRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUpdateUserRoleRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check charging station identification
+
+                UpdateUserRoleResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new UpdateUserRoleResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid UpdateUserRole request for charging station '{request.ChargingStationId}'!"
+                                             )
+                               );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 //CustomUpdateUserRoleRequestSerializer,
+                                 //CustomMessageInfoSerializer,
+                                 //CustomMessageContentSerializer,
+                                 //CustomComponentSerializer,
+                                 //CustomEVSESerializer,
+                                 //CustomSignatureSerializer,
+                                 //CustomCustomDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
+                    {
+
+                        response = new UpdateUserRoleResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming UpdateUserRole!");
+
+                        // Message
+
+                        response = new UpdateUserRoleResponse(
+                                       Request:      request,
+                                       Status:       GenericStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomUpdateUserRoleResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnUpdateUserRoleResponse event
+
+                var responseLogger = OnUpdateUserRoleResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnUpdateUserRoleResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnUpdateUserRoleResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnDeleteUserRole
+
+            ChargingStationServer.OnDeleteUserRole += async (timestamp,
+                                                                sender,
+                                                                connection,
+                                                                request,
+                                                                cancellationToken) => {
+
+                #region Send OnDeleteUserRoleRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnDeleteUserRoleRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnDeleteUserRoleRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteUserRoleRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check charging station identification
+
+                DeleteUserRoleResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new DeleteUserRoleResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid DeleteUserRole request for charging station '{request.ChargingStationId}'!"
+                                             )
+                               );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 //CustomDeleteUserRoleRequestSerializer,
+                                 //CustomMessageInfoSerializer,
+                                 //CustomMessageContentSerializer,
+                                 //CustomComponentSerializer,
+                                 //CustomEVSESerializer,
+                                 //CustomSignatureSerializer,
+                                 //CustomCustomDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
+                    {
+
+                        response = new DeleteUserRoleResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming DeleteUserRole!");
+
+                        // Message
+
+                        response = new DeleteUserRoleResponse(
+                                       Request:      request,
+                                       Status:       GenericStatus.Accepted,
+                                       StatusInfo:   null,
+                                       CustomData:   null
+                                   );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomDeleteUserRoleResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnDeleteUserRoleResponse event
+
+                var responseLogger = OnDeleteUserRoleResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnDeleteUserRoleResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteUserRoleResponse),
                                   e
                               );
                     }

@@ -74,19 +74,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public SetVariablesResponse(CSMS.SetVariablesRequest        Request,
                                     IEnumerable<SetVariableResult>  SetVariableResults,
 
-                                    IEnumerable<KeyPair>?           SignKeys          = null,
-                                    IEnumerable<SignInfo>?          SignInfos         = null,
-                                    SignaturePolicy?                SignaturePolicy   = null,
-                                    IEnumerable<Signature>?         Signatures        = null,
+                                    IEnumerable<KeyPair>?           SignKeys     = null,
+                                    IEnumerable<SignInfo>?          SignInfos    = null,
+                                    IEnumerable<Signature>?         Signatures   = null,
 
-                                    DateTime?                       Timestamp         = null,
-                                    CustomData?                     CustomData        = null)
+                                    DateTime?                       Timestamp    = null,
+                                    CustomData?                     CustomData   = null)
 
             : base(Request,
                    Result.OK(),
                    SignKeys,
                    SignInfos,
-                   SignaturePolicy,
                    Signatures,
                    Timestamp,
                    CustomData)
@@ -417,7 +415,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 SetVariablesResponse = new SetVariablesResponse(
                                            Request,
                                            SetVariableResults,
-                                           null,
                                            null,
                                            null,
                                            Signatures,

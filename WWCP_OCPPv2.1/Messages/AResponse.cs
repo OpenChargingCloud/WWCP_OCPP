@@ -65,19 +65,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public AResponse(TRequest                 Request,
                          Result                   Result,
 
-                         IEnumerable<KeyPair>?    SignKeys          = null,
-                         IEnumerable<SignInfo>?   SignInfos         = null,
-                         SignaturePolicy?         SignaturePolicy   = null,
-                         IEnumerable<Signature>?  Signatures        = null,
+                         IEnumerable<KeyPair>?    SignKeys     = null,
+                         IEnumerable<SignInfo>?   SignInfos    = null,
+                         IEnumerable<Signature>?  Signatures   = null,
 
-                         DateTime?                Timestamp         = null,
-                         CustomData?              CustomData        = null)
+                         DateTime?                Timestamp    = null,
+                         CustomData?              CustomData   = null)
 
             : base(Result,
 
                    SignKeys,
                    SignInfos,
-                   SignaturePolicy,
                    Signatures,
 
                    Timestamp,
@@ -195,7 +193,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public IEnumerable<KeyPair>    SignKeys             { get; }
         public IEnumerable<SignInfo>   SignInfos            { get; }
-        public SignaturePolicy?        SignaturePolicy      { get; set; }
 
 
         /// <summary>
@@ -225,20 +222,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public AResponse(Result                   Result,
 
-                         IEnumerable<KeyPair>?    SignKeys          = null,
-                         IEnumerable<SignInfo>?   SignInfos         = null,
-                         SignaturePolicy?         SignaturePolicy   = null,
-                         IEnumerable<Signature>?  Signatures        = null,
+                         IEnumerable<KeyPair>?    SignKeys     = null,
+                         IEnumerable<SignInfo>?   SignInfos    = null,
+                         IEnumerable<Signature>?  Signatures   = null,
 
-                         DateTime?                Timestamp         = null,
-                         CustomData?              CustomData        = null)
+                         DateTime?                Timestamp    = null,
+                         CustomData?              CustomData   = null)
         {
 
             this.Result             = Result;
 
             this.SignKeys           = SignKeys  ?? Array.Empty<KeyPair>();
             this.SignInfos          = SignInfos ?? Array.Empty<SignInfo>();
-            this.SignaturePolicy    = SignaturePolicy;
             this.signatures         = Signatures is not null && Signatures.Any()
                                           ? new HashSet<Signature>(Signatures)
                                           : new HashSet<Signature>();

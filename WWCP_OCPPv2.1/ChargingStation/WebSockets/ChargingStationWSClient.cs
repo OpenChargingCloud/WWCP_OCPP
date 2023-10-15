@@ -225,6 +225,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public CustomJObjectParserDelegate<CostUpdatedRequest>?                  CustomCostUpdatedRequestParser                   { get; set; }
         public CustomJObjectParserDelegate<CustomerInformationRequest>?          CustomCustomerInformationRequestParser           { get; set; }
 
+
+        // E2E Security Extensions
+        public CustomJObjectParserDelegate<AddSignaturePolicyRequest>?           CustomAddSignaturePolicyRequestParser            { get; set; }
+        public CustomJObjectParserDelegate<UpdateSignaturePolicyRequest>?        CustomUpdateSignaturePolicyRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<DeleteSignaturePolicyRequest>?        CustomDeleteSignaturePolicyRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<AddUserRoleRequest>?                  CustomAddUserRoleRequestParser                   { get; set; }
+        public CustomJObjectParserDelegate<UpdateUserRoleRequest>?               CustomUpdateUserRoleRequestParser                { get; set; }
+        public CustomJObjectParserDelegate<DeleteUserRoleRequest>?               CustomDeleteUserRoleRequestParser                { get; set; }
+
         #endregion
 
         #region Custom JSON serializer delegates
@@ -2344,6 +2353,183 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// An event sent whenever a websocket response to a customer information request was sent.
         /// </summary>
         public event WSClientResponseLogHandler?               OnCustomerInformationWSResponse;
+
+        #endregion
+
+
+        // E2E Security Extensions
+
+        #region OnAddSignaturePolicy
+
+        /// <summary>
+        /// An event sent whenever an AddSignaturePolicy websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?               OnAddSignaturePolicyWSRequest;
+
+        /// <summary>
+        /// An event sent whenever an AddSignaturePolicy request was received.
+        /// </summary>
+        public event OnAddSignaturePolicyRequestDelegate?     OnAddSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event sent whenever an AddSignaturePolicy request was received.
+        /// </summary>
+        public event OnAddSignaturePolicyDelegate?            OnAddSignaturePolicy;
+
+        /// <summary>
+        /// An event sent whenever a response to an AddSignaturePolicy request was sent.
+        /// </summary>
+        public event OnAddSignaturePolicyResponseDelegate?    OnAddSignaturePolicyResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to an AddSignaturePolicy request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?              OnAddSignaturePolicyWSResponse;
+
+        #endregion
+
+        #region OnUpdateSignaturePolicy
+
+        /// <summary>
+        /// An event sent whenever an UpdateSignaturePolicy websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                  OnUpdateSignaturePolicyWSRequest;
+
+        /// <summary>
+        /// An event sent whenever an UpdateSignaturePolicy request was received.
+        /// </summary>
+        public event OnUpdateSignaturePolicyRequestDelegate?     OnUpdateSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event sent whenever an UpdateSignaturePolicy request was received.
+        /// </summary>
+        public event OnUpdateSignaturePolicyDelegate?            OnUpdateSignaturePolicy;
+
+        /// <summary>
+        /// An event sent whenever a response to an UpdateSignaturePolicy request was sent.
+        /// </summary>
+        public event OnUpdateSignaturePolicyResponseDelegate?    OnUpdateSignaturePolicyResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to an UpdateSignaturePolicy request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                 OnUpdateSignaturePolicyWSResponse;
+
+        #endregion
+
+        #region OnDeleteSignaturePolicy
+
+        /// <summary>
+        /// An event sent whenever a DeleteSignaturePolicy websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                  OnDeleteSignaturePolicyWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a DeleteSignaturePolicy request was received.
+        /// </summary>
+        public event OnDeleteSignaturePolicyRequestDelegate?     OnDeleteSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event sent whenever a DeleteSignaturePolicy request was received.
+        /// </summary>
+        public event OnDeleteSignaturePolicyDelegate?            OnDeleteSignaturePolicy;
+
+        /// <summary>
+        /// An event sent whenever a response to a DeleteSignaturePolicy request was sent.
+        /// </summary>
+        public event OnDeleteSignaturePolicyResponseDelegate?    OnDeleteSignaturePolicyResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a DeleteSignaturePolicy request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                 OnDeleteSignaturePolicyWSResponse;
+
+        #endregion
+
+        #region OnAddUserRole
+
+        /// <summary>
+        /// An event sent whenever an AddUserRole websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?        OnAddUserRoleWSRequest;
+
+        /// <summary>
+        /// An event sent whenever an AddUserRole request was received.
+        /// </summary>
+        public event OnAddUserRoleRequestDelegate?     OnAddUserRoleRequest;
+
+        /// <summary>
+        /// An event sent whenever an AddUserRole request was received.
+        /// </summary>
+        public event OnAddUserRoleDelegate?            OnAddUserRole;
+
+        /// <summary>
+        /// An event sent whenever a response to an AddUserRole request was sent.
+        /// </summary>
+        public event OnAddUserRoleResponseDelegate?    OnAddUserRoleResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to an AddUserRole request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?       OnAddUserRoleWSResponse;
+
+        #endregion
+
+        #region OnUpdateUserRole
+
+        /// <summary>
+        /// An event sent whenever an UpdateUserRole websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?           OnUpdateUserRoleWSRequest;
+
+        /// <summary>
+        /// An event sent whenever an UpdateUserRole request was received.
+        /// </summary>
+        public event OnUpdateUserRoleRequestDelegate?     OnUpdateUserRoleRequest;
+
+        /// <summary>
+        /// An event sent whenever an UpdateUserRole request was received.
+        /// </summary>
+        public event OnUpdateUserRoleDelegate?            OnUpdateUserRole;
+
+        /// <summary>
+        /// An event sent whenever a response to an UpdateUserRole request was sent.
+        /// </summary>
+        public event OnUpdateUserRoleResponseDelegate?    OnUpdateUserRoleResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to an UpdateUserRole request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?          OnUpdateUserRoleWSResponse;
+
+        #endregion
+
+        #region OnDeleteUserRole
+
+        /// <summary>
+        /// An event sent whenever a DeleteUserRole websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?           OnDeleteUserRoleWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a DeleteUserRole request was received.
+        /// </summary>
+        public event OnDeleteUserRoleRequestDelegate?     OnDeleteUserRoleRequest;
+
+        /// <summary>
+        /// An event sent whenever a DeleteUserRole request was received.
+        /// </summary>
+        public event OnDeleteUserRoleDelegate?            OnDeleteUserRole;
+
+        /// <summary>
+        /// An event sent whenever a response to a DeleteUserRole request was sent.
+        /// </summary>
+        public event OnDeleteUserRoleResponseDelegate?    OnDeleteUserRoleResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a DeleteUserRole request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?          OnDeleteUserRoleWSResponse;
 
         #endregion
 
@@ -8479,6 +8665,807 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                             catch (Exception e)
                             {
                                 DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnCustomerInformationWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+
+                    // E2E Security Extensions
+
+                    case "AddSignaturePolicy":
+                        {
+
+                            #region Send OnAddSignaturePolicyWSRequest event
+
+                            try
+                            {
+
+                                OnAddSignaturePolicyWSRequest?.Invoke(Timestamp.Now,
+                                                                     this,
+                                                                     requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnAddSignaturePolicyWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (AddSignaturePolicyRequest.TryParse(requestMessage.Message,
+                                                                       requestMessage.RequestId,
+                                                                       ChargingStationIdentity,
+                                                                       out var request,
+                                                                       out var errorResponse,
+                                                                       CustomAddSignaturePolicyRequestParser) && request is not null) {
+
+                                    #region Send OnAddSignaturePolicyRequest event
+
+                                    try
+                                    {
+
+                                        OnAddSignaturePolicyRequest?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnAddSignaturePolicyRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    AddSignaturePolicyResponse? response = null;
+
+                                    var results = OnAddSignaturePolicy?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnAddSignaturePolicyDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                    this,
+                                                                                                                                    WebSocketConnection,
+                                                                                                                                    request,
+                                                                                                                                    cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= AddSignaturePolicyResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnAddSignaturePolicyResponse event
+
+                                    try
+                                    {
+
+                                        OnAddSignaturePolicyResponse?.Invoke(Timestamp.Now,
+                                                                             this,
+                                                                             request,
+                                                                             response,
+                                                                             response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnAddSignaturePolicyResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnAddSignaturePolicyWSResponse event
+
+                            try
+                            {
+
+                                OnAddSignaturePolicyWSResponse?.Invoke(Timestamp.Now,
+                                                                       this,
+                                                                       requestJSON,
+                                                                       new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                          OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnAddSignaturePolicyWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "UpdateSignaturePolicy":
+                        {
+
+                            #region Send OnUpdateSignaturePolicyWSRequest event
+
+                            try
+                            {
+
+                                OnUpdateSignaturePolicyWSRequest?.Invoke(Timestamp.Now,
+                                                                         this,
+                                                                         requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateSignaturePolicyWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (UpdateSignaturePolicyRequest.TryParse(requestMessage.Message,
+                                                                          requestMessage.RequestId,
+                                                                          ChargingStationIdentity,
+                                                                          out var request,
+                                                                          out var errorResponse,
+                                                                          CustomUpdateSignaturePolicyRequestParser) && request is not null) {
+
+                                    #region Send OnUpdateSignaturePolicyRequest event
+
+                                    try
+                                    {
+
+                                        OnUpdateSignaturePolicyRequest?.Invoke(Timestamp.Now,
+                                                                               this,
+                                                                               request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateSignaturePolicyRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    UpdateSignaturePolicyResponse? response = null;
+
+                                    var results = OnUpdateSignaturePolicy?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnUpdateSignaturePolicyDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                       this,
+                                                                                                                                       WebSocketConnection,
+                                                                                                                                       request,
+                                                                                                                                       cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= UpdateSignaturePolicyResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnUpdateSignaturePolicyResponse event
+
+                                    try
+                                    {
+
+                                        OnUpdateSignaturePolicyResponse?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request,
+                                                                                response,
+                                                                                response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateSignaturePolicyResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnUpdateSignaturePolicyWSResponse event
+
+                            try
+                            {
+
+                                OnUpdateSignaturePolicyWSResponse?.Invoke(Timestamp.Now,
+                                                                          this,
+                                                                          requestJSON,
+                                                                          new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                             OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateSignaturePolicyWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "DeleteSignaturePolicy":
+                        {
+
+                            #region Send OnDeleteSignaturePolicyWSRequest event
+
+                            try
+                            {
+
+                                OnDeleteSignaturePolicyWSRequest?.Invoke(Timestamp.Now,
+                                                                         this,
+                                                                         requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteSignaturePolicyWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (DeleteSignaturePolicyRequest.TryParse(requestMessage.Message,
+                                                                          requestMessage.RequestId,
+                                                                          ChargingStationIdentity,
+                                                                          out var request,
+                                                                          out var errorResponse,
+                                                                          CustomDeleteSignaturePolicyRequestParser) && request is not null) {
+
+                                    #region Send OnDeleteSignaturePolicyRequest event
+
+                                    try
+                                    {
+
+                                        OnDeleteSignaturePolicyRequest?.Invoke(Timestamp.Now,
+                                                                               this,
+                                                                               request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteSignaturePolicyRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    DeleteSignaturePolicyResponse? response = null;
+
+                                    var results = OnDeleteSignaturePolicy?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnDeleteSignaturePolicyDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                       this,
+                                                                                                                                       WebSocketConnection,
+                                                                                                                                       request,
+                                                                                                                                       cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= DeleteSignaturePolicyResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnDeleteSignaturePolicyResponse event
+
+                                    try
+                                    {
+
+                                        OnDeleteSignaturePolicyResponse?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                request,
+                                                                                response,
+                                                                                response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteSignaturePolicyResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnDeleteSignaturePolicyWSResponse event
+
+                            try
+                            {
+
+                                OnDeleteSignaturePolicyWSResponse?.Invoke(Timestamp.Now,
+                                                                          this,
+                                                                          requestJSON,
+                                                                          new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                             OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteSignaturePolicyWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "AddUserRole":
+                        {
+
+                            #region Send OnAddUserRoleWSRequest event
+
+                            try
+                            {
+
+                                OnAddUserRoleWSRequest?.Invoke(Timestamp.Now,
+                                                               this,
+                                                               requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnAddUserRoleWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (AddUserRoleRequest.TryParse(requestMessage.Message,
+                                                                requestMessage.RequestId,
+                                                                ChargingStationIdentity,
+                                                                out var request,
+                                                                out var errorResponse,
+                                                                CustomAddUserRoleRequestParser) && request is not null) {
+
+                                    #region Send OnAddUserRoleRequest event
+
+                                    try
+                                    {
+
+                                        OnAddUserRoleRequest?.Invoke(Timestamp.Now,
+                                                                     this,
+                                                                     request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnAddUserRoleRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    AddUserRoleResponse? response = null;
+
+                                    var results = OnAddUserRole?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnAddUserRoleDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                             this,
+                                                                                                                             WebSocketConnection,
+                                                                                                                             request,
+                                                                                                                             cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= AddUserRoleResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnAddUserRoleResponse event
+
+                                    try
+                                    {
+
+                                        OnAddUserRoleResponse?.Invoke(Timestamp.Now,
+                                                                      this,
+                                                                      request,
+                                                                      response,
+                                                                      response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnAddUserRoleResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnAddUserRoleWSResponse event
+
+                            try
+                            {
+
+                                OnAddUserRoleWSResponse?.Invoke(Timestamp.Now,
+                                                                this,
+                                                                requestJSON,
+                                                                new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                   OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnAddUserRoleWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "UpdateUserRole":
+                        {
+
+                            #region Send OnUpdateUserRoleWSRequest event
+
+                            try
+                            {
+
+                                OnUpdateUserRoleWSRequest?.Invoke(Timestamp.Now,
+                                                                  this,
+                                                                  requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateUserRoleWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (UpdateUserRoleRequest.TryParse(requestMessage.Message,
+                                                                   requestMessage.RequestId,
+                                                                   ChargingStationIdentity,
+                                                                   out var request,
+                                                                   out var errorResponse,
+                                                                   CustomUpdateUserRoleRequestParser) && request is not null) {
+
+                                    #region Send OnUpdateUserRoleRequest event
+
+                                    try
+                                    {
+
+                                        OnUpdateUserRoleRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateUserRoleRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    UpdateUserRoleResponse? response = null;
+
+                                    var results = OnUpdateUserRole?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnUpdateUserRoleDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                this,
+                                                                                                                                WebSocketConnection,
+                                                                                                                                request,
+                                                                                                                                cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= UpdateUserRoleResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnUpdateUserRoleResponse event
+
+                                    try
+                                    {
+
+                                        OnUpdateUserRoleResponse?.Invoke(Timestamp.Now,
+                                                                         this,
+                                                                         request,
+                                                                         response,
+                                                                         response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateUserRoleResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnUpdateUserRoleWSResponse event
+
+                            try
+                            {
+
+                                OnUpdateUserRoleWSResponse?.Invoke(Timestamp.Now,
+                                                                   this,
+                                                                   requestJSON,
+                                                                   new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                      OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateUserRoleWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "DeleteUserRole":
+                        {
+
+                            #region Send OnDeleteUserRoleWSRequest event
+
+                            try
+                            {
+
+                                OnDeleteUserRoleWSRequest?.Invoke(Timestamp.Now,
+                                                                  this,
+                                                                  requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteUserRoleWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (DeleteUserRoleRequest.TryParse(requestMessage.Message,
+                                                                   requestMessage.RequestId,
+                                                                   ChargingStationIdentity,
+                                                                   out var request,
+                                                                   out var errorResponse,
+                                                                   CustomDeleteUserRoleRequestParser) && request is not null) {
+
+                                    #region Send OnDeleteUserRoleRequest event
+
+                                    try
+                                    {
+
+                                        OnDeleteUserRoleRequest?.Invoke(Timestamp.Now,
+                                                                        this,
+                                                                        request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteUserRoleRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    DeleteUserRoleResponse? response = null;
+
+                                    var results = OnDeleteUserRole?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnDeleteUserRoleDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                this,
+                                                                                                                                WebSocketConnection,
+                                                                                                                                request,
+                                                                                                                                cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= DeleteUserRoleResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnDeleteUserRoleResponse event
+
+                                    try
+                                    {
+
+                                        OnDeleteUserRoleResponse?.Invoke(Timestamp.Now,
+                                                                         this,
+                                                                         request,
+                                                                         response,
+                                                                         response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteUserRoleResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnDeleteUserRoleWSResponse event
+
+                            try
+                            {
+
+                                OnDeleteUserRoleWSResponse?.Invoke(Timestamp.Now,
+                                                                   this,
+                                                                   requestJSON,
+                                                                   new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                      OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteUserRoleWSResponse));
                             }
 
                             #endregion

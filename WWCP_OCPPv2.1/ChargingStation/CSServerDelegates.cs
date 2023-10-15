@@ -2238,4 +2238,300 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     #endregion
 
 
+    // E2E Security Extensions
+
+    #region OnAddSignaturePolicy
+
+    /// <summary>
+    /// A set display message request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnAddSignaturePolicyRequestDelegate(DateTime                    Timestamp,
+                                            IEventSender                Sender,
+                                            AddSignaturePolicyRequest   Request);
+
+
+    /// <summary>
+    /// A set display message request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<AddSignaturePolicyResponse>
+
+        OnAddSignaturePolicyDelegate(DateTime                    Timestamp,
+                                     IEventSender                Sender,
+                                     WebSocketClientConnection   Connection,
+                                     AddSignaturePolicyRequest   Request,
+                                     CancellationToken           CancellationToken);
+
+
+    /// <summary>
+    /// A set display message response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnAddSignaturePolicyResponseDelegate(DateTime                     Timestamp,
+                                             IEventSender                 Sender,
+                                             AddSignaturePolicyRequest    Request,
+                                             AddSignaturePolicyResponse   Response,
+                                             TimeSpan                     Runtime);
+
+    #endregion
+
+    #region OnUpdateSignaturePolicy
+
+    /// <summary>
+    /// A set display message request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnUpdateSignaturePolicyRequestDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           UpdateSignaturePolicyRequest   Request);
+
+
+    /// <summary>
+    /// A set display message request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<UpdateSignaturePolicyResponse>
+
+        OnUpdateSignaturePolicyDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    UpdateSignaturePolicyRequest    Request,
+                                    CancellationToken           CancellationToken);
+
+
+    /// <summary>
+    /// A set display message response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnUpdateSignaturePolicyResponseDelegate(DateTime                    Timestamp,
+                                            IEventSender                Sender,
+                                            UpdateSignaturePolicyRequest    Request,
+                                            UpdateSignaturePolicyResponse   Response,
+                                            TimeSpan                    Runtime);
+
+    #endregion
+
+    #region OnDeleteSignaturePolicy
+
+    /// <summary>
+    /// A set display message request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnDeleteSignaturePolicyRequestDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           DeleteSignaturePolicyRequest   Request);
+
+
+    /// <summary>
+    /// A set display message request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<DeleteSignaturePolicyResponse>
+
+        OnDeleteSignaturePolicyDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    DeleteSignaturePolicyRequest    Request,
+                                    CancellationToken           CancellationToken);
+
+
+    /// <summary>
+    /// A set display message response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnDeleteSignaturePolicyResponseDelegate(DateTime                    Timestamp,
+                                            IEventSender                Sender,
+                                            DeleteSignaturePolicyRequest    Request,
+                                            DeleteSignaturePolicyResponse   Response,
+                                            TimeSpan                    Runtime);
+
+    #endregion
+
+    #region OnAddUserRole
+
+    /// <summary>
+    /// A set display message request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnAddUserRoleRequestDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           AddUserRoleRequest   Request);
+
+
+    /// <summary>
+    /// A set display message request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<AddUserRoleResponse>
+
+        OnAddUserRoleDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    AddUserRoleRequest    Request,
+                                    CancellationToken           CancellationToken);
+
+
+    /// <summary>
+    /// A set display message response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnAddUserRoleResponseDelegate(DateTime                    Timestamp,
+                                            IEventSender                Sender,
+                                            AddUserRoleRequest    Request,
+                                            AddUserRoleResponse   Response,
+                                            TimeSpan                    Runtime);
+
+    #endregion
+
+    #region OnUpdateUserRole
+
+    /// <summary>
+    /// A set display message request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnUpdateUserRoleRequestDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           UpdateUserRoleRequest   Request);
+
+
+    /// <summary>
+    /// A set display message request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<UpdateUserRoleResponse>
+
+        OnUpdateUserRoleDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    UpdateUserRoleRequest    Request,
+                                    CancellationToken           CancellationToken);
+
+
+    /// <summary>
+    /// A set display message response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnUpdateUserRoleResponseDelegate(DateTime                    Timestamp,
+                                            IEventSender                Sender,
+                                            UpdateUserRoleRequest    Request,
+                                            UpdateUserRoleResponse   Response,
+                                            TimeSpan                    Runtime);
+
+    #endregion
+
+    #region OnDeleteUserRole
+
+    /// <summary>
+    /// A set display message request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnDeleteUserRoleRequestDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           DeleteUserRoleRequest   Request);
+
+
+    /// <summary>
+    /// A set display message request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<DeleteUserRoleResponse>
+
+        OnDeleteUserRoleDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    DeleteUserRoleRequest    Request,
+                                    CancellationToken           CancellationToken);
+
+
+    /// <summary>
+    /// A set display message response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnDeleteUserRoleResponseDelegate(DateTime                    Timestamp,
+                                            IEventSender                Sender,
+                                            DeleteUserRoleRequest    Request,
+                                            DeleteUserRoleResponse   Response,
+                                            TimeSpan                    Runtime);
+
+    #endregion
+
 }

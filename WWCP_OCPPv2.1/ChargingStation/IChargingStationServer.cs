@@ -435,6 +435,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
+        // E2E Security Extensions
+
+        #region OnAddSignaturePolicy
+
+        /// <summary>
+        /// An event sent whenever an AddSignaturePolicy was received.
+        /// </summary>
+        event OnAddSignaturePolicyDelegate            OnAddSignaturePolicy;
+
+        #endregion
+
+        #region OnUpdateSignaturePolicy
+
+        /// <summary>
+        /// An event sent whenever an UpdateSignaturePolicy was received.
+        /// </summary>
+        event OnUpdateSignaturePolicyDelegate         OnUpdateSignaturePolicy;
+
+        #endregion
+
+        #region OnDeleteSignaturePolicy
+
+        /// <summary>
+        /// An event sent whenever a DeleteSignaturePolicy was received.
+        /// </summary>
+        event OnDeleteSignaturePolicyDelegate         OnDeleteSignaturePolicy;
+
+        #endregion
+
+        #region OnAddUserRole
+
+        /// <summary>
+        /// An event sent whenever an AddUserRole was received.
+        /// </summary>
+        event OnAddUserRoleDelegate                   OnAddUserRole;
+
+        #endregion
+
+        #region OnUpdateUserRole
+
+        /// <summary>
+        /// An event sent whenever an UpdateUserRole was received.
+        /// </summary>
+        event OnUpdateUserRoleDelegate                OnUpdateUserRole;
+
+        #endregion
+
+        #region OnDeleteUserRole
+
+        /// <summary>
+        /// An event sent whenever a DeleteUserRole was received.
+        /// </summary>
+        event OnDeleteUserRoleDelegate                OnDeleteUserRole;
+
+        #endregion
+
     }
 
 }

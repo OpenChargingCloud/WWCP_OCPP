@@ -74,19 +74,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public ClearVariableMonitoringResponse(CSMS.ClearVariableMonitoringRequest   Request,
                                                IEnumerable<ClearMonitoringResult>    ClearMonitoringResults,
 
-                                               IEnumerable<KeyPair>?                 SignKeys          = null,
-                                               IEnumerable<SignInfo>?                SignInfos         = null,
-                                               SignaturePolicy?                      SignaturePolicy   = null,
-                                               IEnumerable<Signature>?               Signatures        = null,
+                                               IEnumerable<KeyPair>?                 SignKeys     = null,
+                                               IEnumerable<SignInfo>?                SignInfos    = null,
+                                               IEnumerable<Signature>?               Signatures   = null,
 
-                                               DateTime?                             Timestamp         = null,
-                                               CustomData?                           CustomData        = null)
+                                               DateTime?                             Timestamp    = null,
+                                               CustomData?                           CustomData   = null)
 
             : base(Request,
                    Result.OK(),
                    SignKeys,
                    SignInfos,
-                   SignaturePolicy,
                    Signatures,
                    Timestamp,
                    CustomData)
@@ -326,7 +324,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 ClearVariableMonitoringResponse = new ClearVariableMonitoringResponse(
                                                       Request,
                                                       ClearMonitoringResults,
-                                                      null,
                                                       null,
                                                       null,
                                                       Signatures,

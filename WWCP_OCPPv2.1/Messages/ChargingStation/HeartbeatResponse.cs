@@ -73,19 +73,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public HeartbeatResponse(CS.HeartbeatRequest      Request,
                                  DateTime                 CurrentTime,
 
-                                 IEnumerable<KeyPair>?    SignKeys          = null,
-                                 IEnumerable<SignInfo>?   SignInfos         = null,
-                                 SignaturePolicy?         SignaturePolicy   = null,
-                                 IEnumerable<Signature>?  Signatures        = null,
+                                 IEnumerable<KeyPair>?    SignKeys     = null,
+                                 IEnumerable<SignInfo>?   SignInfos    = null,
+                                 IEnumerable<Signature>?  Signatures   = null,
 
-                                 DateTime?                Timestamp         = null,
-                                 CustomData?              CustomData        = null)
+                                 DateTime?                Timestamp    = null,
+                                 CustomData?              CustomData   = null)
 
             : base(Request,
                    Result.OK(),
                    SignKeys,
                    SignInfos,
-                   SignaturePolicy,
                    Signatures,
                    Timestamp,
                    CustomData)
@@ -258,7 +256,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 HeartbeatResponse = new HeartbeatResponse(
                                         Request,
                                         CurrentTime,
-                                        null,
                                         null,
                                         null,
                                         Signatures,

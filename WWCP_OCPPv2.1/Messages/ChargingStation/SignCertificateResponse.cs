@@ -80,19 +80,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                        GenericStatus              Status,
                                        StatusInfo?                StatusInfo   = null,
 
-                                       IEnumerable<KeyPair>?      SignKeys          = null,
-                                       IEnumerable<SignInfo>?     SignInfos         = null,
-                                       SignaturePolicy?           SignaturePolicy   = null,
-                                       IEnumerable<Signature>?    Signatures        = null,
+                                       IEnumerable<KeyPair>?      SignKeys     = null,
+                                       IEnumerable<SignInfo>?     SignInfos    = null,
+                                       IEnumerable<Signature>?    Signatures   = null,
 
-                                       DateTime?                  Timestamp         = null,
-                                       CustomData?                CustomData        = null)
+                                       DateTime?                  Timestamp    = null,
+                                       CustomData?                CustomData   = null)
 
             : base(Request,
                    Result.OK(),
                    SignKeys,
                    SignInfos,
-                   SignaturePolicy,
                    Signatures,
                    Timestamp,
                    CustomData)
@@ -317,7 +315,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               Request,
                                               Status,
                                               StatusInfo,
-                                              null,
                                               null,
                                               null,
                                               Signatures,

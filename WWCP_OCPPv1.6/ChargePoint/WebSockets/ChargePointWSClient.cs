@@ -3817,6 +3817,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                         }
                         break;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
                 }
 
                 if (OCPPResponseJSON is not null)

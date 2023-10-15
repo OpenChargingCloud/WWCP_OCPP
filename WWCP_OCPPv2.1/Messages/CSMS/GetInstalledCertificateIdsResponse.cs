@@ -92,7 +92,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                                   IEnumerable<KeyPair>?                   SignKeys                   = null,
                                                   IEnumerable<SignInfo>?                  SignInfos                  = null,
-                                                  SignaturePolicy?                        SignaturePolicy            = null,
                                                   IEnumerable<Signature>?                 Signatures                 = null,
 
                                                   DateTime?                               Timestamp                  = null,
@@ -102,7 +101,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    Result.OK(),
                    SignKeys,
                    SignInfos,
-                   SignaturePolicy,
                    Signatures,
                    Timestamp,
                    CustomData)
@@ -440,7 +438,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                          Status,
                                                          CertificateHashDataChain,
                                                          StatusInfo,
-                                                         null,
                                                          null,
                                                          null,
                                                          Signatures,

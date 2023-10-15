@@ -260,7 +260,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnBootNotification (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a BootNotification request will be sent to the CSMS.
+        /// An event fired whenever a BootNotification request was sent from a charging station.
         /// </summary>
         public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
@@ -274,7 +274,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnFirmwareStatusNotification (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a FirmwareStatusNotification request will be sent to the CSMS.
+        /// An event fired whenever a FirmwareStatusNotification request was sent from a charging station.
         /// </summary>
         public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
 
@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnPublishFirmwareStatusNotification (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a PublishFirmwareStatusNotification request will be sent to the CSMS.
+        /// An event fired whenever a PublishFirmwareStatusNotification request was sent from a charging station.
         /// </summary>
         public event OnPublishFirmwareStatusNotificationRequestDelegate?   OnPublishFirmwareStatusNotificationRequest;
 
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnHeartbeat (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a Heartbeat request will be sent to the CSMS.
+        /// An event fired whenever a Heartbeat request was sent from a charging station.
         /// </summary>
         public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
 
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnNotifyEvent (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a NotifyEvent request will be sent to the CSMS.
+        /// An event fired whenever a NotifyEvent request was sent from a charging station.
         /// </summary>
         public event OnNotifyEventRequestDelegate?   OnNotifyEventRequest;
 
@@ -330,7 +330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnSecurityEventNotification (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SecurityEventNotification request will be sent to the CSMS.
+        /// An event fired whenever a SecurityEventNotification request was sent from a charging station.
         /// </summary>
         public event OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
 
@@ -344,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnNotifyReport (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a NotifyReport request will be sent to the CSMS.
+        /// An event fired whenever a NotifyReport request was sent from a charging station.
         /// </summary>
         public event OnNotifyReportRequestDelegate?   OnNotifyReportRequest;
 
@@ -358,7 +358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnNotifyMonitoringReport (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a NotifyMonitoringReport request will be sent to the CSMS.
+        /// An event fired whenever a NotifyMonitoringReport request was sent from a charging station.
         /// </summary>
         public event OnNotifyMonitoringReportRequestDelegate?   OnNotifyMonitoringReportRequest;
 
@@ -372,7 +372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnLogStatusNotification (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a LogStatusNotification request will be sent to the CSMS.
+        /// An event fired whenever a LogStatusNotification request was sent from a charging station.
         /// </summary>
         public event OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
 
@@ -401,7 +401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnSignCertificate (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SignCertificate request will be sent to the CSMS.
+        /// An event fired whenever a SignCertificate request was sent from a charging station.
         /// </summary>
         public event OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
 
@@ -415,7 +415,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnGet15118EVCertificate (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a Get15118EVCertificate request will be sent to the CSMS.
+        /// An event fired whenever a Get15118EVCertificate request was sent from a charging station.
         /// </summary>
         public event OnGet15118EVCertificateRequestDelegate?   OnGet15118EVCertificateRequest;
 
@@ -429,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnGetCertificateStatus (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetCertificateStatus request will be sent to the CSMS.
+        /// An event fired whenever a GetCertificateStatus request was sent from a charging station.
         /// </summary>
         public event OnGetCertificateStatusRequestDelegate?   OnGetCertificateStatusRequest;
 
@@ -443,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnGetCRL (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetCRL request will be sent to the CSMS.
+        /// An event fired whenever a GetCRL request was sent from a charging station.
         /// </summary>
         public event OnGetCRLRequestDelegate?   OnGetCRLRequest;
 
@@ -458,7 +458,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnReservationStatusUpdate (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ReservationStatusUpdate request will be sent to the CSMS.
+        /// An event fired whenever a ReservationStatusUpdate request was sent from a charging station.
         /// </summary>
         public event OnReservationStatusUpdateRequestDelegate?   OnReservationStatusUpdateRequest;
 
@@ -472,7 +472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnAuthorize (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever an Authorize request will be sent to the CSMS.
+        /// An event fired whenever an Authorize request was sent from a charging station.
         /// </summary>
         public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
 
@@ -486,7 +486,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnNotifyEVChargingNeeds (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a NotifyEVChargingNeeds request will be sent to the CSMS.
+        /// An event fired whenever a NotifyEVChargingNeeds request was sent from a charging station.
         /// </summary>
         public event OnNotifyEVChargingNeedsRequestDelegate?   OnNotifyEVChargingNeedsRequest;
 
@@ -500,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnTransactionEvent (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a TransactionEvent will be sent to the CSMS.
+        /// An event fired whenever a TransactionEvent was sent from a charging station.
         /// </summary>
         public event OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
 
@@ -514,7 +514,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnStatusNotification (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a StatusNotification request will be sent to the CSMS.
+        /// An event fired whenever a StatusNotification request was sent from a charging station.
         /// </summary>
         public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
@@ -528,7 +528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnMeterValues (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a MeterValues request will be sent to the CSMS.
+        /// An event fired whenever a MeterValues request was sent from a charging station.
         /// </summary>
         public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
 
@@ -542,7 +542,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnNotifyChargingLimit (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a NotifyChargingLimit request will be sent to the CSMS.
+        /// An event fired whenever a NotifyChargingLimit request was sent from a charging station.
         /// </summary>
         public event OnNotifyChargingLimitRequestDelegate?   OnNotifyChargingLimitRequest;
 
@@ -556,7 +556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnClearedChargingLimit (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ClearedChargingLimit request will be sent to the CSMS.
+        /// An event fired whenever a ClearedChargingLimit request was sent from a charging station.
         /// </summary>
         public event OnClearedChargingLimitRequestDelegate?   OnClearedChargingLimitRequest;
 
@@ -570,7 +570,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnReportChargingProfiles (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
+        /// An event fired whenever a ReportChargingProfiles request was sent from a charging station.
         /// </summary>
         public event OnReportChargingProfilesRequestDelegate?   OnReportChargingProfilesRequest;
 
@@ -584,7 +584,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnNotifyEVChargingSchedule (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
+        /// An event fired whenever a NotifyEVChargingSchedule request was sent from a charging station.
         /// </summary>
         public event OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
 
@@ -598,7 +598,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnNotifyPriorityCharging (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
+        /// An event fired whenever a NotifyPriorityCharging request was sent from a charging station.
         /// </summary>
         public event OnNotifyPriorityChargingRequestDelegate?   OnNotifyPriorityChargingRequest;
 
@@ -612,7 +612,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnPullDynamicScheduleUpdate (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
+        /// An event fired whenever a PullDynamicScheduleUpdate request was sent from a charging station.
         /// </summary>
         public event OnPullDynamicScheduleUpdateRequestDelegate?   OnPullDynamicScheduleUpdateRequest;
 
@@ -627,7 +627,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnNotifyDisplayMessages (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a NotifyDisplayMessages request will be sent to the CSMS.
+        /// An event fired whenever a NotifyDisplayMessages request was sent from a charging station.
         /// </summary>
         public event OnNotifyDisplayMessagesRequestDelegate?   OnNotifyDisplayMessagesRequest;
 
@@ -641,7 +641,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnNotifyCustomerInformation (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a NotifyCustomerInformation request will be sent to the CSMS.
+        /// An event fired whenever a NotifyCustomerInformation request was sent from a charging station.
         /// </summary>
         public event OnNotifyCustomerInformationRequestDelegate?   OnNotifyCustomerInformationRequest;
 
@@ -656,10 +656,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region CSMS -> Charging Station Messages
 
-        #region OnReset (-Request/-Response)
+        #region OnReset                       (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a Reset request will be sent to the CSMS.
+        /// An event fired whenever a Reset request will be sent to the charging station.
         /// </summary>
         public event OnResetRequestDelegate?   OnResetRequest;
 
@@ -670,10 +670,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnUpdateFirmware (-Request/-Response)
+        #region OnUpdateFirmware              (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever an UpdateFirmware request will be sent to the CSMS.
+        /// An event fired whenever an UpdateFirmware request will be sent to the charging station.
         /// </summary>
         public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
@@ -684,10 +684,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnPublishFirmware (-Request/-Response)
+        #region OnPublishFirmware             (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a PublishFirmware request will be sent to the CSMS.
+        /// An event fired whenever a PublishFirmware request will be sent to the charging station.
         /// </summary>
         public event OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
 
@@ -698,10 +698,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnUnpublishFirmware (-Request/-Response)
+        #region OnUnpublishFirmware           (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever an UnpublishFirmware request will be sent to the CSMS.
+        /// An event fired whenever an UnpublishFirmware request will be sent to the charging station.
         /// </summary>
         public event OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
 
@@ -712,10 +712,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnGetBaseReport (-Request/-Response)
+        #region OnGetBaseReport               (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetBaseReport request will be sent to the CSMS.
+        /// An event fired whenever a GetBaseReport request will be sent to the charging station.
         /// </summary>
         public event OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
 
@@ -726,10 +726,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnGetReport (-Request/-Response)
+        #region OnGetReport                   (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetReport request will be sent to the CSMS.
+        /// An event fired whenever a GetReport request will be sent to the charging station.
         /// </summary>
         public event OnGetReportRequestDelegate?   OnGetReportRequest;
 
@@ -740,10 +740,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnGetLog (-Request/-Response)
+        #region OnGetLog                      (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetLog request will be sent to the CSMS.
+        /// An event fired whenever a GetLog request will be sent to the charging station.
         /// </summary>
         public event OnGetLogRequestDelegate?   OnGetLogRequest;
 
@@ -754,10 +754,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnSetVariables (-Request/-Response)
+        #region OnSetVariables                (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SetVariables request will be sent to the CSMS.
+        /// An event fired whenever a SetVariables request will be sent to the charging station.
         /// </summary>
         public event OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
 
@@ -768,10 +768,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnGetVariables (-Request/-Response)
+        #region OnGetVariables                (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetVariables request will be sent to the CSMS.
+        /// An event fired whenever a GetVariables request will be sent to the charging station.
         /// </summary>
         public event OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
 
@@ -782,10 +782,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnSetMonitoringBase (-Request/-Response)
+        #region OnSetMonitoringBase           (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SetMonitoringBase request will be sent to the CSMS.
+        /// An event fired whenever a SetMonitoringBase request will be sent to the charging station.
         /// </summary>
         public event OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
 
@@ -796,10 +796,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnGetMonitoringReport (-Request/-Response)
+        #region OnGetMonitoringReport         (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetMonitoringReport request will be sent to the CSMS.
+        /// An event fired whenever a GetMonitoringReport request will be sent to the charging station.
         /// </summary>
         public event OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
 
@@ -810,10 +810,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnSetMonitoringLevel (-Request/-Response)
+        #region OnSetMonitoringLevel          (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SetMonitoringLevel request will be sent to the CSMS.
+        /// An event fired whenever a SetMonitoringLevel request will be sent to the charging station.
         /// </summary>
         public event OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
 
@@ -824,10 +824,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SetVariableMonitoring/-Response
+        #region SetVariableMonitoring         (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SetVariableMonitoring request will be sent to the CSMS.
+        /// An event fired whenever a SetVariableMonitoring request will be sent to the charging station.
         /// </summary>
         public event OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
 
@@ -838,10 +838,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnClearVariableMonitoring (-Request/-Response)
+        #region OnClearVariableMonitoring     (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ClearVariableMonitoring request will be sent to the CSMS.
+        /// An event fired whenever a ClearVariableMonitoring request will be sent to the charging station.
         /// </summary>
         public event OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
 
@@ -852,10 +852,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnSetNetworkProfile (-Request/-Response)
+        #region OnSetNetworkProfile           (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SetNetworkProfile request will be sent to the CSMS.
+        /// An event fired whenever a SetNetworkProfile request will be sent to the charging station.
         /// </summary>
         public event OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
 
@@ -866,10 +866,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnChangeAvailability (-Request/-Response)
+        #region OnChangeAvailability          (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ChangeAvailability request will be sent to the CSMS.
+        /// An event fired whenever a ChangeAvailability request will be sent to the charging station.
         /// </summary>
         public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
@@ -880,10 +880,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnTriggerMessage (-Request/-Response)
+        #region OnTriggerMessage              (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a TriggerMessage request will be sent to the CSMS.
+        /// An event fired whenever a TriggerMessage request will be sent to the charging station.
         /// </summary>
         public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
@@ -894,7 +894,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnDataTransfer (-Request/-Response)
+        #region OnDataTransfer                (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a reset request was sent.
@@ -909,10 +909,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region OnCertificateSigned (-Request/-Response)
+        #region OnCertificateSigned           (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SignedCertificate request will be sent to the CSMS.
+        /// An event fired whenever a SignedCertificate request will be sent to the charging station.
         /// </summary>
         public event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
 
@@ -923,10 +923,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnInstallCertificate (-Request/-Response)
+        #region OnInstallCertificate          (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever an InstallCertificate request will be sent to the CSMS.
+        /// An event fired whenever an InstallCertificate request will be sent to the charging station.
         /// </summary>
         public event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
 
@@ -937,10 +937,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnGetInstalledCertificateIds (-Request/-Response)
+        #region OnGetInstalledCertificateIds  (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetInstalledCertificateIds request will be sent to the CSMS.
+        /// An event fired whenever a GetInstalledCertificateIds request will be sent to the charging station.
         /// </summary>
         public event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
 
@@ -951,10 +951,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnDeleteCertificate (-Request/-Response)
+        #region OnDeleteCertificate           (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a DeleteCertificate request will be sent to the CSMS.
+        /// An event fired whenever a DeleteCertificate request will be sent to the charging station.
         /// </summary>
         public event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
 
@@ -965,10 +965,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnNotifyCRL (-Request/-Response)
+        #region OnNotifyCRL                   (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a NotifyCRL request will be sent to the CSMS.
+        /// An event fired whenever a NotifyCRL request will be sent to the charging station.
         /// </summary>
         public event OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
 
@@ -980,10 +980,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region OnGetLocalListVersion (-Request/-Response)
+        #region OnGetLocalListVersion         (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetLocalListVersion request will be sent to the CSMS.
+        /// An event fired whenever a GetLocalListVersion request will be sent to the charging station.
         /// </summary>
         public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
@@ -994,10 +994,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnSendLocalList (-Request/-Response)
+        #region OnSendLocalList               (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SendLocalList request will be sent to the CSMS.
+        /// An event fired whenever a SendLocalList request will be sent to the charging station.
         /// </summary>
         public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
@@ -1008,10 +1008,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnClearCache (-Request/-Response)
+        #region OnClearCache                  (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ClearCache request will be sent to the CSMS.
+        /// An event fired whenever a ClearCache request will be sent to the charging station.
         /// </summary>
         public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
@@ -1023,10 +1023,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region OnReserveNow (-Request/-Response)
+        #region OnReserveNow                  (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ReserveNow request will be sent to the CSMS.
+        /// An event fired whenever a ReserveNow request will be sent to the charging station.
         /// </summary>
         public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
 
@@ -1037,10 +1037,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnCancelReservation (-Request/-Response)
+        #region OnCancelReservation           (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a CancelReservation request will be sent to the CSMS.
+        /// An event fired whenever a CancelReservation request will be sent to the charging station.
         /// </summary>
         public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
@@ -1051,10 +1051,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnRequestStartTransaction (-Request/-Response)
+        #region OnRequestStartTransaction     (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a RequestStartTransaction request will be sent to the CSMS.
+        /// An event fired whenever a RequestStartTransaction request will be sent to the charging station.
         /// </summary>
         public event OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
 
@@ -1065,10 +1065,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnRequestStopTransaction (-Request/-Response)
+        #region OnRequestStopTransaction      (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a RequestStopTransaction request will be sent to the CSMS.
+        /// An event fired whenever a RequestStopTransaction request will be sent to the charging station.
         /// </summary>
         public event OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
 
@@ -1079,10 +1079,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnGetTransactionStatus (-Request/-Response)
+        #region OnGetTransactionStatus        (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetTransactionStatus request will be sent to the CSMS.
+        /// An event fired whenever a GetTransactionStatus request will be sent to the charging station.
         /// </summary>
         public event OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
 
@@ -1093,10 +1093,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnSetChargingProfile (-Request/-Response)
+        #region OnSetChargingProfile          (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SetChargingProfile request will be sent to the CSMS.
+        /// An event fired whenever a SetChargingProfile request will be sent to the charging station.
         /// </summary>
         public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
@@ -1107,10 +1107,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnGetChargingProfiles (-Request/-Response)
+        #region OnGetChargingProfiles         (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetChargingProfiles request will be sent to the CSMS.
+        /// An event fired whenever a GetChargingProfiles request will be sent to the charging station.
         /// </summary>
         public event OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
 
@@ -1121,10 +1121,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnClearChargingProfile (-Request/-Response)
+        #region OnClearChargingProfile        (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ClearChargingProfile request will be sent to the CSMS.
+        /// An event fired whenever a ClearChargingProfile request will be sent to the charging station.
         /// </summary>
         public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
@@ -1135,10 +1135,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnGetCompositeSchedule (-Request/-Response)
+        #region OnGetCompositeSchedule        (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetCompositeSchedule request will be sent to the CSMS.
+        /// An event fired whenever a GetCompositeSchedule request will be sent to the charging station.
         /// </summary>
         public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
@@ -1149,10 +1149,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnUpdateDynamicSchedule (-Request/-Response)
+        #region OnUpdateDynamicSchedule       (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a UpdateDynamicSchedule request will be sent to the CSMS.
+        /// An event fired whenever a UpdateDynamicSchedule request will be sent to the charging station.
         /// </summary>
         public event OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
 
@@ -1166,7 +1166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnNotifyAllowedEnergyTransfer (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the CSMS.
+        /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the charging station.
         /// </summary>
         public event OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
 
@@ -1177,10 +1177,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnUsePriorityCharging (-Request/-Response)
+        #region OnUsePriorityCharging         (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a UsePriorityCharging request will be sent to the CSMS.
+        /// An event fired whenever a UsePriorityCharging request will be sent to the charging station.
         /// </summary>
         public event OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
 
@@ -1191,10 +1191,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnUnlockConnector (-Request/-Response)
+        #region OnUnlockConnector             (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever an UnlockConnector request will be sent to the CSMS.
+        /// An event fired whenever an UnlockConnector request will be sent to the charging station.
         /// </summary>
         public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
@@ -1206,10 +1206,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region OnAFRRSignal (-Request/-Response)
+        #region OnAFRRSignal                  (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever an AFRRSignal request will be sent to the CSMS.
+        /// An event fired whenever an AFRRSignal request will be sent to the charging station.
         /// </summary>
         public event OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
 
@@ -1221,10 +1221,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region SetDisplayMessage/-Response
+        #region SetDisplayMessage/-Response   (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SetDisplayMessage request will be sent to the CSMS.
+        /// An event fired whenever a SetDisplayMessage request will be sent to the charging station.
         /// </summary>
         public event OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
 
@@ -1235,10 +1235,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnGetDisplayMessages (-Request/-Response)
+        #region OnGetDisplayMessages          (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetDisplayMessages request will be sent to the CSMS.
+        /// An event fired whenever a GetDisplayMessages request will be sent to the charging station.
         /// </summary>
         public event OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
 
@@ -1249,10 +1249,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnClearDisplayMessage (-Request/-Response)
+        #region OnClearDisplayMessage         (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ClearDisplayMessage request will be sent to the CSMS.
+        /// An event fired whenever a ClearDisplayMessage request will be sent to the charging station.
         /// </summary>
         public event OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
 
@@ -1263,10 +1263,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnCostUpdated (-Request/-Response)
+        #region OnCostUpdated                 (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a CostUpdated request will be sent to the CSMS.
+        /// An event fired whenever a CostUpdated request will be sent to the charging station.
         /// </summary>
         public event OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
 
@@ -1277,10 +1277,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnCustomerInformation (-Request/-Response)
+        #region OnCustomerInformation         (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a CustomerInformation request will be sent to the CSMS.
+        /// An event fired whenever a CustomerInformation request will be sent to the charging station.
         /// </summary>
         public event OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
 
@@ -1291,178 +1291,337 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        // E2E Security Extensions
+
+        #region AddSignaturePolicy            (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a AddSignaturePolicy request will be sent to the charging station.
+        /// </summary>
+        public event OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a AddSignaturePolicy request was received.
+        /// </summary>
+        public event OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
+
+        #endregion
+
+        #region UpdateSignaturePolicy         (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a UpdateSignaturePolicy request will be sent to the charging station.
+        /// </summary>
+        public event OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a UpdateSignaturePolicy request was received.
+        /// </summary>
+        public event OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
+
+        #endregion
+
+        #region DeleteSignaturePolicy         (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a DeleteSignaturePolicy request will be sent to the charging station.
+        /// </summary>
+        public event OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a DeleteSignaturePolicy request was received.
+        /// </summary>
+        public event OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
+
+        #endregion
+
+        #region AddUserRole                   (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a AddUserRole request will be sent to the charging station.
+        /// </summary>
+        public event OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a AddUserRole request was received.
+        /// </summary>
+        public event OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
+
+        #endregion
+
+        #region UpdateUserRole                (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a UpdateUserRole request will be sent to the charging station.
+        /// </summary>
+        public event OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a UpdateUserRole request was received.
+        /// </summary>
+        public event OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
+
+        #endregion
+
+        #region DeleteUserRole                (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a DeleteUserRole request will be sent to the charging station.
+        /// </summary>
+        public event OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a DeleteUserRole request was received.
+        /// </summary>
+        public event OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
+
+        #endregion
+
         #endregion
 
         #endregion
 
         #region Custom JSON serializer delegates
 
-        #region CSMS Messages
+        #region CSMS Request  Messages
 
-        public CustomJObjectSerializerDelegate<ResetRequest>?                                        CustomResetRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<ResetRequest>?                                        CustomResetRequestSerializer                                 { get; set; }
 
-        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?                               CustomUpdateFirmwareRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?                               CustomUpdateFirmwareRequestSerializer                        { get; set; }
 
-        public CustomJObjectSerializerDelegate<PublishFirmwareRequest>?                              CustomPublishFirmwareRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<PublishFirmwareRequest>?                              CustomPublishFirmwareRequestSerializer                       { get; set; }
 
-        public CustomJObjectSerializerDelegate<UnpublishFirmwareRequest>?                            CustomUnpublishFirmwareRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<UnpublishFirmwareRequest>?                            CustomUnpublishFirmwareRequestSerializer                     { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetBaseReportRequest>?                                CustomGetBaseReportRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<GetBaseReportRequest>?                                CustomGetBaseReportRequestSerializer                         { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetReportRequest>?                                    CustomGetReportRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<GetReportRequest>?                                    CustomGetReportRequestSerializer                             { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetLogRequest>?                                       CustomGetLogRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<GetLogRequest>?                                       CustomGetLogRequestSerializer                                { get; set; }
 
-        public CustomJObjectSerializerDelegate<SetVariablesRequest>?                                 CustomSetVariablesRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariablesRequest>?                                 CustomSetVariablesRequestSerializer                          { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetVariablesRequest>?                                 CustomGetVariablesRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetVariablesRequest>?                                 CustomGetVariablesRequestSerializer                          { get; set; }
 
-        public CustomJObjectSerializerDelegate<SetMonitoringBaseRequest>?                            CustomSetMonitoringBaseRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringBaseRequest>?                            CustomSetMonitoringBaseRequestSerializer                     { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetMonitoringReportRequest>?                          CustomGetMonitoringReportRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<GetMonitoringReportRequest>?                          CustomGetMonitoringReportRequestSerializer                   { get; set; }
 
-        public CustomJObjectSerializerDelegate<SetMonitoringLevelRequest>?                           CustomSetMonitoringLevelRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringLevelRequest>?                           CustomSetMonitoringLevelRequestSerializer                    { get; set; }
 
-        public CustomJObjectSerializerDelegate<SetVariableMonitoringRequest>?                        CustomSetVariableMonitoringRequestSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariableMonitoringRequest>?                        CustomSetVariableMonitoringRequestSerializer                 { get; set; }
 
-        public CustomJObjectSerializerDelegate<ClearVariableMonitoringRequest>?                      CustomClearVariableMonitoringRequestSerializer         { get; set; }
+        public CustomJObjectSerializerDelegate<ClearVariableMonitoringRequest>?                      CustomClearVariableMonitoringRequestSerializer               { get; set; }
 
-        public CustomJObjectSerializerDelegate<SetNetworkProfileRequest>?                            CustomSetNetworkProfileRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<SetNetworkProfileRequest>?                            CustomSetNetworkProfileRequestSerializer                     { get; set; }
 
-        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?                           CustomChangeAvailabilityRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?                           CustomChangeAvailabilityRequestSerializer                    { get; set; }
 
-        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                               CustomTriggerMessageRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                               CustomTriggerMessageRequestSerializer                        { get; set; }
 
-        public CustomJObjectSerializerDelegate<DataTransferRequest>?                                 CustomDataTransferRequestSerializer                    { get; set; }
-
-
-        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?                            CustomCertificateSignedRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?                           CustomInstallCertificateRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?                   CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
-
-        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?                            CustomDeleteCertificateRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<NotifyCRLRequest>?                                    CustomNotifyCRLRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?                                 CustomDataTransferRequestSerializer                          { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?                          CustomGetLocalListVersionRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?                            CustomCertificateSignedRequestSerializer                     { get; set; }
 
-        public CustomJObjectSerializerDelegate<SendLocalListRequest>?                                CustomSendLocalListRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?                           CustomInstallCertificateRequestSerializer                    { get; set; }
 
-        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                                   CustomClearCacheRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?                   CustomGetInstalledCertificateIdsRequestSerializer            { get; set; }
 
+        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?                            CustomDeleteCertificateRequestSerializer                     { get; set; }
 
-        public CustomJObjectSerializerDelegate<ReserveNowRequest>?                                   CustomReserveNowRequestSerializer                      { get; set; }
-
-        public CustomJObjectSerializerDelegate<CancelReservationRequest>?                            CustomCancelReservationRequestSerializer               { get; set; }
-
-        public CustomJObjectSerializerDelegate<RequestStartTransactionRequest>?                      CustomRequestStartTransactionRequestSerializer         { get; set; }
-
-        public CustomJObjectSerializerDelegate<RequestStopTransactionRequest>?                       CustomRequestStopTransactionRequestSerializer          { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetTransactionStatusRequest>?                         CustomGetTransactionStatusRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?                           CustomSetChargingProfileRequestSerializer              { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetChargingProfilesRequest>?                          CustomGetChargingProfilesRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?                         CustomClearChargingProfileRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?                         CustomGetCompositeScheduleRequestSerializer            { get; set; }
-
-        public CustomJObjectSerializerDelegate<UpdateDynamicScheduleRequest>?                        CustomUpdateDynamicScheduleRequestSerializer           { get; set; }
-
-        public CustomJObjectSerializerDelegate<NotifyAllowedEnergyTransferRequest>?                  CustomNotifyAllowedEnergyTransferRequestSerializer     { get; set; }
-
-        public CustomJObjectSerializerDelegate<UsePriorityChargingRequest>?                          CustomUsePriorityChargingRequestSerializer             { get; set; }
-
-        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?                              CustomUnlockConnectorRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyCRLRequest>?                                    CustomNotifyCRLRequestSerializer                             { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<AFRRSignalRequest>?                                   CustomAFRRSignalRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?                          CustomGetLocalListVersionRequestSerializer                   { get; set; }
+
+        public CustomJObjectSerializerDelegate<SendLocalListRequest>?                                CustomSendLocalListRequestSerializer                         { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                                   CustomClearCacheRequestSerializer                            { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<SetDisplayMessageRequest>?                            CustomSetDisplayMessageRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<ReserveNowRequest>?                                   CustomReserveNowRequestSerializer                            { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetDisplayMessagesRequest>?                           CustomGetDisplayMessagesRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CancelReservationRequest>?                            CustomCancelReservationRequestSerializer                     { get; set; }
 
-        public CustomJObjectSerializerDelegate<ClearDisplayMessageRequest>?                          CustomClearDisplayMessageRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<RequestStartTransactionRequest>?                      CustomRequestStartTransactionRequestSerializer               { get; set; }
 
-        public CustomJObjectSerializerDelegate<CostUpdatedRequest>?                                  CustomCostUpdatedRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<RequestStopTransactionRequest>?                       CustomRequestStopTransactionRequestSerializer                { get; set; }
 
-        public CustomJObjectSerializerDelegate<CustomerInformationRequest>?                          CustomCustomerInformationRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<GetTransactionStatusRequest>?                         CustomGetTransactionStatusRequestSerializer                  { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?                           CustomSetChargingProfileRequestSerializer                    { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetChargingProfilesRequest>?                          CustomGetChargingProfilesRequestSerializer                   { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?                         CustomClearChargingProfileRequestSerializer                  { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?                         CustomGetCompositeScheduleRequestSerializer                  { get; set; }
+
+        public CustomJObjectSerializerDelegate<UpdateDynamicScheduleRequest>?                        CustomUpdateDynamicScheduleRequestSerializer                 { get; set; }
+
+        public CustomJObjectSerializerDelegate<NotifyAllowedEnergyTransferRequest>?                  CustomNotifyAllowedEnergyTransferRequestSerializer           { get; set; }
+
+        public CustomJObjectSerializerDelegate<UsePriorityChargingRequest>?                          CustomUsePriorityChargingRequestSerializer                   { get; set; }
+
+        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?                              CustomUnlockConnectorRequestSerializer                       { get; set; }
 
 
+        public CustomJObjectSerializerDelegate<AFRRSignalRequest>?                                   CustomAFRRSignalRequestSerializer                            { get; set; }
 
-        public CustomJObjectSerializerDelegate<BootNotificationResponse>?                            CustomBootNotificationResponseSerializer               { get; set; }
 
+        public CustomJObjectSerializerDelegate<SetDisplayMessageRequest>?                            CustomSetDisplayMessageRequestSerializer                     { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetDisplayMessagesRequest>?                           CustomGetDisplayMessagesRequestSerializer                    { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearDisplayMessageRequest>?                          CustomClearDisplayMessageRequestSerializer                   { get; set; }
+
+        public CustomJObjectSerializerDelegate<CostUpdatedRequest>?                                  CustomCostUpdatedRequestSerializer                           { get; set; }
+
+        public CustomJObjectSerializerDelegate<CustomerInformationRequest>?                          CustomCustomerInformationRequestSerializer                   { get; set; }
+
+
+        // E2E Security Extensions
+
+        public CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?                           CustomAddSignaturePolicyRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?                        CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteSignaturePolicyRequest>?                        CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<AddUserRoleRequest>?                                  CustomAddUserRoleRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?                               CustomUpdateUserRoleRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteUserRoleRequest>?                               CustomDeleteUserRoleRequestSerializer                        { get; set; }
 
         #endregion
 
-        #region Charging Station Messages
+        #region CSMS Response Messages
 
-        public CustomJObjectSerializerDelegate<CS.BootNotificationRequest>?                          CustomBootNotificationRequestSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<CS.FirmwareStatusNotificationRequest>?                CustomFirmwareStatusNotificationRequestSerializer      { get; set; }
+        public CustomJObjectSerializerDelegate<BootNotificationResponse>?                            CustomBootNotificationResponseSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<FirmwareStatusNotificationResponse>?                  CustomFirmwareStatusNotificationResponseSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<PublishFirmwareStatusNotificationResponse>?           CustomPublishFirmwareStatusNotificationResponseSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<HeartbeatResponse>?                                   CustomHeartbeatResponseSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyEventResponse>?                                 CustomNotifyEventResponseSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<SecurityEventNotificationResponse>?                   CustomSecurityEventNotificationResponseSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyReportResponse>?                                CustomNotifyReportResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyMonitoringReportResponse>?                      CustomNotifyMonitoringReportResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<LogStatusNotificationResponse>?                       CustomLogStatusNotificationResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferResponse>?                                CustomIncomingDataTransferResponseSerializer                 { get; set; }
 
+        public CustomJObjectSerializerDelegate<SignCertificateResponse>?                             CustomSignCertificateResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<Get15118EVCertificateResponse>?                       CustomGet15118EVCertificateResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<GetCertificateStatusResponse>?                        CustomGetCertificateStatusResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<GetCRLResponse>?                                      CustomGetCRLResponseSerializer                               { get; set; }
 
+        public CustomJObjectSerializerDelegate<ReservationStatusUpdateResponse>?                     CustomReservationStatusUpdateResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizeResponse>?                                   CustomAuthorizeResponseSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyEVChargingNeedsResponse>?                       CustomNotifyEVChargingNeedsResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<TransactionEventResponse>?                            CustomTransactionEventResponseSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<StatusNotificationResponse>?                          CustomStatusNotificationResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<MeterValuesResponse>?                                 CustomMeterValuesResponseSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyChargingLimitResponse>?                         CustomNotifyChargingLimitResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<ClearedChargingLimitResponse>?                        CustomClearedChargingLimitResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<ReportChargingProfilesResponse>?                      CustomReportChargingProfilesResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyEVChargingScheduleResponse>?                    CustomNotifyEVChargingScheduleResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyPriorityChargingResponse>?                      CustomNotifyPriorityChargingResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<PullDynamicScheduleUpdateResponse>?                   CustomPullDynamicScheduleUpdateResponseSerializer            { get; set; }
 
-
-
-        public CustomJObjectSerializerDelegate<CS.ResetResponse>?                                    CustomResetResponseSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<CS.UpdateFirmwareResponse>?                           CustomUpdateFirmwareResponseSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CS.PublishFirmwareResponse>?                          CustomPublishFirmwareResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<CS.UnpublishFirmwareResponse>?                        CustomUnpublishFirmwareResponseSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetBaseReportResponse>?                            CustomGetBaseReportResponseSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetReportResponse>?                                CustomGetReportResponseSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetLogResponse>?                                   CustomGetLogResponseSerializer                         { get; set; }
-
-        public CustomJObjectSerializerDelegate<CS.SetVariablesResponse>?                             CustomSetVariablesResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetVariablesResponse>?                             CustomGetVariablesResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SetMonitoringBaseResponse>?                        CustomSetMonitoringBaseResponseSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetMonitoringReportResponse>?                      CustomGetMonitoringReportResponseSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SetMonitoringLevelResponse>?                       CustomSetMonitoringLevelResponseSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SetVariableMonitoringResponse>?                    CustomSetVariableMonitoringResponseSerializer          { get; set; }
-        public CustomJObjectSerializerDelegate<CS.ClearVariableMonitoringResponse>?                  CustomClearVariableMonitoringResponseSerializer        { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SetNetworkProfileResponse>?                        CustomSetNetworkProfileResponseSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<CS.ChangeAvailabilityResponse>?                       CustomChangeAvailabilityResponseSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<CS.TriggerMessageResponse>?                           CustomTriggerMessageResponseSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CS.DataTransferResponse>?                             CustomDataTransferResponseSerializer                   { get; set; }
-
-        public CustomJObjectSerializerDelegate<CS.CertificateSignedResponse>?                        CustomCertificateSignedResponseSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<CS.InstallCertificateResponse>?                       CustomInstallCertificateResponseSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetInstalledCertificateIdsResponse>?               CustomGetInstalledCertificateIdsResponseSerializer     { get; set; }
-        public CustomJObjectSerializerDelegate<CS.DeleteCertificateResponse>?                        CustomDeleteCertificateResponseSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<CS.NotifyCRLResponse>?                                CustomNotifyCRLResponseSerializer                      { get; set; }
-
-        public CustomJObjectSerializerDelegate<CS.GetLocalListVersionResponse>?                      CustomGetLocalListVersionResponseSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SendLocalListResponse>?                            CustomSendLocalListResponseSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<CS.ClearCacheResponse>?                               CustomClearCacheResponseSerializer                     { get; set; }
-
-        public CustomJObjectSerializerDelegate<CS.ReserveNowResponse>?                               CustomReserveNowResponseSerializer                     { get; set; }
-        public CustomJObjectSerializerDelegate<CS.CancelReservationResponse>?                        CustomCancelReservationResponseSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<CS.RequestStartTransactionResponse>?                  CustomRequestStartTransactionResponseSerializer        { get; set; }
-        public CustomJObjectSerializerDelegate<CS.RequestStopTransactionResponse>?                   CustomRequestStopTransactionResponseSerializer         { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetTransactionStatusResponse>?                     CustomGetTransactionStatusResponseSerializer           { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SetChargingProfileResponse>?                       CustomSetChargingProfileResponseSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetChargingProfilesResponse>?                      CustomGetChargingProfilesResponseSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<CS.ClearChargingProfileResponse>?                     CustomClearChargingProfileResponseSerializer           { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetCompositeScheduleResponse>?                     CustomGetCompositeScheduleResponseSerializer           { get; set; }
-        public CustomJObjectSerializerDelegate<CS.UpdateDynamicScheduleResponse>?                    CustomUpdateDynamicScheduleResponseSerializer          { get; set; }
-        public CustomJObjectSerializerDelegate<CS.NotifyAllowedEnergyTransferResponse>?              CustomNotifyAllowedEnergyTransferResponseSerializer    { get; set; }
-        public CustomJObjectSerializerDelegate<CS.UsePriorityChargingResponse>?                      CustomUsePriorityChargingResponseSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<CS.UnlockConnectorResponse>?                          CustomUnlockConnectorResponseSerializer                { get; set; }
-
-        public CustomJObjectSerializerDelegate<CS.AFRRSignalResponse>?                               CustomAFRRSignalResponseSerializer                     { get; set; }
-
-        public CustomJObjectSerializerDelegate<CS.SetDisplayMessageResponse>?                        CustomSetDisplayMessageResponseSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetDisplayMessagesResponse>?                       CustomGetDisplayMessagesResponseSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<CS.ClearDisplayMessageResponse>?                      CustomClearDisplayMessageResponseSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<CS.CostUpdatedResponse>?                              CustomCostUpdatedResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<CS.CustomerInformationResponse>?                      CustomCustomerInformationResponseSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyDisplayMessagesResponse>?                       CustomNotifyDisplayMessagesResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<NotifyCustomerInformationResponse>?                   CustomNotifyCustomerInformationResponseSerializer            { get; set; }
 
         #endregion
+
+
+        #region Charging Station Request  Messages
+
+        public CustomJObjectSerializerDelegate<CS.BootNotificationRequest>?                          CustomBootNotificationRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<CS.FirmwareStatusNotificationRequest>?                CustomFirmwareStatusNotificationRequestSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<CS.PublishFirmwareStatusNotificationRequest>?         CustomPublishFirmwareStatusNotificationRequestSerializer     { get; set; }
+        public CustomJObjectSerializerDelegate<CS.HeartbeatRequest>?                                 CustomHeartbeatRequestSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyEventRequest>?                               CustomNotifyEventRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SecurityEventNotificationRequest>?                 CustomSecurityEventNotificationRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyReportRequest>?                              CustomNotifyReportRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyMonitoringReportRequest>?                    CustomNotifyMonitoringReportRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CS.LogStatusNotificationRequest>?                     CustomLogStatusNotificationRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CS.DataTransferRequest>?                              CustomIncomingDataTransferRequestSerializer                  { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.SignCertificateRequest>?                           CustomSignCertificateRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<CS.Get15118EVCertificateRequest>?                     CustomGet15118EVCertificateRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetCertificateStatusRequest>?                      CustomGetCertificateStatusRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetCRLRequest>?                                    CustomGetCRLRequestSerializer                                { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.ReservationStatusUpdateRequest>?                   CustomReservationStatusUpdateRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CS.AuthorizeRequest>?                                 CustomAuthorizeRequestSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyEVChargingNeedsRequest>?                     CustomNotifyEVChargingNeedsRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CS.TransactionEventRequest>?                          CustomTransactionEventRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<CS.StatusNotificationRequest>?                        CustomStatusNotificationRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.MeterValuesRequest>?                               CustomMeterValuesRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyChargingLimitRequest>?                       CustomNotifyChargingLimitRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ClearedChargingLimitRequest>?                      CustomClearedChargingLimitRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ReportChargingProfilesRequest>?                    CustomReportChargingProfilesRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyEVChargingScheduleRequest>?                  CustomNotifyEVChargingScheduleRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyPriorityChargingRequest>?                    CustomNotifyPriorityChargingRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CS.PullDynamicScheduleUpdateRequest>?                 CustomPullDynamicScheduleUpdateRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.NotifyDisplayMessagesRequest>?                     CustomNotifyDisplayMessagesRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyCustomerInformationRequest>?                 CustomNotifyCustomerInformationRequestSerializer             { get; set; }
+
+        #endregion
+
+        #region Charging Station Response Messages
+
+        public CustomJObjectSerializerDelegate<CS.ResetResponse>?                                    CustomResetResponseSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UpdateFirmwareResponse>?                           CustomUpdateFirmwareResponseSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<CS.PublishFirmwareResponse>?                          CustomPublishFirmwareResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UnpublishFirmwareResponse>?                        CustomUnpublishFirmwareResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetBaseReportResponse>?                            CustomGetBaseReportResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetReportResponse>?                                CustomGetReportResponseSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetLogResponse>?                                   CustomGetLogResponseSerializer                               { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.SetVariablesResponse>?                             CustomSetVariablesResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetVariablesResponse>?                             CustomGetVariablesResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetMonitoringBaseResponse>?                        CustomSetMonitoringBaseResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetMonitoringReportResponse>?                      CustomGetMonitoringReportResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetMonitoringLevelResponse>?                       CustomSetMonitoringLevelResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetVariableMonitoringResponse>?                    CustomSetVariableMonitoringResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ClearVariableMonitoringResponse>?                  CustomClearVariableMonitoringResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetNetworkProfileResponse>?                        CustomSetNetworkProfileResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ChangeAvailabilityResponse>?                       CustomChangeAvailabilityResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CS.TriggerMessageResponse>?                           CustomTriggerMessageResponseSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<CS.DataTransferResponse>?                             CustomDataTransferResponseSerializer                         { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.CertificateSignedResponse>?                        CustomCertificateSignedResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.InstallCertificateResponse>?                       CustomInstallCertificateResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetInstalledCertificateIdsResponse>?               CustomGetInstalledCertificateIdsResponseSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<CS.DeleteCertificateResponse>?                        CustomDeleteCertificateResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyCRLResponse>?                                CustomNotifyCRLResponseSerializer                            { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.GetLocalListVersionResponse>?                      CustomGetLocalListVersionResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SendLocalListResponse>?                            CustomSendLocalListResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ClearCacheResponse>?                               CustomClearCacheResponseSerializer                           { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.ReserveNowResponse>?                               CustomReserveNowResponseSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<CS.CancelReservationResponse>?                        CustomCancelReservationResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.RequestStartTransactionResponse>?                  CustomRequestStartTransactionResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CS.RequestStopTransactionResponse>?                   CustomRequestStopTransactionResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetTransactionStatusResponse>?                     CustomGetTransactionStatusResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SetChargingProfileResponse>?                       CustomSetChargingProfileResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetChargingProfilesResponse>?                      CustomGetChargingProfilesResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ClearChargingProfileResponse>?                     CustomClearChargingProfileResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetCompositeScheduleResponse>?                     CustomGetCompositeScheduleResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UpdateDynamicScheduleResponse>?                    CustomUpdateDynamicScheduleResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CS.NotifyAllowedEnergyTransferResponse>?              CustomNotifyAllowedEnergyTransferResponseSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UsePriorityChargingResponse>?                      CustomUsePriorityChargingResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CS.UnlockConnectorResponse>?                          CustomUnlockConnectorResponseSerializer                      { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.AFRRSignalResponse>?                               CustomAFRRSignalResponseSerializer                           { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.SetDisplayMessageResponse>?                        CustomSetDisplayMessageResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetDisplayMessagesResponse>?                       CustomGetDisplayMessagesResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CS.ClearDisplayMessageResponse>?                      CustomClearDisplayMessageResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CS.CostUpdatedResponse>?                              CustomCostUpdatedResponseSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<CS.CustomerInformationResponse>?                      CustomCustomerInformationResponseSerializer                  { get; set; }
+
+        #endregion
+
 
         #region Data Structures
 
@@ -1522,6 +1681,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<SetMonitoringResult>?                                 CustomSetMonitoringResultSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<ClearMonitoringResult>?                               CustomClearMonitoringResultSerializer                  { get; set; }
         public CustomJObjectSerializerDelegate<CompositeSchedule>?                                   CustomCompositeScheduleSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<EventData>?                                           CustomEventDataSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<ReportData>?                                          CustomReportDataSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<VariableAttribute>?                                   CustomVariableAttributeSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<VariableCharacteristics>?                             CustomVariableCharacteristicsSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<MonitoringData>?                                      CustomMonitoringDataSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<VariableMonitoring>?                                  CustomVariableMonitoringSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<OCSPRequestData>?                                     CustomOCSPRequestDataSerializer                        { get; set; }
+
+        public CustomJObjectSerializerDelegate<ChargingNeeds>?                                       CustomChargingNeedsSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<ACChargingParameters>?                                CustomACChargingParametersSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<DCChargingParameters>?                                CustomDCChargingParametersSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<V2XChargingParameters>?                               CustomV2XChargingParametersSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<EVEnergyOffer>?                                       CustomEVEnergyOfferSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<EVPowerSchedule>?                                     CustomEVPowerScheduleSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<EVPowerScheduleEntry>?                                CustomEVPowerScheduleEntrySerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<EVAbsolutePriceSchedule>?                             CustomEVAbsolutePriceScheduleSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<EVAbsolutePriceScheduleEntry>?                        CustomEVAbsolutePriceScheduleEntrySerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<EVPriceRule>?                                         CustomEVPriceRuleSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<Transaction>?                                         CustomTransactionSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<MeterValue>?                                          CustomMeterValueSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<SampledValue>?                                        CustomSampledValueSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<SignedMeterValue>?                                    CustomSignedMeterValueSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<UnitsOfMeasure>?                                      CustomUnitsOfMeasureSerializer                         { get; set; }
+
+
+
 
         #endregion
 
@@ -2215,52 +2400,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
 
 
-                var response  = !SignaturePolicy.VerifyRequestMessage(
-                                    request,
-                                    request.ToJSON(
-                                        CustomBootNotificationRequestSerializer,
-                                        CustomChargingStationSerializer,
-                                        CustomSignatureSerializer,
-                                        CustomCustomDataSerializer
-                                    ),
-                                    out var errorResponse
-                                )
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomBootNotificationRequestSerializer,
+                                       CustomChargingStationSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
 
-                                    ? new BootNotificationResponse(
-                                          Request:       request,
-                                          Result:        Result.SignatureError(
-                                                             $"Invalid signature(s): {errorResponse}"
-                                                         )
-                                      )
+                                   ? new BootNotificationResponse(
+                                         Request:       request,
+                                         Result:        Result.SignatureError(
+                                                            $"Invalid signature(s): {errorResponse}"
+                                                        )
+                                     )
 
-                                    : new BootNotificationResponse(
-                                          Request:       request,
-                                          Status:        RegistrationStatus.Accepted,
-                                          CurrentTime:   Timestamp.Now,
-                                          Interval:      TimeSpan.FromMinutes(5),
-                                          StatusInfo:    null,
-                                          CustomData:    null
-                                      );
+                                   : new BootNotificationResponse(
+                                         Request:       request,
+                                         Status:        RegistrationStatus.Accepted,
+                                         CurrentTime:   Timestamp.Now,
+                                         Interval:      TimeSpan.FromMinutes(5),
+                                         StatusInfo:    null,
+                                         CustomData:    null
+                                     );
 
-
-
-                //if (request.Signatures.Any())
-                //{
-
-                //    var signInfos = new[] { SignInfo.GenerateKeys()! };
-
-                    SignaturePolicy.SignResponseMessage(
-                        response,
-                        response.ToJSON(
-                            CustomBootNotificationResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
-                        ),
-                        out var errorResponse2);
-                        //signInfos.ToArray());
-
-                //}
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomBootNotificationResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnBootNotificationResponse event
@@ -2360,27 +2535,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
 
 
-                var response  = !SignaturePolicy.VerifyRequestMessage(
-                                    request,
-                                    request.ToJSON(
-                                        CustomFirmwareStatusNotificationRequestSerializer,
-                                        CustomSignatureSerializer,
-                                        CustomCustomDataSerializer
-                                    ),
-                                    out var errorResponse
-                                )
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomFirmwareStatusNotificationRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
 
-                                    ? new FirmwareStatusNotificationResponse(
-                                          Request:      request,
-                                          Result:       Result.SignatureError(
-                                                            $"Invalid signature(s): {errorResponse}"
-                                                        )
-                                      )
+                                   ? new FirmwareStatusNotificationResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
 
-                                    : new FirmwareStatusNotificationResponse(
-                                          Request:      request,
-                                          CustomData:   null
-                                      );
+                                   : new FirmwareStatusNotificationResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomFirmwareStatusNotificationResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnFirmwareStatusNotificationResponse event
@@ -2483,10 +2667,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new PublishFirmwareStatusNotificationResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomPublishFirmwareStatusNotificationRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new PublishFirmwareStatusNotificationResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new PublishFirmwareStatusNotificationResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomPublishFirmwareStatusNotificationResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnPublishFirmwareStatusNotificationResponse event
@@ -2587,11 +2798,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
 
 
-                var response = new HeartbeatResponse(
-                                   Request:       request,
-                                   CurrentTime:   Timestamp.Now,
-                                   CustomData:    null
-                               );
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomHeartbeatRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new HeartbeatResponse(
+                                         Request:       request,
+                                         Result:        Result.SignatureError(
+                                                            $"Invalid signature(s): {errorResponse}"
+                                                        )
+                                     )
+
+                                   : new HeartbeatResponse(
+                                         Request:       request,
+                                         CurrentTime:   Timestamp.Now,
+                                         CustomData:    null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomHeartbeatResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnHeartbeatResponse event
@@ -2695,10 +2932,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new NotifyEventResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomNotifyEventRequestSerializer,
+                                       CustomEventDataSerializer,
+                                       CustomComponentSerializer,
+                                       CustomEVSESerializer,
+                                       CustomVariableSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new NotifyEventResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new NotifyEventResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomNotifyEventResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnNotifyEventResponse event
@@ -2801,10 +3069,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new SecurityEventNotificationResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomSecurityEventNotificationRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new SecurityEventNotificationResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new SecurityEventNotificationResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSecurityEventNotificationResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnSecurityEventNotificationResponse event
@@ -2908,10 +3203,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new NotifyReportResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomNotifyReportRequestSerializer,
+                                       CustomReportDataSerializer,
+                                       CustomComponentSerializer,
+                                       CustomEVSESerializer,
+                                       CustomVariableSerializer,
+                                       CustomVariableAttributeSerializer,
+                                       CustomVariableCharacteristicsSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new NotifyReportResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new NotifyReportResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomNotifyReportResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnNotifyReportResponse event
@@ -3016,10 +3344,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new NotifyMonitoringReportResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomNotifyMonitoringReportRequestSerializer,
+                                       CustomMonitoringDataSerializer,
+                                       CustomComponentSerializer,
+                                       CustomEVSESerializer,
+                                       CustomVariableSerializer,
+                                       CustomVariableMonitoringSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new NotifyMonitoringReportResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new NotifyMonitoringReportResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomNotifyMonitoringReportResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnNotifyMonitoringReportResponse event
@@ -3121,10 +3481,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new LogStatusNotificationResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomLogStatusNotificationRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new LogStatusNotificationResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new LogStatusNotificationResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomLogStatusNotificationResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnLogStatusNotificationResponse event
@@ -3265,23 +3652,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response =  request.VendorId.ToString() == "GraphDefined OEM"
 
-                                    ? new DataTransferResponse(
-                                          Request:      request,
-                                          Status:       DataTransferStatus.Accepted,
-                                          Data:         responseData,
-                                          StatusInfo:   null,
-                                          CustomData:   null
-                                      )
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomIncomingDataTransferRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
 
-                                    : new DataTransferResponse(
-                                          Request:      request,
-                                          Status:       DataTransferStatus.Rejected,
-                                          Data:         null,
-                                          StatusInfo:   null,
-                                          CustomData:   null
-                                      );
+                                   ? new DataTransferResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : request.VendorId.ToString() == "GraphDefined OEM"
+
+                                         ? new (
+                                               Request:      request,
+                                               Status:       DataTransferStatus.Accepted,
+                                               Data:         responseData,
+                                               StatusInfo:   null,
+                                               CustomData:   null
+                                           )
+
+                                         : new DataTransferResponse(
+                                               Request:      request,
+                                               Status:       DataTransferStatus.Rejected,
+                                               Data:         null,
+                                               StatusInfo:   null,
+                                               CustomData:   null
+                                         );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomIncomingDataTransferResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnIncomingDataTransferResponse event
@@ -3384,12 +3799,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new SignCertificateResponse(
-                                   Request:      request,
-                                   Status:       GenericStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomSignCertificateRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new SignCertificateResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new SignCertificateResponse(
+                                         Request:      request,
+                                         Status:       GenericStatus.Accepted,
+                                         StatusInfo:   null,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSignCertificateResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnSignCertificateResponse event
@@ -3494,14 +3937,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new Get15118EVCertificateResponse(
-                                   Request:              request,
-                                   Status:               ISO15118EVCertificateStatus.Accepted,
-                                   EXIResponse:          EXIData.Parse("0x1234"),
-                                   RemainingContracts:   null,
-                                   StatusInfo:           null,
-                                   CustomData:           null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomGet15118EVCertificateRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new Get15118EVCertificateResponse(
+                                         Request:              request,
+                                         Result:               Result.SignatureError(
+                                                                   $"Invalid signature(s): {errorResponse}"
+                                                               )
+                                     )
+
+                                   : new Get15118EVCertificateResponse(
+                                         Request:              request,
+                                         Status:               ISO15118EVCertificateStatus.Accepted,
+                                         EXIResponse:          EXIData.Parse("0x1234"),
+                                         RemainingContracts:   null,
+                                         StatusInfo:           null,
+                                         CustomData:           null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGet15118EVCertificateResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnGet15118EVCertificateResponse event
@@ -3602,13 +4073,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new GetCertificateStatusResponse(
-                                   Request:      request,
-                                   Status:       GetCertificateStatus.Accepted,
-                                   OCSPResult:   OCSPResult.Parse("ok!"),
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomGetCertificateStatusRequestSerializer,
+                                       CustomOCSPRequestDataSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new GetCertificateStatusResponse(
+                                         Request:              request,
+                                         Result:               Result.SignatureError(
+                                                                   $"Invalid signature(s): {errorResponse}"
+                                                               )
+                                     )
+
+                                   : new GetCertificateStatusResponse(
+                                         Request:      request,
+                                         Status:       GetCertificateStatus.Accepted,
+                                         OCSPResult:   OCSPResult.Parse("ok!"),
+                                         StatusInfo:   null,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetCertificateStatusResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnGetCertificateStatusResponse event
@@ -3710,13 +4210,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new GetCRLResponse(
-                                   Request:           request,
-                                   GetCRLRequestId:   request.GetCRLRequestId,
-                                   Status:            GenericStatus.Accepted,
-                                   StatusInfo:        null,
-                                   CustomData:        null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomGetCRLRequestSerializer,
+                                       CustomCertificateHashDataSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new GetCRLResponse(
+                                         Request:           request,
+                                         Result:            Result.SignatureError(
+                                                                $"Invalid signature(s): {errorResponse}"
+                                                            )
+                                     )
+
+                                   : new GetCRLResponse(
+                                         Request:           request,
+                                         GetCRLRequestId:   request.GetCRLRequestId,
+                                         Status:            GenericStatus.Accepted,
+                                         StatusInfo:        null,
+                                         CustomData:        null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetCRLResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnGetCRLResponse event
@@ -3819,10 +4348,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new ReservationStatusUpdateResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomReservationStatusUpdateRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new ReservationStatusUpdateResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new ReservationStatusUpdateResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomReservationStatusUpdateResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnReservationStatusUpdateResponse event
@@ -3930,15 +4486,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new AuthorizeResponse(
-                                   Request:             request,
-                                   IdTokenInfo:         new IdTokenInfo(
-                                                            Status:                AuthorizationStatus.Accepted,
-                                                            CacheExpiryDateTime:   Timestamp.Now.AddDays(3)
-                                                        ),
-                                   CertificateStatus:   AuthorizeCertificateStatus.Accepted,
-                                   CustomData:          null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomAuthorizeRequestSerializer,
+                                       CustomIdTokenSerializer,
+                                       CustomAdditionalInfoSerializer,
+                                       CustomOCSPRequestDataSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new AuthorizeResponse(
+                                         Request:             request,
+                                         Result:              Result.SignatureError(
+                                                                  $"Invalid signature(s): {errorResponse}"
+                                                              )
+                                     )
+
+                                   : new AuthorizeResponse(
+                                         Request:             request,
+                                         IdTokenInfo:         new IdTokenInfo(
+                                                                  Status:                AuthorizationStatus.Accepted,
+                                                                  CacheExpiryDateTime:   Timestamp.Now.AddDays(3)
+                                                              ),
+                                         CertificateStatus:   AuthorizeCertificateStatus.Accepted,
+                                         CustomData:          null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomAuthorizeResponseSerializer,
+                        CustomIdTokenInfoSerializer,
+                        CustomIdTokenSerializer,
+                        CustomAdditionalInfoSerializer,
+                        CustomMessageContentSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnAuthorizeResponse event
@@ -4041,12 +4631,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new NotifyEVChargingNeedsResponse(
-                                   Request:      request,
-                                   Status:       NotifyEVChargingNeedsStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomNotifyEVChargingNeedsRequestSerializer,
+                                       CustomChargingNeedsSerializer,
+                                       CustomACChargingParametersSerializer,
+                                       CustomDCChargingParametersSerializer,
+                                       CustomV2XChargingParametersSerializer,
+                                       CustomEVEnergyOfferSerializer,
+                                       CustomEVPowerScheduleSerializer,
+                                       CustomEVPowerScheduleEntrySerializer,
+                                       CustomEVAbsolutePriceScheduleSerializer,
+                                       CustomEVAbsolutePriceScheduleEntrySerializer,
+                                       CustomEVPriceRuleSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new NotifyEVChargingNeedsResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new NotifyEVChargingNeedsResponse(
+                                         Request:      request,
+                                         Status:       NotifyEVChargingNeedsStatus.Accepted,
+                                         StatusInfo:   null,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomNotifyEVChargingNeedsResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnNotifyEVChargingNeedsResponse event
@@ -4166,14 +4794,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new TransactionEventResponse(
-                                   Request:                  request,
-                                   TotalCost:                null,
-                                   ChargingPriority:         null,
-                                   IdTokenInfo:              null,
-                                   UpdatedPersonalMessage:   null,
-                                   CustomData:               null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomTransactionEventRequestSerializer,
+                                       CustomTransactionSerializer,
+                                       CustomIdTokenSerializer,
+                                       CustomAdditionalInfoSerializer,
+                                       CustomEVSESerializer,
+                                       CustomMeterValueSerializer,
+                                       CustomSampledValueSerializer,
+                                       CustomSignedMeterValueSerializer,
+                                       CustomUnitsOfMeasureSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new TransactionEventResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new TransactionEventResponse(
+                                         Request:                  request,
+                                         TotalCost:                null,
+                                         ChargingPriority:         null,
+                                         IdTokenInfo:              null,
+                                         UpdatedPersonalMessage:   null,
+                                         CustomData:               null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomTransactionEventResponseSerializer,
+                        CustomIdTokenInfoSerializer,
+                        CustomIdTokenSerializer,
+                        CustomAdditionalInfoSerializer,
+                        CustomMessageContentSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnTransactionEventResponse event
@@ -4273,10 +4940,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         reachableChargingStations[request.ChargingStationId] = new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
-                var response = new StatusNotificationResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomStatusNotificationRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new StatusNotificationResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new StatusNotificationResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomStatusNotificationResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnStatusNotificationResponse event
@@ -4377,10 +5071,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         reachableChargingStations[request.ChargingStationId] = new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
-                var response = new MeterValuesResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomMeterValuesRequestSerializer,
+                                       CustomMeterValueSerializer,
+                                       CustomSampledValueSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new MeterValuesResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new MeterValuesResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomMeterValuesResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnMeterValuesResponse event
@@ -4483,10 +5206,61 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new NotifyChargingLimitResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+
+                                       CustomNotifyChargingLimitRequestSerializer,
+                                       CustomChargingScheduleSerializer,
+                                       CustomLimitBeyondSoCSerializer,
+                                       CustomChargingSchedulePeriodSerializer,
+                                       CustomV2XFreqWattEntrySerializer,
+                                       CustomV2XSignalWattEntrySerializer,
+                                       CustomSalesTariffSerializer,
+                                       CustomSalesTariffEntrySerializer,
+                                       CustomRelativeTimeIntervalSerializer,
+                                       CustomConsumptionCostSerializer,
+                                       CustomCostSerializer,
+
+                                       CustomAbsolutePriceScheduleSerializer,
+                                       CustomPriceRuleStackSerializer,
+                                       CustomPriceRuleSerializer,
+                                       CustomTaxRuleSerializer,
+                                       CustomOverstayRuleListSerializer,
+                                       CustomOverstayRuleSerializer,
+                                       CustomAdditionalServiceSerializer,
+
+                                       CustomPriceLevelScheduleSerializer,
+                                       CustomPriceLevelScheduleEntrySerializer,
+
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new NotifyChargingLimitResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new NotifyChargingLimitResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomNotifyChargingLimitResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnNotifyChargingLimitResponse event
@@ -4588,10 +5362,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new ClearedChargingLimitResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomClearedChargingLimitRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new ClearedChargingLimitResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new ClearedChargingLimitResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomClearedChargingLimitResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnClearedChargingLimitResponse event
@@ -4696,10 +5497,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new ReportChargingProfilesResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+
+                                       CustomReportChargingProfilesRequestSerializer,
+                                       CustomChargingProfileSerializer,
+                                       CustomLimitBeyondSoCSerializer,
+                                       CustomChargingScheduleSerializer,
+                                       CustomChargingSchedulePeriodSerializer,
+                                       CustomV2XFreqWattEntrySerializer,
+                                       CustomV2XSignalWattEntrySerializer,
+                                       CustomSalesTariffSerializer,
+                                       CustomSalesTariffEntrySerializer,
+                                       CustomRelativeTimeIntervalSerializer,
+                                       CustomConsumptionCostSerializer,
+                                       CustomCostSerializer,
+
+                                       CustomAbsolutePriceScheduleSerializer,
+                                       CustomPriceRuleStackSerializer,
+                                       CustomPriceRuleSerializer,
+                                       CustomTaxRuleSerializer,
+                                       CustomOverstayRuleListSerializer,
+                                       CustomOverstayRuleSerializer,
+                                       CustomAdditionalServiceSerializer,
+
+                                       CustomPriceLevelScheduleSerializer,
+                                       CustomPriceLevelScheduleEntrySerializer,
+
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new ReportChargingProfilesResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new ReportChargingProfilesResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomReportChargingProfilesResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnReportChargingProfilesResponse event
@@ -4804,12 +5657,64 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new NotifyEVChargingScheduleResponse(
-                                   Request:      request,
-                                   Status:       GenericStatus.Accepted,
-                                   StatusInfo:   null,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+
+                                       CustomNotifyEVChargingScheduleRequestSerializer,
+                                       CustomChargingScheduleSerializer,
+                                       CustomLimitBeyondSoCSerializer,
+                                       CustomChargingSchedulePeriodSerializer,
+                                       CustomV2XFreqWattEntrySerializer,
+                                       CustomV2XSignalWattEntrySerializer,
+                                       CustomSalesTariffSerializer,
+                                       CustomSalesTariffEntrySerializer,
+                                       CustomRelativeTimeIntervalSerializer,
+                                       CustomConsumptionCostSerializer,
+                                       CustomCostSerializer,
+
+                                       CustomAbsolutePriceScheduleSerializer,
+                                       CustomPriceRuleStackSerializer,
+                                       CustomPriceRuleSerializer,
+                                       CustomTaxRuleSerializer,
+                                       CustomOverstayRuleListSerializer,
+                                       CustomOverstayRuleSerializer,
+                                       CustomAdditionalServiceSerializer,
+
+                                       CustomPriceLevelScheduleSerializer,
+                                       CustomPriceLevelScheduleEntrySerializer,
+
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new NotifyEVChargingScheduleResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new NotifyEVChargingScheduleResponse(
+                                         Request:      request,
+                                         Status:       GenericStatus.Accepted,
+                                         StatusInfo:   null,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomNotifyEVChargingScheduleResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnNotifyEVChargingScheduleResponse event
@@ -4911,10 +5816,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new NotifyPriorityChargingResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomNotifyPriorityChargingRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new NotifyPriorityChargingResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new NotifyPriorityChargingResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomNotifyPriorityChargingResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnNotifyPriorityChargingResponse event
@@ -5015,29 +5947,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new PullDynamicScheduleUpdateResponse(
 
-                                   Request:               request,
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomPullDynamicScheduleUpdateRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
 
-                                   Limit:                 ChargingRateValue.Parse( 1, ChargingRateUnits.Watts),
-                                   Limit_L2:              ChargingRateValue.Parse( 2, ChargingRateUnits.Watts),
-                                   Limit_L3:              ChargingRateValue.Parse( 3, ChargingRateUnits.Watts),
+                                   ? new PullDynamicScheduleUpdateResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
 
-                                   DischargeLimit:        ChargingRateValue.Parse(-4, ChargingRateUnits.Watts),
-                                   DischargeLimit_L2:     ChargingRateValue.Parse(-5, ChargingRateUnits.Watts),
-                                   DischargeLimit_L3:     ChargingRateValue.Parse(-6, ChargingRateUnits.Watts),
+                                   : new PullDynamicScheduleUpdateResponse(
 
-                                   Setpoint:              ChargingRateValue.Parse( 7, ChargingRateUnits.Watts),
-                                   Setpoint_L2:           ChargingRateValue.Parse( 8, ChargingRateUnits.Watts),
-                                   Setpoint_L3:           ChargingRateValue.Parse( 9, ChargingRateUnits.Watts),
+                                         Request:               request,
 
-                                   SetpointReactive:      ChargingRateValue.Parse(10, ChargingRateUnits.Watts),
-                                   SetpointReactive_L2:   ChargingRateValue.Parse(11, ChargingRateUnits.Watts),
-                                   SetpointReactive_L3:   ChargingRateValue.Parse(12, ChargingRateUnits.Watts),
+                                         Limit:                 ChargingRateValue.Parse( 1, ChargingRateUnits.Watts),
+                                         Limit_L2:              ChargingRateValue.Parse( 2, ChargingRateUnits.Watts),
+                                         Limit_L3:              ChargingRateValue.Parse( 3, ChargingRateUnits.Watts),
 
-                                   CustomData:            null
+                                         DischargeLimit:        ChargingRateValue.Parse(-4, ChargingRateUnits.Watts),
+                                         DischargeLimit_L2:     ChargingRateValue.Parse(-5, ChargingRateUnits.Watts),
+                                         DischargeLimit_L3:     ChargingRateValue.Parse(-6, ChargingRateUnits.Watts),
 
-                               );
+                                         Setpoint:              ChargingRateValue.Parse( 7, ChargingRateUnits.Watts),
+                                         Setpoint_L2:           ChargingRateValue.Parse( 8, ChargingRateUnits.Watts),
+                                         Setpoint_L3:           ChargingRateValue.Parse( 9, ChargingRateUnits.Watts),
+
+                                         SetpointReactive:      ChargingRateValue.Parse(10, ChargingRateUnits.Watts),
+                                         SetpointReactive_L2:   ChargingRateValue.Parse(11, ChargingRateUnits.Watts),
+                                         SetpointReactive_L3:   ChargingRateValue.Parse(12, ChargingRateUnits.Watts),
+
+                                         CustomData:            null
+
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomPullDynamicScheduleUpdateResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnPullDynamicScheduleUpdateResponse event
@@ -5140,10 +6099,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         reachableChargingStations[request.ChargingStationId] = new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
                 }
 
-                var response = new NotifyDisplayMessagesResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomNotifyDisplayMessagesRequestSerializer,
+                                       CustomMessageInfoSerializer,
+                                       CustomMessageContentSerializer,
+                                       CustomComponentSerializer,
+                                       CustomEVSESerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new NotifyDisplayMessagesResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new NotifyDisplayMessagesResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomNotifyDisplayMessagesResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnNotifyDisplayMessagesResponse event
@@ -5248,10 +6238,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 }
 
-                var response = new NotifyCustomerInformationResponse(
-                                   Request:      request,
-                                   CustomData:   null
-                               );
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomNotifyCustomerInformationRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new NotifyCustomerInformationResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : new NotifyCustomerInformationResponse(
+                                         Request:      request,
+                                         CustomData:   null
+                                     );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomNotifyCustomerInformationResponseSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnNotifyCustomerInformationResponse event
@@ -9703,6 +10720,603 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnCustomerInformationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        // E2E Security Extensions
+
+        #region AddSignaturePolicy          (Request)
+
+        /// <summary>
+        /// Add a signature policy.
+        /// </summary>
+        /// <param name="Request">An AddSignaturePolicy request.</param>
+        public async Task<CS.AddSignaturePolicyResponse>
+            AddSignaturePolicy(AddSignaturePolicyRequest Request)
+
+        {
+
+            #region Send OnAddSignaturePolicyRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAddSignaturePolicyRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnAddSignaturePolicyRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          //CustomAddSignaturePolicyRequestSerializer,
+                                          //CustomMessageInfoSerializer,
+                                          //CustomMessageContentSerializer,
+                                          //CustomComponentSerializer,
+                                          //CustomEVSESerializer,
+                                          //CustomSignatureSerializer,
+                                          //CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.AddSignaturePolicy(Request)
+
+                                      : new CS.AddSignaturePolicyResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.AddSignaturePolicyResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    //CustomAddSignaturePolicyResponseSerializer,
+                    //CustomStatusInfoSerializer,
+                    //CustomSignatureSerializer,
+                    //CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnAddSignaturePolicyResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAddSignaturePolicyResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnAddSignaturePolicyResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region UpdateSignaturePolicy       (Request)
+
+        /// <summary>
+        /// Set a display message.
+        /// </summary>
+        /// <param name="Request">A UpdateSignaturePolicy request.</param>
+        public async Task<CS.UpdateSignaturePolicyResponse>
+            UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request)
+
+        {
+
+            #region Send OnUpdateSignaturePolicyRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateSignaturePolicyRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUpdateSignaturePolicyRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          //CustomUpdateSignaturePolicyRequestSerializer,
+                                          //CustomMessageInfoSerializer,
+                                          //CustomMessageContentSerializer,
+                                          //CustomComponentSerializer,
+                                          //CustomEVSESerializer,
+                                          //CustomSignatureSerializer,
+                                          //CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.UpdateSignaturePolicy(Request)
+
+                                      : new CS.UpdateSignaturePolicyResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.UpdateSignaturePolicyResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    //CustomUpdateSignaturePolicyResponseSerializer,
+                    //CustomStatusInfoSerializer,
+                    //CustomSignatureSerializer,
+                    //CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnUpdateSignaturePolicyResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateSignaturePolicyResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUpdateSignaturePolicyResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region DeleteSignaturePolicy       (Request)
+
+        /// <summary>
+        /// Set a display message.
+        /// </summary>
+        /// <param name="Request">A DeleteSignaturePolicy request.</param>
+        public async Task<CS.DeleteSignaturePolicyResponse>
+            DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request)
+
+        {
+
+            #region Send OnDeleteSignaturePolicyRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteSignaturePolicyRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteSignaturePolicyRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          //CustomDeleteSignaturePolicyRequestSerializer,
+                                          //CustomMessageInfoSerializer,
+                                          //CustomMessageContentSerializer,
+                                          //CustomComponentSerializer,
+                                          //CustomEVSESerializer,
+                                          //CustomSignatureSerializer,
+                                          //CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.DeleteSignaturePolicy(Request)
+
+                                      : new CS.DeleteSignaturePolicyResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.DeleteSignaturePolicyResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    //CustomDeleteSignaturePolicyResponseSerializer,
+                    //CustomStatusInfoSerializer,
+                    //CustomSignatureSerializer,
+                    //CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnDeleteSignaturePolicyResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteSignaturePolicyResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteSignaturePolicyResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region AddUserRole                 (Request)
+
+        /// <summary>
+        /// Set a display message.
+        /// </summary>
+        /// <param name="Request">A AddUserRole request.</param>
+        public async Task<CS.AddUserRoleResponse>
+            AddUserRole(AddUserRoleRequest Request)
+
+        {
+
+            #region Send OnAddUserRoleRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAddUserRoleRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnAddUserRoleRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          //CustomAddUserRoleRequestSerializer,
+                                          //CustomMessageInfoSerializer,
+                                          //CustomMessageContentSerializer,
+                                          //CustomComponentSerializer,
+                                          //CustomEVSESerializer,
+                                          //CustomSignatureSerializer,
+                                          //CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.AddUserRole(Request)
+
+                                      : new CS.AddUserRoleResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.AddUserRoleResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    //CustomAddUserRoleResponseSerializer,
+                    //CustomStatusInfoSerializer,
+                    //CustomSignatureSerializer,
+                    //CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnAddUserRoleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAddUserRoleResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnAddUserRoleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region UpdateUserRole              (Request)
+
+        /// <summary>
+        /// Set a display message.
+        /// </summary>
+        /// <param name="Request">A UpdateUserRole request.</param>
+        public async Task<CS.UpdateUserRoleResponse>
+            UpdateUserRole(UpdateUserRoleRequest Request)
+
+        {
+
+            #region Send OnUpdateUserRoleRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateUserRoleRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUpdateUserRoleRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          //CustomUpdateUserRoleRequestSerializer,
+                                          //CustomMessageInfoSerializer,
+                                          //CustomMessageContentSerializer,
+                                          //CustomComponentSerializer,
+                                          //CustomEVSESerializer,
+                                          //CustomSignatureSerializer,
+                                          //CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.UpdateUserRole(Request)
+
+                                      : new CS.UpdateUserRoleResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.UpdateUserRoleResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    //CustomUpdateUserRoleResponseSerializer,
+                    //CustomStatusInfoSerializer,
+                    //CustomSignatureSerializer,
+                    //CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnUpdateUserRoleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateUserRoleResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnUpdateUserRoleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region DeleteUserRole              (Request)
+
+        /// <summary>
+        /// Set a display message.
+        /// </summary>
+        /// <param name="Request">A DeleteUserRole request.</param>
+        public async Task<CS.DeleteUserRoleResponse>
+            DeleteUserRole(DeleteUserRoleRequest Request)
+
+        {
+
+            #region Send OnDeleteUserRoleRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteUserRoleRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteUserRoleRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          //CustomDeleteUserRoleRequestSerializer,
+                                          //CustomMessageInfoSerializer,
+                                          //CustomMessageContentSerializer,
+                                          //CustomComponentSerializer,
+                                          //CustomEVSESerializer,
+                                          //CustomSignatureSerializer,
+                                          //CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.DeleteUserRole(Request)
+
+                                      : new CS.DeleteUserRoleResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.DeleteUserRoleResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    //CustomDeleteUserRoleResponseSerializer,
+                    //CustomStatusInfoSerializer,
+                    //CustomSignatureSerializer,
+                    //CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnDeleteUserRoleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteUserRoleResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteUserRoleResponse));
             }
 
             #endregion

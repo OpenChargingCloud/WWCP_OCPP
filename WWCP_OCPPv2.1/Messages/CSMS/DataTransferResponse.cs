@@ -87,22 +87,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
         public DataTransferResponse(CSMS.DataTransferRequest  Request,
                                     DataTransferStatus        Status,
-                                    JToken?                   Data              = null,
-                                    StatusInfo?               StatusInfo        = null,
+                                    JToken?                   Data         = null,
+                                    StatusInfo?               StatusInfo   = null,
 
-                                    IEnumerable<KeyPair>?     SignKeys          = null,
-                                    IEnumerable<SignInfo>?    SignInfos         = null,
-                                    SignaturePolicy?          SignaturePolicy   = null,
-                                    IEnumerable<Signature>?   Signatures        = null,
+                                    IEnumerable<KeyPair>?     SignKeys     = null,
+                                    IEnumerable<SignInfo>?    SignInfos    = null,
+                                    IEnumerable<Signature>?   Signatures   = null,
 
-                                    DateTime?                 Timestamp         = null,
-                                    CustomData?               CustomData        = null)
+                                    DateTime?                 Timestamp    = null,
+                                    CustomData?               CustomData   = null)
 
             : base(Request,
                    Result.OK(),
                    SignKeys,
                    SignInfos,
-                   SignaturePolicy,
                    Signatures,
                    Timestamp,
                    CustomData)
@@ -340,7 +338,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            DataTransferStatus,
                                            Data,
                                            StatusInfo,
-                                           null,
                                            null,
                                            null,
                                            Signatures,

@@ -38,14 +38,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// An OCPP CSE cryptographic signature policy.
     /// </summary>
     public class SignaturePolicy : ACustomData,
+                                   ISignableMessage,
                                    IEquatable<SignaturePolicy>
     {
 
         #region Data
 
+        /// <summary>
+        /// The JSON-LD context of this data structure.
+        /// </summary>
+        public  static readonly JSONLDContext              DefaultJSONLDContext   = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/signaturePolicy");
+
         private        readonly HashSet<SigningRule>       signingRules           = new();
         private        readonly HashSet<VerificationRule>  verificationRules      = new();
         private        readonly HashSet<KeyPair>           keyPairs               = new();
+
+        private        readonly HashSet<Signature>         signatures;
 
         private static readonly JsonConverter[]            defaultJSONConverters  = new[] {
                                                                                         new Newtonsoft.Json.Converters.IsoDateTimeConverter {
@@ -56,6 +64,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext                  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The enumeration of signature policy entries.
@@ -106,6 +120,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         /// <summary>
+        /// The optional priority of this signature policy.
+        /// </summary>
+        [Mandatory]
+        public Byte                           Priority                      { get; }
+
+        /// <summary>
         /// The optional timestamp before which the signature policy should not be used.
         /// </summary>
         [Mandatory]
@@ -116,6 +136,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         [Optional]
         public DateTime?                      NotAfter                      { get; }
+
+
+
+        /// <summary>
+        /// The optional enumeration of cryptographic signatures for this message.
+        /// </summary>
+        [Optional]
+        public IEnumerable<Signature>         Signatures
+            => signatures;
+
+        public IEnumerable<KeyPair>           SignKeys                      { get; }
+        public IEnumerable<SignInfo>          SignInfos                     { get; }
 
         #endregion
 
@@ -132,6 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="DefaultVerificationAction">An optional default verification action for this policy.</param>
         /// <param name="DefaultSigningKeyPair">An optional default cryptographic signing key pair.</param>
         /// 
+        /// <param name="Priority">An optional priority of this signature policy.</param>
         /// <param name="NotBefore">An optional timestamp before which the signature policy should not be used.</param>
         /// <param name="NotAfter">An optional timestamp after which the signature policy should not be used.</param>
         /// 
@@ -144,8 +177,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                VerificationRuleAction?         DefaultVerificationAction    = null,
                                KeyPair?                        DefaultVerificationKeyPair   = null,
 
+                               Byte?                           Priority                     = null,
                                DateTime?                       NotBefore                    = null,
                                DateTime?                       NotAfter                     = null,
+
+                               IEnumerable<KeyPair>?           SignKeys                     = null,
+                               IEnumerable<SignInfo>?          SignInfos                    = null,
+                               IEnumerable<Signature>?         Signatures                   = null,
 
                                CustomData?                     CustomData                   = null)
 
@@ -157,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 foreach (var signingRule      in SigningRules)
                     signingRules.   Add(signingRule);
 
-            this.DefaultSigningAction        = DefaultSigningAction      ?? SigningRuleAction.     ForwardUnsigned;
+            this.DefaultSigningAction        = DefaultSigningAction      ?? SigningRuleAction.ForwardUnsigned;
             this.DefaultSigningKeyPair       = DefaultSigningKeyPair;
 
             if (this.DefaultSigningAction == SigningRuleAction.Sign &&
@@ -182,8 +220,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             }
 
 
+            this.Priority                    = Priority  ?? 0;
             this.NotBefore                   = NotBefore ?? Timestamp.Now;
             this.NotAfter                    = NotAfter;
+
+            this.SignKeys                    = SignKeys  ?? Array.Empty<KeyPair>();
+            this.SignInfos                   = SignInfos ?? Array.Empty<SignInfo>();
+            this.signatures                  = Signatures is not null && Signatures.Any()
+                                                   ? new HashSet<Signature>(Signatures)
+                                                   : new HashSet<Signature>();
 
             unchecked
             {
@@ -204,6 +249,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Documentation
 
         // tba.
+
+        #endregion
+
+
+
+        #region ToJSON(CustomSignaturePolicySerializer = null, CustomEventDataSerializer = null, ...)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomSignaturePolicySerializer">A delegate to serialize custom signature policies.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SignaturePolicy>?  CustomSignaturePolicySerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?        CustomSignatureSerializer         = null,
+                              CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer        = null)
+        {
+
+            var json = JSONObject.Create(
+
+
+                           Signatures.Any()
+                               ? new JProperty("signatures",    new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                           CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",    CustomData.ToJSON(CustomCustomDataSerializer))
+                               : null);
+
+            return CustomSignaturePolicySerializer is not null
+                       ? CustomSignaturePolicySerializer(this, json)
+                       : json;
+
+        }
 
         #endregion
 
@@ -791,6 +871,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
         #endregion
+
+
+        public void AddSignature(Signature Signature)
+        {
+            lock (signatures)
+            {
+                signatures.Add(Signature);
+            }
+        }
 
 
         #region Operator overloading

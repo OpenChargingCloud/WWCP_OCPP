@@ -175,7 +175,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                                  IEnumerable<KeyPair>?                SignKeys              = null,
                                                  IEnumerable<SignInfo>?               SignInfos             = null,
-                                                 SignaturePolicy?                     SignaturePolicy       = null,
                                                  IEnumerable<Signature>?              Signatures            = null,
 
                                                  DateTime?                            Timestamp             = null,
@@ -185,7 +184,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Result.OK(),
                    SignKeys,
                    SignInfos,
-                   SignaturePolicy,
                    Signatures,
                    Timestamp,
                    CustomData)
@@ -551,7 +549,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                         SetpointReactive_L2,
                                                         SetpointReactive_L3,
 
-                                                        null,
                                                         null,
                                                         null,
                                                         Signatures,

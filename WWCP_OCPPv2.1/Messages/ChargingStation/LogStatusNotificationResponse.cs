@@ -67,19 +67,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public LogStatusNotificationResponse(CS.LogStatusNotificationRequest  Request,
 
 
-                                             IEnumerable<KeyPair>?            SignKeys          = null,
-                                             IEnumerable<SignInfo>?           SignInfos         = null,
-                                             SignaturePolicy?                 SignaturePolicy   = null,
-                                             IEnumerable<Signature>?          Signatures        = null,
+                                             IEnumerable<KeyPair>?            SignKeys     = null,
+                                             IEnumerable<SignInfo>?           SignInfos    = null,
+                                             IEnumerable<Signature>?          Signatures   = null,
 
-                                             DateTime?                        Timestamp         = null,
-                                             CustomData?                      CustomData        = null)
+                                             DateTime?                        Timestamp    = null,
+                                             CustomData?                      CustomData   = null)
 
             : base(Request,
                    Result.OK(),
                    SignKeys,
                    SignInfos,
-                   SignaturePolicy,
                    Signatures,
                    Timestamp,
                    CustomData)
@@ -223,7 +221,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 LogStatusNotificationResponse  = new LogStatusNotificationResponse(
                                                      Request,
-                                                     null,
                                                      null,
                                                      null,
                                                      Signatures,

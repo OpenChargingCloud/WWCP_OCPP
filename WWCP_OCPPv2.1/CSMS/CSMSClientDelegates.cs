@@ -1292,4 +1292,175 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     #endregion
 
 
+    // E2E Security Extensions
+
+    #region OnAddSignaturePolicy             (-Request/-Response) Delegate
+
+    /// <summary>
+    /// A delegate called whenever an AddSignaturePolicy request will be sent to a charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The reserve now request.</param>
+    public delegate Task OnAddSignaturePolicyRequestDelegate(DateTime                    Timestamp,
+                                                             IEventSender                Sender,
+                                                             AddSignaturePolicyRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to an AddSignaturePolicy request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnAddSignaturePolicyResponseDelegate(DateTime                     Timestamp,
+                                                              IEventSender                 Sender,
+                                                              AddSignaturePolicyRequest    Request,
+                                                              AddSignaturePolicyResponse   Response,
+                                                              TimeSpan                     Runtime);
+
+    #endregion
+
+    #region OnUpdateSignaturePolicy          (-Request/-Response) Delegate
+
+    /// <summary>
+    /// A delegate called whenever an UpdateSignaturePolicy request will be sent to a charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The reserve now request.</param>
+    public delegate Task OnUpdateSignaturePolicyRequestDelegate(DateTime                       Timestamp,
+                                                                IEventSender                   Sender,
+                                                                UpdateSignaturePolicyRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever an UpdateSignaturePolicy request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnUpdateSignaturePolicyResponseDelegate(DateTime                        Timestamp,
+                                                                 IEventSender                    Sender,
+                                                                 UpdateSignaturePolicyRequest    Request,
+                                                                 UpdateSignaturePolicyResponse   Response,
+                                                                 TimeSpan                        Runtime);
+
+    #endregion
+
+    #region OnDeleteSignaturePolicy          (-Request/-Response) Delegate
+
+    /// <summary>
+    /// A delegate called whenever a DeleteSignaturePolicy request will be sent to a charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The reserve now request.</param>
+    public delegate Task OnDeleteSignaturePolicyRequestDelegate(DateTime                       Timestamp,
+                                                                IEventSender                   Sender,
+                                                                DeleteSignaturePolicyRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a DeleteSignaturePolicy request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnDeleteSignaturePolicyResponseDelegate(DateTime                        Timestamp,
+                                                                 IEventSender                    Sender,
+                                                                 DeleteSignaturePolicyRequest    Request,
+                                                                 DeleteSignaturePolicyResponse   Response,
+                                                                 TimeSpan                        Runtime);
+
+    #endregion
+
+    #region OnAddUserRole                    (-Request/-Response) Delegate
+
+    /// <summary>
+    /// A delegate called whenever an AddUserRole request will be sent to a charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The reserve now request.</param>
+    public delegate Task OnAddUserRoleRequestDelegate(DateTime             Timestamp,
+                                                      IEventSender         Sender,
+                                                      AddUserRoleRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to an AddUserRole request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnAddUserRoleResponseDelegate(DateTime              Timestamp,
+                                                       IEventSender          Sender,
+                                                       AddUserRoleRequest    Request,
+                                                       AddUserRoleResponse   Response,
+                                                       TimeSpan              Runtime);
+
+    #endregion
+
+    #region OnUpdateUserRole                 (-Request/-Response) Delegate
+
+    /// <summary>
+    /// A delegate called whenever an UpdateUserRole request will be sent to a charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The reserve now request.</param>
+    public delegate Task OnUpdateUserRoleRequestDelegate(DateTime                Timestamp,
+                                                         IEventSender            Sender,
+                                                         UpdateUserRoleRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to an UpdateUserRole request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnUpdateUserRoleResponseDelegate(DateTime                 Timestamp,
+                                                          IEventSender             Sender,
+                                                          UpdateUserRoleRequest    Request,
+                                                          UpdateUserRoleResponse   Response,
+                                                          TimeSpan                 Runtime);
+
+    #endregion
+
+    #region OnDeleteUserRole                 (-Request/-Response) Delegate
+
+    /// <summary>
+    /// A delegate called whenever a DeleteUserRole request will be sent to a charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The reserve now request.</param>
+    public delegate Task OnDeleteUserRoleRequestDelegate(DateTime                Timestamp,
+                                                         IEventSender            Sender,
+                                                         DeleteUserRoleRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a DeleteUserRole request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnDeleteUserRoleResponseDelegate(DateTime                 Timestamp,
+                                                          IEventSender             Sender,
+                                                          DeleteUserRoleRequest    Request,
+                                                          DeleteUserRoleResponse   Response,
+                                                          TimeSpan                 Runtime);
+
+    #endregion
+
+
 }

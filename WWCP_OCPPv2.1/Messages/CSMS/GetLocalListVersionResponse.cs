@@ -74,19 +74,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public GetLocalListVersionResponse(CSMS.GetLocalListVersionRequest  Request,
                                            UInt64                           VersionNumber,
 
-                                           IEnumerable<KeyPair>?            SignKeys          = null,
-                                           IEnumerable<SignInfo>?           SignInfos         = null,
-                                           SignaturePolicy?                 SignaturePolicy   = null,
-                                           IEnumerable<Signature>?          Signatures        = null,
+                                           IEnumerable<KeyPair>?            SignKeys     = null,
+                                           IEnumerable<SignInfo>?           SignInfos    = null,
+                                           IEnumerable<Signature>?          Signatures   = null,
 
-                                           DateTime?                        Timestamp         = null,
-                                           CustomData?                      CustomData        = null)
+                                           DateTime?                        Timestamp    = null,
+                                           CustomData?                      CustomData   = null)
 
             : base(Request,
                    Result.OK(),
                    SignKeys,
                    SignInfos,
-                   SignaturePolicy,
                    Signatures,
                    Timestamp,
                    CustomData)
@@ -254,7 +252,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 GetLocalListVersionResponse = new GetLocalListVersionResponse(
                                                   Request,
                                                   VersionNumber,
-                                                  null,
                                                   null,
                                                   null,
                                                   Signatures,
