@@ -102,7 +102,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 signaturePolicy.AddVerificationRule(BootNotificationResponse.DefaultJSONLDContext);
 
                 var keyPair2                 = KeyPair.GenerateKeys()!;
-                testCSMS01.SignaturePolicy ??= new SignaturePolicy();
                 testCSMS01.SignaturePolicy.AddSigningRule(BootNotificationResponse.DefaultJSONLDContext, keyPair2);
 
 
@@ -128,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 Assert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().ChargingStationId);
                 Assert.AreEqual(reason,                                  bootNotificationRequests.First().Reason);
                 Assert.AreEqual(1,                                       bootNotificationRequests.First().Signatures.Count());
-                Assert.AreEqual(VerificationStatus.Verified,             bootNotificationRequests.First().Signatures.First().Status);
+                Assert.AreEqual(VerificationStatus.ValidSignature,             bootNotificationRequests.First().Signatures.First().Status);
                 Assert.AreEqual("ahzf",                                  bootNotificationRequests.First().Signatures.First().Name);
                 Assert.AreEqual("Just a test!",                          bootNotificationRequests.First().Signatures.First().Description?.FirstText());
                 Assert.AreEqual(now.ToIso8601(),                         bootNotificationRequests.First().Signatures.First().Timestamp?.  ToIso8601());

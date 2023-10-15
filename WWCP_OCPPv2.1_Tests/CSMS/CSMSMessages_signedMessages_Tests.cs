@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 Assert.AreEqual(ResultCodes.OK,                response.Result.ResultCode);
                 Assert.AreEqual(ResetStatus.Accepted,          response.Status);
 
-                Assert.IsTrue  (CryptoUtils.VerifyResponseMessage(
+                Assert.IsTrue  (testCSMS01.SignaturePolicy.VerifyResponseMessage(
                                     response,
                                     response.ToJSON(
                                         testCSMS01.CustomResetResponseSerializer,
@@ -95,9 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                                         testCSMS01.CustomSignatureSerializer,
                                         testCSMS01.CustomCustomDataSerializer
                                     ),
-                                    null,
-                                    out var errorResponse,
-                                    AllMustBeValid: true
+                                    out var errorResponse
                                 ));
 
 
@@ -105,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 Assert.AreEqual(chargingStation1.Id,           resetRequests.First().ChargingStationId);
                 Assert.AreEqual(resetType,                     resetRequests.First().ResetType);
                 Assert.AreEqual(1,                             resetRequests.First().Signatures.Count());
-                Assert.AreEqual(VerificationStatus.Verified,   resetRequests.First().Signatures.First().Status);
+                Assert.AreEqual(VerificationStatus.ValidSignature,   resetRequests.First().Signatures.First().Status);
                 Assert.AreEqual("ahzf",                        resetRequests.First().Signatures.First().Name);
                 Assert.AreEqual("Just a test!",                resetRequests.First().Signatures.First().Description?.FirstText());
                 Assert.AreEqual(now.ToIso8601(),               resetRequests.First().Signatures.First().Timestamp?.  ToIso8601());

@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Properties
 
-        public SignaturePolicy?         SignaturePolicy             { get; set; }
+        public SignaturePolicy          SignaturePolicy             { get; }
 
 
         /// <summary>
@@ -1840,6 +1840,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.HTTPAuthentication       = HTTPAuthentication;
             this.DNSClient                = DNSClient;
 
+            this.SignaturePolicy          = new SignaturePolicy();
+
         }
 
         #endregion
@@ -2015,16 +2017,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomResetRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -2091,7 +2091,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomResetResponseSerializer,
@@ -2099,7 +2099,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -2207,7 +2206,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomUpdateFirmwareRequestSerializer,
@@ -2215,9 +2214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -2255,7 +2252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomUpdateFirmwareResponseSerializer,
@@ -2263,7 +2260,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -2371,16 +2367,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomPublishFirmwareRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -2419,7 +2413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomPublishFirmwareResponseSerializer,
@@ -2427,7 +2421,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -2535,16 +2528,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomUnpublishFirmwareRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -2578,14 +2569,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomUnpublishFirmwareResponseSerializer,
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -2693,16 +2683,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomGetBaseReportRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -2738,7 +2726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomGetBaseReportResponseSerializer,
@@ -2746,7 +2734,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -2854,7 +2841,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomGetReportRequestSerializer,
@@ -2865,9 +2852,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -2904,7 +2889,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomGetReportResponseSerializer,
@@ -2912,7 +2897,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -3020,7 +3004,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomGetLogRequestSerializer,
@@ -3028,9 +3012,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -3069,7 +3051,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomGetLogResponseSerializer,
@@ -3077,7 +3059,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -3185,7 +3166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomSetVariablesRequestSerializer,
@@ -3196,9 +3177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -3239,7 +3218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomSetVariablesResponseSerializer,
@@ -3251,7 +3230,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -3359,7 +3337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomGetVariablesRequestSerializer,
@@ -3370,9 +3348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -3414,7 +3390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomGetVariablesResponseSerializer,
@@ -3426,7 +3402,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -3534,16 +3509,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomSetMonitoringBaseRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -3578,7 +3551,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomSetMonitoringBaseResponseSerializer,
@@ -3586,7 +3559,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -3694,7 +3666,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomGetMonitoringReportRequestSerializer,
@@ -3705,9 +3677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -3744,7 +3714,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomGetMonitoringReportResponseSerializer,
@@ -3752,7 +3722,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -3860,16 +3829,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomSetMonitoringLevelRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -3904,7 +3871,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomSetMonitoringLevelResponseSerializer,
@@ -3912,7 +3879,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -4020,7 +3986,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomSetVariableMonitoringRequestSerializer,
@@ -4031,9 +3997,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -4076,7 +4040,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomSetVariableMonitoringResponseSerializer,
@@ -4088,7 +4052,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -4196,16 +4159,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomClearVariableMonitoringRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -4244,7 +4205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomClearVariableMonitoringResponseSerializer,
@@ -4253,7 +4214,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -4361,7 +4321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomSetNetworkProfileRequestSerializer,
@@ -4371,9 +4331,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -4408,7 +4366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomSetNetworkProfileResponseSerializer,
@@ -4416,7 +4374,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -4524,7 +4481,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomChangeAvailabilityRequestSerializer,
@@ -4532,9 +4489,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -4622,7 +4577,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomChangeAvailabilityResponseSerializer,
@@ -4630,7 +4585,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -4738,7 +4692,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomTriggerMessageRequestSerializer,
@@ -4746,9 +4700,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -4853,7 +4805,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomTriggerMessageResponseSerializer,
@@ -4861,7 +4813,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -4969,16 +4920,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomIncomingDataTransferRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -5061,7 +5010,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomIncomingDataTransferResponseSerializer,
@@ -5069,7 +5018,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -5178,16 +5126,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomCertificateSignedRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -5225,7 +5171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomCertificateSignedResponseSerializer,
@@ -5233,7 +5179,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -5341,16 +5286,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomInstallCertificateRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -5392,7 +5335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomInstallCertificateResponseSerializer,
@@ -5400,7 +5343,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -5508,16 +5450,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomGetInstalledCertificateIdsRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -5569,7 +5509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomGetInstalledCertificateIdsResponseSerializer,
@@ -5578,7 +5518,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -5686,7 +5625,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomDeleteCertificateRequestSerializer,
@@ -5694,9 +5633,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -5737,7 +5674,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomDeleteCertificateResponseSerializer,
@@ -5745,7 +5682,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -5853,16 +5789,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomNotifyCRLRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -5897,14 +5831,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomNotifyCRLResponseSerializer,
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -6013,16 +5946,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomGetLocalListVersionRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -6056,14 +5987,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomGetLocalListVersionResponseSerializer,
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -6171,7 +6101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomSendLocalListRequestSerializer,
@@ -6183,9 +6113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -6221,7 +6149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomSendLocalListResponseSerializer,
@@ -6229,7 +6157,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -6337,16 +6264,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomClearCacheRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -6380,7 +6305,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomClearCacheResponseSerializer,
@@ -6388,7 +6313,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -6497,7 +6421,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomReserveNowRequestSerializer,
@@ -6506,9 +6430,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -6553,7 +6475,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomReserveNowResponseSerializer,
@@ -6561,7 +6483,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -6669,16 +6590,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomCancelReservationRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -6719,7 +6638,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomCancelReservationResponseSerializer,
@@ -6727,7 +6646,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -6835,7 +6753,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
 
@@ -6869,9 +6787,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomCustomDataSerializer
 
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -6994,7 +6910,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomRequestStartTransactionResponseSerializer,
@@ -7002,7 +6918,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -7110,16 +7025,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomRequestStopTransactionRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -7229,7 +7142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomRequestStopTransactionResponseSerializer,
@@ -7237,7 +7150,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -7345,16 +7257,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomGetTransactionStatusRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -7420,14 +7330,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomGetTransactionStatusResponseSerializer,
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -7535,7 +7444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
 
@@ -7567,9 +7476,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomCustomDataSerializer
 
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -7637,7 +7544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomSetChargingProfileResponseSerializer,
@@ -7645,7 +7552,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -7753,7 +7659,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomGetChargingProfilesRequestSerializer,
@@ -7761,9 +7667,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -7810,7 +7714,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomGetChargingProfilesResponseSerializer,
@@ -7818,7 +7722,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -7926,7 +7829,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomClearChargingProfileRequestSerializer,
@@ -7934,9 +7837,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -7972,7 +7873,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomClearChargingProfileResponseSerializer,
@@ -7980,7 +7881,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -8088,16 +7988,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomGetCompositeScheduleRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -8135,7 +8033,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomGetCompositeScheduleResponseSerializer,
@@ -8145,7 +8043,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -8253,16 +8150,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomUpdateDynamicScheduleRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -8313,7 +8208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomUpdateDynamicScheduleResponseSerializer,
@@ -8321,7 +8216,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -8429,16 +8323,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomNotifyAllowedEnergyTransferRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -8473,7 +8365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomNotifyAllowedEnergyTransferResponseSerializer,
@@ -8481,7 +8373,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -8589,16 +8480,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomUsePriorityChargingRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -8634,7 +8523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomUsePriorityChargingResponseSerializer,
@@ -8642,7 +8531,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -8750,16 +8638,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomUnlockConnectorRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -8812,7 +8698,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomUnlockConnectorResponseSerializer,
@@ -8820,7 +8706,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -8929,16 +8814,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomAFRRSignalRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -8976,7 +8859,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomAFRRSignalResponseSerializer,
@@ -8984,7 +8867,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -9093,7 +8975,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomSetDisplayMessageRequestSerializer,
@@ -9104,9 +8986,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -9154,7 +9034,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomSetDisplayMessageResponseSerializer,
@@ -9162,7 +9042,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -9270,16 +9149,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomGetDisplayMessagesRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -9333,7 +9210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomGetDisplayMessagesResponseSerializer,
@@ -9341,7 +9218,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -9449,16 +9325,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomClearDisplayMessageRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -9502,7 +9376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomClearDisplayMessageResponseSerializer,
@@ -9510,7 +9384,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -9617,16 +9490,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomCostUpdatedRequestSerializer,
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -9673,14 +9544,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomCostUpdatedResponseSerializer,
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -9788,7 +9658,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 else
                 {
 
-                    if (!CryptoUtils.VerifyRequestMessage(
+                    if (!SignaturePolicy.VerifyRequestMessage(
                              request,
                              request.ToJSON(
                                  CustomCustomerInformationRequestSerializer,
@@ -9798,9 +9668,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer
                              ),
-                             SignaturePolicy,
-                             out var errorResponse,
-                             AllMustBeValid: true
+                             out var errorResponse
                          ))
                     {
 
@@ -9874,7 +9742,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Sign response message
 
-                CryptoUtils.SignResponseMessage(
+                SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToJSON(
                         CustomCustomerInformationResponseSerializer,
@@ -9882,7 +9750,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
-                    SignaturePolicy,
                     out var errorResponse2);
 
                 #endregion
@@ -10067,7 +9934,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomBootNotificationRequestSerializer,
@@ -10075,7 +9942,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -10091,7 +9957,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomBootNotificationResponseSerializer,
@@ -10099,9 +9965,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -10194,14 +10058,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomFirmwareStatusNotificationRequestSerializer,
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -10217,16 +10080,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomFirmwareStatusNotificationResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -10299,14 +10160,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomPublishFirmwareStatusNotificationRequestSerializer,
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -10322,16 +10182,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomPublishFirmwareStatusNotificationResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -10401,14 +10259,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomHeartbeatRequestSerializer,
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -10424,16 +10281,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomHeartbeatResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -10507,7 +10362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomNotifyEventRequestSerializer,
@@ -10518,7 +10373,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -10534,16 +10388,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomNotifyEventResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -10616,14 +10468,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomSecurityEventNotificationRequestSerializer,
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -10639,16 +10490,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomSecurityEventNotificationResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -10723,7 +10572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomNotifyReportRequestSerializer,
@@ -10736,7 +10585,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -10752,16 +10600,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomNotifyReportResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -10836,7 +10682,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomNotifyMonitoringReportRequestSerializer,
@@ -10848,7 +10694,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -10864,16 +10709,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomNotifyMonitoringReportResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -10945,14 +10788,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomLogStatusNotificationRequestSerializer,
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -10968,16 +10810,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomLogStatusNotificationResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -11050,14 +10890,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomDataTransferRequestSerializer,
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -11073,7 +10912,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomDataTransferResponseSerializer,
@@ -11081,9 +10920,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -11156,14 +10993,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomSignCertificateRequestSerializer,
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -11179,7 +11015,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomSignCertificateResponseSerializer,
@@ -11187,9 +11023,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -11264,14 +11098,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomGet15118EVCertificateRequestSerializer,
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -11287,7 +11120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomGet15118EVCertificateResponseSerializer,
@@ -11295,9 +11128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -11368,7 +11199,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomGetCertificateStatusRequestSerializer,
@@ -11376,7 +11207,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -11392,7 +11222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomGetCertificateStatusResponseSerializer,
@@ -11400,9 +11230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -11475,7 +11303,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomGetCRLRequestSerializer,
@@ -11483,7 +11311,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -11499,7 +11326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomGetCRLResponseSerializer,
@@ -11507,9 +11334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -11582,14 +11407,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomReservationStatusUpdateRequestSerializer,
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -11605,16 +11429,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomReservationStatusUpdateResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -11687,7 +11509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomAuthorizeRequestSerializer,
@@ -11697,7 +11519,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -11713,7 +11534,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomAuthorizeResponseSerializer,
@@ -11724,9 +11545,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -11800,7 +11619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomNotifyEVChargingNeedsRequestSerializer,
@@ -11817,7 +11636,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -11833,7 +11651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomNotifyEVChargingNeedsResponseSerializer,
@@ -11841,9 +11659,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -11927,7 +11743,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomTransactionEventRequestSerializer,
@@ -11942,7 +11758,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -11958,7 +11773,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomTransactionEventResponseSerializer,
@@ -11969,9 +11784,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -12045,14 +11858,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomStatusNotificationRequestSerializer,
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -12068,16 +11880,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomStatusNotificationResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -12149,7 +11959,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomMeterValuesRequestSerializer,
@@ -12158,7 +11968,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -12174,16 +11983,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomMeterValuesResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -12256,7 +12063,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
 
@@ -12287,7 +12094,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomCustomDataSerializer
 
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -12303,16 +12109,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomNotifyChargingLimitResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -12384,14 +12188,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomClearedChargingLimitRequestSerializer,
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -12407,16 +12210,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomClearedChargingLimitResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -12491,7 +12292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
 
@@ -12523,7 +12324,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomCustomDataSerializer
 
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -12539,16 +12339,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomReportChargingProfilesResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -12624,7 +12422,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
 
@@ -12655,7 +12453,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomCustomDataSerializer
 
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -12671,7 +12468,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomNotifyEVChargingScheduleResponseSerializer,
@@ -12679,9 +12476,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -12754,14 +12549,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomNotifyPriorityChargingRequestSerializer,
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -12777,16 +12571,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomNotifyPriorityChargingResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -12858,14 +12650,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomPullDynamicScheduleUpdateRequestSerializer,
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -12881,16 +12672,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomPullDynamicScheduleUpdateResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -12964,7 +12753,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomNotifyDisplayMessagesRequestSerializer,
@@ -12975,7 +12764,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -12991,16 +12779,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomNotifyDisplayMessagesResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 
@@ -13075,14 +12861,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var response = CSClient is not null
 
-                               ? CryptoUtils.SignRequestMessage(
+                               ? SignaturePolicy.SignRequestMessage(
                                      Request,
                                      Request.ToJSON(
                                          CustomNotifyCustomerInformationRequestSerializer,
                                          CustomSignatureSerializer,
                                          CustomCustomDataSerializer
                                      ),
-                                     Request.SignaturePolicy ?? SignaturePolicy,
                                      out var errorResponse
                                  )
 
@@ -13098,16 +12883,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Result.Server("Unknown or unreachable charging station!")
                                  );
 
-            CryptoUtils.VerifyResponseMessage(
+            SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToJSON(
                     CustomNotifyCustomerInformationResponseSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
-                SignaturePolicy,
-                out errorResponse,
-                AllMustBeValid: true
+                out errorResponse
             );
 
 

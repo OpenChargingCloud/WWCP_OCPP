@@ -24,12 +24,57 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public enum VerificationStatus
     {
 
+        /// <summary>
+        /// The message was not verified as defined by the signature policy!
+        /// </summary>
+        Unverified,
+
+        /// <summary>
+        /// The message must be dropped silently!
+        /// </summary>
+        DropMessage,
+
+        /// <summary>
+        /// The message must be rejected!
+        /// </summary>
+        RejectMessage,
+
+        /// <summary>
+        /// Signatures had been expected, but none had been found!
+        /// </summary>
         NoSignaturesFound,
+
+        /// <summary>
+        /// The signature algorithm is unknown.
+        /// </summary>
         UnknownSignatureAlgorithm,
+
+        /// <summary>
+        /// The signature seems to be technically invalid.
+        /// </summary>
         BrokenSignature,
+
+        /// <summary>
+        /// The signature is cryptographically invalid.
+        /// </summary>
         InvalidSignature,
-        InvalidSignatureChain,
-        Verified
+
+        /// <summary>
+        /// The signature is cryptographically valid, but this does not mean,
+        /// that it was signed by a trused signer!
+        /// </summary>
+        ValidSignature,
+
+        /// <summary>
+        /// The signer of the signature is unknown.
+        /// </summary>
+        UnknownSigner,
+
+        /// <summary>
+        /// The signer of the signature is not trusted for this message.
+        /// </summary>
+        InvalidSigner
+
 
     }
 

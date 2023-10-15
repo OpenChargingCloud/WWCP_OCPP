@@ -79,7 +79,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                            IEnumerable<KeyPair>?    SignKeys            = null,
                                            IEnumerable<SignInfo>?   SignInfos           = null,
-                                           SignaturePolicy?         SignaturePolicy     = null,
                                            IEnumerable<Signature>?  Signatures          = null,
 
                                            CustomData?              CustomData          = null,
@@ -94,7 +93,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    "GetCertificateStatus",
                    SignKeys,
                    SignInfos,
-                   SignaturePolicy,
                    Signatures,
                    CustomData,
                    RequestId,
@@ -355,7 +353,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 GetCertificateStatusRequest = new GetCertificateStatusRequest(
                                                   ChargingStationId,
                                                   OCSPRequestData,
-                                                  null,
                                                   null,
                                                   null,
                                                   Signatures,

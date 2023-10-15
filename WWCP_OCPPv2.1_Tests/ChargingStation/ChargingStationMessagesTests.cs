@@ -1994,9 +1994,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                 };
 
                 var response = await chargingStation1.PullDynamicScheduleUpdate(
-                                   PullDynamicScheduleUpdateRequestId:   1,
-                                   ChargingProfileId:                    ChargingProfile_Id.Parse(235),
-                                   CustomData:                           null
+                                   ChargingProfileId:   ChargingProfile_Id.Parse(235),
+                                   CustomData:          null
                                );
 
 

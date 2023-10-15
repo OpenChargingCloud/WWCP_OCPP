@@ -98,38 +98,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     return Task.CompletedTask;
                 };
 
-                var now                            = Timestamp.Now;
+                var now1                           = Timestamp.Now;
                 var keyPair                        = KeyPair.GenerateKeys()!;
-                chargingStation1.SignaturePolicy ??= new SignaturePolicy();
                 chargingStation1.SignaturePolicy.AddSigningRule     (BootNotificationRequest. DefaultJSONLDContext,
                                                                      KeyPair:                 keyPair,
-                                                                     UserIdGenerator:         (signableMessage) => "ahzf",
-                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a test!"),
-                                                                     TimestampGenerator:      (signableMessage) => now);
-                chargingStation1.SignaturePolicy.AddVerificationRule(BootNotificationResponse.DefaultJSONLDContext);
+                                                                     UserIdGenerator:         (signableMessage) => "cs001",
+                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a charging station test!"),
+                                                                     TimestampGenerator:      (signableMessage) => now1);
+                chargingStation1.SignaturePolicy.AddVerificationRule(BootNotificationResponse.DefaultJSONLDContext,
+                                                                     VerificationPolicyAction.VerifyAll);
 
+                var now2                           = Timestamp.Now;
                 var keyPair2                       = KeyPair.GenerateKeys()!;
-                testCSMS01.SignaturePolicy       ??= new SignaturePolicy();
-                testCSMS01.SignaturePolicy.AddSigningRule(BootNotificationResponse.DefaultJSONLDContext, keyPair2);
+                testCSMS01.SignaturePolicy.      AddVerificationRule(BootNotificationRequest. DefaultJSONLDContext,
+                                                                     VerificationPolicyAction.VerifyAll);
+                testCSMS01.SignaturePolicy.      AddSigningRule     (BootNotificationResponse.DefaultJSONLDContext,
+                                                                     keyPair2,
+                                                                     UserIdGenerator:         (signableMessage) => "csms001",
+                                                                     DescriptionGenerator:    (signableMessage) => I18NString.Create("Just a backend test!"),
+                                                                     TimestampGenerator:      (signableMessage) => now2);
 
 
                 var reason                         = BootReason.PowerUp;
-                var response1                      = await chargingStation1.SendBootNotification(
+                var response                       = await chargingStation1.SendBootNotification(
                                                          BootReason:   reason,
                                                          CustomData:   null
                                                      );
 
-                Assert.AreEqual(ResultCodes.OK,                          response1.Result.ResultCode);
-                Assert.AreEqual(RegistrationStatus.Accepted,             response1.Status);
-
-                Assert.AreEqual(1,                                       bootNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().ChargingStationId);
-                Assert.AreEqual(reason,                                  bootNotificationRequests.First().Reason);
-                Assert.AreEqual(1,                                       bootNotificationRequests.First().Signatures.Count());
-                Assert.AreEqual(VerificationStatus.Verified,             bootNotificationRequests.First().Signatures.First().Status);
-                Assert.AreEqual("ahzf",                                  bootNotificationRequests.First().Signatures.First().Name);
-                Assert.AreEqual("Just a test!",                          bootNotificationRequests.First().Signatures.First().Description?.FirstText());
-                Assert.AreEqual(now.ToIso8601(),                         bootNotificationRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                Assert.AreEqual(ResultCodes.OK,                          response.Result.ResultCode);
+                Assert.AreEqual(RegistrationStatus.Accepted,             response.Status);
+                Assert.AreEqual(1,                                       response.Signatures.Count());
+                Assert.AreEqual(VerificationStatus.ValidSignature,       response.Signatures.First().Status);
+                Assert.AreEqual("csms001",                               response.Signatures.First().Name);
+                Assert.AreEqual("Just a backend test!",                  response.Signatures.First().Description?.FirstText());
+                Assert.AreEqual(now2.ToIso8601(),                        response.Signatures.First().Timestamp?.  ToIso8601());
 
                 var chargingStation = bootNotificationRequests.First().ChargingStation;
 
@@ -152,6 +154,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
                     }
 
                 }
+
+
+                Assert.AreEqual(1,                                       bootNotificationRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().ChargingStationId);
+                Assert.AreEqual(reason,                                  bootNotificationRequests.First().Reason);
+                Assert.AreEqual(1,                                       bootNotificationRequests.First().Signatures.Count());
+                Assert.AreEqual(VerificationStatus.ValidSignature,             bootNotificationRequests.First().Signatures.First().Status);
+                Assert.AreEqual("cs001",                                 bootNotificationRequests.First().Signatures.First().Name);
+                Assert.AreEqual("Just a charging station test!",         bootNotificationRequests.First().Signatures.First().Description?.FirstText());
+                Assert.AreEqual(now1.ToIso8601(),                        bootNotificationRequests.First().Signatures.First().Timestamp?.  ToIso8601());
 
             }
 

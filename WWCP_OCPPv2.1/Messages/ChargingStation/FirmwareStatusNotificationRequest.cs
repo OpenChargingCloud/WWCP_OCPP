@@ -88,7 +88,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                                  IEnumerable<KeyPair>?    SignKeys                  = null,
                                                  IEnumerable<SignInfo>?   SignInfos                 = null,
-                                                 SignaturePolicy?         SignaturePolicy           = null,
                                                  IEnumerable<Signature>?  Signatures                = null,
 
                                                  CustomData?              CustomData                = null,
@@ -104,7 +103,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                    SignKeys,
                    SignInfos,
-                   SignaturePolicy,
                    Signatures,
 
                    CustomData,
@@ -357,7 +355,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                         ChargingStationId,
                                                         Status,
                                                         UpdateFirmwareRequestId,
-                                                        null,
                                                         null,
                                                         null,
                                                         Signatures,
