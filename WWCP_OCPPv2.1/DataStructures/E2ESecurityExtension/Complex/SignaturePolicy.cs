@@ -66,10 +66,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
+        /// The unique identification of this signature policy.
+        /// </summary>
+        [Mandatory]
+        public SignaturePolicy_Id?            Id                            { get; }
+
+        /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
+        [Mandatory]
         public JSONLDContext                  Context
             => DefaultJSONLDContext;
+
+        /// <summary>
+        /// The priority of this signature policy.
+        /// </summary>
+        [Mandatory]
+        public Byte                           Priority                      { get; }
+
+        /// <summary>
+        /// The timestamp before which the signature policy should not be used.
+        /// </summary>
+        [Mandatory]
+        public DateTime                       NotBefore                     { get; }
+
+        /// <summary>
+        /// The optional timestamp after which the signature policy should not be used.
+        /// </summary>
+        [Optional]
+        public DateTime?                      NotAfter                      { get; }
+
 
         /// <summary>
         /// The enumeration of signature policy entries.
@@ -119,25 +145,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public KeyPair?                       DefaultVerificationKeyPair    { get; }
 
 
-        /// <summary>
-        /// The optional priority of this signature policy.
-        /// </summary>
-        [Mandatory]
-        public Byte                           Priority                      { get; }
-
-        /// <summary>
-        /// The optional timestamp before which the signature policy should not be used.
-        /// </summary>
-        [Mandatory]
-        public DateTime                       NotBefore                     { get; }
-
-        /// <summary>
-        /// The optional timestamp after which the signature policy should not be used.
-        /// </summary>
-        [Optional]
-        public DateTime?                      NotAfter                      { get; }
-
-
 
         /// <summary>
         /// The optional enumeration of cryptographic signatures for this message.
@@ -156,6 +163,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new OCPP CSE cryptographic signature policy.
         /// </summary>
+        /// <param name="Id">An optional unique identification for this signature policy.</param>
+        /// <param name="Priority">An optional priority of this signature policy.</param>
+        /// <param name="NotBefore">An optional timestamp before which the signature policy should not be used.</param>
+        /// <param name="NotAfter">An optional timestamp after which the signature policy should not be used.</param>
+        /// 
         /// <param name="SigningRules">An optional enumeration of cryptographic signing rules.</param>
         /// <param name="DefaultSigningAction">An optional default signing action for this policy.</param>
         /// <param name="DefaultSigningKeyPair">An optional default cryptographic signing key pair.</param>
@@ -164,22 +176,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="DefaultVerificationAction">An optional default verification action for this policy.</param>
         /// <param name="DefaultSigningKeyPair">An optional default cryptographic signing key pair.</param>
         /// 
-        /// <param name="Priority">An optional priority of this signature policy.</param>
-        /// <param name="NotBefore">An optional timestamp before which the signature policy should not be used.</param>
-        /// <param name="NotAfter">An optional timestamp after which the signature policy should not be used.</param>
-        /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SignaturePolicy(IEnumerable<SigningRule>?       SigningRules                 = null,
+        public SignaturePolicy(SignaturePolicy_Id?             Id                           = null,
+                               Byte?                           Priority                     = null,
+                               DateTime?                       NotBefore                    = null,
+                               DateTime?                       NotAfter                     = null,
+
+                               IEnumerable<SigningRule>?       SigningRules                 = null,
                                SigningRuleAction?              DefaultSigningAction         = null,
                                KeyPair?                        DefaultSigningKeyPair        = null,
 
                                IEnumerable<VerificationRule>?  VerificationRules            = null,
                                VerificationRuleAction?         DefaultVerificationAction    = null,
                                KeyPair?                        DefaultVerificationKeyPair   = null,
-
-                               Byte?                           Priority                     = null,
-                               DateTime?                       NotBefore                    = null,
-                               DateTime?                       NotAfter                     = null,
 
                                IEnumerable<KeyPair>?           SignKeys                     = null,
                                IEnumerable<SignInfo>?          SignInfos                    = null,
@@ -191,6 +200,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
+            this.Id                          = Id        ?? SignaturePolicy_Id.NewRandom();
+            this.Priority                    = Priority  ?? 1;
+            this.NotBefore                   = NotBefore ?? Timestamp.Now;
+            this.NotAfter                    = NotAfter;
+
+            // Signing
             if (SigningRules is not null)
                 foreach (var signingRule      in SigningRules)
                     signingRules.   Add(signingRule);
@@ -205,6 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             }
 
 
+            // Verification
             if (VerificationRules is not null)
                 foreach (var verificationRule in VerificationRules)
                     verificationRules.Add(verificationRule);
@@ -220,10 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             }
 
 
-            this.Priority                    = Priority  ?? 0;
-            this.NotBefore                   = NotBefore ?? Timestamp.Now;
-            this.NotAfter                    = NotAfter;
-
+            // Signatures
             this.SignKeys                    = SignKeys  ?? Array.Empty<KeyPair>();
             this.SignInfos                   = SignInfos ?? Array.Empty<SignInfo>();
             this.signatures                  = Signatures is not null && Signatures.Any()
@@ -252,7 +265,193 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region (static) Parse   (JSON, CustomSignaturePolicyParser = null)
 
+        /// <summary>
+        /// Parse the given JSON representation of a signature policy.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="CustomSignaturePolicyParser">A delegate to parse custom signature policies.</param>
+        public static SignaturePolicy Parse(JObject                                        JSON,
+                                            CustomJObjectParserDelegate<SignaturePolicy>?  CustomSignaturePolicyParser   = null)
+        {
+
+            if (TryParse(JSON,
+                         out var signaturePolicy,
+                         out var errorResponse,
+                         CustomSignaturePolicyParser))
+            {
+                return signaturePolicy!;
+            }
+
+            throw new ArgumentException("The given JSON representation of a signature policy is invalid: " + errorResponse,
+                                        nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(JSON, out SignaturePolicy, out ErrorResponse, CustomSignaturePolicyParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a signature policy.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="SignaturePolicy">The parsed connector type.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject               JSON,
+                                       out SignaturePolicy?  SignaturePolicy,
+                                       out String?           ErrorResponse)
+
+            => TryParse(JSON,
+                        out SignaturePolicy,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a signature policy.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="SignaturePolicy">The parsed connector type.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSignaturePolicyParser">A delegate to parse custom signature policies.</param>
+        public static Boolean TryParse(JObject                                        JSON,
+                                       out SignaturePolicy?                           SignaturePolicy,
+                                       out String?                                    ErrorResponse,
+                                       CustomJObjectParserDelegate<SignaturePolicy>?  CustomSignaturePolicyParser)
+        {
+
+            try
+            {
+
+                SignaturePolicy = default;
+
+                #region Id              [mandatory]
+
+                if (!JSON.ParseMandatory("id",
+                                         "signature policy identification",
+                                         SignaturePolicy_Id.TryParse,
+                                         out SignaturePolicy_Id Id,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Priority        [mandatory]
+
+                if (!JSON.ParseMandatory("priority",
+                                         "signature policy priority",
+                                         out Byte Priority,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region NotBefore       [mandatory]
+
+                if (!JSON.ParseMandatory("notBefore",
+                                         "start schedule",
+                                         out DateTime NotBefore,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region NotAfter        [optional]
+
+                if (JSON.ParseOptional("notAfter",
+                                       "start schedule",
+                                       out DateTime? NotAfter,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                       return false;
+                }
+
+                #endregion
+
+
+
+
+
+                #region Signatures      [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData      [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_1.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                SignaturePolicy = new SignaturePolicy(
+
+                                      Id,
+                                      Priority,
+                                      NotBefore,
+                                      NotAfter,
+
+                                      null,  // SigningRules
+                                      null,  // DefaultSigningAction
+                                      null,  // DefaultSigningKeyPair
+
+                                      null,  // VerificationRules
+                                      null,  // DefaultVerificationAction
+                                      null,  // DefaultVerificationKeyPair
+
+                                      null,
+                                      null,
+                                      Signatures,
+
+                                      CustomData
+
+                                  );
+
+                if (CustomSignaturePolicyParser is not null)
+                    SignaturePolicy = CustomSignaturePolicyParser(JSON,
+                                                                  SignaturePolicy);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                SignaturePolicy  = default;
+                ErrorResponse    = "The given JSON representation of a signature policy is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
 
         #region ToJSON(CustomSignaturePolicySerializer = null, CustomEventDataSerializer = null, ...)
 
@@ -268,6 +467,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             var json = JSONObject.Create(
+
+                                 new JProperty("id",            Id.ToString()),
+                                 new JProperty("priority",      Priority),
+                                 new JProperty("notBefore",     NotBefore.ToIso8601()),
+
+                           NotAfter.HasValue
+                               ? new JProperty("notAfter",      NotAfter.Value.ToIso8601())
+                               : null,
+
 
 
                            Signatures.Any()

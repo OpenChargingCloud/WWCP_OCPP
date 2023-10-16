@@ -26,12 +26,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
-    // After start-up, every charging station SHALL send a request to the
-    // central system with information about its configuration
-    // (e.g.version, vendor, etc.).
-
     /// <summary>
-    /// A boot notification request.
+    /// An add signature policy request.
     /// </summary>
     public class AddSignaturePolicyRequest : ARequest<AddSignaturePolicyRequest>,
                                              IRequest
@@ -42,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/bootNotificationRequest");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/addSignaturePolicyRequest");
 
         #endregion
 
@@ -55,27 +51,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// A physical system where an electrical vehicle (EV) can be charged.
+        /// The signature policy.
         /// </summary>
         [Mandatory]
-        public ChargingStation  ChargingStation    { get; }
-
-        /// <summary>
-        /// The the reason for sending this boot notification to the CSMS.
-        /// </summary>
-        [Mandatory]
-        public BootReason       Reason             { get; }
+        public SignaturePolicy  SignaturePolicy    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new boot notification request.
+        /// Create a new add signature policy request.
         /// </summary>
         /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="ChargingStation">A physical system where an electrical vehicle (EV) can be charged.</param>
-        /// <param name="Reason">The the reason for sending this boot notification to the CSMS.</param>
+        /// <param name="SignaturePolicy">A signature policy.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -86,20 +75,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public AddSignaturePolicyRequest(ChargingStation_Id       ChargingStationId,
-                                       ChargingStation          ChargingStation,
-                                       BootReason               Reason,
+                                         SignaturePolicy          SignaturePolicy,
 
-                                       IEnumerable<KeyPair>?    SignKeys            = null,
-                                       IEnumerable<SignInfo>?   SignInfos           = null,
-                                       IEnumerable<Signature>?  Signatures          = null,
+                                         IEnumerable<KeyPair>?    SignKeys            = null,
+                                         IEnumerable<SignInfo>?   SignInfos           = null,
+                                         IEnumerable<Signature>?  Signatures          = null,
 
-                                       CustomData?              CustomData          = null,
+                                         CustomData?              CustomData          = null,
 
-                                       Request_Id?              RequestId           = null,
-                                       DateTime?                RequestTimestamp    = null,
-                                       TimeSpan?                RequestTimeout      = null,
-                                       EventTracking_Id?        EventTrackingId     = null,
-                                       CancellationToken        CancellationToken   = default)
+                                         Request_Id?              RequestId           = null,
+                                         DateTime?                RequestTimestamp    = null,
+                                         TimeSpan?                RequestTimeout      = null,
+                                         EventTracking_Id?        EventTrackingId     = null,
+                                         CancellationToken        CancellationToken   = default)
 
             : base(ChargingStationId,
                    "AddSignaturePolicy",
@@ -118,14 +106,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.ChargingStation  = ChargingStation;
-            this.Reason           = Reason;
+            this.SignaturePolicy = SignaturePolicy;
 
             unchecked
             {
 
-                hashCode = this.ChargingStation.GetHashCode() * 5 ^
-                           this.Reason.         GetHashCode() * 3 ^
+                hashCode = this.SignaturePolicy.GetHashCode() * 3 ^
                            base.                GetHashCode();
 
             }
@@ -137,150 +123,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Documentation
 
-        // {
-        //   "$schema": "http://json-schema.org/draft-06/schema#",
-        //   "$id": "urn:OCPP:Cp:2:2020:3:AddSignaturePolicyRequest",
-        //   "comment": "OCPP 2.0.1 FINAL",
-        //   "definitions": {
-        //     "CustomDataType": {
-        //       "description": "This class does not get 'AdditionalProperties = false' in the schema generation, so it can be extended with arbitrary JSON properties to allow adding custom data.",
-        //       "javaType": "CustomData",
-        //       "type": "object",
-        //       "properties": {
-        //         "vendorId": {
-        //           "type": "string",
-        //           "maxLength": 255
-        //         }
-        //       },
-        //       "required": [
-        //         "vendorId"
-        //       ]
-        //     },
-        //     "BootReasonEnumType": {
-        //       "description": "This contains the reason for sending this message to the CSMS.\r\n",
-        //       "javaType": "BootReasonEnum",
-        //       "type": "string",
-        //       "additionalProperties": false,
-        //       "enum": [
-        //         "ApplicationReset",
-        //         "FirmwareUpdate",
-        //         "LocalReset",
-        //         "PowerUp",
-        //         "RemoteReset",
-        //         "ScheduledReset",
-        //         "Triggered",
-        //         "Unknown",
-        //         "Watchdog"
-        //       ]
-        //     },
-        //     "ChargingStationType": {
-        //       "description": "Charge_ Point\r\nurn:x-oca:ocpp:uid:2:233122\r\nThe physical system where an Electrical Vehicle (EV) can be charged.\r\n",
-        //       "javaType": "ChargingStation",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "serialNumber": {
-        //           "description": "Device. Serial_ Number. Serial_ Number\r\nurn:x-oca:ocpp:uid:1:569324\r\nVendor-specific device identifier.\r\n",
-        //           "type": "string",
-        //           "maxLength": 25
-        //         },
-        //         "model": {
-        //           "description": "Device. Model. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569325\r\nDefines the model of the device.\r\n",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "modem": {
-        //           "$ref": "#/definitions/ModemType"
-        //         },
-        //         "vendorName": {
-        //           "description": "Identifies the vendor (not necessarily in a unique manner).\r\n",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         },
-        //         "firmwareVersion": {
-        //           "description": "This contains the firmware version of the Charging Station.\r\n\r\n",
-        //           "type": "string",
-        //           "maxLength": 50
-        //         }
-        //       },
-        //       "required": [
-        //         "model",
-        //         "vendorName"
-        //       ]
-        //     },
-        //     "ModemType": {
-        //       "description": "Wireless_ Communication_ Module\r\nurn:x-oca:ocpp:uid:2:233306\r\nDefines parameters required for initiating and maintaining wireless communication with other devices.\r\n",
-        //       "javaType": "Modem",
-        //       "type": "object",
-        //       "additionalProperties": false,
-        //       "properties": {
-        //         "customData": {
-        //           "$ref": "#/definitions/CustomDataType"
-        //         },
-        //         "iccid": {
-        //           "description": "Wireless_ Communication_ Module. ICCID. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569327\r\nThis contains the ICCID of the modem’s SIM card.\r\n",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         },
-        //         "imsi": {
-        //           "description": "Wireless_ Communication_ Module. IMSI. CI20_ Text\r\nurn:x-oca:ocpp:uid:1:569328\r\nThis contains the IMSI of the modem’s SIM card.\r\n",
-        //           "type": "string",
-        //           "maxLength": 20
-        //         }
-        //       }
-        //     }
-        //   },
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "chargingStation": {
-        //       "$ref": "#/definitions/ChargingStationType"
-        //     },
-        //     "reason": {
-        //       "$ref": "#/definitions/BootReasonEnumType"
-        //     }
-        //   },
-        //   "required": [
-        //     "reason",
-        //     "chargingStation"
-        //   ]
-        // }
+        // tba.
 
         #endregion
 
         #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomAddSignaturePolicyRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a boot notification request.
+        /// Parse the given JSON representation of an AddSignaturePolicy request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="CustomAddSignaturePolicyRequestParser">A delegate to parse custom boot notification requests.</param>
-        public static AddSignaturePolicyRequest Parse(JObject                                                JSON,
-                                                    Request_Id                                             RequestId,
-                                                    ChargingStation_Id                                     ChargingStationId,
-                                                    CustomJObjectParserDelegate<AddSignaturePolicyRequest>?  CustomAddSignaturePolicyRequestParser   = null)
+        /// <param name="CustomAddSignaturePolicyRequestParser">A delegate to parse custom AddSignaturePolicy requests.</param>
+        public static AddSignaturePolicyRequest Parse(JObject                                                  JSON,
+                                                      Request_Id                                               RequestId,
+                                                      ChargingStation_Id                                       ChargingStationId,
+                                                      CustomJObjectParserDelegate<AddSignaturePolicyRequest>?  CustomAddSignaturePolicyRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
                          ChargingStationId,
-                         out var bootNotificationRequest,
+                         out var addSignaturePolicyRequest,
                          out var errorResponse,
                          CustomAddSignaturePolicyRequestParser))
             {
-                return bootNotificationRequest!;
+                return addSignaturePolicyRequest!;
             }
 
-            throw new ArgumentException("The given JSON representation of a boot notification request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a AddSignaturePolicy request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -292,12 +165,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a boot notification request.
+        /// Try to parse the given JSON representation of a AddSignaturePolicy request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="AddSignaturePolicyRequest">The parsed boot notification request.</param>
+        /// <param name="AddSignaturePolicyRequest">The parsed AddSignaturePolicy request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                         JSON,
                                        Request_Id                      RequestId,
@@ -314,19 +187,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a boot notification request.
+        /// Try to parse the given JSON representation of a AddSignaturePolicy request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="AddSignaturePolicyRequest">The parsed boot notification request.</param>
+        /// <param name="AddSignaturePolicyRequest">The parsed AddSignaturePolicy request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAddSignaturePolicyRequestParser">A delegate to parse custom boot notification requests.</param>
-        public static Boolean TryParse(JObject                                                JSON,
-                                       Request_Id                                             RequestId,
-                                       ChargingStation_Id                                     ChargingStationId,
+        /// <param name="CustomAddSignaturePolicyRequestParser">A delegate to parse custom AddSignaturePolicy requests.</param>
+        public static Boolean TryParse(JObject                                                  JSON,
+                                       Request_Id                                               RequestId,
+                                       ChargingStation_Id                                       ChargingStationId,
                                        out AddSignaturePolicyRequest?                           AddSignaturePolicyRequest,
-                                       out String?                                            ErrorResponse,
+                                       out String?                                              ErrorResponse,
                                        CustomJObjectParserDelegate<AddSignaturePolicyRequest>?  CustomAddSignaturePolicyRequestParser)
         {
 
@@ -335,27 +208,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 AddSignaturePolicyRequest = null;
 
-                #region ChargingStation      [mandatory]
+                #region SignaturePolicy      [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("chargingStation",
-                                             "charging station",
-                                             OCPPv2_1.ChargingStation.TryParse,
-                                             out ChargingStation? ChargingStation,
+                if (!JSON.ParseMandatoryJSON("signaturePolicy",
+                                             "signature policy",
+                                             OCPPv2_1.SignaturePolicy.TryParse,
+                                             out SignaturePolicy? SignaturePolicy,
                                              out ErrorResponse) ||
-                     ChargingStation is null)
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region Reason               [mandatory]
-
-                if (!JSON.ParseMandatory("reason",
-                                         "boot reason",
-                                         BootReason.TryParse,
-                                         out BootReason Reason,
-                                         out ErrorResponse))
+                     SignaturePolicy is null)
                 {
                     return false;
                 }
@@ -411,19 +271,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 AddSignaturePolicyRequest = new AddSignaturePolicyRequest(
-                                              ChargingStationId,
-                                              ChargingStation,
-                                              Reason,
-                                              null,
-                                              null,
-                                              Signatures,
-                                              CustomData,
-                                              RequestId
-                                          );
+                                                ChargingStationId,
+                                                SignaturePolicy,
+                                                null,
+                                                null,
+                                                Signatures,
+                                                CustomData,
+                                                RequestId
+                                            );
 
                 if (CustomAddSignaturePolicyRequestParser is not null)
                     AddSignaturePolicyRequest = CustomAddSignaturePolicyRequestParser(JSON,
-                                                                                  AddSignaturePolicyRequest);
+                                                                                      AddSignaturePolicyRequest);
 
                 return true;
 
@@ -431,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 AddSignaturePolicyRequest  = null;
-                ErrorResponse            = "The given JSON representation of a boot notification request is invalid: " + e.Message;
+                ErrorResponse              = "The given JSON representation of a AddSignaturePolicy request is invalid: " + e.Message;
                 return false;
             }
 
@@ -439,25 +298,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomAddSignaturePolicyRequestSerializer = null, CustomChargingStationSerializer = null, ...)
+        #region ToJSON(CustomAddSignaturePolicyRequestSerializer = null, CustomSignaturePolicySerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomAddSignaturePolicyRequestSerializer">A delegate to serialize custom boot notification requests.</param>
-        /// <param name="CustomChargingStationSerializer">A delegate to serialize custom ChargingStations.</param>
+        /// <param name="CustomAddSignaturePolicyRequestSerializer">A delegate to serialize custom AddSignaturePolicy requests.</param>
+        /// <param name="CustomSignaturePolicySerializer">A delegate to serialize custom signature policies.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?  CustomAddSignaturePolicyRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<ChargingStation>?            CustomChargingStationSerializer             = null,
+                              CustomJObjectSerializerDelegate<SignaturePolicy>?            CustomSignaturePolicySerializer             = null,
                               CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("chargingStation",   ChargingStation.ToJSON(CustomChargingStationSerializer)),
-                                 new JProperty("reason",            Reason.         ToString()),
+                                 new JProperty("signaturePolicy",   SignaturePolicy.ToJSON(CustomSignaturePolicySerializer)),
 
                            Signatures.Any()
                                ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -484,10 +342,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (AddSignaturePolicyRequest1, AddSignaturePolicyRequest2)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two AddSignaturePolicy requests for equality.
         /// </summary>
-        /// <param name="AddSignaturePolicyRequest1">A boot notification request.</param>
-        /// <param name="AddSignaturePolicyRequest2">Another boot notification request.</param>
+        /// <param name="AddSignaturePolicyRequest1">A AddSignaturePolicy request.</param>
+        /// <param name="AddSignaturePolicyRequest2">Another AddSignaturePolicy request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (AddSignaturePolicyRequest? AddSignaturePolicyRequest1,
                                            AddSignaturePolicyRequest? AddSignaturePolicyRequest2)
@@ -510,10 +368,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (AddSignaturePolicyRequest1, AddSignaturePolicyRequest2)
 
         /// <summary>
-        /// Compares two boot notification requests for inequality.
+        /// Compares two AddSignaturePolicy requests for inequality.
         /// </summary>
-        /// <param name="AddSignaturePolicyRequest1">A boot notification request.</param>
-        /// <param name="AddSignaturePolicyRequest2">Another boot notification request.</param>
+        /// <param name="AddSignaturePolicyRequest1">A AddSignaturePolicy request.</param>
+        /// <param name="AddSignaturePolicyRequest2">Another AddSignaturePolicy request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (AddSignaturePolicyRequest? AddSignaturePolicyRequest1,
                                            AddSignaturePolicyRequest? AddSignaturePolicyRequest2)
@@ -529,28 +387,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two AddSignaturePolicy requests for equality.
         /// </summary>
-        /// <param name="Object">A boot notification request to compare with.</param>
+        /// <param name="Object">A AddSignaturePolicy request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is AddSignaturePolicyRequest bootNotificationRequest &&
-                   Equals(bootNotificationRequest);
+            => Object is AddSignaturePolicyRequest addSignaturePolicyRequest &&
+                   Equals(addSignaturePolicyRequest);
 
         #endregion
 
         #region Equals(AddSignaturePolicyRequest)
 
         /// <summary>
-        /// Compares two boot notification requests for equality.
+        /// Compares two AddSignaturePolicy requests for equality.
         /// </summary>
-        /// <param name="AddSignaturePolicyRequest">A boot notification request to compare with.</param>
+        /// <param name="AddSignaturePolicyRequest">A AddSignaturePolicy request to compare with.</param>
         public override Boolean Equals(AddSignaturePolicyRequest? AddSignaturePolicyRequest)
 
             => AddSignaturePolicyRequest is not null &&
 
-               ChargingStation.Equals(AddSignaturePolicyRequest.ChargingStation) &&
-               Reason.         Equals(AddSignaturePolicyRequest.Reason)          &&
+               SignaturePolicy.Equals(AddSignaturePolicyRequest.SignaturePolicy) &&
 
                base.    GenericEquals(AddSignaturePolicyRequest);
 
@@ -577,7 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => $"Boot reason: {Reason}";
+            => SignaturePolicy.ToString();
 
         #endregion
 
