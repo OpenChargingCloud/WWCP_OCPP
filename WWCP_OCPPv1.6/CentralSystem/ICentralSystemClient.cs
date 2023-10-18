@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
-    /// Extention methods for all central system clients
+    /// Extension methods for all central system clients
     /// </summary>
     public static class ICentralSystemClientExtensions
     {

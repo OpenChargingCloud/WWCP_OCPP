@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 {
 
     /// <summary>
-    /// Extention methods for price algorithm identifications.
+    /// Extension methods for price algorithm identifications.
     /// </summary>
     public static class PriceAlgorithmIdExtensions
     {

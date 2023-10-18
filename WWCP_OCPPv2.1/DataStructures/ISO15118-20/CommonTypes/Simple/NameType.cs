@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes
 {
 
     /// <summary>
-    /// Extention methods for names.
+    /// Extension methods for names.
     /// </summary>
     public static class NameExtensions
     {

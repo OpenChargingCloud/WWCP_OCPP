@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for display message identifications.
+    /// Extension methods for display message identifications.
     /// </summary>
     public static class DisplayMessageIdExtensions
     {

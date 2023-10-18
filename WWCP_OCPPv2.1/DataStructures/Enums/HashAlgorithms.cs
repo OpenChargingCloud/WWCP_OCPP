@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for cryptographic hash algorithms.
+    /// Extension methods for cryptographic hash algorithms.
     /// </summary>
     public static class HashAlgorithmsExtensions
     {

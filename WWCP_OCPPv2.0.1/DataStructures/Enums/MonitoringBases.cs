@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for monitoring bases.
+    /// Extension methods for monitoring bases.
     /// </summary>
     public static class MonitoringBasesExtensions
     {

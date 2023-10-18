@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for OCPP network interfaces.
+    /// Extension methods for OCPP network interfaces.
     /// </summary>
     public static class NetworkInterfacesExtensions
     {

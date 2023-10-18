@@ -30,9 +30,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// OCPP Charging Station WebAPI extentions.
+    /// OCPP Charging Station WebAPI extensions.
     /// </summary>
-    public static class ChargingStationWebAPIExtentions
+    public static class ChargingStationWebAPIExtensions
     {
 
     }

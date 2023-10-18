@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extention methods for identification tokens.
+    /// Extension methods for identification tokens.
     /// </summary>
     public static class IdTokenExtensions
     {

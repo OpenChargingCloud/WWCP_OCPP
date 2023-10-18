@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for display message status.
+    /// Extension methods for display message status.
     /// </summary>
     public static class DisplayMessageStatusExtensions
     {

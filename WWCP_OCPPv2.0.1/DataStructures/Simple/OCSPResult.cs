@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for OCSP results.
+    /// Extension methods for OCSP results.
     /// </summary>
     public static class OCSPResultExtensions
     {

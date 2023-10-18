@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                     Boolean       IncludeCryptoHash        = true);
 
     /// <summary>
-    /// Extention methods for chargeBoxs.
+    /// Extension methods for chargeBoxs.
     /// </summary>
     public static class ChargeBoxExtensions
     {

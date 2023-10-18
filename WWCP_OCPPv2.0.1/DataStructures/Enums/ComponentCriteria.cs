@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for component criteria.
+    /// Extension methods for component criteria.
     /// </summary>
     public static class ComponentCriteriaExtensions
     {

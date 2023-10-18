@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for monitoring criteria.
+    /// Extension methods for monitoring criteria.
     /// </summary>
     public static class MonitoringCriteriaExtensions
     {

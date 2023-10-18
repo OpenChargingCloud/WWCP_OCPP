@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for severities.
+    /// Extension methods for severities.
     /// </summary>
     public static class SeveritiesExtensions
     {

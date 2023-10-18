@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for stop transaction reasons.
+    /// Extension methods for stop transaction reasons.
     /// </summary>
     public static class ReasonsExtensions
     {

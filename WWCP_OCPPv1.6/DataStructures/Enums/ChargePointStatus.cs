@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extention methods for the charge point status.
+    /// Extension methods for the charge point status.
     /// </summary>
     public static class ChargePointStatusExtensions
     {

@@ -19,7 +19,7 @@
 //{
 
 //    /// <summary>
-//    /// Extention methods for boot reasons.
+//    /// Extension methods for boot reasons.
 //    /// </summary>
 //    public static class BootReasonsExtensions
 //    {

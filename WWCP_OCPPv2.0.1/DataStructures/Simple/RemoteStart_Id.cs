@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for remote start identifications.
+    /// Extension methods for remote start identifications.
     /// </summary>
     public static class RemoteStartIdExtensions
     {

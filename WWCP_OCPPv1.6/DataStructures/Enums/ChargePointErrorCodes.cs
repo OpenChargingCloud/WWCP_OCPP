@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extention methods for charge point error codes.
+    /// Extension methods for charge point error codes.
     /// </summary>
     public static class ChargePointErrorCodeExtensions
     {

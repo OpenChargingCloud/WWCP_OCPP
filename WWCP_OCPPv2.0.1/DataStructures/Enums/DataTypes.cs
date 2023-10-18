@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for data types.
+    /// Extension methods for data types.
     /// </summary>
     public static class DataTypesExtensions
     {

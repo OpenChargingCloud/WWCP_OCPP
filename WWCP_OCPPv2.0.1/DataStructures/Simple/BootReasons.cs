@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for boot reasons.
+    /// Extension methods for boot reasons.
     /// </summary>
     public static class BootReasonExtensions
     {

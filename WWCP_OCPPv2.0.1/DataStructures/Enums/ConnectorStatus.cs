@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for the connector status.
+    /// Extension methods for the connector status.
     /// </summary>
     public static class ConnectorStatusExtensions
     {

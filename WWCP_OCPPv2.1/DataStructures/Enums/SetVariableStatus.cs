@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for set variable status.
+    /// Extension methods for set variable status.
     /// </summary>
     public static class SetVariableStatusExtensions
     {

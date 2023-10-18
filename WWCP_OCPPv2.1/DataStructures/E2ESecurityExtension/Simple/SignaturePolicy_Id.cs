@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for signature policy identifications.
+    /// Extension methods for signature policy identifications.
     /// </summary>
     public static class SignaturePolicyIdExtensions
     {

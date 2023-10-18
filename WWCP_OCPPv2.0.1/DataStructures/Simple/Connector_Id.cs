@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for connector identifications.
+    /// Extension methods for connector identifications.
     /// </summary>
     public static class ConnectorIdExtensions
     {

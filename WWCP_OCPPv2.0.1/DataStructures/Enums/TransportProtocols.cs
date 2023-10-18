@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for OCPP transport protocols.
+    /// Extension methods for OCPP transport protocols.
     /// </summary>
     public static class TransportProtocolsExtensions
     {

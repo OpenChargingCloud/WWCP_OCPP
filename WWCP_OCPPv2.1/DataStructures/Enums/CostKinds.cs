@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for cost kinds.
+    /// Extension methods for cost kinds.
     /// </summary>
     public static class CostKindsExtensions
     {

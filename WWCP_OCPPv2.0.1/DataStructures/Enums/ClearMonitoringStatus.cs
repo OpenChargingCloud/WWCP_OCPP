@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for clear monitoring status.
+    /// Extension methods for clear monitoring status.
     /// </summary>
     public static class ClearMonitoringStatusExtensions
     {

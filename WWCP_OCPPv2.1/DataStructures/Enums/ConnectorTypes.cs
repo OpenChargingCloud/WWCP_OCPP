@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for connector types.
+    /// Extension methods for connector types.
     /// </summary>
     public static class ConnectorTypesExtensions
     {

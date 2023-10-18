@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for APN authentication methods.
+    /// Extension methods for APN authentication methods.
     /// </summary>
     public static class APNAuthenticationMethodsExtensions
     {

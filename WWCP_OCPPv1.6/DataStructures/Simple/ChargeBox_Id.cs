@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extention methods for charge box identifications.
+    /// Extension methods for charge box identifications.
     /// </summary>
     public static class ChargeBoxIdExtensions
     {

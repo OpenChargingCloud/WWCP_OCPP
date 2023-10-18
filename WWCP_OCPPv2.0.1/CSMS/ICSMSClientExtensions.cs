@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 {
 
     /// <summary>
-    /// Extention methods for all CSMS clients
+    /// Extension methods for all CSMS clients
     /// </summary>
     public static class ICSMSClientExtensions
     {

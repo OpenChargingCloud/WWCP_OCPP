@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for a human language identifier.
+    /// Extension methods for a human language identifier.
     /// </summary>
     public static class LanguageIdExtensions
     {

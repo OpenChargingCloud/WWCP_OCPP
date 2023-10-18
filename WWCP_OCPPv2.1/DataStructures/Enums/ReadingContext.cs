@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for the reading context.
+    /// Extension methods for the reading context.
     /// </summary>
     public static class ReadingContextsExtensions
     {

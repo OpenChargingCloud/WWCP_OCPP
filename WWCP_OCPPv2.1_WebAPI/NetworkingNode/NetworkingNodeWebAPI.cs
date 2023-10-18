@@ -30,9 +30,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// OCPP Networking Node WebAPI extentions.
+    /// OCPP Networking Node WebAPI extensions.
     /// </summary>
-    public static class NetworkingNodeWebAPIExtentions
+    public static class NetworkingNodeWebAPIExtensions
     {
 
     }

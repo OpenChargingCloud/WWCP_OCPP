@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for a vendor identification.
+    /// Extension methods for a vendor identification.
     /// </summary>
     public static class VendorIdExtensions
     {

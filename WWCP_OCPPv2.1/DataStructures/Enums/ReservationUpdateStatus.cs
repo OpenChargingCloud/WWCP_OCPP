@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for reservation update statuss.
+    /// Extension methods for reservation update statuss.
     /// </summary>
     public static class ReservationUpdateStatusExtensions
     {

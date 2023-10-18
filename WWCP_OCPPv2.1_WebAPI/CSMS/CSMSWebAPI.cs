@@ -34,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// OCPP Charging Station Management System WebAPI extentions.
+    /// OCPP Charging Station Management System WebAPI extensions.
     /// </summary>
-    public static class CSMSWebAPIExtentions
+    public static class CSMSWebAPIExtensions
     {
 
         #region ParseChargeBoxId(this HTTPRequest, OCPPWebAPI, out ChargeBoxId,                out HTTPResponse)
@@ -4496,7 +4496,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         #endregion
 
-                        #region Choose HTTP Content Type based on the file name extention...
+                        #region Choose HTTP Content Type based on the file name extension...
 
                         var fileName             = filePath[(filePath.LastIndexOf("/") + 1)..];
                         var responseContentType  = fileName.Remove(0, fileName.LastIndexOf(".") + 1) switch {

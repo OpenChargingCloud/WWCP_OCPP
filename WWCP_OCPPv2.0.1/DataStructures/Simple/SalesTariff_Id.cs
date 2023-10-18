@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for sales tariff identifications.
+    /// Extension methods for sales tariff identifications.
     /// </summary>
     public static class SalesTariffIdExtensions
     {

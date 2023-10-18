@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for attribute types.
+    /// Extension methods for attribute types.
     /// </summary>
     public static class AttributeTypesExtensions
     {

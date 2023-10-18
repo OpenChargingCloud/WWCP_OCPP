@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extention method for the value format.
+    /// Extension method for the value format.
     /// </summary>
     public static class ValueFormatExtensions
     {

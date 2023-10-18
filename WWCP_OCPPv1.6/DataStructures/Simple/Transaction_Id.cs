@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extention methods for transaction identifications.
+    /// Extension methods for transaction identifications.
     /// </summary>
     public static class TransactionIdExtensions
     {

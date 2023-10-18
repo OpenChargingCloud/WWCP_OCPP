@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for EVSE identifications.
+    /// Extension methods for EVSE identifications.
     /// </summary>
     public static class EVSEIdExtensions
     {

@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for energy transfer modes.
+    /// Extension methods for energy transfer modes.
     /// </summary>
     public static class EnergyTransferModesExtensions
     {

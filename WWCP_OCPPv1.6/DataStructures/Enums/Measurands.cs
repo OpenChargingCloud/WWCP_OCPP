@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extention methods for the measurands.
+    /// Extension methods for the measurands.
     /// </summary>
     public static class MeasurandExtensions
     {

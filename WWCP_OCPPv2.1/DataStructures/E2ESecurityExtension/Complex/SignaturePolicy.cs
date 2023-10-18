@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The default signature action.
         /// </summary>
         [Mandatory]
-        public SigningRuleAction              DefaultSigningAction          { get; }
+        public SigningRuleActions             DefaultSigningAction          { get; }
 
         /// <summary>
         /// The optional default cryptographic signing key pair.
@@ -183,7 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                DateTime?                       NotAfter                     = null,
 
                                IEnumerable<SigningRule>?       SigningRules                 = null,
-                               SigningRuleAction?              DefaultSigningAction         = null,
+                               SigningRuleActions?             DefaultSigningAction         = null,
                                KeyPair?                        DefaultSigningKeyPair        = null,
 
                                IEnumerable<VerificationRule>?  VerificationRules            = null,
@@ -210,10 +210,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 foreach (var signingRule      in SigningRules)
                     signingRules.   Add(signingRule);
 
-            this.DefaultSigningAction        = DefaultSigningAction      ?? SigningRuleAction.ForwardUnsigned;
+            this.DefaultSigningAction        = DefaultSigningAction      ?? SigningRuleActions.ForwardUnsigned;
             this.DefaultSigningKeyPair       = DefaultSigningKeyPair;
 
-            if (this.DefaultSigningAction == SigningRuleAction.Sign &&
+            if (this.DefaultSigningAction == SigningRuleActions.Sign &&
                 this.DefaultSigningKeyPair is null)
             {
                 throw new ArgumentException("If the default action is 'sign', a default signing key pair must be provided!");
@@ -329,7 +329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SignaturePolicy = default;
 
-                #region Id              [mandatory]
+                #region Id                   [mandatory]
 
                 if (!JSON.ParseMandatory("id",
                                          "signature policy identification",
@@ -342,7 +342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Priority        [mandatory]
+                #region Priority             [mandatory]
 
                 if (!JSON.ParseMandatory("priority",
                                          "signature policy priority",
@@ -354,7 +354,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region NotBefore       [mandatory]
+                #region NotBefore            [mandatory]
 
                 if (!JSON.ParseMandatory("notBefore",
                                          "start schedule",
@@ -366,7 +366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region NotAfter        [optional]
+                #region NotAfter             [optional]
 
                 if (JSON.ParseOptional("notAfter",
                                        "start schedule",
@@ -380,10 +380,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
+                #region SigningRules         [optional]
+
+                if (JSON.ParseOptionalHashSet("signingRules",
+                                              "signing rules",
+                                              SigningRule.TryParse,
+                                              out HashSet<SigningRule> SigningRules,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
 
 
+                #region VerificationRules    [optional]
 
-                #region Signatures      [optional, OCPP_CSE]
+                if (JSON.ParseOptionalHashSet("verificationRules",
+                                              "verification rules",
+                                              VerificationRule.TryParse,
+                                              out HashSet<VerificationRule> VerificationRules,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region Signatures           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -397,7 +424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region CustomData      [optional]
+                #region CustomData           [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -419,11 +446,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       NotBefore,
                                       NotAfter,
 
-                                      null,  // SigningRules
+                                      SigningRules,
                                       null,  // DefaultSigningAction
                                       null,  // DefaultSigningKeyPair
 
-                                      null,  // VerificationRules
+                                      VerificationRules,
                                       null,  // DefaultVerificationAction
                                       null,  // DefaultVerificationKeyPair
 
@@ -511,9 +538,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             {
 
                 signingRules.Add(new SigningRule(
-                                     signingRules.Any() ? signingRules.Max(entry => entry.Priority) + 1 : 1,
                                      Context,
-                                     SigningRuleAction.Sign,
+                                     signingRules.Any() ? signingRules.Max(entry => entry.Priority) + 1 : 1,
+                                     SigningRuleActions.Sign,
                                      KeyPair,
                                      UserIdGenerator,
                                      DescriptionGenerator,
@@ -542,9 +569,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             {
 
                 signingRules.Add(new SigningRule(
-                                     Priority,
                                      Context,
-                                     SigningRuleAction.Sign,
+                                     Priority,
+                                     SigningRuleActions.Sign,
                                      KeyPair,
                                      UserIdGenerator,
                                      DescriptionGenerator,
@@ -591,8 +618,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             return new[] {
                        new SigningRule(
-                           0,
                            JSONLDContext.Parse("default"),
+                           0,
                            DefaultSigningAction
                        )
                    };

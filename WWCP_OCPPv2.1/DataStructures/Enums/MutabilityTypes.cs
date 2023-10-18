@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for mutability types.
+    /// Extension methods for mutability types.
     /// </summary>
     public static class MutabilityTypesExtensions
     {

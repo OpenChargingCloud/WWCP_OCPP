@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// Extention methods for all charging stations
+    /// Extension methods for all charging stations
     /// </summary>
     public static class IChargingStationExtensions
     {

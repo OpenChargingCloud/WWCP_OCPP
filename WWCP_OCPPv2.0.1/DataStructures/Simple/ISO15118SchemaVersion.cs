@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for an ISO 15118 schema version.
+    /// Extension methods for an ISO 15118 schema version.
     /// </summary>
     public static class ISO15118SchemaVersionExtensions
     {

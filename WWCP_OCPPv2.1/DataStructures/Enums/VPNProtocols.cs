@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for VPN protocols.
+    /// Extension methods for VPN protocols.
     /// </summary>
     public static class VPNProtocolsExtensions
     {

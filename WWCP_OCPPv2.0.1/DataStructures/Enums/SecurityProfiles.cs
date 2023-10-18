@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for OCPP security profiles.
+    /// Extension methods for OCPP security profiles.
     /// </summary>
     public static class OCPPSecurityProfilesExtensions
     {

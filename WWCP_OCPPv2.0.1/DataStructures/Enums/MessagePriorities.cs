@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for display message prioritys.
+    /// Extension methods for display message prioritys.
     /// </summary>
     public static class MessagePrioritiesExtensions
     {

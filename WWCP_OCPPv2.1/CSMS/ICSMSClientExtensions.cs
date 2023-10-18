@@ -30,7 +30,7 @@
 //{
 
 //    /// <summary>
-//    /// Extention methods for all CSMS clients
+//    /// Extension methods for all CSMS clients
 //    /// </summary>
 //    public static class ICSMSClientExtensions
 //    {

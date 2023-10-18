@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 {
 
     /// <summary>
-    /// Extention methods for electrical phases.
+    /// Extension methods for electrical phases.
     /// </summary>
     public static class PhasesExtensions
     {

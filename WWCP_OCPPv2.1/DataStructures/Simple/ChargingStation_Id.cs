@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for charging station identifications.
+    /// Extension methods for charging station identifications.
     /// </summary>
     public static class ChargingStationIdExtensions
     {

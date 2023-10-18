@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for units of measure.
+    /// Extension methods for units of measure.
     /// </summary>
     public static class UnitOfMeasureExtensions
     {

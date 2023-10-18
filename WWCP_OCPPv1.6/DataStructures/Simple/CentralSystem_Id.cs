@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
     /// <summary>
-    /// Extention methods for central system identifications.
+    /// Extension methods for central system identifications.
     /// </summary>
     public static class CentralSystemIdExtensions
     {

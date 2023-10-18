@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extention methods for event notification types.
+    /// Extension methods for event notification types.
     /// </summary>
     public static class EventNotificationTypesExtensions
     {
