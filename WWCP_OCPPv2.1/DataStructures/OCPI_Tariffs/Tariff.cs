@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System.Security.Cryptography;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -36,11 +34,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <remarks>
     /// This is based on OICP v2.2.1 as this might become future part of OCPP v2.1 (draft 3++).
     /// </remarks>
-    public class Tariff : IHasId<Tariff_Id>,
+    public class Tariff : SignableMessage,
+                          IHasId<Tariff_Id>,
                           IEquatable<Tariff>,
                           IComparable<Tariff>,
                           IComparable
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this data structure.
+        /// </summary>
+        public static readonly JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/tariff");
+
+        #endregion
 
         #region Properties
 
@@ -57,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //public   Party_Id                    PartyId              { get; }
 
         /// <summary>
-        /// The identification of the tariff within the CPOs platform (and suboperator platforms).
+        /// The global unique and unique in time identification of the charging tariff.
         /// </summary>
         [Mandatory]
         public   Tariff_Id                   Id                   { get; }
@@ -159,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="CountryCode">An ISO-3166 alpha-2 country code of the charge point operator that 'owns' this session.</param>
         /// <param name="PartyId">An identification of the charge point operator that 'owns' this session (following the ISO-15118 standard).</param>
-        /// <param name="Id">An identification of the tariff within the CPOs platform (and suboperator platforms).</param>
+        /// <param name="Id">A global unique and unique in time identification of the charging tariff.</param>
         /// <param name="Currency">An ISO 4217 code of the currency used for this tariff.</param>
         /// <param name="TariffElements">An enumeration of tariff elements.</param>
         /// 

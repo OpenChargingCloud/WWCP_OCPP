@@ -27,25 +27,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// A signable charging tariff element.
+    /// A charging tariff element.
     /// </summary>
-    /// 
-    /// <remarks>
-    /// This is based on OICP v2.2.1 as this might become future part of OCPP v2.1 (draft 3++).
-    /// A (global unique and unique in time) tariff identification is still missing!
-    /// </remarks>
-    public class TariffElement : SignableMessage,
-                                 IEquatable<TariffElement>
+    public class TariffElement : IEquatable<TariffElement>
     {
-
-        #region Data
-
-        /// <summary>
-        /// The JSON-LD context of this data structure.
-        /// </summary>
-        public  static readonly JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/tariffElement");
-
-        #endregion
 
         #region Properties
 
