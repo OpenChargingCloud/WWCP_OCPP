@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The default verification action.
         /// </summary>
         [Mandatory]
-        public VerificationRuleActions         DefaultVerificationAction     { get; }
+        public VerificationRuleActions        DefaultVerificationAction     { get; }
 
         /// <summary>
         /// The optional default cryptographic verification key pair.
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                KeyPair?                        DefaultSigningKeyPair        = null,
 
                                IEnumerable<VerificationRule>?  VerificationRules            = null,
-                               VerificationRuleActions?         DefaultVerificationAction    = null,
+                               VerificationRuleActions?        DefaultVerificationAction    = null,
                                KeyPair?                        DefaultVerificationKeyPair   = null,
 
                                IEnumerable<KeyPair>?           SignKeys                     = null,

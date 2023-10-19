@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <remarks>
     /// This is based on OICP v2.2.1 as this might become future part of OCPP v2.1 (draft 3++).
     /// </remarks>
-    public class Tariff : SignableMessage,
+    public class Tariff : ACustomSignableData,
                           IHasId<Tariff_Id>,
                           IEquatable<Tariff>,
                           IComparable<Tariff>,
@@ -142,21 +142,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //public   EnergyMix?                  EnergyMix            { get;  }
 
         ///// <summary>
-        ///// The timestamp when this tariff was created.
-        ///// </summary>
-        //[Mandatory]
-        //public   DateTime                    Created              { get; }
-
-        ///// <summary>
         ///// The timestamp when this tariff was last updated (or created).
         ///// </summary>
         //[Mandatory]
         //public   DateTime                    LastUpdated          { get; }
-
-        /// <summary>
-        /// The SHA256 hash of the JSON representation of this charging tariff.
-        /// </summary>
-        //public   String                      ETag                 { get; }
 
         #endregion
 
@@ -179,18 +168,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Start">An optional timestamp when this tariff becomes active (UTC).</param>
         /// <param name="End">An optional timestamp after which this tariff is no longer valid (UTC).</param>
         /// <param name="EnergyMix">Optional details on the energy supplied with this tariff.</param>
-        /// 
-        /// <param name="Created">An optional timestamp when this charging tariff was created.</param>
-        /// 
-        /// <param name="CustomTariffSerializer">A delegate to serialize custom tariff JSON objects.</param>
-        /// <param name="CustomDisplayTextSerializer">A delegate to serialize custom multi-language text JSON objects.</param>
-        /// <param name="CustomPriceSerializer">A delegate to serialize custom price JSON objects.</param>
-        /// <param name="CustomTariffElementSerializer">A delegate to serialize custom tariff element JSON objects.</param>
-        /// <param name="CustomPriceComponentSerializer">A delegate to serialize custom price component JSON objects.</param>
-        /// <param name="CustomTariffRestrictionsSerializer">A delegate to serialize custom tariff restrictions JSON objects.</param>
-        /// <param name="CustomEnergyMixSerializer">A delegate to serialize custom hours JSON objects.</param>
-        /// <param name="CustomEnergySourceSerializer">A delegate to serialize custom energy source JSON objects.</param>
-        /// <param name="CustomEnvironmentalImpactSerializer">A delegate to serialize custom environmental impact JSON objects.</param>
         public Tariff(//CountryCode                                            CountryCode,
                       //Party_Id                                               PartyId,
                       Tariff_Id                                              Id,
@@ -206,19 +183,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                       DateTime?                                              End                                   = null,
                       //EnergyMix?                                             EnergyMix                             = null,
 
-                      DateTime?                                              Created                               = null,
-                      DateTime?                                              LastUpdated                           = null,
+                      //DateTime?                                              Created                               = null,
+                      //DateTime?                                              LastUpdated                           = null,
 
-                      CustomJObjectSerializerDelegate<Tariff>?               CustomTariffSerializer                = null,
-                      CustomJObjectSerializerDelegate<DisplayText>?          CustomDisplayTextSerializer           = null,
-                      CustomJObjectSerializerDelegate<Price>?                CustomPriceSerializer                 = null,
-                      CustomJObjectSerializerDelegate<TariffElement>?        CustomTariffElementSerializer         = null,
-                      CustomJObjectSerializerDelegate<PriceComponent>?       CustomPriceComponentSerializer        = null,
-                      CustomJObjectSerializerDelegate<TariffRestrictions>?   CustomTariffRestrictionsSerializer    = null
-                      //CustomJObjectSerializerDelegate<EnergyMix>?            CustomEnergyMixSerializer             = null,
-                      //CustomJObjectSerializerDelegate<EnergySource>?         CustomEnergySourceSerializer          = null,
-                      //CustomJObjectSerializerDelegate<EnvironmentalImpact>?  CustomEnvironmentalImpactSerializer   = null
-            )
+                      IEnumerable<KeyPair>?                                  SignKeys                              = null,
+                      IEnumerable<SignInfo>?                                 SignInfos                             = null,
+                      IEnumerable<Signature>?                                Signatures                            = null,
+
+                      CustomData?                                            CustomData                            = null)
+
+            : base (SignKeys,
+                    SignInfos,
+                    Signatures,
+                    CustomData)
 
         {
 
@@ -240,19 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.End             = End;
             //this.EnergyMix       = EnergyMix;
 
-            //this.Created         = Created                   ?? LastUpdated ?? Timestamp.Now;
             //this.LastUpdated     = LastUpdated               ?? Created     ?? Timestamp.Now;
-
-            //this.ETag            = SHA256.HashData(ToJSON(CustomTariffSerializer,
-            //                                              CustomDisplayTextSerializer,
-            //                                              CustomPriceSerializer,
-            //                                              CustomTariffElementSerializer,
-            //                                              CustomPriceComponentSerializer,
-            //                                              CustomTariffRestrictionsSerializer
-            //                                              //CustomEnergyMixSerializer,
-            //                                              //CustomEnergySourceSerializer,
-            //                                              //CustomEnvironmentalImpactSerializer
-            //                                              ).ToUTF8Bytes()).ToBase64();
 
             unchecked
             {
@@ -606,6 +571,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
+                #region Signatures           [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              Signature.TryParse,
+                                              out HashSet<Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData           [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_1.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 Tariff = new Tariff(//CountryCodeBody ?? CountryCodeURL!.Value,
                                     //PartyIdBody     ?? PartyIdURL!.    Value,
                                     TariffIdBody    ?? TariffIdURL!.   Value,
@@ -621,8 +615,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                     End,
                                     //EnergyMix,
 
-                                    Created);
-                                    //LastUpdated);
+                                    //Created,
+                                    //LastUpdated
+                                    null,
+                                    null,
+                                    Signatures,
+                                    CustomData);
 
                 if (CustomTariffParser is not null)
                     Tariff = CustomTariffParser(JSON,
@@ -656,15 +654,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomEnergyMixSerializer">A delegate to serialize custom hours JSON objects.</param>
         /// <param name="CustomEnergySourceSerializer">A delegate to serialize custom energy source JSON objects.</param>
         /// <param name="CustomEnvironmentalImpactSerializer">A delegate to serialize custom environmental impact JSON objects.</param>
+        /// <param name="CustomSignaturePolicySerializer">A delegate to serialize custom signature policies.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<Tariff>?               CustomTariffSerializer                = null,
                               CustomJObjectSerializerDelegate<DisplayText>?          CustomDisplayTextSerializer           = null,
                               CustomJObjectSerializerDelegate<Price>?                CustomPriceSerializer                 = null,
                               CustomJObjectSerializerDelegate<TariffElement>?        CustomTariffElementSerializer         = null,
                               CustomJObjectSerializerDelegate<PriceComponent>?       CustomPriceComponentSerializer        = null,
-                              CustomJObjectSerializerDelegate<TariffRestrictions>?   CustomTariffRestrictionsSerializer    = null)
+                              CustomJObjectSerializerDelegate<TariffRestrictions>?   CustomTariffRestrictionsSerializer    = null,
                               //CustomJObjectSerializerDelegate<EnergyMix>?            CustomEnergyMixSerializer             = null,
                               //CustomJObjectSerializerDelegate<EnergySource>?         CustomEnergySourceSerializer          = null,
                               //CustomJObjectSerializerDelegate<EnvironmentalImpact>?  CustomEnvironmentalImpactSerializer   = null)
+                              CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
+                              CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
         {
 
             var json = JSONObject.Create(
@@ -707,7 +710,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                            End.HasValue
                                ? new JProperty("end_date_time",     End.  Value.ToIso8601())
-                               : null
+                               : null,
 
                            //EnergyMix is not null
                            //    ? new JProperty("energy_mix",        EnergyMix.  ToJSON(CustomEnergyMixSerializer,
@@ -718,7 +721,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            //      new JProperty("created",           Created.    ToIso8601())
                            //      new JProperty("last_updated",      LastUpdated.ToIso8601())
 
-                       );
+                           Signatures.Any()
+                               ? new JProperty("signatures",    new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                           CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",    CustomData.ToJSON(CustomCustomDataSerializer))
+                               : null);
 
             return CustomTariffSerializer is not null
                        ? CustomTariffSerializer(this, json)
@@ -746,12 +756,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     MinPrice,
                     MaxPrice,
                     Start,
-                    End
+                    End,
                     //EnergyMix?.   Clone(),
 
                     //Created
                     //LastUpdated
-                    );
+                    SignKeys,
+                    SignInfos,
+                    Signatures,
+                    CustomData);
 
         #endregion
 
