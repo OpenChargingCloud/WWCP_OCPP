@@ -17,6 +17,7 @@
 
 #region Usings
 
+using Newtonsoft.Json;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -61,26 +62,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Signature">A cryptographic signature.</param>
         void AddSignature(Signature Signature);
 
-
-    }
-
-    public class SignableMessage : ISignableMessage
-    {
-
-        public JSONLDContext Context
-            => JSONLDContext.Parse("none");
-
-        public IEnumerable<KeyPair> SignKeys
-            => Array.Empty<KeyPair>();
-
-        public IEnumerable<SignInfo> SignInfos
-            => Array.Empty<SignInfo>();
-
-        public IEnumerable<Signature> Signatures
-            => Array.Empty<Signature>();
-
-        public void AddSignature(Signature Signature)
-        { }
 
     }
 

@@ -55,12 +55,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         private        readonly HashSet<Signature>         signatures;
 
-        private static readonly JsonConverter[]            defaultJSONConverters  = new[] {
-                                                                                        new Newtonsoft.Json.Converters.IsoDateTimeConverter {
-                                                                                            DateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffZ"
-                                                                                        }
-                                                                                    };
-
         #endregion
 
         #region Properties
@@ -136,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The default verification action.
         /// </summary>
         [Mandatory]
-        public VerificationRuleAction         DefaultVerificationAction     { get; }
+        public VerificationRuleActions         DefaultVerificationAction     { get; }
 
         /// <summary>
         /// The optional default cryptographic verification key pair.
@@ -187,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                KeyPair?                        DefaultSigningKeyPair        = null,
 
                                IEnumerable<VerificationRule>?  VerificationRules            = null,
-                               VerificationRuleAction?         DefaultVerificationAction    = null,
+                               VerificationRuleActions?         DefaultVerificationAction    = null,
                                KeyPair?                        DefaultVerificationKeyPair   = null,
 
                                IEnumerable<KeyPair>?           SignKeys                     = null,
@@ -225,11 +219,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 foreach (var verificationRule in VerificationRules)
                     verificationRules.Add(verificationRule);
 
-            this.DefaultVerificationAction   = DefaultVerificationAction ?? VerificationRuleAction.AcceptUnverified;
+            this.DefaultVerificationAction   = DefaultVerificationAction ?? VerificationRuleActions.AcceptUnverified;
             this.DefaultVerificationKeyPair  = DefaultVerificationKeyPair;
 
-            if ((this.DefaultVerificationAction == VerificationRuleAction.VerifyAny ||
-                 this.DefaultVerificationAction == VerificationRuleAction.VerifyAll) &&
+            if ((this.DefaultVerificationAction == VerificationRuleActions.VerifyAny ||
+                 this.DefaultVerificationAction == VerificationRuleActions.VerifyAll) &&
                  this.DefaultVerificationKeyPair is null)
             {
                 throw new ArgumentException("If the default action is 'VerifyAny' or 'VerifyAll', a default verification key pair must be provided!");
@@ -752,7 +746,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         #endregion
 
-                        var plainText   = JSONMessage.ToString(Formatting.None, defaultJSONConverters);
+                        var plainText   = JSONMessage.ToString(Formatting.None, OCPPv2_1.SignableMessage.DefaultJSONConverters);
 
                         var cryptoHash  = signInfo.Algorithm switch {
                                               "secp521r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
@@ -849,15 +843,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region AddVerificationRule (...)
 
         public SignaturePolicy AddVerificationRule(JSONLDContext           Context,
-                                                   VerificationRuleAction  Action   = VerificationRuleAction.VerifyAll)
+                                                   VerificationRuleActions  Action   = VerificationRuleActions.VerifyAll)
         {
 
             lock (verificationRules)
             {
 
                 verificationRules.Add(new VerificationRule(
-                                          verificationRules.Any() ? verificationRules.Max(entry => entry.Priority) + 1 : 1,
                                           Context,
+                                          verificationRules.Any() ? verificationRules.Max(entry => entry.Priority) + 1 : 1,
                                           Action
                                       ));
 
@@ -873,15 +867,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public SignaturePolicy AddVerificationRule(UInt32                  Priority,
                                                    JSONLDContext           Context,
-                                                   VerificationRuleAction  Action   = VerificationRuleAction.VerifyAll)
+                                                   VerificationRuleActions  Action   = VerificationRuleActions.VerifyAll)
         {
 
             lock (verificationRules)
             {
 
                 verificationRules.Add(new VerificationRule(
-                                          Priority,
                                           Context,
+                                          Priority,
                                           Action
                                       ));
 
@@ -925,8 +919,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             return new[] {
                        new VerificationRule(
-                           0,
                            JSONLDContext.Parse("default"),
+                           0,
                            DefaultVerificationAction
                        )
                    };
@@ -948,8 +942,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return verificationRule;
 
             return new VerificationRule(
-                       0,
                        JSONLDContext.Parse("default"),
+                       0,
                        DefaultVerificationAction
                    );
 
@@ -978,7 +972,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (!SignableMessage.Signatures.Any())
             {
 
-                if (DefaultVerificationAction == VerificationRuleAction.AcceptUnverified)
+                if (DefaultVerificationAction == VerificationRuleActions.AcceptUnverified)
                     return true;
 
                 ErrorResponse = "The given message does not contain any signatures!";
@@ -992,25 +986,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (JSONMessage["@context"] is null)
                     JSONMessage.AddFirst(new JProperty("@context", SignableMessage.Context.ToString()));
 
-                var jsonMessageCopy  = JObject.Parse(JSONMessage.ToString(Formatting.None, defaultJSONConverters));
+                var jsonMessageCopy  = JObject.Parse(JSONMessage.ToString(Formatting.None, OCPPv2_1.SignableMessage.DefaultJSONConverters));
                 jsonMessageCopy.Remove("signatures");
 
-                var plainText = jsonMessageCopy.ToString(Formatting.None, defaultJSONConverters);
+                var plainText = jsonMessageCopy.ToString(Formatting.None, OCPPv2_1.SignableMessage.DefaultJSONConverters);
 
                 switch (verificationPolicyEntry.Action)
                 {
 
-                    case VerificationRuleAction.AcceptUnverified:
+                    case VerificationRuleActions.AcceptUnverified:
                         foreach (var signature in SignableMessage.Signatures)
                             signature.Status = VerificationStatus.Unverified;
                         return true;
 
-                    case VerificationRuleAction.Drop:
+                    case VerificationRuleActions.Drop:
                         foreach (var signature in SignableMessage.Signatures)
                             signature.Status = VerificationStatus.DropMessage;
                         return true;
 
-                    case VerificationRuleAction.Reject:
+                    case VerificationRuleActions.Reject:
                         foreach (var signature in SignableMessage.Signatures)
                             signature.Status = VerificationStatus.RejectMessage;
                         return true;
@@ -1041,7 +1035,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                             ? VerificationStatus.ValidSignature
                                             : VerificationStatus.InvalidSignature;
 
-                    if (verificationPolicyEntry?.Action == VerificationRuleAction.VerifyAny &&
+                    if (verificationPolicyEntry?.Action == VerificationRuleActions.VerifyAny &&
                         signature.Status == VerificationStatus.ValidSignature)
                     {
                         return true;

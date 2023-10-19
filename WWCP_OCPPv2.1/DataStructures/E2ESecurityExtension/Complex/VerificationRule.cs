@@ -30,30 +30,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// An OCPP CSE cryptographic signature verification entry.
     /// </summary>
     public class VerificationRule : ACustomData,
-                                           IEquatable<VerificationRule>
+                                    IEquatable<VerificationRule>
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this data structure.
+        /// </summary>
+        public static readonly JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/verificationRule");
+
+        #endregion
 
         #region Properties
 
         /// <summary>
-        /// The priority of the cryptographic signature verification entry.
-        /// </summary>
-        public UInt32                    Priority    { get; }
-
-        /// <summary>
         /// The context of the cryptographic signature verification entry.
         /// </summary>
-        public JSONLDContext             Context     { get; }
+        public JSONLDContext            Context     { get; }
+
+        /// <summary>
+        /// The priority of the cryptographic signature verification entry.
+        /// </summary>
+        public UInt32                   Priority    { get; }
 
         /// <summary>
         /// An optional cryptographic key pair for verification.
         /// </summary>
-        public KeyPair?                  KeyPair     { get; }
+        public KeyPair?                 KeyPair     { get; }
 
         /// <summary>
         /// The context of the cryptographic signature verification action.
         /// </summary>
-        public VerificationRuleAction  Action      { get; }
+        public VerificationRuleActions  Action      { get; }
 
         #endregion
 
@@ -62,31 +71,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new OCPP CSE cryptographic signature verification entry.
         /// </summary>
-        /// <param name="Priority">The priority of the cryptographic signature entry.</param>
         /// <param name="Context">The context of the cryptographic signature entry.</param>
+        /// <param name="Priority">The priority of the cryptographic signature entry.</param>
         /// <param name="Action">The context of the cryptographic signature action.</param>
         /// <param name="KeyPair">The optional cryptographic key pair for verification.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public VerificationRule(UInt32                    Priority,
-                                       JSONLDContext             Context,
-                                       VerificationRuleAction  Action,
-                                       KeyPair?                  KeyPair      = null,
-                                       CustomData?               CustomData   = null)
+        public VerificationRule(JSONLDContext            Context,
+                                UInt32                   Priority,
+                                VerificationRuleActions  Action,
+                                KeyPair?                 KeyPair      = null,
+                                CustomData?              CustomData   = null)
 
             : base(CustomData)
 
         {
 
-            this.Priority  = Priority;
             this.Context   = Context;
+            this.Priority  = Priority;
             this.Action    = Action;
             this.KeyPair   = KeyPair;
 
             unchecked
             {
 
-                hashCode = Priority.GetHashCode()       * 11 ^
-                           Context. GetHashCode()       *  7 ^
+                hashCode = Context. GetHashCode()       * 11 ^
+                           Priority.GetHashCode()       *  7 ^
                            Action.  GetHashCode()       *  5 ^
                           (KeyPair?.GetHashCode() ?? 0) *  3 ^
                            base.    GetHashCode();
@@ -104,21 +113,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) Parse   (JSON, CustomVerificationPolicyEntryParser = null)
+        #region (static) Parse   (JSON, CustomVerificationRuleParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a cryptographic signature.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomVerificationPolicyEntryParser">A delegate to parse custom cryptographic signatures.</param>
-        public static VerificationRule Parse(JObject                                  JSON,
-                                      CustomJObjectParserDelegate<VerificationRule>?  CustomVerificationPolicyEntryParser   = null)
+        /// <param name="CustomVerificationRuleParser">A delegate to parse custom cryptographic signatures.</param>
+        public static VerificationRule Parse(JObject                                         JSON,
+                                             CustomJObjectParserDelegate<VerificationRule>?  CustomVerificationRuleParser   = null)
         {
 
             if (TryParse(JSON,
                          out var signature,
                          out var errorResponse,
-                         CustomVerificationPolicyEntryParser))
+                         CustomVerificationRuleParser))
             {
                 return signature!;
             }
@@ -130,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(JSON, out VerificationPolicyEntry, out ErrorResponse, CustomVerificationPolicyEntryParser = null)
+        #region (static) TryParse(JSON, out VerificationRule, out ErrorResponse, CustomVerificationRuleParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -138,14 +147,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given JSON representation of a signature.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="VerificationPolicyEntry">The parsed connector type.</param>
+        /// <param name="VerificationRule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject         JSON,
-                                       out VerificationRule?  VerificationPolicyEntry,
-                                       out String?     ErrorResponse)
+        public static Boolean TryParse(JObject                JSON,
+                                       out VerificationRule?  VerificationRule,
+                                       out String?            ErrorResponse)
 
             => TryParse(JSON,
-                        out VerificationPolicyEntry,
+                        out VerificationRule,
                         out ErrorResponse,
                         null);
 
@@ -154,98 +163,92 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given JSON representation of a signature.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="VerificationPolicyEntry">The parsed connector type.</param>
+        /// <param name="VerificationRule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomVerificationPolicyEntryParser">A delegate to parse custom signatures.</param>
-        public static Boolean TryParse(JObject                                  JSON,
-                                       out VerificationRule?                           VerificationPolicyEntry,
-                                       out String?                              ErrorResponse,
-                                       CustomJObjectParserDelegate<VerificationRule>?  CustomVerificationPolicyEntryParser   = null)
+        /// <param name="CustomVerificationRuleParser">A delegate to parse custom signatures.</param>
+        public static Boolean TryParse(JObject                                         JSON,
+                                       out VerificationRule?                           VerificationRule,
+                                       out String?                                     ErrorResponse,
+                                       CustomJObjectParserDelegate<VerificationRule>?  CustomVerificationRuleParser   = null)
         {
 
             try
             {
 
-                VerificationPolicyEntry = default;
+                VerificationRule = default;
 
-                //#region KeyId             [mandatory]
+                #region Priority      [mandatory]
 
-                //if (!JSON.ParseMandatoryText("keyId",
-                //                             "key identification",
-                //                             out String KeyId,
-                //                             out ErrorResponse))
-                //{
-                //    return false;
-                //}
+                if (!JSON.ParseMandatory("priority",
+                                         "signature policy priority",
+                                         out UInt32 Priority,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
 
-                //#endregion
+                #endregion
 
-                //#region Value             [mandatory]
+                #region Action        [mandatory]
 
-                //if (!JSON.ParseMandatoryText("value",
-                //                             "signature value",
-                //                             out String Value,
-                //                             out ErrorResponse))
-                //{
-                //    return false;
-                //}
+                if (!JSON.ParseMandatory("action",
+                                         "verification rule action",
+                                         VerificationRuleActionsExtensions.TryParse,
+                                         out VerificationRuleActions Action,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
 
-                //#endregion
+                #endregion
 
-                //#region Algorithm         [optional]
+                #region KeyPair       [optional]
 
-                //var Algorithm = JSON.GetString("algorithm");
+                if (JSON.ParseOptionalJSON("keyPair",
+                                           "cryptographic key pair",
+                                           OCPPv2_1.KeyPair.TryParse,
+                                           out KeyPair? KeyPair,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
-                //#endregion
+                #endregion
 
-                //#region SigningMethod     [optional]
+                #region CustomData    [optional]
 
-                //var SigningMethod   = JSON.GetString("signingMethod");
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPPv2_1.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
-                //#endregion
-
-                //#region EncodingMethod    [optional]
-
-                //var EncodingMethod  = JSON.GetString("encodingMethod");
-
-                //#endregion
-
-                //#region CustomData        [optional]
-
-                //if (JSON.ParseOptionalJSON("customData",
-                //                           "custom data",
-                //                           OCPPv2_1.CustomData.TryParse,
-                //                           out CustomData CustomData,
-                //                           out ErrorResponse))
-                //{
-                //    if (ErrorResponse is not null)
-                //        return false;
-                //}
-
-                //#endregion
-
-                ErrorResponse = null;
+                #endregion
 
 
-                //VerificationPolicyEntry = new VerificationPolicyEntry(
-                //                KeyId,
-                //                Value,
-                //                Algorithm,
-                //                SigningMethod,
-                //                EncodingMethod,
-                //                CustomData
-                //            );
+                VerificationRule = new VerificationRule(
+                                              DefaultJSONLDContext,
+                                              Priority,
+                                              Action,
+                                              KeyPair,
+                                              CustomData
+                                          );
 
-                if (CustomVerificationPolicyEntryParser is not null)
-                    VerificationPolicyEntry = CustomVerificationPolicyEntryParser(JSON,
-                                                      VerificationPolicyEntry);
+                if (CustomVerificationRuleParser is not null)
+                    VerificationRule = CustomVerificationRuleParser(JSON,
+                                                                                  VerificationRule);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                VerificationPolicyEntry      = default;
+                VerificationRule      = default;
                 ErrorResponse  = "The given JSON representation of a signature is invalid: " + e.Message;
                 return false;
             }
@@ -254,37 +257,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomVerificationPolicyEntrySerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomVerificationRuleSerializer = null, CustomKeyPairSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomVerificationPolicyEntrySerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomVerificationRuleSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomKeyPairSerializer">A delegate to serialize cryptographic key pairs.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<VerificationRule>?   CustomVerificationPolicyEntrySerializer    = null,
-                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<VerificationRule>?  CustomVerificationRuleSerializer   = null,
+                              CustomJObjectSerializerDelegate<KeyPair>?           CustomKeyPairSerializer            = null,
+                              CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataSerializer         = null)
         {
 
             var json = JSONObject.Create(
 
-                           //      new JProperty("keyId",            KeyId),
-                           //      new JProperty("value",            Value),
-                           //      new JProperty("signingMethod",    SigningMethod),
-                           //      new JProperty("encodingMethod",   EncodingMethod),
+                                 new JProperty("priority",     Priority),
+                                 new JProperty("action",       Action.    AsText()),
 
-                           //String.Equals(Algorithm, "secp256r1",
-                           //              StringComparison.OrdinalIgnoreCase)
-                           //    ? null
-                           //    : new JProperty("algorithm",        Algorithm),
+                           KeyPair is not null
+                               ? new JProperty("keyPair",      KeyPair.   ToJSON(CustomKeyPairSerializer,
+                                                                                 CustomCustomDataSerializer))
+                               : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomVerificationPolicyEntrySerializer is not null
-                       ? CustomVerificationPolicyEntrySerializer(this, json)
+            return CustomVerificationRuleSerializer is not null
+                       ? CustomVerificationRuleSerializer(this, json)
                        : json;
 
         }
@@ -294,82 +297,82 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Operator overloading
 
-        #region Operator == (VerificationPolicyEntry1, VerificationPolicyEntry2)
+        #region Operator == (VerificationRule1, VerificationRule2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VerificationPolicyEntry1">A signature.</param>
-        /// <param name="VerificationPolicyEntry2">Another signature.</param>
+        /// <param name="VerificationRule1">A verification rule.</param>
+        /// <param name="VerificationRule2">Another verification rule.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (VerificationRule? VerificationPolicyEntry1,
-                                           VerificationRule? VerificationPolicyEntry2)
+        public static Boolean operator == (VerificationRule? VerificationRule1,
+                                           VerificationRule? VerificationRule2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(VerificationPolicyEntry1, VerificationPolicyEntry2))
+            if (ReferenceEquals(VerificationRule1, VerificationRule2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (VerificationPolicyEntry1 is null || VerificationPolicyEntry2 is null)
+            if (VerificationRule1 is null || VerificationRule2 is null)
                 return false;
 
-            return VerificationPolicyEntry1.Equals(VerificationPolicyEntry2);
+            return VerificationRule1.Equals(VerificationRule2);
 
         }
 
         #endregion
 
-        #region Operator != (VerificationPolicyEntry1, VerificationPolicyEntry2)
+        #region Operator != (VerificationRule1, VerificationRule2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="VerificationPolicyEntry1">A signature.</param>
-        /// <param name="VerificationPolicyEntry2">Another signature.</param>
+        /// <param name="VerificationRule1">A verification rule.</param>
+        /// <param name="VerificationRule2">Another verification rule.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (VerificationRule? VerificationPolicyEntry1,
-                                           VerificationRule? VerificationPolicyEntry2)
+        public static Boolean operator != (VerificationRule? VerificationRule1,
+                                           VerificationRule? VerificationRule2)
 
-            => !(VerificationPolicyEntry1 == VerificationPolicyEntry2);
-
-        #endregion
+            => !(VerificationRule1 == VerificationRule2);
 
         #endregion
 
-        #region IEquatable<VerificationPolicyEntry> Members
+        #endregion
+
+        #region IEquatable<VerificationRule> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two signatures for equality.
+        /// Compares two verification rules for equality.
         /// </summary>
-        /// <param name="Object">A signature to compare with.</param>
+        /// <param name="Object">A verification rule to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is VerificationRule signature &&
-                   Equals(signature);
+            => Object is VerificationRule verificationRule &&
+                   Equals(verificationRule);
 
         #endregion
 
-        #region Equals(VerificationPolicyEntry)
+        #region Equals(VerificationRule)
 
         /// <summary>
-        /// Compares two signatures for equality.
+        /// Compares two verification rules for equality.
         /// </summary>
-        /// <param name="VerificationPolicyEntry">A signature to compare with.</param>
-        public Boolean Equals(VerificationRule? VerificationPolicyEntry)
+        /// <param name="VerificationRule">A verification rule to compare with.</param>
+        public Boolean Equals(VerificationRule? VerificationRule)
 
-            => VerificationPolicyEntry is not null &&
+            => VerificationRule is not null &&
 
-               Priority.Equals(VerificationPolicyEntry.Priority) &&
-               Context. Equals(VerificationPolicyEntry.Context)  &&
-               Action.  Equals(VerificationPolicyEntry.Action)   &&
+               Priority.Equals(VerificationRule.Priority) &&
+               Context. Equals(VerificationRule.Context)  &&
+               Action.  Equals(VerificationRule.Action)   &&
 
-             ((KeyPair is null     && VerificationPolicyEntry.KeyPair is null) ||
-              (KeyPair is not null && VerificationPolicyEntry.KeyPair is not null && KeyPair.Equals(VerificationPolicyEntry.KeyPair))) &&
+             ((KeyPair is null     && VerificationRule.KeyPair is null) ||
+              (KeyPair is not null && VerificationRule.KeyPair is not null && KeyPair.Equals(VerificationRule.KeyPair))) &&
 
-               base.    Equals(VerificationPolicyEntry);
+               base.    Equals(VerificationRule);
 
         #endregion
 

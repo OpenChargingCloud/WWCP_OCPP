@@ -40,25 +40,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The time anchor.
         /// </summary>
         [Mandatory]
-        public DateTime                                   TimeAnchor                        { get; }
+        public DateTime                                    TimeAnchor                        { get; }
 
         /// <summary>
         /// The currency (ISO 4217).
         /// </summary>
         [Mandatory]
-        public Currency                                   Currency                          { get; }
+        public org.GraphDefined.Vanaheimr.Illias.Currency  Currency                          { get; }
 
         /// <summary>
         /// The price algorithm.
         /// </summary>
         [Mandatory]
-        public PriceAlgorithm_Id                          PriceAlgorithm                    { get; }
+        public PriceAlgorithm_Id                           PriceAlgorithm                    { get; }
 
         /// <summary>
         /// The enumeration of EV absolute price schedule entries.
         /// </summary>
         [Mandatory]
-        public IEnumerable<EVAbsolutePriceScheduleEntry>  EVAbsolutePriceScheduleEntries    { get; }
+        public IEnumerable<EVAbsolutePriceScheduleEntry>   EVAbsolutePriceScheduleEntries    { get; }
 
         #endregion
 
@@ -71,11 +71,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Currency">A currency (ISO 4217).</param>
         /// <param name="PriceAlgorithm">A price algorithm.</param>
         /// <param name="EVAbsolutePriceScheduleEntries">An enumeration of EV absolute price schedule entries (max 1024).</param>
-        public EVAbsolutePriceSchedule(DateTime                                   TimeAnchor,
-                                       Currency                                   Currency,
-                                       PriceAlgorithm_Id                          PriceAlgorithm,
-                                       IEnumerable<EVAbsolutePriceScheduleEntry>  EVAbsolutePriceScheduleEntries,
-                                       CustomData?                                CustomData   = null)
+        public EVAbsolutePriceSchedule(DateTime                                    TimeAnchor,
+                                       org.GraphDefined.Vanaheimr.Illias.Currency  Currency,
+                                       PriceAlgorithm_Id                           PriceAlgorithm,
+                                       IEnumerable<EVAbsolutePriceScheduleEntry>   EVAbsolutePriceScheduleEntries,
+                                       CustomData?                                 CustomData   = null)
 
             : base(CustomData)
 
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 if (!JSON.ParseMandatory("currency",
                                          "currency",
                                          org.GraphDefined.Vanaheimr.Illias.Currency.TryParse,
-                                         out Currency? Currency,
+                                         out org.GraphDefined.Vanaheimr.Illias.Currency? Currency,
                                          out ErrorResponse))
                 {
                     return false;
@@ -288,7 +288,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                            new JProperty("timeAnchor",                       TimeAnchor.ToIso8601()),
-                           new JProperty("currency",                         Currency.ISOCode),
+                           new JProperty("currency",                         this.Currency.ISOCode),
                            new JProperty("priceAlgorithm",                   PriceAlgorithm.ToString()),
                            new JProperty("evAbsolutePriceScheduleEntries",   new JArray(EVAbsolutePriceScheduleEntries.Select(evAbsolutePriceScheduleEntry => evAbsolutePriceScheduleEntry.ToJSON(CustomEVAbsolutePriceScheduleEntrySerializer,
                                                                                                                                                                                                   CustomEVPriceRuleSerializer)))),

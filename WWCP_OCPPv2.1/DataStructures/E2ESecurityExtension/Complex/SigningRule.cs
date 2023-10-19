@@ -287,31 +287,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomSigningRuleSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomSigningRuleSerializer = null, CustomKeyPairSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomSigningRuleSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomKeyPairSerializer">A delegate to serialize cryptographic key pairs.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SigningRule>?  CustomSigningRuleSerializer   = null,
+                              CustomJObjectSerializerDelegate<KeyPair>?      CustomKeyPairSerializer       = null,
                               CustomJObjectSerializerDelegate<CustomData>?   CustomCustomDataSerializer    = null)
         {
 
             var json = JSONObject.Create(
 
-                           //      new JProperty("keyId",            KeyId),
-                           //      new JProperty("value",            Value),
-                           //      new JProperty("signingMethod",    SigningMethod),
-                           //      new JProperty("encodingMethod",   EncodingMethod),
+                                 new JProperty("priority",     Priority),
+                                 new JProperty("action",       Action.    AsText()),
 
-                           //String.Equals(Algorithm, "secp256r1",
-                           //              StringComparison.OrdinalIgnoreCase)
-                           //    ? null
-                           //    : new JProperty("algorithm",        Algorithm),
+                           KeyPair is not null
+                               ? new JProperty("keyPair",      KeyPair.   ToJSON(CustomKeyPairSerializer,
+                                                                                 CustomCustomDataSerializer))
+                               : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -332,8 +332,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="SigningRule1">A signature.</param>
-        /// <param name="SigningRule2">Another signature.</param>
+        /// <param name="SigningRule1">A signing rule.</param>
+        /// <param name="SigningRule2">Another signing rule.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (SigningRule? SigningRule1,
                                            SigningRule? SigningRule2)
@@ -358,8 +358,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="SigningRule1">A signature.</param>
-        /// <param name="SigningRule2">Another signature.</param>
+        /// <param name="SigningRule1">A signing rule.</param>
+        /// <param name="SigningRule2">Another signing rule.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (SigningRule? SigningRule1,
                                            SigningRule? SigningRule2)
@@ -375,9 +375,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two signatures for equality.
+        /// Compares two signing rules for equality.
         /// </summary>
-        /// <param name="Object">A signature to compare with.</param>
+        /// <param name="Object">A signing rule to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is SigningRule signingRule &&
@@ -388,9 +388,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(SigningRule)
 
         /// <summary>
-        /// Compares two signatures for equality.
+        /// Compares two signing rules for equality.
         /// </summary>
-        /// <param name="SigningRule">A signature to compare with.</param>
+        /// <param name="SigningRule">A signing rule to compare with.</param>
         public Boolean Equals(SigningRule? SigningRule)
 
             => SigningRule is not null &&

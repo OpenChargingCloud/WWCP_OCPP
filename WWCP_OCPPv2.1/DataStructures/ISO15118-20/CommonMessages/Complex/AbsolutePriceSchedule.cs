@@ -41,63 +41,63 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// The unique identification of the absolute price schedule.
         /// </summary>
         [Mandatory]
-        public AbsolutePriceSchedule_Id        Id                            { get; }
+        public AbsolutePriceSchedule_Id                    Id                            { get; }
 
         /// <summary>
         /// The currency used.
         /// </summary>
         [Mandatory]
-        public Currency                        Currency                      { get; }
+        public org.GraphDefined.Vanaheimr.Illias.Currency  Currency                      { get; }
 
         /// <summary>
         /// The language spoken.
         /// </summary>
         [Mandatory]
-        public String                          Language                      { get; }
+        public String                                      Language                      { get; }
 
         /// <summary>
         /// The unique identification of the price algorithm.
         /// </summary>
         [Mandatory]
-        public PriceAlgorithm_Id               PriceAlgorithmId              { get; }
+        public PriceAlgorithm_Id                           PriceAlgorithmId              { get; }
 
         /// <summary>
         /// The optional minimum cost.
         /// </summary>
         [Optional]
-        public Decimal?                        MinimumCost                   { get; }
+        public Decimal?                                    MinimumCost                   { get; }
 
         /// <summary>
         /// The optional maximum cost.
         /// </summary>
         [Optional]
-        public Decimal?                        MaximumCost                   { get; }
+        public Decimal?                                    MaximumCost                   { get; }
 
         /// <summary>
         /// The optional enumeration of tax rules.
         /// [max 10]
         /// </summary>
         [Optional]
-        public IEnumerable<TaxRule>            TaxRules                      { get; }
+        public IEnumerable<TaxRule>                        TaxRules                      { get; }
 
         /// <summary>
         /// The enumeration of price rule stacks.
         /// [max 1024]
         /// </summary>
         [Mandatory]
-        public IEnumerable<PriceRuleStack>     PriceRuleStacks               { get; }
+        public IEnumerable<PriceRuleStack>                 PriceRuleStacks               { get; }
 
         /// <summary>
         /// The optional overstay rules list.
         /// </summary>
         [Optional]
-        public OverstayRuleList?               OverstayRules                 { get; }
+        public OverstayRuleList?                           OverstayRules                 { get; }
 
         /// <summary>
         /// The optional enumeration of additional selected services.
         /// </summary>
         [Optional]
-        public IEnumerable<AdditionalService>  AdditionalSelectedServices    { get; }
+        public IEnumerable<AdditionalService>              AdditionalSelectedServices    { get; }
 
         #endregion
 
@@ -120,20 +120,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="TaxRules">An optional enumeration of tax rules [max 10].</param>
         /// <param name="OverstayRules">An optional overstay rules list.</param>
         /// <param name="AdditionalSelectedServices">An optional enumeration of additional selected services.</param>
-        public AbsolutePriceSchedule(AbsolutePriceSchedule_Id         Id,
-                                     DateTime                         TimeAnchor,
-                                     PriceSchedule_Id                 PriceScheduleId,
-                                     Currency                         Currency,
-                                     String                           Language,
-                                     PriceAlgorithm_Id                PriceAlgorithmId,
-                                     IEnumerable<PriceRuleStack>      PriceRuleStacks,
+        public AbsolutePriceSchedule(AbsolutePriceSchedule_Id                    Id,
+                                     DateTime                                    TimeAnchor,
+                                     PriceSchedule_Id                            PriceScheduleId,
+                                     org.GraphDefined.Vanaheimr.Illias.Currency  Currency,
+                                     String                                      Language,
+                                     PriceAlgorithm_Id                           PriceAlgorithmId,
+                                     IEnumerable<PriceRuleStack>                 PriceRuleStacks,
 
-                                     Description?                     Description                  = null,
-                                     Decimal?                         MinimumCost                  = null,
-                                     Decimal?                         MaximumCost                  = null,
-                                     IEnumerable<TaxRule>?            TaxRules                     = null,
-                                     OverstayRuleList?                OverstayRules                = null,
-                                     IEnumerable<AdditionalService>?  AdditionalSelectedServices   = null)
+                                     Description?                                Description                  = null,
+                                     Decimal?                                    MinimumCost                  = null,
+                                     Decimal?                                    MaximumCost                  = null,
+                                     IEnumerable<TaxRule>?                       TaxRules                     = null,
+                                     OverstayRuleList?                           OverstayRules                = null,
+                                     IEnumerable<AdditionalService>?             AdditionalSelectedServices   = null)
 
             : base(TimeAnchor,
                    PriceScheduleId,
@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                 if (!JSON.ParseMandatory("currency",
                                          "currency",
                                          org.GraphDefined.Vanaheimr.Illias.Currency.TryParse,
-                                         out Currency Currency,
+                                         out org.GraphDefined.Vanaheimr.Illias.Currency Currency,
                                          out ErrorResponse))
                 {
                     return false;
