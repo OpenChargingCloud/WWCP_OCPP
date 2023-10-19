@@ -148,7 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The SHA256 hash of the JSON representation of this charging tariff.
         /// </summary>
-        public   String                      ETag                 { get; }
+        //public   String                      ETag                 { get; }
 
         #endregion
 
@@ -235,16 +235,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             //this.Created         = Created                   ?? LastUpdated ?? Timestamp.Now;
             //this.LastUpdated     = LastUpdated               ?? Created     ?? Timestamp.Now;
 
-            this.ETag            = SHA256.HashData(ToJSON(CustomTariffSerializer,
-                                                          CustomDisplayTextSerializer,
-                                                          CustomPriceSerializer,
-                                                          CustomTariffElementSerializer,
-                                                          CustomPriceComponentSerializer,
-                                                          CustomTariffRestrictionsSerializer
-                                                          //CustomEnergyMixSerializer,
-                                                          //CustomEnergySourceSerializer,
-                                                          //CustomEnvironmentalImpactSerializer
-                                                          ).ToUTF8Bytes()).ToBase64();
+            //this.ETag            = SHA256.HashData(ToJSON(CustomTariffSerializer,
+            //                                              CustomDisplayTextSerializer,
+            //                                              CustomPriceSerializer,
+            //                                              CustomTariffElementSerializer,
+            //                                              CustomPriceComponentSerializer,
+            //                                              CustomTariffRestrictionsSerializer
+            //                                              //CustomEnergyMixSerializer,
+            //                                              //CustomEnergySourceSerializer,
+            //                                              //CustomEnvironmentalImpactSerializer
+            //                                              ).ToUTF8Bytes()).ToBase64();
 
             unchecked
             {
@@ -439,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("currency",
                                          "currency",
-                                         OCPPv2_1.Currency.TryParse,
+                                         org.GraphDefined.Vanaheimr.Illias.Currency.TryParse,
                                          out Currency Currency,
                                          out ErrorResponse))
                 {

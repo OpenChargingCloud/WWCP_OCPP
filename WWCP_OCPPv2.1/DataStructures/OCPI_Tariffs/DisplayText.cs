@@ -248,8 +248,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                DisplayText = new DisplayText(Language,
-                                              Text);
+                DisplayText = new DisplayText(
+                                  Language,
+                                  Text
+                              );
 
 
                 if (CustomDisplayTextParser is not null)
