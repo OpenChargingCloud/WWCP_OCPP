@@ -40,13 +40,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Price/Cost excluding VAT.
         /// </summary>
         [Mandatory]
-        public Double   ExcludingVAT    { get; }
+        public Decimal   ExcludingVAT    { get; }
 
         /// <summary>
         /// Price/Cost including VAT.
         /// </summary>
         [Optional]
-        public Double?  IncludingVAT    { get; }
+        public Decimal?  IncludingVAT    { get; }
 
         #endregion
 
@@ -57,8 +57,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="ExcludingVAT">Price/Cost excluding VAT.</param>
         /// <param name="IncludingVAT">Price/Cost including VAT.</param>
-        public Price(Double   ExcludingVAT,
-                     Double?  IncludingVAT   = null)
+        public Price(Decimal   ExcludingVAT,
+                     Decimal?  IncludingVAT   = null)
         {
 
             this.ExcludingVAT  = ExcludingVAT;
@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("excl_vat",
                                          "price excluding VAT",
-                                         out Double ExcludingVAT,
+                                         out Decimal ExcludingVAT,
                                          out ErrorResponse))
                 {
                     return false;
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("incl_vat",
                                        "price including VAT",
-                                       out Double? IncludingVAT,
+                                       out Decimal? IncludingVAT,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -190,8 +190,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                Price = new Price(ExcludingVAT,
-                                  IncludingVAT);
+                Price = new Price(
+                            ExcludingVAT,
+                            IncludingVAT
+                        );
 
 
                 if (CustomPriceParser is not null)

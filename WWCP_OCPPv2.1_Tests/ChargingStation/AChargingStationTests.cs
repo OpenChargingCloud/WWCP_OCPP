@@ -23,10 +23,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.tests.CSMS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests
+namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 {
 
     /// <summary>

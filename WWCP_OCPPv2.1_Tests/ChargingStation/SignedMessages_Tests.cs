@@ -26,14 +26,14 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests
+namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 {
 
     /// <summary>
     /// Unit tests for charging stations sending sending signed messages to the CSMS.
     /// </summary>
     [TestFixture]
-    public class ChargingStation_signedMessages_Tests : AChargingStationTests
+    public class SignedMessages_Tests : AChargingStationTests
     {
 
         #region Init_Test()

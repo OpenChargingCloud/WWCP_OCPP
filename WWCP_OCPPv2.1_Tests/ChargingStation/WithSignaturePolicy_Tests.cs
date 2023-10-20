@@ -26,7 +26,7 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests
+namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 {
 
     /// <summary>
@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
     /// based on a message signature policy to the CSMS.
     /// </summary>
     [TestFixture]
-    public class ChargingStation_withSignaturePolicy_Tests : AChargingStationTests
+    public class WithSignaturePolicy_Tests : AChargingStationTests
     {
 
         #region Init_Test()

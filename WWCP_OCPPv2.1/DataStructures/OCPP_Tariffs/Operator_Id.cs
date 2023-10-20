@@ -61,15 +61,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The regular expression for parsing a charging station operator identification:
         /// ^([A-Za-z]{2}\*?[A-Za-z0-9]{3})$
         /// </summary>
-        public static readonly Regex  OperatorId_RegEx          = new (@"^([A-Za-z]{2})(\*?)([A-Za-z0-9]{3})$",
-                                                                       RegexOptions.IgnorePatternWhitespace);
-
-        /// <summary>
-        /// The regular expression for parsing a country alpha-2 code used for unknown country codes only:
-        /// ^[A-Za-z]{2}$
-        /// </summary>
-        public static readonly Regex  CountryAlpha2Codes_RegEx  = new (@"^[A-Za-z]{2}$",
-                                                                       RegexOptions.IgnorePatternWhitespace);
+        public static readonly Regex OperatorId_RegEx = new (@"^([A-Za-z]{2})(\*?)([A-Za-z0-9]{3})$",
+                                                             RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
@@ -88,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Whether to use the optional separator "*".
         /// </summary>
-        public Boolean  Separator      { get; }
+        public Char?    Separator      { get; }
 
 
         /// <summary>
@@ -107,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Returns the length of the charging station operator identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) (CountryCode.Alpha2Code.Length + (Separator ? 1 : 0)  + (Suffix?.Length ?? 0));
+            => (UInt64) (CountryCode.Alpha2Code.Length + (Separator.HasValue ? 1 : 0) + (Suffix?.Length ?? 0));
 
         #endregion
 
@@ -118,10 +111,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="CountryCode">The country code.</param>
         /// <param name="Suffix">The suffix of the charging station operator identification.</param>
-        /// <param name="Separator">Whether to use the optional separator "*".</param>
+        /// <param name="Separator">The optional separator "*".</param>
         private Operator_Id(Country  CountryCode,
                             String   Suffix,
-                            Boolean  Separator   = true)
+                            Char?    Separator   = '*')
         {
 
             if (Suffix.IsNullOrEmpty())
@@ -148,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var operatorId))
                 return operatorId;
 
-            throw new ArgumentException($"Invalid text representation of an EVSE charging station operator identification: '{Text}'!",
+            throw new ArgumentException($"Invalid text representation of a charging station operator identification: '{Text}'!",
                                         nameof(Text));
 
         }
@@ -215,7 +208,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         OperatorId = new Operator_Id(
                                          country,
                                          matchCollection[0].Groups[3].Value,
-                                         matchCollection[0].Groups[2].Value == "*"
+                                         matchCollection[0].Groups[2].Value.Length == 1
+                                             ? matchCollection[0].Groups[2].Value[0]
+                                             : null
                                      );
 
                         return true;
@@ -223,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     }
 
                     // An unknown/unassigned alpha-2 country code, like e.g. "DT"...
-                    if (CountryAlpha2Codes_RegEx.IsMatch(matchCollection[0].Groups[1].Value))
+                    if (Country.Alpha2Codes_RegEx.IsMatch(matchCollection[0].Groups[1].Value))
                     {
 
                         OperatorId = new Operator_Id(
@@ -235,7 +230,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              0
                                          ),
                                          matchCollection[0].Groups[3].Value,
-                                         matchCollection[0].Groups[2].Value == "*"
+                                         matchCollection[0].Groups[2].Value.Length == 1
+                                             ? matchCollection[0].Groups[2].Value[0]
+                                             : null
                                      );
 
                         return true;
@@ -485,7 +482,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => CountryCode.Alpha2Code + (Separator ? "*" : "") + Suffix;
+            => CountryCode.Alpha2Code + Separator + Suffix;
 
         #endregion
 

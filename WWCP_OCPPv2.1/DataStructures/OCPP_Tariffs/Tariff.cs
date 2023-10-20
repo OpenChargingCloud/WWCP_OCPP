@@ -76,10 +76,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public   DateTime                    Created              { get; }
 
         /// <summary>
-        /// This tariff replaces the tariff specificed by this tariff identification.
+        /// The optional reference to another existing tariff, which will be replaced by this tariff.
         /// </summary>
         [Optional]
         public   Tariff_Id?                  Replaces             { get; }
+
+        /// <summary>
+        /// The optional reference to another existing tariff, e.g. because some local adaption of the tariff was required.
+        /// </summary>
+        [Optional]
+        public   Tariff_Id?                  References           { get; }
 
         /// <summary>
         /// The unique identification of the e-mobility provider responsible for this tariff.
@@ -184,7 +190,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TariffElements">An enumeration of tariff elements.</param>
         /// 
         /// <param name="Created">An optional timestamp when this tariff was created.</param>
-        /// <param name="Replaces">This tariff replaces the tariff specificed by this tariff identification.</param>
+        /// <param name="Replaces">An optional reference to another existing tariff, which will be replaced by this tariff.</param>
+        /// <param name="References">An optional reference to another existing tariff, e.g. because some local adaption of the tariff was required.</param>
         /// <param name="TariffType">An optional tariff type, that allows to distinguish between charging preferences. When omitted, this tariff is valid for all charging sessions.</param>
         /// <param name="Description">An optional multi-language tariff description.</param>
         /// <param name="URL">An optional informative (not legally binding) URL to a web page that contains an explanation of the tariff information in human readable form.</param>
@@ -207,6 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                       DateTime?                    Created       = null,
                       Tariff_Id?                   Replaces      = null,
+                      Tariff_Id?                   References    = null,
                       TariffType?                  TariffType    = null,
                       IEnumerable<DisplayText>?    Description   = null,
                       URL?                         URL           = null,
@@ -464,6 +472,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region Parse References        [optional]
+
+                if (!JSON.ParseOptional("references",
+                                        "references tariff",
+                                        Tariff_Id.TryParse,
+                                        out Tariff_Id? References,
+                                        out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Parse TariffType        [optional]
 
                 if (JSON.ParseOptionalEnum("type",
@@ -626,6 +648,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                              Created,
                              Replaces,
+                             References,
                              TariffType,
                              Description,
                              URL,
@@ -778,6 +801,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     Created,
                     Replaces?.     Clone,
+                    References?.   Clone,
                     TariffType?.   Clone,
                     Description.   Select(displayText   => displayText.  Clone()).ToArray(),
                     URL?.          Clone,

@@ -27,7 +27,7 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests
+namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 {
 
     /// <summary>

@@ -24,12 +24,13 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests
+namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 {
 
     /// <summary>
@@ -37,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
     /// based on a message signature policy to charging stations.
     /// </summary>
     [TestFixture]
-    public class CSMSMessages_withSignaturePolicy_Tests : AChargingStationTests
+    public class WithSignaturePolicy_Tests : AChargingStationTests
     {
 
         #region AddSignaturePolicy_Test()

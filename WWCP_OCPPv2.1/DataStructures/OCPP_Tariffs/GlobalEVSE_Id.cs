@@ -79,6 +79,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Operator_Id  OperatorId    { get; }
 
         /// <summary>
+        /// Whether to use the optional separator "*".
+        /// </summary>
+        public Char?        Separator      { get; }
+
+        /// <summary>
         /// The suffix of the EVSE identification.
         /// </summary>
         public String       Suffix        { get; }
@@ -115,7 +120,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Suffix">The suffix of the EVSE identification.</param>
         private GlobalEVSE_Id(String       RAW,
                               Operator_Id  OperatorId,
-                              String       Suffix)
+                              String       Suffix,
+                              Char?        Separator   = '*')
         {
 
             if (Suffix.IsNullOrEmpty())
@@ -124,6 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.RAW         = RAW;
             this.OperatorId  = OperatorId;
             this.Suffix      = Suffix;
+            this.Separator   = Separator;
 
             unchecked
             {
@@ -250,7 +257,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     EVSEId = new GlobalEVSE_Id(
                                  Text,
                                  operatorId,
-                                 matchCollection[0].Groups[2].Value + "E" + matchCollection[0].Groups[3].Value
+                                 matchCollection[0].Groups[3].Value,
+                                 matchCollection[0].Groups[2].Value.Length == 1
+                                             ? matchCollection[0].Groups[2].Value[0]
+                                             : null
                              );
 
                     return true;
