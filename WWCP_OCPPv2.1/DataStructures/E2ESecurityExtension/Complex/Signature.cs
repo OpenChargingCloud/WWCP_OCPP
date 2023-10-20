@@ -383,6 +383,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region Clone()
+
+        /// <summary>
+        /// Clone this cryptographic signature.
+        /// </summary>
+        public Signature Clone()
+
+            => new (new String(KeyId.    ToCharArray()),
+                    new String(Value.    ToCharArray()),
+                    new String(Algorithm.ToCharArray()),
+                    SigningMethod,
+                    EncodingMethod,
+                    Name,
+                    Description,
+                    Timestamp,
+                    CustomData);
+
+        #endregion
+
 
         #region Operator overloading
 

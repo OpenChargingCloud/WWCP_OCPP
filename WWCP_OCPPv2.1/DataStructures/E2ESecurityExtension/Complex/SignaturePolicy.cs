@@ -170,6 +170,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="DefaultVerificationAction">An optional default verification action for this policy.</param>
         /// <param name="DefaultSigningKeyPair">An optional default cryptographic signing key pair.</param>
         /// 
+        /// <param name="SignKeys"></param>
+        /// <param name="SignInfos"></param>
+        /// <param name="Signatures"></param>
+        /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public SignaturePolicy(SignaturePolicy_Id?             Id                           = null,
                                Byte?                           Priority                     = null,
