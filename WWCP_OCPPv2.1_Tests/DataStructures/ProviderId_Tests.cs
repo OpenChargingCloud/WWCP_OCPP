@@ -188,6 +188,68 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         #endregion
 
 
+
+        #region Equals_OptionalDash_OptionalDash()
+
+        /// <summary>
+        /// A test for comparing "DE-GDF" and "DE-GDF" for equality.
+        /// </summary>
+        [Test]
+        public void Equals_OptionalDash_OptionalDash()
+        {
+
+            var operatorId1 = Provider_Id.TryParse("DE-GDF");
+            var operatorId2 = Provider_Id.TryParse("DE-GDF");
+
+            Assert.AreEqual(operatorId1,       operatorId2);
+            Assert.IsTrue  (operatorId1.Equals(operatorId2));
+            Assert.IsTrue  (operatorId1 ==     operatorId2);
+
+        }
+
+        #endregion
+
+        #region Equals_WithoutSeparator_OptionalDash()
+
+        /// <summary>
+        /// A test for comparing "DEGDF" and "DE-GDF" for equality.
+        /// </summary>
+        [Test]
+        public void Equals_WithoutSeparator_OptionalDash()
+        {
+
+            var operatorId1 = Provider_Id.TryParse("DEGDF");
+            var operatorId2 = Provider_Id.TryParse("DE-GDF");
+
+            Assert.AreEqual(operatorId1,       operatorId2);
+            Assert.IsTrue  (operatorId1.Equals(operatorId2));
+            Assert.IsTrue  (operatorId1 ==     operatorId2);
+
+        }
+
+        #endregion
+
+        #region Equals_WithoutSeparator_WithoutSeparator()
+
+        /// <summary>
+        /// A test for comparing "DEGDF" and "DEGDF" for equality.
+        /// </summary>
+        [Test]
+        public void Equals_WithoutSeparator_WithoutSeparator()
+        {
+
+            var operatorId1 = Provider_Id.TryParse("DEGDF");
+            var operatorId2 = Provider_Id.TryParse("DEGDF");
+
+            Assert.AreEqual(operatorId1,       operatorId2);
+            Assert.IsTrue  (operatorId1.Equals(operatorId2));
+            Assert.IsTrue  (operatorId1 ==     operatorId2);
+
+        }
+
+        #endregion
+
+
     }
 
 }

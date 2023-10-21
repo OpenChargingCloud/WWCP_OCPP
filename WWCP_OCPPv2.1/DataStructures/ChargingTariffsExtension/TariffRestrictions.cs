@@ -63,14 +63,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// (inclusive) being used.
         /// </summary>
         [Optional]
-        public Decimal?                  MinkWh              { get; }
+        public WattHour?                 MinkWh              { get; }
 
         /// <summary>
         /// The maximum consumed energy in kWh, for example 50, valid until this amount of energy
         /// (exclusive) being used.
         /// </summary>
         [Optional]
-        public Decimal?                  MaxkWh              { get; }
+        public WattHour?                 MaxkWh              { get; }
 
         /// <summary>
         /// The sum of the minimum current (in Amperes) over all phases, for example 5. When the EV is
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// longer be active when the charging current drops below the defined value.
         /// </summary>
         [Optional]
-        public Decimal?                  MinCurrent          { get; }
+        public Ampere?                   MinCurrent          { get; }
 
         /// <summary>
         /// The sum of the maximum current (in Amperes) over all phases, for example 20. When the EV is
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// active when the charging current raises above the defined value.
         /// </summary>
         [Optional]
-        public Decimal?                  MaxCurrent          { get; }
+        public Ampere?                   MaxCurrent          { get; }
 
         /// <summary>
         /// The minimum power in kW, for example 5. When the EV is charging with more than, or equal to,
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// defined value.
         /// </summary>
         [Optional]
-        public Decimal?                  MinPower            { get; }
+        public Watt?                     MinPower            { get; }
 
         /// <summary>
         /// The maximum power in kW, for example 20. When the EV is charging with less than the defined
@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// value.
         /// </summary>
         [Optional]
-        public Decimal?                  MaxPower            { get; }
+        public Watt?                     MaxPower            { get; }
 
         /// <summary>
         /// The minimum duration in seconds the charging session MUST last (inclusive). When the
@@ -177,12 +177,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                   Time?                     EndTime       = null,
                                   DateTime?                 StartDate     = null,
                                   DateTime?                 EndDate       = null,
-                                  Decimal?                  MinkWh        = null,
-                                  Decimal?                  MaxkWh        = null,
-                                  Decimal?                  MinCurrent    = null,
-                                  Decimal?                  MaxCurrent    = null,
-                                  Decimal?                  MinPower      = null,
-                                  Decimal?                  MaxPower      = null,
+                                  WattHour?                 MinkWh        = null,
+                                  WattHour?                 MaxkWh        = null,
+                                  Ampere?                   MinCurrent    = null,
+                                  Ampere?                   MaxCurrent    = null,
+                                  Watt?                     MinPower      = null,
+                                  Watt?                     MaxPower      = null,
                                   TimeSpan?                 MinDuration   = null,
                                   TimeSpan?                 MaxDuration   = null,
                                   IEnumerable<DayOfWeek>?   DayOfWeek     = null,
@@ -337,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("min_kwh",
                                        "minimum consumed kWh",
-                                       out Decimal? MinKWh,
+                                       out WattHour? MinKWh,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("max_kwh",
                                        "maximum consumed kWh",
-                                       out Decimal? MaxKWh,
+                                       out WattHour? MaxKWh,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -363,7 +363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("min_current",
                                        "minimum current",
-                                       out Decimal? MinCurrent,
+                                       out Ampere? MinCurrent,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("max_current",
                                        "maximum current",
-                                       out Decimal? MaxCurrent,
+                                       out Ampere? MaxCurrent,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -389,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("min_power",
                                        "minimum power",
-                                       out Decimal? MinPower,
+                                       out Watt? MinPower,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -402,7 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("max_power",
                                        "maximum power",
-                                       out Decimal? MaxPower,
+                                       out Watt? MaxPower,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -490,20 +490,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        DayOfWeek.  Any() ||
                                        Reservation.HasValue)
 
-                                           ? new TariffRestrictions(StartTime,
-                                                                    EndTime,
-                                                                    StartDate,
-                                                                    EndDate,
-                                                                    MinKWh,
-                                                                    MaxKWh,
-                                                                    MinCurrent,
-                                                                    MaxCurrent,
-                                                                    MinPower,
-                                                                    MaxPower,
-                                                                    MinDuration,
-                                                                    MaxDuration,
-                                                                    DayOfWeek,
-                                                                    Reservation)
+                                           ? new TariffRestrictions(
+                                                 StartTime,
+                                                 EndTime,
+                                                 StartDate,
+                                                 EndDate,
+                                                 MinKWh,
+                                                 MaxKWh,
+                                                 MinCurrent,
+                                                 MaxCurrent,
+                                                 MinPower,
+                                                 MaxPower,
+                                                 MinDuration,
+                                                 MaxDuration,
+                                                 DayOfWeek,
+                                                 Reservation
+                                             )
 
                                            : null;
 

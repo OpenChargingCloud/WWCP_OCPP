@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The unique identification of the e-mobility provider responsible for this tariff.
         /// </summary>
         [Mandatory]
-        public   String                      ProviderId           { get; }
+        public   Provider_Id                 ProviderId           { get; }
 
         /// <summary>
         /// The multi-language name of the e-mobility provider responsible for this tariff.
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public Tariff(Tariff_Id                    Id,
-                      String                       ProviderId,
+                      Provider_Id                  ProviderId,
                       IEnumerable<DisplayText>     ProviderName,
                       Currency                     Currency,
                       IEnumerable<TariffElement>   TariffElements,
@@ -249,6 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.Created         = Created   ?? Timestamp.Now;
             this.Replaces        = Replaces;
+            this.References      = References;
             this.TariffType      = TariffType;
             this.Description     = Description?.  Distinct() ?? Array.Empty<DisplayText>();
             this.URL             = URL;
@@ -396,10 +397,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse ProviderId        [mandatory]
 
-                if (!JSON.ParseMandatoryText("providerId",
-                                             "provider identification",
-                                             out String ProviderId,
-                                             out ErrorResponse))
+                if (!JSON.ParseMandatory("providerId",
+                                         "provider identification",
+                                         Provider_Id.TryParse,
+                                         out Provider_Id ProviderId,
+                                         out ErrorResponse))
                 {
                     return false;
                 }
@@ -715,7 +717,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("id",             Id.              ToString()),
-                                 new JProperty("providerId",                      ProviderId),
+                                 new JProperty("providerId",     ProviderId.      ToString()),
                                  new JProperty("providerName",   new JArray(ProviderName.  Select(providerName  => providerName. ToJSON(CustomDisplayTextSerializer)))),
                                  new JProperty("currency",       Currency.        ToString()),
 
@@ -794,7 +796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Tariff Clone()
 
             => new (Id.            Clone,
-                    new String(ProviderId.ToCharArray()),
+                    ProviderId.    Clone,
                     ProviderName.  Select(displayText   => displayText.  Clone()).ToArray(),
                     Currency.      Clone,
                     TariffElements.Select(tariffElement => tariffElement.Clone()).ToArray(),

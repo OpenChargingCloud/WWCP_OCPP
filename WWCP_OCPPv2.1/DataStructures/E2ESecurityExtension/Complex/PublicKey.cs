@@ -19,9 +19,7 @@
 
 using Newtonsoft.Json.Linq;
 
-using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Asn1.X9;
-using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Parameters;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -32,25 +30,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// An OCPP CSE asymmetric cryptographic key pair.
+    /// An OCPP CSE asymmetric cryptographic public key.
     /// </summary>
-    public class KeyPair : ACustomData,
-                           IEquatable<KeyPair>
+    public class PublicKey : ACustomData,
+                             IEquatable<PublicKey>
     {
 
         #region Properties
 
         /// <summary>
-        /// The cryptographic private key.
-        /// </summary>
-        [Mandatory]
-        public   String                  Private               { get; }
-
-        /// <summary>
         /// The cryptographic public key.
         /// </summary>
         [Mandatory]
-        public   String                  Public                { get; }
+        public   String                  Value                 { get; }
 
         /// <summary>
         /// The optional cryptographic algorithm of the keys. Default is 'secp256r1'.
@@ -76,36 +68,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public   ECDomainParameters      ECDomainParameters    { get; }
 
 
-        internal ECPrivateKeyParameters  PrivateKey            { get; }
-
-        internal ECPublicKeyParameters   PublicKey             { get; }
+        internal ECPublicKeyParameters   PublicKey2            { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new OCPP CSE asymmetric cryptographic key pair.
+        /// Create a new OCPP CSE asymmetric cryptographic public key.
         /// </summary>
-        /// <param name="Private">The private key.</param>
-        /// <param name="Public">The public key.</param>
+        /// <param name="Value">The public key.</param>
         /// <param name="Algorithm">The optional cryptographic algorithm of the keys. Default is 'secp256r1'.</param>
         /// <param name="Serialization">The optional serialization of the cryptographic keys. Default is 'raw'.</param>
         /// <param name="Encoding">The optional encoding of the cryptographic keys. Default is 'base64'.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public KeyPair(String       Private,
-                       String       Public,
-                       String?      Algorithm       = "secp256r1",
-                       String?      Serialization   = "raw",
-                       String?      Encoding        = "base64",
-                       CustomData?  CustomData      = null)
+        public PublicKey(String       Value,
+                         String?      Algorithm       = "secp256r1",
+                         String?      Serialization   = "raw",
+                         String?      Encoding        = "base64",
+                         CustomData?  CustomData      = null)
 
             : base(CustomData)
 
         {
 
-            this.Private             = Private;
-            this.Public              = Public;
+            this.Value               = Value;
             this.Algorithm           = Algorithm     ?? "secp256r1";
             this.Serialization       = Serialization ?? "raw";
             this.Encoding            = Encoding      ?? "base64";
@@ -123,39 +110,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            ECParameters.GetSeed()
                                        );
 
-            #region Try to parse the private key
-
-            try
-            {
-
-                this.PrivateKey      = new ECPrivateKeyParameters(
-                                           new BigInteger(this.Private.FromBase64()),
-                                           ECDomainParameters
-                                       );
-
-            }
-            catch (Exception e)
-            {
-                throw new ArgumentException("The given private key is invalid!", nameof(Private), e);
-            }
-
-            #endregion
-
             #region Try to parse the public key
 
             try
             {
 
-                this.PublicKey       = new ECPublicKeyParameters(
+                this.PublicKey2      = new ECPublicKeyParameters(
                                            "ECDSA",
-                                           ECParameters.Curve.DecodePoint(this.Public.FromBase64()),
+                                           ECParameters.Curve.DecodePoint(this.Value.FromBase64()),
                                            ECDomainParameters
                                        );
 
             }
             catch (Exception e)
             {
-                throw new ArgumentException("The given public key is invalid!", nameof(Public), e);
+                throw new ArgumentException("The given public key is invalid!", nameof(Value), e);
             }
 
             #endregion
@@ -164,8 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                hashCode = this.Private.      GetHashCode() * 13 ^
-                           this.Public.       GetHashCode() * 11 ^
+                hashCode = this.Value.        GetHashCode() * 11 ^
                            this.Algorithm.    GetHashCode() *  7 ^
                            this.Serialization.GetHashCode() *  5 ^
                            this.Encoding.     GetHashCode() *  3 ^
@@ -185,121 +153,75 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) GenerateKeys(Algorithm = secp256r1)
-
-        public static KeyPair? GenerateKeys(String? Algorithm = "secp256r1")
-        {
-
-            var ecParameters  = ECNamedCurveTable. GetByName(Algorithm ?? "secp256r1");
-
-            if (ecParameters is null)
-                return null;
-
-            var g             = GeneratorUtilities.GetKeyPairGenerator("ECDH");
-
-            g.Init(new ECKeyGenerationParameters(
-                       new ECDomainParameters(
-                           ecParameters.Curve,
-                           ecParameters.G,
-                           ecParameters.N,
-                           ecParameters.H,
-                           ecParameters.GetSeed()
-                       ),
-                       new SecureRandom()
-                   ));
-
-            var keyPair = g.GenerateKeyPair();
-
-            return new KeyPair(
-                       (keyPair.Private as ECPrivateKeyParameters)!.D.ToByteArray().ToBase64(),
-                       (keyPair.Public  as ECPublicKeyParameters)!. Q.GetEncoded(). ToBase64()
-                   );
-
-        }
-
-        #endregion
-
-        #region (static) Parse       (JSON, CustomKeyPairParser = null)
+        #region (static) Parse       (JSON, CustomPublicKeyParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a cryptographic key pair.
+        /// Parse the given JSON representation of a cryptographic public key.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomKeyPairParser">A delegate to parse custom cryptographic key pairs.</param>
-        public static KeyPair Parse(JObject                                  JSON,
-                                      CustomJObjectParserDelegate<KeyPair>?  CustomKeyPairParser   = null)
+        /// <param name="CustomPublicKeyParser">A delegate to parse custom cryptographic public keys.</param>
+        public static PublicKey Parse(JObject                                  JSON,
+                                      CustomJObjectParserDelegate<PublicKey>?  CustomPublicKeyParser   = null)
         {
 
             if (TryParse(JSON,
-                         out var keyPair,
+                         out var publicKey,
                          out var errorResponse,
-                         CustomKeyPairParser))
+                         CustomPublicKeyParser))
             {
-                return keyPair!;
+                return publicKey!;
             }
 
-            throw new ArgumentException("The given JSON representation of a key pair is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a public key is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse    (JSON, out KeyPair, out ErrorResponse, CustomKeyPairParser = null)
+        #region (static) TryParse    (JSON, out PublicKey, out ErrorResponse, CustomPublicKeyParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a key pair.
+        /// Try to parse the given JSON representation of a public key.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="KeyPair">The parsed connector type.</param>
+        /// <param name="PublicKey">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject       JSON,
-                                       out KeyPair?  KeyPair,
-                                       out String?   ErrorResponse)
+        public static Boolean TryParse(JObject         JSON,
+                                       out PublicKey?  PublicKey,
+                                       out String?     ErrorResponse)
 
             => TryParse(JSON,
-                        out KeyPair,
+                        out PublicKey,
                         out ErrorResponse,
                         null);
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a key pair.
+        /// Try to parse the given JSON representation of a public key.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="KeyPair">The parsed connector type.</param>
+        /// <param name="PublicKey">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomKeyPairParser">A delegate to parse custom key pairs.</param>
-        public static Boolean TryParse(JObject                                JSON,
-                                       out KeyPair?                           KeyPair,
-                                       out String?                            ErrorResponse,
-                                       CustomJObjectParserDelegate<KeyPair>?  CustomKeyPairParser   = null)
+        /// <param name="CustomPublicKeyParser">A delegate to parse custom public keys.</param>
+        public static Boolean TryParse(JObject                                  JSON,
+                                       out PublicKey?                           PublicKey,
+                                       out String?                              ErrorResponse,
+                                       CustomJObjectParserDelegate<PublicKey>?  CustomPublicKeyParser   = null)
         {
 
             try
             {
 
-                KeyPair = default;
+                PublicKey = default;
 
-                #region Private           [mandatory]
+                #region Value             [mandatory]
 
-                if (!JSON.ParseMandatoryText("private",
-                                             "private key",
-                                             out String Private,
-                                             out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
-                #region Public            [mandatory]
-
-                if (!JSON.ParseMandatoryText("public",
-                                             "public key",
-                                             out String Public,
+                if (!JSON.ParseMandatoryText("value",
+                                             "public key value",
+                                             out String Value,
                                              out ErrorResponse))
                 {
                     return false;
@@ -340,26 +262,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                KeyPair = new KeyPair(
-                              Private,
-                              Public,
-                              Algorithm,
-                              Serialization,
-                              Encoding,
-                              CustomData
-                          );
+                PublicKey = new PublicKey(
+                                Value,
+                                Algorithm,
+                                Serialization,
+                                Encoding,
+                                CustomData
+                            );
 
-                if (CustomKeyPairParser is not null)
-                    KeyPair = CustomKeyPairParser(JSON,
-                                                  KeyPair);
+                if (CustomPublicKeyParser is not null)
+                    PublicKey = CustomPublicKeyParser(JSON,
+                                                      PublicKey);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                KeyPair        = default;
-                ErrorResponse  = "The given JSON representation of a key pair is invalid: " + e.Message;
+                PublicKey      = default;
+                ErrorResponse  = "The given JSON representation of a public key is invalid: " + e.Message;
                 return false;
             }
 
@@ -367,21 +288,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomKeyPairSerializer = null, CustomCustomDataSerializer = null)
+        #region ToJSON(CustomPublicKeySerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomKeyPairSerializer">A delegate to serialize cryptographic key pairs.</param>
+        /// <param name="CustomPublicKeySerializer">A delegate to serialize cryptographic public keys.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<KeyPair>?     CustomKeyPairSerializer      = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<PublicKey>?     CustomPublicKeySerializer      = null,
                               CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("private",         Private),
-                                 new JProperty("public",          Public),
+                                 new JProperty("value",           Value),
 
                            Algorithm.    Equals("secp256r1", StringComparison.OrdinalIgnoreCase)
                                ? null
@@ -401,8 +321,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                        );
 
-            return CustomKeyPairSerializer is not null
-                       ? CustomKeyPairSerializer(this, json)
+            return CustomPublicKeySerializer is not null
+                       ? CustomPublicKeySerializer(this, json)
                        : json;
 
         }
@@ -414,12 +334,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Clone this object.
         /// </summary>
-        public KeyPair Clone()
+        public PublicKey Clone()
 
             => new (
 
-                   new String(Private.ToCharArray()),
-                   new String(Public. ToCharArray()),
+                   new String(Value.ToCharArray()),
 
                    Algorithm     is not null ? new String(Algorithm.    ToCharArray()) : null,
                    Serialization is not null ? new String(Serialization.ToCharArray()) : null,
@@ -434,81 +353,80 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Operator overloading
 
-        #region Operator == (KeyPair1, KeyPair2)
+        #region Operator == (PublicKey1, PublicKey2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="KeyPair1">A key pair.</param>
-        /// <param name="KeyPair2">Another key pair.</param>
+        /// <param name="PublicKey1">A public key.</param>
+        /// <param name="PublicKey2">Another public key.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (KeyPair? KeyPair1,
-                                           KeyPair? KeyPair2)
+        public static Boolean operator == (PublicKey? PublicKey1,
+                                           PublicKey? PublicKey2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(KeyPair1, KeyPair2))
+            if (ReferenceEquals(PublicKey1, PublicKey2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (KeyPair1 is null || KeyPair2 is null)
+            if (PublicKey1 is null || PublicKey2 is null)
                 return false;
 
-            return KeyPair1.Equals(KeyPair2);
+            return PublicKey1.Equals(PublicKey2);
 
         }
 
         #endregion
 
-        #region Operator != (KeyPair1, KeyPair2)
+        #region Operator != (PublicKey1, PublicKey2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="KeyPair1">A key pair.</param>
-        /// <param name="KeyPair2">Another key pair.</param>
+        /// <param name="PublicKey1">A public key.</param>
+        /// <param name="PublicKey2">Another public key.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (KeyPair? KeyPair1,
-                                           KeyPair? KeyPair2)
+        public static Boolean operator != (PublicKey? PublicKey1,
+                                           PublicKey? PublicKey2)
 
-            => !(KeyPair1 == KeyPair2);
-
-        #endregion
+            => !(PublicKey1 == PublicKey2);
 
         #endregion
 
-        #region IEquatable<KeyPair> Members
+        #endregion
+
+        #region IEquatable<PublicKey> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two key pairs for equality.
+        /// Compares two public keys for equality.
         /// </summary>
-        /// <param name="Object">A key pair to compare with.</param>
+        /// <param name="Object">A public key to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is KeyPair keyPair &&
-                   Equals(keyPair);
+            => Object is PublicKey publicKey &&
+                   Equals(publicKey);
 
         #endregion
 
-        #region Equals(KeyPair)
+        #region Equals(PublicKey)
 
         /// <summary>
-        /// Compares two key pairs for equality.
+        /// Compares two public keys for equality.
         /// </summary>
-        /// <param name="KeyPair">A key pair to compare with.</param>
-        public Boolean Equals(KeyPair? KeyPair)
+        /// <param name="PublicKey">A public key to compare with.</param>
+        public Boolean Equals(PublicKey? PublicKey)
 
-            => KeyPair is not null &&
+            => PublicKey is not null &&
 
-               String.Equals(Private,       KeyPair.Private,       StringComparison.Ordinal)           &&
-               String.Equals(Public,        KeyPair.Public,        StringComparison.Ordinal)           &&
-               String.Equals(Algorithm,     KeyPair.Algorithm,     StringComparison.OrdinalIgnoreCase) &&
-               String.Equals(Serialization, KeyPair.Serialization, StringComparison.OrdinalIgnoreCase) &&
-               String.Equals(Encoding,      KeyPair.Encoding,      StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(Value,         PublicKey.Value,         StringComparison.Ordinal)           &&
+               String.Equals(Algorithm,     PublicKey.Algorithm,     StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(Serialization, PublicKey.Serialization, StringComparison.OrdinalIgnoreCase) &&
+               String.Equals(Encoding,      PublicKey.Encoding,      StringComparison.OrdinalIgnoreCase) &&
 
-               base.  Equals(KeyPair);
+               base.  Equals(PublicKey);
 
         #endregion
 
@@ -533,9 +451,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{Private} / {Public}";
+            => Value;
 
         #endregion
+
 
     }
 

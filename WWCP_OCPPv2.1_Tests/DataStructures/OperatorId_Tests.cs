@@ -162,6 +162,67 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         #endregion
 
 
+        #region Equals_OptionalStar_OptionalStar()
+
+        /// <summary>
+        /// A test for comparing "DE*GEF" and "DE*GEF" for equality.
+        /// </summary>
+        [Test]
+        public void Equals_OptionalStar_OptionalStar()
+        {
+
+            var operatorId1 = Operator_Id.TryParse("DE*GEF");
+            var operatorId2 = Operator_Id.TryParse("DE*GEF");
+
+            Assert.AreEqual(operatorId1,       operatorId2);
+            Assert.IsTrue  (operatorId1.Equals(operatorId2));
+            Assert.IsTrue  (operatorId1 ==     operatorId2);
+
+        }
+
+        #endregion
+
+        #region Equals_WithoutSeparator_OptionalStar()
+
+        /// <summary>
+        /// A test for comparing "DEGEF" and "DE*GEF" for equality.
+        /// </summary>
+        [Test]
+        public void Equals_WithoutSeparator_OptionalStar()
+        {
+
+            var operatorId1 = Operator_Id.TryParse("DEGEF");
+            var operatorId2 = Operator_Id.TryParse("DE*GEF");
+
+            Assert.AreEqual(operatorId1,       operatorId2);
+            Assert.IsTrue  (operatorId1.Equals(operatorId2));
+            Assert.IsTrue  (operatorId1 ==     operatorId2);
+
+        }
+
+        #endregion
+
+        #region Equals_WithoutSeparator_WithoutSeparator()
+
+        /// <summary>
+        /// A test for comparing "DEGEF" and "DEGEF" for equality.
+        /// </summary>
+        [Test]
+        public void Equals_WithoutSeparator_WithoutSeparator()
+        {
+
+            var operatorId1 = Operator_Id.TryParse("DEGEF");
+            var operatorId2 = Operator_Id.TryParse("DEGEF");
+
+            Assert.AreEqual(operatorId1,       operatorId2);
+            Assert.IsTrue  (operatorId1.Equals(operatorId2));
+            Assert.IsTrue  (operatorId1 ==     operatorId2);
+
+        }
+
+        #endregion
+
+
     }
 
 }
