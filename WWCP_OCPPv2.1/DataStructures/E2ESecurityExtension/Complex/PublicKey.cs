@@ -295,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="CustomPublicKeySerializer">A delegate to serialize cryptographic public keys.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<PublicKey>?     CustomPublicKeySerializer      = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<PublicKey>?   CustomPublicKeySerializer    = null,
                               CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
         {
 

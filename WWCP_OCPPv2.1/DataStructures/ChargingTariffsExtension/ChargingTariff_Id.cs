@@ -27,22 +27,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// Extension methods for charging tariff identifications.
     /// </summary>
-    public static class TariffIdExtensions
+    public static class ChargingTariffIdExtensions
     {
 
         /// <summary>
         /// Indicates whether this charging tariff identification is null or empty.
         /// </summary>
-        /// <param name="TariffId">A charging tariff identification.</param>
-        public static Boolean IsNullOrEmpty(this Tariff_Id? TariffId)
-            => !TariffId.HasValue || TariffId.Value.IsNullOrEmpty;
+        /// <param name="ChargingTariffId">A charging tariff identification.</param>
+        public static Boolean IsNullOrEmpty(this ChargingTariff_Id? ChargingTariffId)
+            => !ChargingTariffId.HasValue || ChargingTariffId.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this charging tariff identification is NOT null or empty.
         /// </summary>
-        /// <param name="TariffId">A charging tariff identification.</param>
-        public static Boolean IsNotNullOrEmpty(this Tariff_Id? TariffId)
-            => TariffId.HasValue && TariffId.Value.IsNotNullOrEmpty;
+        /// <param name="ChargingTariffId">A charging tariff identification.</param>
+        public static Boolean IsNotNullOrEmpty(this ChargingTariff_Id? ChargingTariffId)
+            => ChargingTariffId.HasValue && ChargingTariffId.Value.IsNotNullOrEmpty;
 
     }
 
@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// The unique identification of a charging tariff.
     /// </summary>
-    public readonly struct Tariff_Id : IId<Tariff_Id>
+    public readonly struct ChargingTariff_Id : IId<ChargingTariff_Id>
     {
 
         #region Data
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new charging tariff identification based on the given text.
         /// </summary>
         /// <param name="Text">The text representation of a charging tariff identification.</param>
-        private Tariff_Id(String Text)
+        private ChargingTariff_Id(String Text)
         {
             this.InternalId = Text;
         }
@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// and a random number.
         /// </summary>
         /// <param name="Length">The expected length of the charging tariff identification.</param>
-        public static Tariff_Id NewRandom(String  EMPId,
+        public static ChargingTariff_Id NewRandom(String  EMPId,
                                           Byte    Length = 30)
 
             => new (String.Concat(
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given text as a charging tariff identification.
         /// </summary>
         /// <param name="Text">A text representation of a charging tariff identification.</param>
-        public static Tariff_Id Parse(String Text)
+        public static ChargingTariff_Id Parse(String Text)
         {
 
             if (TryParse(Text, out var tariffId))
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given text as a charging tariff identification.
         /// </summary>
         /// <param name="Text">A text representation of a charging tariff identification.</param>
-        public static Tariff_Id? TryParse(String Text)
+        public static ChargingTariff_Id? TryParse(String Text)
         {
 
             if (TryParse(Text, out var tariffId))
@@ -154,14 +154,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse (Text, out TariffId)
+        #region (static) TryParse (Text, out ChargingTariffId)
 
         /// <summary>
         /// Try to parse the given text as a charging tariff identification.
         /// </summary>
         /// <param name="Text">A text representation of a charging tariff identification.</param>
-        /// <param name="TariffId">The parsed charging tariff identification.</param>
-        public static Boolean TryParse(String Text, out Tariff_Id TariffId)
+        /// <param name="ChargingTariffId">The parsed charging tariff identification.</param>
+        public static Boolean TryParse(String Text, out ChargingTariff_Id ChargingTariffId)
         {
 
             Text = Text.Trim();
@@ -170,14 +170,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             {
                 try
                 {
-                    TariffId = new Tariff_Id(Text);
+                    ChargingTariffId = new ChargingTariff_Id(Text);
                     return true;
                 }
                 catch
                 { }
             }
 
-            TariffId = default;
+            ChargingTariffId = default;
             return false;
 
         }
@@ -189,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Clone this charging tariff identification.
         /// </summary>
-        public Tariff_Id Clone
+        public ChargingTariff_Id Clone
 
             => new (
                    new String(InternalId?.ToCharArray())
@@ -200,99 +200,99 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Operator overloading
 
-        #region Operator == (TariffId1, TariffId2)
+        #region Operator == (ChargingTariffId1, ChargingTariffId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffId1">A charging tariff identification.</param>
-        /// <param name="TariffId2">Another charging tariff identification.</param>
+        /// <param name="ChargingTariffId1">A charging tariff identification.</param>
+        /// <param name="ChargingTariffId2">Another charging tariff identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Tariff_Id TariffId1,
-                                           Tariff_Id TariffId2)
+        public static Boolean operator == (ChargingTariff_Id ChargingTariffId1,
+                                           ChargingTariff_Id ChargingTariffId2)
 
-            => TariffId1.Equals(TariffId2);
+            => ChargingTariffId1.Equals(ChargingTariffId2);
 
         #endregion
 
-        #region Operator != (TariffId1, TariffId2)
+        #region Operator != (ChargingTariffId1, ChargingTariffId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffId1">A charging tariff identification.</param>
-        /// <param name="TariffId2">Another charging tariff identification.</param>
+        /// <param name="ChargingTariffId1">A charging tariff identification.</param>
+        /// <param name="ChargingTariffId2">Another charging tariff identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Tariff_Id TariffId1,
-                                           Tariff_Id TariffId2)
+        public static Boolean operator != (ChargingTariff_Id ChargingTariffId1,
+                                           ChargingTariff_Id ChargingTariffId2)
 
-            => !TariffId1.Equals(TariffId2);
+            => !ChargingTariffId1.Equals(ChargingTariffId2);
 
         #endregion
 
-        #region Operator <  (TariffId1, TariffId2)
+        #region Operator <  (ChargingTariffId1, ChargingTariffId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffId1">A charging tariff identification.</param>
-        /// <param name="TariffId2">Another charging tariff identification.</param>
+        /// <param name="ChargingTariffId1">A charging tariff identification.</param>
+        /// <param name="ChargingTariffId2">Another charging tariff identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Tariff_Id TariffId1,
-                                          Tariff_Id TariffId2)
+        public static Boolean operator < (ChargingTariff_Id ChargingTariffId1,
+                                          ChargingTariff_Id ChargingTariffId2)
 
-            => TariffId1.CompareTo(TariffId2) < 0;
+            => ChargingTariffId1.CompareTo(ChargingTariffId2) < 0;
 
         #endregion
 
-        #region Operator <= (TariffId1, TariffId2)
+        #region Operator <= (ChargingTariffId1, ChargingTariffId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffId1">A charging tariff identification.</param>
-        /// <param name="TariffId2">Another charging tariff identification.</param>
+        /// <param name="ChargingTariffId1">A charging tariff identification.</param>
+        /// <param name="ChargingTariffId2">Another charging tariff identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Tariff_Id TariffId1,
-                                           Tariff_Id TariffId2)
+        public static Boolean operator <= (ChargingTariff_Id ChargingTariffId1,
+                                           ChargingTariff_Id ChargingTariffId2)
 
-            => TariffId1.CompareTo(TariffId2) <= 0;
+            => ChargingTariffId1.CompareTo(ChargingTariffId2) <= 0;
 
         #endregion
 
-        #region Operator >  (TariffId1, TariffId2)
+        #region Operator >  (ChargingTariffId1, ChargingTariffId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffId1">A charging tariff identification.</param>
-        /// <param name="TariffId2">Another charging tariff identification.</param>
+        /// <param name="ChargingTariffId1">A charging tariff identification.</param>
+        /// <param name="ChargingTariffId2">Another charging tariff identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Tariff_Id TariffId1,
-                                          Tariff_Id TariffId2)
+        public static Boolean operator > (ChargingTariff_Id ChargingTariffId1,
+                                          ChargingTariff_Id ChargingTariffId2)
 
-            => TariffId1.CompareTo(TariffId2) > 0;
+            => ChargingTariffId1.CompareTo(ChargingTariffId2) > 0;
 
         #endregion
 
-        #region Operator >= (TariffId1, TariffId2)
+        #region Operator >= (ChargingTariffId1, ChargingTariffId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TariffId1">A charging tariff identification.</param>
-        /// <param name="TariffId2">Another charging tariff identification.</param>
+        /// <param name="ChargingTariffId1">A charging tariff identification.</param>
+        /// <param name="ChargingTariffId2">Another charging tariff identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Tariff_Id TariffId1,
-                                           Tariff_Id TariffId2)
+        public static Boolean operator >= (ChargingTariff_Id ChargingTariffId1,
+                                           ChargingTariff_Id ChargingTariffId2)
 
-            => TariffId1.CompareTo(TariffId2) >= 0;
-
-        #endregion
+            => ChargingTariffId1.CompareTo(ChargingTariffId2) >= 0;
 
         #endregion
 
-        #region IComparable<TariffId> Members
+        #endregion
+
+        #region IComparable<ChargingTariffId> Members
 
         #region CompareTo(Object)
 
@@ -302,30 +302,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A charging tariff identification to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is Tariff_Id tariffId
+            => Object is ChargingTariff_Id tariffId
                    ? CompareTo(tariffId)
                    : throw new ArgumentException("The given object is not a charging tariff identification!",
                                                  nameof(Object));
 
         #endregion
 
-        #region CompareTo(TariffId)
+        #region CompareTo(ChargingTariffId)
 
         /// <summary>
         /// Compares two charging tariff identifications.
         /// </summary>
-        /// <param name="TariffId">A charging tariff identification to compare with.</param>
-        public Int32 CompareTo(Tariff_Id TariffId)
+        /// <param name="ChargingTariffId">A charging tariff identification to compare with.</param>
+        public Int32 CompareTo(ChargingTariff_Id ChargingTariffId)
 
             => String.Compare(InternalId,
-                              TariffId.InternalId,
+                              ChargingTariffId.InternalId,
                               StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
         #endregion
 
-        #region IEquatable<TariffId> Members
+        #region IEquatable<ChargingTariffId> Members
 
         #region Equals(Object)
 
@@ -335,21 +335,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A charging tariff identification to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is Tariff_Id tariffId &&
+            => Object is ChargingTariff_Id tariffId &&
                    Equals(tariffId);
 
         #endregion
 
-        #region Equals(TariffId)
+        #region Equals(ChargingTariffId)
 
         /// <summary>
         /// Compares two charging tariff identifications for equality.
         /// </summary>
-        /// <param name="TariffId">A charging tariff identification to compare with.</param>
-        public Boolean Equals(Tariff_Id TariffId)
+        /// <param name="ChargingTariffId">A charging tariff identification to compare with.</param>
+        public Boolean Equals(ChargingTariff_Id ChargingTariffId)
 
             => String.Equals(InternalId,
-                             TariffId.InternalId,
+                             ChargingTariffId.InternalId,
                              StringComparison.OrdinalIgnoreCase);
 
         #endregion

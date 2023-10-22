@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The enumeration of tariffs that can be used with this charging ticket.
         /// </summary>
         [Mandatory]
-        public IEnumerable<Tariff>              Tariffs                    { get; }
+        public IEnumerable<ChargingTariff>      Tariffs                    { get; }
 
 
         /// <summary>
@@ -121,13 +121,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An optional enumeration of EVSE identifications, this charging ticket is valid for.
         /// </summary>
         [Optional]
-        public IEnumerable<GlobalEVSE_Id>       ValidChargingPools         { get; }
+        public IEnumerable<ChargingPool_Id>     ValidChargingPools         { get; }
 
         /// <summary>
         /// An optional enumeration of EVSE identifications, this charging ticket is valid for.
         /// </summary>
         [Optional]
-        public IEnumerable<GlobalEVSE_Id>       ValidChargingStations      { get; }
+        public IEnumerable<ChargingStation_Id>  ValidChargingStations      { get; }
 
         /// <summary>
         /// An optional enumeration of EVSE identifications, this charging ticket is valid for.
@@ -140,13 +140,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An optional enumeration of EVSE identifications, this charging ticket is valid for.
         /// </summary>
         [Optional]
-        public IEnumerable<GlobalEVSE_Id>       InvalidChargingPools       { get; }
+        public IEnumerable<ChargingPool_Id>     InvalidChargingPools       { get; }
 
         /// <summary>
         /// An optional enumeration of EVSE identifications, this charging ticket is valid for.
         /// </summary>
         [Optional]
-        public IEnumerable<GlobalEVSE_Id>       InvalidChargingStations    { get; }
+        public IEnumerable<ChargingStation_Id>  InvalidChargingStations    { get; }
 
         /// <summary>
         /// An optional enumeration of EVSE identifications, this charging ticket is valid for.
@@ -154,6 +154,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         [Optional]
         public IEnumerable<GlobalEVSE_Id>       InvalidEVSEIds             { get; }
 
+
+        /// <summary>
+        /// The allowed current type: AC, DC, or both.
+        /// </summary>
+        [Mandatory]
+        public CurrentTypes                     AllowedCurrentType         { get; }
 
         /// <summary>
         /// The maximum allowed consumed energy during a charging session authorized by this charging ticket.
@@ -229,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               Provider_Id                       ProviderId,
                               IEnumerable<DisplayText>          ProviderName,
                               PublicKey                         DriverPublicKey,
-                              IEnumerable<Tariff>               Tariffs,
+                              IEnumerable<ChargingTariff>       Tariffs,
 
                               URL?                              ProviderURL               = null,
                               IEnumerable<DisplayText>?         Description               = null,
@@ -238,14 +244,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               DateTime?                         NotAfter                  = null,
 
                               IEnumerable<Operator_Id>?         ValidOperators            = null,
-                              IEnumerable<GlobalEVSE_Id>?       ValidChargingPools        = null,
-                              IEnumerable<GlobalEVSE_Id>?       ValidChargingStations     = null,
+                              IEnumerable<ChargingPool_Id>?     ValidChargingPools        = null,
+                              IEnumerable<ChargingStation_Id>?  ValidChargingStations     = null,
                               IEnumerable<GlobalEVSE_Id>?       ValidEVSEIds              = null,
 
-                              IEnumerable<GlobalEVSE_Id>?       InvalidChargingPools      = null,
-                              IEnumerable<GlobalEVSE_Id>?       InvalidChargingStations   = null,
+                              IEnumerable<ChargingPool_Id>?     InvalidChargingPools      = null,
+                              IEnumerable<ChargingStation_Id>?  InvalidChargingStations   = null,
                               IEnumerable<GlobalEVSE_Id>?       InvalidEVSEIds            = null,
 
+                              CurrentTypes?                     AllowedCurrentType        = null,
                               TimeSpan?                         MaxDuration               = null,
                               WattHour?                         MaxKWh                    = null,
                               Watt?                             MaxKW                     = null,
@@ -285,14 +292,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.NotAfter                 = NotAfter                            ?? this.Created + TimeSpan.FromDays(3);
 
             this.ValidOperators           = ValidOperators?.         Distinct() ?? Array.Empty<Operator_Id>();
-            this.ValidChargingPools       = ValidChargingPools?.     Distinct() ?? Array.Empty<GlobalEVSE_Id>();
-            this.ValidChargingStations    = ValidChargingStations?.  Distinct() ?? Array.Empty<GlobalEVSE_Id>();
+            this.ValidChargingPools       = ValidChargingPools?.     Distinct() ?? Array.Empty<ChargingPool_Id>();
+            this.ValidChargingStations    = ValidChargingStations?.  Distinct() ?? Array.Empty<ChargingStation_Id>();
             this.ValidEVSEIds             = ValidEVSEIds?.           Distinct() ?? Array.Empty<GlobalEVSE_Id>();
 
-            this.InvalidChargingPools     = InvalidChargingPools?.   Distinct() ?? Array.Empty<GlobalEVSE_Id>();
-            this.InvalidChargingStations  = InvalidChargingStations?.Distinct() ?? Array.Empty<GlobalEVSE_Id>();
+            this.InvalidChargingPools     = InvalidChargingPools?.   Distinct() ?? Array.Empty<ChargingPool_Id>();
+            this.InvalidChargingStations  = InvalidChargingStations?.Distinct() ?? Array.Empty<ChargingStation_Id>();
             this.InvalidEVSEIds           = InvalidEVSEIds?.         Distinct() ?? Array.Empty<GlobalEVSE_Id>();
 
+            this.AllowedCurrentType       = AllowedCurrentType                  ?? CurrentTypes.ACDC;
             this.MaxDuration              = MaxDuration;
             this.MaxKWh                   = MaxKWh;
             this.MaxKW                    = MaxKW;
@@ -300,7 +308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.MaxPrice                 = MaxPrice;
             this.DaysOfWeek               = DaysOfWeek?.             Distinct() ?? Array.Empty<DayOfWeek>();
 
-            this.MultiUsage               = MultiUsage                          ?? ChargingTicketMultiUsages.      MultiUseAllowed;
+            this.MultiUsage               = MultiUsage                          ?? ChargingTicketMultiUsages.      Allowed;
             this.ValidationMethod         = ValidationMethod                    ?? ChargingTicketValidationMethods.OfflineChargingAllowed;
 
             unchecked
@@ -394,6 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         out ErrorResponse,
                         null,
                         null);
+
 
         /// <summary>
         /// Try to parse the given JSON representation of a charging ticket.
@@ -491,8 +500,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatoryHashSet("chargingTariffs",
                                                 "charging tariffs",
-                                                Tariff.TryParse,
-                                                out HashSet<Tariff> ChargingTariffs,
+                                                ChargingTariff.TryParse,
+                                                out HashSet<ChargingTariff> ChargingTariffs,
                                                 out ErrorResponse))
                 {
                     return false;
@@ -695,6 +704,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                 ChargingTicket = new ChargingTicket(
+
                                      TicketIdBody ?? TicketIdURL!.Value,
                                      ProviderId,
                                      ProviderName,
@@ -716,6 +726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      null, //InvalidChargingStations,
                                      null, //InvalidEVSEIds,
 
+                                     null, //AllowedCurrentType,
                                      null, //MaxDuration,
                                      null, //MaxKWh,
                                      null, //MaxKW,
@@ -735,15 +746,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (CustomTicketParser is not null)
                     ChargingTicket = CustomTicketParser(JSON,
-                                                ChargingTicket);
+                                                        ChargingTicket);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                ChargingTicket         = default;
-                ErrorResponse  = "The given JSON representation of a charging ticket is invalid: " + e.Message;
+                ChargingTicket  = default;
+                ErrorResponse   = "The given JSON representation of a charging ticket is invalid: " + e.Message;
                 return false;
             }
 
@@ -751,25 +762,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomTicketSerializer = null, CustomDisplayTextSerializer = null, ...)
+        #region ToJSON(CustomChargingTicketSerializer = null, CustomDisplayTextSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomTicketSerializer">A delegate to serialize custom ticket JSON objects.</param>
+        /// <param name="CustomChargingTicketSerializer">A delegate to serialize custom ticket JSON objects.</param>
         /// <param name="CustomDisplayTextSerializer">A delegate to serialize custom multi-language text JSON objects.</param>
+        /// <param name="CustomPublicKeySerializer">A delegate to serialize cryptographic public keys.</param>
+        /// 
         /// <param name="CustomPriceSerializer">A delegate to serialize custom price JSON objects.</param>
-        /// <param name="CustomTicketElementSerializer">A delegate to serialize custom ticket element JSON objects.</param>
         /// <param name="CustomPriceComponentSerializer">A delegate to serialize custom price component JSON objects.</param>
-        /// <param name="CustomTicketRestrictionsSerializer">A delegate to serialize custom ticket restrictions JSON objects.</param>
         /// <param name="CustomEnergyMixSerializer">A delegate to serialize custom hours JSON objects.</param>
         /// <param name="CustomEnergySourceSerializer">A delegate to serialize custom energy source JSON objects.</param>
         /// <param name="CustomEnvironmentalImpactSerializer">A delegate to serialize custom environmental impact JSON objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingTicket>?       CustomTicketSerializer                = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingTicket>?       CustomChargingTicketSerializer        = null,
                               CustomJObjectSerializerDelegate<DisplayText>?          CustomDisplayTextSerializer           = null,
-                              CustomJObjectSerializerDelegate<Tariff>?               CustomTariffSerializer                = null,
+                              CustomJObjectSerializerDelegate<PublicKey>?            CustomPublicKeySerializer             = null,
+                              CustomJObjectSerializerDelegate<ChargingTariff>?               CustomTariffSerializer                = null,
                               CustomJObjectSerializerDelegate<Price>?                CustomPriceSerializer                 = null,
                               CustomJObjectSerializerDelegate<TariffElement>?        CustomTariffElementSerializer         = null,
                               CustomJObjectSerializerDelegate<PriceComponent>?       CustomPriceComponentSerializer        = null,
@@ -783,45 +795,110 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("id",             Id.              ToString()),
-                                 new JProperty("providerId",                      ProviderId),
-                                 new JProperty("providerName",   new JArray(ProviderName.Select(providerName   => providerName.  ToJSON(CustomDisplayTextSerializer)))),
-                                 new JProperty("tariffs",        new JArray(Tariffs.     Select(chargingTariff => chargingTariff.ToJSON(CustomTariffSerializer,
-                                                                                                                                        CustomDisplayTextSerializer,
-                                                                                                                                        CustomPriceSerializer,
-                                                                                                                                        CustomTariffElementSerializer,
-                                                                                                                                        CustomPriceComponentSerializer,
-                                                                                                                                        CustomTariffRestrictionsSerializer,
-                                                                                                                                        CustomEnergyMixSerializer,
-                                                                                                                                        CustomEnergySourceSerializer,
-                                                                                                                                        CustomEnvironmentalImpactSerializer,
-                                                                                                                                        CustomSignatureSerializer,
-                                                                                                                                        CustomCustomDataSerializer)))),
+                                 new JProperty("id",                        Id.              ToString()),
 
-                                 new JProperty("created",        Created.         ToIso8601()),
-                                 new JProperty("notBefore",      NotBefore.       ToIso8601()),
-                                 new JProperty("notAftere",      NotAfter.        ToIso8601()),
+                                 new JProperty("providerId",                                 ProviderId),
+                                 new JProperty("providerName",              new JArray(ProviderName.           Select(providerName      => providerName.     ToJSON(CustomDisplayTextSerializer)))),
 
-                           Description.Any()
-                               ? new JProperty("description",    new JArray(Description.Select(description      => description.  ToJSON(CustomDisplayTextSerializer))))
+                           ProviderURL.HasValue
+                               ? new JProperty("providerURL",               ProviderURL.Value.ToString())
+                               : null,
+
+                                 new JProperty("driverPublicKey",           DriverPublicKey.  ToJSON(CustomPublicKeySerializer,
+                                                                                                     CustomCustomDataSerializer)),
+
+                                 new JProperty("tariffs",                   new JArray(Tariffs.                Select(chargingTariff    => chargingTariff.   ToJSON(CustomTariffSerializer,
+                                                                                                                                                                    CustomDisplayTextSerializer,
+                                                                                                                                                                    CustomPriceSerializer,
+                                                                                                                                                                    CustomTariffElementSerializer,
+                                                                                                                                                                    CustomPriceComponentSerializer,
+                                                                                                                                                                    CustomTariffRestrictionsSerializer,
+                                                                                                                                                                    CustomEnergyMixSerializer,
+                                                                                                                                                                    CustomEnergySourceSerializer,
+                                                                                                                                                                    CustomEnvironmentalImpactSerializer,
+                                                                                                                                                                    CustomSignatureSerializer,
+                                                                                                                                                                    CustomCustomDataSerializer)))),
+
+                           Description.            Any()
+                               ? new JProperty("description",               new JArray(Description.            Select(description       => description.      ToJSON(CustomDisplayTextSerializer))))
+                               : null,
+
+                                 new JProperty("created",                   Created.         ToIso8601()),
+                                 new JProperty("notBefore",                 NotBefore.       ToIso8601()),
+                                 new JProperty("notAftere",                 NotAfter.        ToIso8601()),
+
+                           ValidOperators.         Any()
+                               ? new JProperty("validOperators",            new JArray(ValidOperators.         Select(operatorId        => operatorId.       ToString())))
+                               : null,
+
+                           ValidChargingPools.     Any()
+                               ? new JProperty("validChargingPools",        new JArray(ValidChargingPools.     Select(chargingPoolId    => chargingPoolId.   ToString())))
+                               : null,
+
+                           ValidChargingStations.  Any()
+                               ? new JProperty("validChargingStations",     new JArray(ValidChargingStations.  Select(chargingStationId => chargingStationId.ToString())))
+                               : null,
+
+                           ValidEVSEIds.           Any()
+                               ? new JProperty("validEVSEIds",              new JArray(ValidEVSEIds.           Select(evseId            => evseId.           ToString())))
+                               : null,
+
+
+                           InvalidChargingPools.   Any()
+                               ? new JProperty("invalidChargingPools",      new JArray(InvalidChargingPools.   Select(chargingPoolId    => chargingPoolId.   ToString())))
+                               : null,
+
+                           InvalidChargingStations.Any()
+                               ? new JProperty("invalidChargingStations",   new JArray(InvalidChargingStations.Select(chargingStationId => chargingStationId.ToString())))
+                               : null,
+
+                           InvalidEVSEIds.         Any()
+                               ? new JProperty("invalidEVSEIds",            new JArray(InvalidEVSEIds.         Select(evseId            => evseId.           ToString())))
+                               : null,
+
+
+                                 new JProperty("allowedCurrentType",        AllowedCurrentType.AsText()),
+
+                           MaxDuration.HasValue
+                               ? new JProperty("maxDuration",               MaxDuration.Value.TotalMinutes)
+                               : null,
+
+                           MaxKWh.     HasValue
+                               ? new JProperty("maxKWh",                    MaxKWh.     Value.Value)
+                               : null,
+
+                           MaxKW.      HasValue
+                               ? new JProperty("maxKW",                     MaxKW.      Value.Value)
+                               : null,
+
+                           MaxCurrent. HasValue
+                               ? new JProperty("maxCurrent",                MaxCurrent. Value.Value)
                                : null,
 
                            MaxPrice.HasValue
-                               ? new JProperty("maxPrice",       MaxPrice.Value.ToJSON(CustomPriceSerializer))
+                               ? new JProperty("maxPrice",                  MaxPrice.   Value.ToJSON(CustomPriceSerializer))
                                : null,
+
+                           DaysOfWeek.Any()
+                               ? new JProperty("daysOfWeek",                new JArray(DaysOfWeek.             Select(dayOfWeek         => dayOfWeek.    ToString())))
+                               : null,
+
+                                 new JProperty("multiUsage",                MultiUsage.      AsText()),
+                                 new JProperty("validationMethod",          ValidationMethod.AsText()),
 
 
                            Signatures.Any()
-                               ? new JProperty("signatures",     new JArray(Signatures. Select(signature        => signature.    ToJSON(CustomSignatureSerializer,
-                                                                                                                                        CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",                new JArray(Signatures.             Select(signature         => signature.    ToJSON(CustomSignatureSerializer,
+                                                                                                                                                                CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",                CustomData.ToJSON(CustomCustomDataSerializer))
                                : null);
 
-            return CustomTicketSerializer is not null
-                       ? CustomTicketSerializer(this, json)
+
+            return CustomChargingTicketSerializer is not null
+                       ? CustomChargingTicketSerializer(this, json)
                        : json;
 
         }
@@ -856,6 +933,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     InvalidChargingStations.Select(chargingStationId => chargingStationId.Clone).ToArray(),
                     InvalidEVSEIds.         Select(evseId            => evseId.           Clone).ToArray(),
 
+                    AllowedCurrentType,
                     MaxDuration,
                     MaxKWh,
                     MaxKW,
@@ -1067,7 +1145,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => ChargingTicket is not null &&
 
                Id.                     Equals(ChargingTicket.Id)          &&
-               //Currency.               Equals(ChargingTicket.Currency)    &&
 
             //((!TicketType.HasValue    && !ChargingTicket.TicketType.HasValue) ||
             //  (TicketType.HasValue    &&  ChargingTicket.TicketType.HasValue    && TicketType.Value.Equals(ChargingTicket.TicketType.Value))) &&
@@ -1082,9 +1159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
               (MaxPrice.  HasValue    &&  ChargingTicket.MaxPrice.  HasValue    && MaxPrice.  Value.Equals(ChargingTicket.MaxPrice.  Value))) &&
 
             NotBefore.     Equals(ChargingTicket.NotBefore) &&
-
-            //((!NotAfter.       HasValue    && !ChargingTicket.NotAfter.       HasValue) ||
-            //  (NotAfter.       HasValue    &&  ChargingTicket.NotAfter.       HasValue    && NotAfter.       Value.Equals(ChargingTicket.NotAfter.       Value))) &&
+            NotAfter.      Equals(ChargingTicket.NotAfter)  &&
 
             // ((EnergyMix  is     null &&  ChargingTicket.EnergyMix  is null)  ||
             //  (EnergyMix  is not null &&  ChargingTicket.EnergyMix  is not null && EnergyMix.       Equals(ChargingTicket.EnergyMix)))        &&

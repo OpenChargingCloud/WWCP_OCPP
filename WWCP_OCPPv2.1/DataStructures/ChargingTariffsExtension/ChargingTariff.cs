@@ -45,10 +45,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     ///  - Added property "ProviderName" as the multi-language name of the e-mobility provider responsible for this tariff.
     ///  - Added property "EVSEIds" as a list of EVSE identifications, this tariff is valid for.
     /// </remarks>
-    public class Tariff : ACustomSignableData,
-                          IHasId<Tariff_Id>,
-                          IEquatable<Tariff>,
-                          IComparable<Tariff>,
+    public class ChargingTariff : ACustomSignableData,
+                          IHasId<ChargingTariff_Id>,
+                          IEquatable<ChargingTariff>,
+                          IComparable<ChargingTariff>,
                           IComparable
     {
 
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The global unique and unique in time identification of the charging tariff.
         /// </summary>
         [Mandatory]
-        public   Tariff_Id                   Id                   { get; }
+        public   ChargingTariff_Id                   Id                   { get; }
 
         /// <summary>
         /// The timestamp when this tariff was created.
@@ -79,13 +79,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional reference to another existing tariff, which will be replaced by this tariff.
         /// </summary>
         [Optional]
-        public   Tariff_Id?                  Replaces             { get; }
+        public   ChargingTariff_Id?                  Replaces             { get; }
 
         /// <summary>
         /// The optional reference to another existing tariff, e.g. because some local adaption of the tariff was required.
         /// </summary>
         [Optional]
-        public   Tariff_Id?                  References           { get; }
+        public   ChargingTariff_Id?                  References           { get; }
 
         /// <summary>
         /// The unique identification of the e-mobility provider responsible for this tariff.
@@ -206,15 +206,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Signatures"></param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public Tariff(Tariff_Id                    Id,
+        public ChargingTariff(ChargingTariff_Id                    Id,
                       Provider_Id                  ProviderId,
                       IEnumerable<DisplayText>     ProviderName,
                       Currency                     Currency,
                       IEnumerable<TariffElement>   TariffElements,
 
                       DateTime?                    Created       = null,
-                      Tariff_Id?                   Replaces      = null,
-                      Tariff_Id?                   References    = null,
+                      ChargingTariff_Id?                   Replaces      = null,
+                      ChargingTariff_Id?                   References    = null,
                       TariffType?                  TariffType    = null,
                       IEnumerable<DisplayText>?    Description   = null,
                       URL?                         URL           = null,
@@ -298,11 +298,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PartyIdURL">An optional party identification, e.g. from the HTTP URL.</param>
         /// <param name="TariffIdURL">An optional tariff identification, e.g. from the HTTP URL.</param>
         /// <param name="CustomTariffParser">A delegate to parse custom tariff JSON objects.</param>
-        public static Tariff Parse(JObject                               JSON,
+        public static ChargingTariff Parse(JObject                               JSON,
                                    //CountryCode?                          CountryCodeURL       = null,
                                    //Party_Id?                             PartyIdURL           = null,
-                                   Tariff_Id?                            TariffIdURL          = null,
-                                   CustomJObjectParserDelegate<Tariff>?  CustomTariffParser   = null)
+                                   ChargingTariff_Id?                            TariffIdURL          = null,
+                                   CustomJObjectParserDelegate<ChargingTariff>?  CustomTariffParser   = null)
         {
 
             if (TryParse(JSON,
@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Tariff">The parsed tariff.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject      JSON,
-                                       out Tariff?  Tariff,
+                                       out ChargingTariff?  Tariff,
                                        out String?  ErrorResponse)
 
             => TryParse(JSON,
@@ -352,10 +352,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="TariffIdURL">An optional tariff identification, e.g. from the HTTP URL.</param>
         /// <param name="CustomTariffParser">A delegate to parse custom tariff JSON objects.</param>
         public static Boolean TryParse(JObject                               JSON,
-                                       out Tariff?                           Tariff,
+                                       out ChargingTariff?                           Tariff,
                                        out String?                           ErrorResponse,
-                                       Tariff_Id?                            TariffIdURL          = null,
-                                       CustomJObjectParserDelegate<Tariff>?  CustomTariffParser   = null)
+                                       ChargingTariff_Id?                            TariffIdURL          = null,
+                                       CustomJObjectParserDelegate<ChargingTariff>?  CustomTariffParser   = null)
         {
 
             try
@@ -373,8 +373,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("id",
                                        "tariff identification",
-                                       Tariff_Id.TryParse,
-                                       out Tariff_Id? TariffIdBody,
+                                       ChargingTariff_Id.TryParse,
+                                       out ChargingTariff_Id? TariffIdBody,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -464,8 +464,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseOptional("replaces",
                                         "replaces tariff",
-                                        Tariff_Id.TryParse,
-                                        out Tariff_Id? Replaces,
+                                        ChargingTariff_Id.TryParse,
+                                        out ChargingTariff_Id? Replaces,
                                         out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -478,8 +478,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseOptional("references",
                                         "references tariff",
-                                        Tariff_Id.TryParse,
-                                        out Tariff_Id? References,
+                                        ChargingTariff_Id.TryParse,
+                                        out ChargingTariff_Id? References,
                                         out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -641,7 +641,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                Tariff = new Tariff(
+                Tariff = new ChargingTariff(
                              TariffIdBody ?? TariffIdURL!.Value,
                              ProviderId,
                              ProviderName,
@@ -701,7 +701,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomEnvironmentalImpactSerializer">A delegate to serialize custom environmental impact JSON objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<Tariff>?               CustomTariffSerializer                = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingTariff>?               CustomTariffSerializer                = null,
                               CustomJObjectSerializerDelegate<DisplayText>?          CustomDisplayTextSerializer           = null,
                               CustomJObjectSerializerDelegate<Price>?                CustomPriceSerializer                 = null,
                               CustomJObjectSerializerDelegate<TariffElement>?        CustomTariffElementSerializer         = null,
@@ -793,7 +793,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Clone this object.
         /// </summary>
-        public Tariff Clone()
+        public ChargingTariff Clone()
 
             => new (Id.            Clone,
                     ProviderId.    Clone,
@@ -833,8 +833,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Tariff1">A charging tariff.</param>
         /// <param name="Tariff2">Another charging tariff.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Tariff? Tariff1,
-                                           Tariff? Tariff2)
+        public static Boolean operator == (ChargingTariff? Tariff1,
+                                           ChargingTariff? Tariff2)
         {
 
             if (Object.ReferenceEquals(Tariff1, Tariff2))
@@ -857,8 +857,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Tariff1">A charging tariff.</param>
         /// <param name="Tariff2">Another charging tariff.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Tariff? Tariff1,
-                                           Tariff? Tariff2)
+        public static Boolean operator != (ChargingTariff? Tariff1,
+                                           ChargingTariff? Tariff2)
 
             => !(Tariff1 == Tariff2);
 
@@ -872,8 +872,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Tariff1">A charging tariff.</param>
         /// <param name="Tariff2">Another charging tariff.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Tariff? Tariff1,
-                                          Tariff? Tariff2)
+        public static Boolean operator < (ChargingTariff? Tariff1,
+                                          ChargingTariff? Tariff2)
 
             => Tariff1 is null
                    ? throw new ArgumentNullException(nameof(Tariff1), "The given tariff must not be null!")
@@ -889,8 +889,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Tariff1">A charging tariff.</param>
         /// <param name="Tariff2">Another charging tariff.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Tariff? Tariff1,
-                                           Tariff? Tariff2)
+        public static Boolean operator <= (ChargingTariff? Tariff1,
+                                           ChargingTariff? Tariff2)
 
             => !(Tariff1 > Tariff2);
 
@@ -904,8 +904,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Tariff1">A charging tariff.</param>
         /// <param name="Tariff2">Another charging tariff.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Tariff? Tariff1,
-                                          Tariff? Tariff2)
+        public static Boolean operator > (ChargingTariff? Tariff1,
+                                          ChargingTariff? Tariff2)
 
             => Tariff1 is null
                    ? throw new ArgumentNullException(nameof(Tariff1), "The given tariff must not be null!")
@@ -921,8 +921,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Tariff1">A charging tariff.</param>
         /// <param name="Tariff2">Another charging tariff.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Tariff? Tariff1,
-                                           Tariff? Tariff2)
+        public static Boolean operator >= (ChargingTariff? Tariff1,
+                                           ChargingTariff? Tariff2)
 
             => !(Tariff1 < Tariff2);
 
@@ -940,7 +940,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A charging tariff to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is Tariff tariff
+            => Object is ChargingTariff tariff
                    ? CompareTo(tariff)
                    : throw new ArgumentException("The given object is not a charging tariff!",
                                                  nameof(Object));
@@ -953,7 +953,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Compares two charging tariffs.
         /// </summary>
         /// <param name="Tariff">A charging tariff to compare with.</param>
-        public Int32 CompareTo(Tariff? Tariff)
+        public Int32 CompareTo(ChargingTariff? Tariff)
         {
 
             if (Tariff is null)
@@ -999,7 +999,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A charging tariff to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is Tariff tariff &&
+            => Object is ChargingTariff tariff &&
                    Equals(tariff);
 
         #endregion
@@ -1010,7 +1010,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Compares two charging tariffs for equality.
         /// </summary>
         /// <param name="Tariff">A charging tariff to compare with.</param>
-        public Boolean Equals(Tariff? Tariff)
+        public Boolean Equals(ChargingTariff? Tariff)
 
             => Tariff is not null &&
 
