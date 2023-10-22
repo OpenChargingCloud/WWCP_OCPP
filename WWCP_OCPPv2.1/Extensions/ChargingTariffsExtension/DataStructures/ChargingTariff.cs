@@ -30,21 +30,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A read-only signable charging tariff.
     /// </summary>
-    /// 
-    /// <remarks>
-    /// This is based on OICP v2.2.1 as this might become future part of OCPP v2.1 (draft 3++).
-    ///  - Removed property "CountryCode" and "PartyId", as both are just an OCPI implementation detail.
-    ///  - Removed property "LastUpdated", as this data structure must be immutable for legal reasons!
-    ///  - Renamed property "Start" to a _mandatory_ "NotBefore", to be more aligned with certificates.
-    ///  - Renamed property "End" to "NotAfter", to be more aligned with certificates.
-    ///  - Renamed property "TariffAltText" to "Description" and its data type from IEnumerable&lt;DisplayText&gt; to DisplayTexts.
-    ///  - Renamed property "TariffAltURL" to "URL"
-    ///  
-    ///  - Added property "Created" to track when the tariff was created.
-    ///  - Added property "ProviderId" as the unique identification of the e-mobility provider responsible for this tariff.
-    ///  - Added property "ProviderName" as the multi-language name of the e-mobility provider responsible for this tariff.
-    ///  - Added property "EVSEIds" as a list of EVSE identifications, this tariff is valid for.
-    /// </remarks>
     public class ChargingTariff : ACustomSignableData,
                                   IHasId<ChargingTariff_Id>,
                                   IEquatable<ChargingTariff>,
@@ -67,69 +52,81 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The global unique and unique in time identification of the charging tariff.
         /// </summary>
         [Mandatory]
-        public   ChargingTariff_Id           Id                   { get; }
+        public   ChargingTariff_Id              Id                    { get; }
 
         /// <summary>
         /// The timestamp when this tariff was created.
         /// </summary>
         [Mandatory] //, NonStandard("Pagination")]
-        public   DateTime                    Created              { get; }
+        public   DateTime                       Created               { get; }
 
         /// <summary>
         /// The optional reference to another existing tariff, which will be replaced by this tariff.
         /// </summary>
         [Optional]
-        public   ChargingTariff_Id?          Replaces             { get; }
+        public   ChargingTariff_Id?             Replaces              { get; }
 
         /// <summary>
         /// The optional reference to another existing tariff, e.g. because some local adaption of the tariff was required.
         /// </summary>
         [Optional]
-        public   ChargingTariff_Id?          References           { get; }
+        public   ChargingTariff_Id?             References            { get; }
 
         /// <summary>
         /// The unique identification of the e-mobility provider responsible for this tariff.
         /// </summary>
         [Mandatory]
-        public   Provider_Id                 ProviderId           { get; }
+        public   Provider_Id                    ProviderId            { get; }
 
         /// <summary>
         /// The multi-language name of the e-mobility provider responsible for this tariff.
         /// </summary>
         [Mandatory]
-        public   DisplayTexts                ProviderName         { get; }
+        public   DisplayTexts                   ProviderName          { get; }
 
         /// <summary>
         /// The ISO 4217 code of the currency used for this tariff.
         /// </summary>
         [Mandatory]
-        public   Currency                    Currency             { get; }
+        public   Currency                       Currency              { get; }
 
         /// <summary>
         /// The optional tariff type allows to distinguish between charging preferences.
         /// When omitted, this tariff is valid for all charging sessions.
         /// </summary>
         [Optional]
-        public   TariffType?                 TariffType           { get; }
+        public   TariffType?                    TariffType            { get; }
 
         /// <summary>
         /// The optional multi-language tariff description.
         /// </summary>
         [Optional]
-        public   DisplayTexts                Description          { get; }
+        public   DisplayTexts                   Description           { get; }
 
         /// <summary>
         /// The optional informative (not legally binding) URL to a web page that contains an
         /// explanation of the tariff information in human readable form.
         /// </summary>
         [Optional]
-        public   URL?                        URL                  { get; }
+        public   URL?                           URL                   { get; }
 
         /// <summary>
         /// An optional enumeration of EVSE identifications, this tariff is valid for.
         /// </summary>
         [Optional]
-        public IEnumerable<GlobalEVSE_Id>    EVSEIds              { get; }
+        public IEnumerable<GlobalEVSE_Id>       EVSEIds               { get; }
+
+        /// <summary>
+        /// An optional enumeration of charging station identifications, this tariff is valid for.
+        /// </summary>
+        [Optional]
+        public IEnumerable<ChargingStation_Id>  ChargingStationIds    { get; }
+
+        /// <summary>
+        /// An optional enumeration of charging pool identifications, this tariff is valid for.
+        /// </summary>
+        [Optional]
+        public IEnumerable<ChargingPool_Id>     ChargingPoolIds       { get; }
 
         /// <summary>
         /// When this optional field is set, a charging session with this tariff will at least cost
@@ -139,20 +136,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// than this amount, the cost of the charging session will be equal to this amount.
         /// </summary>
         [Optional]
-        public   Price?                      MinPrice             { get; }
+        public   Price?                         MinPrice              { get; }
 
         /// <summary>
         /// When this optional field is set, a charging session with this tariff will NOT
         /// cost more than this amount.
         /// </summary>
         [Optional]
-        public   Price?                      MaxPrice             { get; }
+        public   Price?                         MaxPrice              { get; }
 
         /// <summary>
         /// The enumeration of tariff elements.
         /// </summary>
         [Mandatory]
-        public   IEnumerable<TariffElement>  TariffElements       { get; }
+        public   IEnumerable<TariffElement>     TariffElements        { get; }
 
         /// <summary>
         /// The timestamp when this tariff becomes active (UTC).
@@ -160,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// before it becomes active.
         /// </summary>
         [Mandatory]
-        public   DateTime                    NotBefore            { get; }
+        public   DateTime                       NotBefore             { get; }
 
         /// <summary>
         /// The optional timestamp after which this tariff is no longer valid (UTC).
@@ -168,13 +165,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// in the near future.
         /// </summary>
         [Optional]
-        public   DateTime?                   NotAfter             { get; }
+        public   DateTime?                      NotAfter              { get; }
 
         /// <summary>
         /// Optional details on the energy supplied with this tariff.
         /// </summary>
         [Optional]
-        public   EnergyMix?                  EnergyMix            { get;  }
+        public   EnergyMix?                     EnergyMix             { get;  }
 
         #endregion
 
@@ -201,35 +198,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="NotAfter">An optional timestamp after which this tariff is no longer valid (UTC).</param>
         /// <param name="EnergyMix">Optional details on the energy supplied with this tariff.</param>
         /// 
-        /// <param name="SignKeys"></param>
-        /// <param name="SignInfos"></param>
-        /// <param name="Signatures"></param>
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this charging tariff.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this charging tariff.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public ChargingTariff(ChargingTariff_Id            Id,
-                              Provider_Id                  ProviderId,
-                              DisplayTexts                 ProviderName,
-                              Currency                     Currency,
-                              IEnumerable<TariffElement>   TariffElements,
+        public ChargingTariff(ChargingTariff_Id                 Id,
+                              Provider_Id                       ProviderId,
+                              DisplayTexts                      ProviderName,
+                              Currency                          Currency,
+                              IEnumerable<TariffElement>        TariffElements,
 
-                              DateTime?                    Created       = null,
-                              ChargingTariff_Id?           Replaces      = null,
-                              ChargingTariff_Id?           References    = null,
-                              TariffType?                  TariffType    = null,
-                              DisplayTexts?                Description   = null,
-                              URL?                         URL           = null,
-                              IEnumerable<GlobalEVSE_Id>?  EVSEIds       = null,
-                              Price?                       MinPrice      = null,
-                              Price?                       MaxPrice      = null,
-                              DateTime?                    NotBefore     = null,
-                              DateTime?                    NotAfter      = null,
-                              EnergyMix?                   EnergyMix     = null,
+                              DateTime?                         Created              = null,
+                              ChargingTariff_Id?                Replaces             = null,
+                              ChargingTariff_Id?                References           = null,
+                              TariffType?                       TariffType           = null,
+                              DisplayTexts?                     Description          = null,
+                              URL?                              URL                  = null,
+                              IEnumerable<GlobalEVSE_Id>?       EVSEIds              = null,
+                              IEnumerable<ChargingStation_Id>?  ChargingStationIds   = null,
+                              IEnumerable<ChargingPool_Id>?     ChargingPoolIds      = null,
+                              Price?                            MinPrice             = null,
+                              Price?                            MaxPrice             = null,
+                              DateTime?                         NotBefore            = null,
+                              DateTime?                         NotAfter             = null,
+                              EnergyMix?                        EnergyMix            = null,
 
-                              IEnumerable<KeyPair>?        SignKeys      = null,
-                              IEnumerable<SignInfo>?       SignInfos     = null,
-                              IEnumerable<Signature>?      Signatures    = null,
+                              IEnumerable<KeyPair>?             SignKeys             = null,
+                              IEnumerable<SignInfo>?            SignInfos            = null,
+                              IEnumerable<Signature>?           Signatures           = null,
 
-                              CustomData?                  CustomData    = null)
+                              CustomData?                       CustomData           = null)
 
             : base (SignKeys,
                     SignInfos,
@@ -241,46 +240,50 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (!TariffElements.Any())
                 throw new ArgumentNullException(nameof(TariffElements), "The given enumeration of tariff elements must not be null or empty!");
 
-            this.Id              = Id;
-            this.ProviderId      = ProviderId;
-            this.ProviderName    = ProviderName;
-            this.Currency        = Currency;
-            this.TariffElements  = TariffElements.Distinct();
+            this.Id                  = Id;
+            this.ProviderId          = ProviderId;
+            this.ProviderName        = ProviderName;
+            this.Currency            = Currency;
+            this.TariffElements      = TariffElements.Distinct();
 
-            this.Created         = Created     ?? Timestamp.Now;
-            this.Replaces        = Replaces;
-            this.References      = References;
-            this.TariffType      = TariffType;
-            this.Description     = Description ?? DisplayTexts.Empty;
-            this.URL             = URL;
-            this.EVSEIds         = EVSEIds?.      Distinct() ?? Array.Empty<GlobalEVSE_Id>();
-            this.MinPrice        = MinPrice;
-            this.MaxPrice        = MaxPrice;
-            this.NotBefore       = NotBefore   ?? this.Created;
-            this.NotAfter        = NotAfter;
-            this.EnergyMix       = EnergyMix;
+            this.Created             = Created     ?? Timestamp.Now;
+            this.Replaces            = Replaces;
+            this.References          = References;
+            this.TariffType          = TariffType;
+            this.Description         = Description ?? DisplayTexts.Empty;
+            this.URL                 = URL;
+            this.EVSEIds             = EVSEIds?.           Distinct() ?? Array.Empty<GlobalEVSE_Id>();
+            this.ChargingStationIds  = ChargingStationIds?.Distinct() ?? Array.Empty<ChargingStation_Id>();
+            this.ChargingPoolIds     = ChargingPoolIds?.   Distinct() ?? Array.Empty<ChargingPool_Id>();
+            this.MinPrice            = MinPrice;
+            this.MaxPrice            = MaxPrice;
+            this.NotBefore           = NotBefore   ?? this.Created;
+            this.NotAfter            = NotAfter;
+            this.EnergyMix           = EnergyMix;
 
             unchecked
             {
 
-                hashCode = this.Id.            GetHashCode()       * 59 ^
-                           this.ProviderId.    GetHashCode()       * 53 ^
-                           this.ProviderName.  GetHashCode()       * 47 ^
-                           this.Currency.      GetHashCode()       * 43 ^
-                           this.TariffElements.CalcHashCode()      * 41 ^
-                           this.Created.       GetHashCode()       * 37 ^
-                          (this.Replaces?.     GetHashCode() ?? 0) * 31 ^
-                          (this.TariffType?.   GetHashCode() ?? 0) * 29 ^
-                           this.Description.   CalcHashCode()      * 23 ^
-                          (this.URL?.          GetHashCode() ?? 0) * 19 ^
-                           this.EVSEIds.       CalcHashCode()      * 17 ^
-                          (this.MinPrice?.     GetHashCode() ?? 0) * 13 ^
-                          (this.MaxPrice?.     GetHashCode() ?? 0) * 11 ^
-                           this.NotBefore.     GetHashCode()       *  7 ^
-                          (this.NotAfter?.     GetHashCode() ?? 0) *  5 ^
-                           this.EnergyMix?.    GetHashCode() ?? 0  *  3 ^
+                hashCode = this.Id.                GetHashCode()       * 63 ^
+                           this.ProviderId.        GetHashCode()       * 61 ^
+                           this.ProviderName.      GetHashCode()       * 59 ^
+                           this.Currency.          GetHashCode()       * 53 ^
+                           this.TariffElements.    CalcHashCode()      * 47 ^
+                           this.Created.           GetHashCode()       * 43 ^
+                          (this.Replaces?.         GetHashCode() ?? 0) * 41 ^
+                          (this.TariffType?.       GetHashCode() ?? 0) * 37 ^
+                           this.Description.       CalcHashCode()      * 31 ^
+                          (this.URL?.              GetHashCode() ?? 0) * 29 ^
+                           this.EVSEIds.           CalcHashCode()      * 23 ^
+                           this.ChargingStationIds.CalcHashCode()      * 19 ^
+                           this.ChargingPoolIds.   CalcHashCode()      * 17 ^
+                          (this.MinPrice?.         GetHashCode() ?? 0) * 13 ^
+                          (this.MaxPrice?.         GetHashCode() ?? 0) * 11 ^
+                           this.NotBefore.         GetHashCode()       *  7 ^
+                          (this.NotAfter?.         GetHashCode() ?? 0) *  5 ^
+                           this.EnergyMix?.        GetHashCode() ?? 0  *  3 ^
 
-                           base.               GetHashCode();
+                           base.                   GetHashCode();
 
             }
 
@@ -370,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return false;
                 }
 
-                #region Parse Id                [optional]
+                #region Parse Id                    [optional]
 
                 if (JSON.ParseOptional("id",
                                        "tariff identification",
@@ -396,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse ProviderId        [mandatory]
+                #region Parse ProviderId            [mandatory]
 
                 if (!JSON.ParseMandatory("providerId",
                                          "provider identification",
@@ -409,7 +412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse ProviderName      [mandatory]
+                #region Parse ProviderName          [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("provider_name",
                                              "provider name",
@@ -423,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse Currency          [mandatory]
+                #region Parse Currency              [mandatory]
 
                 if (!JSON.ParseMandatory("currency",
                                          "currency",
@@ -436,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse TariffElements    [mandatory]
+                #region Parse TariffElements        [mandatory]
 
                 if (!JSON.ParseMandatoryHashSet("elements",
                                                 "tariff elements",
@@ -450,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                #region Parse Created           [mandatory]
+                #region Parse Created               [mandatory]
 
                 if (!JSON.ParseMandatory("created",
                                          "created",
@@ -462,7 +465,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse Replaces          [optional]
+                #region Parse Replaces              [optional]
 
                 if (!JSON.ParseOptional("replaces",
                                         "replaces tariff",
@@ -476,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse References        [optional]
+                #region Parse References            [optional]
 
                 if (!JSON.ParseOptional("references",
                                         "references tariff",
@@ -490,7 +493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse TariffType        [optional]
+                #region Parse TariffType            [optional]
 
                 if (JSON.ParseOptionalEnum("type",
                                            "tariff type",
@@ -503,7 +506,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse Description       [optional]
+                #region Parse Description           [optional]
 
                 if (JSON.ParseOptionalJSON("description",
                                            "tariff description",
@@ -517,7 +520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse URL               [optional]
+                #region Parse URL                   [optional]
 
                 if (JSON.ParseOptional("url",
                                        "tariff URL",
@@ -531,7 +534,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse EVSEIds           [optional]
+                #region Parse EVSEIds               [optional]
 
                 if (JSON.ParseOptionalHashSet("evseIds",
                                               "EVSE identifications",
@@ -545,7 +548,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse MinPrice          [optional]
+                #region Parse ChargingStationIds    [optional]
+
+                if (JSON.ParseOptionalHashSet("chargingStationIds",
+                                              "charging station identifications",
+                                              ChargingStation_Id.TryParse,
+                                              out HashSet<ChargingStation_Id> ChargingStationIds,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse ChargingPoolIds       [optional]
+
+                if (JSON.ParseOptionalHashSet("chargingPoolIds",
+                                              "charging pool identifications",
+                                              ChargingPool_Id.TryParse,
+                                              out HashSet<ChargingPool_Id> ChargingPoolIds,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse MinPrice              [optional]
 
                 if (JSON.ParseOptionalJSON("min_price",
                                            "minimum price",
@@ -559,7 +590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse MaxPrice          [optional]
+                #region Parse MaxPrice              [optional]
 
                 if (JSON.ParseOptionalJSON("max_price",
                                            "maximum price",
@@ -573,7 +604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse NotBefore         [optional]
+                #region Parse NotBefore             [optional]
 
                 if (JSON.ParseOptional("notBefore",
                                        "not before",
@@ -586,7 +617,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse NotAfter          [optional]
+                #region Parse NotAfter              [optional]
 
                 if (JSON.ParseOptional("notAfter",
                                        "not after",
@@ -599,7 +630,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse EnergyMix         [optional]
+                #region Parse EnergyMix             [optional]
 
                 if (JSON.ParseOptionalJSON("energy_mix",
                                            "energy mix",
@@ -614,7 +645,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                #region Signatures              [optional, OCPP_CSE]
+                #region Signatures                  [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -628,7 +659,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region CustomData              [optional]
+                #region CustomData                  [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -658,6 +689,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Description,
                                      URL,
                                      EVSEIds,
+                                     ChargingStationIds,
+                                     ChargingPoolIds,
                                      MinPrice,
                                      MaxPrice,
                                      NotBefore,
@@ -720,68 +753,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("id",             Id.              ToString()),
-                                 new JProperty("providerId",     ProviderId.      ToString()),
-                                 new JProperty("providerName",   new JArray(ProviderName.  Select(providerName  => providerName. ToJSON(CustomDisplayTextSerializer)))),
-                                 new JProperty("currency",       Currency.        ToString()),
+                                 new JProperty("id",                   Id.              ToString()),
+                                 new JProperty("providerId",           ProviderId.      ToString()),
+                                 new JProperty("providerName",         new JArray(ProviderName.     Select(providerName       => providerName.     ToJSON(CustomDisplayTextSerializer)))),
+                                 new JProperty("currency",             Currency.        ToString()),
 
-                           TariffElements.Any()
-                               ? new JProperty("elements",       new JArray(TariffElements.Select(tariffElement => tariffElement.ToJSON(CustomTariffElementSerializer,
-                                                                                                                                        CustomPriceComponentSerializer,
-                                                                                                                                        CustomTariffRestrictionsSerializer))))
+                           TariffElements.    Any()
+                               ? new JProperty("elements",             new JArray(TariffElements.   Select(tariffElement      => tariffElement.    ToJSON(CustomTariffElementSerializer,
+                                                                                                                                                          CustomPriceComponentSerializer,
+                                                                                                                                                          CustomTariffRestrictionsSerializer))))
                                : null,
 
-                                 new JProperty("notBefore",      NotBefore.       ToIso8601()),
+                                 new JProperty("notBefore",            NotBefore.       ToIso8601()),
 
 
-                                 new JProperty("created",        Created.         ToIso8601()),
+                                 new JProperty("created",              Created.         ToIso8601()),
 
                            Replaces.  HasValue
-                               ? new JProperty("replaces",       Replaces.        ToString())
+                               ? new JProperty("replaces",             Replaces.        ToString())
                                : null,
 
                            TariffType.HasValue
-                               ? new JProperty("type",           TariffType.Value.ToString())
+                               ? new JProperty("type",                 TariffType.Value.ToString())
                                : null,
 
-                           Description.Any()
-                               ? new JProperty("description",    new JArray(Description.Select(description      => description.  ToJSON(CustomDisplayTextSerializer))))
+                           Description.       Any()
+                               ? new JProperty("description",          new JArray(Description.       Select(description       => description.      ToJSON(CustomDisplayTextSerializer))))
                                : null,
 
                            URL.     HasValue
-                               ? new JProperty("url",            URL.  ToString())
+                               ? new JProperty("url",                  URL.             ToString())
                                : null,
 
-                           EVSEIds.Any()
-                               ? new JProperty("evseIds",        new JArray(EVSEIds.    Select(evseId           => evseId.       ToString())))
+                           EVSEIds.           Any()
+                               ? new JProperty("evseIds",              new JArray(EVSEIds.           Select(evseId            => evseId.           ToString())))
+                               : null,
+
+                           ChargingStationIds.Any()
+                               ? new JProperty("chargingStationIds",   new JArray(ChargingStationIds.Select(chargingStationId => chargingStationId.ToString())))
+                               : null,
+
+                           ChargingPoolIds.   Any()
+                               ? new JProperty("chargingPoolIds",      new JArray(ChargingPoolIds.   Select(chargingPoolId    => chargingPoolId.   ToString())))
                                : null,
 
                            MinPrice.HasValue
-                               ? new JProperty("minPrice",       MinPrice.Value.ToJSON(CustomPriceSerializer))
+                               ? new JProperty("minPrice",             MinPrice.Value.  ToJSON(CustomPriceSerializer))
                                : null,
 
                            MaxPrice.HasValue
-                               ? new JProperty("maxPrice",       MaxPrice.Value.ToJSON(CustomPriceSerializer))
+                               ? new JProperty("maxPrice",             MaxPrice.Value.  ToJSON(CustomPriceSerializer))
                                : null,
 
                            NotAfter.HasValue
-                               ? new JProperty("notAftere",      NotAfter.Value.ToIso8601())
+                               ? new JProperty("notAftere",            NotAfter.Value.  ToIso8601())
                                : null,
 
                            EnergyMix is not null
-                               ? new JProperty("energyMix",      EnergyMix.     ToJSON(CustomEnergyMixSerializer,
-                                                                                       CustomEnergySourceSerializer,
-                                                                                       CustomEnvironmentalImpactSerializer))
+                               ? new JProperty("energyMix",            EnergyMix.       ToJSON(CustomEnergyMixSerializer,
+                                                                                               CustomEnergySourceSerializer,
+                                                                                               CustomEnvironmentalImpactSerializer))
                                : null,
 
 
                            Signatures.Any()
-                               ? new JProperty("signatures",     new JArray(Signatures. Select(signature        => signature.    ToJSON(CustomSignatureSerializer,
-                                                                                                                                        CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",           new JArray(Signatures.        Select(signature         => signature.        ToJSON(CustomSignatureSerializer,
+                                                                                                                                                          CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",           CustomData.      ToJSON(CustomCustomDataSerializer))
                                : null);
 
             return CustomTariffSerializer is not null
@@ -803,7 +844,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     ProviderId.    Clone,
                     ProviderName.  Clone(),
                     Currency.      Clone,
-                    TariffElements.Select(tariffElement => tariffElement.Clone()).ToArray(),
+                    TariffElements.Select(tariffElement         => tariffElement.    Clone()).ToArray(),
 
                     Created,
                     Replaces?.     Clone,
@@ -811,7 +852,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     TariffType?.   Clone,
                     Description.   Clone(),
                     URL?.          Clone,
-                    EVSEIds.       Select(evseId        => evseId.       Clone  ).ToArray(),
+                    EVSEIds.           Select(evseId            => evseId.           Clone).ToArray(),
+                    ChargingStationIds.Select(chargingStationId => chargingStationId.Clone).ToArray(),
+                    ChargingPoolIds.   Select(chargingPoolId    => chargingPoolId.   Clone).ToArray(),
                     MinPrice?.     Clone(),
                     MaxPrice?.     Clone(),
                     NotBefore,
@@ -820,7 +863,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     SignKeys,
                     SignInfos,
-                    Signatures.    Select(signature     => signature.    Clone()).ToArray(),
+                    Signatures.    Select(signature             => signature.        Clone()).ToArray(),
 
                     CustomData);
 
