@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The multi-language name of the e-mobility provider responsible for this charging ticket.
         /// </summary>
         [Mandatory]
-        public IEnumerable<DisplayText>         ProviderName               { get; }
+        public DisplayTexts                     ProviderName               { get; }
 
         /// <summary>
         /// The optional URL of the e-mobility provider responsible for this charging ticket.
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional multi-language charging ticket description.
         /// </summary>
         [Optional]
-        public IEnumerable<DisplayText>         Description                { get; }
+        public DisplayTexts                     Description                { get; }
 
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The enumeration of tariffs that can be used with this charging ticket.
         /// </summary>
         [Mandatory]
-        public IEnumerable<ChargingTariff>      Tariffs                    { get; }
+        public IEnumerable<ChargingTariff>      ChargingTariffs            { get; }
 
 
         /// <summary>
@@ -233,12 +233,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public ChargingTicket(ChargingTicket_Id                 Id,
                               Provider_Id                       ProviderId,
-                              IEnumerable<DisplayText>          ProviderName,
+                              DisplayTexts                      ProviderName,
                               PublicKey                         DriverPublicKey,
-                              IEnumerable<ChargingTariff>       Tariffs,
+                              IEnumerable<ChargingTariff>       ChargingTariffs,
 
                               URL?                              ProviderURL               = null,
-                              IEnumerable<DisplayText>?         Description               = null,
+                              DisplayTexts?                     Description               = null,
                               DateTime?                         Created                   = null,
                               DateTime?                         NotBefore                 = null,
                               DateTime?                         NotAfter                  = null,
@@ -276,17 +276,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            if (!Tariffs.Any())
-                throw new ArgumentNullException(nameof(Tariffs), "The given enumeration of tariffs must not be null or empty!");
+            if (!ChargingTariffs.Any())
+                throw new ArgumentNullException(nameof(ChargingTariffs), "The given enumeration of tariffs must not be null or empty!");
 
             this.Id                       = Id;
             this.ProviderId               = ProviderId;
-            this.ProviderName             = ProviderName.            Distinct();
+            this.ProviderName             = ProviderName;
             this.DriverPublicKey          = DriverPublicKey;
-            this.Tariffs                  = Tariffs.                 Distinct();
+            this.ChargingTariffs          = ChargingTariffs.         Distinct();
 
             this.ProviderURL              = ProviderURL;
-            this.Description              = Description?.            Distinct() ?? Array.Empty<DisplayText>();
+            this.Description              = Description                         ?? DisplayTexts.Empty;
             this.Created                  = Created                             ?? Timestamp.Now;
             this.NotBefore                = NotBefore                           ?? this.Created;
             this.NotAfter                 = NotAfter                            ?? this.Created + TimeSpan.FromDays(3);
@@ -318,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            this.ProviderId.             GetHashCode()       * 83 ^
                            this.ProviderName.           GetHashCode()       * 79 ^
                            this.DriverPublicKey.        GetHashCode()       * 73 ^
-                           this.Tariffs.                CalcHashCode()      * 71 ^
+                           this.ChargingTariffs.                CalcHashCode()      * 71 ^
 
                           (this.ProviderURL?.           GetHashCode() ?? 0) * 67 ^
                            this.Description.            CalcHashCode()      * 61 ^
@@ -471,11 +471,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse ProviderName       [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("provider_name",
+                if (!JSON.ParseMandatoryJSON("providerName",
                                              "provider name",
-                                             DisplayText.TryParse,
-                                             out IEnumerable<DisplayText> ProviderName,
-                                             out ErrorResponse))
+                                             DisplayTexts.TryParse,
+                                             out DisplayTexts? ProviderName,
+                                             out ErrorResponse) ||
+                     ProviderName is null)
                 {
                     return false;
                 }
@@ -567,8 +568,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalJSON("description",
                                            "ticket description",
-                                           DisplayText.TryParse,
-                                           out IEnumerable<DisplayText> Description,
+                                           DisplayTexts.TryParse,
+                                           out DisplayTexts? Description,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -807,7 +808,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("driverPublicKey",           DriverPublicKey.  ToJSON(CustomPublicKeySerializer,
                                                                                                      CustomCustomDataSerializer)),
 
-                                 new JProperty("tariffs",                   new JArray(Tariffs.                Select(chargingTariff    => chargingTariff.   ToJSON(CustomTariffSerializer,
+                                 new JProperty("tariffs",                   new JArray(ChargingTariffs.                Select(chargingTariff    => chargingTariff.   ToJSON(CustomTariffSerializer,
                                                                                                                                                                     CustomDisplayTextSerializer,
                                                                                                                                                                     CustomPriceSerializer,
                                                                                                                                                                     CustomTariffElementSerializer,
@@ -914,12 +915,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (Id,
                     ProviderId.             Clone,
-                    ProviderName.           Select(displayText => displayText.Clone()).ToArray(),
+                    ProviderName.           Clone(),
                     DriverPublicKey.        Clone(),
-                    Tariffs,
+                    ChargingTariffs,
 
                     ProviderURL,
-                    Description.            Select(displayText => displayText.Clone()).ToArray(),
+                    Description.            Clone(),
                     Created,
                     NotBefore,
                     NotAfter,
@@ -1089,27 +1090,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (ChargingTicket is null)
                 throw new ArgumentNullException(nameof(ChargingTicket), "The given charging ticket must not be null!");
 
-            var c = Id.         CompareTo(ChargingTicket.Id);
+            var c =         Id.        CompareTo(ChargingTicket.Id);
 
-            //if (c == 0)
-            //    c = Currency.   CompareTo(Ticket.Currency);
+            if (c == 0) c = ProviderId.CompareTo(ChargingTicket.ProviderId);
+            if (c == 0) c = Created.   CompareTo(ChargingTicket.Created);
+            if (c == 0) c = NotBefore. CompareTo(ChargingTicket.NotBefore);
+            if (c == 0) c = NotAfter.  CompareTo(ChargingTicket.NotAfter);
 
-            //if (c == 0)
-            //    c = Created.    CompareTo(Ticket.Created);
+            //ProviderId,
+            //ProviderName,
+            //DriverPublicKey,
+            //Tariffs,
 
-            //if (c == 0)
-            //    c = LastUpdated.CompareTo(Ticket.LastUpdated);
+            //ProviderURL
+            //Description
+            //Created
+            //NotBefore
+            //NotAfter
 
-            // TicketElements
-            // 
-            // TicketType
-            // TicketAltText
-            // TicketAltURL
-            // MinPrice
-            // MaxPrice
-            // Start
-            // End
-            // EnergyMix
+            //ValidOperators
+            //ValidChargingPools
+            //ValidChargingStations
+            //ValidEVSEIds
+
+            //InvalidChargingPools
+            //InvalidChargingStations
+            //InvalidEVSEIds
+
+            //AllowedCurrentType
+            //MaxDuration
+            //MaxKWh
+            //MaxKW
+            //MaxCurrent
+            //MaxPrice
+            //DaysOfWeek
+
+            //MultiUsage
+            //ValidationMethod
+
+            //SignKeys
+            //SignInfos
+            //Signatures
+
+            //CustomData
 
             return c;
 
@@ -1144,31 +1167,63 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => ChargingTicket is not null &&
 
-               Id.                     Equals(ChargingTicket.Id)          &&
+               Id.                     Equals(ChargingTicket.Id)                 &&
+               ProviderId.             Equals(ChargingTicket.ProviderId)         &&
+               ProviderName.           Equals(ChargingTicket.ProviderName)       &&
+               DriverPublicKey.        Equals(ChargingTicket.DriverPublicKey)    &&
 
-            //((!TicketType.HasValue    && !ChargingTicket.TicketType.HasValue) ||
-            //  (TicketType.HasValue    &&  ChargingTicket.TicketType.HasValue    && TicketType.Value.Equals(ChargingTicket.TicketType.Value))) &&
+               ProviderId.             Equals(ChargingTicket.ProviderId)         &&
+               NotBefore.              Equals(ChargingTicket.NotBefore)          &&
+               NotAfter.               Equals(ChargingTicket.NotAfter)           &&
+               AllowedCurrentType.     Equals(ChargingTicket.AllowedCurrentType) &&
+               MultiUsage.             Equals(ChargingTicket.MultiUsage)         &&
+               ValidationMethod.       Equals(ChargingTicket.ValidationMethod)   &&
 
-            //((!TicketType.HasValue    && !ChargingTicket.TicketType.HasValue) ||
-            //  (TicketType.HasValue    &&  ChargingTicket.TicketType.HasValue    && TicketType.Value.Equals(ChargingTicket.TicketType.Value))) &&
+               ChargingTariffs.Count().Equals(ChargingTicket.ChargingTariffs.Count()) &&
+               ChargingTariffs.All(displayText => ChargingTicket.ChargingTariffs.Contains(displayText)) &&
 
-            //((!MinPrice.  HasValue    && !ChargingTicket.MinPrice.  HasValue) ||
-            //  (MinPrice.  HasValue    &&  ChargingTicket.MinPrice.  HasValue    && MinPrice.  Value.Equals(ChargingTicket.MinPrice.  Value))) &&
+            ((!ProviderURL.HasValue     && !ChargingTicket.ProviderURL.HasValue) ||
+              (ProviderURL.HasValue     &&  ChargingTicket.ProviderURL.HasValue    && ProviderURL.Value.Equals(ChargingTicket.ProviderURL.Value))) &&
 
-            ((!MaxPrice.  HasValue    && !ChargingTicket.MaxPrice.  HasValue) ||
-              (MaxPrice.  HasValue    &&  ChargingTicket.MaxPrice.  HasValue    && MaxPrice.  Value.Equals(ChargingTicket.MaxPrice.  Value))) &&
+             ((Description  is     null &&  ChargingTicket.Description is null)  ||
+              (Description  is not null &&  ChargingTicket.Description is not null && Description.      Equals(ChargingTicket.Description)))       &&
 
-            NotBefore.     Equals(ChargingTicket.NotBefore) &&
-            NotAfter.      Equals(ChargingTicket.NotAfter)  &&
 
-            // ((EnergyMix  is     null &&  ChargingTicket.EnergyMix  is null)  ||
-            //  (EnergyMix  is not null &&  ChargingTicket.EnergyMix  is not null && EnergyMix.       Equals(ChargingTicket.EnergyMix)))        &&
 
-            //   TicketElements.Count().Equals(ChargingTicket.TicketElements.Count())     &&
-            //   TicketElements.All(ticketElement => ChargingTicket.TicketElements.Contains(ticketElement)) &&
+            ((!MaxDuration.HasValue    && !ChargingTicket.MaxDuration. HasValue) ||
+              (MaxDuration.HasValue    &&  ChargingTicket.MaxDuration. HasValue    && MaxDuration.Value.Equals(ChargingTicket.MaxDuration.Value))) &&
 
-               Description.Count().Equals(ChargingTicket.Description.Count())     &&
-               Description.All(displayText => ChargingTicket.Description.Contains(displayText));
+            ((!MaxKWh.     HasValue    && !ChargingTicket.MaxKWh.      HasValue) ||
+              (MaxKWh.     HasValue    &&  ChargingTicket.MaxKWh.      HasValue    && MaxKWh.     Value.Equals(ChargingTicket.MaxKWh.     Value))) &&
+
+            ((!MaxKW.      HasValue    && !ChargingTicket.MaxKW.       HasValue) ||
+              (MaxKW.      HasValue    &&  ChargingTicket.MaxKW.       HasValue    && MaxKW.      Value.Equals(ChargingTicket.MaxKW.      Value))) &&
+
+            ((!MaxCurrent. HasValue    && !ChargingTicket.MaxCurrent.  HasValue) ||
+              (MaxCurrent. HasValue    &&  ChargingTicket.MaxCurrent.  HasValue    && MaxCurrent. Value.Equals(ChargingTicket.MaxCurrent. Value))) &&
+
+            ((!MaxPrice.   HasValue    && !ChargingTicket.MaxPrice.    HasValue) ||
+              (MaxPrice.   HasValue    &&  ChargingTicket.MaxPrice.    HasValue    && MaxPrice.   Value.Equals(ChargingTicket.MaxPrice.   Value))) &&
+
+               base.Equals(ChargingTicket);
+
+
+        //ValidOperators
+        //ValidChargingPools
+        //ValidChargingStations
+        //ValidEVSEIds
+
+        //InvalidChargingPools
+        //InvalidChargingStations
+        //InvalidEVSEIds
+
+        //DaysOfWeek
+
+        //SignKeys
+        //SignInfos
+        //Signatures
+
+        //CustomData
 
         #endregion
 
