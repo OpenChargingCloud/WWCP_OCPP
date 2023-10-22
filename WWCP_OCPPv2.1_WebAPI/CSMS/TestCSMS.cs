@@ -1737,7 +1737,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.DefaultRequestTimeout   = DefaultRequestTimeout ?? defaultRequestTimeout;
             this.HTTPUploadPort          = HTTPUploadPort        ?? DefaultHTTPUploadPort;
 
-            Directory.CreateDirectory("HTTPSSEs");
+            Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
 
             this.TestAPI                 = new HTTPExtAPI(
                                                HTTPServerPort:         IPPort.Parse(3502),
