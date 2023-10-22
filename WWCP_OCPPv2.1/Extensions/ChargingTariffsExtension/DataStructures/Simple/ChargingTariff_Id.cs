@@ -98,22 +98,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region (static) NewRandom(EMPId, Length = 20)
+        #region (static) NewRandom(ProviderId, Length = 30)
 
         /// <summary>
         /// Create a new random charging tariff identification based
-        /// on an e-mobility provider Identification, the current timestamp
-        /// and a random number.
+        /// on the given e-mobility provider identification,
+        /// the current timestamp and a random number of the given length.
         /// </summary>
+        /// <param name="ProviderId">An e-mobility provider identification.</param>
         /// <param name="Length">The expected length of the charging tariff identification.</param>
-        public static ChargingTariff_Id NewRandom(String  EMPId,
-                                          Byte    Length = 30)
+        public static ChargingTariff_Id NewRandom(Provider_Id  ProviderId,
+                                                  Byte         Length = 30)
 
             => new (String.Concat(
-                        EMPId,                           "-",
-                        Timestamp.Now.ToUnixTimestamp(), "-",
+                        ProviderId,                      "T",
+                        Timestamp.Now.ToUnixTimestamp(), "*",
                         RandomExtensions.RandomString(Length)
                     ));
+
+        #endregion
+
+        #region (static) Generate (ProviderId, Suffix, CreationTimestamp = null)
+
+        /// <summary>
+        /// Create a new charging tariff identification based
+        /// on the given e-mobility provider identification,
+        /// the current timestamp and a given suffix.
+        /// </summary>
+        /// <param name="ProviderId">An e-mobility provider identification.</param>
+        /// <param name="Suffix">The suffix of the charging tariff identification.</param>
+        /// <param name="CreationTimestamp">An optional creation timestamp.</param>
+        public static ChargingTariff_Id Generate(Provider_Id  ProviderId,
+                                                 String       Suffix,
+                                                 DateTime?    CreationTimestamp   = null)
+
+            => new ($"{ProviderId}T{(CreationTimestamp ?? Timestamp.Now).ToUnixTimestamp()}*{Suffix}");
 
         #endregion
 
