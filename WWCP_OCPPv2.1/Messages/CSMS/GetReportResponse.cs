@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region GetReportResponse(Request, Status, StatusInfo = null, CustomData = null)
+        #region GetReportResponse(Request, Status, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new get report response.
@@ -75,26 +75,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="Status">The success or failure of the get report command.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetReportResponse(CSMS.GetReportRequest     Request,
                                  GenericDeviceModelStatus  Status,
-                                 StatusInfo?               StatusInfo   = null,
+                                 StatusInfo?               StatusInfo          = null,
+                                 DateTime?                 ResponseTimestamp   = null,
 
-                                 IEnumerable<KeyPair>?     SignKeys     = null,
-                                 IEnumerable<SignInfo>?    SignInfos    = null,
-                                 IEnumerable<Signature>?   Signatures   = null,
+                                 IEnumerable<KeyPair>?     SignKeys            = null,
+                                 IEnumerable<SignInfo>?    SignInfos           = null,
+                                 IEnumerable<Signature>?   Signatures          = null,
 
-                                 DateTime?                 Timestamp    = null,
-                                 CustomData?               CustomData   = null)
+                                 CustomData?               CustomData          = null)
 
             : base(Request,
                    Result.OK(),
+                   ResponseTimestamp,
+
                    SignKeys,
                    SignInfos,
                    Signatures,
-                   Timestamp,
+
                    CustomData)
 
         {
@@ -317,8 +323,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                         StatusInfo,
                                         null,
                                         null,
-                                        Signatures,
                                         null,
+                                        Signatures,
                                         CustomData
                                     );
 

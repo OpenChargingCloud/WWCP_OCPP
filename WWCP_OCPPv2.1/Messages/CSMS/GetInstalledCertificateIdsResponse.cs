@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region GetInstalledCertificateIdsResponse(Request, Status, CertificateHashDataChain, StatusInfo = null, CustomData = null)
+        #region GetInstalledCertificateIdsResponse(Request, Status, CertificateHashDataChain, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new get installed certificate ids response.
@@ -82,27 +82,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Status">The Charge Point indicates if it can process the request.</param>
         /// <param name="CertificateHashDataChain">An optional enumeration of information about available certificates.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetInstalledCertificateIdsResponse(CSMS.GetInstalledCertificateIdsRequest  Request,
                                                   GetInstalledCertificateStatus           Status,
                                                   IEnumerable<CertificateHashData>?       CertificateHashDataChain   = null,
                                                   StatusInfo?                             StatusInfo                 = null,
+                                                  DateTime?                               ResponseTimestamp          = null,
 
                                                   IEnumerable<KeyPair>?                   SignKeys                   = null,
                                                   IEnumerable<SignInfo>?                  SignInfos                  = null,
                                                   IEnumerable<Signature>?                 Signatures                 = null,
 
-                                                  DateTime?                               Timestamp                  = null,
                                                   CustomData?                             CustomData                 = null)
 
             : base(Request,
                    Result.OK(),
+                   ResponseTimestamp,
+
                    SignKeys,
                    SignInfos,
                    Signatures,
-                   Timestamp,
+
                    CustomData)
 
         {
@@ -440,8 +446,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                          StatusInfo,
                                                          null,
                                                          null,
-                                                         Signatures,
                                                          null,
+                                                         Signatures,
                                                          CustomData
                                                      );
 

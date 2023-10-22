@@ -153,8 +153,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="SetpointReactive_L2">Optional setpoint for reactive power (or current) in chargingRateUnit on phase L2.</param>
         /// <param name="SetpointReactive_L3">Optional setpoint for reactive power (or current) in chargingRateUnit on phase L3.</param>
         /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public PullDynamicScheduleUpdateResponse(CS.PullDynamicScheduleUpdateRequest  Request,
 
                                                  ChargingRateValue?                   Limit                 = null,
@@ -173,19 +178,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  ChargingRateValue?                   SetpointReactive_L2   = null,
                                                  ChargingRateValue?                   SetpointReactive_L3   = null,
 
+                                                 DateTime?                            ResponseTimestamp     = null,
+
                                                  IEnumerable<KeyPair>?                SignKeys              = null,
                                                  IEnumerable<SignInfo>?               SignInfos             = null,
                                                  IEnumerable<Signature>?              Signatures            = null,
 
-                                                 DateTime?                            Timestamp             = null,
                                                  CustomData?                          CustomData            = null)
 
             : base(Request,
                    Result.OK(),
+                   ResponseTimestamp,
+
                    SignKeys,
                    SignInfos,
                    Signatures,
-                   Timestamp,
+
                    CustomData)
 
         {
@@ -550,10 +558,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                         SetpointReactive_L3,
 
                                                         null,
+
+                                                        null,
                                                         null,
                                                         Signatures,
 
-                                                        null,
                                                         CustomData
 
                                                     );

@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region AuthorizeResponse(Request, IdTokenInfo, CertificateStatus = null, CustomData = null)
+        #region AuthorizeResponse(Request, IdTokenInfo, CertificateStatus = null, ...)
 
         /// <summary>
         /// Create an authorize response.
@@ -77,25 +77,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="IdTokenInfo">The identification token info.</param>
         /// <param name="CertificateStatus">The optional certificate status information.</param>
         /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public AuthorizeResponse(CS.AuthorizeRequest          Request,
                                  IdTokenInfo                  IdTokenInfo,
                                  AuthorizeCertificateStatus?  CertificateStatus   = null,
 
+                                 DateTime?                    ResponseTimestamp   = null,
+
                                  IEnumerable<KeyPair>?        SignKeys            = null,
                                  IEnumerable<SignInfo>?       SignInfos           = null,
                                  IEnumerable<Signature>?      Signatures          = null,
 
-                                 DateTime?                    Timestamp           = null,
                                  CustomData?                  CustomData          = null)
 
             : base(Request,
                    Result.OK(),
+                   ResponseTimestamp,
+
                    SignKeys,
                    SignInfos,
                    Signatures,
-                   Timestamp,
+
                    CustomData)
 
         {
@@ -486,8 +492,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                         CertificateStatus,
                                         null,
                                         null,
-                                        Signatures,
                                         null,
+                                        Signatures,
                                         CustomData
                                     );
 

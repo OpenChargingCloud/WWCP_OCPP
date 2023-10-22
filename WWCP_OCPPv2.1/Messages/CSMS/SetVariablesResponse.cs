@@ -61,32 +61,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region SetVariablesResponse(Request, Status, SetResults, CustomData = null)
+        #region SetVariablesResponse(Request, SetVariableResults, ...)
 
         /// <summary>
         /// Create a new set variables response.
         /// </summary>
         /// <param name="Request">The set variables request leading to this response.</param>
         /// <param name="SetVariableResults">An enumeration of set variable result status per component and variable.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public SetVariablesResponse(CSMS.SetVariablesRequest        Request,
                                     IEnumerable<SetVariableResult>  SetVariableResults,
+                                    DateTime?                       ResponseTimestamp   = null,
 
-                                    IEnumerable<KeyPair>?           SignKeys     = null,
-                                    IEnumerable<SignInfo>?          SignInfos    = null,
-                                    IEnumerable<Signature>?         Signatures   = null,
+                                    IEnumerable<KeyPair>?           SignKeys            = null,
+                                    IEnumerable<SignInfo>?          SignInfos           = null,
+                                    IEnumerable<Signature>?         Signatures          = null,
 
-                                    DateTime?                       Timestamp    = null,
-                                    CustomData?                     CustomData   = null)
+                                    CustomData?                     CustomData          = null)
 
             : base(Request,
                    Result.OK(),
+                   ResponseTimestamp,
+
                    SignKeys,
                    SignInfos,
                    Signatures,
-                   Timestamp,
+
                    CustomData)
 
         {
@@ -417,8 +423,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            SetVariableResults,
                                            null,
                                            null,
-                                           Signatures,
                                            null,
+                                           Signatures,
                                            CustomData
                                        );
 

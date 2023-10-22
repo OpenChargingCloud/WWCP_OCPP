@@ -31,7 +31,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// An abstract generic OCPP request.
     /// </summary>
     /// <typeparam name="TRequest">The type of the OCPP request.</typeparam>
-    public abstract class ARequest<TRequest> : IEquatable<TRequest>
+    public abstract class ARequest<TRequest> : ACustomSignableData,
+                                               IEquatable<TRequest>
 
         where TRequest : class, IRequest
 
@@ -44,8 +45,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public static readonly TimeSpan DefaultRequestTimeout = TimeSpan.FromSeconds(30);
 
-        private readonly HashSet<Signature> signatures;
-
         #endregion
 
         #region Properties
@@ -54,59 +53,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The charging station identification.
         /// </summary>
         [Mandatory]
-        public ChargingStation_Id      ChargingStationId    { get; }
+        public ChargingStation_Id  ChargingStationId    { get; }
 
         /// <summary>
         /// The request identification.
         /// </summary>
         [Mandatory]
-        public Request_Id              RequestId            { get; set; }
+        public Request_Id          RequestId            { get; set; }
 
         /// <summary>
         /// The timestamp of the request message creation.
         /// </summary>
         [Mandatory]
-        public DateTime                RequestTimestamp     { get; }
+        public DateTime            RequestTimestamp     { get; }
 
         /// <summary>
         /// The timeout of this request.
         /// </summary>
         [Mandatory]
-        public TimeSpan                RequestTimeout       { get; }
+        public TimeSpan            RequestTimeout       { get; }
 
         /// <summary>
         /// An event tracking identification for correlating this request with other events.
         /// </summary>
         [Mandatory]
-        public EventTracking_Id        EventTrackingId      { get; }
+        public EventTracking_Id    EventTrackingId      { get; }
 
         /// <summary>
         /// The OCPP HTTP Web Socket action.
         /// </summary>
         [Mandatory]
-        public String                  Action               { get; }
-
-        /// <summary>
-        /// The optional enumeration of cryptographic signatures for this message.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Signature>  Signatures
-            => signatures;
-
-        public IEnumerable<KeyPair>    SignKeys             { get; }
-        public IEnumerable<SignInfo>   SignInfos            { get; }
-
-
-        /// <summary>
-        /// The custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        [Optional]
-        public CustomData?             CustomData           { get; }
+        public String              Action               { get; }
 
         /// <summary>
         /// An optional token to cancel this request.
         /// </summary>
-        public CancellationToken       CancellationToken    { get; }
+        public CancellationToken   CancellationToken    { get; }
 
         #endregion
 
@@ -118,8 +100,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="Action">The OCPP HTTP Web Socket action.</param>
         /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this request.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this request.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
@@ -141,24 +126,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         EventTracking_Id?        EventTrackingId     = null,
                         CancellationToken        CancellationToken   = default)
 
+            : base(SignKeys,
+                   SignInfos,
+                   Signatures,
+                   CustomData)
+
         {
 
             this.ChargingStationId  = ChargingStationId;
             this.Action             = Action;
-
-            this.SignKeys           = SignKeys  ?? Array.Empty<KeyPair>();
-            this.SignInfos          = SignInfos ?? Array.Empty<SignInfo>();
-            this.signatures         = Signatures is not null && Signatures.Any()
-                                          ? new HashSet<Signature>(Signatures)
-                                          : new HashSet<Signature>();
-
-            this.CustomData         = CustomData;
 
             this.RequestId          = RequestId        ?? Request_Id.NewRandom();
             this.RequestTimestamp   = RequestTimestamp ?? Timestamp.Now;
             this.RequestTimeout     = RequestTimeout   ?? DefaultRequestTimeout;
             this.EventTrackingId    = EventTrackingId  ?? EventTracking_Id.New;
             this.CancellationToken  = CancellationToken;
+
+            unchecked
+            {
+
+                hashCode = this.ChargingStationId.GetHashCode() * 13 ^
+                           this.Action.           GetHashCode() * 11 ^
+                           this.RequestId.        GetHashCode() *  7 ^
+                           this.RequestTimestamp. GetHashCode() *  5 ^
+                           this.RequestTimeout.   GetHashCode() *  3 ^
+                           this.EventTrackingId.  GetHashCode();
+
+            }
 
         }
 
@@ -174,27 +168,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             var json = JSONObject.Create(
-                           new JProperty("id",                RequestId.        ToString()),
-                           new JProperty("timestamp",         RequestTimestamp. ToIso8601()),
-                           new JProperty("eventTrackingId",   EventTrackingId.  ToString()),
-                           new JProperty("connection",        Connection?.      ToJSON()),
-                           new JProperty("chargeBoxId",       ChargingStationId.ToString()),
-                           new JProperty("timeout",           RequestTimeout.   TotalSeconds),
-                           new JProperty("action",            Action),
-                           new JProperty("data",              RequestData)
+                           new JProperty("id",                  RequestId.        ToString()),
+                           new JProperty("timestamp",           RequestTimestamp. ToIso8601()),
+                           new JProperty("eventTrackingId",     EventTrackingId.  ToString()),
+                           new JProperty("connection",          Connection?.      ToJSON()),
+                           new JProperty("chargingStationId",   ChargingStationId.ToString()),
+                           new JProperty("timeout",             RequestTimeout.   TotalSeconds),
+                           new JProperty("action",              Action),
+                           new JProperty("data",                RequestData)
                        );
 
             return json;
 
-        }
-
-
-        public void AddSignature(Signature Signature)
-        {
-            lock (signatures)
-            {
-                signatures.Add(Signature);
-            }
         }
 
 
@@ -218,12 +203,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => ARequest is not null &&
 
-               ChargingStationId.     Equals(ARequest.ChargingStationId)      &&
-               RequestId.       Equals(ARequest.RequestId)        &&
-               RequestTimestamp.Equals(ARequest.RequestTimestamp) &&
-               RequestTimeout.  Equals(ARequest.RequestTimeout)   &&
-               EventTrackingId. Equals(ARequest.EventTrackingId)  &&
-               Action.          Equals(ARequest.Action)           &&
+               ChargingStationId.Equals(ARequest.ChargingStationId) &&
+               RequestId.        Equals(ARequest.RequestId)         &&
+               RequestTimestamp. Equals(ARequest.RequestTimestamp)  &&
+               RequestTimeout.   Equals(ARequest.RequestTimeout)    &&
+               EventTrackingId.  Equals(ARequest.EventTrackingId)   &&
+               Action.           Equals(ARequest.Action)            &&
 
              ((CustomData is     null && ARequest.CustomData is     null) ||
               (CustomData is not null && ARequest.CustomData is not null && CustomData.Equals(ARequest.CustomData)));
@@ -232,26 +217,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
 
-                return ChargingStationId.     GetHashCode() * 17 ^
-                       RequestId.       GetHashCode() * 13 ^
-                       RequestTimestamp.GetHashCode() * 11 ^
-                       RequestTimeout.  GetHashCode() *  7 ^
-                       EventTrackingId. GetHashCode() *  5 ^
-                       Action.          GetHashCode() *  3 ^
+            => hashCode ^
+               base.GetHashCode();
 
-                       CustomData?.     GetHashCode() ?? 0;
+        #endregion
 
-            }
-        }
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
+        public override String ToString()
+
+            => $"{Action} ({RequestId}) for charging station '{ChargingStationId}'";
 
         #endregion
 

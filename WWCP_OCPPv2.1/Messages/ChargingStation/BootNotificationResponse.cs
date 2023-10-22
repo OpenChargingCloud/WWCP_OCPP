@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Constructor(s)
 
-        #region BootNotificationResponse(Request, Status, CurrentTime, Interval, StatusInfo = null, CustomData = null)
+        #region BootNotificationResponse(Request, Status, CurrentTime, Interval, StatusInfo = null, ...)
 
         /// <summary>
         /// Create a new boot notification response.
@@ -94,27 +94,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Interval">When the registration status is 'accepted', the interval defines the heartbeat interval in seconds. In all other cases, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
         /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public BootNotificationResponse(CS.BootNotificationRequest  Request,
                                         RegistrationStatus          Status,
                                         DateTime                    CurrentTime,
                                         TimeSpan                    Interval,
-                                        StatusInfo?                 StatusInfo        = null,
+                                        StatusInfo?                 StatusInfo          = null,
 
-                                        IEnumerable<KeyPair>?       SignKeys          = null,
-                                        IEnumerable<SignInfo>?      SignInfos         = null,
-                                        IEnumerable<Signature>?     Signatures        = null,
+                                        DateTime?                   ResponseTimestamp   = null,
 
-                                        DateTime?                   Timestamp         = null,
-                                        CustomData?                 CustomData        = null)
+                                        IEnumerable<KeyPair>?       SignKeys            = null,
+                                        IEnumerable<SignInfo>?      SignInfos           = null,
+                                        IEnumerable<Signature>?     Signatures          = null,
+
+                                        CustomData?                 CustomData          = null)
 
             : base(Request,
                    Result.OK(),
+                   ResponseTimestamp,
+
                    SignKeys,
                    SignInfos,
                    Signatures,
-                   Timestamp,
+
                    CustomData)
 
         {
@@ -388,8 +396,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                StatusInfo,
                                                null,
                                                null,
-                                               Signatures,
                                                null,
+                                               Signatures,
                                                CustomData
                                            );
 

@@ -34,17 +34,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                             }
                                                                         };
 
-        public JSONLDContext Context
+        public JSONLDContext           Context
             => JSONLDContext.Parse("none");
 
-        public IEnumerable<KeyPair> SignKeys
+        public IEnumerable<KeyPair>    SignKeys
             => Array.Empty<KeyPair>();
 
-        public IEnumerable<SignInfo> SignInfos
+        public IEnumerable<SignInfo>   SignInfos
             => Array.Empty<SignInfo>();
 
-        public IEnumerable<Signature> Signatures
+        public IEnumerable<Signature>  Signatures
             => Array.Empty<Signature>();
+
 
         public void AddSignature(Signature Signature)
         { }

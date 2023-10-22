@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// An OCPP CSE cryptographic signature policy.
     /// </summary>
-    public class SignaturePolicy : ACustomData,
+    public class SignaturePolicy : ACustomSignableData,
                                    ISignableMessage,
                                    IEquatable<SignaturePolicy>
     {
@@ -52,8 +52,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         private        readonly HashSet<SigningRule>       signingRules           = new();
         private        readonly HashSet<VerificationRule>  verificationRules      = new();
         private        readonly HashSet<KeyPair>           keyPairs               = new();
-
-        private        readonly HashSet<Signature>         signatures;
 
         #endregion
 
@@ -138,18 +136,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         [Optional]
         public KeyPair?                       DefaultVerificationKeyPair    { get; }
 
-
-
-        /// <summary>
-        /// The optional enumeration of cryptographic signatures for this message.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Signature>         Signatures
-            => signatures;
-
-        public IEnumerable<KeyPair>           SignKeys                      { get; }
-        public IEnumerable<SignInfo>          SignInfos                     { get; }
-
         #endregion
 
         #region Constructor(s)
@@ -170,9 +156,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="DefaultVerificationAction">An optional default verification action for this policy.</param>
         /// <param name="DefaultSigningKeyPair">An optional default cryptographic signing key pair.</param>
         /// 
-        /// <param name="SignKeys"></param>
-        /// <param name="SignInfos"></param>
-        /// <param name="Signatures"></param>
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this message.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this message.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public SignaturePolicy(SignaturePolicy_Id?             Id                           = null,
@@ -194,7 +180,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                CustomData?                     CustomData                   = null)
 
-            : base(CustomData)
+            : base(SignKeys,
+                   SignInfos,
+                   Signatures,
+                   CustomData)
 
         {
 
@@ -233,13 +222,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 throw new ArgumentException("If the default action is 'VerifyAny' or 'VerifyAll', a default verification key pair must be provided!");
             }
 
-
-            // Signatures
-            this.SignKeys                    = SignKeys  ?? Array.Empty<KeyPair>();
-            this.SignInfos                   = SignInfos ?? Array.Empty<SignInfo>();
-            this.signatures                  = Signatures is not null && Signatures.Any()
-                                                   ? new HashSet<Signature>(Signatures)
-                                                   : new HashSet<Signature>();
 
             unchecked
             {
@@ -1104,15 +1086,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
         #endregion
-
-
-        public void AddSignature(Signature Signature)
-        {
-            lock (signatures)
-            {
-                signatures.Add(Signature);
-            }
-        }
 
 
         #region Operator overloading

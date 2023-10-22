@@ -57,34 +57,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Request">The request leading to this result.</param>
         /// <param name="Result">A generic result.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
-        /// <param name="Timestamp">An optional response timestamp.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public AResponse(TRequest                 Request,
                          Result                   Result,
+                         DateTime?                ResponseTimestamp   = null,
 
-                         IEnumerable<KeyPair>?    SignKeys     = null,
-                         IEnumerable<SignInfo>?   SignInfos    = null,
-                         IEnumerable<Signature>?  Signatures   = null,
+                         IEnumerable<KeyPair>?    SignKeys            = null,
+                         IEnumerable<SignInfo>?   SignInfos           = null,
+                         IEnumerable<Signature>?  Signatures          = null,
 
-                         DateTime?                Timestamp    = null,
-                         CustomData?              CustomData   = null)
+                         CustomData?              CustomData          = null)
 
             : base(Result,
+                   ResponseTimestamp,
 
                    SignKeys,
                    SignInfos,
                    Signatures,
 
-                   Timestamp,
                    CustomData)
 
         {
 
             this.Request  = Request;
-            this.Runtime  = ResponseTimestamp - Request.RequestTimestamp;
+            this.Runtime  = base.ResponseTimestamp - Request.RequestTimestamp;
 
         }
 
@@ -116,21 +118,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                           new JProperty("chargeBoxId",       Request.ChargingStationId.ToString()),
-                           new JProperty("eventTrackingId",   Request.EventTrackingId. ToString()),
+                           new JProperty("chargingStationId",   Request.ChargingStationId.ToString()),
+                           new JProperty("eventTrackingId",     Request.EventTrackingId.  ToString()),
 
-                           new JProperty("request",           JSONObject.Create(
-                               new JProperty("id",                Request.RequestId.       ToString()),
-                               new JProperty("timestamp",         Request.RequestTimestamp.ToIso8601()),
-                               new JProperty("timeout",           Request.RequestTimeout.  TotalSeconds),
-                               new JProperty("action",            Request.Action),
-                               new JProperty("data",              RequestData)
+                           new JProperty("request",             JSONObject.Create(
+                               new JProperty("id",                  Request.RequestId.       ToString()),
+                               new JProperty("timestamp",           Request.RequestTimestamp.ToIso8601()),
+                               new JProperty("timeout",             Request.RequestTimeout.  TotalSeconds),
+                               new JProperty("action",              Request.Action),
+                               new JProperty("data",                RequestData)
                            )),
 
-                           new JProperty("response",          JSONObject.Create(
-                               new JProperty("timestamp",         ResponseTimestamp.       ToIso8601()),
-                               new JProperty("runtime",           Runtime.TotalMilliseconds),
-                               new JProperty("data",              ResponseData)
+                           new JProperty("response",            JSONObject.Create(
+                               new JProperty("timestamp",           ResponseTimestamp.       ToIso8601()),
+                               new JProperty("runtime",             Runtime.TotalMilliseconds),
+                               new JProperty("data",                ResponseData)
                            ))
 
                        );
@@ -167,45 +169,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// An abstract generic response.
     /// </summary>
-    public abstract class AResponse<TResponse> : IEquatable<TResponse>
+    public abstract class AResponse<TResponse> : ACustomSignableData,
+                                                 IEquatable<TResponse>
 
         where TResponse : class, IResponse
 
     {
-
-        #region Data
-
-        private readonly HashSet<Signature> signatures;
-
-        #endregion
 
         #region Properties
 
         /// <summary>
         /// The machine-readable result code.
         /// </summary>
-        public Result                  Result               { get; }
+        public Result    Result               { get; }
 
         /// <summary>
         /// The timestamp of the response message creation.
         /// </summary>
-        public DateTime                ResponseTimestamp    { get; }
-
-        public IEnumerable<KeyPair>    SignKeys             { get; }
-        public IEnumerable<SignInfo>   SignInfos            { get; }
-
-
-        /// <summary>
-        /// The optional enumeration of cryptographic signatures for this message.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Signature>  Signatures
-            => signatures;
-
-        /// <summary>
-        /// The custom data object to allow to store any kind of customer specific data.
-        /// </summary>
-        public CustomData?             CustomData           { get; }
+        public DateTime  ResponseTimestamp    { get; }
 
         #endregion
 
@@ -215,41 +196,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Create a new generic response.
         /// </summary>
         /// <param name="Result">A generic result.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
-        /// <param name="Timestamp">An optional response timestamp.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public AResponse(Result                   Result,
+                         DateTime?                ResponseTimestamp   = null,
 
-                         IEnumerable<KeyPair>?    SignKeys     = null,
-                         IEnumerable<SignInfo>?   SignInfos    = null,
-                         IEnumerable<Signature>?  Signatures   = null,
+                         IEnumerable<KeyPair>?    SignKeys            = null,
+                         IEnumerable<SignInfo>?   SignInfos           = null,
+                         IEnumerable<Signature>?  Signatures          = null,
 
-                         DateTime?                Timestamp    = null,
-                         CustomData?              CustomData   = null)
+                         CustomData?              CustomData          = null)
+
+            : base(SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
+
         {
 
             this.Result             = Result;
+            this.ResponseTimestamp  = ResponseTimestamp ?? Timestamp.Now;
 
-            this.SignKeys           = SignKeys  ?? Array.Empty<KeyPair>();
-            this.SignInfos          = SignInfos ?? Array.Empty<SignInfo>();
-            this.signatures         = Signatures is not null && Signatures.Any()
-                                          ? new HashSet<Signature>(Signatures)
-                                          : new HashSet<Signature>();
+            unchecked
+            {
 
-            this.ResponseTimestamp  = Timestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
-            this.CustomData         = CustomData;
+                hashCode = this.Result.           GetHashCode() * 3 ^
+                           this.ResponseTimestamp.GetHashCode();
+
+            }
 
         }
 
         #endregion
-
-
-        public void AddSignature(Signature Signature)
-        {
-            signatures.Add(Signature);
-        }
 
 
         #region Operator overloading
@@ -344,21 +328,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
 
-                return Result.           GetHashCode() * 5 ^
-                       ResponseTimestamp.GetHashCode() * 3 ^
-                      (CustomData?.      GetHashCode() ?? 0);
-
-            }
-        }
+            => hashCode ^
+               base.GetHashCode();
 
         #endregion
 

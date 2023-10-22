@@ -61,32 +61,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Constructor(s)
 
-        #region ClearVariableMonitoringResponse(Request, ClearMonitoringResults, CustomData = null)
+        #region ClearVariableMonitoringResponse(Request, ClearMonitoringResults, ...)
 
         /// <summary>
         /// Create a new clear variable monitoring response.
         /// </summary>
         /// <param name="Request">The clear variable monitoring request leading to this response.</param>
         /// <param name="ClearMonitoringResults">An enumeration of clear variable monitoring results.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public ClearVariableMonitoringResponse(CSMS.ClearVariableMonitoringRequest   Request,
                                                IEnumerable<ClearMonitoringResult>    ClearMonitoringResults,
+                                               DateTime?                             ResponseTimestamp   = null,
 
-                                               IEnumerable<KeyPair>?                 SignKeys     = null,
-                                               IEnumerable<SignInfo>?                SignInfos    = null,
-                                               IEnumerable<Signature>?               Signatures   = null,
+                                               IEnumerable<KeyPair>?                 SignKeys            = null,
+                                               IEnumerable<SignInfo>?                SignInfos           = null,
+                                               IEnumerable<Signature>?               Signatures          = null,
 
-                                               DateTime?                             Timestamp    = null,
-                                               CustomData?                           CustomData   = null)
+                                               CustomData?                           CustomData          = null)
 
             : base(Request,
                    Result.OK(),
+                   ResponseTimestamp,
+
                    SignKeys,
                    SignInfos,
                    Signatures,
-                   Timestamp,
+
                    CustomData)
 
         {
@@ -326,8 +332,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       ClearMonitoringResults,
                                                       null,
                                                       null,
-                                                      Signatures,
                                                       null,
+                                                      Signatures,
                                                       CustomData
                                                   );
 

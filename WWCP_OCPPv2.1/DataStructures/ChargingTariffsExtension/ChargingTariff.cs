@@ -279,7 +279,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            this.NotBefore.     GetHashCode()       *  7 ^
                           (this.NotAfter?.     GetHashCode() ?? 0) *  5 ^
                            this.EnergyMix?.    GetHashCode() ?? 0  *  3 ^
-                           this.Signatures.    CalcHashCode();
+
+                           base.               GetHashCode();
 
             }
 
@@ -1058,7 +1059,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-            => hashCode;
+
+            => hashCode ^
+               Signatures.CalcHashCode();
 
         #endregion
 

@@ -76,26 +76,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The notify EV charging schedule request leading to this response.</param>
         /// <param name="Status">Whether the CSMS has been able to process the message successfully. It does not imply any approval of the charging schedule.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public NotifyEVChargingScheduleResponse(CS.NotifyEVChargingScheduleRequest  Request,
                                                 GenericStatus                       Status,
-                                                StatusInfo?                         StatusInfo   = null,
+                                                StatusInfo?                         StatusInfo          = null,
+                                                DateTime?                           ResponseTimestamp   = null,
 
-                                                IEnumerable<KeyPair>?               SignKeys     = null,
-                                                IEnumerable<SignInfo>?              SignInfos    = null,
-                                                IEnumerable<Signature>?             Signatures   = null,
+                                                IEnumerable<KeyPair>?               SignKeys            = null,
+                                                IEnumerable<SignInfo>?              SignInfos           = null,
+                                                IEnumerable<Signature>?             Signatures          = null,
 
-                                                DateTime?                           Timestamp    = null,
-                                                CustomData?                         CustomData   = null)
+                                                CustomData?                         CustomData          = null)
 
             : base(Request,
                    Result.OK(),
+                   ResponseTimestamp,
+
                    SignKeys,
                    SignInfos,
                    Signatures,
-                   Timestamp,
+
                    CustomData)
 
         {
@@ -247,8 +253,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                        StatusInfo,
                                                        null,
                                                        null,
-                                                       Signatures,
                                                        null,
+                                                       Signatures,
                                                        CustomData
                                                    );
 

@@ -83,27 +83,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Status">Whether the central system was able to retrieve the OCSP certificate status.</param>
         /// <param name="OCSPResult">The optional DER encoded and then base64 OCSP response as defined in IETF RFC 6960. MAY only be omitted when status was not "Accepted".</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public GetCertificateStatusResponse(CS.GetCertificateStatusRequest  Request,
                                             GetCertificateStatus            Status,
                                             OCSPResult                      OCSPResult,
-                                            StatusInfo?                     StatusInfo   = null,
+                                            StatusInfo?                     StatusInfo          = null,
+                                            DateTime?                       ResponseTimestamp   = null,
 
-                                            IEnumerable<KeyPair>?           SignKeys     = null,
-                                            IEnumerable<SignInfo>?          SignInfos    = null,
-                                            IEnumerable<Signature>?         Signatures   = null,
+                                            IEnumerable<KeyPair>?           SignKeys            = null,
+                                            IEnumerable<SignInfo>?          SignInfos           = null,
+                                            IEnumerable<Signature>?         Signatures          = null,
 
-                                            DateTime?                       Timestamp    = null,
-                                            CustomData?                     CustomData   = null)
+                                            CustomData?                     CustomData          = null)
 
             : base(Request,
                    Result.OK(),
+                   ResponseTimestamp,
+
                    SignKeys,
                    SignInfos,
                    Signatures,
-                   Timestamp,
+
                    CustomData)
 
         {
@@ -344,8 +350,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                    StatusInfo,
                                                    null,
                                                    null,
-                                                   Signatures,
                                                    null,
+                                                   Signatures,
                                                    CustomData
                                                );
 

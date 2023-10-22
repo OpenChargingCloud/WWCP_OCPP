@@ -17,7 +17,6 @@
 
 #region Usings
 
-using Newtonsoft.Json;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -38,26 +37,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         JSONLDContext           Context       { get; }
 
         /// <summary>
-        /// The optional enumeration of keys to be used for signing the message.
+        /// The optional enumeration of keys to be used for signing this message.
         /// </summary>
         [Optional]
         IEnumerable<KeyPair>    SignKeys      { get; }
 
         /// <summary>
-        /// The optional enumeration of information to be used for signing the message.
+        /// The optional enumeration of information to be used for signing this message.
         /// </summary>
         [Optional]
         IEnumerable<SignInfo>   SignInfos     { get; }
 
         /// <summary>
-        /// The optional enumeration of all cryptographic signatures.
+        /// The optional enumeration of cryptographic signatures.
         /// </summary>
         [Optional]
         IEnumerable<Signature>  Signatures    { get; }
 
 
         /// <summary>
-        /// Add the given cryptographic signature to the message.
+        /// Add the given cryptographic signature to this message.
         /// </summary>
         /// <param name="Signature">A cryptographic signature.</param>
         void AddSignature(Signature Signature);
