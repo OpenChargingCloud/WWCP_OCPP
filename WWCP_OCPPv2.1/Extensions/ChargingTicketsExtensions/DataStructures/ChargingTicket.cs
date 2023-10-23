@@ -404,7 +404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region (static) Parse   (JSON, CountryCodeURL = null, PartyIdURL = null, TicketIdURL = null, CustomTicketParser = null)
+        #region (static) Parse   (JSON, ChargingTicketIdURL = null, CustomTicketParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a charging ticket.
@@ -433,7 +433,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(JSON, out ChargingTicket, out ErrorResponse, TicketIdURL = null, CustomTicketParser = null)
+        #region (static) TryParse(JSON, out ChargingTicket, out ErrorResponse, ChargingTicketIdURL = null, CustomChargingTicketParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -461,12 +461,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingTicket">The parsed charging ticket.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="ChargingTicketIdURL">An optional charging ticket identification, e.g. from the HTTP URL.</param>
-        /// <param name="CustomTicketParser">A delegate to parse custom ticket JSON objects.</param>
+        /// <param name="CustomChargingTicketParser">A delegate to parse custom charging ticket JSON objects.</param>
         public static Boolean TryParse(JObject                                       JSON,
                                        out ChargingTicket?                           ChargingTicket,
                                        out String?                                   ErrorResponse,
-                                       ChargingTicket_Id?                            ChargingTicketIdURL   = null,
-                                       CustomJObjectParserDelegate<ChargingTicket>?  CustomTicketParser    = null)
+                                       ChargingTicket_Id?                            ChargingTicketIdURL          = null,
+                                       CustomJObjectParserDelegate<ChargingTicket>?  CustomChargingTicketParser   = null)
         {
 
             try
@@ -960,9 +960,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  );
 
-                if (CustomTicketParser is not null)
-                    ChargingTicket = CustomTicketParser(JSON,
-                                                        ChargingTicket);
+                if (CustomChargingTicketParser is not null)
+                    ChargingTicket = CustomChargingTicketParser(JSON,
+                                                                ChargingTicket);
 
                 return true;
 
