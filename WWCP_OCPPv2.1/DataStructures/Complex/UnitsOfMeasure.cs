@@ -183,10 +183,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Multiplier    [optional]
 
-                if (!JSON.ParseOptional("multiplier",
-                                        "multiplier",
-                                        out Int32? Multiplier,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("multiplier",
+                                       "multiplier",
+                                       out Int32? Multiplier,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

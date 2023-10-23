@@ -608,11 +608,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse Replaces              [optional]
 
-                if (!JSON.ParseOptionalHashSet("replaces",
-                                               "replaces tariff",
-                                               ChargingTariff_Id.TryParse,
-                                               out HashSet<ChargingTariff_Id> Replaces,
-                                               out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("replaces",
+                                              "replaces tariff",
+                                              ChargingTariff_Id.TryParse,
+                                              out HashSet<ChargingTariff_Id> Replaces,
+                                              out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -622,11 +622,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse References            [optional]
 
-                if (!JSON.ParseOptionalHashSet("references",
-                                               "references tariff",
-                                               ChargingTariff_Id.TryParse,
-                                               out HashSet<ChargingTariff_Id> References,
-                                               out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("references",
+                                              "references tariff",
+                                              ChargingTariff_Id.TryParse,
+                                              out HashSet<ChargingTariff_Id> References,
+                                              out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

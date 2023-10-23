@@ -379,10 +379,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region Retries              [optional]
 
-                if (!JSON.ParseOptional("retries",
-                                        "retries",
-                                        out Byte? Retries,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("retries",
+                                       "retries",
+                                       out Byte? Retries,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

@@ -286,25 +286,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
 
                 #region TaxRuleName                    [optional]
 
-                if (!JSON.ParseOptional("taxRuleName",
-                                        "tax rule name",
-                                        Name.TryParse,
-                                        out Name? TaxRuleName,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("taxRuleName",
+                                       "tax rule name",
+                                       Name.TryParse,
+                                       out Name? TaxRuleName,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
                 #region TaxIncludedInPrice             [optional]
 
-                if (!JSON.ParseOptional("taxIncludedInPrice",
-                                        "tax included in price",
-                                        out Boolean? TaxIncludedInPrice,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("taxIncludedInPrice",
+                                       "tax included in price",
+                                       out Boolean? TaxIncludedInPrice,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion

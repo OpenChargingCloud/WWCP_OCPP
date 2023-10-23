@@ -242,7 +242,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         out DateTime? InstallTimestamp,
                                         out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion

@@ -209,11 +209,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region AttributeType    [optional]
 
-                if (!JSON.ParseOptional("attributeType",
-                                        "attribute type",
-                                        AttributeTypesExtensions.TryParse,
-                                        out AttributeTypes? AttributeType,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("attributeType",
+                                       "attribute type",
+                                       AttributeTypesExtensions.TryParse,
+                                       out AttributeTypes? AttributeType,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;

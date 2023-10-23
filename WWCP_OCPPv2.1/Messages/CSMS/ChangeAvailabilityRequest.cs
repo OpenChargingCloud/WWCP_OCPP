@@ -301,13 +301,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region EVSE                 [optional]
 
-                if (!JSON.ParseOptionalJSON("evse",
-                                            "evse/connector identification",
-                                            OCPPv2_1.EVSE.TryParse,
-                                            out EVSE? EVSE,
-                                            out ErrorResponse))
+                if (JSON.ParseOptionalJSON("evse",
+                                           "evse/connector identification",
+                                           OCPPv2_1.EVSE.TryParse,
+                                           out EVSE? EVSE,
+                                           out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
