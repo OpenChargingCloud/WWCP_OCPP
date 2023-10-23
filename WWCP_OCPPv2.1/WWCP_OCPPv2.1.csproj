@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <Folder Include="DataStructures\ISO15118-20\CommonTypes\Complex\" />
-    <Folder Include="Extensions\ChargingTicketsExtension\DataStructures\Complex\" />
+    <Folder Include="Extensions\ChargingTicketsExtensions\DataStructures\Complex\" />
   </ItemGroup>
 
 </Project>
