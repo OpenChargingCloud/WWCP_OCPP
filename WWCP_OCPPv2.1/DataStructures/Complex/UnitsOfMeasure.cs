@@ -38,14 +38,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The unit of the measured value.
         /// </summary>
-        [Optional]
-        public UnitOfMeasure?  Unit          { get; }
+        [Mandatory]
+        public UnitOfMeasure  Unit          { get; }
 
         /// <summary>
         /// Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.
         /// </summary>
         [Optional]
-        public Int32?          Multiplier    { get; }
+        public Int32          Multiplier    { get; }
 
         #endregion
 
@@ -57,16 +57,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Unit">The unit of the measured value.</param>
         /// <param name="Multiplier">Multiplier, this value represents the exponent to base 10. I.e. multiplier 3 means 10 raised to the 3rd power.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public UnitsOfMeasure(UnitOfMeasure?  Unit         = null,
-                              Int32?          Multiplier   = null,
-                              CustomData?     CustomData   = null)
+        public UnitsOfMeasure(UnitOfMeasure  Unit,
+                              Int32?         Multiplier   = null,
+                              CustomData?    CustomData   = null)
 
             : base(CustomData)
 
         {
 
             this.Unit        = Unit;
-            this.Multiplier  = Multiplier;
+            this.Multiplier  = Multiplier ?? 1;
 
         }
 
@@ -167,16 +167,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 UnitsOfMeasure = default;
 
-                #region Unit          [optional]
+                #region Unit          [mandatory]
 
-                if (JSON.ParseOptional("unit",
-                                       "unit measure",
-                                       UnitOfMeasure.TryParse,
-                                       out UnitOfMeasure? Unit,
-                                       out ErrorResponse))
+                if (!JSON.ParseMandatory("unit",
+                                         "unit measure",
+                                         UnitOfMeasure.TryParse,
+                                         out UnitOfMeasure Unit,
+                                         out ErrorResponse))
                 {
-                    if (ErrorResponse is not null)
-                        return false;
+                    return false;
                 }
 
                 #endregion
@@ -246,11 +245,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                           Unit.      HasValue
-                               ? new JProperty("unit",         Unit.      ToString())
-                               : null,
+                                 new JProperty("unit",         Unit.      ToString()),
 
-                           Multiplier.HasValue
+                           Multiplier != 1
                                ? new JProperty("multiplier",   Multiplier)
                                : null,
 
@@ -265,6 +262,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        : json;
 
         }
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this unit of measure and a multiplier.
+        /// </summary>
+        public UnitsOfMeasure Clone()
+
+            => new (
+                   Unit.Clone,
+                   Multiplier,
+                   CustomData
+               );
 
         #endregion
 
@@ -504,11 +516,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => UnitsOfMeasure is not null &&
 
-            ((!Unit.      HasValue && UnitsOfMeasure.Unit.      HasValue) ||
-              (Unit.      HasValue && UnitsOfMeasure.Unit.      HasValue && Unit.      Equals(UnitsOfMeasure.Unit)))       &&
-
-            ((!Multiplier.HasValue && UnitsOfMeasure.Multiplier.HasValue) ||
-              (Multiplier.HasValue && UnitsOfMeasure.Multiplier.HasValue && Multiplier.Equals(UnitsOfMeasure.Multiplier))) &&
+               Unit.      Equals(UnitsOfMeasure.Unit)       &&
+               Multiplier.Equals(UnitsOfMeasure.Multiplier) &&
 
                base.      Equals(UnitsOfMeasure);
 
@@ -527,10 +536,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                return (Unit?.      GetHashCode() ?? 0) * 5 ^
-                       (Multiplier?.GetHashCode() ?? 0) * 3 ^
-
-                        base.       GetHashCode();
+                return Unit.      GetHashCode() * 5 ^
+                       Multiplier.GetHashCode() * 3 ^
+                       base.      GetHashCode();
 
             }
         }
@@ -544,7 +552,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{Unit?.ToString() ?? "-"} ( *10^{Multiplier?.ToString() ?? "-"} )";
+            => $"{Unit}{(Multiplier != 1 ? $"*10^{Multiplier}" : "")}";
 
         #endregion
 

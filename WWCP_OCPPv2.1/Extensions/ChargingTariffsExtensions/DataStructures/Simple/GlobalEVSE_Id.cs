@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The charging station operator identification.
         /// </summary>
-        public Operator_Id  OperatorId    { get; }
+        public CSOOperator_Id  OperatorId    { get; }
 
         /// <summary>
         /// Whether to use the optional separator "*".
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="OperatorId">The unique identification of a charging station operator.</param>
         /// <param name="Suffix">The suffix of the EVSE identification.</param>
         private GlobalEVSE_Id(String       RAW,
-                              Operator_Id  OperatorId,
+                              CSOOperator_Id  OperatorId,
                               String       Suffix,
                               Char?        Separator   = '*')
         {
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="OperatorId">The unique identification of a charging station operator.</param>
         /// <param name="Length">The expected length of the EVSE identification suffix</param>
         /// <param name="Mapper">A delegate to modify the newly generated EVSE identification.</param>
-        public static GlobalEVSE_Id NewRandom(Operator_Id            OperatorId,
+        public static GlobalEVSE_Id NewRandom(CSOOperator_Id            OperatorId,
                                               Byte                   Length   = 12,
                                               Func<String, String>?  Mapper   = null)
         {
@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="OperatorId">The unique identification of a charging station operator.</param>
         /// <param name="Suffix">The suffix of the EVSE identification.</param>
-        public static GlobalEVSE_Id Parse(Operator_Id  OperatorId,
+        public static GlobalEVSE_Id Parse(CSOOperator_Id  OperatorId,
                                           String       Suffix)
         {
 
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 var matchCollection = GlobalEVSEId_RegEx.Matches(Text.Trim());
 
                 if (matchCollection.Count == 1 &&
-                    Operator_Id.TryParse(matchCollection[0].Groups[1].Value, out var operatorId))
+                    CSOOperator_Id.TryParse(matchCollection[0].Groups[1].Value, out var operatorId))
                 {
 
                     EVSEId = new GlobalEVSE_Id(

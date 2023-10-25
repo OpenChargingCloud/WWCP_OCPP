@@ -27,13 +27,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// A sampled (energy) meter value.
+    /// A metering value.
     /// </summary>
-    public class SampledValue : ACustomData,
-                                IEquatable<SampledValue>
+    public class MeteringValue : ACustomData,
+                                 IEquatable<MeteringValue>
     {
 
         #region Properties
+
+        /// <summary>
+        /// The timestamp of the value.
+        /// </summary>
+        public DateTime               Timestamp           { get; }
 
         /// <summary>
         /// The measured value.
@@ -63,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Phases?                Phase               { get; }
 
         /// <summary>
-        /// The optional indication where the measured value has been sampled.
+        /// The optional indication where the measured value has been metering.
         /// Default: "Outlet".
         /// </summary>
         [Optional]
@@ -86,29 +91,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new sampled (energy) meter value.
+        /// Create a new metering value.
         /// </summary>
         /// <param name="Value">A measured value.</param>
         /// <param name="Context">An optional type of the value.</param>
         /// <param name="Measurand">An optional type of the measurement. Default: "Energy.Active.Import.Register".</param>
         /// <param name="Phase">An optional indication how to interpret the measured value.</param>
-        /// <param name="Location">An optional indication where the measured value has been sampled. Default: "Outlet".</param>
+        /// <param name="Location">An optional indication where the measured value has been metering. Default: "Outlet".</param>
         /// <param name="SignedMeterValue">An optional meter value with signature and encoding information.</param>
         /// <param name="UnitOfMeasure">An optional unit of measure including a multiplier.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SampledValue(Decimal                Value,
-                            ReadingContexts?       Context            = null,
-                            Measurands?            Measurand          = null,
-                            Phases?                Phase              = null,
-                            MeasurementLocations?  Location           = null,
-                            SignedMeterValue?      SignedMeterValue   = null,
-                            UnitsOfMeasure?        UnitOfMeasure      = null,
-                            CustomData?            CustomData         = null)
+        public MeteringValue(DateTime               Timestamp,
+                             Decimal                Value,
+                             ReadingContexts?       Context            = null,
+                             Measurands?            Measurand          = null,
+                             Phases?                Phase              = null,
+                             MeasurementLocations?  Location           = null,
+                             SignedMeterValue?      SignedMeterValue   = null,
+                             UnitsOfMeasure?        UnitOfMeasure      = null,
+                             CustomData?            CustomData         = null)
 
             : base(CustomData)
 
         {
 
+            this.Timestamp         = Timestamp;
             this.Value             = Value;
             this.Context           = Context;
             this.Measurand         = Measurand;
@@ -140,113 +147,90 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Documentation
 
-        // "SampledValueType": {
-        //   "description": "Sampled_ Value\r\nurn:x-oca:ocpp:uid:2:233266\r\nSingle sampled value in MeterValues. Each value can be accompanied by optional fields.\r\n\r\nTo save on mobile data usage, default values of all of the optional fields are such that. The value without any additional fields will be interpreted, as a register reading of active import energy in Wh (Watt-hour) units.\r\n",
-        //   "javaType": "SampledValue",
-        //   "type": "object",
-        //   "additionalProperties": false,
-        //   "properties": {
-        //     "customData": {
-        //       "$ref": "#/definitions/CustomDataType"
-        //     },
-        //     "value": {
-        //       "description": "Sampled_ Value. Value. Measure\r\nurn:x-oca:ocpp:uid:1:569260\r\nIndicates the measured value.\r\n\r\n",
-        //       "type": "number"
-        //     },
-        //     "context": {
-        //       "$ref": "#/definitions/ReadingContextEnumType"
-        //     },
-        //     "measurand": {
-        //       "$ref": "#/definitions/MeasurandEnumType"
-        //     },
-        //     "phase": {
-        //       "$ref": "#/definitions/PhaseEnumType"
-        //     },
-        //     "location": {
-        //       "$ref": "#/definitions/LocationEnumType"
-        //     },
-        //     "signedMeterValue": {
-        //       "$ref": "#/definitions/SignedMeterValueType"
-        //     },
-        //     "unitOfMeasure": {
-        //       "$ref": "#/definitions/UnitOfMeasureType"
-        //     }
-        //   },
-        //   "required": [
-        //     "value"
-        //   ]
-        // }
+        // tba.
 
         #endregion
 
-        #region (static) Parse   (JSON, CustomSampledValueParser = null)
+        #region (static) Parse   (JSON, CustomMeteringValueParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a sampled value.
+        /// Parse the given JSON representation of a metering value.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomSampledValueParser">A delegate to parse custom sampled values.</param>
-        public static SampledValue Parse(JObject                                     JSON,
-                                         CustomJObjectParserDelegate<SampledValue>?  CustomSampledValueParser   = null)
+        /// <param name="CustomMeteringValueParser">A delegate to parse custom metering values.</param>
+        public static MeteringValue Parse(JObject                                      JSON,
+                                          CustomJObjectParserDelegate<MeteringValue>?  CustomMeteringValueParser   = null)
         {
 
             if (TryParse(JSON,
-                         out var sampledValue,
+                         out var meteringValue,
                          out var errorResponse,
-                         CustomSampledValueParser))
+                         CustomMeteringValueParser))
             {
-                return sampledValue!;
+                return meteringValue!;
             }
 
-            throw new ArgumentException("The given JSON representation of a sampled value is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a metering value is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, out SampledValue, out ErrorResponse, CustomSampledValueParser = null)
+        #region (static) TryParse(JSON, out MeteringValue, out ErrorResponse, CustomMeteringValueParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a sampled value.
+        /// Try to parse the given JSON representation of a metering value.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SampledValue">The parsed sampled value.</param>
+        /// <param name="MeteringValue">The parsed metering value.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject            JSON,
-                                       out SampledValue?  SampledValue,
-                                       out String?        ErrorResponse)
+        public static Boolean TryParse(JObject             JSON,
+                                       out MeteringValue?  MeteringValue,
+                                       out String?         ErrorResponse)
 
             => TryParse(JSON,
-                        out SampledValue,
+                        out MeteringValue,
                         out ErrorResponse,
                         null);
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a sampled value.
+        /// Try to parse the given JSON representation of a metering value.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="SampledValue">The parsed sampled value.</param>
+        /// <param name="MeteringValue">The parsed metering value.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSampledValueParser">A delegate to parse custom sampled values.</param>
-        public static Boolean TryParse(JObject                                     JSON,
-                                       out SampledValue?                           SampledValue,
-                                       out String?                                 ErrorResponse,
-                                       CustomJObjectParserDelegate<SampledValue>?  CustomSampledValueParser   = null)
+        /// <param name="CustomMeteringValueParser">A delegate to parse custom metering values.</param>
+        public static Boolean TryParse(JObject                                      JSON,
+                                       out MeteringValue?                           MeteringValue,
+                                       out String?                                  ErrorResponse,
+                                       CustomJObjectParserDelegate<MeteringValue>?  CustomMeteringValueParser   = null)
         {
 
             try
             {
 
-                SampledValue = default;
+                MeteringValue = default;
+
+                #region Timestamp           [mandatory]
+
+                if (!JSON.ParseMandatory("timestamp",
+                                         "metering timestamp",
+                                         out DateTime Timestamp,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
 
                 #region Value               [mandatory]
 
                 if (!JSON.ParseMandatory("value",
-                                         "value",
+                                         "metering value",
                                          out Decimal Value,
                                          out ErrorResponse))
                 {
@@ -354,28 +338,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                SampledValue = new SampledValue(
-                                   Value,
-                                   Context,
-                                   Measurand,
-                                   Phase,
-                                   Location,
-                                   SignedMeterValue,
-                                   UnitOfMeasure,
-                                   CustomData
-                               );
+                MeteringValue = new MeteringValue(
+                                    Timestamp,
+                                    Value,
+                                    Context,
+                                    Measurand,
+                                    Phase,
+                                    Location,
+                                    SignedMeterValue,
+                                    UnitOfMeasure,
+                                    CustomData
+                                );
 
-                if (CustomSampledValueParser is not null)
-                    SampledValue = CustomSampledValueParser(JSON,
-                                                            SampledValue);
+                if (CustomMeteringValueParser is not null)
+                    MeteringValue = CustomMeteringValueParser(JSON,
+                                                              MeteringValue);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                SampledValue   = default;
-                ErrorResponse  = "The given JSON representation of a sampled value is invalid: " + e.Message;
+                MeteringValue  = default;
+                ErrorResponse  = "The given JSON representation of a metering value is invalid: " + e.Message;
                 return false;
             }
 
@@ -383,16 +368,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomSampledValueSerializer = null, ..., CustomCustomDataSerializer = null)
+        #region ToJSON(CustomMeteringValueSerializer = null, ..., CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
+        /// <param name="CustomMeteringValueSerializer">A delegate to serialize custom metering values.</param>
         /// <param name="CustomSignedMeterValueSerializer">A delegate to serialize custom signed meter values.</param>
         /// <param name="CustomUnitsOfMeasureSerializer">A delegate to serialize custom units of measure.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SampledValue>?     CustomSampledValueSerializer       = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<MeteringValue>?    CustomMeteringValueSerializer      = null,
                               CustomJObjectSerializerDelegate<SignedMeterValue>? CustomSignedMeterValueSerializer   = null,
                               CustomJObjectSerializerDelegate<UnitsOfMeasure>?   CustomUnitsOfMeasureSerializer     = null,
                               CustomJObjectSerializerDelegate<CustomData>?       CustomCustomDataSerializer         = null)
@@ -400,6 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
+                                 new JProperty("timestamp",          Timestamp.       ToIso8601()),
                                  new JProperty("value",              Value),
 
                            Context.HasValue
@@ -434,8 +420,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                        );
 
-            return CustomSampledValueSerializer is not null
-                       ? CustomSampledValueSerializer(this, json)
+            return CustomMeteringValueSerializer is not null
+                       ? CustomMeteringValueSerializer(this, json)
                        : json;
 
         }
@@ -445,11 +431,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this sampled (energy) meter value.
+        /// Clone this metering value.
         /// </summary>
-        public SampledValue Clone()
+        public MeteringValue Clone()
 
             => new (
+                   Timestamp,
                    Value,
                    Context,
                    Measurand,
@@ -465,95 +452,96 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Operator overloading
 
-        #region Operator == (SampledValue1, SampledValue2)
+        #region Operator == (MeteringValue1, MeteringValue2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="SampledValue1">A sampled (energy) meter value.</param>
-        /// <param name="SampledValue2">Another sampled (energy) meter value.</param>
+        /// <param name="MeteringValue1">A metering value.</param>
+        /// <param name="MeteringValue2">Another metering value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (SampledValue? SampledValue1,
-                                           SampledValue? SampledValue2)
+        public static Boolean operator == (MeteringValue? MeteringValue1,
+                                           MeteringValue? MeteringValue2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(SampledValue1, SampledValue2))
+            if (ReferenceEquals(MeteringValue1, MeteringValue2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (SampledValue1 is null || SampledValue2 is null)
+            if (MeteringValue1 is null || MeteringValue2 is null)
                 return false;
 
-            return SampledValue1.Equals(SampledValue2);
+            return MeteringValue1.Equals(MeteringValue2);
 
         }
 
         #endregion
 
-        #region Operator != (SampledValue1, SampledValue2)
+        #region Operator != (MeteringValue1, MeteringValue2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="SampledValue1">A sampled (energy) meter value.</param>
-        /// <param name="SampledValue2">Another sampled (energy) meter value.</param>
+        /// <param name="MeteringValue1">A metering value.</param>
+        /// <param name="MeteringValue2">Another metering value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (SampledValue? SampledValue1,
-                                           SampledValue? SampledValue2)
+        public static Boolean operator != (MeteringValue? MeteringValue1,
+                                           MeteringValue? MeteringValue2)
 
-            => !(SampledValue1 == SampledValue2);
-
-        #endregion
+            => !(MeteringValue1 == MeteringValue2);
 
         #endregion
 
-        #region IEquatable<SampledValue> Members
+        #endregion
+
+        #region IEquatable<MeteringValue> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two sampled values for equality.
+        /// Compares two metering values for equality.
         /// </summary>
-        /// <param name="Object">A sampled value to compare with.</param>
+        /// <param name="Object">A metering value to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is SampledValue sampledValue &&
-                   Equals(sampledValue);
+            => Object is MeteringValue meteringValue &&
+                   Equals(meteringValue);
 
         #endregion
 
-        #region Equals(SampledValue)
+        #region Equals(MeteringValue)
 
         /// <summary>
-        /// Compares two sampled values for equality.
+        /// Compares two metering values for equality.
         /// </summary>
-        /// <param name="SampledValue">A sampled value to compare with.</param>
-        public Boolean Equals(SampledValue? SampledValue)
+        /// <param name="MeteringValue">A metering value to compare with.</param>
+        public Boolean Equals(MeteringValue? MeteringValue)
 
-            => SampledValue is not null &&
+            => MeteringValue is not null &&
 
-               Value.Equals(SampledValue.Value) &&
+               Value.                Equals(MeteringValue.Value)                 &&
+               Timestamp.ToIso8601().Equals(MeteringValue.Timestamp.ToIso8601()) &&
 
-            ((!Context.HasValue   && !SampledValue.Context.HasValue)   ||
-              (Context.HasValue   &&  SampledValue.Context.HasValue   && Context.  Value.Equals(SampledValue.Context.  Value))) &&
+            ((!Context.HasValue   && !MeteringValue.Context.HasValue)   ||
+              (Context.HasValue   &&  MeteringValue.Context.HasValue   && Context.  Value.Equals(MeteringValue.Context.  Value))) &&
 
-            ((!Measurand.HasValue && !SampledValue.Measurand.HasValue) ||
-              (Measurand.HasValue &&  SampledValue.Measurand.HasValue && Measurand.Value.Equals(SampledValue.Measurand.Value))) &&
+            ((!Measurand.HasValue && !MeteringValue.Measurand.HasValue) ||
+              (Measurand.HasValue &&  MeteringValue.Measurand.HasValue && Measurand.Value.Equals(MeteringValue.Measurand.Value))) &&
 
-            ((!Phase.HasValue     && !SampledValue.Phase.HasValue)     ||
-              (Phase.HasValue     &&  SampledValue.Phase.HasValue     && Phase.    Value.Equals(SampledValue.Phase.    Value))) &&
+            ((!Phase.HasValue     && !MeteringValue.Phase.HasValue)     ||
+              (Phase.HasValue     &&  MeteringValue.Phase.HasValue     && Phase.    Value.Equals(MeteringValue.Phase.    Value))) &&
 
-            ((!Location.HasValue  && !SampledValue.Location.HasValue)  ||
-              (Location.HasValue  &&  SampledValue.Location.HasValue  && Location. Value.Equals(SampledValue.Location. Value))) &&
+            ((!Location.HasValue  && !MeteringValue.Location.HasValue)  ||
+              (Location.HasValue  &&  MeteringValue.Location.HasValue  && Location. Value.Equals(MeteringValue.Location. Value))) &&
 
-            ((SignedMeterValue is     null && SampledValue.SignedMeterValue is     null) ||
-             (SignedMeterValue is not null && SampledValue.SignedMeterValue is not null   && SignedMeterValue.Equals(SampledValue.SignedMeterValue))) &&
+            ((SignedMeterValue is     null && MeteringValue.SignedMeterValue is     null) ||
+             (SignedMeterValue is not null && MeteringValue.SignedMeterValue is not null   && SignedMeterValue.Equals(MeteringValue.SignedMeterValue))) &&
 
-            ((UnitOfMeasure    is     null && SampledValue.UnitOfMeasure    is     null) ||
-             (UnitOfMeasure    is not null && SampledValue.UnitOfMeasure    is not null   && UnitOfMeasure.   Equals(SampledValue.UnitOfMeasure)))    &&
+            ((UnitOfMeasure    is     null && MeteringValue.UnitOfMeasure    is     null) ||
+             (UnitOfMeasure    is not null && MeteringValue.UnitOfMeasure    is not null   && UnitOfMeasure.   Equals(MeteringValue.UnitOfMeasure)))    &&
 
-              base.Equals(SampledValue);
+              base.Equals(MeteringValue);
 
         #endregion
 
@@ -578,7 +566,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{Value}{(UnitOfMeasure is not null ? $" {UnitOfMeasure.Unit}" : "")}";
+            => $"{Timestamp}: {Value}{(UnitOfMeasure is not null ? $" {UnitOfMeasure.Unit}" : "")}";
 
         #endregion
 

@@ -29,22 +29,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// Extension methods for charging station operator identifications.
     /// </summary>
-    public static class OperatorIdExtensions
+    public static class CSOCSOOperatorIdExtensions
     {
 
         /// <summary>
         /// Indicates whether this charging station operator identification is null or empty.
         /// </summary>
-        /// <param name="OperatorId">A charging station operator identification.</param>
-        public static Boolean IsNullOrEmpty(this Operator_Id? OperatorId)
-            => !OperatorId.HasValue || OperatorId.Value.IsNullOrEmpty;
+        /// <param name="CSOOperatorId">A charging station operator identification.</param>
+        public static Boolean IsNullOrEmpty(this CSOOperator_Id? CSOOperatorId)
+            => !CSOOperatorId.HasValue || CSOOperatorId.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this charging station operator identification is null or empty.
         /// </summary>
-        /// <param name="OperatorId">A charging station operator identification.</param>
-        public static Boolean IsNotNullOrEmpty(this Operator_Id? OperatorId)
-            => OperatorId.HasValue && OperatorId.Value.IsNotNullOrEmpty;
+        /// <param name="CSOOperatorId">A charging station operator identification.</param>
+        public static Boolean IsNotNullOrEmpty(this CSOOperator_Id? CSOOperatorId)
+            => CSOOperatorId.HasValue && CSOOperatorId.Value.IsNotNullOrEmpty;
 
     }
 
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// The unique identification of a charging station operator.
     /// </summary>
-    public readonly struct Operator_Id : IId<Operator_Id>
+    public readonly struct CSOOperator_Id : IId<CSOOperator_Id>
     {
 
         #region Data
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The regular expression for parsing a charging station operator identification:
         /// ^([A-Za-z]{2}\*?[A-Za-z0-9]{3})$
         /// </summary>
-        public static readonly Regex OperatorId_RegEx = new (@"^([A-Za-z]{2})(\*?)([A-Za-z0-9]{3})$",
+        public static readonly Regex CSOOperatorId_RegEx = new (@"^([A-Za-z]{2})(\*?)([A-Za-z0-9]{3})$",
                                                              RegexOptions.IgnorePatternWhitespace);
 
         #endregion
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CountryCode">The country code.</param>
         /// <param name="Suffix">The suffix of the charging station operator identification.</param>
         /// <param name="Separator">The optional separator "*".</param>
-        private Operator_Id(Country  CountryCode,
+        private CSOOperator_Id(Country  CountryCode,
                             String   Suffix,
                             Char?    Separator   = '*')
         {
@@ -135,11 +135,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Parse the given text representation of a charging station operator identification.
         /// </summary>
         /// <param name="Text">A text representation of a charging station operator identification.</param>
-        public static Operator_Id Parse(String Text)
+        public static CSOOperator_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out var operatorId))
-                return operatorId;
+            if (TryParse(Text, out var csoOperatorId))
+                return csoOperatorId;
 
             throw new ArgumentException($"Invalid text representation of a charging station operator identification: '{Text}'!",
                                         nameof(Text));
@@ -156,7 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CountryCode">A country code.</param>
         /// <param name="Suffix">The suffix of an charging station operator identification.</param>
         /// <param name="Separator">Whether to use the optional separator "*".</param>
-        public static Operator_Id Parse(Country  CountryCode,
+        public static CSOOperator_Id Parse(Country  CountryCode,
                                         String   Suffix,
                                         Boolean  Separator   = true)
 
@@ -170,11 +170,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Try to parse the given text representation of a charging station operator identification.
         /// </summary>
         /// <param name="Text">A text representation of a charging station operator identification.</param>
-        public static Operator_Id? TryParse(String Text)
+        public static CSOOperator_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var operatorId))
-                return operatorId;
+            if (TryParse(Text, out var csoOperatorId))
+                return csoOperatorId;
 
             return null;
 
@@ -182,21 +182,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(Text, out OperatorId)
+        #region (static) TryParse(Text, out CSOOperatorId)
 
         /// <summary>
         /// Try to parse the given text representation of a charging station operator identification.
         /// </summary>
         /// <param name="Text">A text representation of a charging station operator identification.</param>
-        /// <param name="OperatorId">The parsed charging station operator identification.</param>
+        /// <param name="CSOOperatorId">The parsed charging station operator identification.</param>
         public static Boolean TryParse(String           Text,
-                                       out Operator_Id  OperatorId)
+                                       out CSOOperator_Id  CSOOperatorId)
         {
 
             try
             {
 
-                var matchCollection = OperatorId_RegEx.Matches(Text.Trim());
+                var matchCollection = CSOOperatorId_RegEx.Matches(Text.Trim());
 
                 if (matchCollection.Count == 1)
                 {
@@ -205,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     if (Country.TryParseAlpha2Code(matchCollection[0].Groups[1].Value, out var country))
                     {
 
-                        OperatorId = new Operator_Id(
+                        CSOOperatorId = new CSOOperator_Id(
                                          country,
                                          matchCollection[0].Groups[3].Value,
                                          matchCollection[0].Groups[2].Value.Length == 1
@@ -221,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     if (Country.Alpha2Codes_RegEx.IsMatch(matchCollection[0].Groups[1].Value))
                     {
 
-                        OperatorId = new Operator_Id(
+                        CSOOperatorId = new CSOOperator_Id(
                                          new Country(
                                              I18NString.Create(Languages.en, matchCollection[0].Groups[1].Value),
                                              matchCollection[0].Groups[1].Value,
@@ -246,35 +246,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch
             { }
 
-            OperatorId = default;
+            CSOOperatorId = default;
             return false;
 
         }
 
         #endregion
 
-        #region (static) TryParse(CountryCode, Suffix, out OperatorId, Separator = true)
+        #region (static) TryParse(CountryCode, Suffix, out CSOOperatorId, Separator = true)
 
         /// <summary>
         /// Try to parse the given text representation of a charging station operator identification.
         /// </summary>
         /// <param name="CountryCode">A country code.</param>
         /// <param name="Suffix">The suffix of a charging station operator identification.</param>
-        /// <param name="OperatorId">The parsed e-mobility charging station operator identification.</param>
+        /// <param name="CSOOperatorId">The parsed e-mobility charging station operator identification.</param>
         /// <param name="Separator">Whether to use the optional separator "*".</param>
         public static Boolean TryParse(Country          CountryCode,
                                        String           Suffix,
-                                       out Operator_Id  OperatorId,
+                                       out CSOOperator_Id  CSOOperatorId,
                                        Boolean          Separator   = true)
         {
 
             if (CountryCode is not null && Suffix.IsNeitherNullNorEmpty() &&
-                TryParse(CountryCode.Alpha2Code + (Separator ? "*" : "") + Suffix, out OperatorId))
+                TryParse(CountryCode.Alpha2Code + (Separator ? "*" : "") + Suffix, out CSOOperatorId))
             {
                 return true;
             }
 
-            OperatorId = default;
+            CSOOperatorId = default;
             return false;
 
         }
@@ -286,7 +286,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Clone this charging station operator identification.
         /// </summary>
-        public Operator_Id Clone
+        public CSOOperator_Id Clone
 
             => new (CountryCode,
                     new String(Suffix.ToCharArray()),
@@ -297,99 +297,99 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Operator overloading
 
-        #region Operator == (OperatorId1, OperatorId2)
+        #region Operator == (CSOOperatorId1, CSOOperatorId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="OperatorId1">An charging station operator identification.</param>
-        /// <param name="OperatorId2">Another charging station operator identification.</param>
+        /// <param name="CSOOperatorId1">An charging station operator identification.</param>
+        /// <param name="CSOOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Operator_Id OperatorId1,
-                                           Operator_Id OperatorId2)
+        public static Boolean operator == (CSOOperator_Id CSOOperatorId1,
+                                           CSOOperator_Id CSOOperatorId2)
 
-            => OperatorId1.Equals(OperatorId2);
+            => CSOOperatorId1.Equals(CSOOperatorId2);
 
         #endregion
 
-        #region Operator != (OperatorId1, OperatorId2)
+        #region Operator != (CSOOperatorId1, CSOOperatorId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="OperatorId1">An charging station operator identification.</param>
-        /// <param name="OperatorId2">Another charging station operator identification.</param>
+        /// <param name="CSOOperatorId1">An charging station operator identification.</param>
+        /// <param name="CSOOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Operator_Id OperatorId1,
-                                           Operator_Id OperatorId2)
+        public static Boolean operator != (CSOOperator_Id CSOOperatorId1,
+                                           CSOOperator_Id CSOOperatorId2)
 
-            => !OperatorId1.Equals(OperatorId2);
+            => !CSOOperatorId1.Equals(CSOOperatorId2);
 
         #endregion
 
-        #region Operator <  (OperatorId1, OperatorId2)
+        #region Operator <  (CSOOperatorId1, CSOOperatorId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="OperatorId1">An charging station operator identification.</param>
-        /// <param name="OperatorId2">Another charging station operator identification.</param>
+        /// <param name="CSOOperatorId1">An charging station operator identification.</param>
+        /// <param name="CSOOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Operator_Id OperatorId1,
-                                          Operator_Id OperatorId2)
+        public static Boolean operator < (CSOOperator_Id CSOOperatorId1,
+                                          CSOOperator_Id CSOOperatorId2)
 
-            => OperatorId1.CompareTo(OperatorId2) < 0;
+            => CSOOperatorId1.CompareTo(CSOOperatorId2) < 0;
 
         #endregion
 
-        #region Operator <= (OperatorId1, OperatorId2)
+        #region Operator <= (CSOOperatorId1, CSOOperatorId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="OperatorId1">An charging station operator identification.</param>
-        /// <param name="OperatorId2">Another charging station operator identification.</param>
+        /// <param name="CSOOperatorId1">An charging station operator identification.</param>
+        /// <param name="CSOOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Operator_Id OperatorId1,
-                                           Operator_Id OperatorId2)
+        public static Boolean operator <= (CSOOperator_Id CSOOperatorId1,
+                                           CSOOperator_Id CSOOperatorId2)
 
-            => OperatorId1.CompareTo(OperatorId2) <= 0;
+            => CSOOperatorId1.CompareTo(CSOOperatorId2) <= 0;
 
         #endregion
 
-        #region Operator >  (OperatorId1, OperatorId2)
+        #region Operator >  (CSOOperatorId1, CSOOperatorId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="OperatorId1">An charging station operator identification.</param>
-        /// <param name="OperatorId2">Another charging station operator identification.</param>
+        /// <param name="CSOOperatorId1">An charging station operator identification.</param>
+        /// <param name="CSOOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Operator_Id OperatorId1,
-                                          Operator_Id OperatorId2)
+        public static Boolean operator > (CSOOperator_Id CSOOperatorId1,
+                                          CSOOperator_Id CSOOperatorId2)
 
-            => OperatorId1.CompareTo(OperatorId2) > 0;
+            => CSOOperatorId1.CompareTo(CSOOperatorId2) > 0;
 
         #endregion
 
-        #region Operator >= (OperatorId1, OperatorId2)
+        #region Operator >= (CSOOperatorId1, CSOOperatorId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="OperatorId1">An charging station operator identification.</param>
-        /// <param name="OperatorId2">Another charging station operator identification.</param>
+        /// <param name="CSOOperatorId1">An charging station operator identification.</param>
+        /// <param name="CSOOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Operator_Id OperatorId1,
-                                           Operator_Id OperatorId2)
+        public static Boolean operator >= (CSOOperator_Id CSOOperatorId1,
+                                           CSOOperator_Id CSOOperatorId2)
 
-            => OperatorId1.CompareTo(OperatorId2) >= 0;
-
-        #endregion
+            => CSOOperatorId1.CompareTo(CSOOperatorId2) >= 0;
 
         #endregion
 
-        #region IComparable<OperatorId> Members
+        #endregion
+
+        #region IComparable<CSOOperatorId> Members
 
         #region CompareTo(Object)
 
@@ -399,26 +399,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A charging station operator identification to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is Operator_Id operatorId
-                   ? CompareTo(operatorId)
+            => Object is CSOOperator_Id csoOperatorId
+                   ? CompareTo(csoOperatorId)
                    : throw new ArgumentException("The given object is not a charging station operator identification!", nameof(Object));
 
         #endregion
 
-        #region CompareTo(OperatorId)
+        #region CompareTo(CSOOperatorId)
 
         /// <summary>
         /// Compares two charging station operator identifications for equality.
         /// </summary>
-        /// <param name="OperatorId">A charging station operator identification to compare with.</param>
-        public Int32 CompareTo(Operator_Id OperatorId)
+        /// <param name="CSOOperatorId">A charging station operator identification to compare with.</param>
+        public Int32 CompareTo(CSOOperator_Id CSOOperatorId)
         {
 
-            var c = CountryCode.CompareTo(OperatorId.CountryCode);
+            var c = CountryCode.CompareTo(CSOOperatorId.CountryCode);
 
             if (c == 0)
                 c = String.Compare(Suffix,
-                                   OperatorId.Suffix,
+                                   CSOOperatorId.Suffix,
                                    StringComparison.OrdinalIgnoreCase);
 
             return c;
@@ -429,7 +429,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region IEquatable<OperatorId> Members
+        #region IEquatable<CSOOperatorId> Members
 
         #region Equals(Object)
 
@@ -439,23 +439,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A charging station operator identification to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is Operator_Id operatorId &&
-                   Equals(operatorId);
+            => Object is CSOOperator_Id csoOperatorId &&
+                   Equals(csoOperatorId);
 
         #endregion
 
-        #region Equals(OperatorId)
+        #region Equals(CSOOperatorId)
 
         /// <summary>
         /// Compares two charging station operator identifications for equality.
         /// </summary>
-        /// <param name="OperatorId">A charging station operator identification to compare with.</param>
-        public Boolean Equals(Operator_Id OperatorId)
+        /// <param name="CSOOperatorId">A charging station operator identification to compare with.</param>
+        public Boolean Equals(CSOOperator_Id CSOOperatorId)
 
-            => CountryCode.Equals(OperatorId.CountryCode) &&
+            => CountryCode.Equals(CSOOperatorId.CountryCode) &&
 
                     String.Equals(Suffix,
-                                  OperatorId.Suffix,
+                                  CSOOperatorId.Suffix,
                                   StringComparison.OrdinalIgnoreCase);
 
         #endregion

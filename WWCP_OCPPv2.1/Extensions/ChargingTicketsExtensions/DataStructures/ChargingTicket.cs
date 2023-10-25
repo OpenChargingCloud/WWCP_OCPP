@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An optional enumeration of charging station operators, this charging ticket is valid for.
         /// </summary>
         [Optional]
-        public IEnumerable<Operator_Id>                ValidOperators              { get; }
+        public IEnumerable<CSOOperator_Id>                ValidOperators              { get; }
 
         /// <summary>
         /// An optional enumeration of EVSE identifications, this charging ticket is valid for.
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               DateTime?                                NotAfter                   = null,
                               TimeSpan?                                Validity                   = null,
 
-                              IEnumerable<Operator_Id>?                ValidOperators             = null,
+                              IEnumerable<CSOOperator_Id>?                ValidOperators             = null,
                               IEnumerable<ChargingPool_Id>?            ValidChargingPools         = null,
                               IEnumerable<ChargingStation_Id>?         ValidChargingStations      = null,
                               IEnumerable<GlobalEVSE_Id>?              ValidEVSEs                 = null,
@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.NotBefore                 = NotBefore                           ?? this.Created;
             this.NotAfter                  = NotAfter                            ?? this.NotBefore + (Validity ?? TimeSpan.FromDays(3));
 
-            this.ValidOperators            = ValidOperators?.         Distinct() ?? Array.Empty<Operator_Id>();
+            this.ValidOperators            = ValidOperators?.         Distinct() ?? Array.Empty<CSOOperator_Id>();
             this.ValidChargingPools        = ValidChargingPools?.     Distinct() ?? Array.Empty<ChargingPool_Id>();
             this.ValidChargingStations     = ValidChargingStations?.  Distinct() ?? Array.Empty<ChargingStation_Id>();
             this.ValidEVSEs                = ValidEVSEs?.             Distinct() ?? Array.Empty<GlobalEVSE_Id>();
@@ -630,8 +630,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalHashSet("validOperators",
                                               "valid operator identifications",
-                                              Operator_Id.TryParse,
-                                              out HashSet<Operator_Id> ValidOperators,
+                                              CSOOperator_Id.TryParse,
+                                              out HashSet<CSOOperator_Id> ValidOperators,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         {
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            var operatorId = Operator_Id.TryParse(null);
+            var operatorId = CSOOperator_Id.TryParse(null);
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
             Assert.IsNull(operatorId);
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         public void TryParse_empty()
         {
 
-            var operatorId = Operator_Id.TryParse("");
+            var operatorId = CSOOperator_Id.TryParse("");
 
             Assert.IsNull(operatorId);
 

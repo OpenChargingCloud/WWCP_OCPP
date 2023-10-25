@@ -346,6 +346,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region Operator +  (Price1, Price2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Price1">A price.</param>
+        /// <param name="Price2">Another price.</param>
+        /// <returns>true|false</returns>
+        public static Price operator + (Price Price1,
+                                        Price Price2)
+
+            => new (
+                   Price1.ExcludingVAT       +  Price2.ExcludingVAT,
+                  (Price1.IncludingVAT ?? 0) + (Price2.IncludingVAT ?? 0)
+               );
+
+        #endregion
+
+        #region Operator -  (Price1, Price2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Price1">A price.</param>
+        /// <param name="Price2">Another price.</param>
+        /// <returns>true|false</returns>
+        public static Price operator - (Price Price1,
+                                        Price Price2)
+
+            => new (
+                   Price1.ExcludingVAT       -  Price2.ExcludingVAT,
+                  (Price1.IncludingVAT ?? 0) - (Price2.IncludingVAT ?? 0)
+               );
+
+        #endregion
+
         #endregion
 
         #region IComparable<Price> Members

@@ -126,16 +126,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ChargingTime(Price, VAT = null, Duration = null)
+        #region Time        (Price, VAT = null, Duration = null)
 
         /// <summary>
         /// Create a new time-based charging price component.
         /// </summary>
         /// <param name="Price">A price per time span (excl. VAT).</param>
         /// <param name="Duration">An optional minimum granularity of time that will be billed.</param>
-        public static PriceComponent ChargingTime(Decimal    Price,
-                                                  Decimal?   VAT        = null,
-                                                  TimeSpan?  Duration   = null)
+        public static PriceComponent Time(Decimal    Price,
+                                          Decimal?   VAT        = null,
+                                          TimeSpan?  Duration   = null)
 
             => new (TariffDimension.TIME,
                     Price,

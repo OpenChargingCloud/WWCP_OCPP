@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         public void TryParse_withoutSeparator()
         {
 
-            var operatorId = Operator_Id.TryParse("DEGEF");
+            var operatorId = CSOOperator_Id.TryParse("DEGEF");
 
             Assert.IsNotNull(operatorId);
 
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         public void TryParse_optionalStar()
         {
 
-            var operatorId = Operator_Id.TryParse("DE*GEF");
+            var operatorId = CSOOperator_Id.TryParse("DE*GEF");
 
             Assert.IsNotNull(operatorId);
 
@@ -135,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         {
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            var operatorId = Operator_Id.TryParse(null);
+            var operatorId = CSOOperator_Id.TryParse(null);
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
             Assert.IsNull(operatorId);
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         public void TryParse_empty()
         {
 
-            var operatorId = Operator_Id.TryParse("");
+            var operatorId = CSOOperator_Id.TryParse("");
 
             Assert.IsNull(operatorId);
 
@@ -171,8 +171,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         public void Equals_OptionalStar_OptionalStar()
         {
 
-            var operatorId1 = Operator_Id.TryParse("DE*GEF");
-            var operatorId2 = Operator_Id.TryParse("DE*GEF");
+            var operatorId1 = CSOOperator_Id.TryParse("DE*GEF");
+            var operatorId2 = CSOOperator_Id.TryParse("DE*GEF");
 
             Assert.AreEqual(operatorId1,       operatorId2);
             Assert.IsTrue  (operatorId1.Equals(operatorId2));
@@ -191,8 +191,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         public void Equals_WithoutSeparator_OptionalStar()
         {
 
-            var operatorId1 = Operator_Id.TryParse("DEGEF");
-            var operatorId2 = Operator_Id.TryParse("DE*GEF");
+            var operatorId1 = CSOOperator_Id.TryParse("DEGEF");
+            var operatorId2 = CSOOperator_Id.TryParse("DE*GEF");
 
             Assert.AreEqual(operatorId1,       operatorId2);
             Assert.IsTrue  (operatorId1.Equals(operatorId2));
@@ -211,8 +211,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         public void Equals_WithoutSeparator_WithoutSeparator()
         {
 
-            var operatorId1 = Operator_Id.TryParse("DEGEF");
-            var operatorId2 = Operator_Id.TryParse("DEGEF");
+            var operatorId1 = CSOOperator_Id.TryParse("DEGEF");
+            var operatorId2 = CSOOperator_Id.TryParse("DEGEF");
 
             Assert.AreEqual(operatorId1,       operatorId2);
             Assert.IsTrue  (operatorId1.Equals(operatorId2));

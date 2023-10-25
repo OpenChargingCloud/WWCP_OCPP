@@ -188,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The JSON-LD context of this data structure.
         /// </summary>
-        public static readonly JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/tariff");
+        public static readonly JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/chargingTariff");
 
         #endregion
 

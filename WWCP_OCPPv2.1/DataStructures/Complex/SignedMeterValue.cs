@@ -337,6 +337,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region Clone()
+
+        /// <summary>
+        /// Clone this signed meter value.
+        /// </summary>
+        public SignedMeterValue Clone()
+
+            => new (
+                   new String(SignedMeterData.ToCharArray()),
+                   new String(SigningMethod.  ToCharArray()),
+                   new String(EncodingMethod. ToCharArray()),
+                   new String(PublicKey.      ToCharArray()),
+                   CustomData
+               );
+
+        #endregion
+
 
         #region Operator overloading
 

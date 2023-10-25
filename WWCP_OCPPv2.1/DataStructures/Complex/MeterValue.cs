@@ -291,6 +291,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region Clone()
+
+        /// <summary>
+        /// Clone this meter value.
+        /// </summary>
+        public MeterValue Clone()
+
+            => new (
+                   Timestamp,
+                   SampledValues.Select(sampledValue => sampledValue.Clone()).ToArray(),
+                   CustomData
+               );
+
+        #endregion
+
 
         #region Operator overloading
 
