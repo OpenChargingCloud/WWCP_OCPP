@@ -84,9 +84,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
         public void SimpleChargingSessionWithKWhTariff()
         {
 
-            #region Define a  charging tariff
+            var timeReference      = Timestamp.Now - TimeSpan.FromHours(1);
 
-            var now                = Timestamp.Now - TimeSpan.FromHours(1);
+            #region Define a  charging tariff
 
             var chargingTariff     = new ChargingTariff(
 
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                                                                         )
                                                                     },
 
-                                         Created:                   now,
+                                         Created:                   timeReference,
                                          Replaces:                  null,
                                          References:                null,
                                          TariffType:                TariffType.REGULAR,
@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                                                                         ExcludingVAT:  0.51M,
                                                                         IncludingVAT:  0.53M
                                                                     ),
-                                         NotBefore:                 now,
+                                         NotBefore:                 timeReference,
                                          NotAfter:                  null,
                                          EnergyMix:                 null,
 
@@ -181,23 +181,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
             #endregion
 
-            #region Define a  transaction
-
-            var transaction        = new Transaction(
-                                         TransactionId:             Transaction_Id.Parse("DEGEFE12345678"),
-                                         ChargingState:             ChargingStates.SuspendedEVSE,
-                                         TimeSpentCharging:         TimeSpan.FromHours(2),
-                                         StoppedReason:             StopTransactionReasons.Local,
-                                         RemoteStartId:             null,
-                                         OperationMode:             OperationModes.ExternalLimits,
-                                         CustomData:                null
-                                     );
-
-            Assert.IsNotNull(transaction);
-
-            #endregion
-
             #region Define    transaction events
+
+            var transactionId      = Transaction_Id.Parse("DEGEFE12345678");
 
             var transactionEvents  = new[] {
 
@@ -206,10 +192,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                                              ChargingStationId:         chargingStationId,
 
                                              EventType:                 TransactionEvents.Started,
-                                             Timestamp:                 now - TimeSpan.FromMinutes(50),
+                                             Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
                                              TriggerReason:             TriggerReasons.ChargingStateChanged,
                                              SequenceNumber:            1,
-                                             TransactionInfo:           transaction,
+                                             TransactionInfo:           new Transaction(
+                                                                            TransactionId:             transactionId,
+                                                                            ChargingState:             ChargingStates.EVConnected,
+                                                                            TimeSpentCharging:         TimeSpan.Zero,
+                                                                            StoppedReason:             null,
+                                                                            RemoteStartId:             null,
+                                                                            OperationMode:             OperationModes.ChargingOnly,
+                                                                            CustomData:                null
+                                                                        ),
 
                                              Offline:                   null,
                                              NumberOfPhasesUsed:        null,
@@ -219,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                                              EVSE:                      evse,
                                              MeterValues:               new[] {
                                                                             new MeterValue(
-                                                                                Timestamp:       now - TimeSpan.FromMinutes(50),
+                                                                                Timestamp:       timeReference + TimeSpan.FromMinutes(10),
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
                                                                                                          Value:              1,
@@ -261,10 +255,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                                              ChargingStationId:         chargingStationId,
 
                                              EventType:                 TransactionEvents.Ended,
-                                             Timestamp:                 now - TimeSpan.FromMinutes(5),
+                                             Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
                                              TriggerReason:             TriggerReasons.ChargingStateChanged,
                                              SequenceNumber:            2,
-                                             TransactionInfo:           transaction,
+                                             TransactionInfo:           new Transaction(
+                                                                            TransactionId:             transactionId,
+                                                                            ChargingState:             ChargingStates.SuspendedEVSE,
+                                                                            TimeSpentCharging:         TimeSpan.FromHours(2),
+                                                                            StoppedReason:             StopTransactionReasons.Local,
+                                                                            RemoteStartId:             null,
+                                                                            OperationMode:             OperationModes.ChargingOnly,
+                                                                            CustomData:                null
+                                                                        ),
 
                                              Offline:                   null,
                                              NumberOfPhasesUsed:        null,
@@ -274,7 +276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
                                              EVSE:                      evse,
                                              MeterValues:               new[] {
                                                                             new MeterValue(
-                                                                                Timestamp:       now - TimeSpan.FromMinutes(11),
+                                                                                Timestamp:       timeReference + TimeSpan.FromMinutes(49),
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
                                                                                                          Value:              10000,
@@ -320,7 +322,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
 
 
             if (chargingTariff    is not null &&
-                transaction       is not null &&
                 transactionEvents is not null)
             {
 
