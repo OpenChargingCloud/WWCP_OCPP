@@ -1,15 +1,15 @@
-# OCPP Charging Tariffs Extensions
+# OCPP E2E Charging Tariffs Extensions
 
-The *Charging Tariffs Extensions* allow you to have machine readable and digital signed read-only charging tariffs.
+The *E2E Charging Tariffs Extensions* allow you to have machine readable and digital signed read-only charging tariffs.
 It is a legal requirement in some countries to verify that a tariff is shown before, during and after the charging session
 and to make sure, that the tariff was not manipulated during that time. By this the EV driver can be sure that (s)he is charged the correct price.
-This is especially important for *dynamic tariffs* or the famous *German Calibration Law* for adhoc charging at public charging stations.
+This is especially important for *dynamic tariffs* or the famous *German Calibration Law* for secure adhoc charging at public charging stations.
 
-Charging Tariffs might be part of OCPP v2.1 Draft 3++, but we are not sure about this. Therefore we have created this experimental extension.
+Charging Tariffs might be part of OCPP v2.1 Draft 3++, but the current approach of the Open Charge Alliance does not adopt end-to-end use cases, it stayes an OCPP-internal solution. Therefore we have created this experimental extension.
 
-## Differences to OCPI
+## Differences to OCPI and OCPP
 
-The charging tariff data structure is based on OCPI v2.2.1, but has many advantages over it:
+The charging tariff data structure is based on OCPI v2.2.1 and OCPP v2.1 draft 2 v0.44, but has many advantages over it:
 
 1. It is digitally signed, so that the EV driver can be sure that the tariff was not manipulated.
 2. The charging tariff has a **well-defined read-only globally unique** and **unique over time** **identification**, so that it can be referenced by other data structures like *charging tickets* easily.
