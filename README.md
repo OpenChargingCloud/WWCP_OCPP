@@ -14,7 +14,8 @@ For more details on this protocol please visit http://www.openchargealliance.org
 - **OCPP v2.1** is a based on an internal OCA specification (Draft 2 v0.44) and currently
 under development. This version also comes with our [OCPP CSE](OCPP_CSE) extensions for
 cryptographically signed messages, security polices, user roles, end-to-end digital
-signed charging tariffs and charging tickets.
+signed charging tariffs and charging tickets. This version was also tested on multiple
+Open Charge Alliance Plugfests.
 - **OCPP v2.0.1** is fully implemented and at least one tests exists for every charging
 station or CSMS message. This versions is not longer actively maintained and justs remains
 to reflect data structure changes within different OCPP version. Please use version v2.1.
