@@ -863,12 +863,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomTariffSerializer = null, CustomDisplayTextSerializer = null, ...)
+        #region ToJSON(CustomChargingTariffSerializer = null, CustomDisplayTextSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomTariffSerializer">A delegate to serialize custom tariff JSON objects.</param>
+        /// <param name="CustomChargingTariffSerializer">A delegate to serialize custom tariff JSON objects.</param>
         /// <param name="CustomDisplayTextSerializer">A delegate to serialize custom multi-language text JSON objects.</param>
         /// <param name="CustomPriceSerializer">A delegate to serialize custom price JSON objects.</param>
         /// <param name="CustomTariffElementSerializer">A delegate to serialize custom tariff element JSON objects.</param>
@@ -879,7 +879,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomEnvironmentalImpactSerializer">A delegate to serialize custom environmental impact JSON objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingTariff>?       CustomTariffSerializer                = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingTariff>?       CustomChargingTariffSerializer        = null,
                               CustomJObjectSerializerDelegate<DisplayText>?          CustomDisplayTextSerializer           = null,
                               CustomJObjectSerializerDelegate<Price>?                CustomPriceSerializer                 = null,
                               CustomJObjectSerializerDelegate<TariffElement>?        CustomTariffElementSerializer         = null,
@@ -970,8 +970,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? new JProperty("customData",           CustomData.      ToJSON(CustomCustomDataSerializer))
                                : null);
 
-            return CustomTariffSerializer is not null
-                       ? CustomTariffSerializer(this, json)
+            return CustomChargingTariffSerializer is not null
+                       ? CustomChargingTariffSerializer(this, json)
                        : json;
 
         }
