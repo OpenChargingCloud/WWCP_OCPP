@@ -2762,6 +2762,190 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
+
+        // E2E Security Extensions
+
+
+
+
+
+        // E2E Charging Tariffs Extensions
+
+        #region SetDefaultChargingTariff   (this CSMS, ChargingStationId, ChargingTariff,          EVSEIds = null, ...)
+
+        /// <summary>
+        /// Set a default charging tariff for the charging station,
+        /// or for a subset of EVSEs of the charging station.
+        /// </summary>
+        /// <param name="ChargingTariff">A charging tariff.</param>
+        /// <param name="EVSEIds">An optional enumeration of EVSEs the default charging tariff applies to.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.SetDefaultChargingTariffResponse>
+
+            SetDefaultChargingTariff(this ICSMS               CSMS,
+                                     ChargingStation_Id       ChargingStationId,
+                                     ChargingTariff           ChargingTariff,
+                                     IEnumerable<EVSE_Id>?    EVSEIds             = null,
+
+                                     IEnumerable<KeyPair>?    SignKeys            = null,
+                                     IEnumerable<SignInfo>?   SignInfos           = null,
+                                     IEnumerable<Signature>?  Signatures          = null,
+
+                                     CustomData?              CustomData          = null,
+
+                                     Request_Id?              RequestId           = null,
+                                     DateTime?                RequestTimestamp    = null,
+                                     TimeSpan?                RequestTimeout      = null,
+                                     EventTracking_Id?        EventTrackingId     = null,
+                                     CancellationToken        CancellationToken   = default)
+
+
+                => CSMS.SetDefaultChargingTariff(
+                       new SetDefaultChargingTariffRequest(
+                           ChargingStationId,
+                           ChargingTariff,
+                           EVSEIds,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region GetDefaultChargingTariff   (this CSMS, ChargingStationId,                          EVSEIds = null, ...)
+
+        /// <summary>
+        /// Get the default charging tariff(s) for the charging station and its EVSEs.
+        /// </summary>
+        /// <param name="EVSEIds">An optional enumeration of EVSEs the default charging tariff should be reported on.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.GetDefaultChargingTariffResponse>
+
+            GetDefaultChargingTariff(this ICSMS               CSMS,
+                                     ChargingStation_Id       ChargingStationId,
+                                     IEnumerable<EVSE_Id>?    EVSEIds             = null,
+
+                                     IEnumerable<KeyPair>?    SignKeys            = null,
+                                     IEnumerable<SignInfo>?   SignInfos           = null,
+                                     IEnumerable<Signature>?  Signatures          = null,
+
+                                     CustomData?              CustomData          = null,
+
+                                     Request_Id?              RequestId           = null,
+                                     DateTime?                RequestTimestamp    = null,
+                                     TimeSpan?                RequestTimeout      = null,
+                                     EventTracking_Id?        EventTrackingId     = null,
+                                     CancellationToken        CancellationToken   = default)
+
+
+                => CSMS.GetDefaultChargingTariff(
+                       new GetDefaultChargingTariffRequest(
+                           ChargingStationId,
+                           EVSEIds,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+        #region RemoveDefaultChargingTariff(this CSMS, ChargingStationId, ChargingTariffId = null, EVSEIds = null, ...)
+
+        /// <summary>
+        /// Remove the default charging tariff of the charging station,
+        /// or of a subset of EVSEs of the charging station.
+        /// </summary>
+        /// <param name="ChargingTariffId">The optional unique charging tariff identification of the default charging tariff to be removed.</param>
+        /// <param name="EVSEIds">An optional enumeration of EVSEs the default charging tariff applies to.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.RemoveDefaultChargingTariffResponse>
+
+            RemoveDefaultChargingTariff(this ICSMS               CSMS,
+                                        ChargingStation_Id       ChargingStationId,
+                                        ChargingTariff_Id?       ChargingTariffId    = null,
+                                        IEnumerable<EVSE_Id>?    EVSEIds             = null,
+
+                                        IEnumerable<KeyPair>?    SignKeys            = null,
+                                        IEnumerable<SignInfo>?   SignInfos           = null,
+                                        IEnumerable<Signature>?  Signatures          = null,
+
+                                        CustomData?              CustomData          = null,
+
+                                        Request_Id?              RequestId           = null,
+                                        DateTime?                RequestTimestamp    = null,
+                                        TimeSpan?                RequestTimeout      = null,
+                                        EventTracking_Id?        EventTrackingId     = null,
+                                        CancellationToken        CancellationToken   = default)
+
+
+                => CSMS.RemoveDefaultChargingTariff(
+                       new RemoveDefaultChargingTariffRequest(
+                           ChargingStationId,
+                           ChargingTariffId,
+                           EVSEIds,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
+
+
     }
 
 }

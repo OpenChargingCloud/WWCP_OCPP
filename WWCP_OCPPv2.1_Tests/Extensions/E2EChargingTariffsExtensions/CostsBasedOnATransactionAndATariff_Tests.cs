@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
+namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensions
 {
 
     /// <summary>

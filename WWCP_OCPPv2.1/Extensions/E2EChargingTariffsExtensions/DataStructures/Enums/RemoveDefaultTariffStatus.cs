@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RemoveDefaultChargingTariffStatus">The parsed remove default charging tariff status.</param>
         public static Boolean TryParse(String Text, out RemoveDefaultChargingTariffStatus RemoveDefaultChargingTariffStatus)
         {
-            switch (Text.Trim().ToUpper())
+            switch (Text.Trim())
             {
 
                 case "Accepted":
@@ -123,7 +123,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// No default charging tariff found.
         /// </summary>
-        NotFound
+        NotFound,
+
+        /// <summary>
+        /// The found charging tariff identification does not match its expected value.
+        /// </summary>
+        ChargingTariffIdMismatch
 
     }
 

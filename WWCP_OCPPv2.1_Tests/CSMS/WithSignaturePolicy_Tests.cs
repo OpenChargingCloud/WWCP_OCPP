@@ -121,6 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
 
+
         #region Reset_Test()
 
         /// <summary>
@@ -150,18 +151,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var keyPair     = KeyPair.GenerateKeys()!;
-                testCSMS01.SignaturePolicy.AddSigningRule     (ResetRequest. DefaultJSONLDContext, keyPair!);
+                chargingStation1.SignaturePolicy.AddVerificationRule(ResetRequest.DefaultJSONLDContext,
+                                                                     VerificationRuleActions.VerifyAll);
+
+
+                var requestKeyPair  = KeyPair.GenerateKeys()!;
+                testCSMS01.SignaturePolicy.AddSigningRule     (ResetRequest. DefaultJSONLDContext, requestKeyPair!);
                 testCSMS01.SignaturePolicy.AddVerificationRule(ResetResponse.DefaultJSONLDContext);
 
 
-                var resetType  = ResetTypes.Immediate;
-                var now        = Timestamp.Now;
-                var response   = await testCSMS01.Reset(
-                                     ChargingStationId:   chargingStation1.Id,
-                                     ResetType:           resetType,
-                                     CustomData:          null
-                                 );
+                var resetType       = ResetTypes.Immediate;
+                var now             = Timestamp.Now;
+                var response        = await testCSMS01.Reset(
+                                          ChargingStationId:   chargingStation1.Id,
+                                          ResetType:           resetType,
+                                          CustomData:          null
+                                      );
 
                 Assert.AreEqual(ResultCodes.OK,                response.Result.ResultCode);
                 Assert.AreEqual(ResetStatus.Accepted,          response.Status);

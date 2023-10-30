@@ -234,6 +234,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public CustomJObjectParserDelegate<UpdateUserRoleRequest>?               CustomUpdateUserRoleRequestParser                { get; set; }
         public CustomJObjectParserDelegate<DeleteUserRoleRequest>?               CustomDeleteUserRoleRequestParser                { get; set; }
 
+
+        // E2E Charging Tariffs Extensions
+        public CustomJObjectParserDelegate<SetDefaultChargingTariffRequest>?     CustomSetDefaultChargingTariffRequestParser      { get; set; }
+        public CustomJObjectParserDelegate<GetDefaultChargingTariffRequest>?     CustomGetDefaultChargingTariffRequestParser      { get; set; }
+        public CustomJObjectParserDelegate<RemoveDefaultChargingTariffRequest>?  CustomRemoveDefaultChargingTariffRequestParser   { get; set; }
+
         #endregion
 
         #region Custom JSON serializer delegates
@@ -2530,6 +2536,96 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// An event sent whenever a websocket response to a DeleteUserRole request was sent.
         /// </summary>
         public event WSClientResponseLogHandler?          OnDeleteUserRoleWSResponse;
+
+        #endregion
+
+
+        // E2E Charging Tariffs Extensions
+
+        #region OnSetDefaultChargingTariff
+
+        /// <summary>
+        /// An event sent whenever a SetDefaultChargingTariff websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                     OnSetDefaultChargingTariffWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a SetDefaultChargingTariff request was received.
+        /// </summary>
+        public event OnSetDefaultChargingTariffRequestDelegate?     OnSetDefaultChargingTariffRequest;
+
+        /// <summary>
+        /// An event sent whenever a SetDefaultChargingTariff request was received.
+        /// </summary>
+        public event OnSetDefaultChargingTariffDelegate?            OnSetDefaultChargingTariff;
+
+        /// <summary>
+        /// An event sent whenever a response to a SetDefaultChargingTariff request was sent.
+        /// </summary>
+        public event OnSetDefaultChargingTariffResponseDelegate?    OnSetDefaultChargingTariffResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a SetDefaultChargingTariff request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                    OnSetDefaultChargingTariffWSResponse;
+
+        #endregion
+
+        #region OnGetDefaultChargingTariff
+
+        /// <summary>
+        /// An event sent whenever a GetDefaultChargingTariff websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                     OnGetDefaultChargingTariffWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a GetDefaultChargingTariff request was received.
+        /// </summary>
+        public event OnGetDefaultChargingTariffRequestDelegate?     OnGetDefaultChargingTariffRequest;
+
+        /// <summary>
+        /// An event sent whenever a GetDefaultChargingTariff request was received.
+        /// </summary>
+        public event OnGetDefaultChargingTariffDelegate?            OnGetDefaultChargingTariff;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetDefaultChargingTariff request was sent.
+        /// </summary>
+        public event OnGetDefaultChargingTariffResponseDelegate?    OnGetDefaultChargingTariffResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a GetDefaultChargingTariff request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                    OnGetDefaultChargingTariffWSResponse;
+
+        #endregion
+
+        #region OnRemoveDefaultChargingTariff
+
+        /// <summary>
+        /// An event sent whenever a RemoveDefaultChargingTariff websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                        OnRemoveDefaultChargingTariffWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a RemoveDefaultChargingTariff request was received.
+        /// </summary>
+        public event OnRemoveDefaultChargingTariffRequestDelegate?     OnRemoveDefaultChargingTariffRequest;
+
+        /// <summary>
+        /// An event sent whenever a RemoveDefaultChargingTariff request was received.
+        /// </summary>
+        public event OnRemoveDefaultChargingTariffDelegate?            OnRemoveDefaultChargingTariff;
+
+        /// <summary>
+        /// An event sent whenever a response to a RemoveDefaultChargingTariff request was sent.
+        /// </summary>
+        public event OnRemoveDefaultChargingTariffResponseDelegate?    OnRemoveDefaultChargingTariffResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a RemoveDefaultChargingTariff request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                       OnRemoveDefaultChargingTariffWSResponse;
 
         #endregion
 
@@ -9466,6 +9562,408 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                             catch (Exception e)
                             {
                                 DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteUserRoleWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+
+                    // E2E Charging Tariffs Extensions
+
+                    case "SetDefaultChargingTariff":
+                        {
+
+                            #region Send OnSetDefaultChargingTariffWSRequest event
+
+                            try
+                            {
+
+                                OnSetDefaultChargingTariffWSRequest?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnSetDefaultChargingTariffWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (SetDefaultChargingTariffRequest.TryParse(requestMessage.Message,
+                                                                             requestMessage.RequestId,
+                                                                             ChargingStationIdentity,
+                                                                             out var request,
+                                                                             out var errorResponse,
+                                                                             CustomSetDefaultChargingTariffRequestParser) && request is not null) {
+
+                                    #region Send OnSetDefaultChargingTariffRequest event
+
+                                    try
+                                    {
+
+                                        OnSetDefaultChargingTariffRequest?.Invoke(Timestamp.Now,
+                                                                                  this,
+                                                                                  request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnSetDefaultChargingTariffRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    SetDefaultChargingTariffResponse? response = null;
+
+                                    var results = OnSetDefaultChargingTariff?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnSetDefaultChargingTariffDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                          this,
+                                                                                                                                          WebSocketConnection,
+                                                                                                                                          request,
+                                                                                                                                          cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= SetDefaultChargingTariffResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnSetDefaultChargingTariffResponse event
+
+                                    try
+                                    {
+
+                                        OnSetDefaultChargingTariffResponse?.Invoke(Timestamp.Now,
+                                                                                   this,
+                                                                                   request,
+                                                                                   response,
+                                                                                   response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnSetDefaultChargingTariffResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnSetDefaultChargingTariffWSResponse event
+
+                            try
+                            {
+
+                                OnSetDefaultChargingTariffWSResponse?.Invoke(Timestamp.Now,
+                                                                             this,
+                                                                             requestJSON,
+                                                                             new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                                OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnSetDefaultChargingTariffWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "GetDefaultChargingTariff":
+                        {
+
+                            #region Send OnGetDefaultChargingTariffWSRequest event
+
+                            try
+                            {
+
+                                OnGetDefaultChargingTariffWSRequest?.Invoke(Timestamp.Now,
+                                                                            this,
+                                                                            requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGetDefaultChargingTariffWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (GetDefaultChargingTariffRequest.TryParse(requestMessage.Message,
+                                                                             requestMessage.RequestId,
+                                                                             ChargingStationIdentity,
+                                                                             out var request,
+                                                                             out var errorResponse,
+                                                                             CustomGetDefaultChargingTariffRequestParser) && request is not null) {
+
+                                    #region Send OnGetDefaultChargingTariffRequest event
+
+                                    try
+                                    {
+
+                                        OnGetDefaultChargingTariffRequest?.Invoke(Timestamp.Now,
+                                                                                  this,
+                                                                                  request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGetDefaultChargingTariffRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    GetDefaultChargingTariffResponse? response = null;
+
+                                    var results = OnGetDefaultChargingTariff?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnGetDefaultChargingTariffDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                          this,
+                                                                                                                                          WebSocketConnection,
+                                                                                                                                          request,
+                                                                                                                                          cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= GetDefaultChargingTariffResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnGetDefaultChargingTariffResponse event
+
+                                    try
+                                    {
+
+                                        OnGetDefaultChargingTariffResponse?.Invoke(Timestamp.Now,
+                                                                                   this,
+                                                                                   request,
+                                                                                   response,
+                                                                                   response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGetDefaultChargingTariffResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnGetDefaultChargingTariffWSResponse event
+
+                            try
+                            {
+
+                                OnGetDefaultChargingTariffWSResponse?.Invoke(Timestamp.Now,
+                                                                             this,
+                                                                             requestJSON,
+                                                                             new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                                OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGetDefaultChargingTariffWSResponse));
+                            }
+
+                            #endregion
+
+                        }
+                        break;
+
+                    case "RemoveDefaultChargingTariff":
+                        {
+
+                            #region Send OnRemoveDefaultChargingTariffWSRequest event
+
+                            try
+                            {
+
+                                OnRemoveDefaultChargingTariffWSRequest?.Invoke(Timestamp.Now,
+                                                                               this,
+                                                                               requestJSON);
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnRemoveDefaultChargingTariffWSRequest));
+                            }
+
+                            #endregion
+
+                            try
+                            {
+
+                                if (RemoveDefaultChargingTariffRequest.TryParse(requestMessage.Message,
+                                                                                requestMessage.RequestId,
+                                                                                ChargingStationIdentity,
+                                                                                out var request,
+                                                                                out var errorResponse,
+                                                                                CustomRemoveDefaultChargingTariffRequestParser) && request is not null) {
+
+                                    #region Send OnRemoveDefaultChargingTariffRequest event
+
+                                    try
+                                    {
+
+                                        OnRemoveDefaultChargingTariffRequest?.Invoke(Timestamp.Now,
+                                                                                     this,
+                                                                                     request);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnRemoveDefaultChargingTariffRequest));
+                                    }
+
+                                    #endregion
+
+                                    #region Call async subscribers
+
+                                    RemoveDefaultChargingTariffResponse? response = null;
+
+                                    var results = OnRemoveDefaultChargingTariff?.
+                                                      GetInvocationList()?.
+                                                      SafeSelect(subscriber => (subscriber as OnRemoveDefaultChargingTariffDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                             this,
+                                                                                                                                             WebSocketConnection,
+                                                                                                                                             request,
+                                                                                                                                             cancellationTokenSource.Token)).
+                                                      ToArray();
+
+                                    if (results?.Length > 0)
+                                    {
+
+                                        await Task.WhenAll(results!);
+
+                                        response = results.FirstOrDefault()?.Result;
+
+                                    }
+
+                                    response ??= RemoveDefaultChargingTariffResponse.Failed(request);
+
+                                    #endregion
+
+                                    #region Send OnRemoveDefaultChargingTariffResponse event
+
+                                    try
+                                    {
+
+                                        OnRemoveDefaultChargingTariffResponse?.Invoke(Timestamp.Now,
+                                                                                      this,
+                                                                                      request,
+                                                                                      response,
+                                                                                      response.Runtime);
+
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnRemoveDefaultChargingTariffResponse));
+                                    }
+
+                                    #endregion
+
+                                    OCPPResponseJSON = response.ToJSON();
+
+                                }
+
+                                else
+                                    ErrorMessage = OCPP_WebSocket_ErrorMessage.CouldNotParse(requestMessage.RequestId,
+                                                                                             requestMessage.Action,
+                                                                                             requestMessage.Message,
+                                                                                             errorResponse);
+
+                            }
+                            catch (Exception e)
+                            {
+                                ErrorMessage = OCPP_WebSocket_ErrorMessage.FormationViolation(requestMessage.RequestId,
+                                                                                              requestMessage.Action,
+                                                                                              requestJSON,
+                                                                                              e);
+                            }
+
+                            #region Send OnRemoveDefaultChargingTariffWSResponse event
+
+                            try
+                            {
+
+                                OnRemoveDefaultChargingTariffWSResponse?.Invoke(Timestamp.Now,
+                                                                                this,
+                                                                                requestJSON,
+                                                                                new OCPP_WebSocket_ResponseMessage(requestMessage.RequestId,
+                                                                                                                   OCPPResponseJSON ?? new JObject()).ToJSON());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnRemoveDefaultChargingTariffWSResponse));
                             }
 
                             #endregion

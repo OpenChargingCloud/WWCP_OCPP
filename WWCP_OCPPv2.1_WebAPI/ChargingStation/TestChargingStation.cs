@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
@@ -30,7 +31,6 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
-//using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -98,6 +98,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Decimal?           MeterStopValue           { get; set; }
 
         public String?            SignedStopMeterValue     { get; set; }
+
+
+        public ChargingTariff?    DefaultChargingTariff    { get; set; }
 
 
         public ChargingStationEVSE(EVSE_Id                                 Id,
@@ -456,6 +459,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CSMS.UpdateUserRoleRequest>?                          CustomUpdateUserRoleRequestSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.DeleteUserRoleRequest>?                          CustomDeleteUserRoleRequestSerializer                        { get; set; }
 
+
+        // E2E Charging Tariffs Extensions
+        public CustomJObjectSerializerDelegate<CSMS.SetDefaultChargingTariffRequest>?                CustomSetDefaultChargingTariffRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetDefaultChargingTariffRequest>?                CustomGetDefaultChargingTariffRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.RemoveDefaultChargingTariffRequest>?             CustomRemoveDefaultChargingTariffRequestSerializer           { get; set; }
+
         #endregion
 
         #region CSMS Response Messages
@@ -590,6 +599,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<UpdateUserRoleResponse>?                              CustomUpdateUserRoleResponseSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<DeleteUserRoleResponse>?                              CustomDeleteUserRoleResponseSerializer                        { get; set; }
 
+
+        // E2E Charging Tariff Extensions
+        public CustomJObjectSerializerDelegate<SetDefaultChargingTariffResponse>?                    CustomSetDefaultChargingTariffResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<GetDefaultChargingTariffResponse>?                    CustomGetDefaultChargingTariffResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<RemoveDefaultChargingTariffResponse>?                 CustomRemoveDefaultChargingTariffResponseSerializer           { get; set; }
+
         #endregion
 
 
@@ -627,7 +642,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                                         { get; set; }
-        
+
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                               { get; set; }
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                                    { get; set; }
@@ -676,6 +691,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<SetMonitoringResult>?                                 CustomSetMonitoringResultSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<ClearMonitoringResult>?                               CustomClearMonitoringResultSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<CompositeSchedule>?                                   CustomCompositeScheduleSerializer                            { get; set; }
+
+
+        // E2E Security Extensions
+
+
+
+        // E2E Charging Tariff Extensions
+
+        public CustomJObjectSerializerDelegate<ChargingTariff>?                                      CustomChargingTariffSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<DisplayText>?                                         CustomDisplayTextSerializer                                  { get; set; }
+        public CustomJObjectSerializerDelegate<Price>?                                               CustomPriceSerializer                                        { get; set; }
+        public CustomJObjectSerializerDelegate<TariffElement>?                                       CustomTariffElementSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<PriceComponent>?                                      CustomPriceComponentSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<TariffRestrictions>?                                  CustomTariffRestrictionsSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<EnergyMix>?                                           CustomEnergyMixSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<EnergySource>?                                        CustomEnergySourceSerializer                                 { get; set; }
+        public CustomJObjectSerializerDelegate<EnvironmentalImpact>?                                 CustomEnvironmentalImpactSerializer                          { get; set; }
 
         #endregion
 
@@ -1148,12 +1180,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Reset
 
         /// <summary>
-        /// An event fired whenever a Reset request will be sent to the charging station.
+        /// An event fired whenever a Reset request was received from the CSMS.
         /// </summary>
         public event OnResetRequestDelegate?   OnResetRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a Reset request was received.
+        /// An event fired whenever a response to a Reset request was sent.
         /// </summary>
         public event OnResetResponseDelegate?  OnResetResponse;
 
@@ -1162,12 +1194,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region UpdateFirmware
 
         /// <summary>
-        /// An event fired whenever an UpdateFirmware request will be sent to the charging station.
+        /// An event fired whenever an UpdateFirmware request was received from the CSMS.
         /// </summary>
         public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
         /// <summary>
-        /// An event fired whenever a response to an UpdateFirmware request was received.
+        /// An event fired whenever a response to an UpdateFirmware request was sent.
         /// </summary>
         public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
 
@@ -1176,12 +1208,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region PublishFirmware
 
         /// <summary>
-        /// An event fired whenever a PublishFirmware request will be sent to the charging station.
+        /// An event fired whenever a PublishFirmware request was received from the CSMS.
         /// </summary>
         public event OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a PublishFirmware request was received.
+        /// An event fired whenever a response to a PublishFirmware request was sent.
         /// </summary>
         public event OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
 
@@ -1190,12 +1222,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region UnpublishFirmware
 
         /// <summary>
-        /// An event fired whenever an UnpublishFirmware request will be sent to the charging station.
+        /// An event fired whenever an UnpublishFirmware request was received from the CSMS.
         /// </summary>
         public event OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
 
         /// <summary>
-        /// An event fired whenever a response to an UnpublishFirmware request was received.
+        /// An event fired whenever a response to an UnpublishFirmware request was sent.
         /// </summary>
         public event OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
 
@@ -1204,12 +1236,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetBaseReport
 
         /// <summary>
-        /// An event fired whenever a GetBaseReport request will be sent to the charging station.
+        /// An event fired whenever a GetBaseReport request was received from the CSMS.
         /// </summary>
         public event OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a GetBaseReport request was received.
+        /// An event fired whenever a response to a GetBaseReport request was sent.
         /// </summary>
         public event OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
 
@@ -1218,12 +1250,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetReport
 
         /// <summary>
-        /// An event fired whenever a GetReport request will be sent to the charging station.
+        /// An event fired whenever a GetReport request was received from the CSMS.
         /// </summary>
         public event OnGetReportRequestDelegate?   OnGetReportRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a GetReport request was received.
+        /// An event fired whenever a response to a GetReport request was sent.
         /// </summary>
         public event OnGetReportResponseDelegate?  OnGetReportResponse;
 
@@ -1232,12 +1264,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetLog
 
         /// <summary>
-        /// An event fired whenever a GetLog request will be sent to the charging station.
+        /// An event fired whenever a GetLog request was received from the CSMS.
         /// </summary>
         public event OnGetLogRequestDelegate?   OnGetLogRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a GetLog request was received.
+        /// An event fired whenever a response to a GetLog request was sent.
         /// </summary>
         public event OnGetLogResponseDelegate?  OnGetLogResponse;
 
@@ -1246,12 +1278,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetVariables
 
         /// <summary>
-        /// An event fired whenever a SetVariables request will be sent to the charging station.
+        /// An event fired whenever a SetVariables request was received from the CSMS.
         /// </summary>
         public event OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a SetVariables request was received.
+        /// An event fired whenever a response to a SetVariables request was sent.
         /// </summary>
         public event OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
 
@@ -1260,12 +1292,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetVariables
 
         /// <summary>
-        /// An event fired whenever a GetVariables request will be sent to the charging station.
+        /// An event fired whenever a GetVariables request was received from the CSMS.
         /// </summary>
         public event OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a GetVariables request was received.
+        /// An event fired whenever a response to a GetVariables request was sent.
         /// </summary>
         public event OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
 
@@ -1274,12 +1306,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetMonitoringBase
 
         /// <summary>
-        /// An event fired whenever a SetMonitoringBase request will be sent to the charging station.
+        /// An event fired whenever a SetMonitoringBase request was received from the CSMS.
         /// </summary>
         public event OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a SetMonitoringBase request was received.
+        /// An event fired whenever a response to a SetMonitoringBase request was sent.
         /// </summary>
         public event OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
 
@@ -1288,12 +1320,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetMonitoringReport
 
         /// <summary>
-        /// An event fired whenever a GetMonitoringReport request will be sent to the charging station.
+        /// An event fired whenever a GetMonitoringReport request was received from the CSMS.
         /// </summary>
         public event OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a GetMonitoringReport request was received.
+        /// An event fired whenever a response to a GetMonitoringReport request was sent.
         /// </summary>
         public event OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
 
@@ -1302,12 +1334,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetMonitoringLevel
 
         /// <summary>
-        /// An event fired whenever a SetMonitoringLevel request will be sent to the charging station.
+        /// An event fired whenever a SetMonitoringLevel request was received from the CSMS.
         /// </summary>
         public event OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a SetMonitoringLevel request was received.
+        /// An event fired whenever a response to a SetMonitoringLevel request was sent.
         /// </summary>
         public event OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
 
@@ -1316,12 +1348,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetVariableMonitoring
 
         /// <summary>
-        /// An event fired whenever a SetVariableMonitoring request will be sent to the charging station.
+        /// An event fired whenever a SetVariableMonitoring request was received from the CSMS.
         /// </summary>
         public event OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a SetVariableMonitoring request was received.
+        /// An event fired whenever a response to a SetVariableMonitoring request was sent.
         /// </summary>
         public event OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
 
@@ -1330,12 +1362,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ClearVariableMonitoring
 
         /// <summary>
-        /// An event fired whenever a ClearVariableMonitoring request will be sent to the charging station.
+        /// An event fired whenever a ClearVariableMonitoring request was received from the CSMS.
         /// </summary>
         public event OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a ClearVariableMonitoring request was received.
+        /// An event fired whenever a response to a ClearVariableMonitoring request was sent.
         /// </summary>
         public event OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
 
@@ -1344,12 +1376,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetNetworkProfile
 
         /// <summary>
-        /// An event fired whenever a SetNetworkProfile request will be sent to the charging station.
+        /// An event fired whenever a SetNetworkProfile request was received from the CSMS.
         /// </summary>
         public event OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a SetNetworkProfile request was received.
+        /// An event fired whenever a response to a SetNetworkProfile request was sent.
         /// </summary>
         public event OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
 
@@ -1358,12 +1390,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ChangeAvailability
 
         /// <summary>
-        /// An event fired whenever a ChangeAvailability request will be sent to the charging station.
+        /// An event fired whenever a ChangeAvailability request was received from the CSMS.
         /// </summary>
         public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a ChangeAvailability request was received.
+        /// An event fired whenever a response to a ChangeAvailability request was sent.
         /// </summary>
         public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
 
@@ -1372,12 +1404,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region TriggerMessage
 
         /// <summary>
-        /// An event fired whenever a TriggerMessage request will be sent to the charging station.
+        /// An event fired whenever a TriggerMessage request was received from the CSMS.
         /// </summary>
         public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a TriggerMessage request was received.
+        /// An event fired whenever a response to a TriggerMessage request was sent.
         /// </summary>
         public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
@@ -1386,7 +1418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnIncomingDataTransferRequest/-Response
 
         /// <summary>
-        /// An event sent whenever a data transfer request was received.
+        /// An event sent whenever a data transfer request was sent.
         /// </summary>
         public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
@@ -1401,12 +1433,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SendSignedCertificate
 
         /// <summary>
-        /// An event fired whenever a SignedCertificate request will be sent to the charging station.
+        /// An event fired whenever a SignedCertificate request was received from the CSMS.
         /// </summary>
         public event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a SignedCertificate request was received.
+        /// An event fired whenever a response to a SignedCertificate request was sent.
         /// </summary>
         public event OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
 
@@ -1415,12 +1447,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region InstallCertificate
 
         /// <summary>
-        /// An event fired whenever an InstallCertificate request will be sent to the charging station.
+        /// An event fired whenever an InstallCertificate request was received from the CSMS.
         /// </summary>
         public event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
 
         /// <summary>
-        /// An event fired whenever a response to an InstallCertificate request was received.
+        /// An event fired whenever a response to an InstallCertificate request was sent.
         /// </summary>
         public event OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
 
@@ -1429,12 +1461,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetInstalledCertificateIds
 
         /// <summary>
-        /// An event fired whenever a GetInstalledCertificateIds request will be sent to the charging station.
+        /// An event fired whenever a GetInstalledCertificateIds request was received from the CSMS.
         /// </summary>
         public event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a GetInstalledCertificateIds request was received.
+        /// An event fired whenever a response to a GetInstalledCertificateIds request was sent.
         /// </summary>
         public event OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
 
@@ -1443,12 +1475,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region DeleteCertificate
 
         /// <summary>
-        /// An event fired whenever a DeleteCertificate request will be sent to the charging station.
+        /// An event fired whenever a DeleteCertificate request was received from the CSMS.
         /// </summary>
         public event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a DeleteCertificate request was received.
+        /// An event fired whenever a response to a DeleteCertificate request was sent.
         /// </summary>
         public event OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
 
@@ -1457,12 +1489,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region NotifyCRL
 
         /// <summary>
-        /// An event fired whenever a NotifyCRL request will be sent to the charging station.
+        /// An event fired whenever a NotifyCRL request was received from the CSMS.
         /// </summary>
         public event OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a NotifyCRL request was received.
+        /// An event fired whenever a response to a NotifyCRL request was sent.
         /// </summary>
         public event OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
 
@@ -1472,12 +1504,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetLocalListVersion
 
         /// <summary>
-        /// An event fired whenever a GetLocalListVersion request will be sent to the charging station.
+        /// An event fired whenever a GetLocalListVersion request was received from the CSMS.
         /// </summary>
         public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a GetLocalListVersion request was received.
+        /// An event fired whenever a response to a GetLocalListVersion request was sent.
         /// </summary>
         public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
@@ -1486,12 +1518,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SendLocalList
 
         /// <summary>
-        /// An event fired whenever a SendLocalList request will be sent to the charging station.
+        /// An event fired whenever a SendLocalList request was received from the CSMS.
         /// </summary>
         public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a SendLocalList request was received.
+        /// An event fired whenever a response to a SendLocalList request was sent.
         /// </summary>
         public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
 
@@ -1500,12 +1532,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ClearCache
 
         /// <summary>
-        /// An event fired whenever a ClearCache request will be sent to the charging station.
+        /// An event fired whenever a ClearCache request was received from the CSMS.
         /// </summary>
         public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a ClearCache request was received.
+        /// An event fired whenever a response to a ClearCache request was sent.
         /// </summary>
         public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
 
@@ -1515,12 +1547,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ReserveNow
 
         /// <summary>
-        /// An event fired whenever a ReserveNow request will be sent to the charging station.
+        /// An event fired whenever a ReserveNow request was received from the CSMS.
         /// </summary>
         public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a ReserveNow request was received.
+        /// An event fired whenever a response to a ReserveNow request was sent.
         /// </summary>
         public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
 
@@ -1529,12 +1561,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CancelReservation
 
         /// <summary>
-        /// An event fired whenever a CancelReservation request will be sent to the charging station.
+        /// An event fired whenever a CancelReservation request was received from the CSMS.
         /// </summary>
         public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a CancelReservation request was received.
+        /// An event fired whenever a response to a CancelReservation request was sent.
         /// </summary>
         public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
@@ -1543,12 +1575,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region StartCharging
 
         /// <summary>
-        /// An event fired whenever a RequestStartTransaction request will be sent to the charging station.
+        /// An event fired whenever a RequestStartTransaction request was received from the CSMS.
         /// </summary>
         public event OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a RequestStartTransaction request was received.
+        /// An event fired whenever a response to a RequestStartTransaction request was sent.
         /// </summary>
         public event OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
 
@@ -1557,12 +1589,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region StopCharging
 
         /// <summary>
-        /// An event fired whenever a RequestStopTransaction request will be sent to the charging station.
+        /// An event fired whenever a RequestStopTransaction request was received from the CSMS.
         /// </summary>
         public event OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a RequestStopTransaction request was received.
+        /// An event fired whenever a response to a RequestStopTransaction request was sent.
         /// </summary>
         public event OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
 
@@ -1571,12 +1603,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetTransactionStatus
 
         /// <summary>
-        /// An event fired whenever a GetTransactionStatus request will be sent to the charging station.
+        /// An event fired whenever a GetTransactionStatus request was received from the CSMS.
         /// </summary>
         public event OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a GetTransactionStatus request was received.
+        /// An event fired whenever a response to a GetTransactionStatus request was sent.
         /// </summary>
         public event OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
 
@@ -1585,12 +1617,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetChargingProfile
 
         /// <summary>
-        /// An event fired whenever a SetChargingProfile request will be sent to the charging station.
+        /// An event fired whenever a SetChargingProfile request was received from the CSMS.
         /// </summary>
         public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a SetChargingProfile request was received.
+        /// An event fired whenever a response to a SetChargingProfile request was sent.
         /// </summary>
         public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
 
@@ -1599,12 +1631,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetChargingProfiles
 
         /// <summary>
-        /// An event fired whenever a GetChargingProfiles request will be sent to the charging station.
+        /// An event fired whenever a GetChargingProfiles request was received from the CSMS.
         /// </summary>
         public event OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a GetChargingProfiles request was received.
+        /// An event fired whenever a response to a GetChargingProfiles request was sent.
         /// </summary>
         public event OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
 
@@ -1613,12 +1645,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ClearChargingProfile
 
         /// <summary>
-        /// An event fired whenever a ClearChargingProfile request will be sent to the charging station.
+        /// An event fired whenever a ClearChargingProfile request was received from the CSMS.
         /// </summary>
         public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a ClearChargingProfile request was received.
+        /// An event fired whenever a response to a ClearChargingProfile request was sent.
         /// </summary>
         public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
 
@@ -1627,12 +1659,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetCompositeSchedule
 
         /// <summary>
-        /// An event fired whenever a GetCompositeSchedule request will be sent to the charging station.
+        /// An event fired whenever a GetCompositeSchedule request was received from the CSMS.
         /// </summary>
         public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a GetCompositeSchedule request was received.
+        /// An event fired whenever a response to a GetCompositeSchedule request was sent.
         /// </summary>
         public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
 
@@ -1641,12 +1673,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region UpdateDynamicSchedule
 
         /// <summary>
-        /// An event fired whenever an UpdateDynamicSchedule request will be sent to the charging station.
+        /// An event fired whenever an UpdateDynamicSchedule request was received from the CSMS.
         /// </summary>
         public event OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
 
         /// <summary>
-        /// An event fired whenever a response to an UpdateDynamicSchedule request was received.
+        /// An event fired whenever a response to an UpdateDynamicSchedule request was sent.
         /// </summary>
         public event OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
 
@@ -1655,12 +1687,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region NotifyAllowedEnergyTransfer
 
         /// <summary>
-        /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the charging station.
+        /// An event fired whenever a NotifyAllowedEnergyTransfer request was received from the CSMS.
         /// </summary>
         public event OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was received.
+        /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was sent.
         /// </summary>
         public event OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
 
@@ -1669,12 +1701,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region UsePriorityCharging
 
         /// <summary>
-        /// An event fired whenever a UsePriorityCharging request will be sent to the charging station.
+        /// An event fired whenever a UsePriorityCharging request was received from the CSMS.
         /// </summary>
         public event OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a UsePriorityCharging request was received.
+        /// An event fired whenever a response to a UsePriorityCharging request was sent.
         /// </summary>
         public event OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
 
@@ -1683,12 +1715,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region UnlockConnector
 
         /// <summary>
-        /// An event fired whenever an UnlockConnector request will be sent to the charging station.
+        /// An event fired whenever an UnlockConnector request was received from the CSMS.
         /// </summary>
         public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
         /// <summary>
-        /// An event fired whenever a response to an UnlockConnector request was received.
+        /// An event fired whenever a response to an UnlockConnector request was sent.
         /// </summary>
         public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
 
@@ -1698,12 +1730,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region AFRRSignal
 
         /// <summary>
-        /// An event fired whenever an AFRR signal request will be sent to the charging station.
+        /// An event fired whenever an AFRR signal request was received from the CSMS.
         /// </summary>
         public event OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
 
         /// <summary>
-        /// An event fired whenever a response to an AFRR signal request was received.
+        /// An event fired whenever a response to an AFRR signal request was sent.
         /// </summary>
         public event OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
 
@@ -1713,12 +1745,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetDisplayMessage
 
         /// <summary>
-        /// An event fired whenever a SetDisplayMessage request will be sent to the charging station.
+        /// An event fired whenever a SetDisplayMessage request was received from the CSMS.
         /// </summary>
         public event OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a SetDisplayMessage request was received.
+        /// An event fired whenever a response to a SetDisplayMessage request was sent.
         /// </summary>
         public event OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
 
@@ -1727,12 +1759,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetDisplayMessages
 
         /// <summary>
-        /// An event fired whenever a GetDisplayMessages request will be sent to the charging station.
+        /// An event fired whenever a GetDisplayMessages request was received from the CSMS.
         /// </summary>
         public event OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a GetDisplayMessages request was received.
+        /// An event fired whenever a response to a GetDisplayMessages request was sent.
         /// </summary>
         public event OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
 
@@ -1741,12 +1773,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ClearDisplayMessage
 
         /// <summary>
-        /// An event fired whenever a ClearDisplayMessage request will be sent to the charging station.
+        /// An event fired whenever a ClearDisplayMessage request was received from the CSMS.
         /// </summary>
         public event OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a ClearDisplayMessage request was received.
+        /// An event fired whenever a response to a ClearDisplayMessage request was sent.
         /// </summary>
         public event OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
 
@@ -1755,12 +1787,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SendCostUpdated
 
         /// <summary>
-        /// An event fired whenever a CostUpdated request will be sent to the charging station.
+        /// An event fired whenever a CostUpdated request was received from the CSMS.
         /// </summary>
         public event OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a CostUpdated request was received.
+        /// An event fired whenever a response to a CostUpdated request was sent.
         /// </summary>
         public event OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
 
@@ -1769,12 +1801,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region RequestCustomerInformation
 
         /// <summary>
-        /// An event fired whenever a CustomerInformation request will be sent to the charging station.
+        /// An event fired whenever a CustomerInformation request was received from the CSMS.
         /// </summary>
         public event OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a CustomerInformation request was received.
+        /// An event fired whenever a response to a CustomerInformation request was sent.
         /// </summary>
         public event OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
 
@@ -1786,12 +1818,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region AddSignaturePolicy
 
         /// <summary>
-        /// An event fired whenever a AddSignaturePolicy request will be sent to the charging station.
+        /// An event fired whenever a AddSignaturePolicy request was received from the CSMS.
         /// </summary>
         public event OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a AddSignaturePolicy request was received.
+        /// An event fired whenever a response to a AddSignaturePolicy request was sent.
         /// </summary>
         public event OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
 
@@ -1800,12 +1832,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region UpdateSignaturePolicy
 
         /// <summary>
-        /// An event fired whenever a UpdateSignaturePolicy request will be sent to the charging station.
+        /// An event fired whenever a UpdateSignaturePolicy request was received from the CSMS.
         /// </summary>
         public event OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a UpdateSignaturePolicy request was received.
+        /// An event fired whenever a response to a UpdateSignaturePolicy request was sent.
         /// </summary>
         public event OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
 
@@ -1814,12 +1846,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region DeleteSignaturePolicy
 
         /// <summary>
-        /// An event fired whenever a DeleteSignaturePolicy request will be sent to the charging station.
+        /// An event fired whenever a DeleteSignaturePolicy request was received from the CSMS.
         /// </summary>
         public event OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a DeleteSignaturePolicy request was received.
+        /// An event fired whenever a response to a DeleteSignaturePolicy request was sent.
         /// </summary>
         public event OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
 
@@ -1828,12 +1860,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region AddUserRole
 
         /// <summary>
-        /// An event fired whenever a AddUserRole request will be sent to the charging station.
+        /// An event fired whenever a AddUserRole request was received from the CSMS.
         /// </summary>
         public event OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a AddUserRole request was received.
+        /// An event fired whenever a response to a AddUserRole request was sent.
         /// </summary>
         public event OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
 
@@ -1842,12 +1874,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region UpdateUserRole
 
         /// <summary>
-        /// An event fired whenever a UpdateUserRole request will be sent to the charging station.
+        /// An event fired whenever a UpdateUserRole request was received from the CSMS.
         /// </summary>
         public event OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a UpdateUserRole request was received.
+        /// An event fired whenever a response to a UpdateUserRole request was sent.
         /// </summary>
         public event OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
 
@@ -1856,14 +1888,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region DeleteUserRole
 
         /// <summary>
-        /// An event fired whenever a DeleteUserRole request will be sent to the charging station.
+        /// An event fired whenever a DeleteUserRole request was received from the CSMS.
         /// </summary>
         public event OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a DeleteUserRole request was received.
+        /// An event fired whenever a response to a DeleteUserRole request was sent.
         /// </summary>
         public event OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
+
+        #endregion
+
+
+        // E2E Charging Tariffs Extensions
+
+        #region SetDefaultChargingTariff
+
+        /// <summary>
+        /// An event fired whenever a SetDefaultChargingTariff request was received from the CSMS.
+        /// </summary>
+        public event OnSetDefaultChargingTariffRequestDelegate?   OnSetDefaultChargingTariffRequest;
+
+        public event OnSetDefaultChargingTariffDelegate?          OnSetDefaultChargingTariff;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetDefaultChargingTariff request was sent.
+        /// </summary>
+        public event OnSetDefaultChargingTariffResponseDelegate?  OnSetDefaultChargingTariffResponse;
+
+        #endregion
+
+        #region GetDefaultChargingTariff
+
+        /// <summary>
+        /// An event fired whenever a GetDefaultChargingTariff request was received from the CSMS.
+        /// </summary>
+        public event OnGetDefaultChargingTariffRequestDelegate?   OnGetDefaultChargingTariffRequest;
+
+        public event OnGetDefaultChargingTariffDelegate?          OnGetDefaultChargingTariff;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetDefaultChargingTariff request was sent.
+        /// </summary>
+        public event OnGetDefaultChargingTariffResponseDelegate?  OnGetDefaultChargingTariffResponse;
+
+        #endregion
+
+        #region RemoveDefaultChargingTariff
+
+        /// <summary>
+        /// An event fired whenever a RemoveDefaultChargingTariff request was received from the CSMS.
+        /// </summary>
+        public event OnRemoveDefaultChargingTariffRequestDelegate?   OnRemoveDefaultChargingTariffRequest;
+
+        public event OnRemoveDefaultChargingTariffDelegate?          OnRemoveDefaultChargingTariff;
+
+        /// <summary>
+        /// An event fired whenever a response to a RemoveDefaultChargingTariff request was sent.
+        /// </summary>
+        public event OnRemoveDefaultChargingTariffResponseDelegate?  OnRemoveDefaultChargingTariffResponse;
 
         #endregion
 
@@ -10888,6 +10971,600 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         await HandleErrors(
                                   nameof(TestChargingStation),
                                   nameof(OnDeleteUserRoleResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            // E2E Charging Tariffs Extensions
+
+            #region OnSetDefaultChargingTariff
+
+            ChargingStationServer.OnSetDefaultChargingTariff += async (timestamp,
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       cancellationToken) => {
+
+                #region Send OnSetDefaultChargingTariffRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnSetDefaultChargingTariffRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnSetDefaultChargingTariffRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetDefaultChargingTariffRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check charging station identification
+
+                SetDefaultChargingTariffResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new SetDefaultChargingTariffResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid SetDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
+                                             )
+                               );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomSetDefaultChargingTariffRequestSerializer,
+                                 CustomChargingTariffSerializer,
+                                 CustomDisplayTextSerializer,
+                                 CustomPriceSerializer,
+                                 CustomTariffElementSerializer,
+                                 CustomPriceComponentSerializer,
+                                 CustomTariffRestrictionsSerializer,
+                                 CustomEnergyMixSerializer,
+                                 CustomEnergySourceSerializer,
+                                 CustomEnvironmentalImpactSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
+                    {
+
+                        response = new SetDefaultChargingTariffResponse(
+                                       Request:   request,
+                                       Result:    Result.SignatureError(
+                                                      $"Invalid signature: {errorResponse}"
+                                                  )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming SetDefaultChargingTariff!");
+
+                        Dictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>? statusInfos = null;
+
+                        if (!request.EVSEIds.Any())
+                        {
+                            foreach (var evse in evses.Values)
+                                evse.DefaultChargingTariff = request.ChargingTariff;
+                        }
+
+                        else
+                        {
+
+                            foreach (var evseId in request.EVSEIds)
+                            {
+                                if (!evses.ContainsKey(evseId))
+                                {
+                                    response = new SetDefaultChargingTariffResponse(
+                                        Request:   request,
+                                        Result:    Result.SignatureError(
+                                                       $"Invalid EVSE identification: {evseId}"
+                                                   )
+                                    );
+                                }
+                            }
+
+                            statusInfos = new Dictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>();
+
+                            foreach (var evseId in request.EVSEIds)
+                            {
+
+                                evses[evseId].DefaultChargingTariff = request.ChargingTariff;
+
+                                statusInfos.Add(evseId, new StatusInfo<SetDefaultChargingTariffStatus>(
+                                                            Status:           SetDefaultChargingTariffStatus.Accepted,
+                                                            ReasonCode:       null,
+                                                            AdditionalInfo:   null,
+                                                            CustomData:       null
+                                                        ));
+
+                            }
+
+                        }
+
+                        response = new SetDefaultChargingTariffResponse(
+                                       Request:       request,
+                                       Status:        SetDefaultChargingTariffStatus.Accepted,
+                                       StatusInfo:    null,
+                                       StatusInfos:   statusInfos is not null
+                                                          ? new ReadOnlyDictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>(statusInfos)
+                                                          : null,
+                                       CustomData:    null
+                                   );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSetDefaultChargingTariffResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnSetDefaultChargingTariffResponse event
+
+                var responseLogger = OnSetDefaultChargingTariffResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnSetDefaultChargingTariffResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSetDefaultChargingTariffResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnGetDefaultChargingTariff
+
+            ChargingStationServer.OnGetDefaultChargingTariff += async (timestamp,
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       cancellationToken) => {
+
+                #region Send OnGetDefaultChargingTariffRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnGetDefaultChargingTariffRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetDefaultChargingTariffRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetDefaultChargingTariffRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check charging station identification
+
+                GetDefaultChargingTariffResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new GetDefaultChargingTariffResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid GetDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
+                                             )
+                               );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomGetDefaultChargingTariffRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
+                    {
+
+                        response = new GetDefaultChargingTariffResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming GetDefaultChargingTariff!");
+
+                        var chargingTariffGroups  = request.EVSEIds.Any()
+                                                        ? evses.Values.Where(evse => request.EVSEIds.Contains(evse.Id)).GroupBy(evse => evse.DefaultChargingTariff?.Id.ToString() ?? "")
+                                                        : evses.Values.                                                 GroupBy(evse => evse.DefaultChargingTariff?.Id.ToString() ?? "");
+
+                        var chargingTariffMap     = chargingTariffGroups.
+                                                        Where (group => group.Key != "").
+                                                        Select(group => new KeyValuePair<ChargingTariff_Id, IEnumerable<EVSE_Id>>(
+                                                                            group.First().DefaultChargingTariff!.Id,
+                                                                            group.Select(evse => evse.Id)
+                                                                        ));
+
+                        response                  = new GetDefaultChargingTariffResponse(
+                                                        Request:             request,
+                                                        Status:              GenericStatus.Accepted,
+                                                        StatusInfo:          null,
+                                                        ChargingTariffs:     chargingTariffGroups.
+                                                                                 Where (group => group.Key != "").
+                                                                                 Select(group => group.First().DefaultChargingTariff).
+                                                                                 Cast<ChargingTariff>(),
+                                                        ChargingTariffMap:   chargingTariffMap.Any()
+                                                                                 ? new ReadOnlyDictionary<ChargingTariff_Id, IEnumerable<EVSE_Id>>(
+                                                                                       new Dictionary<ChargingTariff_Id, IEnumerable<EVSE_Id>>(
+                                                                                           chargingTariffMap
+                                                                                       )
+                                                                                   )
+                                                                                 : null,
+                                                        CustomData:          null
+                                                    );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomGetDefaultChargingTariffResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomChargingTariffSerializer,
+                        CustomDisplayTextSerializer,
+                        CustomPriceSerializer,
+                        CustomTariffElementSerializer,
+                        CustomPriceComponentSerializer,
+                        CustomTariffRestrictionsSerializer,
+                        CustomEnergyMixSerializer,
+                        CustomEnergySourceSerializer,
+                        CustomEnvironmentalImpactSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnGetDefaultChargingTariffResponse event
+
+                var responseLogger = OnGetDefaultChargingTariffResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetDefaultChargingTariffResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetDefaultChargingTariffResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnRemoveDefaultChargingTariff
+
+            ChargingStationServer.OnRemoveDefaultChargingTariff += async (timestamp,
+                                                                          sender,
+                                                                          connection,
+                                                                          request,
+                                                                          cancellationToken) => {
+
+                #region Send OnRemoveDefaultChargingTariffRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnRemoveDefaultChargingTariffRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnRemoveDefaultChargingTariffRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnRemoveDefaultChargingTariffRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check charging station identification
+
+                RemoveDefaultChargingTariffResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new RemoveDefaultChargingTariffResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid RemoveDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
+                                             )
+                               );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomRemoveDefaultChargingTariffRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
+                    {
+
+                        response = new RemoveDefaultChargingTariffResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging station '{Id}': Incoming RemoveDefaultChargingTariff!");
+
+                        var evseIds = request.EVSEIds.Any()
+                                          ? request.EVSEIds
+                                          : evses.Keys;
+
+                        var statusInfos = new Dictionary<EVSE_Id, StatusInfo<RemoveDefaultChargingTariffStatus>>();
+
+                        foreach (var evseId in evseIds)
+                        {
+
+                            if (evses[evseId].DefaultChargingTariff is null)
+                            {
+                                statusInfos.Add(evseId, new StatusInfo<RemoveDefaultChargingTariffStatus>(RemoveDefaultChargingTariffStatus.NotFound));
+                                continue;
+                            }
+
+                            if (!request.ChargingTariffId.HasValue)
+                            {
+                                evses[evseId].DefaultChargingTariff = null;
+                                continue;
+                            }
+
+                            var chargingTariff = evses[evseId].DefaultChargingTariff;
+
+                            if (chargingTariff is null)
+                            {
+                                statusInfos.Add(evseId, new StatusInfo<RemoveDefaultChargingTariffStatus>(RemoveDefaultChargingTariffStatus.Accepted));
+                                continue;
+                            }
+
+                            if (chargingTariff.Id == request.ChargingTariffId.Value)
+                            {
+                                evses[evseId].DefaultChargingTariff = null;
+                                statusInfos.Add(evseId, new StatusInfo<RemoveDefaultChargingTariffStatus>(RemoveDefaultChargingTariffStatus.Accepted));
+                                continue;
+                            }
+
+                            statusInfos.Add(evseId, new StatusInfo<RemoveDefaultChargingTariffStatus>(RemoveDefaultChargingTariffStatus.NotFound));
+
+                        }
+
+                        response = new RemoveDefaultChargingTariffResponse(
+                                       Request:       request,
+                                       Status:        RemoveDefaultChargingTariffStatus.Accepted,
+                                       StatusInfo:    null,
+                                       StatusInfos:   new ReadOnlyDictionary<EVSE_Id, StatusInfo<RemoveDefaultChargingTariffStatus>>(statusInfos),
+                                       CustomData:    null
+                                   );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomRemoveDefaultChargingTariffResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnRemoveDefaultChargingTariffResponse event
+
+                var responseLogger = OnRemoveDefaultChargingTariffResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnRemoveDefaultChargingTariffResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnRemoveDefaultChargingTariffResponse),
                                   e
                               );
                     }

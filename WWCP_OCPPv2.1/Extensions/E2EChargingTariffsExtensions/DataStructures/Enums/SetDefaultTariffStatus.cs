@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="SetDefaultChargingTariffStatus">The parsed set default charging tariff status.</param>
         public static Boolean TryParse(String Text, out SetDefaultChargingTariffStatus SetDefaultChargingTariffStatus)
         {
-            switch (Text.Trim().ToUpper())
+            switch (Text.Trim())
             {
 
                 case "Accepted":

@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ReservationRestriction">The parsed reservation restriction.</param>
         public static Boolean TryParse(String Text, out ReservationRestrictions ReservationRestriction)
         {
-            switch (Text.Trim().ToUpper())
+            switch (Text.Trim())
             {
 
                 case "RESERVATION":

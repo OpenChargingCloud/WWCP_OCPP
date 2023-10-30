@@ -555,7 +555,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse ProviderName          [mandatory]
 
-                if (!JSON.ParseMandatoryJSON("provider_name",
+                if (!JSON.ParseMandatoryJSON("providerName",
                                              "provider name",
                                              DisplayTexts.TryParse,
                                              out DisplayTexts? ProviderName,
@@ -636,10 +636,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse TariffType            [optional]
 
-                if (JSON.ParseOptionalEnum("type",
-                                           "tariff type",
-                                           out TariffType? TariffType,
-                                           out ErrorResponse))
+                if (JSON.ParseOptional("type",
+                                       "tariff type",
+                                       OCPPv2_1.TariffType.TryParse,
+                                       out TariffType? TariffType,
+                                       out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -719,7 +720,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse MinPrice              [optional]
 
-                if (JSON.ParseOptionalJSON("min_price",
+                if (JSON.ParseOptionalJSON("minPrice",
                                            "minimum price",
                                            Price.TryParse,
                                            out Price? MinPrice,
@@ -733,7 +734,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse MaxPrice              [optional]
 
-                if (JSON.ParseOptionalJSON("max_price",
+                if (JSON.ParseOptionalJSON("maxPrice",
                                            "maximum price",
                                            Price.TryParse,
                                            out Price? MaxPrice,
@@ -773,7 +774,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Parse EnergyMix             [optional]
 
-                if (JSON.ParseOptionalJSON("energy_mix",
+                if (JSON.ParseOptionalJSON("energyMix",
                                            "energy mix",
                                            OCPPv2_1.EnergyMix.TryParse,
                                            out EnergyMix EnergyMix,
@@ -896,8 +897,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("id",                   Id.              ToString()),
                                  new JProperty("providerId",           ProviderId.      ToString()),
-                                 new JProperty("providerName",         new JArray(ProviderName.     Select(providerName       => providerName.     ToJSON(CustomDisplayTextSerializer)))),
-                                 new JProperty("currency",             Currency.        ToString()),
+                                 new JProperty("providerName",         ProviderName.    ToJSON()),
+                                 new JProperty("currency",             Currency.        ISOCode),
 
                            TariffElements.    Any()
                                ? new JProperty("elements",             new JArray(TariffElements.   Select(tariffElement      => tariffElement.    ToJSON(CustomTariffElementSerializer,
@@ -923,7 +924,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            Description.       Any()
-                               ? new JProperty("description",          new JArray(Description.       Select(description       => description.      ToJSON(CustomDisplayTextSerializer))))
+                               ? new JProperty("description",          Description.     ToJSON())
                                : null,
 
                            URL.     HasValue

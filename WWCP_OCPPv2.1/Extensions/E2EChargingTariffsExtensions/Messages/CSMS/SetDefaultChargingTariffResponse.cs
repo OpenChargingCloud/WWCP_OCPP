@@ -327,23 +327,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 SetDefaultChargingTariffResponse = new SetDefaultChargingTariffResponse(
 
-                                                Request,
-                                                Status,
-                                                StatusInfo,
-                                                new ReadOnlyDictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>(StatusInfos),
-                                                null,
+                                                       Request,
+                                                       Status,
+                                                       StatusInfo,
+                                                       new ReadOnlyDictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>(StatusInfos),
+                                                       null,
 
-                                                null,
-                                                null,
-                                                Signatures,
+                                                       null,
+                                                       null,
+                                                       Signatures,
 
-                                                CustomData
+                                                       CustomData
 
-                                            );
+                                                   );
 
                 if (CustomSetDefaultChargingTariffResponseParser is not null)
                     SetDefaultChargingTariffResponse = CustomSetDefaultChargingTariffResponseParser(JSON,
-                                                                                      SetDefaultChargingTariffResponse);
+                                                                                                    SetDefaultChargingTariffResponse);
 
                 return true;
 
@@ -351,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 SetDefaultChargingTariffResponse  = null;
-                ErrorResponse              = "The given JSON representation of a set default charging tariff response is invalid: " + e.Message;
+                ErrorResponse                     = "The given JSON representation of a set default charging tariff response is invalid: " + e.Message;
                 return false;
             }
 
@@ -369,9 +369,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SetDefaultChargingTariffResponse>?  CustomSetDefaultChargingTariffResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?                        CustomStatusInfoSerializer                  = null,
-                              CustomJObjectSerializerDelegate<Signature>?                         CustomSignatureSerializer                   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                  = null)
+                              CustomJObjectSerializerDelegate<StatusInfo>?                        CustomStatusInfoSerializer                         = null,
+                              CustomJObjectSerializerDelegate<Signature>?                         CustomSignatureSerializer                          = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                         = null)
         {
 
             var json = JSONObject.Create(

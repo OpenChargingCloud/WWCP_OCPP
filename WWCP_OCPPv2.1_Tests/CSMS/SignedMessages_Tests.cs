@@ -19,10 +19,7 @@
 
 using NUnit.Framework;
 
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
@@ -68,6 +65,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
+                chargingStation1.SignaturePolicy.AddVerificationRule(ResetRequest.DefaultJSONLDContext,
+                                                                     VerificationRuleActions.VerifyAll);
+
+
                 var keyPair    = KeyPair.GenerateKeys()!;
 
                 var resetType  = ResetTypes.Immediate;
@@ -100,14 +101,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                 ));
 
 
-                Assert.AreEqual(1,                             resetRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,           resetRequests.First().ChargingStationId);
-                Assert.AreEqual(resetType,                     resetRequests.First().ResetType);
-                Assert.AreEqual(1,                             resetRequests.First().Signatures.Count());
+                Assert.AreEqual(1,                                   resetRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,                 resetRequests.First().ChargingStationId);
+                Assert.AreEqual(resetType,                           resetRequests.First().ResetType);
+                Assert.AreEqual(1,                                   resetRequests.First().Signatures.Count());
                 Assert.AreEqual(VerificationStatus.ValidSignature,   resetRequests.First().Signatures.First().Status);
-                Assert.AreEqual("ahzf",                        resetRequests.First().Signatures.First().Name);
-                Assert.AreEqual("Just a test!",                resetRequests.First().Signatures.First().Description?.FirstText());
-                Assert.AreEqual(now.ToIso8601(),               resetRequests.First().Signatures.First().Timestamp?.  ToIso8601());
+                Assert.AreEqual("ahzf",                              resetRequests.First().Signatures.First().Name);
+                Assert.AreEqual("Just a test!",                      resetRequests.First().Signatures.First().Description?.FirstText());
+                Assert.AreEqual(now.ToIso8601(),                     resetRequests.First().Signatures.First().Timestamp?.  ToIso8601());
 
             }
 

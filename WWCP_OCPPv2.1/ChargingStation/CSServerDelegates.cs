@@ -2534,4 +2534,155 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     #endregion
 
+
+    // E2E Charging Tariffs Extensions
+
+    #region OnSetDefaultChargingTariff
+
+    /// <summary>
+    /// A SetDefaultChargingTariff request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnSetDefaultChargingTariffRequestDelegate(DateTime                          Timestamp,
+                                                  IEventSender                      Sender,
+                                                  SetDefaultChargingTariffRequest   Request);
+
+
+    /// <summary>
+    /// A SetDefaultChargingTariff request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<SetDefaultChargingTariffResponse>
+
+        OnSetDefaultChargingTariffDelegate(DateTime                          Timestamp,
+                                           IEventSender                      Sender,
+                                           WebSocketClientConnection         Connection,
+                                           SetDefaultChargingTariffRequest   Request,
+                                           CancellationToken                 CancellationToken);
+
+
+    /// <summary>
+    /// A SetDefaultChargingTariff response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnSetDefaultChargingTariffResponseDelegate(DateTime                           Timestamp,
+                                                   IEventSender                       Sender,
+                                                   SetDefaultChargingTariffRequest    Request,
+                                                   SetDefaultChargingTariffResponse   Response,
+                                                   TimeSpan                           Runtime);
+
+    #endregion
+
+    #region OnGetDefaultChargingTariff
+
+    /// <summary>
+    /// A GetDefaultChargingTariff request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnGetDefaultChargingTariffRequestDelegate(DateTime                          Timestamp,
+                                                  IEventSender                      Sender,
+                                                  GetDefaultChargingTariffRequest   Request);
+
+
+    /// <summary>
+    /// A GetDefaultChargingTariff request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<GetDefaultChargingTariffResponse>
+
+        OnGetDefaultChargingTariffDelegate(DateTime                          Timestamp,
+                                           IEventSender                      Sender,
+                                           WebSocketClientConnection         Connection,
+                                           GetDefaultChargingTariffRequest   Request,
+                                           CancellationToken                 CancellationToken);
+
+
+    /// <summary>
+    /// A GetDefaultChargingTariff response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnGetDefaultChargingTariffResponseDelegate(DateTime                           Timestamp,
+                                                   IEventSender                       Sender,
+                                                   GetDefaultChargingTariffRequest    Request,
+                                                   GetDefaultChargingTariffResponse   Response,
+                                                   TimeSpan                           Runtime);
+
+    #endregion
+
+    #region OnRemoveDefaultChargingTariff
+
+    /// <summary>
+    /// A RemoveDefaultChargingTariff request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task
+
+        OnRemoveDefaultChargingTariffRequestDelegate(DateTime                             Timestamp,
+                                                     IEventSender                         Sender,
+                                                     RemoveDefaultChargingTariffRequest   Request);
+
+
+    /// <summary>
+    /// A RemoveDefaultChargingTariff request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<RemoveDefaultChargingTariffResponse>
+
+        OnRemoveDefaultChargingTariffDelegate(DateTime                             Timestamp,
+                                              IEventSender                         Sender,
+                                              WebSocketClientConnection            Connection,
+                                              RemoveDefaultChargingTariffRequest   Request,
+                                              CancellationToken                    CancellationToken);
+
+
+    /// <summary>
+    /// A RemoveDefaultChargingTariff response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnRemoveDefaultChargingTariffResponseDelegate(DateTime                              Timestamp,
+                                                      IEventSender                          Sender,
+                                                      RemoveDefaultChargingTariffRequest    Request,
+                                                      RemoveDefaultChargingTariffResponse   Response,
+                                                      TimeSpan                              Runtime);
+
+    #endregion
+
+
 }

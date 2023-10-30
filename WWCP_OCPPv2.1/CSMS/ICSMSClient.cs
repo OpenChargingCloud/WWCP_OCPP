@@ -765,6 +765,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
+        // E2E Charging Tariffs Extensions
+
+        #region SetDefaultChargingTariff    (Request)
+
+        /// <summary>
+        /// Set a default charging tariff for the charging station,
+        /// or for a subset of EVSEs of the charging station.
+        /// </summary>
+        /// <param name="Request">A SetDefaultChargingTariff request.</param>
+        Task<SetDefaultChargingTariffResponse> SetDefaultChargingTariff(SetDefaultChargingTariffRequest Request);
+
+        #endregion
+
+        #region GetDefaultChargingTariff    (Request)
+
+        /// <summary>
+        /// Get the default charging tariff(s) for the charging station and its EVSEs.
+        /// </summary>
+        /// <param name="Request">A GetDefaultChargingTariff request.</param>
+        Task<GetDefaultChargingTariffResponse> GetDefaultChargingTariff(GetDefaultChargingTariffRequest Request);
+
+        #endregion
+
+        #region RemoveDefaultChargingTariff (Request)
+
+        /// <summary>
+        /// Remove the default charging tariff of the charging station,
+        /// or of a subset of EVSEs of the charging station.
+        /// </summary>
+        /// <param name="Request">A RemoveDefaultChargingTariff request.</param>
+        Task<RemoveDefaultChargingTariffResponse> RemoveDefaultChargingTariff(RemoveDefaultChargingTariffRequest Request);
+
+        #endregion
+
+
     }
 
 }

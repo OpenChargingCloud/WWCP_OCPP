@@ -491,6 +491,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+
+        // E2E Security Extensions
+
+        #region OnSetDefaultChargingTariff
+
+        /// <summary>
+        /// An event sent whenever a SetDefaultChargingTariff was received.
+        /// </summary>
+        event OnSetDefaultChargingTariffDelegate      OnSetDefaultChargingTariff;
+
+        #endregion
+
+        #region OnGetDefaultChargingTariff
+
+        /// <summary>
+        /// An event sent whenever a GetDefaultChargingTariff was received.
+        /// </summary>
+        event OnGetDefaultChargingTariffDelegate      OnGetDefaultChargingTariff;
+
+        #endregion
+
+        #region OnRemoveDefaultChargingTariff
+
+        /// <summary>
+        /// An event sent whenever a RemoveDefaultChargingTariff was received.
+        /// </summary>
+        event OnRemoveDefaultChargingTariffDelegate   OnRemoveDefaultChargingTariff;
+
+        #endregion
+
+
     }
 
 }

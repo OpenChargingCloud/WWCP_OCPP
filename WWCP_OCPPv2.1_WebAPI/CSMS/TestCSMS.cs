@@ -30,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+//using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -1378,6 +1379,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        // E2E Charging Tariff Extensions
+
+        #region SetDefaultChargingTariff      (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a SetDefaultChargingTariff request will be sent to the charging station.
+        /// </summary>
+        public event OnSetDefaultChargingTariffRequestDelegate?   OnSetDefaultChargingTariffRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a SetDefaultChargingTariff request was received.
+        /// </summary>
+        public event OnSetDefaultChargingTariffResponseDelegate?  OnSetDefaultChargingTariffResponse;
+
+        #endregion
+
+        #region GetDefaultChargingTariff      (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a GetDefaultChargingTariff request will be sent to the charging station.
+        /// </summary>
+        public event OnGetDefaultChargingTariffRequestDelegate?   OnGetDefaultChargingTariffRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a GetDefaultChargingTariff request was received.
+        /// </summary>
+        public event OnGetDefaultChargingTariffResponseDelegate?  OnGetDefaultChargingTariffResponse;
+
+        #endregion
+
+        #region RemoveDefaultChargingTariff   (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a RemoveDefaultChargingTariff request will be sent to the charging station.
+        /// </summary>
+        public event OnRemoveDefaultChargingTariffRequestDelegate?   OnRemoveDefaultChargingTariffRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a RemoveDefaultChargingTariff request was received.
+        /// </summary>
+        public event OnRemoveDefaultChargingTariffResponseDelegate?  OnRemoveDefaultChargingTariffResponse;
+
+        #endregion
+
         #endregion
 
         #endregion
@@ -1490,6 +1536,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<AddUserRoleRequest>?                                  CustomAddUserRoleRequestSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?                               CustomUpdateUserRoleRequestSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<DeleteUserRoleRequest>?                               CustomDeleteUserRoleRequestSerializer                        { get; set; }
+
+
+        // E2E Charging Tariffs
+        public CustomJObjectSerializerDelegate<SetDefaultChargingTariffRequest>?                     CustomSetDefaultChargingTariffRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<GetDefaultChargingTariffRequest>?                     CustomGetDefaultChargingTariffRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<RemoveDefaultChargingTariffRequest>?                  CustomRemoveDefaultChargingTariffRequestSerializer           { get; set; }
 
         #endregion
 
@@ -1620,6 +1672,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CS.CostUpdatedResponse>?                              CustomCostUpdatedResponseSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<CS.CustomerInformationResponse>?                      CustomCustomerInformationResponseSerializer                  { get; set; }
 
+
+        // E2E Charging Tariff Extensions
+        public CustomJObjectSerializerDelegate<CS.SetDefaultChargingTariffResponse>?                 CustomSetDefaultChargingTariffResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CS.GetDefaultChargingTariffResponse>?                 CustomGetDefaultChargingTariffResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CS.RemoveDefaultChargingTariffResponse>?              CustomRemoveDefaultChargingTariffResponseSerializer          { get; set; }
+
         #endregion
 
 
@@ -1707,6 +1765,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
 
+        // E2E Charging Tariffs Extensions
+        public CustomJObjectSerializerDelegate<ChargingTariff>?                                      CustomChargingTariffSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<DisplayText>?                                         CustomDisplayTextSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<Price>?                                               CustomPriceSerializer                                  { get; set; }
+        public CustomJObjectSerializerDelegate<TariffElement>?                                       CustomTariffElementSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<PriceComponent>?                                      CustomPriceComponentSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<TariffRestrictions>?                                  CustomTariffRestrictionsSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<EnergyMix>?                                           CustomEnergyMixSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<EnergySource>?                                        CustomEnergySourceSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<EnvironmentalImpact>?                                 CustomEnvironmentalImpactSerializer                    { get; set; }
 
         #endregion
 
@@ -11317,6 +11385,314 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteUserRoleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        // E2E Charging Tariffs Extensions
+
+        #region SetDefaultChargingTariff    (Request)
+
+        /// <summary>
+        /// Set a default charging tariff for the charging station,
+        /// or for a subset of EVSEs of the charging station.
+        /// </summary>
+        /// <param name="Request">An SetDefaultChargingTariff request.</param>
+        public async Task<CS.SetDefaultChargingTariffResponse>
+            SetDefaultChargingTariff(SetDefaultChargingTariffRequest Request)
+
+        {
+
+            #region Send OnSetDefaultChargingTariffRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetDefaultChargingTariffRequest?.Invoke(startTime,
+                                                          this,
+                                                          Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetDefaultChargingTariffRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomSetDefaultChargingTariffRequestSerializer,
+                                          CustomChargingTariffSerializer,
+                                          CustomDisplayTextSerializer,
+                                          CustomPriceSerializer,
+                                          CustomTariffElementSerializer,
+                                          CustomPriceComponentSerializer,
+                                          CustomTariffRestrictionsSerializer,
+                                          CustomEnergyMixSerializer,
+                                          CustomEnergySourceSerializer,
+                                          CustomEnvironmentalImpactSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.SetDefaultChargingTariff(Request)
+
+                                      : new CS.SetDefaultChargingTariffResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.SetDefaultChargingTariffResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSetDefaultChargingTariffResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnSetDefaultChargingTariffResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetDefaultChargingTariffResponse?.Invoke(endTime,
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSetDefaultChargingTariffResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetDefaultChargingTariff    (Request)
+
+        /// <summary>
+        /// Get the default charging tariff(s) for the charging station and its EVSEs.
+        /// </summary>
+        /// <param name="Request">An GetDefaultChargingTariff request.</param>
+        public async Task<CS.GetDefaultChargingTariffResponse>
+            GetDefaultChargingTariff(GetDefaultChargingTariffRequest Request)
+
+        {
+
+            #region Send OnGetDefaultChargingTariffRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetDefaultChargingTariffRequest?.Invoke(startTime,
+                                                          this,
+                                                          Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetDefaultChargingTariffRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetDefaultChargingTariffRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.GetDefaultChargingTariff(Request)
+
+                                      : new CS.GetDefaultChargingTariffResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.GetDefaultChargingTariffResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetDefaultChargingTariffResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomChargingTariffSerializer,
+                    CustomDisplayTextSerializer,
+                    CustomPriceSerializer,
+                    CustomTariffElementSerializer,
+                    CustomPriceComponentSerializer,
+                    CustomTariffRestrictionsSerializer,
+                    CustomEnergyMixSerializer,
+                    CustomEnergySourceSerializer,
+                    CustomEnvironmentalImpactSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnGetDefaultChargingTariffResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetDefaultChargingTariffResponse?.Invoke(endTime,
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetDefaultChargingTariffResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region RemoveDefaultChargingTariff    (Request)
+
+        /// <summary>
+        /// Remove the default charging tariff of the charging station,
+        /// or of a subset of EVSEs of the charging station.
+        /// </summary>
+        /// <param name="Request">An RemoveDefaultChargingTariff request.</param>
+        public async Task<CS.RemoveDefaultChargingTariffResponse>
+            RemoveDefaultChargingTariff(RemoveDefaultChargingTariffRequest Request)
+
+        {
+
+            #region Send OnRemoveDefaultChargingTariffRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnRemoveDefaultChargingTariffRequest?.Invoke(startTime,
+                                                             this,
+                                                             Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnRemoveDefaultChargingTariffRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomRemoveDefaultChargingTariffRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.RemoveDefaultChargingTariff(Request)
+
+                                      : new CS.RemoveDefaultChargingTariffResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.RemoveDefaultChargingTariffResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomRemoveDefaultChargingTariffResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnRemoveDefaultChargingTariffResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnRemoveDefaultChargingTariffResponse?.Invoke(endTime,
+                                                              this,
+                                                              Request,
+                                                              response,
+                                                              endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnRemoveDefaultChargingTariffResponse));
             }
 
             #endregion

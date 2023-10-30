@@ -1805,6 +1805,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+
+        // E2E Charging Tariffs Extensions
+
+        #region OnSetDefaultChargingTariff       (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a SetDefaultChargingTariff request was sent.
+        /// </summary>
+        public event OnSetDefaultChargingTariffRequestDelegate?        OnSetDefaultChargingTariffRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SetDefaultChargingTariff request was sent.
+        /// </summary>
+        public event OnSetDefaultChargingTariffResponseDelegate?       OnSetDefaultChargingTariffResponse;
+
+        #endregion
+
+        #region OnGetDefaultChargingTariff       (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a GetDefaultChargingTariff request was sent.
+        /// </summary>
+        public event OnGetDefaultChargingTariffRequestDelegate?        OnGetDefaultChargingTariffRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetDefaultChargingTariff request was sent.
+        /// </summary>
+        public event OnGetDefaultChargingTariffResponseDelegate?       OnGetDefaultChargingTariffResponse;
+
+        #endregion
+
+        #region OnRemoveDefaultChargingTariff    (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a RemoveDefaultChargingTariff request was sent.
+        /// </summary>
+        public event OnRemoveDefaultChargingTariffRequestDelegate?     OnRemoveDefaultChargingTariffRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a RemoveDefaultChargingTariff request was sent.
+        /// </summary>
+        public event OnRemoveDefaultChargingTariffResponseDelegate?    OnRemoveDefaultChargingTariffResponse;
+
+        #endregion
+
         #endregion
 
         #endregion
@@ -2018,13 +2063,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
         // E2E Security Extensions
-
         public CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?                           CustomAddSignaturePolicyRequestSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?                        CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
         public CustomJObjectSerializerDelegate<DeleteSignaturePolicyRequest>?                        CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
         public CustomJObjectSerializerDelegate<AddUserRoleRequest>?                                  CustomAddUserRoleRequestSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?                               CustomUpdateUserRoleRequestSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<DeleteUserRoleRequest>?                               CustomDeleteUserRoleRequestSerializer                        { get; set; }
+
+
+        // E2E Charging Tariffs Extensions
+        public CustomJObjectSerializerDelegate<SetDefaultChargingTariffRequest>?                     CustomSetDefaultChargingTariffRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<GetDefaultChargingTariffRequest>?                     CustomGetDefaultChargingTariffRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<RemoveDefaultChargingTariffRequest>?                  CustomRemoveDefaultChargingTariffRequestSerializer           { get; set; }
 
         #endregion
 
@@ -2128,9 +2178,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer                      { get; set; }
 
+
+        // E2E Security Extensions
         public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                                  { get; set; }
+
+
+        // E2E Charging Tariffs Extensions
+        public CustomJObjectSerializerDelegate<ChargingTariff>?                                      CustomChargingTariffSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<DisplayText>?                                         CustomDisplayTextSerializer                                  { get; set; }
+        public CustomJObjectSerializerDelegate<Price>?                                               CustomPriceSerializer                                        { get; set; }
+        public CustomJObjectSerializerDelegate<TariffElement>?                                       CustomTariffElementSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<PriceComponent>?                                      CustomPriceComponentSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<TariffRestrictions>?                                  CustomTariffRestrictionsSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<EnergyMix>?                                           CustomEnergyMixSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<EnergySource>?                                        CustomEnergySourceSerializer                                 { get; set; }
+        public CustomJObjectSerializerDelegate<EnvironmentalImpact>?                                 CustomEnvironmentalImpactSerializer                          { get; set; }
 
         #endregion
 
@@ -11776,6 +11840,276 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnDeleteUserRoleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        // E2E Charging Tariffs Extensions
+
+        #region SetDefaultChargingTariff    (Request)
+
+        public async Task<SetDefaultChargingTariffResponse> SetDefaultChargingTariff(SetDefaultChargingTariffRequest Request)
+        {
+
+            #region Send OnSetDefaultChargingTariffRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetDefaultChargingTariffRequest?.Invoke(startTime,
+                                                          this,
+                                                          Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetDefaultChargingTariffRequest));
+            }
+
+            #endregion
+
+
+            SetDefaultChargingTariffResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.EventTrackingId,
+                                                     Request.RequestId,
+                                                     Request.ChargingStationId,
+                                                     Request.Action,
+                                                     Request.ToJSON(
+                                                         CustomSetDefaultChargingTariffRequestSerializer,
+                                                         CustomChargingTariffSerializer,
+                                                         CustomDisplayTextSerializer,
+                                                         CustomPriceSerializer,
+                                                         CustomTariffElementSerializer,
+                                                         CustomPriceComponentSerializer,
+                                                         CustomTariffRestrictionsSerializer,
+                                                         CustomEnergyMixSerializer,
+                                                         CustomEnergySourceSerializer,
+                                                         CustomEnvironmentalImpactSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
+
+                if (SetDefaultChargingTariffResponse.TryParse(Request,
+                                                              sendRequestState.Response,
+                                                              out var setDisplayMessageResponse,
+                                                              out var errorResponse) &&
+                    setDisplayMessageResponse is not null)
+                {
+                    response = setDisplayMessageResponse;
+                }
+
+                response ??= new SetDefaultChargingTariffResponse(Request,
+                                                                  Result.Format(errorResponse));
+
+            }
+
+            response ??= new SetDefaultChargingTariffResponse(Request,
+                                                              Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnSetDefaultChargingTariffResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSetDefaultChargingTariffResponse?.Invoke(endTime,
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnSetDefaultChargingTariffResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetDefaultChargingTariff    (Request)
+
+        public async Task<GetDefaultChargingTariffResponse> GetDefaultChargingTariff(GetDefaultChargingTariffRequest Request)
+        {
+
+            #region Send OnGetDefaultChargingTariffRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetDefaultChargingTariffRequest?.Invoke(startTime,
+                                                          this,
+                                                          Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetDefaultChargingTariffRequest));
+            }
+
+            #endregion
+
+
+            GetDefaultChargingTariffResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.EventTrackingId,
+                                                     Request.RequestId,
+                                                     Request.ChargingStationId,
+                                                     Request.Action,
+                                                     Request.ToJSON(
+                                                         CustomGetDefaultChargingTariffRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
+
+                if (GetDefaultChargingTariffResponse.TryParse(Request,
+                                                              sendRequestState.Response,
+                                                              out var setDisplayMessageResponse,
+                                                              out var errorResponse) &&
+                    setDisplayMessageResponse is not null)
+                {
+                    response = setDisplayMessageResponse;
+                }
+
+                response ??= new GetDefaultChargingTariffResponse(Request,
+                                                                  Result.Format(errorResponse));
+
+            }
+
+            response ??= new GetDefaultChargingTariffResponse(Request,
+                                                              Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnGetDefaultChargingTariffResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetDefaultChargingTariffResponse?.Invoke(endTime,
+                                                           this,
+                                                           Request,
+                                                           response,
+                                                           endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnGetDefaultChargingTariffResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region RemoveDefaultChargingTariff (Request)
+
+        public async Task<RemoveDefaultChargingTariffResponse> RemoveDefaultChargingTariff(RemoveDefaultChargingTariffRequest Request)
+        {
+
+            #region Send OnRemoveDefaultChargingTariffRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnRemoveDefaultChargingTariffRequest?.Invoke(startTime,
+                                                             this,
+                                                             Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnRemoveDefaultChargingTariffRequest));
+            }
+
+            #endregion
+
+
+            RemoveDefaultChargingTariffResponse? response = null;
+
+            var sendRequestState = await SendRequest(Request.EventTrackingId,
+                                                     Request.RequestId,
+                                                     Request.ChargingStationId,
+                                                     Request.Action,
+                                                     Request.ToJSON(
+                                                         CustomRemoveDefaultChargingTariffRequestSerializer,
+                                                         CustomSignatureSerializer,
+                                                         CustomCustomDataSerializer
+                                                     ),
+                                                     Request.RequestTimeout);
+
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
+
+                if (RemoveDefaultChargingTariffResponse.TryParse(Request,
+                                                                 sendRequestState.Response,
+                                                                 out var setDisplayMessageResponse,
+                                                                 out var errorResponse) &&
+                    setDisplayMessageResponse is not null)
+                {
+                    response = setDisplayMessageResponse;
+                }
+
+                response ??= new RemoveDefaultChargingTariffResponse(Request,
+                                                                     Result.Format(errorResponse));
+
+            }
+
+            response ??= new RemoveDefaultChargingTariffResponse(Request,
+                                                                 Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnRemoveDefaultChargingTariffResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnRemoveDefaultChargingTariffResponse?.Invoke(endTime,
+                                                              this,
+                                                              Request,
+                                                              response,
+                                                              endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnRemoveDefaultChargingTariffResponse));
             }
 
             #endregion
