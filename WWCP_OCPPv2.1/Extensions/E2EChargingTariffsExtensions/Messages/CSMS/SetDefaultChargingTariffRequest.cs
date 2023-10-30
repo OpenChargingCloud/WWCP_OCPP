@@ -51,16 +51,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The enumeration of EVSEs the charging tariff applies to.
-        /// </summary>
-        [Mandatory]
-        public IEnumerable<EVSE_Id>  EVSEIds           { get; }
-
-        /// <summary>
         /// The charging tariff.
         /// </summary>
         [Mandatory]
         public ChargingTariff        ChargingTariff    { get; }
+
+        /// <summary>
+        /// The optional enumeration of EVSEs the default charging tariff applies to.
+        /// </summary>
+        [Optional]
+        public IEnumerable<EVSE_Id>  EVSEIds           { get; }
 
         #endregion
 
@@ -70,8 +70,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a new set default charging tariff request.
         /// </summary>
         /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="EVSEIds">The enumeration of EVSEs the charging tariff applies to.</param>
         /// <param name="ChargingTariff">A charging tariff.</param>
+        /// <param name="EVSEIds">An optional enumeration of EVSEs the default charging tariff applies to.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -82,8 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public SetDefaultChargingTariffRequest(ChargingStation_Id       ChargingStationId,
-                                               IEnumerable<EVSE_Id>     EVSEIds,
                                                ChargingTariff           ChargingTariff,
+                                               IEnumerable<EVSE_Id>?    EVSEIds             = null,
 
                                                IEnumerable<KeyPair>?    SignKeys            = null,
                                                IEnumerable<SignInfo>?   SignInfos           = null,
@@ -114,8 +114,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.EVSEIds         = EVSEIds.Distinct();
             this.ChargingTariff  = ChargingTariff;
+            this.EVSEIds         = EVSEIds?.Distinct() ?? Array.Empty<EVSE_Id>();
 
             unchecked
             {
@@ -218,19 +218,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 SetDefaultChargingTariffRequest = null;
 
-                #region EVSEIds              [mandatory]
-
-                if (!JSON.ParseMandatoryHashSet("evseIds",
-                                                "EVSE identifications",
-                                                EVSE_Id.TryParse,
-                                                out HashSet<EVSE_Id> EVSEIds,
-                                                out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
                 #region ChargingTariff       [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("chargingTariff",
@@ -239,6 +226,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              out ChargingTariff? ChargingTariff,
                                              out ErrorResponse) ||
                      ChargingTariff is null)
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region EVSEIds              [optional]
+
+                if (!JSON.ParseOptionalHashSet("evseIds",
+                                               "EVSE identifications",
+                                               EVSE_Id.TryParse,
+                                               out HashSet<EVSE_Id> EVSEIds,
+                                               out ErrorResponse))
                 {
                     return false;
                 }
@@ -295,8 +295,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 SetDefaultChargingTariffRequest = new SetDefaultChargingTariffRequest(
                                                       ChargingStationId,
-                                                      EVSEIds,
                                                       ChargingTariff,
+                                                      EVSEIds,
                                                       null,
                                                       null,
                                                       Signatures,
@@ -355,8 +355,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("evseIds",          new JArray(EVSEIds.   Select(evseId    => evseId.   ToString()))),
-
                                  new JProperty("chargingTariff",   ChargingTariff.ToJSON(CustomChargingTariffSerializer,
                                                                                          CustomDisplayTextSerializer,
                                                                                          CustomPriceSerializer,
@@ -368,6 +366,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                          CustomEnvironmentalImpactSerializer,
                                                                                          CustomSignatureSerializer,
                                                                                          CustomCustomDataSerializer)),
+
+                           EVSEIds.Any()
+                               ? new JProperty("evseIds",          new JArray(EVSEIds.   Select(evseId    => evseId.   ToString())))
+                               : null,
 
                            Signatures.Any()
                                ? new JProperty("signatures",       new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -394,10 +396,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator == (SetDefaultChargingTariffRequest1, SetDefaultChargingTariffRequest2)
 
         /// <summary>
-        /// Compares two setDefaultChargingTariffs requests for equality.
+        /// Compares two SetDefaultChargingTariff requests for equality.
         /// </summary>
-        /// <param name="SetDefaultChargingTariffRequest1">A setDefaultChargingTariffs request.</param>
-        /// <param name="SetDefaultChargingTariffRequest2">Another setDefaultChargingTariffs request.</param>
+        /// <param name="SetDefaultChargingTariffRequest1">A SetDefaultChargingTariff request.</param>
+        /// <param name="SetDefaultChargingTariffRequest2">Another setDefaultChargingTariff request.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (SetDefaultChargingTariffRequest? SetDefaultChargingTariffRequest1,
                                            SetDefaultChargingTariffRequest? SetDefaultChargingTariffRequest2)
@@ -420,10 +422,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Operator != (SetDefaultChargingTariffRequest1, SetDefaultChargingTariffRequest2)
 
         /// <summary>
-        /// Compares two setDefaultChargingTariffs requests for inequality.
+        /// Compares two SetDefaultChargingTariff requests for inequality.
         /// </summary>
-        /// <param name="SetDefaultChargingTariffRequest1">A setDefaultChargingTariffs request.</param>
-        /// <param name="SetDefaultChargingTariffRequest2">Another setDefaultChargingTariffs request.</param>
+        /// <param name="SetDefaultChargingTariffRequest1">A SetDefaultChargingTariff request.</param>
+        /// <param name="SetDefaultChargingTariffRequest2">Another setDefaultChargingTariff request.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (SetDefaultChargingTariffRequest? SetDefaultChargingTariffRequest1,
                                            SetDefaultChargingTariffRequest? SetDefaultChargingTariffRequest2)
@@ -462,7 +464,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                ChargingTariff.Equals(SetDefaultChargingTariffRequest.ChargingTariff) &&
 
                EVSEIds.Count().Equals(SetDefaultChargingTariffRequest.EVSEIds.Count())     &&
-               EVSEIds.All(cost => SetDefaultChargingTariffRequest.EVSEIds.Contains(cost)) &&
+               EVSEIds.All(evseId => SetDefaultChargingTariffRequest.EVSEIds.Contains(evseId)) &&
 
                base.   GenericEquals(SetDefaultChargingTariffRequest);
 
@@ -489,7 +491,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => $"Set default charging tariff '{ChargingTariff.Id}' on EVSEs: {EVSEIds.AggregateWith(", ")}!";
+            => $"Set default charging tariff '{ChargingTariff.Id}'{(EVSEIds.Any() ? $" on EVSEs: {EVSEIds.AggregateWith(", ")}!" : "")}";
 
         #endregion
 

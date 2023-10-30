@@ -375,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"ReasonCode: {ReasonCode}, AdditionalInfo: {(AdditionalInfo is not null ? ", AdditionalInfo: " + AdditionalInfo : "")}";
+            => $"{ReasonCode}{(AdditionalInfo is not null ? $"({AdditionalInfo})" : "")}";
 
         #endregion
 
