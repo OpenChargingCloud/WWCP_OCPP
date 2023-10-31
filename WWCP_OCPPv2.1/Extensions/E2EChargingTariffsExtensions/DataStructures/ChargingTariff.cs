@@ -118,7 +118,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        SHA256.HashData(
 
                            chargingTariff.ToJSON  (CustomTariffSerializer,
-                                                   CustomDisplayTextSerializer,
                                                    CustomPriceSerializer,
                                                    CustomTariffElementSerializer,
                                                    CustomPriceComponentSerializer,
@@ -177,6 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A read-only signable charging tariff.
     /// </summary>
     public class ChargingTariff : ACustomSignableData,
+                                  ISignableMessage,
                                   IHasId<ChargingTariff_Id>,
                                   IEquatable<ChargingTariff>,
                                   IComparable<ChargingTariff>,
@@ -199,6 +199,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         [Mandatory]
         public   ChargingTariff_Id              Id                    { get; }
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        [Mandatory]
+        public JSONLDContext                    Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The timestamp when this tariff was created.
@@ -870,7 +877,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomChargingTariffSerializer">A delegate to serialize custom tariff JSON objects.</param>
-        /// <param name="CustomDisplayTextSerializer">A delegate to serialize custom multi-language text JSON objects.</param>
         /// <param name="CustomPriceSerializer">A delegate to serialize custom price JSON objects.</param>
         /// <param name="CustomTariffElementSerializer">A delegate to serialize custom tariff element JSON objects.</param>
         /// <param name="CustomPriceComponentSerializer">A delegate to serialize custom price component JSON objects.</param>
@@ -881,7 +887,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingTariff>?       CustomChargingTariffSerializer        = null,
-                              CustomJObjectSerializerDelegate<DisplayText>?          CustomDisplayTextSerializer           = null,
                               CustomJObjectSerializerDelegate<Price>?                CustomPriceSerializer                 = null,
                               CustomJObjectSerializerDelegate<TariffElement>?        CustomTariffElementSerializer         = null,
                               CustomJObjectSerializerDelegate<PriceComponent>?       CustomPriceComponentSerializer        = null,
@@ -1016,6 +1021,75 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    CustomData
 
                );
+
+        #endregion
+
+
+        #region Sign(KeyPair, out ErrorResponse, SignerName = null, Description = null, Timestamp = null, ...)
+
+        public Boolean Sign(KeyPair                                                KeyPair,
+                            out String?                                            ErrorResponse,
+                            String?                                                SignerName                            = null,
+                            I18NString?                                            Description                           = null,
+                            DateTime?                                              Timestamp                             = null,
+                            CustomJObjectSerializerDelegate<ChargingTariff>?       CustomChargingTariffSerializer        = null,
+                            CustomJObjectSerializerDelegate<Price>?                CustomPriceSerializer                 = null,
+                            CustomJObjectSerializerDelegate<TariffElement>?        CustomTariffElementSerializer         = null,
+                            CustomJObjectSerializerDelegate<PriceComponent>?       CustomPriceComponentSerializer        = null,
+                            CustomJObjectSerializerDelegate<TariffRestrictions>?   CustomTariffRestrictionsSerializer    = null,
+                            CustomJObjectSerializerDelegate<EnergyMix>?            CustomEnergyMixSerializer             = null,
+                            CustomJObjectSerializerDelegate<EnergySource>?         CustomEnergySourceSerializer          = null,
+                            CustomJObjectSerializerDelegate<EnvironmentalImpact>?  CustomEnvironmentalImpactSerializer   = null,
+                            CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
+                            CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
+
+            => Sign(ToJSON(CustomChargingTariffSerializer,
+                           CustomPriceSerializer,
+                           CustomTariffElementSerializer,
+                           CustomPriceComponentSerializer,
+                           CustomTariffRestrictionsSerializer,
+                           CustomEnergyMixSerializer,
+                           CustomEnergySourceSerializer,
+                           CustomEnvironmentalImpactSerializer,
+                           CustomSignatureSerializer,
+                           CustomCustomDataSerializer),
+                    Context,
+                    KeyPair,
+                    out ErrorResponse,
+                    SignerName,
+                    Description,
+                    Timestamp);
+
+        #endregion
+
+        #region Verify(out ErrorResponse, VerificationRuleAction = null, ...)
+
+        public Boolean Verify(out String?                                            ErrorResponse,
+                              VerificationRuleActions?                               VerificationRuleAction                = null,
+                              CustomJObjectSerializerDelegate<ChargingTariff>?       CustomChargingTariffSerializer        = null,
+                              CustomJObjectSerializerDelegate<Price>?                CustomPriceSerializer                 = null,
+                              CustomJObjectSerializerDelegate<TariffElement>?        CustomTariffElementSerializer         = null,
+                              CustomJObjectSerializerDelegate<PriceComponent>?       CustomPriceComponentSerializer        = null,
+                              CustomJObjectSerializerDelegate<TariffRestrictions>?   CustomTariffRestrictionsSerializer    = null,
+                              CustomJObjectSerializerDelegate<EnergyMix>?            CustomEnergyMixSerializer             = null,
+                              CustomJObjectSerializerDelegate<EnergySource>?         CustomEnergySourceSerializer          = null,
+                              CustomJObjectSerializerDelegate<EnvironmentalImpact>?  CustomEnvironmentalImpactSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
+                              CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
+
+            => Verify(ToJSON(CustomChargingTariffSerializer,
+                             CustomPriceSerializer,
+                             CustomTariffElementSerializer,
+                             CustomPriceComponentSerializer,
+                             CustomTariffRestrictionsSerializer,
+                             CustomEnergyMixSerializer,
+                             CustomEnergySourceSerializer,
+                             CustomEnvironmentalImpactSerializer,
+                             CustomSignatureSerializer,
+                             CustomCustomDataSerializer),
+                      Context,
+                      out ErrorResponse,
+                      VerificationRuleAction);
 
         #endregion
 

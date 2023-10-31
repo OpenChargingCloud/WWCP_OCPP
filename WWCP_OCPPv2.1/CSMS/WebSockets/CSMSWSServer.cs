@@ -2187,7 +2187,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         // E2E Charging Tariffs Extensions
         public CustomJObjectSerializerDelegate<ChargingTariff>?                                      CustomChargingTariffSerializer                               { get; set; }
-        public CustomJObjectSerializerDelegate<DisplayText>?                                         CustomDisplayTextSerializer                                  { get; set; }
         public CustomJObjectSerializerDelegate<Price>?                                               CustomPriceSerializer                                        { get; set; }
         public CustomJObjectSerializerDelegate<TariffElement>?                                       CustomTariffElementSerializer                                { get; set; }
         public CustomJObjectSerializerDelegate<PriceComponent>?                                      CustomPriceComponentSerializer                               { get; set; }
@@ -11400,7 +11399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UpdateSignaturePolicy          (Request)
+        #region UpdateSignaturePolicy       (Request)
 
         public async Task<UpdateSignaturePolicyResponse> UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request)
         {
@@ -11490,7 +11489,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region DeleteSignaturePolicy          (Request)
+        #region DeleteSignaturePolicy       (Request)
 
         public async Task<DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request)
         {
@@ -11580,7 +11579,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region AddUserRole          (Request)
+        #region AddUserRole                 (Request)
 
         public async Task<AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request)
         {
@@ -11670,7 +11669,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region UpdateUserRole          (Request)
+        #region UpdateUserRole              (Request)
 
         public async Task<UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request)
         {
@@ -11760,7 +11759,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region DeleteUserRole          (Request)
+        #region DeleteUserRole              (Request)
 
         public async Task<DeleteUserRoleResponse> DeleteUserRole(DeleteUserRoleRequest Request)
         {
@@ -11886,7 +11885,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Request.ToJSON(
                                                          CustomSetDefaultChargingTariffRequestSerializer,
                                                          CustomChargingTariffSerializer,
-                                                         CustomDisplayTextSerializer,
                                                          CustomPriceSerializer,
                                                          CustomTariffElementSerializer,
                                                          CustomPriceComponentSerializer,

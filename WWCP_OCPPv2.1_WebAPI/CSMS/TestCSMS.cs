@@ -1767,7 +1767,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // E2E Charging Tariffs Extensions
         public CustomJObjectSerializerDelegate<ChargingTariff>?                                      CustomChargingTariffSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<DisplayText>?                                         CustomDisplayTextSerializer                            { get; set; }
         public CustomJObjectSerializerDelegate<Price>?                                               CustomPriceSerializer                                  { get; set; }
         public CustomJObjectSerializerDelegate<TariffElement>?                                       CustomTariffElementSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<PriceComponent>?                                      CustomPriceComponentSerializer                         { get; set; }
@@ -11437,7 +11436,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       Request.ToJSON(
                                           CustomSetDefaultChargingTariffRequestSerializer,
                                           CustomChargingTariffSerializer,
-                                          CustomDisplayTextSerializer,
                                           CustomPriceSerializer,
                                           CustomTariffElementSerializer,
                                           CustomPriceComponentSerializer,
@@ -11565,7 +11563,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     CustomGetDefaultChargingTariffResponseSerializer,
                     CustomStatusInfoSerializer,
                     CustomChargingTariffSerializer,
-                    CustomDisplayTextSerializer,
                     CustomPriceSerializer,
                     CustomTariffElementSerializer,
                     CustomPriceComponentSerializer,

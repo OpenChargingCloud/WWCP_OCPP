@@ -123,7 +123,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The default charging tariff is too large to handle.
         /// </summary>
-        TooLarge
+        TooLarge,
+
+        /// <summary>
+        /// The signature(s) of the default charging tariff is invalid.
+        /// </summary>
+        InvalidSignature,
+
+        /// <summary>
+        /// The signature chain(s) of the default charging tariff are invalid.
+        /// </summary>
+        InvalidSignatureChain
 
     }
 

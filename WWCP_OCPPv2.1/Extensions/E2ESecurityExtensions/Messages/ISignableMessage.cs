@@ -17,12 +17,34 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
+
+    public static class ISignableMessageExtensions
+    {
+
+        public static Boolean Sign(this ISignableMessage  SignableMessage,
+                                   JObject                JSONMessage,
+                                   SignaturePolicy        SignaturePolicy,
+                                   out String?            ErrorResponse,
+                                   params SignInfo[]      SignInfos)
+        {
+
+            return SignaturePolicy.SignMessage(SignableMessage,
+                                               JSONMessage,
+                                               out ErrorResponse,
+                                               SignInfos);
+
+        }
+
+    }
+
 
     /// <summary>
     /// The common interface of all signable OCPP CSE messages.

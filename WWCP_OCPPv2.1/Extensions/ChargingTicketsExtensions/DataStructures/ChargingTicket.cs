@@ -978,24 +978,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomChargingTicketSerializer = null, CustomDisplayTextSerializer = null, ...)
+        #region ToJSON(CustomChargingTicketSerializer = null, CustomPublicKeySerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomChargingTicketSerializer">A delegate to serialize custom ticket JSON objects.</param>
-        /// <param name="CustomDisplayTextSerializer">A delegate to serialize custom multi-language text JSON objects.</param>
         /// <param name="CustomPublicKeySerializer">A delegate to serialize cryptographic public keys.</param>
-        /// 
+        /// <param name="CustomTariffSerializer">A delegate to serialize custom tariff JSON objects.</param>
         /// <param name="CustomPriceSerializer">A delegate to serialize custom price JSON objects.</param>
+        /// <param name="CustomTariffElementSerializer">A delegate to serialize custom tariff element JSON objects.</param>
         /// <param name="CustomPriceComponentSerializer">A delegate to serialize custom price component JSON objects.</param>
+        /// <param name="CustomTariffRestrictionsSerializer">A delegate to serialize custom tariff restrictions JSON objects.</param>
         /// <param name="CustomEnergyMixSerializer">A delegate to serialize custom hours JSON objects.</param>
         /// <param name="CustomEnergySourceSerializer">A delegate to serialize custom energy source JSON objects.</param>
         /// <param name="CustomEnvironmentalImpactSerializer">A delegate to serialize custom environmental impact JSON objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingTicket>?       CustomChargingTicketSerializer        = null,
-                              CustomJObjectSerializerDelegate<DisplayText>?          CustomDisplayTextSerializer           = null,
                               CustomJObjectSerializerDelegate<PublicKey>?            CustomPublicKeySerializer             = null,
                               CustomJObjectSerializerDelegate<ChargingTariff>?       CustomTariffSerializer                = null,
                               CustomJObjectSerializerDelegate<Price>?                CustomPriceSerializer                 = null,
@@ -1014,7 +1014,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("id",                         Id.                      ToString()),
 
                                  new JProperty("providerId",                                          ProviderId),
-                                 new JProperty("providerName",               new JArray(ProviderName.           Select(providerName      => providerName.     ToJSON(CustomDisplayTextSerializer)))),
+                                 new JProperty("providerName",               ProviderName.            ToJSON()),
 
                            ProviderURL.HasValue
                                ? new JProperty("providerURL",                ProviderURL.Value.       ToString())
@@ -1023,8 +1023,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("driverPublicKey",            DriverPublicKey.         ToJSON(CustomPublicKeySerializer,
                                                                                                              CustomCustomDataSerializer)),
 
-                                 new JProperty("tariffs",                    new JArray(ChargingTariffs.                Select(chargingTariff    => chargingTariff.   ToJSON(CustomTariffSerializer,
-                                                                                                                                                                     CustomDisplayTextSerializer,
+                                 new JProperty("tariffs",                    new JArray(ChargingTariffs.        Select(chargingTariff    => chargingTariff.   ToJSON(CustomTariffSerializer,
                                                                                                                                                                      CustomPriceSerializer,
                                                                                                                                                                      CustomTariffElementSerializer,
                                                                                                                                                                      CustomPriceComponentSerializer,
@@ -1036,7 +1035,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                                                                                                      CustomCustomDataSerializer)))),
 
                            Description.            Any()
-                               ? new JProperty("description",                new JArray(Description.            Select(description       => description.      ToJSON(CustomDisplayTextSerializer))))
+                               ? new JProperty("description",                Description.             ToJSON())
                                : null,
 
                                  new JProperty("created",                    Created.                 ToIso8601()),

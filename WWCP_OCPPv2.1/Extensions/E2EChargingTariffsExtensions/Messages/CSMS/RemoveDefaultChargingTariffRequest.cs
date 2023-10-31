@@ -220,13 +220,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region ChargingTariffId     [optional]
 
-                if (!JSON.ParseOptional("chargingTariffId",
-                                        "charging tariff identification",
-                                        ChargingTariff_Id.TryParse,
-                                        out ChargingTariff_Id? ChargingTariffId,
-                                        out ErrorResponse))
+                if (JSON.ParseOptional("chargingTariffId",
+                                       "charging tariff identification",
+                                       ChargingTariff_Id.TryParse,
+                                       out ChargingTariff_Id? ChargingTariffId,
+                                       out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion

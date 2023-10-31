@@ -301,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         if (!chargingTariffId.HasValue)
                             continue;
 
-                        if (chargingTariffProperty.Value["evseIds"] is not JArray evseIdArrayProperty)
+                        if (chargingTariffProperty.Value is not JArray evseIdArrayProperty)
                             continue;
 
                         var evseIds = new HashSet<EVSE_Id>();
@@ -402,7 +402,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomGetDefaultChargingTariffResponseSerializer">A delegate to serialize custom get default charging tariff responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomChargingTariffSerializer">A delegate to serialize custom tariff JSON objects.</param>
-        /// <param name="CustomDisplayTextSerializer">A delegate to serialize custom multi-language text JSON objects.</param>
         /// <param name="CustomPriceSerializer">A delegate to serialize custom price JSON objects.</param>
         /// <param name="CustomTariffElementSerializer">A delegate to serialize custom tariff element JSON objects.</param>
         /// <param name="CustomPriceComponentSerializer">A delegate to serialize custom price component JSON objects.</param>
@@ -415,7 +414,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetDefaultChargingTariffResponse>?  CustomGetDefaultChargingTariffResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<StatusInfo>?                        CustomStatusInfoSerializer                         = null,
                               CustomJObjectSerializerDelegate<ChargingTariff>?                    CustomChargingTariffSerializer                     = null,
-                              CustomJObjectSerializerDelegate<DisplayText>?                       CustomDisplayTextSerializer                        = null,
                               CustomJObjectSerializerDelegate<Price>?                             CustomPriceSerializer                              = null,
                               CustomJObjectSerializerDelegate<TariffElement>?                     CustomTariffElementSerializer                      = null,
                               CustomJObjectSerializerDelegate<PriceComponent>?                    CustomPriceComponentSerializer                     = null,
@@ -438,7 +436,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                            ChargingTariffs.Any()
                                ? new JProperty("chargingTariffs",     new JArray (ChargingTariffs.  Select(chargingTariff => chargingTariff.ToJSON(CustomChargingTariffSerializer,
-                                                                                                                                                   CustomDisplayTextSerializer,
                                                                                                                                                    CustomPriceSerializer,
                                                                                                                                                    CustomTariffElementSerializer,
                                                                                                                                                    CustomPriceComponentSerializer,
@@ -451,7 +448,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                : null,
 
                            ChargingTariffMap.Any()
-                               ? new JProperty("chargingTariffMap",   new JObject(ChargingTariffMap.Select(kvp => new JArray(kvp.Value.Select(evseId => evseId.ToString())))))
+                               ? new JProperty("chargingTariffMap",   new JObject(ChargingTariffMap.Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                                                                                  new JArray   (kvp.Value.Select(evseId => evseId.ToString()))))))
                                : null,
 
                            Signatures.Any()

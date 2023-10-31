@@ -700,7 +700,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         // E2E Charging Tariff Extensions
 
         public CustomJObjectSerializerDelegate<ChargingTariff>?                                      CustomChargingTariffSerializer                               { get; set; }
-        public CustomJObjectSerializerDelegate<DisplayText>?                                         CustomDisplayTextSerializer                                  { get; set; }
         public CustomJObjectSerializerDelegate<Price>?                                               CustomPriceSerializer                                        { get; set; }
         public CustomJObjectSerializerDelegate<TariffElement>?                                       CustomTariffElementSerializer                                { get; set; }
         public CustomJObjectSerializerDelegate<PriceComponent>?                                      CustomPriceComponentSerializer                               { get; set; }
@@ -11055,7 +11054,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                              request.ToJSON(
                                  CustomSetDefaultChargingTariffRequestSerializer,
                                  CustomChargingTariffSerializer,
-                                 CustomDisplayTextSerializer,
                                  CustomPriceSerializer,
                                  CustomTariffElementSerializer,
                                  CustomPriceComponentSerializer,
@@ -11088,10 +11086,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         Dictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>? statusInfos = null;
 
-                        if (!request.EVSEIds.Any())
+                        if (!request.ChargingTariff.Verify(out var err))
                         {
+                            response = new SetDefaultChargingTariffResponse(
+                                           Request:      request,
+                                           Status:       SetDefaultChargingTariffStatus.InvalidSignature,
+                                           StatusInfo:   new StatusInfo(
+                                                             ReasonCode:       "Invalid charging tariff signature(s)!",
+                                                             AdditionalInfo:   err,
+                                                             CustomData:       null
+                                                         ),
+                                           CustomData:   null
+                                       );
+                        }
+
+                        else if (!request.EVSEIds.Any())
+                        {
+
                             foreach (var evse in evses.Values)
                                 evse.DefaultChargingTariff = request.ChargingTariff;
+
+                            response = new SetDefaultChargingTariffResponse(
+                                           Request:       request,
+                                           Status:        SetDefaultChargingTariffStatus.Accepted,
+                                           StatusInfo:    null,
+                                           StatusInfos:   statusInfos is not null
+                                                              ? new ReadOnlyDictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>(statusInfos)
+                                                              : null,
+                                           CustomData:    null
+                                       );
+
                         }
 
                         else
@@ -11102,41 +11126,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 if (!evses.ContainsKey(evseId))
                                 {
                                     response = new SetDefaultChargingTariffResponse(
-                                        Request:   request,
-                                        Result:    Result.SignatureError(
-                                                       $"Invalid EVSE identification: {evseId}"
-                                                   )
-                                    );
+                                                   Request:   request,
+                                                   Result:    Result.SignatureError(
+                                                                  $"Invalid EVSE identification: {evseId}"
+                                                              )
+                                               );
                                 }
                             }
 
-                            statusInfos = new Dictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>();
-
-                            foreach (var evseId in request.EVSEIds)
+                            if (response == null)
                             {
 
-                                evses[evseId].DefaultChargingTariff = request.ChargingTariff;
+                                statusInfos = new Dictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>();
 
-                                statusInfos.Add(evseId, new StatusInfo<SetDefaultChargingTariffStatus>(
-                                                            Status:           SetDefaultChargingTariffStatus.Accepted,
-                                                            ReasonCode:       null,
-                                                            AdditionalInfo:   null,
-                                                            CustomData:       null
-                                                        ));
+                                foreach (var evseId in request.EVSEIds)
+                                {
+
+                                    evses[evseId].DefaultChargingTariff = request.ChargingTariff;
+
+                                    statusInfos.Add(evseId, new StatusInfo<SetDefaultChargingTariffStatus>(
+                                                                Status:           SetDefaultChargingTariffStatus.Accepted,
+                                                                ReasonCode:       null,
+                                                                AdditionalInfo:   null,
+                                                                CustomData:       null
+                                                            ));
+
+                                }
+
+                                response = new SetDefaultChargingTariffResponse(
+                                               Request:       request,
+                                               Status:        SetDefaultChargingTariffStatus.Accepted,
+                                               StatusInfo:    null,
+                                               StatusInfos:   statusInfos is not null
+                                                                  ? new ReadOnlyDictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>(statusInfos)
+                                                                  : null,
+                                               CustomData:    null
+                                           );
 
                             }
 
                         }
-
-                        response = new SetDefaultChargingTariffResponse(
-                                       Request:       request,
-                                       Status:        SetDefaultChargingTariffStatus.Accepted,
-                                       StatusInfo:    null,
-                                       StatusInfos:   statusInfos is not null
-                                                          ? new ReadOnlyDictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>(statusInfos)
-                                                          : null,
-                                       CustomData:    null
-                                   );
 
                     }
 
@@ -11327,7 +11356,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         CustomGetDefaultChargingTariffResponseSerializer,
                         CustomStatusInfoSerializer,
                         CustomChargingTariffSerializer,
-                        CustomDisplayTextSerializer,
                         CustomPriceSerializer,
                         CustomTariffElementSerializer,
                         CustomPriceComponentSerializer,

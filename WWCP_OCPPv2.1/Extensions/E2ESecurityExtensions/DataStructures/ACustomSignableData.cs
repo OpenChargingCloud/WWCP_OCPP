@@ -17,7 +17,14 @@
 
 #region Usings
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
+using Org.BouncyCastle.Asn1.Sec;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.X509;
+using System.Security.Cryptography;
 
 #endregion
 
@@ -131,6 +138,200 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                base.GetHashCode();
 
             }
+        }
+
+        #endregion
+
+
+        #region Sign  (JSONMessage, Context, KeyPair, out ErrorResponse, SignerName = null, Description = null, Timestamp = null)
+
+        /// <summary>
+        /// Sign the given data structure.
+        /// </summary>
+        /// <param name="JSONMessage"></param>
+        /// <param name="Context"></param>
+        /// <param name="KeyPair"></param>
+        /// <param name="ErrorResponse"></param>
+        /// <param name="SignerName"></param>
+        /// <param name="Description"></param>
+        /// <param name="Timestamp"></param>
+        public Boolean Sign(JObject        JSONMessage,
+                            JSONLDContext  Context,
+                            KeyPair        KeyPair,
+                            out String?    ErrorResponse,
+                            String?        SignerName    = null,
+                            I18NString?    Description   = null,
+                            DateTime?      Timestamp     = null)
+        {
+
+            #region Initial checks
+
+            if (JSONMessage is null)
+            {
+                ErrorResponse = "The given JSON message must not be null!";
+                return false;
+            }
+
+            //if (SignInfos is null || !SignInfos.Any())
+            //{
+            //    ErrorResponse = "The given key pairs must not be null or empty!";
+            //    return false;
+            //}
+
+            #endregion
+
+            try
+            {
+
+                if (JSONMessage["@context"] is null)
+                    JSONMessage.AddFirst(new JProperty("@context", Context.ToString()));
+
+                #region Initial checks
+
+                if (KeyPair.Private is null || KeyPair.Private.IsNullOrEmpty())
+                {
+                    ErrorResponse = "The given key pair must contain a serialized private key!";
+                    return false;
+                }
+
+                if (KeyPair.Public  is null || KeyPair.Public. IsNullOrEmpty())
+                {
+                    ErrorResponse = "The given key pair must contain a serialized public key!";
+                    return false;
+                }
+
+
+                if (KeyPair.PrivateKey is null)
+                {
+                    ErrorResponse = "The given key pair must contain a private key!";
+                    return false;
+                }
+
+                if (KeyPair.PublicKey is null)
+                {
+                    ErrorResponse = "The given key pair must contain a public key!";
+                    return false;
+                }
+
+                #endregion
+
+                var plainText   = JSONMessage.ToString(Formatting.None, SignableMessage.DefaultJSONConverters);
+
+                var cryptoHash  = KeyPair.Algorithm switch {
+                                      "secp521r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                      "secp384r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                      _            => SHA256.HashData(plainText.ToUTF8Bytes()),
+                                  };
+
+                var signer       = SignerUtilities.GetSigner("NONEwithECDSA");
+                signer.Init(true, KeyPair.PrivateKey);
+                signer.BlockUpdate(cryptoHash);
+                var signature    = signer.GenerateSignature();
+
+                AddSignature(new Signature(
+                                 KeyId:            SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(KeyPair.PublicKey).PublicKeyData.GetBytes().ToBase64(),
+                                 Value:            signature.ToBase64(),
+                                 Algorithm:        KeyPair.Algorithm,
+                                 SigningMethod:    null,
+                                 EncodingMethod:   KeyPair.Encoding,
+                                 Name:             SignerName,
+                                 Description:      Description,
+                                 Timestamp:        Timestamp
+                             ));
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region Verify(JSONMessage, out ErrorResponse)
+
+        /// <summary>
+        /// Verify the given data structure.
+        /// </summary>
+        /// <param name="JSONMessage">The JSON representation of the signable/verifiable message.</param>
+        /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
+        public Boolean Verify(JObject                   JSONMessage,
+                              JSONLDContext             Context,
+                              out String?               ErrorResponse,
+                              VerificationRuleActions?  VerificationRuleAction = VerificationRuleActions.VerifyAll)
+        {
+
+            ErrorResponse = null;
+
+            if (!Signatures.Any())
+            {
+
+                if (VerificationRuleAction == VerificationRuleActions.AcceptUnverified)
+                    return true;
+
+                ErrorResponse = "The given message does not contain any signatures!";
+                return false;
+
+            }
+
+            try
+            {
+
+                if (JSONMessage["@context"] is null)
+                    JSONMessage.AddFirst(new JProperty("@context", Context.ToString()));
+
+                var jsonMessageCopy  = JObject.Parse(JSONMessage.ToString(Formatting.None, SignableMessage.DefaultJSONConverters));
+                jsonMessageCopy.Remove("signatures");
+
+                var plainText = jsonMessageCopy.ToString(Formatting.None, SignableMessage.DefaultJSONConverters);
+
+                foreach (var signature in Signatures)
+                {
+
+                    var ecp           = signature.Algorithm switch {
+                                            "secp521r1"  => SecNamedCurves.GetByName("secp521r1"),
+                                            "secp384r1"  => SecNamedCurves.GetByName("secp384r1"),
+                                            _            => SecNamedCurves.GetByName("secp256r1"),
+                                        };
+                    var ecParams      = new ECDomainParameters(ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
+                    var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId.FromBase64()), ecParams);
+
+                    var cryptoHash    = signature.Algorithm switch {
+                                            "secp521r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                            "secp384r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                            _            => SHA256.HashData(plainText.ToUTF8Bytes()),
+                                        };
+
+                    var verifier      = SignerUtilities.GetSigner("NONEwithECDSA");
+                    verifier.Init(false, pubKeyParams);
+                    verifier.BlockUpdate(cryptoHash);
+                    signature.Status  = verifier.VerifySignature(signature.Value.FromBase64())
+                                            ? VerificationStatus.ValidSignature
+                                            : VerificationStatus.InvalidSignature;
+
+                    if (VerificationRuleAction == VerificationRuleActions.VerifyAny &&
+                        signature.Status       == VerificationStatus.ValidSignature)
+                    {
+                        return true;
+                    }
+
+                }
+
+                // Default, and when there is no signature policy (entry) defined!
+                return Signatures.All(signature => signature.Status == VerificationStatus.ValidSignature);
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = e.Message;
+                return false;
+            }
+
         }
 
         #endregion

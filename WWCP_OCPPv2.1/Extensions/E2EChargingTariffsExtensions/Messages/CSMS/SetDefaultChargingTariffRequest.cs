@@ -330,7 +330,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="CustomSetDefaultChargingTariffRequestSerializer">A delegate to serialize custom setDefaultChargingTariffs requests.</param>
         /// <param name="CustomChargingTariffSerializer">A delegate to serialize custom charging tariff JSON objects.</param>
-        /// <param name="CustomDisplayTextSerializer">A delegate to serialize custom multi-language text JSON objects.</param>
         /// <param name="CustomPriceSerializer">A delegate to serialize custom price JSON objects.</param>
         /// <param name="CustomTariffElementSerializer">A delegate to serialize custom tariff element JSON objects.</param>
         /// <param name="CustomPriceComponentSerializer">A delegate to serialize custom price component JSON objects.</param>
@@ -342,7 +341,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SetDefaultChargingTariffRequest>?  CustomSetDefaultChargingTariffRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<ChargingTariff>?                   CustomChargingTariffSerializer                    = null,
-                              CustomJObjectSerializerDelegate<DisplayText>?                      CustomDisplayTextSerializer                       = null,
                               CustomJObjectSerializerDelegate<Price>?                            CustomPriceSerializer                             = null,
                               CustomJObjectSerializerDelegate<TariffElement>?                    CustomTariffElementSerializer                     = null,
                               CustomJObjectSerializerDelegate<PriceComponent>?                   CustomPriceComponentSerializer                    = null,
@@ -357,7 +355,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             var json = JSONObject.Create(
 
                                  new JProperty("chargingTariff",   ChargingTariff.ToJSON(CustomChargingTariffSerializer,
-                                                                                         CustomDisplayTextSerializer,
                                                                                          CustomPriceSerializer,
                                                                                          CustomTariffElementSerializer,
                                                                                          CustomPriceComponentSerializer,
