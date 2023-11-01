@@ -1734,6 +1734,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<ChargingStation>?                                     CustomChargingStationSerializer                        { get; set; }
 
         public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?      CustomEVSEStatusInfoSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>?   CustomEVSEStatusInfoSerializer2                        { get; set; }
         public CustomJObjectSerializerDelegate<SetVariableResult>?                                   CustomSetVariableResultSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<GetVariableResult>?                                   CustomGetVariableResultSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<SetMonitoringResult>?                                 CustomSetMonitoringResultSerializer                    { get; set; }
@@ -11467,6 +11469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 response.ToJSON(
                     CustomSetDefaultChargingTariffResponseSerializer,
                     CustomStatusInfoSerializer,
+                    CustomEVSEStatusInfoSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),
@@ -11604,7 +11607,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region RemoveDefaultChargingTariff    (Request)
+        #region RemoveDefaultChargingTariff (Request)
 
         /// <summary>
         /// Remove the default charging tariff of the charging station,
@@ -11666,6 +11669,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 response.ToJSON(
                     CustomRemoveDefaultChargingTariffResponseSerializer,
                     CustomStatusInfoSerializer,
+                    CustomEVSEStatusInfoSerializer2,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),

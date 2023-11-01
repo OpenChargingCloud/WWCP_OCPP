@@ -50,26 +50,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext                                                             Context
+        public JSONLDContext                                                Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The SetDefaultChargingTariff status.
         /// </summary>
         [Mandatory]
-        public SetDefaultChargingTariffStatus                                            Status         { get; }
+        public SetDefaultChargingTariffStatus                               Status             { get; }
 
         /// <summary>
         /// An optional element providing more information about the SetDefaultChargingTariff status.
         /// </summary>
         [Optional]
-        public StatusInfo?                                                               StatusInfo     { get; }
+        public StatusInfo?                                                  StatusInfo         { get; }
 
         /// <summary>
         /// The optional enumeration of status infos for individual EVSEs.
         /// </summary>
         [Optional]
-        public IReadOnlyDictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>  StatusInfos    { get; }
+        public IEnumerable<EVSEStatusInfo<SetDefaultChargingTariffStatus>>  EVSEStatusInfos    { get; }
 
         #endregion
 
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The set default charging tariff request leading to this response.</param>
         /// <param name="Status">The registration status.</param>
         /// <param name="StatusInfo">An optional element providing more information about the registration status.</param>
-        /// <param name="StatusInfos">An optional enumeration of status infos for individual EVSEs.</param>
+        /// <param name="EVSEStatusInfos">An optional enumeration of status infos for individual EVSEs.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
@@ -91,17 +91,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SetDefaultChargingTariffResponse(CSMS.SetDefaultChargingTariffRequest                                       Request,
-                                                SetDefaultChargingTariffStatus                                             Status,
-                                                StatusInfo?                                                                StatusInfo          = null,
-                                                IReadOnlyDictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>?  StatusInfos         = null,
-                                                DateTime?                                                                  ResponseTimestamp   = null,
+        public SetDefaultChargingTariffResponse(CSMS.SetDefaultChargingTariffRequest                          Request,
+                                                SetDefaultChargingTariffStatus                                Status,
+                                                StatusInfo?                                                   StatusInfo          = null,
+                                                IEnumerable<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?  EVSEStatusInfos     = null,
+                                                DateTime?                                                     ResponseTimestamp   = null,
 
-                                                IEnumerable<KeyPair>?                                                      SignKeys            = null,
-                                                IEnumerable<SignInfo>?                                                     SignInfos           = null,
-                                                IEnumerable<Signature>?                                                    Signatures          = null,
+                                                IEnumerable<KeyPair>?                                         SignKeys            = null,
+                                                IEnumerable<SignInfo>?                                        SignInfos           = null,
+                                                IEnumerable<Signature>?                                       Signatures          = null,
 
-                                                CustomData?                                                                CustomData          = null)
+                                                CustomData?                                                   CustomData          = null)
 
             : base(Request,
                    Result.OK(),
@@ -115,19 +115,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            this.Status       = Status;
-            this.StatusInfo   = StatusInfo;
-            this.StatusInfos  = StatusInfos ?? new ReadOnlyDictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>(
-                                                   new Dictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>()
-                                               );
+            this.Status           = Status;
+            this.StatusInfo       = StatusInfo;
+            this.EVSEStatusInfos  = EVSEStatusInfos ?? Array.Empty<EVSEStatusInfo<SetDefaultChargingTariffStatus>>();
 
             unchecked
             {
 
-                hashCode = this.Status.     GetHashCode()       * 7 ^
-                          (this.StatusInfo?.GetHashCode() ?? 0) * 5 ^
-                           this.StatusInfos.CalcHashCode()      * 3 ^
-                           base.            GetHashCode();
+                hashCode = this.Status.         GetHashCode()       * 7 ^
+                          (this.StatusInfo?.    GetHashCode() ?? 0) * 5 ^
+                           this.EVSEStatusInfos.CalcHashCode()      * 3 ^
+                           base.                GetHashCode();
 
             }
 
@@ -150,18 +148,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            this.Status       = SetDefaultChargingTariffStatus.Rejected;
-            this.StatusInfos  = Request.EVSEIds.ToDictionary(
-                                                    evseId => evseId,
-                                                    evseId => new StatusInfo<SetDefaultChargingTariffStatus>(SetDefaultChargingTariffStatus.Rejected));
+            this.Status           = SetDefaultChargingTariffStatus.Rejected;
+            this.EVSEStatusInfos  = Request.EVSEIds.Select(evseId => new EVSEStatusInfo<SetDefaultChargingTariffStatus>(
+                                                                         evseId,
+                                                                         SetDefaultChargingTariffStatus.Rejected
+                                                                     ));
 
             unchecked
             {
 
-                hashCode = this.Status.     GetHashCode()       * 7 ^
-                          (this.StatusInfo?.GetHashCode() ?? 0) * 5 ^
-                           this.StatusInfos.CalcHashCode()      * 3 ^
-                           base.            GetHashCode();
+                hashCode = this.Status.         GetHashCode()       * 7 ^
+                          (this.StatusInfo?.    GetHashCode() ?? 0) * 5 ^
+                           this.EVSEStatusInfos.CalcHashCode()      * 3 ^
+                           base.                GetHashCode();
 
             }
 
@@ -230,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 SetDefaultChargingTariffResponse = null;
 
-                #region Status         [mandatory]
+                #region Status             [mandatory]
 
                 if (!JSON.ParseMandatory("status",
                                          "set default charging tariff status",
@@ -243,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region StatusInfo     [optional]
+                #region StatusInfo         [optional]
 
                 if (JSON.ParseOptionalJSON("statusInfo",
                                            "status info",
@@ -257,46 +256,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region StatusInfos    [mandatory]
+                #region EVSEStatusInfos    [mandatory]
 
-                if (!JSON.ParseMandatory("statusInfos",
-                                         "status infos",
-                                         out JObject StatusInfosJSON,
+                if (!JSON.ParseMandatory("evseStatusInfos",
+                                         "EVSE status infos",
+                                         out JArray EVSEStatusInfosJSON,
                                          out ErrorResponse))
                 {
                     return false;
                 }
 
-                var StatusInfos = new Dictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>();
+                var EVSEStatusInfos = new List<EVSEStatusInfo<SetDefaultChargingTariffStatus>>();
 
-                foreach (var statusInfoProperty in StatusInfosJSON.Properties())
+                foreach (var evseStatusInfoProperty in EVSEStatusInfosJSON)
                 {
 
-                    var evseId = EVSE_Id.TryParse(statusInfoProperty.Name);
-
-                    if (!evseId.HasValue)
-                        continue;
-
-                    if (statusInfoProperty.Value["status"] is not JObject statusInfoJObject)
-                        continue;
-
-                    if (!StatusInfo<SetDefaultChargingTariffStatus>.TryParse(statusInfoJObject,
-                                                                             out var statusInfo,
-                                                                             out var errorResponse,
-                                                                             SetDefaultChargingTariffStatusExtensions.TryParse,
-                                                                             null) ||
-                        statusInfo is null)
+                    if (evseStatusInfoProperty is not JObject evseStatusInfoJObject)
                     {
-                        continue;
+                        ErrorResponse = "Invalid evseStatusInfo JSON object!";
+                        return false;
                     }
 
-                    StatusInfos.Add(evseId.Value, statusInfo);
+                    if (!EVSEStatusInfo<SetDefaultChargingTariffStatus>.TryParse(evseStatusInfoJObject,
+                                                                                 out var evseStatusInfo,
+                                                                                 out ErrorResponse,
+                                                                                 SetDefaultChargingTariffStatusExtensions.TryParse,
+                                                                                 null) ||
+                        evseStatusInfo is null)
+                    {
+                        return false;
+                    }
+
+                    EVSEStatusInfos.Add(evseStatusInfo);
 
                 }
 
                 #endregion
 
-                #region Signatures     [optional, OCPP_CSE]
+                #region Signatures         [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -310,7 +307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region CustomData     [optional]
+                #region CustomData         [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -330,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                        Request,
                                                        Status,
                                                        StatusInfo,
-                                                       new ReadOnlyDictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>(StatusInfos),
+                                                       EVSEStatusInfos,
                                                        null,
 
                                                        null,
@@ -368,35 +365,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SetDefaultChargingTariffResponse>?  CustomSetDefaultChargingTariffResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<StatusInfo>?                        CustomStatusInfoSerializer                         = null,
-                              CustomJObjectSerializerDelegate<Signature>?                         CustomSignatureSerializer                          = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                         = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SetDefaultChargingTariffResponse>?                CustomSetDefaultChargingTariffResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<StatusInfo>?                                      CustomStatusInfoSerializer                         = null,
+                              CustomJObjectSerializerDelegate<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?  CustomEVSEStatusInfoSerializer                     = null,
+                              CustomJObjectSerializerDelegate<Signature>?                                       CustomSignatureSerializer                          = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                                      CustomCustomDataSerializer                         = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",        Status.    AsText()),
+                                 new JProperty("status",            Status.    AsText()),
 
                            StatusInfo is not null
-                               ? new JProperty("statusInfo",    StatusInfo.ToJSON(CustomStatusInfoSerializer,
-                                                                                  CustomCustomDataSerializer))
+                               ? new JProperty("statusInfo",        StatusInfo.ToJSON(CustomStatusInfoSerializer,
+                                                                                      CustomCustomDataSerializer))
                                : null,
 
-                                 new JProperty("statusInfos",   new JObject(StatusInfos.Select(statusInfo => new JProperty(
-                                                                                                                 statusInfo.Key.  ToString(),
-                                                                                                                 statusInfo.Value.ToJSON(status => status.AsText(),
-                                                                                                                                         CustomStatusInfoSerializer,
-                                                                                                                                         CustomCustomDataSerializer)
-                                                                                                             )))),
+                                 new JProperty("evseStatusInfos",   new JArray(EVSEStatusInfos.Select(evseStatusInfo => evseStatusInfo.ToJSON(status => status.AsText(),
+                                                                                                                                              CustomEVSEStatusInfoSerializer,
+                                                                                                                                              CustomCustomDataSerializer)))),
 
                            Signatures.Any()
-                               ? new JProperty("signatures",    new JArray (Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                            CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",        new JArray(Signatures.     Select(signature      => signature.     ToJSON(CustomSignatureSerializer,
+                                                                                                                                              CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",    CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",        CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -498,8 +493,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
              ((StatusInfo is     null && SetDefaultChargingTariffResponse.StatusInfo is     null) ||
               (StatusInfo is not null && SetDefaultChargingTariffResponse.StatusInfo is not null && StatusInfo.Equals(SetDefaultChargingTariffResponse.StatusInfo))) &&
 
-               StatusInfos.Count().Equals(SetDefaultChargingTariffResponse.StatusInfos.Count()) &&
-               StatusInfos.All(kvp => SetDefaultChargingTariffResponse.StatusInfos.Contains(kvp)) &&
+               EVSEStatusInfos.Count().Equals(SetDefaultChargingTariffResponse.EVSEStatusInfos.Count()) &&
+               EVSEStatusInfos.All(kvp => SetDefaultChargingTariffResponse.EVSEStatusInfos.Contains(kvp)) &&
 
                base.GenericEquals(SetDefaultChargingTariffResponse);
 
@@ -526,7 +521,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => $"{Status.AsText()}{(StatusInfo is not null ? $", {StatusInfo}" : "")}{(StatusInfos.Any() ? $", {StatusInfos.Select(kvp => $"{kvp.Key} => '{kvp.Value}'").AggregateWith(", ")}" : "")}";
+            => $"{Status.AsText()}{(StatusInfo is not null ? $", {StatusInfo}" : "")}{(EVSEStatusInfos.Any() ? $", {EVSEStatusInfos.Select(evseStatusInfo => $"{evseStatusInfo.EVSEId} => '{evseStatusInfo.Status.AsText()}'").AggregateWith(", ")}" : "")}";
 
         #endregion
 

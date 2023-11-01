@@ -37,26 +37,47 @@ using cloud.charging.open.protocols.OCPPv2_1.CS;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
+    #region (class) ChargingStationConnector
 
+    /// <summary>
+    /// A connector at a charging station.
+    /// </summary>
     public class ChargingStationConnector
     {
 
-        public Connector_Id  Id    { get; }
+        #region Properties
 
+        public Connector_Id    Id               { get; }
+        public ConnectorTypes  ConnectorType    { get; }
 
-        public ChargingStationConnector(Connector_Id Id)
+        #endregion
+
+        #region ChargingStationConnector(Id, ConnectorType)
+
+        public ChargingStationConnector(Connector_Id    Id,
+                                        ConnectorTypes  ConnectorType)
         {
-            this.Id = Id;
+
+            this.Id             = Id;
+            this.ConnectorType  = ConnectorType;
+
         }
+
+        #endregion
 
     }
 
+    #endregion
+
+    #region (class) ChargingStationEVSE
 
     /// <summary>
-    /// A charging station connector.
+    /// An EVSE at a charging station.
     /// </summary>
     public class ChargingStationEVSE
     {
+
+        #region Properties
 
         public EVSE_Id            Id                       { get; }
 
@@ -102,6 +123,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public ChargingTariff?    DefaultChargingTariff    { get; set; }
 
+        #endregion
+
+        #region ChargingStationEVSE(Id, AdminStatus, ...)
 
         public ChargingStationEVSE(EVSE_Id                                 Id,
                                    OperationalStatus                       AdminStatus,
@@ -122,8 +146,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         }
 
+        #endregion
 
-        private HashSet<ChargingStationConnector>  connectors;
+
+        #region Connectors
+
+        private readonly HashSet<ChargingStationConnector> connectors;
 
         public IEnumerable<ChargingStationConnector> Connectors
             => connectors;
@@ -137,9 +165,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         }
 
+        #endregion
+
 
     }
 
+    #endregion
 
 
     /// <summary>
@@ -611,6 +642,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Data Structures
 
         public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
+        public CustomJObjectSerializerDelegate<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?      CustomEVSEStatusInfoSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>?   CustomEVSEStatusInfoSerializer2                              { get; set; }
         public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                                    { get; set; }
         public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                                     { get; set; }
@@ -11084,7 +11117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         DebugX.Log($"Charging station '{Id}': Incoming SetDefaultChargingTariff!");
 
-                        Dictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>? statusInfos = null;
+                        List<EVSEStatusInfo<SetDefaultChargingTariffStatus>>? evseStatusInfos = null;
 
                         if (!request.ChargingTariff.Verify(out var err))
                         {
@@ -11107,13 +11140,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 evse.DefaultChargingTariff = request.ChargingTariff;
 
                             response = new SetDefaultChargingTariffResponse(
-                                           Request:       request,
-                                           Status:        SetDefaultChargingTariffStatus.Accepted,
-                                           StatusInfo:    null,
-                                           StatusInfos:   statusInfos is not null
-                                                              ? new ReadOnlyDictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>(statusInfos)
-                                                              : null,
-                                           CustomData:    null
+                                           Request:           request,
+                                           Status:            SetDefaultChargingTariffStatus.Accepted,
+                                           StatusInfo:        null,
+                                           EVSEStatusInfos:   null,
+                                           CustomData:        null
                                        );
 
                         }
@@ -11137,30 +11168,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                             if (response == null)
                             {
 
-                                statusInfos = new Dictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>();
+                                evseStatusInfos = new List<EVSEStatusInfo<SetDefaultChargingTariffStatus>>();
 
                                 foreach (var evseId in request.EVSEIds)
                                 {
 
                                     evses[evseId].DefaultChargingTariff = request.ChargingTariff;
 
-                                    statusInfos.Add(evseId, new StatusInfo<SetDefaultChargingTariffStatus>(
-                                                                Status:           SetDefaultChargingTariffStatus.Accepted,
-                                                                ReasonCode:       null,
-                                                                AdditionalInfo:   null,
-                                                                CustomData:       null
-                                                            ));
+                                    evseStatusInfos.Add(new EVSEStatusInfo<SetDefaultChargingTariffStatus>(
+                                                            EVSEId:           evseId,
+                                                            Status:           SetDefaultChargingTariffStatus.Accepted,
+                                                            ReasonCode:       null,
+                                                            AdditionalInfo:   null,
+                                                            CustomData:       null
+                                                        ));
 
                                 }
 
                                 response = new SetDefaultChargingTariffResponse(
-                                               Request:       request,
-                                               Status:        SetDefaultChargingTariffStatus.Accepted,
-                                               StatusInfo:    null,
-                                               StatusInfos:   statusInfos is not null
-                                                                  ? new ReadOnlyDictionary<EVSE_Id, StatusInfo<SetDefaultChargingTariffStatus>>(statusInfos)
-                                                                  : null,
-                                               CustomData:    null
+                                               Request:           request,
+                                               Status:            SetDefaultChargingTariffStatus.Accepted,
+                                               StatusInfo:        null,
+                                               EVSEStatusInfos:   evseStatusInfos,
+                                               CustomData:        null
                                            );
 
                             }
@@ -11178,6 +11208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     response.ToJSON(
                         CustomSetDefaultChargingTariffResponseSerializer,
                         CustomStatusInfoSerializer,
+                        CustomEVSEStatusInfoSerializer,
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),
@@ -11500,18 +11531,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         DebugX.Log($"Charging station '{Id}': Incoming RemoveDefaultChargingTariff!");
 
-                        var evseIds = request.EVSEIds.Any()
-                                          ? request.EVSEIds
-                                          : evses.Keys;
+                        var evseIds          = request.EVSEIds.Any()
+                                                   ? request.EVSEIds
+                                                   : evses.Keys;
 
-                        var statusInfos = new Dictionary<EVSE_Id, StatusInfo<RemoveDefaultChargingTariffStatus>>();
+                        var evseStatusInfos  = new List<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>();
 
                         foreach (var evseId in evseIds)
                         {
 
                             if (evses[evseId].DefaultChargingTariff is null)
                             {
-                                statusInfos.Add(evseId, new StatusInfo<RemoveDefaultChargingTariffStatus>(RemoveDefaultChargingTariffStatus.NotFound));
+                                evseStatusInfos.Add(new EVSEStatusInfo<RemoveDefaultChargingTariffStatus>(
+                                                        evseId,
+                                                        RemoveDefaultChargingTariffStatus.NotFound
+                                                    ));
                                 continue;
                             }
 
@@ -11525,27 +11559,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                             if (chargingTariff is null)
                             {
-                                statusInfos.Add(evseId, new StatusInfo<RemoveDefaultChargingTariffStatus>(RemoveDefaultChargingTariffStatus.Accepted));
+                                evseStatusInfos.Add(new EVSEStatusInfo<RemoveDefaultChargingTariffStatus>(
+                                                        evseId,
+                                                        RemoveDefaultChargingTariffStatus.Accepted
+                                                    ));
                                 continue;
                             }
 
                             if (chargingTariff.Id == request.ChargingTariffId.Value)
                             {
                                 evses[evseId].DefaultChargingTariff = null;
-                                statusInfos.Add(evseId, new StatusInfo<RemoveDefaultChargingTariffStatus>(RemoveDefaultChargingTariffStatus.Accepted));
+                                evseStatusInfos.Add(new EVSEStatusInfo<RemoveDefaultChargingTariffStatus>(
+                                                        evseId,
+                                                        RemoveDefaultChargingTariffStatus.Accepted
+                                                    ));
                                 continue;
                             }
 
-                            statusInfos.Add(evseId, new StatusInfo<RemoveDefaultChargingTariffStatus>(RemoveDefaultChargingTariffStatus.NotFound));
+                            evseStatusInfos.Add(new EVSEStatusInfo<RemoveDefaultChargingTariffStatus>(
+                                                    evseId,
+                                                    RemoveDefaultChargingTariffStatus.NotFound
+                                                ));
 
                         }
 
                         response = new RemoveDefaultChargingTariffResponse(
-                                       Request:       request,
-                                       Status:        RemoveDefaultChargingTariffStatus.Accepted,
-                                       StatusInfo:    null,
-                                       StatusInfos:   new ReadOnlyDictionary<EVSE_Id, StatusInfo<RemoveDefaultChargingTariffStatus>>(statusInfos),
-                                       CustomData:    null
+                                       Request:           request,
+                                       Status:            RemoveDefaultChargingTariffStatus.Accepted,
+                                       StatusInfo:        null,
+                                       EVSEStatusInfos:   evseStatusInfos,
+                                       CustomData:        null
                                    );
 
                     }
@@ -11559,6 +11602,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     response.ToJSON(
                         CustomRemoveDefaultChargingTariffResponseSerializer,
                         CustomStatusInfoSerializer,
+                        CustomEVSEStatusInfoSerializer2,
                         CustomSignatureSerializer,
                         CustomCustomDataSerializer
                     ),

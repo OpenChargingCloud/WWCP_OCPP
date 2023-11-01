@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             chargingStation1WebSocketTextMessageResponsesReceived  = new ConcurrentList<LogData2>();
 
             chargingStation1 = new TestChargingStation(
-                                    Id:              ChargingStation_Id.Parse("GD001"),
+                                    Id:                       ChargingStation_Id.Parse("GD001"),
                                     VendorName:               "GraphDefined OEM #1",
                                     Model:                    "VCP.1",
                                     Description:              I18NString.Create(Languages.en, "Our first virtual charging station!"),
@@ -199,7 +199,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                       MeterPublicKey:      "MPK1",
                                                                       Connectors:          new[] {
                                                                                                new ChargingStationConnector(
-                                                                                                   Id:    Connector_Id.Parse(1)
+                                                                                                   Id:              Connector_Id.Parse(1),
+                                                                                                   ConnectorType:   ConnectorTypes.sType2
                                                                                                )
                                                                                            }
                                                                   )

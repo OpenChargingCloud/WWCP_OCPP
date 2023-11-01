@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             chargingStation1WebSocketTextMessageResponsesReceived  = new List<LogData2>();
 
             chargingStation1 = new TestChargingStation(
-                                    Id:              ChargingStation_Id.Parse("GD001"),
+                                    Id:                       ChargingStation_Id.Parse("GD001"),
                                     VendorName:               "GraphDefined OEM #1",
                                     Model:                    "VCP.1",
                                     Description:              I18NString.Create(Languages.en, "Our first virtual charging station!"),
@@ -96,7 +96,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                       MeterPublicKey:      "MPK1",
                                                                       Connectors:          new[] {
                                                                                                new ChargingStationConnector(
-                                                                                                   Id:    Connector_Id.Parse(1)
+                                                                                                   Id:              Connector_Id.Parse(1),
+                                                                                                   ConnectorType:   ConnectorTypes.sType2
                                                                                                )
                                                                                            }
                                                                   )
@@ -120,17 +121,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 testCSMS01.AddOrUpdateHTTPBasicAuth(ChargingStation_Id.Parse("test01"), "1234abcd");
 
-                var response1 = chargingStation1.ConnectWebSocket(
-                                    From:                    "From:GD001",
-                                    To:                      "To:OCPPTest01",
-                                    RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation1.Id),
-                                    HTTPAuthentication:      HTTPBasicAuthentication.Create("test01", "1234abcd"),
-                                    DisableWebSocketPings:   true
-                                ).Result;
+                var response = chargingStation1.ConnectWebSocket(
+                                   From:                    "From:GD001",
+                                   To:                      "To:OCPPTest01",
+                                   RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation1.Id),
+                                   HTTPAuthentication:      HTTPBasicAuthentication.Create("test01", "1234abcd"),
+                                   DisableWebSocketPings:   true
+                               ).Result;
 
-                Assert.IsNotNull(response1);
+                Assert.IsNotNull(response);
 
-                if (response1 is not null)
+                if (response is not null)
                 {
 
                     // HTTP/1.1 101 Switching Protocols
@@ -142,12 +143,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     // Sec-WebSocket-Protocol:  ocpp2.0.1
                     // Sec-WebSocket-Version:   13
 
-                    Assert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    response1.HTTPStatusCode);
-                    Assert.AreEqual($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API",   response1.Server);
-                    Assert.AreEqual("Upgrade",                                                            response1.Connection);
-                    Assert.AreEqual("websocket",                                                          response1.Upgrade);
-                    Assert.IsTrue  (response1.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
-                    Assert.AreEqual("13",                                                                 response1.SecWebSocketVersion);
+                    Assert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    response.HTTPStatusCode);
+                    Assert.AreEqual($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API",   response.Server);
+                    Assert.AreEqual("Upgrade",                                                            response.Connection);
+                    Assert.AreEqual("websocket",                                                          response.Upgrade);
+                    Assert.IsTrue  (response.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
+                    Assert.AreEqual("13",                                                                 response.SecWebSocketVersion);
 
                 }
 
@@ -188,7 +189,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             chargingStation2WebSocketTextMessageResponsesReceived  = new List<LogData2>();
 
             chargingStation2  = new TestChargingStation(
-                                    Id:              ChargingStation_Id.Parse("CP002"),
+                                    Id:                       ChargingStation_Id.Parse("CP002"),
                                     VendorName:               "GraphDefined OEM #2",
                                     Model:                    "VCP.2",
                                     Description:              I18NString.Create(Languages.en, "Our 2nd virtual charging station!"),
@@ -203,11 +204,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                       Id:                  EVSE_Id.Parse(1),
                                                                       AdminStatus:         OperationalStatus.Operative,
                                                                       MeterType:           "MT2",
-                                                                      MeterSerialNumber:   "MSN2",
-                                                                      MeterPublicKey:      "MPK2",
+                                                                      MeterSerialNumber:   "MSN2.1",
+                                                                      MeterPublicKey:      "MPK2.1",
                                                                       Connectors:          new[] {
                                                                                                new ChargingStationConnector(
-                                                                                                   Id:    Connector_Id.Parse(1)
+                                                                                                   Id:              Connector_Id.Parse(1),
+                                                                                                   ConnectorType:   ConnectorTypes.sType2
+                                                                                               )
+                                                                                           }
+                                                                  ),
+                                                                  new ChargingStationEVSE(
+                                                                      Id:                  EVSE_Id.Parse(2),
+                                                                      AdminStatus:         OperationalStatus.Operative,
+                                                                      MeterType:           "MT2",
+                                                                      MeterSerialNumber:   "MSN2.2",
+                                                                      MeterPublicKey:      "MPK2.1",
+                                                                      Connectors:          new[] {
+                                                                                               new ChargingStationConnector(
+                                                                                                   Id:              Connector_Id.Parse(1),
+                                                                                                   ConnectorType:   ConnectorTypes.cCCS2
                                                                                                )
                                                                                            }
                                                                   )
@@ -223,6 +238,70 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             Assert.IsNotNull(chargingStation2);
 
+            if (testBackendWebSockets01 is not null)
+            {
+
+                testCSMS01.AddOrUpdateHTTPBasicAuth(ChargingStation_Id.Parse("test02"), "1234abcd");
+
+                var response = chargingStation2.ConnectWebSocket(
+                                   From:                    "From:GD002",
+                                   To:                      "To:OCPPTest01",
+                                   RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation2.Id),
+                                   HTTPAuthentication:      HTTPBasicAuthentication.Create("test01", "1234abcd"),
+                                   DisableWebSocketPings:   true
+                               ).Result;
+
+                Assert.IsNotNull(response);
+
+                if (response is not null)
+                {
+
+                    // HTTP/1.1 101 Switching Protocols
+                    // Date:                    Mon, 02 Apr 2023 15:55:18 GMT
+                    // Server:                  GraphDefined OCPP v2.0.1 HTTP/WebSocket/JSON CSMS API
+                    // Connection:              Upgrade
+                    // Upgrade:                 websocket
+                    // Sec-WebSocket-Accept:    HSmrc0sMlYUkAGmm5OPpG2HaGWk=
+                    // Sec-WebSocket-Protocol:  ocpp2.0.1
+                    // Sec-WebSocket-Version:   13
+
+                    Assert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    response.HTTPStatusCode);
+                    Assert.AreEqual($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API",   response.Server);
+                    Assert.AreEqual("Upgrade",                                                            response.Connection);
+                    Assert.AreEqual("websocket",                                                          response.Upgrade);
+                    Assert.IsTrue  (response.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
+                    Assert.AreEqual("13",                                                                 response.SecWebSocketVersion);
+
+                }
+
+
+                var chargingStation2WebSocketClient = chargingStation2.CSClient as ChargingStationWSClient;
+                Assert.IsNotNull(chargingStation2WebSocketClient);
+
+                if (chargingStation2WebSocketClient is not null)
+                {
+
+                    chargingStation2WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message) => {
+                        chargingStation2WebSocketTextMessagesReceived.        Add(new LogData1(timestamp, message));
+                    };
+
+                    chargingStation2WebSocketClient.OnTextMessageResponseSent     += async (timestamp, client, webSocketFrame, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
+                        chargingStation2WebSocketTextMessageResponsesSent.    Add(new LogData2(requestTimestamp, requestMessage, responseTimestamp, responseMessage));
+                    };
+
+                    chargingStation2WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message) => {
+                        chargingStation2WebSocketTextMessagesSent.            Add(new LogData1(timestamp, message));
+                    };
+
+                    chargingStation2WebSocketClient.OnTextMessageResponseReceived += async (timestamp, client, webSocketFrame, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
+                        chargingStation2WebSocketTextMessageResponsesReceived.Add(new LogData2(requestTimestamp, requestMessage, responseTimestamp, responseMessage));
+                    };
+
+                }
+
+            }
+
+
             #endregion
 
             #region Charging Station #3
@@ -233,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             chargingStation3WebSocketTextMessageResponsesReceived  = new List<LogData2>();
 
             chargingStation3 = new TestChargingStation(
-                                    Id:              ChargingStation_Id.Parse("CP003"),
+                                    Id:                       ChargingStation_Id.Parse("CP003"),
                                     VendorName:               "GraphDefined OEM #3",
                                     Model:                    "VCP.3",
                                     Description:              I18NString.Create(Languages.en, "Our 3rd virtual charging station!"),
@@ -248,11 +327,51 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                       Id:                  EVSE_Id.Parse(1),
                                                                       AdminStatus:         OperationalStatus.Operative,
                                                                       MeterType:           "MT3",
-                                                                      MeterSerialNumber:   "MSN3",
-                                                                      MeterPublicKey:      "MPK3",
+                                                                      MeterSerialNumber:   "MSN3.1",
+                                                                      MeterPublicKey:      "MPK3.1",
                                                                       Connectors:          new[] {
                                                                                                new ChargingStationConnector(
-                                                                                                   Id:    Connector_Id.Parse(1)
+                                                                                                   Id:              Connector_Id.Parse(1),
+                                                                                                   ConnectorType:   ConnectorTypes.sType2
+                                                                                               )
+                                                                                           }
+                                                                  ),
+                                                                  new ChargingStationEVSE(
+                                                                      Id:                  EVSE_Id.Parse(2),
+                                                                      AdminStatus:         OperationalStatus.Operative,
+                                                                      MeterType:           "MT3",
+                                                                      MeterSerialNumber:   "MSN3.2",
+                                                                      MeterPublicKey:      "MPK3.2",
+                                                                      Connectors:          new[] {
+                                                                                               new ChargingStationConnector(
+                                                                                                   Id:              Connector_Id.Parse(1),
+                                                                                                   ConnectorType:   ConnectorTypes.sType2
+                                                                                               )
+                                                                                           }
+                                                                  ),
+                                                                  new ChargingStationEVSE(
+                                                                      Id:                  EVSE_Id.Parse(3),
+                                                                      AdminStatus:         OperationalStatus.Operative,
+                                                                      MeterType:           "MT3",
+                                                                      MeterSerialNumber:   "MSN3.3",
+                                                                      MeterPublicKey:      "MPK3.3",
+                                                                      Connectors:          new[] {
+                                                                                               new ChargingStationConnector(
+                                                                                                   Id:              Connector_Id.Parse(1),
+                                                                                                   ConnectorType:   ConnectorTypes.cCCS2
+                                                                                               )
+                                                                                           }
+                                                                  ),
+                                                                  new ChargingStationEVSE(
+                                                                      Id:                  EVSE_Id.Parse(4),
+                                                                      AdminStatus:         OperationalStatus.Operative,
+                                                                      MeterType:           "MT3",
+                                                                      MeterSerialNumber:   "MSN3.4",
+                                                                      MeterPublicKey:      "MPK3.4",
+                                                                      Connectors:          new[] {
+                                                                                               new ChargingStationConnector(
+                                                                                                   Id:              Connector_Id.Parse(1),
+                                                                                                   ConnectorType:   ConnectorTypes.cCCS2
                                                                                                )
                                                                                            }
                                                                   )

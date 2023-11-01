@@ -35,42 +35,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The start time of day, for example "13:30", valid from this time of the day.
-        /// </summary>
-        [Optional]
-        public Time?                     StartTime           { get; }
-
-        /// <summary>
-        /// The end time of day, for example "19:45", valid from this time of the day.
-        /// </summary>
-        [Optional]
-        public Time?                     EndTime             { get; }
-
-        /// <summary>
         /// The start date, for example: 2015-12-24, valid from this day until that day (excluding that day).
         /// </summary>
         [Optional]
-        public DateTime?                 StartDate           { get; }
+        public DateTime?                        NotBefore                  { get; }
 
         /// <summary>
         /// The end date, for example: 2015-12-24, valid from this day until that day (excluding that day).
         /// </summary>
         [Optional]
-        public DateTime?                 EndDate             { get; }
+        public DateTime?                        NotAfter                   { get; }
+
+
+
+        /// <summary>
+        /// The day(s) of the week this tariff element is active.
+        /// </summary>
+        [Optional]
+        public IEnumerable<DayOfWeek>           DaysOfWeek                 { get; }
+
+        /// <summary>
+        /// The start time of day, for example "13:30", valid from this time of the day.
+        /// </summary>
+        [Optional]
+        public Time?                            StartTimeOfDay             { get; }
+
+        /// <summary>
+        /// The end time of day, for example "19:45", valid from this time of the day.
+        /// </summary>
+        [Optional]
+        public Time?                            EndTimeOfDay               { get; }
+
+
+
+        /// <summary>
+        /// The optional allowed current type: AC, DC, or both.
+        /// </summary>
+        [Optional]
+        public CurrentTypes?                    CurrentType                { get; }
 
         /// <summary>
         /// The minimum consumed energy in kWh, for example 20, valid from this amount of energy
         /// (inclusive) being used.
         /// </summary>
         [Optional]
-        public WattHour?                 MinkWh              { get; }
+        public WattHour?                        MinEnergy                  { get; }
 
         /// <summary>
         /// The maximum consumed energy in kWh, for example 50, valid until this amount of energy
         /// (exclusive) being used.
         /// </summary>
         [Optional]
-        public WattHour?                 MaxkWh              { get; }
+        public WattHour?                        MaxEnergy                  { get; }
 
         /// <summary>
         /// The sum of the minimum current (in Amperes) over all phases, for example 5. When the EV is
@@ -82,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// longer be active when the charging current drops below the defined value.
         /// </summary>
         [Optional]
-        public Ampere?                   MinCurrent          { get; }
+        public Ampere?                          MinCurrent                 { get; }
 
         /// <summary>
         /// The sum of the maximum current (in Amperes) over all phases, for example 20. When the EV is
@@ -94,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// active when the charging current raises above the defined value.
         /// </summary>
         [Optional]
-        public Ampere?                   MaxCurrent          { get; }
+        public Ampere?                          MaxCurrent                 { get; }
 
         /// <summary>
         /// The minimum power in kW, for example 5. When the EV is charging with more than, or equal to,
@@ -106,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// defined value.
         /// </summary>
         [Optional]
-        public Watt?                     MinPower            { get; }
+        public Watt?                            MinPower                   { get; }
 
         /// <summary>
         /// The maximum power in kW, for example 20. When the EV is charging with less than the defined
@@ -118,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// value.
         /// </summary>
         [Optional]
-        public Watt?                     MaxPower            { get; }
+        public Watt?                            MaxPower                   { get; }
 
         /// <summary>
         /// The minimum duration in seconds the charging session MUST last (inclusive). When the
@@ -126,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// or becomes active. Before that moment, this tariff element is not yet active.
         /// </summary>
         [Optional]
-        public TimeSpan?                 MinDuration         { get; }
+        public TimeSpan?                        MinDuration                { get; }
 
         /// <summary>
         /// The maximum duration in seconds the charging session MUST last (exclusive). When the
@@ -134,13 +150,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// is or becomes active. After that moment, this tariff element is no longer active.
         /// </summary>
         [Optional]
-        public TimeSpan?                 MaxDuration         { get; }
+        public TimeSpan?                        MaxDuration                { get; }
+
 
         /// <summary>
-        /// The day(s) of the week this tariff element is active.
+        /// An optional enumeration of charging station operators, this charging ticket is valid for.
         /// </summary>
         [Optional]
-        public IEnumerable<DayOfWeek>    DayOfWeek           { get; }
+        public IEnumerable<CSOOperator_Id>      ValidOperators             { get; }
+
+        /// <summary>
+        /// An optional enumeration of EVSE identifications, this charging ticket is valid for.
+        /// </summary>
+        [Optional]
+        public IEnumerable<ChargingPool_Id>     ValidChargingPools         { get; }
+
+        /// <summary>
+        /// An optional enumeration of EVSE identifications, this charging ticket is valid for.
+        /// </summary>
+        [Optional]
+        public IEnumerable<ChargingStation_Id>  ValidChargingStations      { get; }
+
+        /// <summary>
+        /// An optional enumeration of EVSE identifications, this charging ticket is valid for.
+        /// </summary>
+        [Optional]
+        public IEnumerable<GlobalEVSE_Id>       ValidEVSEs                 { get; }
+
+
+        /// <summary>
+        /// An optional enumeration of EVSE identifications, this charging ticket is valid for.
+        /// </summary>
+        [Optional]
+        public IEnumerable<ChargingPool_Id>     InvalidChargingPools       { get; }
+
+        /// <summary>
+        /// An optional enumeration of EVSE identifications, this charging ticket is valid for.
+        /// </summary>
+        [Optional]
+        public IEnumerable<ChargingStation_Id>  InvalidChargingStations    { get; }
+
+        /// <summary>
+        /// An optional enumeration of EVSE identifications, this charging ticket is valid for.
+        /// </summary>
+        [Optional]
+        public IEnumerable<GlobalEVSE_Id>       InvalidEVSEs               { get; }
+
 
         /// <summary>
         /// When this field is present, the tariff element describes reservation costs.
@@ -150,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// for the duration of the reservation.
         /// </summary>
         [Optional]
-        public ReservationRestrictions?  Reservation         { get; }
+        public ReservationRestrictions?         Reservation                { get; }
 
         #endregion
 
@@ -159,50 +214,123 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new charging tariff restrictions.
         /// </summary>
-        /// <param name="StartTime">A start time of day, for example "13:30", valid from this time of the day.</param>
-        /// <param name="EndTime">An end time of day, for example "19:45", valid from this time of the day.</param>
-        /// <param name="StartDate">A start date, for example: 2015-12-24, valid from this day until that day (excluding that day).</param>
-        /// <param name="EndDate">An end date, for example: 2015-12-24, valid from this day until that day (excluding that day).</param>
-        /// <param name="MinkWh">A minimum consumed energy in kWh, for example 20, valid from this amount of energy (inclusive) being used.</param>
-        /// <param name="MaxkWh">A maximum consumed energy in kWh, for example 50, valid until this amount of energy (exclusive) being used.</param>
+        /// <param name="NotBefore">A start date, for example: 2015-12-24, valid from this day until that day (excluding that day).</param>
+        /// <param name="NotAfter">An end date, for example: 2015-12-24, valid from this day until that day (excluding that day).</param>
+        /// 
+        /// <param name="DaysOfWeek">All day(s) of the week this tariff element is active.</param>
+        /// <param name="StartTimeOfDay">A start time of day, for example "13:30", valid from this time of the day.</param>
+        /// <param name="EndTimeOfDay">An end time of day, for example "19:45", valid from this time of the day.</param>
+        /// 
+        /// <param name="CurrentType">The allowed current type: AC, DC, or both.</param>
+        /// <param name="MinEnergy">A minimum consumed energy in kWh, for example 20, valid from this amount of energy (inclusive) being used.</param>
+        /// <param name="MaxEnergy">A maximum consumed energy in kWh, for example 50, valid until this amount of energy (exclusive) being used.</param>
         /// <param name="MinCurrent">A sum of the minimum current (in Amperes) over all phases, for example 5.</param>
         /// <param name="MaxCurrent">A sum of the maximum current (in Amperes) over all phases, for example 20.</param>
         /// <param name="MinPower">A minimum power in kW, for example 5.</param>
         /// <param name="MaxPower">A maximum power in kW, for example 20.</param>
         /// <param name="MinDuration">A minimum duration in seconds the charging session MUST last (inclusive).</param>
         /// <param name="MaxDuration">A maximum duration in seconds the charging session MUST last (exclusive).</param>
-        /// <param name="DayOfWeek">All day(s) of the week this tariff element is active.</param>
+        /// 
+        /// <param name="ValidOperators">An enumeration of charging station operators where this charging ticket can be used.</param>
+        /// <param name="ValidChargingPools">An enumeration of charging pools where this charging ticket can be used.</param>
+        /// <param name="ValidChargingStations">An enumeration of charging stations where this charging ticket can be used.</param>
+        /// <param name="ValidEVSEs">An enumeration of EVSEs where this charging ticket can be used.</param>
+        /// 
+        /// <param name="InvalidChargingPools">An enumeration of charging pools where this charging ticket can NOT be used.</param>
+        /// <param name="InvalidChargingStations">An enumeration of charging stations where this charging ticket can NOT be used.</param>
+        /// <param name="InvalidEVSEs">An enumeration of EVSEs where this charging ticket can NOT be used.</param>
+        /// 
         /// <param name="Reservation"> When this field is present, the tariff element describes reservation costs.</param>
-        public TariffRestrictions(Time?                     StartTime     = null,
-                                  Time?                     EndTime       = null,
-                                  DateTime?                 StartDate     = null,
-                                  DateTime?                 EndDate       = null,
-                                  WattHour?                 MinkWh        = null,
-                                  WattHour?                 MaxkWh        = null,
-                                  Ampere?                   MinCurrent    = null,
-                                  Ampere?                   MaxCurrent    = null,
-                                  Watt?                     MinPower      = null,
-                                  Watt?                     MaxPower      = null,
-                                  TimeSpan?                 MinDuration   = null,
-                                  TimeSpan?                 MaxDuration   = null,
-                                  IEnumerable<DayOfWeek>?   DayOfWeek     = null,
-                                  ReservationRestrictions?  Reservation   = null)
+        public TariffRestrictions(DateTime?                         NotBefore                 = null,
+                                  DateTime?                         NotAfter                  = null,
+
+                                  IEnumerable<DayOfWeek>?           DaysOfWeek                = null,
+                                  Time?                             StartTimeOfDay            = null,
+                                  Time?                             EndTimeOfDay              = null,
+
+                                  CurrentTypes?                     CurrentType               = null,
+                                  WattHour?                         MinEnergy                 = null,
+                                  WattHour?                         MaxEnergy                 = null,
+                                  Ampere?                           MinCurrent                = null,
+                                  Ampere?                           MaxCurrent                = null,
+                                  Watt?                             MinPower                  = null,
+                                  Watt?                             MaxPower                  = null,
+                                  TimeSpan?                         MinDuration               = null,
+                                  TimeSpan?                         MaxDuration               = null,
+
+                                  IEnumerable<CSOOperator_Id>?      ValidOperators            = null,
+                                  IEnumerable<ChargingPool_Id>?     ValidChargingPools        = null,
+                                  IEnumerable<ChargingStation_Id>?  ValidChargingStations     = null,
+                                  IEnumerable<GlobalEVSE_Id>?       ValidEVSEs                = null,
+
+                                  IEnumerable<ChargingPool_Id>?     InvalidChargingPools      = null,
+                                  IEnumerable<ChargingStation_Id>?  InvalidChargingStations   = null,
+                                  IEnumerable<GlobalEVSE_Id>?       InvalidEVSEs              = null,
+
+                                  ReservationRestrictions?          Reservation               = null)
+
         {
 
-            this.StartTime     = StartTime;
-            this.EndTime       = EndTime;
-            this.StartDate     = StartDate;
-            this.EndDate       = EndDate;
-            this.MinkWh        = MinkWh;
-            this.MaxkWh        = MaxkWh;
-            this.MinCurrent    = MinCurrent;
-            this.MaxCurrent    = MaxCurrent;
-            this.MinPower      = MinPower;
-            this.MaxPower      = MaxPower;
-            this.MinDuration   = MinDuration;
-            this.MaxDuration   = MaxDuration;
-            this.DayOfWeek     = DayOfWeek?.Distinct() ?? Array.Empty<DayOfWeek>();
-            this.Reservation   = Reservation;
+            this.NotBefore                = NotBefore;
+            this.NotAfter                 = NotAfter;
+
+            this.DaysOfWeek               = DaysOfWeek?.             Distinct() ?? Array.Empty<DayOfWeek>();
+            this.StartTimeOfDay           = StartTimeOfDay;
+            this.EndTimeOfDay             = EndTimeOfDay;
+
+            this.CurrentType              = CurrentType;
+            this.MinEnergy                = MinEnergy;
+            this.MaxEnergy                = MaxEnergy;
+            this.MinCurrent               = MinCurrent;
+            this.MaxCurrent               = MaxCurrent;
+            this.MinPower                 = MinPower;
+            this.MaxPower                 = MaxPower;
+            this.MinDuration              = MinDuration;
+            this.MaxDuration              = MaxDuration;
+
+            this.ValidOperators           = ValidOperators?.         Distinct() ?? Array.Empty<CSOOperator_Id>();
+            this.ValidChargingPools       = ValidChargingPools?.     Distinct() ?? Array.Empty<ChargingPool_Id>();
+            this.ValidChargingStations    = ValidChargingStations?.  Distinct() ?? Array.Empty<ChargingStation_Id>();
+            this.ValidEVSEs               = ValidEVSEs?.             Distinct() ?? Array.Empty<GlobalEVSE_Id>();
+
+            this.InvalidChargingPools     = InvalidChargingPools?.   Distinct() ?? Array.Empty<ChargingPool_Id>();
+            this.InvalidChargingStations  = InvalidChargingStations?.Distinct() ?? Array.Empty<ChargingStation_Id>();
+            this.InvalidEVSEs             = InvalidEVSEs?.           Distinct() ?? Array.Empty<GlobalEVSE_Id>();
+
+            this.Reservation              = Reservation;
+
+            unchecked
+            {
+
+                hashCode = (this.NotBefore?.             GetHashCode() ?? 0) * 41 ^
+                           (this.NotAfter?.              GetHashCode() ?? 0) * 37 ^
+
+                            this.DaysOfWeek.             CalcHashCode()      * 47 ^
+                           (this.StartTimeOfDay?.        GetHashCode() ?? 0) * 47 ^
+                           (this.EndTimeOfDay?.          GetHashCode() ?? 0) * 43 ^
+
+                           (this.CurrentType?.           GetHashCode() ?? 0) * 31 ^
+                           (this.MinEnergy?.             GetHashCode() ?? 0) * 31 ^
+                           (this.MaxEnergy?.             GetHashCode() ?? 0) * 29 ^
+                           (this.MinCurrent?.            GetHashCode() ?? 0) * 23 ^
+                           (this.MaxCurrent?.            GetHashCode() ?? 0) * 19 ^
+                           (this.MinPower?.              GetHashCode() ?? 0) * 13^
+                           (this.MaxPower?.              GetHashCode() ?? 0) * 11 ^
+                           (this.MinDuration?.           GetHashCode() ?? 0) *  7 ^
+                           (this.MaxDuration?.           GetHashCode() ?? 0) *  5 ^
+
+                            this.ValidOperators.         CalcHashCode()      * 19 ^
+                            this.ValidChargingPools.     CalcHashCode()      * 17 ^
+                            this.ValidChargingStations.  CalcHashCode()      * 13 ^
+                            this.ValidEVSEs.             CalcHashCode()      * 11 ^
+
+                            this.InvalidChargingPools.   CalcHashCode()      *  7 ^
+                            this.InvalidChargingStations.CalcHashCode()      *  5 ^
+                            this.InvalidEVSEs.           CalcHashCode()      *  3 ^
+
+                            this.Reservation?.           GetHashCode() ?? 0;
+
+            }
 
         }
 
@@ -279,12 +407,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return true;
                 }
 
-                #region Parse StartTime      [optional]
+                #region Parse NotBefore                  [optional]
 
-                if (JSON.ParseOptional("start_time",
+                if (JSON.ParseOptional("notBefore",
+                                       "not before",
+                                       out DateTime? NotBefore,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse NotAfter                   [optional]
+
+                if (JSON.ParseOptional("notAfter",
+                                       "not after",
+                                       out DateTime? NotAfter,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region Parse DaysOfWeek                 [optional]
+
+                // "day_of_week": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"]
+
+                if (JSON.ParseOptionalEnums("daysOfWeek",
+                                            "days of week",
+                                            out HashSet<DayOfWeek> DaysOfWeek,
+                                            out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse StartTimeOfDay             [optional]
+
+                if (JSON.ParseOptional("startTimeOfDay",
                                        "start time",
                                        Time.TryParse,
-                                       out Time? StartTime,
+                                       out Time? StartTimeOfDay,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -293,12 +463,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse EndTime        [optional]
+                #region Parse EndTimeOfDay               [optional]
 
-                if (JSON.ParseOptional("end_time",
+                if (JSON.ParseOptional("endTimeOfDay",
                                        "end time",
                                        Time.TryParse,
-                                       out Time? EndTime,
+                                       out Time? EndTimeOfDay,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -307,11 +477,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse StartDate      [optional]
 
-                if (JSON.ParseOptional("start_date",
-                                       "start date",
-                                       out DateTime? StartDate,
+                #region Parse CurrentType                [optional]
+
+                if (JSON.ParseOptional("currentType",
+                                       "current type",
+                                       CurrentTypesExtensions.TryParse,
+                                       out CurrentTypes? CurrentType,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -320,11 +492,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse EndDate        [optional]
+                #region Parse MinEnergy                  [optional]
 
-                if (JSON.ParseOptional("end_date",
-                                       "end date",
-                                       out DateTime? EndDate,
+                if (JSON.ParseOptional("minEnergy",
+                                       "minimum energy",
+                                       out WattHour? MinEnergy,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -333,11 +505,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse MinKWh         [optional]
+                #region Parse MaxEnergy                  [optional]
 
-                if (JSON.ParseOptional("min_kwh",
-                                       "minimum consumed kWh",
-                                       out WattHour? MinKWh,
+                if (JSON.ParseOptional("maxEnergy",
+                                       "maximum energy",
+                                       out WattHour? MaxEnergy,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -346,22 +518,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse MaxKWh         [optional]
+                #region Parse MinCurrent                 [optional]
 
-                if (JSON.ParseOptional("max_kwh",
-                                       "maximum consumed kWh",
-                                       out WattHour? MaxKWh,
-                                       out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
-
-                #region Parse MinCurrent     [optional]
-
-                if (JSON.ParseOptional("min_current",
+                if (JSON.ParseOptional("minCurrent",
                                        "minimum current",
                                        out Ampere? MinCurrent,
                                        out ErrorResponse))
@@ -372,9 +531,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse MaxCurrent     [optional]
+                #region Parse MaxCurrent                 [optional]
 
-                if (JSON.ParseOptional("max_current",
+                if (JSON.ParseOptional("maxCurrent",
                                        "maximum current",
                                        out Ampere? MaxCurrent,
                                        out ErrorResponse))
@@ -385,9 +544,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse MinPower       [optional]
+                #region Parse MinPower                   [optional]
 
-                if (JSON.ParseOptional("min_power",
+                if (JSON.ParseOptional("minPower",
                                        "minimum power",
                                        out Watt? MinPower,
                                        out ErrorResponse))
@@ -398,9 +557,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse MaxPower       [optional]
+                #region Parse MaxPower                   [optional]
 
-                if (JSON.ParseOptional("max_power",
+                if (JSON.ParseOptional("maxPower",
                                        "maximum power",
                                        out Watt? MaxPower,
                                        out ErrorResponse))
@@ -411,9 +570,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse MinDuration    [optional]
+                #region Parse MinDuration                [optional]
 
-                if (JSON.ParseOptional("min_duration",
+                if (JSON.ParseOptional("minDuration",
                                        "minimum duration",
                                        out Double? minDurationSec,
                                        out ErrorResponse))
@@ -428,9 +587,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse MaxDuration    [optional]
+                #region Parse MaxDuration                [optional]
 
-                if (JSON.ParseOptional("max_duration",
+                if (JSON.ParseOptional("maxDuration",
                                        "maximum duration",
                                        out Double? maxDurationSec,
                                        out ErrorResponse))
@@ -445,14 +604,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse DayOfWeek      [optional]
 
-                // "day_of_week": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"]
+                #region Parse ValidOperators             [optional]
 
-                if (JSON.ParseOptionalEnums("day_of_week",
-                                            "day of week",
-                                            out HashSet<DayOfWeek> DayOfWeek,
-                                            out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("validOperators",
+                                              "valid operator identifications",
+                                              CSOOperator_Id.TryParse,
+                                              out HashSet<CSOOperator_Id> ValidOperators,
+                                              out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -460,7 +619,93 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse Reservation    [optional]
+                #region Parse ValidChargingPools         [optional]
+
+                if (JSON.ParseOptionalHashSet("validChargingPools",
+                                              "valid charging pool identifications",
+                                              ChargingPool_Id.TryParse,
+                                              out HashSet<ChargingPool_Id> ValidChargingPools,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse ValidChargingStations      [optional]
+
+                if (JSON.ParseOptionalHashSet("validChargingStations",
+                                              "valid charging station identifications",
+                                              ChargingStation_Id.TryParse,
+                                              out HashSet<ChargingStation_Id> ValidChargingStations,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse ValidEVSEs                 [optional]
+
+                if (JSON.ParseOptionalHashSet("validEVSEs",
+                                              "valid EVSE identifications",
+                                              GlobalEVSE_Id.TryParse,
+                                              out HashSet<GlobalEVSE_Id> ValidEVSEs,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region Parse InvalidChargingPools       [optional]
+
+                if (JSON.ParseOptionalHashSet("invalidChargingPools",
+                                              "invalid charging pool identifications",
+                                              ChargingPool_Id.TryParse,
+                                              out HashSet<ChargingPool_Id> InvalidChargingPools,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse InvalidChargingStations    [optional]
+
+                if (JSON.ParseOptionalHashSet("invalidChargingStations",
+                                              "invalid charging station identifications",
+                                              ChargingStation_Id.TryParse,
+                                              out HashSet<ChargingStation_Id> InvalidChargingStations,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse InvalidEVSEs               [optional]
+
+                if (JSON.ParseOptionalHashSet("invalidEVSEs",
+                                              "invalid EVSE identifications",
+                                              GlobalEVSE_Id.TryParse,
+                                              out HashSet<GlobalEVSE_Id> InvalidEVSEs,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region Parse Reservation                [optional]
 
                 if (JSON.ParseOptional("reservation",
                                        "reservation restriction",
@@ -475,35 +720,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                TariffRestrictions  = (StartTime.  HasValue  ||
-                                       EndTime.    HasValue  ||
-                                       StartDate.  HasValue  ||
-                                       EndDate.    HasValue  ||
-                                       MinKWh.     HasValue  ||
-                                       MaxKWh.     HasValue  ||
-                                       MinCurrent. HasValue  ||
-                                       MaxCurrent. HasValue  ||
-                                       MinPower.   HasValue  ||
-                                       MaxPower.   HasValue  ||
-                                       MinDuration.HasValue  ||
-                                       MaxDuration.HasValue  ||
-                                       DayOfWeek.  Any() ||
-                                       Reservation.HasValue)
+                TariffRestrictions  = (NotBefore.              HasValue ||
+                                       NotAfter.               HasValue ||
+
+                                       DaysOfWeek.             Any()    ||
+                                       StartTimeOfDay.         HasValue ||
+                                       EndTimeOfDay.           HasValue ||
+
+                                       CurrentType.            HasValue ||
+                                       MinEnergy.              HasValue ||
+                                       MaxEnergy.              HasValue ||
+                                       MinCurrent.             HasValue ||
+                                       MaxCurrent.             HasValue ||
+                                       MinPower.               HasValue ||
+                                       MaxPower.               HasValue ||
+                                       MinDuration.            HasValue ||
+                                       MaxDuration.            HasValue ||
+
+                                       ValidOperators.         Any()    ||
+                                       ValidChargingPools.     Any()    ||
+                                       ValidChargingStations.  Any()    ||
+                                       ValidEVSEs.             Any()    ||
+
+                                       InvalidChargingPools.   Any()    ||
+                                       InvalidChargingStations.Any()    ||
+                                       InvalidEVSEs.           Any()    ||
+
+                                       Reservation.            HasValue)
 
                                            ? new TariffRestrictions(
-                                                 StartTime,
-                                                 EndTime,
-                                                 StartDate,
-                                                 EndDate,
-                                                 MinKWh,
-                                                 MaxKWh,
+
+                                                 NotBefore,
+                                                 NotAfter,
+
+                                                 DaysOfWeek,
+                                                 StartTimeOfDay,
+                                                 EndTimeOfDay,
+
+                                                 CurrentType,
+                                                 MinEnergy,
+                                                 MaxEnergy,
                                                  MinCurrent,
                                                  MaxCurrent,
                                                  MinPower,
                                                  MaxPower,
                                                  MinDuration,
                                                  MaxDuration,
-                                                 DayOfWeek,
+
+                                                 ValidOperators,
+                                                 ValidChargingPools,
+                                                 ValidChargingStations,
+                                                 ValidEVSEs,
+
+                                                 InvalidChargingPools,
+                                                 InvalidChargingStations,
+                                                 InvalidEVSEs,
+
                                                  Reservation
                                              )
 
@@ -534,65 +806,99 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomTariffRestrictionsSerializer">A delegate to serialize custom tariff restrictions JSON objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<TariffRestrictions>? CustomTariffRestrictionsSerializer = null)
+        public JObject? ToJSON(CustomJObjectSerializerDelegate<TariffRestrictions>? CustomTariffRestrictionsSerializer = null)
         {
 
             var json = JSONObject.Create(
 
-                           StartTime.  HasValue
-                               ? new JProperty("start_time",    StartTime.  Value.ToString())
+
+                           NotBefore.  HasValue
+                               ? new JProperty("notBefore",                 NotBefore.     Value.ToIso8601())
                                : null,
 
-                           EndTime.    HasValue
-                               ? new JProperty("end_time",      EndTime.    Value.ToString())
+                           NotAfter.    HasValue
+                               ? new JProperty("notAfter",                  NotAfter.      Value.ToIso8601())
                                : null,
 
-                           StartDate.  HasValue
-                               ? new JProperty("start_date",    StartDate.  Value.ToString("yyyy-MM-dd"))
+
+                           DaysOfWeek.SafeAny()
+                               ? new JProperty("dayOfWeek",                 new JArray(DaysOfWeek.              Select(day               => day.              ToString().ToUpper())))
                                : null,
 
-                           EndDate.    HasValue
-                               ? new JProperty("end_date",      EndDate.    Value.ToString("yyyy-MM-dd"))
+                           StartTimeOfDay.  HasValue
+                               ? new JProperty("startTimeOfDay",            StartTimeOfDay.Value.ToString())
                                : null,
 
-                           MinkWh.     HasValue
-                               ? new JProperty("min_kwh",       MinkWh.     Value)
+                           EndTimeOfDay.    HasValue
+                               ? new JProperty("endTimeofDay",              EndTimeOfDay.  Value.ToString())
                                : null,
 
-                           MaxkWh.     HasValue
-                               ? new JProperty("max_kwh",       MaxkWh.     Value)
+
+                           MinEnergy.     HasValue
+                               ? new JProperty("minEnergy",                 MinEnergy.     Value)
+                               : null,
+
+                           MaxEnergy.     HasValue
+                               ? new JProperty("maxEnergy",                 MaxEnergy.     Value)
                                : null,
 
                            MinCurrent. HasValue
-                               ? new JProperty("min_current",   MinCurrent. Value)
+                               ? new JProperty("minCurrent",                MinCurrent.    Value)
                                : null,
 
                            MaxCurrent. HasValue
-                               ? new JProperty("max_current",   MaxCurrent. Value)
+                               ? new JProperty("maxCurrent",                MaxCurrent.    Value)
                                : null,
 
                            MinPower.   HasValue
-                               ? new JProperty("min_power",     MinPower.   Value)
+                               ? new JProperty("minPower",                  MinPower.      Value)
                                : null,
 
                            MaxPower.   HasValue
-                               ? new JProperty("max_power",     MaxPower.   Value)
+                               ? new JProperty("maxPower",                  MaxPower.      Value)
                                : null,
 
                            MinDuration.HasValue
-                               ? new JProperty("min_duration",  MinDuration.Value.TotalSeconds)
+                               ? new JProperty("minDuration",               MinDuration.   Value.TotalSeconds)
                                : null,
 
                            MaxDuration.HasValue
-                               ? new JProperty("max_duration",  MaxDuration.Value.TotalSeconds)
+                               ? new JProperty("maxDuration",               MaxDuration.   Value.TotalSeconds)
                                : null,
 
-                           DayOfWeek.SafeAny()
-                               ? new JProperty("day_of_week",   new JArray(DayOfWeek.Select(day => day.ToString().ToUpper())))
+
+                           ValidOperators.         Any()
+                               ? new JProperty("validOperators",            new JArray(ValidOperators.         Select(operatorId        => operatorId.       ToString())))
                                : null,
+
+                           ValidChargingPools.     Any()
+                               ? new JProperty("validChargingPools",        new JArray(ValidChargingPools.     Select(chargingPoolId    => chargingPoolId.   ToString())))
+                               : null,
+
+                           ValidChargingStations.  Any()
+                               ? new JProperty("validChargingStations",     new JArray(ValidChargingStations.  Select(chargingStationId => chargingStationId.ToString())))
+                               : null,
+
+                           ValidEVSEs.           Any()
+                               ? new JProperty("validEVSEIds",              new JArray(ValidEVSEs.             Select(evseId            => evseId.           ToString())))
+                               : null,
+
+
+                           InvalidChargingPools.   Any()
+                               ? new JProperty("invalidChargingPools",      new JArray(InvalidChargingPools.   Select(chargingPoolId    => chargingPoolId.   ToString())))
+                               : null,
+
+                           InvalidChargingStations.Any()
+                               ? new JProperty("invalidChargingStations",   new JArray(InvalidChargingStations.Select(chargingStationId => chargingStationId.ToString())))
+                               : null,
+
+                           InvalidEVSEs.         Any()
+                               ? new JProperty("invalidEVSEIds",            new JArray(InvalidEVSEs.           Select(evseId            => evseId.           ToString())))
+                               : null,
+
 
                            Reservation.HasValue
-                               ? new JProperty("reservation",   Reservation.Value.AsText())
+                               ? new JProperty("reservation",               Reservation.   Value.AsText())
                                : null
 
                        );
@@ -616,19 +922,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public TariffRestrictions Clone()
 
-            => new (StartTime,
-                    EndTime,
-                    StartDate,
-                    EndDate,
-                    MinkWh,
-                    MaxkWh,
+            => new (NotBefore,
+                    NotAfter,
+
+                    DaysOfWeek.ToArray(),
+                    StartTimeOfDay,
+                    EndTimeOfDay,
+
+                    CurrentType,
+                    MinEnergy,
+                    MaxEnergy,
                     MinCurrent,
                     MaxCurrent,
                     MinPower,
                     MaxPower,
                     MinDuration,
                     MaxDuration,
-                    DayOfWeek.ToArray(),
+
+                    ValidOperators,
+                    ValidChargingPools,
+                    ValidChargingStations,
+                    ValidEVSEs,
+
+                    InvalidChargingPools,
+                    InvalidChargingStations,
+                    InvalidEVSEs,
+
                     Reservation);
 
         #endregion
@@ -702,47 +1021,76 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => TariffRestrictions is not null &&
 
-                ((!StartTime.  HasValue && !TariffRestrictions.StartTime.  HasValue) ||
-                  (StartTime.  HasValue &&  TariffRestrictions.StartTime.  HasValue && StartTime.  Value.Equals(TariffRestrictions.StartTime.  Value))) &&
+            ((!NotBefore.     HasValue && !TariffRestrictions.NotBefore.     HasValue) ||
+             ( NotBefore.     HasValue &&  TariffRestrictions.NotBefore.     HasValue && NotBefore.     Value.Equals(TariffRestrictions.NotBefore.  Value))) &&
 
-                ((!EndTime.    HasValue && !TariffRestrictions.EndTime.    HasValue) ||
-                  (EndTime.    HasValue &&  TariffRestrictions.EndTime.    HasValue && EndTime.    Value.Equals(TariffRestrictions.EndTime.    Value))) &&
+            ((!NotAfter.      HasValue && !TariffRestrictions.NotAfter.      HasValue) ||
+             ( NotAfter.      HasValue &&  TariffRestrictions.NotAfter.      HasValue && NotAfter.      Value.Equals(TariffRestrictions.NotAfter.    Value))) &&
 
-                ((!StartDate.  HasValue && !TariffRestrictions.StartDate.  HasValue) ||
-                 ( StartDate.  HasValue &&  TariffRestrictions.StartDate.  HasValue && StartDate.  Value.Equals(TariffRestrictions.StartDate.  Value))) &&
 
-                ((!EndDate.    HasValue && !TariffRestrictions.EndDate.    HasValue) ||
-                 ( EndDate.    HasValue &&  TariffRestrictions.EndDate.    HasValue && EndDate.    Value.Equals(TariffRestrictions.EndDate.    Value))) &&
+               DaysOfWeek.Count().Equals(TariffRestrictions.DaysOfWeek.Count())   &&
+               DaysOfWeek.All(day => TariffRestrictions.DaysOfWeek.Contains(day)) &&
 
-                ((!MinkWh.     HasValue && !TariffRestrictions.MinkWh.     HasValue) ||
-                  (MinkWh.     HasValue &&  TariffRestrictions.MinkWh.     HasValue && MinkWh.     Value.Equals(TariffRestrictions.MinkWh.     Value))) &&
+            ((!StartTimeOfDay.HasValue && !TariffRestrictions.StartTimeOfDay.HasValue) ||
+              (StartTimeOfDay.HasValue &&  TariffRestrictions.StartTimeOfDay.HasValue && StartTimeOfDay.Value.Equals(TariffRestrictions.StartTimeOfDay.Value))) &&
 
-                ((!MaxkWh.     HasValue && !TariffRestrictions.MaxkWh.     HasValue) ||
-                  (MaxkWh.     HasValue &&  TariffRestrictions.MaxkWh.     HasValue && MaxkWh.     Value.Equals(TariffRestrictions.MaxkWh.     Value))) &&
+            ((!EndTimeOfDay.  HasValue && !TariffRestrictions.EndTimeOfDay.  HasValue) ||
+              (EndTimeOfDay.  HasValue &&  TariffRestrictions.EndTimeOfDay.  HasValue && EndTimeOfDay.  Value.Equals(TariffRestrictions.EndTimeOfDay.  Value))) &&
 
-                ((!MinCurrent. HasValue && !TariffRestrictions.MinCurrent. HasValue) ||
-                  (MinCurrent. HasValue &&  TariffRestrictions.MinCurrent. HasValue && MinCurrent. Value.Equals(TariffRestrictions.MinCurrent. Value))) &&
 
-                ((!MaxCurrent. HasValue && !TariffRestrictions.MaxCurrent. HasValue) ||
-                  (MaxCurrent. HasValue &&  TariffRestrictions.MaxCurrent. HasValue && MaxCurrent. Value.Equals(TariffRestrictions.MaxCurrent. Value))) &&
+            ((!CurrentType.   HasValue && !TariffRestrictions.CurrentType.   HasValue) ||
+              (CurrentType.   HasValue &&  TariffRestrictions.CurrentType.   HasValue && CurrentType.   Value.Equals(TariffRestrictions.CurrentType.   Value))) &&
 
-                ((!MinPower.   HasValue && !TariffRestrictions.MinPower.   HasValue) ||
-                  (MinPower.   HasValue &&  TariffRestrictions.MinPower.   HasValue && MinPower.   Value.Equals(TariffRestrictions.MinPower.   Value))) &&
+            ((!MinEnergy.     HasValue && !TariffRestrictions.MinEnergy.     HasValue) ||
+              (MinEnergy.     HasValue &&  TariffRestrictions.MinEnergy.     HasValue && MinEnergy.     Value.Equals(TariffRestrictions.MinEnergy.     Value))) &&
 
-                ((!MaxPower.   HasValue && !TariffRestrictions.MaxPower.   HasValue) ||
-                  (MaxPower.   HasValue &&  TariffRestrictions.MaxPower.   HasValue && MaxPower.   Value.Equals(TariffRestrictions.MaxPower.   Value))) &&
+            ((!MaxEnergy.     HasValue && !TariffRestrictions.MaxEnergy.     HasValue) ||
+              (MaxEnergy.     HasValue &&  TariffRestrictions.MaxEnergy.     HasValue && MaxEnergy.     Value.Equals(TariffRestrictions.MaxEnergy.     Value))) &&
 
-                ((!MinDuration.HasValue && !TariffRestrictions.MinDuration.HasValue) ||
-                  (MinDuration.HasValue &&  TariffRestrictions.MinDuration.HasValue && MinDuration.Value.Equals(TariffRestrictions.MinDuration.Value))) &&
+            ((!MinCurrent. HasValue && !TariffRestrictions.MinCurrent. HasValue) ||
+              (MinCurrent. HasValue &&  TariffRestrictions.MinCurrent. HasValue && MinCurrent. Value.Equals(TariffRestrictions.MinCurrent. Value))) &&
 
-                ((!MaxDuration.HasValue && !TariffRestrictions.MaxDuration.HasValue) ||
-                  (MaxDuration.HasValue &&  TariffRestrictions.MaxDuration.HasValue && MaxDuration.Value.Equals(TariffRestrictions.MaxDuration.Value))) &&
+            ((!MaxCurrent. HasValue && !TariffRestrictions.MaxCurrent. HasValue) ||
+              (MaxCurrent. HasValue &&  TariffRestrictions.MaxCurrent. HasValue && MaxCurrent. Value.Equals(TariffRestrictions.MaxCurrent. Value))) &&
 
-                DayOfWeek.Count().Equals(TariffRestrictions.DayOfWeek.Count()) &&
-                DayOfWeek.All(day => TariffRestrictions.DayOfWeek.Contains(day)) &&
+            ((!MinPower.   HasValue && !TariffRestrictions.MinPower.   HasValue) ||
+              (MinPower.   HasValue &&  TariffRestrictions.MinPower.   HasValue && MinPower.   Value.Equals(TariffRestrictions.MinPower.   Value))) &&
 
-                ((!Reservation.HasValue && !TariffRestrictions.Reservation.HasValue) ||
-                  (Reservation.HasValue &&  TariffRestrictions.Reservation.HasValue && Reservation.Value.Equals(TariffRestrictions.Reservation.Value)));
+            ((!MaxPower.   HasValue && !TariffRestrictions.MaxPower.   HasValue) ||
+              (MaxPower.   HasValue &&  TariffRestrictions.MaxPower.   HasValue && MaxPower.   Value.Equals(TariffRestrictions.MaxPower.   Value))) &&
+
+            ((!MinDuration.HasValue && !TariffRestrictions.MinDuration.HasValue) ||
+              (MinDuration.HasValue &&  TariffRestrictions.MinDuration.HasValue && MinDuration.Value.Equals(TariffRestrictions.MinDuration.Value))) &&
+
+            ((!MaxDuration.HasValue && !TariffRestrictions.MaxDuration.HasValue) ||
+              (MaxDuration.HasValue &&  TariffRestrictions.MaxDuration.HasValue && MaxDuration.Value.Equals(TariffRestrictions.MaxDuration.Value))) &&
+
+
+               ValidOperators.         Count().          Equals(TariffRestrictions.ValidOperators.         Count())                     &&
+               ValidOperators.         All(operatorId        => TariffRestrictions.ValidOperators.         Contains(operatorId))        &&
+
+               ValidChargingPools.     Count().          Equals(TariffRestrictions.ValidChargingPools.     Count())                     &&
+               ValidChargingPools.     All(chargingPoolId    => TariffRestrictions.ValidChargingPools.     Contains(chargingPoolId))    &&
+
+               ValidChargingStations.  Count().          Equals(TariffRestrictions.ValidChargingStations.  Count())                     &&
+               ValidChargingStations.  All(chargingStationId => TariffRestrictions.ValidChargingStations.  Contains(chargingStationId)) &&
+
+               ValidEVSEs.             Count().          Equals(TariffRestrictions.ValidEVSEs.             Count())                     &&
+               ValidEVSEs.             All(evseId            => TariffRestrictions.ValidEVSEs.             Contains(evseId))            &&
+
+
+               InvalidChargingPools.   Count().          Equals(TariffRestrictions.InvalidChargingPools.   Count())                     &&
+               InvalidChargingPools.   All(chargingPoolId    => TariffRestrictions.InvalidChargingPools.   Contains(chargingPoolId))    &&
+
+               InvalidChargingStations.Count().          Equals(TariffRestrictions.InvalidChargingStations.Count())                     &&
+               InvalidChargingStations.All(chargingStationId => TariffRestrictions.InvalidChargingStations.Contains(chargingStationId)) &&
+
+               InvalidEVSEs.           Count().          Equals(TariffRestrictions.InvalidEVSEs.           Count())                     &&
+               InvalidEVSEs.           All(evseId            => TariffRestrictions.InvalidEVSEs.           Contains(evseId))            &&
+
+
+            ((!Reservation.HasValue && !TariffRestrictions.Reservation.HasValue) ||
+              (Reservation.HasValue &&  TariffRestrictions.Reservation.HasValue && Reservation.Value.Equals(TariffRestrictions.Reservation.Value)));
 
         #endregion
 
@@ -750,31 +1098,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return (StartTime?.  GetHashCode() ?? 0) * 47 ^
-                       (EndTime?.    GetHashCode() ?? 0) * 43 ^
-                       (StartDate?.  GetHashCode() ?? 0) * 41 ^
-                       (EndDate?.    GetHashCode() ?? 0) * 37 ^
-                       (MinkWh?.     GetHashCode() ?? 0) * 31 ^
-                       (MaxkWh?.     GetHashCode() ?? 0) * 29 ^
-                       (MinCurrent?. GetHashCode() ?? 0) * 23 ^
-                       (MaxCurrent?. GetHashCode() ?? 0) * 19 ^
-                       (MinPower?.   GetHashCode() ?? 0) * 13^
-                       (MaxPower?.   GetHashCode() ?? 0) * 11 ^
-                       (MinDuration?.GetHashCode() ?? 0) *  7 ^
-                       (MaxDuration?.GetHashCode() ?? 0) *  5 ^
-                       (Reservation?.GetHashCode() ?? 0) *  3 ^
-                        DayOfWeek.   CalcHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -787,28 +1117,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => String.Concat(
 
-                   StartTime.  HasValue
-                       ?            StartTime.  Value.ToString()
+                   StartTimeOfDay.  HasValue
+                       ?            StartTimeOfDay.  Value.ToString()
                        : "",
 
-                   EndTime.    HasValue
-                       ? " - "    + EndTime.    Value.ToString()
+                   EndTimeOfDay.    HasValue
+                       ? " - "    + EndTimeOfDay.    Value.ToString()
                        : "",
 
-                   StartDate.  HasValue
-                       ? " from " + StartDate.  Value.ToString()
+                   NotBefore.  HasValue
+                       ? " from " + NotBefore.  Value.ToString()
                        : "",
 
-                   EndDate.    HasValue
-                       ? " to "   + EndDate.    Value.ToString()
+                   NotAfter.    HasValue
+                       ? " to "   + NotAfter.    Value.ToString()
                        : "",
 
-                   MinkWh.     HasValue
-                       ? ", >= "  + MinkWh.     Value.ToString() + " kWh"
+                   MinEnergy.     HasValue
+                       ? ", >= "  + MinEnergy.     Value.ToString() + " kWh"
                        : "",
 
-                   MaxkWh.     HasValue
-                       ? ", <= "  + MaxkWh.     Value.ToString() + " kWh"
+                   MaxEnergy.     HasValue
+                       ? ", <= "  + MaxEnergy.     Value.ToString() + " kWh"
                        : "",
 
                    MinCurrent. HasValue
@@ -839,8 +1169,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        ? ", reservation: " + Reservation.Value.AsText()
                        : "",
 
-                   DayOfWeek.  SafeAny()
-                       ? ", "     + DayOfWeek.AggregateWith("|")
+                   DaysOfWeek.  SafeAny()
+                       ? ", "     + DaysOfWeek.AggregateWith("|")
                        : ""
 
                );

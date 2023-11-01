@@ -121,10 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                         "0.53 / kWh"
                                                                     ),
                                          URL:                       URL.Parse("https://open.charging.cloud/emp/tariffs/DE-GDF-T12345678"),
-
-                                         EVSEIds:                   null,
-                                         ChargingStationIds:        null,
-                                         ChargingPoolIds:           null,
+                                         EnergyMix:                 null,
 
                                          MinPrice:                  null,
                                          MaxPrice:                  new Price(
@@ -133,7 +130,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                     ),
                                          NotBefore:                 timeReference,
                                          NotAfter:                  null,
-                                         EnergyMix:                 null,
 
                                          SignKeys:                  null,
                                          SignInfos:                 null,

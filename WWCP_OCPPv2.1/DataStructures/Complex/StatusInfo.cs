@@ -500,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 StatusInfo = default;
 
-                #region ReasonCode        [mandatory]
+                #region Status            [mandatory]
 
                 if (!JSON.ParseMandatory("status",
                                          "status",
@@ -588,9 +588,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(Func<T, String>                               CustomStatusSerializer,
-                              CustomJObjectSerializerDelegate<StatusInfo>?  CustomStatusInfoSerializer   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
+        public JObject ToJSON(Func<T, String>                                  CustomStatusSerializer,
+                              CustomJObjectSerializerDelegate<StatusInfo<T>>?  CustomStatusInfoSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?     CustomCustomDataSerializer   = null)
         {
 
             var json = JSONObject.Create(

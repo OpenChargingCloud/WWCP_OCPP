@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An optional enumeration of charging station operators, this charging ticket is valid for.
         /// </summary>
         [Optional]
-        public IEnumerable<CSOOperator_Id>                ValidOperators              { get; }
+        public IEnumerable<CSOOperator_Id>             ValidOperators              { get; }
 
         /// <summary>
         /// An optional enumeration of EVSE identifications, this charging ticket is valid for.
@@ -159,19 +159,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The allowed current type: AC, DC, or both.
         /// </summary>
         [Mandatory]
-        public CurrentTypes                            AllowedCurrentType          { get; }
+        public CurrentTypes                            CurrentType          { get; }
 
         /// <summary>
         /// The maximum allowed consumed energy during a charging session authorized by this charging ticket.
         /// </summary>
         [Optional]
-        public WattHour?                               MaxKWh                      { get; }
+        public WattHour?                               MaxEnergy                      { get; }
 
         /// <summary>
         /// The maximum allowed charging power during a charging session authorized by this charging ticket.
         /// </summary>
         [Optional]
-        public Watt?                                   MaxKW                       { get; }
+        public Watt?                                   MaxPower                       { get; }
 
         /// <summary>
         /// The maximum allowed current of a charging session authorized by this charging ticket.
@@ -283,7 +283,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               DateTime?                                NotAfter                   = null,
                               TimeSpan?                                Validity                   = null,
 
-                              IEnumerable<CSOOperator_Id>?                ValidOperators             = null,
+                              IEnumerable<CSOOperator_Id>?             ValidOperators             = null,
                               IEnumerable<ChargingPool_Id>?            ValidChargingPools         = null,
                               IEnumerable<ChargingStation_Id>?         ValidChargingStations      = null,
                               IEnumerable<GlobalEVSE_Id>?              ValidEVSEs                 = null,
@@ -343,9 +343,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.InvalidChargingStations   = InvalidChargingStations?.Distinct() ?? Array.Empty<ChargingStation_Id>();
             this.InvalidEVSEs              = InvalidEVSEs?.           Distinct() ?? Array.Empty<GlobalEVSE_Id>();
 
-            this.AllowedCurrentType        = AllowedCurrentType                  ?? CurrentTypes.ACDC;
-            this.MaxKWh                    = MaxKWh;
-            this.MaxKW                     = MaxKW;
+            this.CurrentType        = AllowedCurrentType                  ?? CurrentTypes.ACDC;
+            this.MaxEnergy                    = MaxKWh;
+            this.MaxPower                     = MaxKW;
             this.MaxCurrent                = MaxCurrent;
             this.MaxDuration               = MaxDuration;
             this.MaxPrice                  = MaxPrice;
@@ -381,9 +381,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            this.InvalidChargingStations. CalcHashCode()      *  53 ^
                            this.InvalidEVSEs.            CalcHashCode()      *  47 ^
 
-                           this.AllowedCurrentType.      GetHashCode()       *  43 ^
-                          (this.MaxKWh?.                 GetHashCode() ?? 0) *  37 ^
-                          (this.MaxKW?.                  GetHashCode() ?? 0) *  31 ^
+                           this.CurrentType.      GetHashCode()       *  43 ^
+                          (this.MaxEnergy?.                 GetHashCode() ?? 0) *  37 ^
+                          (this.MaxPower?.                  GetHashCode() ?? 0) *  31 ^
                           (this.MaxCurrent?.             GetHashCode() ?? 0) *  29 ^
                           (this.MaxDuration?.            GetHashCode() ?? 0) *  23 ^
                           (this.MaxPrice?.               GetHashCode() ?? 0) *  19 ^
@@ -1072,14 +1072,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
 
-                                 new JProperty("allowedCurrentType",         AllowedCurrentType.      AsText()),
+                                 new JProperty("currentType",                CurrentType.             AsText()),
 
-                           MaxKWh.     HasValue
-                               ? new JProperty("maxKWh",                     MaxKWh.            Value.Value)
+                           MaxEnergy.     HasValue
+                               ? new JProperty("maxEnergy",                  MaxEnergy.         Value.Value)
                                : null,
 
-                           MaxKW.      HasValue
-                               ? new JProperty("maxKW",                      MaxKW.             Value.Value)
+                           MaxPower.      HasValue
+                               ? new JProperty("maxPower",                   MaxPower.          Value.Value)
                                : null,
 
                            MaxCurrent. HasValue
@@ -1093,6 +1093,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            MaxPrice.HasValue
                                ? new JProperty("maxPrice",                   MaxPrice.          Value.ToJSON(CustomPriceSerializer))
                                : null,
+
+                           //StartTimeOfDay.  HasValue
+                           //    ? new JProperty("startTimeOfDay",             StartTimeOfDay.    Value.ToString())
+                           //    : null,
+
+                           //EndTimeofDay.    HasValue
+                           //    ? new JProperty("endTimeofDay",               EndTimeofDay.      Value.ToString())
+                           //    : null,
 
                            DaysOfWeek.Any()
                                ? new JProperty("daysOfWeek",                 new JArray(DaysOfWeek.             Select(dayOfWeek         => dayOfWeek.    ToString())))
@@ -1151,9 +1159,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     InvalidChargingStations.Select(chargingStationId => chargingStationId.Clone).ToArray(),
                     InvalidEVSEs.           Select(evseId            => evseId.           Clone).ToArray(),
 
-                    AllowedCurrentType,
-                    MaxKWh,
-                    MaxKW,
+                    CurrentType,
+                    MaxEnergy,
+                    MaxPower,
                     MaxCurrent,
                     MaxDuration,
                     MaxPrice,
@@ -1395,7 +1403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                ProviderId.              Equals(ChargingTicket.ProviderId)               &&
                NotBefore.               Equals(ChargingTicket.NotBefore)                &&
                NotAfter.                Equals(ChargingTicket.NotAfter)                 &&
-               AllowedCurrentType.      Equals(ChargingTicket.AllowedCurrentType)       &&
+               CurrentType.      Equals(ChargingTicket.CurrentType)       &&
                MultipleSessions.        Equals(ChargingTicket.MultipleSessions)         &&
                ValidationMethod.        Equals(ChargingTicket.ValidationMethod)         &&
                SmartChargingMode.       Equals(ChargingTicket.SmartChargingMode)        &&
@@ -1410,11 +1418,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
               (Description is not null &&  ChargingTicket.Description  is not null && Description.      Equals(ChargingTicket.Description)))       &&
 
 
-            ((!MaxKWh.     HasValue    && !ChargingTicket.MaxKWh.      HasValue) ||
-              (MaxKWh.     HasValue    &&  ChargingTicket.MaxKWh.      HasValue    && MaxKWh.     Value.Equals(ChargingTicket.MaxKWh.     Value))) &&
+            ((!MaxEnergy.     HasValue    && !ChargingTicket.MaxEnergy.      HasValue) ||
+              (MaxEnergy.     HasValue    &&  ChargingTicket.MaxEnergy.      HasValue    && MaxEnergy.     Value.Equals(ChargingTicket.MaxEnergy.     Value))) &&
 
-            ((!MaxKW.      HasValue    && !ChargingTicket.MaxKW.       HasValue) ||
-              (MaxKW.      HasValue    &&  ChargingTicket.MaxKW.       HasValue    && MaxKW.      Value.Equals(ChargingTicket.MaxKW.      Value))) &&
+            ((!MaxPower.      HasValue    && !ChargingTicket.MaxPower.       HasValue) ||
+              (MaxPower.      HasValue    &&  ChargingTicket.MaxPower.       HasValue    && MaxPower.      Value.Equals(ChargingTicket.MaxPower.      Value))) &&
 
             ((!MaxCurrent. HasValue    && !ChargingTicket.MaxCurrent.  HasValue) ||
               (MaxCurrent. HasValue    &&  ChargingTicket.MaxCurrent.  HasValue    && MaxCurrent. Value.Equals(ChargingTicket.MaxCurrent. Value))) &&
