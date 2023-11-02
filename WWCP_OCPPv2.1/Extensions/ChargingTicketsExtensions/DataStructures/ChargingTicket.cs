@@ -993,6 +993,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomEnergyMixSerializer">A delegate to serialize custom hours JSON objects.</param>
         /// <param name="CustomEnergySourceSerializer">A delegate to serialize custom energy source JSON objects.</param>
         /// <param name="CustomEnvironmentalImpactSerializer">A delegate to serialize custom environmental impact JSON objects.</param>
+        /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
+        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingTicket>?       CustomChargingTicketSerializer        = null,
@@ -1005,6 +1007,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               CustomJObjectSerializerDelegate<EnergyMix>?            CustomEnergyMixSerializer             = null,
                               CustomJObjectSerializerDelegate<EnergySource>?         CustomEnergySourceSerializer          = null,
                               CustomJObjectSerializerDelegate<EnvironmentalImpact>?  CustomEnvironmentalImpactSerializer   = null,
+                              CustomJObjectSerializerDelegate<IdToken>?              CustomIdTokenSerializer               = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?       CustomAdditionalInfoSerializer        = null,
                               CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
                               CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
         {
@@ -1031,6 +1035,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                                                                                                      CustomEnergyMixSerializer,
                                                                                                                                                                      CustomEnergySourceSerializer,
                                                                                                                                                                      CustomEnvironmentalImpactSerializer,
+                                                                                                                                                                     CustomIdTokenSerializer,
+                                                                                                                                                                     CustomAdditionalInfoSerializer,
                                                                                                                                                                      CustomSignatureSerializer,
                                                                                                                                                                      CustomCustomDataSerializer)))),
 

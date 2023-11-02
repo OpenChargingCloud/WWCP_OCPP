@@ -290,8 +290,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public TariffElement Clone()
 
-            => new (PriceComponents.Select(priceComponent => priceComponent.Clone()).ToArray(),
-                    TariffRestrictions?.Clone());
+            => new (
+                   PriceComponents.Select(priceComponent => priceComponent.Clone()).ToArray(),
+                   TariffRestrictions?.Clone()
+               );
 
         #endregion
 

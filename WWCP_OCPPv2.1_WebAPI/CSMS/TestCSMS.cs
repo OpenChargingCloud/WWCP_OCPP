@@ -11445,6 +11445,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                           CustomEnergyMixSerializer,
                                           CustomEnergySourceSerializer,
                                           CustomEnvironmentalImpactSerializer,
+                                          CustomIdTokenSerializer,
+                                          CustomAdditionalInfoSerializer,
                                           CustomSignatureSerializer,
                                           CustomCustomDataSerializer
                                       ),
@@ -11573,6 +11575,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     CustomEnergyMixSerializer,
                     CustomEnergySourceSerializer,
                     CustomEnvironmentalImpactSerializer,
+                    CustomIdTokenSerializer,
+                    CustomAdditionalInfoSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),

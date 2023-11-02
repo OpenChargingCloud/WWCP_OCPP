@@ -171,6 +171,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                      testCSMS01.CustomEnergyMixSerializer,
                                                      testCSMS01.CustomEnergySourceSerializer,
                                                      testCSMS01.CustomEnvironmentalImpactSerializer,
+                                                     testCSMS01.CustomIdTokenSerializer,
+                                                     testCSMS01.CustomAdditionalInfoSerializer,
                                                      testCSMS01.CustomSignatureSerializer,
                                                      testCSMS01.CustomCustomDataSerializer));
 
@@ -493,6 +495,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                      testCSMS01.CustomEnergyMixSerializer,
                                                      testCSMS01.CustomEnergySourceSerializer,
                                                      testCSMS01.CustomEnvironmentalImpactSerializer,
+                                                     testCSMS01.CustomIdTokenSerializer,
+                                                     testCSMS01.CustomAdditionalInfoSerializer,
                                                      testCSMS01.CustomSignatureSerializer,
                                                      testCSMS01.CustomCustomDataSerializer));
 
@@ -825,6 +829,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                      testCSMS01.CustomEnergyMixSerializer,
                                                      testCSMS01.CustomEnergySourceSerializer,
                                                      testCSMS01.CustomEnvironmentalImpactSerializer,
+                                                     testCSMS01.CustomIdTokenSerializer,
+                                                     testCSMS01.CustomAdditionalInfoSerializer,
                                                      testCSMS01.CustomSignatureSerializer,
                                                      testCSMS01.CustomCustomDataSerializer));
 
@@ -1157,6 +1163,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                      testCSMS01.CustomEnergyMixSerializer,
                                                      testCSMS01.CustomEnergySourceSerializer,
                                                      testCSMS01.CustomEnvironmentalImpactSerializer,
+                                                     testCSMS01.CustomIdTokenSerializer,
+                                                     testCSMS01.CustomAdditionalInfoSerializer,
                                                      testCSMS01.CustomSignatureSerializer,
                                                      testCSMS01.CustomCustomDataSerializer));
 
@@ -1480,20 +1488,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
 
                 Assert.IsTrue   (chargingTariff1.Sign(providerKeyPair,
-                                                     out var eerr,
-                                                     "emp1",
-                                                     I18NString.Create("Just a signed charging tariff!"),
-                                                     timeReference,
-                                                     testCSMS01.CustomChargingTariffSerializer,
-                                                     testCSMS01.CustomPriceSerializer,
-                                                     testCSMS01.CustomTariffElementSerializer,
-                                                     testCSMS01.CustomPriceComponentSerializer,
-                                                     testCSMS01.CustomTariffRestrictionsSerializer,
-                                                     testCSMS01.CustomEnergyMixSerializer,
-                                                     testCSMS01.CustomEnergySourceSerializer,
-                                                     testCSMS01.CustomEnvironmentalImpactSerializer,
-                                                     testCSMS01.CustomSignatureSerializer,
-                                                     testCSMS01.CustomCustomDataSerializer));
+                                                      out var eerr,
+                                                      "emp1",
+                                                      I18NString.Create("Just a signed charging tariff!"),
+                                                      timeReference,
+                                                      testCSMS01.CustomChargingTariffSerializer,
+                                                      testCSMS01.CustomPriceSerializer,
+                                                      testCSMS01.CustomTariffElementSerializer,
+                                                      testCSMS01.CustomPriceComponentSerializer,
+                                                      testCSMS01.CustomTariffRestrictionsSerializer,
+                                                      testCSMS01.CustomEnergyMixSerializer,
+                                                      testCSMS01.CustomEnergySourceSerializer,
+                                                      testCSMS01.CustomEnvironmentalImpactSerializer,
+                                                      testCSMS01.CustomIdTokenSerializer,
+                                                      testCSMS01.CustomAdditionalInfoSerializer,
+                                                      testCSMS01.CustomSignatureSerializer,
+                                                      testCSMS01.CustomCustomDataSerializer));
 
                 Assert.IsTrue   (chargingTariff1.Signatures.Any());
 
@@ -1556,20 +1566,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
 
                 Assert.IsTrue   (chargingTariff2.Sign(providerKeyPair,
-                                                     out var eerr2,
-                                                     "emp1",
-                                                     I18NString.Create("Just a signed charging tariff!"),
-                                                     timeReference,
-                                                     testCSMS01.CustomChargingTariffSerializer,
-                                                     testCSMS01.CustomPriceSerializer,
-                                                     testCSMS01.CustomTariffElementSerializer,
-                                                     testCSMS01.CustomPriceComponentSerializer,
-                                                     testCSMS01.CustomTariffRestrictionsSerializer,
-                                                     testCSMS01.CustomEnergyMixSerializer,
-                                                     testCSMS01.CustomEnergySourceSerializer,
-                                                     testCSMS01.CustomEnvironmentalImpactSerializer,
-                                                     testCSMS01.CustomSignatureSerializer,
-                                                     testCSMS01.CustomCustomDataSerializer));
+                                                      out var eerr2,
+                                                      "emp1",
+                                                      I18NString.Create("Just a signed charging tariff!"),
+                                                      timeReference,
+                                                      testCSMS01.CustomChargingTariffSerializer,
+                                                      testCSMS01.CustomPriceSerializer,
+                                                      testCSMS01.CustomTariffElementSerializer,
+                                                      testCSMS01.CustomPriceComponentSerializer,
+                                                      testCSMS01.CustomTariffRestrictionsSerializer,
+                                                      testCSMS01.CustomEnergyMixSerializer,
+                                                      testCSMS01.CustomEnergySourceSerializer,
+                                                      testCSMS01.CustomEnvironmentalImpactSerializer,
+                                                      testCSMS01.CustomIdTokenSerializer,
+                                                      testCSMS01.CustomAdditionalInfoSerializer,
+                                                      testCSMS01.CustomSignatureSerializer,
+                                                      testCSMS01.CustomCustomDataSerializer));
 
                 Assert.IsTrue   (chargingTariff2.Signatures.Any());
 

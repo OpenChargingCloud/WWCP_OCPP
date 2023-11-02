@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extension methods for charging tariffs.
+    /// Extension methods for EV driver charging tariffs (B2C).
     /// </summary>
     public static class ChargingTariffExtensions
     {
@@ -39,32 +39,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GenerateWithHashId(ProviderId, ProviderName, Currency, TariffElements, ...)
 
         /// <summary>
-        /// Generate a new charging tariff having an identification based on the SHA256 of its information.
+        /// Generate a new read-only signable EV driver charging tariff (B2C) having an identification based on the SHA256 of its information.
         /// </summary>
         public static ChargingTariff GenerateWithHashId(Provider_Id                                            ProviderId,
                                                         DisplayTexts                                           ProviderName,
                                                         Currency                                               Currency,
                                                         IEnumerable<TariffElement>                             TariffElements,
 
+                                                        LogoURLs?                                              ProviderLogos                         = null,
                                                         DateTime?                                              Created                               = null,
                                                         IEnumerable<ChargingTariff_Id>?                        Replaces                              = null,
                                                         IEnumerable<ChargingTariff_Id>?                        References                            = null,
                                                         TariffType?                                            TariffType                            = null,
                                                         DisplayTexts?                                          Description                           = null,
                                                         URL?                                                   URL                                   = null,
-                                                        IEnumerable<GlobalEVSE_Id>?                            EVSEIds                               = null,
-                                                        IEnumerable<ChargingStation_Id>?                       ChargingStationIds                    = null,
-                                                        IEnumerable<ChargingPool_Id>?                          ChargingPoolIds                       = null,
+                                                        EnergyMix?                                             EnergyMix                             = null,
+
+                                                        IEnumerable<IdToken>?                                  IdTokens                              = null,
+
                                                         Price?                                                 MinPrice                              = null,
                                                         Price?                                                 MaxPrice                              = null,
                                                         DateTime?                                              NotBefore                             = null,
                                                         DateTime?                                              NotAfter                              = null,
-                                                        EnergyMix?                                             EnergyMix                             = null,
 
                                                         CustomData?                                            CustomData                            = null,
 
                                                         CustomJObjectSerializerDelegate<ChargingTariff>?       CustomTariffSerializer                = null,
-                                                        CustomJObjectSerializerDelegate<DisplayText>?          CustomDisplayTextSerializer           = null,
                                                         CustomJObjectSerializerDelegate<Price>?                CustomPriceSerializer                 = null,
                                                         CustomJObjectSerializerDelegate<TariffElement>?        CustomTariffElementSerializer         = null,
                                                         CustomJObjectSerializerDelegate<PriceComponent>?       CustomPriceComponentSerializer        = null,
@@ -72,6 +72,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                         CustomJObjectSerializerDelegate<EnergyMix>?            CustomEnergyMixSerializer             = null,
                                                         CustomJObjectSerializerDelegate<EnergySource>?         CustomEnergySourceSerializer          = null,
                                                         CustomJObjectSerializerDelegate<EnvironmentalImpact>?  CustomEnvironmentalImpactSerializer   = null,
+                                                        CustomJObjectSerializerDelegate<IdToken>?              CustomIdTokenSerializer               = null,
+                                                        CustomJObjectSerializerDelegate<AdditionalInfo>?       CustomAdditionalInfoSerializer        = null,
                                                         CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
                                                         CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
 
@@ -87,6 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          Currency,
                                          TariffElements,
 
+                                         ProviderLogos,
                                          creationTimestamp,
                                          Replaces,
                                          References,
@@ -94,6 +97,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                          Description,
                                          URL,
                                          EnergyMix,
+
+                                         IdTokens,
 
                                          MinPrice,
                                          MaxPrice,
@@ -123,6 +128,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                    CustomEnergyMixSerializer,
                                                    CustomEnergySourceSerializer,
                                                    CustomEnvironmentalImpactSerializer,
+                                                   CustomIdTokenSerializer,
+                                                   CustomAdditionalInfoSerializer,
                                                    CustomSignatureSerializer,
                                                    CustomCustomDataSerializer).
 
@@ -140,6 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    chargingTariff.Currency,
                    chargingTariff.TariffElements,
 
+                   chargingTariff.ProviderLogos,
                    chargingTariff.Created,
                    chargingTariff.Replaces,
                    chargingTariff.References,
@@ -147,6 +155,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    chargingTariff.Description,
                    chargingTariff.URL,
                    chargingTariff.EnergyMix,
+
+                   chargingTariff.IdTokens,
 
                    chargingTariff.MinPrice,
                    chargingTariff.MaxPrice,
@@ -169,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
     /// <summary>
-    /// A read-only signable charging tariff.
+    /// A read-only signable EV driver charging tariff (B2C).
     /// </summary>
     public class ChargingTariff : ACustomSignableData,
                                   ISignableMessage,
@@ -234,6 +244,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public   DisplayTexts                   ProviderName          { get; }
 
         /// <summary>
+        /// The optional collection of logo URLs of the e-mobility provider responsible for this tariff.
+        /// </summary>
+        [Optional]
+        public   LogoURLs                       ProviderLogos         { get; }
+
+        /// <summary>
         /// The ISO 4217 code of the currency used for this tariff.
         /// </summary>
         [Mandatory]
@@ -264,6 +280,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         [Optional]
         public   EnergyMix?                     EnergyMix             { get;  }
+
+
+        /// <summary>
+        /// The optional enumeration of IdTokens this charging tariff is intended for.
+        /// </summary>
+        [Optional]
+        public   IEnumerable<IdToken>           IdTokens              { get;  }
 
 
         /// <summary>
@@ -310,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charging tariff.
+        /// Create a new read-only signable EV driver charging tariff (B2C).
         /// </summary>
         /// <param name="Id">A global unique and unique in time identification of the charging tariff.</param>
         /// <param name="ProviderId">An unique identification of the e-mobility provider responsible for this tariff.</param>
@@ -318,12 +341,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Currency">An ISO 4217 code of the currency used for this tariff.</param>
         /// <param name="TariffElements">An enumeration of tariff elements.</param>
         /// 
+        /// <param name="ProviderLogos">An optional collection of logo URLs of the e-mobility provider responsible for this tariff.</param>
         /// <param name="Created">An optional timestamp when this tariff was created.</param>
         /// <param name="Replaces">Optional references to other tariffs, which will be replaced by this charging tariff.</param>
         /// <param name="References">Optional references to other tariffs, e.g. because some local adaption of a charging tariff was required.</param>
         /// <param name="TariffType">An optional tariff type, that allows to distinguish between charging preferences. When omitted, this tariff is valid for all charging sessions.</param>
         /// <param name="Description">An optional multi-language tariff description.</param>
         /// <param name="URL">An optional informative (not legally binding) URL to a web page that contains an explanation of the tariff information in human readable form.</param>
+        /// 
+        /// <param name="IdToken">An optional enumeration of IdTokens for which this charging tariff is intended for.</param>
         /// 
         /// <param name="MinPrice">When this optional field is set, a charging session with this tariff will at least cost this amount.</param>
         /// <param name="MaxPrice">When this optional field is set, a charging session with this tariff will NOT cost more than this amount.</param>
@@ -342,24 +368,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               Currency                         Currency,
                               IEnumerable<TariffElement>       TariffElements,
 
-                              DateTime?                        Created       = null,
-                              IEnumerable<ChargingTariff_Id>?  Replaces      = null,
-                              IEnumerable<ChargingTariff_Id>?  References    = null,
-                              TariffType?                      TariffType    = null,
-                              DisplayTexts?                    Description   = null,
-                              URL?                             URL           = null,
-                              EnergyMix?                       EnergyMix     = null,
+                              LogoURLs?                        ProviderLogos   = null,
+                              DateTime?                        Created         = null,
+                              IEnumerable<ChargingTariff_Id>?  Replaces        = null,
+                              IEnumerable<ChargingTariff_Id>?  References      = null,
+                              TariffType?                      TariffType      = null,
+                              DisplayTexts?                    Description     = null,
+                              URL?                             URL             = null,
+                              EnergyMix?                       EnergyMix       = null,
 
-                              Price?                           MinPrice      = null,
-                              Price?                           MaxPrice      = null,
-                              DateTime?                        NotBefore     = null,
-                              DateTime?                        NotAfter      = null,
+                              IEnumerable<IdToken>?            IdTokens        = null,
 
-                              IEnumerable<KeyPair>?            SignKeys      = null,
-                              IEnumerable<SignInfo>?           SignInfos     = null,
-                              IEnumerable<Signature>?          Signatures    = null,
+                              Price?                           MinPrice        = null,
+                              Price?                           MaxPrice        = null,
+                              DateTime?                        NotBefore       = null,
+                              DateTime?                        NotAfter        = null,
 
-                              CustomData?                      CustomData    = null)
+                              IEnumerable<KeyPair>?            SignKeys        = null,
+                              IEnumerable<SignInfo>?           SignInfos       = null,
+                              IEnumerable<Signature>?          Signatures      = null,
+
+                              CustomData?                      CustomData      = null)
 
             : base (SignKeys,
                     SignInfos,
@@ -377,38 +406,47 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Currency        = Currency;
             this.TariffElements  = TariffElements.Distinct();
 
-            this.Created         = Created     ?? Timestamp.Now;
+            this.ProviderLogos   = ProviderLogos ?? LogoURLs.Empty;
+            this.Created         = Created       ?? Timestamp.Now;
             this.Replaces        = Replaces?.     Distinct() ?? Array.Empty<ChargingTariff_Id>();
             this.References      = References?.   Distinct() ?? Array.Empty<ChargingTariff_Id>();
             this.TariffType      = TariffType;
-            this.Description     = Description ?? DisplayTexts.Empty;
+            this.Description     = Description   ?? DisplayTexts.Empty;
             this.URL             = URL;
+            this.EnergyMix       = EnergyMix;
+
+            this.IdTokens        = IdTokens?.     Distinct() ?? Array.Empty<IdToken>();
+
             this.MinPrice        = MinPrice;
             this.MaxPrice        = MaxPrice;
-            this.NotBefore       = NotBefore   ?? this.Created;
+            this.NotBefore       = NotBefore     ?? this.Created;
             this.NotAfter        = NotAfter;
-            this.EnergyMix       = EnergyMix;
+
 
             unchecked
             {
 
-                hashCode = this.Id.            GetHashCode()       * 71 ^
-                           this.ProviderId.    GetHashCode()       * 67 ^
-                           this.ProviderName.  GetHashCode()       * 61 ^
-                           this.Currency.      GetHashCode()       * 59 ^
-                           this.TariffElements.CalcHashCode()      * 53 ^
-                           this.Created.       GetHashCode()       * 47 ^
-                           this.Replaces.      CalcHashCode()      * 44 ^
-                           this.References.    CalcHashCode()      * 41 ^
-                          (this.TariffType?.   GetHashCode() ?? 0) * 37 ^
-                           this.Description.   CalcHashCode()      * 31 ^
-                          (this.URL?.          GetHashCode() ?? 0) * 29 ^
+                hashCode = this.Id.            GetHashCode()        * 67 ^
+                           this.ProviderId.    GetHashCode()        * 61 ^
+                           this.ProviderName.  GetHashCode()        * 59 ^
+                           this.Currency.      GetHashCode()        * 53 ^
+                           this.TariffElements.CalcHashCode()       * 47 ^
 
-                          (this.MinPrice?.     GetHashCode() ?? 0) * 13 ^
-                          (this.MaxPrice?.     GetHashCode() ?? 0) * 11 ^
-                           this.NotBefore.     GetHashCode()       *  7 ^
-                          (this.NotAfter?.     GetHashCode() ?? 0) *  5 ^
-                           this.EnergyMix?.    GetHashCode() ?? 0  *  3 ^
+                           this.ProviderLogos. GetHashCode()        * 43 ^
+                           this.Created.       GetHashCode()        * 41 ^
+                           this.Replaces.      CalcHashCode()       * 37 ^
+                           this.References.    CalcHashCode()       * 31 ^
+                          (this.TariffType?.   GetHashCode()  ?? 0) * 29 ^
+                           this.Description.   CalcHashCode()       * 23 ^
+                          (this.URL?.          GetHashCode()  ?? 0) * 19 ^
+                           this.EnergyMix?.    GetHashCode()  ?? 0  * 17 ^
+
+                          (this.IdTokens?.     CalcHashCode() ?? 0) * 13 ^
+
+                          (this.MinPrice?.     GetHashCode()  ?? 0) * 11 ^
+                          (this.MaxPrice?.     GetHashCode()  ?? 0) *  7 ^
+                           this.NotBefore.     GetHashCode()        *  5 ^
+                          (this.NotAfter?.     GetHashCode()  ?? 0) *  3 ^
 
                            base.               GetHashCode();
 
@@ -574,6 +612,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
+                #region Parse ProviderLogos         [optional]
+
+                if (JSON.ParseOptionalJSONArray("providerLogos",
+                                                "provider logo URLs",
+                                                OCPPv2_1.LogoURLs.TryParse,
+                                                out LogoURLs LogoURLs,
+                                                out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Parse Created               [mandatory]
 
                 if (!JSON.ParseMandatory("created",
@@ -671,6 +723,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
+                #region Parse IdTokens              [optional]
+
+                if (!JSON.ParseOptionalHashSet("idTokens",
+                                               "id tokens",
+                                               IdToken.TryParse,
+                                               out HashSet<IdToken> IdTokens,
+                                               out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
                 #region Parse MinPrice              [optional]
 
                 if (JSON.ParseOptionalJSON("minPrice",
@@ -763,6 +829,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Currency,
                                      TariffElements,
 
+                                     LogoURLs,
                                      Created,
                                      Replaces,
                                      References,
@@ -770,6 +837,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      Description,
                                      URL,
                                      EnergyMix,
+
+                                     IdTokens,
 
                                      MinPrice,
                                      MaxPrice,
@@ -814,6 +883,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomEnergyMixSerializer">A delegate to serialize custom hours JSON objects.</param>
         /// <param name="CustomEnergySourceSerializer">A delegate to serialize custom energy source JSON objects.</param>
         /// <param name="CustomEnvironmentalImpactSerializer">A delegate to serialize custom environmental impact JSON objects.</param>
+        /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
+        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<ChargingTariff>?       CustomChargingTariffSerializer        = null,
@@ -824,6 +895,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               CustomJObjectSerializerDelegate<EnergyMix>?            CustomEnergyMixSerializer             = null,
                               CustomJObjectSerializerDelegate<EnergySource>?         CustomEnergySourceSerializer          = null,
                               CustomJObjectSerializerDelegate<EnvironmentalImpact>?  CustomEnvironmentalImpactSerializer   = null,
+                              CustomJObjectSerializerDelegate<IdToken>?              CustomIdTokenSerializer               = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?       CustomAdditionalInfoSerializer        = null,
                               CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
                               CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
         {
@@ -833,6 +906,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("id",             Id.              ToString()),
                                  new JProperty("providerId",     ProviderId.      ToString()),
                                  new JProperty("providerName",   ProviderName.    ToJSON()),
+
+                           ProviderLogos.     Any()
+                               ? new JProperty("providerLogos",  ProviderLogos.   ToJSON())
+                               : null,
+
                                  new JProperty("currency",       Currency.        ISOCode),
                                  new JProperty("created",        Created.         ToIso8601()),
 
@@ -860,6 +938,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? new JProperty("energyMix",      EnergyMix.       ToJSON(CustomEnergyMixSerializer,
                                                                                          CustomEnergySourceSerializer,
                                                                                          CustomEnvironmentalImpactSerializer))
+                               : null,
+
+
+                           IdTokens.          Any()
+                               ? new JProperty("idTokens",       new JArray(IdTokens.Select(idToken                => idToken.         ToJSON(CustomIdTokenSerializer,
+                                                                                                                                              CustomAdditionalInfoSerializer,
+                                                                                                                                              CustomCustomDataSerializer))))
                                : null,
 
 
@@ -917,6 +1002,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Currency.      Clone,
                    TariffElements.Select(tariffElement    => tariffElement.   Clone()).ToArray(),
 
+                   ProviderLogos. Clone(),
                    Created,
                    Replaces.      Select(chargingTariffId => chargingTariffId.Clone).  ToArray(),
                    References.    Select(chargingTariffId => chargingTariffId.Clone).  ToArray(),
@@ -924,6 +1010,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Description.   Clone(),
                    URL?.          Clone,
                    EnergyMix?.    Clone(),
+
+                   IdTokens.      Select(idToken          => idToken.Clone()).         ToArray(),
 
                    MinPrice?.     Clone(),
                    MaxPrice?.     Clone(),
@@ -956,6 +1044,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                             CustomJObjectSerializerDelegate<EnergyMix>?            CustomEnergyMixSerializer             = null,
                             CustomJObjectSerializerDelegate<EnergySource>?         CustomEnergySourceSerializer          = null,
                             CustomJObjectSerializerDelegate<EnvironmentalImpact>?  CustomEnvironmentalImpactSerializer   = null,
+                            CustomJObjectSerializerDelegate<IdToken>?              CustomIdTokenSerializer               = null,
+                            CustomJObjectSerializerDelegate<AdditionalInfo>?       CustomAdditionalInfoSerializer        = null,
                             CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
                             CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
 
@@ -967,6 +1057,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            CustomEnergyMixSerializer,
                            CustomEnergySourceSerializer,
                            CustomEnvironmentalImpactSerializer,
+                           CustomIdTokenSerializer,
+                           CustomAdditionalInfoSerializer,
                            CustomSignatureSerializer,
                            CustomCustomDataSerializer),
                     Context,
@@ -990,6 +1082,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               CustomJObjectSerializerDelegate<EnergyMix>?            CustomEnergyMixSerializer             = null,
                               CustomJObjectSerializerDelegate<EnergySource>?         CustomEnergySourceSerializer          = null,
                               CustomJObjectSerializerDelegate<EnvironmentalImpact>?  CustomEnvironmentalImpactSerializer   = null,
+                              CustomJObjectSerializerDelegate<IdToken>?              CustomIdTokenSerializer               = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?       CustomAdditionalInfoSerializer        = null,
                               CustomJObjectSerializerDelegate<Signature>?            CustomSignatureSerializer             = null,
                               CustomJObjectSerializerDelegate<CustomData>?           CustomCustomDataSerializer            = null)
 
@@ -1001,6 +1095,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                              CustomEnergyMixSerializer,
                              CustomEnergySourceSerializer,
                              CustomEnvironmentalImpactSerializer,
+                             CustomIdTokenSerializer,
+                             CustomAdditionalInfoSerializer,
                              CustomSignatureSerializer,
                              CustomCustomDataSerializer),
                       Context,

@@ -268,6 +268,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public AdditionalInfo Clone()
+
+            => new (
+                   new String(AdditionalIdToken.ToCharArray()),
+                   new String(Type.             ToCharArray()),
+                   CustomData
+               );
+
+        #endregion
+
 
         #region Operator overloading
 
