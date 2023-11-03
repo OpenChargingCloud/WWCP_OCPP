@@ -40,20 +40,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The tariff dimension.
         /// </summary>
         [Mandatory]
-        public TariffDimension  Type           { get; }
+        public TariffDimension  Type        { get; }
 
         /// <summary>
         /// The price per unit (excl. VAT) for this tariff dimension.
         /// </summary>
         [Mandatory]
-        public Decimal          Price          { get; }
+        public Decimal          Price       { get; }
 
         /// <summary>
-        /// The applicable VAT percentage for this tariff dimension. If omitted, no VAT is applicable.
-        /// Not providing a VAT is different from 0% VAT, which would be a value of 0.0 here.
+        /// The enumeration of applicable tax percentages for this tariff dimension.
+        /// If omitted, no tax is applicable. Not providing a tax is different from 0% tax, which would be a value of 0.0 here.
         /// </summary>
         [Optional]
-        public Decimal?         VAT            { get; }
+        public TaxRates         TaxRates    { get; }
 
         /// <summary>
         /// The minimum amount to be billed. This unit will be billed in this step_size blocks.
@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// so if 6 minutes is used, 10 minutes (2 blocks of step_size) will be billed.
         /// </example>
         [Mandatory]
-        public UInt32           StepSize       { get; }
+        public UInt32?          StepSize    { get; }
 
         #endregion
 
@@ -74,95 +74,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Type">A tariff dimension.</param>
         /// <param name="Price">A price per unit (excl. VAT) for this tariff dimension.</param>
-        /// <param name="VAT">An applicable VAT percentage for this tariff dimension. If omitted, no VAT is applicable. Not providing a VAT is different from 0% VAT, which would be a value of 0.0 here.</param>
+        /// <param name="TaxRates">The enumeration of applicable tax percentages for this tariff dimension.</param>
         /// <param name="StepSize">The minimum amount to be billed. This unit will be billed in this step_size blocks.</param>
         public PriceComponent(TariffDimension  Type,
                               Decimal          Price,
-                              Decimal?         VAT        = null,
-                              UInt32           StepSize   = 1)
+                              TaxRates?        TaxRates   = null,
+                              UInt32?          StepSize   = null)
         {
 
-            this.Type            = Type;
-            this.Price           = Price;
-            this.VAT             = VAT;
-            this.StepSize        = StepSize;
+            this.Type      = Type;
+            this.Price     = Price;
+            this.TaxRates  = TaxRates ?? TaxRates.Empty;
+            this.StepSize  = StepSize;
 
         }
-
-        #endregion
-
-
-        #region Flat        (Price, VAT = null)
-
-        /// <summary>
-        /// Create a new flat rate price component.
-        /// </summary>
-        /// <param name="Price">A flat rate price (excl. VAT).</param>
-        public static PriceComponent FlatRate(Decimal   Price,
-                                              Decimal?  VAT   = null)
-
-            => new (TariffDimension.FLAT,
-                    Price,
-                    VAT,
-                    1);
-
-        #endregion
-
-        #region Energy      (Price, VAT = null, StepSize = 1)
-
-        /// <summary>
-        /// Create a new energy price component.
-        /// </summary>
-        /// <param name="Price">An energy price (excl. VAT).</param>
-        /// <param name="StepSize">An optional minimum granularity of Wh that will be billed.</param>
-        public static PriceComponent Energy(Decimal   Price,
-                                            Decimal?  VAT        = null,
-                                            UInt32    StepSize   = 1)
-
-            => new (TariffDimension.ENERGY,
-                    Price,
-                    VAT,
-                    StepSize);
-
-        #endregion
-
-        #region Time        (Price, VAT = null, Duration = null)
-
-        /// <summary>
-        /// Create a new time-based charging price component.
-        /// </summary>
-        /// <param name="Price">A price per time span (excl. VAT).</param>
-        /// <param name="Duration">An optional minimum granularity of time that will be billed.</param>
-        public static PriceComponent Time(Decimal    Price,
-                                          Decimal?   VAT        = null,
-                                          TimeSpan?  Duration   = null)
-
-            => new (TariffDimension.TIME,
-                    Price,
-                    VAT,
-                    Duration.HasValue
-                        ? (UInt32) Math.Round(Duration.Value.TotalSeconds, 0)
-                        : 1);
-
-        #endregion
-
-        #region ParkingTime (Price, VAT = null, Duration = null)
-
-        /// <summary>
-        /// Create a new time-based parking price component.
-        /// </summary>
-        /// <param name="Price">A price per time span (excl. VAT).</param>
-        /// <param name="Duration">An optional minimum granularity of time that will be billed.</param>
-        public static PriceComponent ParkingTime(Decimal    Price,
-                                                 Decimal?   VAT        = null,
-                                                 TimeSpan?  Duration   = null)
-
-            => new (TariffDimension.PARKING_TIME,
-                    Price,
-                    VAT,
-                    Duration.HasValue
-                        ? (UInt32) Math.Round(Duration.Value.TotalSeconds, 0)
-                        : 1);
 
         #endregion
 
@@ -287,12 +212,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse VAT         [optional]
+                #region Parse TaxRates    [optional]
 
-                if (JSON.ParseOptional("vat",
-                                       "value added tax",
-                                       out Decimal? VAT,
-                                       out ErrorResponse))
+                if (JSON.ParseOptionalJSONArray("taxRates",
+                                                "tax rates",
+                                                OCPPv2_1.TaxRates.TryParse,
+                                                out TaxRates TaxRates,
+                                                out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
@@ -313,10 +239,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                PriceComponent = new PriceComponent(Type,
-                                                    Price,
-                                                    VAT,
-                                                    StepSize);
+                PriceComponent = new PriceComponent(
+                                     Type,
+                                     Price,
+                                     TaxRates,
+                                     StepSize
+                                 );
 
 
                 if (CustomPriceComponentParser is not null)
@@ -337,25 +265,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomPriceComponentSerializer = null)
+        #region ToJSON(CustomPriceComponentSerializer = null, CustomTaxRateSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomPriceComponentSerializer">A delegate to serialize custom price component JSON objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<PriceComponent>? CustomPriceComponentSerializer = null)
+        /// <param name="CustomTaxRateSerializer">A delegate to serialize custom tax rate JSON objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<PriceComponent>?  CustomPriceComponentSerializer   = null,
+                              CustomJObjectSerializerDelegate<TaxRate>?         CustomTaxRateSerializer          = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("type",       Type.ToString()),
-                           new JProperty("price",      Price),
+                                 new JProperty("type",       Type.ToString()),
+                                 new JProperty("price",      Price),
 
-                           VAT.HasValue
-                               ? new JProperty("vat",  VAT. Value)
+                           TaxRates.Any()
+                               ? new JProperty("taxRates",   new JArray(TaxRates.Select(taxRate => taxRate.ToJSON(CustomTaxRateSerializer))))
                                : null,
 
-                           new JProperty("step_size",  StepSize)
+                           StepSize.HasValue
+                               ? new JProperty("stepSize",   StepSize.Value)
+                               : null
 
                        );
 
@@ -374,9 +306,99 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public PriceComponent Clone()
 
-            => new (Type.Clone,
+            => new (
+                   Type.Clone,
+                   Price,
+                   TaxRates,
+                   StepSize
+               );
+
+        #endregion
+
+
+        #region Static definitions
+
+        #region (static) Flat        (Price, VAT = null)
+
+        /// <summary>
+        /// Create a new flat rate price component.
+        /// </summary>
+        /// <param name="Price">A flat rate price (excl. VAT).</param>
+        public static PriceComponent FlatRate(Decimal   Price,
+                                              Decimal?  VAT   = null)
+
+            => new (TariffDimension.FLAT,
                     Price,
+                    VAT.HasValue
+                        ? TaxRates.VAT(VAT.Value)
+                        : null,
+                    1);
+
+        #endregion
+
+        #region (static) Energy      (Price, VAT = null, StepSize = 1)
+
+        /// <summary>
+        /// Create a new energy price component.
+        /// </summary>
+        /// <param name="Price">An energy price (excl. VAT).</param>
+        /// <param name="StepSize">An optional minimum granularity of Wh that will be billed.</param>
+        public static PriceComponent Energy(Decimal   Price,
+                                            Decimal?  VAT        = null,
+                                            UInt32    StepSize   = 1)
+
+            => new (TariffDimension.ENERGY,
+                    Price,
+                    VAT.HasValue
+                        ? TaxRates.VAT(VAT.Value)
+                        : null,
                     StepSize);
+
+        #endregion
+
+        #region (static) Time        (Price, VAT = null, Duration = null)
+
+        /// <summary>
+        /// Create a new time-based charging price component.
+        /// </summary>
+        /// <param name="Price">A price per time span (excl. VAT).</param>
+        /// <param name="Duration">An optional minimum granularity of time that will be billed.</param>
+        public static PriceComponent Time(Decimal    Price,
+                                          Decimal?   VAT        = null,
+                                          TimeSpan?  Duration   = null)
+
+            => new (TariffDimension.TIME,
+                    Price,
+                    VAT.     HasValue
+                        ? TaxRates.VAT(VAT.Value)
+                        : null,
+                    Duration.HasValue
+                        ? (UInt32) Math.Round(Duration.Value.TotalSeconds, 0)
+                        : 1);
+
+        #endregion
+
+        #region (static) ParkingTime (Price, VAT = null, Duration = null)
+
+        /// <summary>
+        /// Create a new time-based parking price component.
+        /// </summary>
+        /// <param name="Price">A price per time span (excl. VAT).</param>
+        /// <param name="Duration">An optional minimum granularity of time that will be billed.</param>
+        public static PriceComponent ParkingTime(Decimal    Price,
+                                                 Decimal?   VAT        = null,
+                                                 TimeSpan?  Duration   = null)
+
+            => new (TariffDimension.PARKING_TIME,
+                    Price,
+                    VAT.HasValue
+                        ? TaxRates.VAT(VAT.Value)
+                        : null,
+                    Duration.HasValue
+                        ? (UInt32) Math.Round(Duration.Value.TotalSeconds, 0)
+                        : 1);
+
+        #endregion
 
         #endregion
 
@@ -501,16 +523,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Int32 CompareTo(PriceComponent PriceComponent)
         {
 
-            var c = Type.    CompareTo(PriceComponent.Type);
+            var c = Type.           CompareTo(PriceComponent.Type);
 
             if (c == 0)
-                c = Price.   CompareTo(PriceComponent.Price);
+                c = Price.          CompareTo(PriceComponent.Price);
 
             if (c == 0)
-                c = StepSize.CompareTo(PriceComponent.StepSize);
+                c = (StepSize ?? 1).CompareTo(PriceComponent.StepSize ?? 1);
 
-            if (c == 0 && VAT.HasValue && PriceComponent.VAT.HasValue)
-                c = Price.   CompareTo(PriceComponent.Price);
+            if (c == 0)
+                c = Price.          CompareTo(PriceComponent.Price);
 
             return c;
 
@@ -543,9 +565,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PriceComponent">A price component to compare with.</param>
         public Boolean Equals(PriceComponent PriceComponent)
 
-            => Type.    Equals(PriceComponent.Type)  &&
-               Price.   Equals(PriceComponent.Price) &&
-               VAT.     Equals(PriceComponent.VAT)   &&
+            => Type.    Equals(PriceComponent.Type)     &&
+               Price.   Equals(PriceComponent.Price)    &&
+               TaxRates.Equals(PriceComponent.TaxRates) &&
                StepSize.Equals(PriceComponent.StepSize);
 
         #endregion
@@ -566,7 +588,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return Type.    GetHashCode() * 7 ^
                        Price.   GetHashCode() * 5 ^
                        StepSize.GetHashCode() * 3 ^
-                       VAT?.    GetHashCode() ?? 0;
+                       TaxRates.GetHashCode();
 
             }
         }
@@ -582,12 +604,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => String.Concat(
 
-                   Type,     ", ",
-                   StepSize, ", ",
-                   Price,
+                   $"{Type}, {StepSize}, {Price}",
 
-                   VAT.HasValue
-                       ? ", " + VAT.Value
+                   TaxRates.Any()
+                       ? ", " + TaxRates.ToString()
                        : ""
 
                );

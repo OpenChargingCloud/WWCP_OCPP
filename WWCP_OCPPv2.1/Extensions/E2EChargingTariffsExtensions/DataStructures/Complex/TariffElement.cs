@@ -259,15 +259,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="CustomTariffElementSerializer">A delegate to serialize custom tariff element JSON objects.</param>
         /// <param name="CustomPriceComponentSerializer">A delegate to serialize custom price component JSON objects.</param>
+        /// <param name="CustomTaxRateSerializer">A delegate to serialize custom tax rate JSON objects.</param>
         /// <param name="CustomTariffRestrictionsSerializer">A delegate to serialize custom tariff restrictions JSON objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<TariffElement>?       CustomTariffElementSerializer        = null,
                               CustomJObjectSerializerDelegate<PriceComponent>?      CustomPriceComponentSerializer       = null,
+                              CustomJObjectSerializerDelegate<TaxRate>?             CustomTaxRateSerializer              = null,
                               CustomJObjectSerializerDelegate<TariffRestrictions>?  CustomTariffRestrictionsSerializer   = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("price_components",  new JArray(PriceComponents.Select(priceComponent => priceComponent.ToJSON(CustomPriceComponentSerializer)))),
+                                 new JProperty("priceComponents",   new JArray(PriceComponents.Select(priceComponent => priceComponent.ToJSON(CustomPriceComponentSerializer,
+                                                                                                                                              CustomTaxRateSerializer)))),
 
                            TariffRestrictions is not null
                                ? new JProperty("restrictions",      TariffRestrictions.ToJSON(CustomTariffRestrictionsSerializer))

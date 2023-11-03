@@ -443,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var flatPriceComponent          = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.FLAT);
             var flatPrice                   = flatPriceComponent.Price;
-            var flatVAT                     = flatPriceComponent.VAT;
+            var flatVAT                     = flatPriceComponent.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;
 
             var totalFixedCost              = new Price(
                                                   ExcludingVAT:  flatPrice,
@@ -456,9 +456,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var chargingTimePriceComponent  = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.TIME,
                                                                                            PriceComponent.Time(0));
-            var chargingTimeStepSize        = chargingTimePriceComponent.StepSize;
+            var chargingTimeStepSize        = chargingTimePriceComponent.StepSize ?? 1;
             var chargingTimePrice           = chargingTimePriceComponent.Price;
-            var chargingTimeVAT             = chargingTimePriceComponent.VAT;
+            var chargingTimeVAT             = chargingTimePriceComponent.TaxRates.Get("VAT", AppliesToEnergyFee: true)?.Tax;
 
             var billedChargingTimeSteps     = Math.Ceiling(totalChargingTime.TotalSeconds / chargingTimeStepSize);
             var billedChargingTime          = TimeSpan.FromSeconds(billedChargingTimeSteps * chargingTimeStepSize);
@@ -469,9 +469,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var timePriceComponent          = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.TIME,
                                                                                            PriceComponent.Time(0));
-            var timeStepSize                = timePriceComponent.StepSize;
+            var timeStepSize                = timePriceComponent.StepSize ?? 1;
             var timePrice                   = timePriceComponent.Price;
-            var timeVAT                     = timePriceComponent.VAT;
+            var timeVAT                     = timePriceComponent.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;
 
             var billedTimeSteps             = Math.Ceiling(totalTime.TotalSeconds / timeStepSize);
             var billedTime                  = TimeSpan.FromSeconds(billedTimeSteps * timeStepSize);
@@ -481,9 +481,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region Calculate BilledEnergy
 
             var energyPriceComponent        = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.ENERGY);
-            var energyStepSize              = energyPriceComponent.StepSize;
+            var energyStepSize              = energyPriceComponent.StepSize ?? 1;
             var energyPrice                 = energyPriceComponent.Price;
-            var energyVAT                   = energyPriceComponent.VAT;
+            var energyVAT                   = energyPriceComponent.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;
 
             var billedEnergySteps           = Math.Ceiling(totalEnergy.Value / energyStepSize);
             var billedEnergy                = WattHour.Parse(billedEnergySteps * energyStepSize);

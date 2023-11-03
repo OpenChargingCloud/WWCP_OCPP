@@ -333,6 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomPriceSerializer">A delegate to serialize custom price JSON objects.</param>
         /// <param name="CustomTariffElementSerializer">A delegate to serialize custom tariff element JSON objects.</param>
         /// <param name="CustomPriceComponentSerializer">A delegate to serialize custom price component JSON objects.</param>
+        /// <param name="CustomTaxRateSerializer">A delegate to serialize custom tax rate JSON objects.</param>
         /// <param name="CustomTariffRestrictionsSerializer">A delegate to serialize custom tariff restrictions JSON objects.</param>
         /// <param name="CustomEnergyMixSerializer">A delegate to serialize custom hours JSON objects.</param>
         /// <param name="CustomEnergySourceSerializer">A delegate to serialize custom energy source JSON objects.</param>
@@ -346,6 +347,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CustomJObjectSerializerDelegate<Price>?                            CustomPriceSerializer                             = null,
                               CustomJObjectSerializerDelegate<TariffElement>?                    CustomTariffElementSerializer                     = null,
                               CustomJObjectSerializerDelegate<PriceComponent>?                   CustomPriceComponentSerializer                    = null,
+                              CustomJObjectSerializerDelegate<TaxRate>?                          CustomTaxRateSerializer                           = null,
                               CustomJObjectSerializerDelegate<TariffRestrictions>?               CustomTariffRestrictionsSerializer                = null,
                               CustomJObjectSerializerDelegate<EnergyMix>?                        CustomEnergyMixSerializer                         = null,
                               CustomJObjectSerializerDelegate<EnergySource>?                     CustomEnergySourceSerializer                      = null,
@@ -362,6 +364,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                          CustomPriceSerializer,
                                                                                          CustomTariffElementSerializer,
                                                                                          CustomPriceComponentSerializer,
+                                                                                         CustomTaxRateSerializer,
                                                                                          CustomTariffRestrictionsSerializer,
                                                                                          CustomEnergyMixSerializer,
                                                                                          CustomEnergySourceSerializer,

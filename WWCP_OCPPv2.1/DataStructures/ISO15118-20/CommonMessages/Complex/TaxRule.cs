@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
         /// <param name="AppliesToEnergyFee">Whether the tax applies to the energy fee.</param>
         /// <param name="AppliesToParkingFee">Whether the tax applies to the parking fee.</param>
         /// <param name="AppliesToOverstayFee">Whether the tax applies to the overstay fee.</param>
-        /// <param name="AppliesMinimumMaximumCost">Whether the tax applies to minimum/maximum cost.</param>
+        /// <param name="AppliesToMinimumMaximumCost">Whether the tax applies to minimum/maximum cost.</param>
         /// <param name="TaxRuleName">An optional name of the tax rule.</param>
         /// <param name="TaxIncludedInPrice">Whether the tax is included within the price.</param>
         public TaxRule(TaxRule_Id  TaxRuleId,
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
                        Boolean     AppliesToEnergyFee,
                        Boolean     AppliesToParkingFee,
                        Boolean     AppliesToOverstayFee,
-                       Boolean     AppliesMinimumMaximumCost,
+                       Boolean     AppliesToMinimumMaximumCost,
                        Name?       TaxRuleName          = null,
                        Boolean?    TaxIncludedInPrice   = null)
 
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             this.AppliesToEnergyFee           = AppliesToEnergyFee;
             this.AppliesToParkingFee          = AppliesToParkingFee;
             this.AppliesToOverstayFee         = AppliesToOverstayFee;
-            this.AppliesToMinimumMaximumCost  = AppliesMinimumMaximumCost;
+            this.AppliesToMinimumMaximumCost  = AppliesToMinimumMaximumCost;
             this.TaxRuleName                  = TaxRuleName;
             this.TaxIncludedInPrice           = TaxIncludedInPrice;
 
