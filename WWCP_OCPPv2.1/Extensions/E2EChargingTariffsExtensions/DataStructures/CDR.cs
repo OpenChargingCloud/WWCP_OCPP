@@ -454,8 +454,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region Calculate BilledChargingTime
 
-            var chargingTimePriceComponent  = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.TIME,
-                                                                                           PriceComponent.Time(0));
+            var chargingTimePriceComponent  = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.CHARGE_HOURS,
+                                                                                           PriceComponent.ChargeHours(0));
             var chargingTimeStepSize        = chargingTimePriceComponent.StepSize ?? 1;
             var chargingTimePrice           = chargingTimePriceComponent.Price;
             var chargingTimeVAT             = chargingTimePriceComponent.TaxRates.Get("VAT", AppliesToEnergyFee: true)?.Tax;
@@ -467,8 +467,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region Calculate BilledTime
 
-            var timePriceComponent          = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.TIME,
-                                                                                           PriceComponent.Time(0));
+            var timePriceComponent          = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.CHARGE_HOURS,
+                                                                                           PriceComponent.ChargeHours(0));
             var timeStepSize                = timePriceComponent.StepSize ?? 1;
             var timePrice                   = timePriceComponent.Price;
             var timeVAT                     = timePriceComponent.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;

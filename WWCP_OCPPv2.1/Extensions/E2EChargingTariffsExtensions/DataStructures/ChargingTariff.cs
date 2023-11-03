@@ -351,7 +351,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Description">An optional multi-language tariff description.</param>
         /// <param name="URL">An optional informative (not legally binding) URL to a web page that contains an explanation of the tariff information in human readable form.</param>
         /// 
-        /// <param name="IdToken">An optional enumeration of IdTokens for which this charging tariff is intended for.</param>
+        /// <param name="IdTokens">An optional enumeration of IdTokens for which this charging tariff is intended for.</param>
         /// 
         /// <param name="MinPrice">When this optional field is set, a charging session with this tariff will at least cost this amount.</param>
         /// <param name="MaxPrice">When this optional field is set, a charging session with this tariff will NOT cost more than this amount.</param>
@@ -443,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                           (this.URL?.          GetHashCode()  ?? 0) * 19 ^
                            this.EnergyMix?.    GetHashCode()  ?? 0  * 17 ^
 
-                          (this.IdTokens?.     CalcHashCode() ?? 0) * 13 ^
+                           this.IdTokens.      CalcHashCode()       * 13 ^
 
                           (this.MinPrice?.     GetHashCode()  ?? 0) * 11 ^
                           (this.MaxPrice?.     GetHashCode()  ?? 0) *  7 ^

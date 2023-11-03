@@ -119,12 +119,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                            PriceComponent.Energy(
                                                                                Price:      0.51M,
                                                                                VAT:        0.02M,
-                                                                               StepSize:   1000
+                                                                               StepSize:   WattHour.Parse(1000)
                                                                            )
                                                                        }
-                                                                       //new TariffRestrictions(
-                                                                       //    MaxCurrent:   Ampere.Parse(10)
-                                                                       //)
                                                                    )
                                                                },
 
@@ -444,12 +441,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                          PriceComponent.Energy(
                                                                              Price:      0.51M,
                                                                              VAT:        0.02M,
-                                                                             StepSize:   1000
+                                                                             StepSize:   WattHour.Parse(1000)
                                                                          )
                                                                      }
-                                                                     //new TariffRestrictions(
-                                                                     //    MaxCurrent:   Ampere.Parse(10)
-                                                                     //)
                                                                  )
                                                              },
 
@@ -779,12 +773,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                          PriceComponent.Energy(
                                                                              Price:      0.51M,
                                                                              VAT:        0.02M,
-                                                                             StepSize:   1000
+                                                                             StepSize:   WattHour.Parse(1000)
                                                                          )
                                                                      }
-                                                                     //new TariffRestrictions(
-                                                                     //    MaxCurrent:   Ampere.Parse(10)
-                                                                     //)
                                                                  )
                                                              },
 
@@ -1114,12 +1105,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                          PriceComponent.Energy(
                                                                              Price:      0.51M,
                                                                              VAT:        0.02M,
-                                                                             StepSize:   1000
+                                                                             StepSize:   WattHour.Parse(1000)
                                                                          )
                                                                      }
-                                                                     //new TariffRestrictions(
-                                                                     //    MaxCurrent:   Ampere.Parse(10)
-                                                                     //)
                                                                  )
                                                              },
 
@@ -1452,12 +1440,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                          PriceComponent.Energy(
                                                                              Price:      0.51M,
                                                                              VAT:        0.02M,
-                                                                             StepSize:   1000
+                                                                             StepSize:   WattHour.Parse(1000)
                                                                          )
                                                                      }
-                                                                     //new TariffRestrictions(
-                                                                     //    MaxCurrent:   Ampere.Parse(10)
-                                                                     //)
                                                                  )
                                                              },
 
@@ -1531,12 +1516,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                          PriceComponent.Energy(
                                                                              Price:      0.51M,
                                                                              VAT:        0.02M,
-                                                                             StepSize:   1000
+                                                                             StepSize:   WattHour.Parse(1000)
                                                                          )
                                                                      }
-                                                                     //new TariffRestrictions(
-                                                                     //    MaxCurrent:   Ampere.Parse(10)
-                                                                     //)
                                                                  )
                                                              },
 

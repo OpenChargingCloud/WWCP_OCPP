@@ -318,85 +318,237 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Static definitions
 
-        #region (static) Flat        (Price, VAT = null)
+        #region (static) Flat             (Price, VAT = null)
 
         /// <summary>
         /// Create a new flat rate price component.
         /// </summary>
         /// <param name="Price">A flat rate price (excl. VAT).</param>
+        /// <param name="VAT">An optional value added tax (percentage).</param>
         public static PriceComponent FlatRate(Decimal   Price,
                                               Decimal?  VAT   = null)
 
-            => new (TariffDimension.FLAT,
-                    Price,
-                    VAT.HasValue
-                        ? TaxRates.VAT(VAT.Value)
-                        : null,
-                    1);
+            => new (
+                   TariffDimension.FLAT,
+                   Price,
+                   VAT.HasValue
+                       ? TaxRates.VAT(VAT.Value)
+                       : null,
+                   1
+               );
 
         #endregion
 
-        #region (static) Energy      (Price, VAT = null, StepSize = 1)
+        #region (static) Flat             (Price, TaxRates)
+
+        /// <summary>
+        /// Create a new flat rate price component.
+        /// </summary>
+        /// <param name="Price">A flat rate price (excl. VAT).</param>
+        /// <param name="TaxRates">The enumeration of applicable tax rates for this tariff dimension.</param>
+        public static PriceComponent FlatRate(Decimal   Price,
+                                              TaxRates  TaxRates)
+
+            => new (
+                   TariffDimension.FLAT,
+                   Price,
+                   TaxRates,
+                   1
+               );
+
+        #endregion
+
+
+        #region (static) Energy           (Price, VAT = null, StepSize = null)
 
         /// <summary>
         /// Create a new energy price component.
         /// </summary>
         /// <param name="Price">An energy price (excl. VAT).</param>
-        /// <param name="StepSize">An optional minimum granularity of Wh that will be billed.</param>
-        public static PriceComponent Energy(Decimal   Price,
-                                            Decimal?  VAT        = null,
-                                            UInt32    StepSize   = 1)
+        /// <param name="VAT">An optional value added tax (percentage).</param>
+        /// <param name="StepSize">An optional minimum energy granularity that will be billed.</param>
+        public static PriceComponent Energy(Decimal    Price,
+                                            Decimal?   VAT        = null,
+                                            WattHour?  StepSize   = null)
 
-            => new (TariffDimension.ENERGY,
-                    Price,
-                    VAT.HasValue
-                        ? TaxRates.VAT(VAT.Value)
-                        : null,
-                    StepSize);
+            => new (
+                   TariffDimension.ENERGY,
+                   Price,
+                   VAT.HasValue
+                       ? TaxRates.VAT(VAT.Value)
+                       : null,
+                   StepSize.HasValue
+                       ? (UInt32) Math.Round(StepSize.Value.Value, 0)
+                       : 1
+               );
 
         #endregion
 
-        #region (static) Time        (Price, VAT = null, Duration = null)
+        #region (static) Energy           (Price, TaxRates,   StepSize = null)
+
+        /// <summary>
+        /// Create a new energy price component.
+        /// </summary>
+        /// <param name="Price">An energy price (excl. VAT).</param>
+        /// <param name="TaxRates">An enumeration of applicable tax rates for this tariff dimension.</param>
+        /// <param name="StepSize">An optional minimum energy granularity that will be billed.</param>
+        public static PriceComponent Energy(Decimal    Price,
+                                            TaxRates   TaxRates,
+                                            WattHour?  StepSize   = null)
+
+            => new (
+                   TariffDimension.ENERGY,
+                   Price,
+                   TaxRates,
+                   StepSize.HasValue
+                       ? (UInt32) Math.Round(StepSize.Value.Value, 0)
+                       : 1
+               );
+
+        #endregion
+
+
+        #region (static) ReservationHours (Price, VAT = null, StepSize = null)
+
+        /// <summary>
+        /// Create a new time-based reservation price component.
+        /// </summary>
+        /// <param name="Price">A price per time span (excl. VAT).</param>
+        /// <param name="VAT">An optional value added tax (percentage).</param>
+        /// <param name="StepSize">An optional minimum granularity of time that will be billed.</param>
+        public static PriceComponent ReservationHours(Decimal    Price,
+                                                      Decimal?   VAT        = null,
+                                                      TimeSpan?  StepSize   = null)
+
+            => new (
+                   TariffDimension.RESERVATION_HOURS,
+                   Price,
+                   VAT.     HasValue
+                       ? TaxRates.VAT(VAT.Value)
+                       : null,
+                   StepSize.HasValue
+                       ? (UInt32) Math.Round(StepSize.Value.TotalSeconds, 0)
+                       : 1
+               );
+
+        #endregion
+
+        #region (static) ReservationHours (Price, TaxRates,   StepSize = null)
+
+        /// <summary>
+        /// Create a new time-based reservation price component.
+        /// </summary>
+        /// <param name="Price">A price per time span (excl. VAT).</param>
+        /// <param name="TaxRates">An enumeration of applicable tax rates for this tariff dimension.</param>
+        /// <param name="StepSize">An optional minimum granularity of time that will be billed.</param>
+        public static PriceComponent ReservationHours(Decimal    Price,
+                                                      TaxRates   TaxRates,
+                                                      TimeSpan?  StepSize   = null)
+
+            => new (
+                   TariffDimension.RESERVATION_HOURS,
+                   Price,
+                   TaxRates,
+                   StepSize.HasValue
+                       ? (UInt32) Math.Round(StepSize.Value.TotalSeconds, 0)
+                       : 1
+               );
+
+        #endregion
+
+
+        #region (static) ChargeHours      (Price, VAT = null, StepSize = null)
 
         /// <summary>
         /// Create a new time-based charging price component.
         /// </summary>
         /// <param name="Price">A price per time span (excl. VAT).</param>
-        /// <param name="Duration">An optional minimum granularity of time that will be billed.</param>
-        public static PriceComponent Time(Decimal    Price,
-                                          Decimal?   VAT        = null,
-                                          TimeSpan?  Duration   = null)
+        /// <param name="VAT">An optional value added tax (percentage).</param>
+        /// <param name="StepSize">An optional minimum granularity of time that will be billed.</param>
+        public static PriceComponent ChargeHours(Decimal    Price,
+                                                 Decimal?   VAT        = null,
+                                                 TimeSpan?  StepSize   = null)
 
-            => new (TariffDimension.TIME,
-                    Price,
-                    VAT.     HasValue
-                        ? TaxRates.VAT(VAT.Value)
-                        : null,
-                    Duration.HasValue
-                        ? (UInt32) Math.Round(Duration.Value.TotalSeconds, 0)
-                        : 1);
+            => new (
+                   TariffDimension.CHARGE_HOURS,
+                   Price,
+                   VAT.     HasValue
+                       ? TaxRates.VAT(VAT.Value)
+                       : null,
+                   StepSize.HasValue
+                       ? (UInt32) Math.Round(StepSize.Value.TotalSeconds, 0)
+                       : 1
+               );
 
         #endregion
 
-        #region (static) ParkingTime (Price, VAT = null, Duration = null)
+        #region (static) ChargeHours      (Price, TaxRates,   StepSize = null)
 
         /// <summary>
-        /// Create a new time-based parking price component.
+        /// Create a new time-based charging price component.
         /// </summary>
         /// <param name="Price">A price per time span (excl. VAT).</param>
-        /// <param name="Duration">An optional minimum granularity of time that will be billed.</param>
-        public static PriceComponent ParkingTime(Decimal    Price,
-                                                 Decimal?   VAT        = null,
-                                                 TimeSpan?  Duration   = null)
+        /// <param name="TaxRates">An enumeration of applicable tax rates for this tariff dimension.</param>
+        /// <param name="StepSize">An optional minimum granularity of time that will be billed.</param>
+        public static PriceComponent ChargeHours(Decimal    Price,
+                                                 TaxRates   TaxRates,
+                                                 TimeSpan?  StepSize   = null)
 
-            => new (TariffDimension.PARKING_TIME,
+            => new (
+                   TariffDimension.CHARGE_HOURS,
+                   Price,
+                   TaxRates,
+                   StepSize.HasValue
+                       ? (UInt32) Math.Round(StepSize.Value.TotalSeconds, 0)
+                       : 1
+               );
+
+        #endregion
+
+
+        #region (static) IdleHours        (Price, VAT = null, StepSize = null)
+
+        /// <summary>
+        /// Create a new time-based price component for the time not charging.
+        /// </summary>
+        /// <param name="Price">A price per time span (excl. VAT).</param>
+        /// <param name="VAT">An optional value added tax (percentage).</param>
+        /// <param name="StepSize">An optional minimum granularity of time that will be billed.</param>
+        public static PriceComponent IdleHours(Decimal    Price,
+                                               Decimal?   VAT        = null,
+                                               TimeSpan?  StepSize   = null)
+
+            => new (TariffDimension.IDLE_HOURS,
                     Price,
                     VAT.HasValue
                         ? TaxRates.VAT(VAT.Value)
                         : null,
-                    Duration.HasValue
-                        ? (UInt32) Math.Round(Duration.Value.TotalSeconds, 0)
+                    StepSize.HasValue
+                        ? (UInt32) Math.Round(StepSize.Value.TotalSeconds, 0)
                         : 1);
+
+        #endregion
+
+        #region (static) IdleHours        (Price, TaxRates,   StepSize = null)
+
+        /// <summary>
+        /// Create a new time-based price component for the time not charging.
+        /// </summary>
+        /// <param name="Price">A price per time span (excl. VAT).</param>
+        /// <param name="TaxRates">An enumeration of applicable tax rates for this tariff dimension.</param>
+        /// <param name="StepSize">An optional minimum granularity of time that will be billed.</param>
+        public static PriceComponent IdleHours(Decimal    Price,
+                                               TaxRates   TaxRates,
+                                               TimeSpan?  StepSize   = null)
+
+            => new (
+                   TariffDimension.IDLE_HOURS,
+                   Price,
+                   TaxRates,
+                   StepSize.HasValue
+                       ? (UInt32) Math.Round(StepSize.Value.TotalSeconds, 0)
+                       : 1
+               );
 
         #endregion
 

@@ -195,18 +195,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new ("FLAT");
 
         /// <summary>
-        /// Time not charging: defined in hours, step_size multiplier: 1 second.
+        /// Reservation time (before) charging: defined in hours, step_size multiplier: 1 second.
         /// </summary>
-        public static TariffDimension PARKING_TIME
-            => new ("PARKING_TIME");
+        public static TariffDimension RESERVATION_HOURS
+            => new ("RESERVATION_HOURS");
 
         /// <summary>
         /// Time charging: defined in hours, step_size multiplier: 1 second.
         /// Can also be used in combination with a RESERVATION restriction to describe
         /// the price of the reservation time.
         /// </summary>
-        public static TariffDimension TIME
-            => new ("TIME");
+        public static TariffDimension CHARGE_HOURS
+            => new ("CHARGE_HOURS");
+
+        /// <summary>
+        /// Time not charging: defined in hours, step_size multiplier: 1 second.
+        /// </summary>
+        public static TariffDimension IDLE_HOURS
+            => new ("IDLE_HOURS");
 
         #endregion
 
