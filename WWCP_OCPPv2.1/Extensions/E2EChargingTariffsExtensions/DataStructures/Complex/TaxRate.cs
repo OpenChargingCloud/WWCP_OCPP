@@ -87,10 +87,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="AppliesToMinimumMaximumCost">Whether the tax applies to minimum/maximum cost.</param>
         public TaxRate(String  Type,
                        Decimal Tax,
-                       Boolean AppliesToEnergyFee,
-                       Boolean AppliesToParkingFee,
-                       Boolean AppliesToOverstayFee,
-                       Boolean AppliesToMinimumMaximumCost)
+                       Boolean AppliesToEnergyFee            = false,
+                       Boolean AppliesToParkingFee           = false,
+                       Boolean AppliesToOverstayFee          = false,
+                       Boolean AppliesToMinimumMaximumCost   = false)
         {
 
             this.Type                         = Type;

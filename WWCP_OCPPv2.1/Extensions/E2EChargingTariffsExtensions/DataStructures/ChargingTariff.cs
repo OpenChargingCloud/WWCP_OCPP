@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                         Currency                                               Currency,
                                                         IEnumerable<TariffElement>                             TariffElements,
 
-                                                        LogoURLs?                                              ProviderLogos                         = null,
+                                                        ImageLinks?                                            ProviderLogos                         = null,
                                                         DateTime?                                              Created                               = null,
                                                         IEnumerable<ChargingTariff_Id>?                        Replaces                              = null,
                                                         IEnumerable<ChargingTariff_Id>?                        References                            = null,
@@ -249,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional collection of logo URLs of the e-mobility provider responsible for this tariff.
         /// </summary>
         [Optional]
-        public   LogoURLs                       ProviderLogos         { get; }
+        public   ImageLinks                     ProviderLogos         { get; }
 
         /// <summary>
         /// The ISO 4217 code of the currency used for this tariff.
@@ -370,7 +370,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               Currency                         Currency,
                               IEnumerable<TariffElement>       TariffElements,
 
-                              LogoURLs?                        ProviderLogos   = null,
+                              ImageLinks?                      ProviderLogos   = null,
                               DateTime?                        Created         = null,
                               IEnumerable<ChargingTariff_Id>?  Replaces        = null,
                               IEnumerable<ChargingTariff_Id>?  References      = null,
@@ -408,8 +408,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.Currency        = Currency;
             this.TariffElements  = TariffElements.Distinct();
 
-            this.ProviderLogos   = ProviderLogos ?? LogoURLs.Empty;
-            this.Created         = Created       ?? Timestamp.Now;
+            this.ProviderLogos   = ProviderLogos ?? ImageLinks.  Empty;
+            this.Created         = Created       ?? Timestamp.   Now;
             this.Replaces        = Replaces?.     Distinct() ?? Array.Empty<ChargingTariff_Id>();
             this.References      = References?.   Distinct() ?? Array.Empty<ChargingTariff_Id>();
             this.TariffType      = TariffType;
@@ -618,8 +618,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalJSONArray("providerLogos",
                                                 "provider logo URLs",
-                                                OCPPv2_1.LogoURLs.TryParse,
-                                                out LogoURLs LogoURLs,
+                                                ImageLinks.TryParse,
+                                                out ImageLinks LogoURLs,
                                                 out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

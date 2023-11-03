@@ -41,6 +41,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region Propertis
+
+        #region Count
+
+        /// <summary>
+        /// The number of tax rates.
+        /// </summary>
+        public UInt32 Count
+
+            => (UInt32) taxRates.Count;
+
+        #endregion
+
+        #endregion
+
         #region Constructor(s)
 
         #region TaxRates(Type, Tax, ...)
@@ -125,7 +140,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSONArray,
                          out var taxRates,
                          out var errorResponse,
-                         CustomTaxRateParser))
+                         CustomTaxRateParser) &&
+                taxRates is not null)
             {
                 return taxRates;
             }
@@ -147,9 +163,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSONArray">The JSON array to parse.</param>
         /// <param name="TaxRates">The parsed tax rates.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JArray        JSONArray,
-                                       out TaxRates  TaxRates,
-                                       out String?   ErrorResponse)
+        public static Boolean TryParse(JArray         JSONArray,
+                                       out TaxRates?  TaxRates,
+                                       out String?    ErrorResponse)
 
             => TryParse(JSONArray,
                         out TaxRates,
@@ -165,18 +181,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomTaxRateParser">A delegate to parse custom tax rate JSON objects.</param>
         public static Boolean TryParse(JArray                                 JSONArray,
-                                       out TaxRates                           TaxRates,
+                                       out TaxRates?                          TaxRates,
                                        out String?                            ErrorResponse,
                                        CustomJObjectParserDelegate<TaxRate>?  CustomTaxRateParser   = null)
         {
 
-            TaxRates       = new TaxRates();
+            TaxRates       = null;
             ErrorResponse  = null;
 
             if (JSONArray is null)
             {
                 return true;
             }
+
+            var taxRates = new HashSet<TaxRate>();
 
             foreach (var jsonToken in JSONArray)
             {
@@ -196,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                             return false;
                         }
 
-                        TaxRates.Add(taxRate);
+                        taxRates.Add(taxRate);
 
                     }
 
@@ -209,6 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             }
 
+            TaxRates = new TaxRates(taxRates);
             return true;
 
         }
@@ -236,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public TaxRates Clone()
 
-            => new (taxRates);
+            => new (taxRates.Select(taxRate => taxRate.Clone()));
 
         #endregion
 
@@ -254,26 +273,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="AppliesToMinimumMaximumCost">Whether the tax applies to minimum/maximum cost.</param>
         public TaxRates Add(String  Type,
                             Decimal Tax,
-                            Boolean AppliesToEnergyFee,
-                            Boolean AppliesToParkingFee,
-                            Boolean AppliesToOverstayFee,
-                            Boolean AppliesToMinimumMaximumCost)
-        {
+                            Boolean AppliesToEnergyFee            = false,
+                            Boolean AppliesToParkingFee           = false,
+                            Boolean AppliesToOverstayFee          = false,
+                            Boolean AppliesToMinimumMaximumCost   = false)
 
-            taxRates.Add(
-                new TaxRate(
-                    Type,
-                    Tax,
-                    AppliesToEnergyFee,
-                    AppliesToParkingFee,
-                    AppliesToOverstayFee,
-                    AppliesToMinimumMaximumCost
-                )
-            );
-
-            return this;
-
-        }
+            => new (new List<TaxRate>(taxRates) {
+                        new TaxRate(
+                            Type,
+                            Tax,
+                            AppliesToEnergyFee,
+                            AppliesToParkingFee,
+                            AppliesToOverstayFee,
+                            AppliesToMinimumMaximumCost
+                        )
+                    });
 
         #endregion
 
@@ -284,15 +298,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="TaxRate">A tax rate to add.</param>
         public TaxRates Add(TaxRate TaxRate)
-        {
 
-            taxRates.Add(TaxRate);
-
-            return this;
-
-        }
+            => new (new List<TaxRate>(taxRates) { TaxRate });
 
         #endregion
+
 
         #region Get   (TaxRateType)
 
@@ -337,23 +347,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
         #region Remove(Type)
 
         /// <summary>
-        /// Remove the given tax rate.
+        /// Remove all tax rates having the given type.
         /// </summary>
-        /// <param name="Type">A tax rate tyoe to remove.</param>
+        /// <param name="Type">A type of tax rates to remove.</param>
         public TaxRates Remove(String Type)
-        {
 
-            var taxRatesToRemove = taxRates.Where(taxRate => taxRate.Type == Type).ToArray();
-
-            foreach (var taxRateToRemove in taxRatesToRemove)
-                taxRates.Remove(taxRateToRemove);
-
-            return this;
-
-        }
+            => new (new List<TaxRate>(taxRates.Where(taxRate => taxRate.Type != Type)));
 
         #endregion
 
@@ -364,24 +367,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="TaxRate">A tax rate to remove.</param>
         public TaxRates Remove(TaxRate TaxRate)
-        {
 
-            taxRates.Remove(TaxRate);
-
-            return this;
-
-        }
-
-        #endregion
-
-        #region Count
-
-        /// <summary>
-        /// The number of language/value pairs.
-        /// </summary>
-        public UInt32 Count
-
-            => (UInt32) taxRates.Count;
+            => new (new List<TaxRate>(taxRates.Where(taxRate => taxRate != TaxRate)));
 
         #endregion
 
@@ -426,13 +413,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetEnumerator()
 
         /// <summary>
-        /// Enumerate all internationalized (ML) texts.
+        /// Enumerate all tax rates.
         /// </summary>
         public IEnumerator<TaxRate> GetEnumerator()
             => taxRates.GetEnumerator();
 
         /// <summary>
-        /// Enumerate all internationalized (ML) texts.
+        /// Enumerate all tax rates.
         /// </summary>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
             => taxRates.GetEnumerator();
@@ -575,20 +562,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var c = taxRates.Count.CompareTo(TaxRates.taxRates.Count);
 
-            var a = taxRates.OrderBy(taxRate => taxRate).ToArray();
-            var b = TaxRates.OrderBy(taxRate => taxRate).ToArray();
-
-            for (var i = 0; i < a.Length; i++)
+            if (c == 0)
             {
 
-                c = a[i].CompareTo(b[i]);
+                var a = taxRates.OrderBy(taxRate => taxRate).ToArray();
+                var b = TaxRates.OrderBy(taxRate => taxRate).ToArray();
 
-                if (c != 0)
-                    return c;
+                for (var i = 0; i < a.Length; i++)
+                {
+
+                    c = a[i].CompareTo(b[i]);
+
+                    if (c != 0)
+                        return c;
+
+                }
 
             }
 
-            return 0;
+            return c;
 
         }
 
@@ -645,7 +637,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => taxRates.Count == 0
+            => taxRates.Count > 0
 
                    ? taxRates.
                          Select(taxRate => taxRate.ToString()).
