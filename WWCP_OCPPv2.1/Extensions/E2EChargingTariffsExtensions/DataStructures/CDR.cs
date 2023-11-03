@@ -17,13 +17,9 @@
 
 #region Usings
 
-using System.Security.Cryptography;
-
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -133,6 +129,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public   IEnumerable<MeteringValue>     MeteringValues        { get; }
 
+        public   IEnumerable<ChargingPeriod>    ChargingPeriods       { get; }
+
 
 
 
@@ -185,51 +183,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public CDR(CDR_Id                      Id,
+        public CDR(CDR_Id                        Id,
 
-                   Provider_Id                 ProviderId,
-                   DisplayTexts                ProviderName,
+                   Provider_Id                   ProviderId,
+                   DisplayTexts                  ProviderName,
 
-                   CSOOperator_Id              OperatorId,
-                   GlobalEVSE_Id               EVSEId,
-                   ChargingStation_Id?         ChargingStationId,
-                   ChargingPool_Id?            ChargingPoolId,
-                   IEnumerable<MeteringValue>  MeteringValues,
+                   CSOOperator_Id                CSOOperatorId,
+                   GlobalEVSE_Id                 EVSEId,
+                   ChargingStation_Id?           ChargingStationId,
+                   ChargingPool_Id?              ChargingPoolId,
+                   IEnumerable<MeteringValue>    MeteringValues,
 
-                   Price                       TotalFixedCost,
-                   Price                       TotalReservationCost,
+                   Price                         TotalFixedCost,
+                   Price                         TotalReservationCost,
 
-                   TimeSpan                    TotalTime,
-                   TimeSpan                    BilledTime,
-                   Price                       TotalTimeCost,
+                   TimeSpan                      TotalTime,
+                   TimeSpan                      BilledTime,
+                   Price                         TotalTimeCost,
 
-                   TimeSpan                    TotalChargingTime,
-                   TimeSpan                    BilledChargingTime,
+                   TimeSpan                      TotalChargingTime,
+                   TimeSpan                      BilledChargingTime,
 
-                   WattHour                    TotalEnergy,
-                   WattHour                    BilledEnergy,
-                   Price                       TotalEnergyCost,
+                   WattHour                      TotalEnergy,
+                   WattHour                      BilledEnergy,
+                   Price                         TotalEnergyCost,
 
-                   TimeSpan                    TotalParkingTime,
-                   TimeSpan                    BilledParkingTime,
-                   Price                       TotalParkingCost,
+                   TimeSpan                      TotalParkingTime,
+                   TimeSpan                      BilledParkingTime,
+                   Price                         TotalParkingCost,
 
-                   Price                       TotalCost,
-                   Currency                    Currency,
+                   Price                         TotalCost,
+                   Currency                      Currency,
 
-                   DateTime?                   Created              = null,
-                   IEnumerable<CDR_Id>?        Replaces             = null,
-                   IEnumerable<CDR_Id>?        References           = null,
-                   ChargingTariff?             ChargingTariff       = null,
+                   DateTime?                     Created              = null,
+                   IEnumerable<CDR_Id>?          Replaces             = null,
+                   IEnumerable<CDR_Id>?          References           = null,
+                   ChargingTariff?               ChargingTariff       = null,
+                   IEnumerable<ChargingPeriod>?  ChargingPeriods      = null,
 
-                   DisplayTexts?               Description          = null,
-                   URL?                        URL                  = null,
+                   DisplayTexts?                 Description          = null,
+                   URL?                          URL                  = null,
 
-                   IEnumerable<KeyPair>?       SignKeys             = null,
-                   IEnumerable<SignInfo>?      SignInfos            = null,
-                   IEnumerable<Signature>?     Signatures           = null,
+                   IEnumerable<KeyPair>?         SignKeys             = null,
+                   IEnumerable<SignInfo>?        SignInfos            = null,
+                   IEnumerable<Signature>?       Signatures           = null,
 
-                   CustomData?                 CustomData           = null)
+                   CustomData?                   CustomData           = null)
 
             : base (SignKeys,
                     SignInfos,
@@ -246,11 +245,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.ProviderName          = ProviderName;
             this.Currency              = Currency;
 
-            this.CSOOperatorId            = OperatorId;
+            this.CSOOperatorId         = CSOOperatorId;
             this.EVSEId                = EVSEId;
             this.ChargingStationId     = ChargingStationId;
             this.ChargingPoolId        = ChargingPoolId;
-            this.MeteringValues        = MeteringValues.Distinct();
+            this.MeteringValues        = MeteringValues.  Distinct();
+            this.ChargingPeriods       = ChargingPeriods?.Distinct() ?? Array.Empty<ChargingPeriod>();
 
             this.TotalFixedCost        = TotalFixedCost;
             this.TotalReservationCost  = TotalReservationCost;
@@ -813,6 +813,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region Parse ChargingPeriods       [optional]
+
+                if (JSON.ParseOptionalHashSet("chargingPeriods",
+                                              "charging periods",
+                                              ChargingPeriod.TryParse,
+                                              out HashSet<ChargingPeriod> ChargingPeriods,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Parse Description           [optional]
 
                 if (JSON.ParseOptionalJSON("description",
@@ -1021,6 +1035,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                           Replaces,
                           References,
                           ChargingTariff,
+                          ChargingPeriods,
 
                           null,
                           null,
@@ -1028,6 +1043,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                           null,
                           null,
                           Signatures,
+
                           CustomData
 
                       );
@@ -1130,7 +1146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    EVSEId,
                    ChargingStationId,
                    ChargingPoolId,
-                   MeteringValues.Select(meteringValue => meteringValue.Clone()).ToArray(),
+                   MeteringValues. Select(meteringValue  => meteringValue.Clone()). ToArray(),
 
                    TotalFixedCost.      Clone(),
                    TotalReservationCost.Clone(),
@@ -1154,9 +1170,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Currency,
 
                    Created,
-                   Replaces.      Select(cdrId         => cdrId.        Clone).  ToArray(),
-                   References.    Select(cdrId         => cdrId.        Clone).  ToArray(),
-                   null,
+                   Replaces.       Select(cdrId          => cdrId.         Clone).  ToArray(),
+                   References.     Select(cdrId          => cdrId.         Clone).  ToArray(),
+                   ChargingTariff,
+                   ChargingPeriods.Select(chargingPeriod => chargingPeriod.Clone()).ToArray(),
 
                    null,
                    null,
