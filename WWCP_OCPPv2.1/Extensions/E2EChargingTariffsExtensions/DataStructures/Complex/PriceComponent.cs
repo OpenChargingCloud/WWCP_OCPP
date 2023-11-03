@@ -29,9 +29,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A price component defines the pricing of a tariff.
     /// </summary>
-    public readonly struct PriceComponent : IEquatable<PriceComponent>,
-                                            IComparable<PriceComponent>,
-                                            IComparable
+    public class PriceComponent : IEquatable<PriceComponent>,
+                                  IComparable<PriceComponent>,
+                                  IComparable
     {
 
         #region Properties
@@ -49,13 +49,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Decimal          Price       { get; }
 
         /// <summary>
-        /// The enumeration of applicable tax percentages for this tariff dimension.
-        /// If omitted, no tax is applicable. Not providing a tax is different from 0% tax, which would be a value of 0.0 here.
-        /// </summary>
-        [Optional]
-        public TaxRates         TaxRates    { get; }
-
-        /// <summary>
         /// The minimum amount to be billed. This unit will be billed in this step_size blocks.
         /// </summary>
         /// <example>
@@ -63,7 +56,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// so if 6 minutes is used, 10 minutes (2 blocks of step_size) will be billed.
         /// </example>
         [Mandatory]
-        public UInt32?          StepSize    { get; }
+        public UInt32           StepSize    { get; }
+
+        /// <summary>
+        /// The enumeration of applicable tax percentages for this tariff dimension.
+        /// If omitted, no tax is applicable. Not providing a tax is different from 0% tax, which would be a value of 0.0 here.
+        /// </summary>
+        [Optional]
+        public TaxRates         TaxRates    { get; }
 
         #endregion
 
@@ -74,18 +74,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Type">A tariff dimension.</param>
         /// <param name="Price">A price per unit (excl. VAT) for this tariff dimension.</param>
-        /// <param name="TaxRates">The enumeration of applicable tax percentages for this tariff dimension.</param>
         /// <param name="StepSize">The minimum amount to be billed. This unit will be billed in this step_size blocks.</param>
+        /// <param name="TaxRates">An optional enumeration of applicable tax percentages for this tariff dimension.</param>
         public PriceComponent(TariffDimension  Type,
                               Decimal          Price,
-                              TaxRates?        TaxRates   = null,
-                              UInt32?          StepSize   = null)
+                              UInt32           StepSize,
+                              TaxRates?        TaxRates   = null)
         {
 
             this.Type      = Type;
             this.Price     = Price;
-            this.TaxRates  = TaxRates ?? TaxRates.Empty;
             this.StepSize  = StepSize;
+            this.TaxRates  = TaxRates ?? TaxRates.Empty;
 
         }
 
@@ -106,38 +106,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var priceComponent,
                          out var errorResponse,
-                         CustomPriceComponentParser))
+                         CustomPriceComponentParser) &&
+                priceComponent is not null)
             {
                 return priceComponent;
             }
 
             throw new ArgumentException("The given JSON representation of a price component is invalid: " + errorResponse,
                                         nameof(JSON));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(JSON, CustomPriceComponentParser = null)
-
-        /// <summary>
-        /// Try to parse the given JSON representation of a price component.
-        /// </summary>
-        /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomPriceComponentParser">A delegate to parse custom price component JSON objects.</param>
-        public static PriceComponent? TryParse(JObject                                          JSON,
-                                                  CustomJObjectParserDelegate<PriceComponent>?  CustomPriceComponentParser   = null)
-        {
-
-            if (TryParse(JSON,
-                         out var priceComponent,
-                         out var errorResponse,
-                         CustomPriceComponentParser))
-            {
-                return priceComponent;
-            }
-
-            return default;
 
         }
 
@@ -153,9 +129,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="PriceComponent">The parsed price component.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject             JSON,
-                                       out PriceComponent  PriceComponent,
-                                       out String?         ErrorResponse)
+        public static Boolean TryParse(JObject              JSON,
+                                       out PriceComponent?  PriceComponent,
+                                       out String?          ErrorResponse)
 
             => TryParse(JSON,
                         out PriceComponent,
@@ -171,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomPriceComponentParser">A delegate to parse custom price component JSON objects.</param>
         public static Boolean TryParse(JObject                                       JSON,
-                                       out PriceComponent                            PriceComponent,
+                                       out PriceComponent?                           PriceComponent,
                                        out String?                                   ErrorResponse,
                                        CustomJObjectParserDelegate<PriceComponent>?  CustomPriceComponentParser   = null)
         {
@@ -179,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             try
             {
 
-                PriceComponent = default;
+                PriceComponent = null;
 
                 if (JSON?.HasValues != true)
                 {
@@ -212,6 +188,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
+                #region Parse StepSize    [optional]
+
+                if (JSON.ParseOptional("stepSize",
+                                       "step size",
+                                       out UInt32? StepSize,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
                 #region Parse TaxRates    [optional]
 
                 if (JSON.ParseOptionalJSONArray("taxRates",
@@ -226,24 +215,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse StepSize    [mandatory]
-
-                if (!JSON.ParseMandatory("step_size",
-                                         "step size",
-                                         out UInt32 StepSize,
-                                         out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
 
 
                 PriceComponent = new PriceComponent(
                                      Type,
                                      Price,
-                                     TaxRates,
-                                     StepSize
+                                     StepSize ?? 1,
+                                     TaxRates
                                  );
 
 
@@ -256,7 +234,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             }
             catch (Exception e)
             {
-                PriceComponent  = default;
+                PriceComponent  = null;
                 ErrorResponse   = "The given JSON representation of a price component is invalid: " + e.Message;
                 return false;
             }
@@ -280,13 +258,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("type",       Type.ToString()),
                                  new JProperty("price",      Price),
+                                 new JProperty("stepSize",   StepSize),
 
                            TaxRates.Any()
                                ? new JProperty("taxRates",   new JArray(TaxRates.Select(taxRate => taxRate.ToJSON(CustomTaxRateSerializer))))
-                               : null,
-
-                           StepSize.HasValue
-                               ? new JProperty("stepSize",   StepSize.Value)
                                : null
 
                        );
@@ -309,8 +284,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    Type.Clone,
                    Price,
-                   TaxRates,
-                   StepSize
+                   StepSize,
+                   TaxRates.Clone()
                );
 
         #endregion
@@ -331,10 +306,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    TariffDimension.FLAT,
                    Price,
+                   1,
                    VAT.HasValue
                        ? TaxRates.VAT(VAT.Value)
-                       : null,
-                   1
+                       : null
                );
 
         #endregion
@@ -352,8 +327,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    TariffDimension.FLAT,
                    Price,
-                   TaxRates,
-                   1
+                   1,
+                   TaxRates
                );
 
         #endregion
@@ -374,12 +349,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    TariffDimension.ENERGY,
                    Price,
+                   StepSize.HasValue
+                       ? (UInt32)Math.Round(StepSize.Value.Value, 0)
+                       : 1000,
                    VAT.HasValue
                        ? TaxRates.VAT(VAT.Value)
-                       : null,
-                   StepSize.HasValue
-                       ? (UInt32) Math.Round(StepSize.Value.Value, 0)
-                       : 1
+                       : null
                );
 
         #endregion
@@ -399,10 +374,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    TariffDimension.ENERGY,
                    Price,
-                   TaxRates,
                    StepSize.HasValue
                        ? (UInt32) Math.Round(StepSize.Value.Value, 0)
-                       : 1
+                       : 1000,
+                   TaxRates
                );
 
         #endregion
@@ -423,12 +398,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    TariffDimension.RESERVATION_HOURS,
                    Price,
-                   VAT.     HasValue
-                       ? TaxRates.VAT(VAT.Value)
-                       : null,
                    StepSize.HasValue
                        ? (UInt32) Math.Round(StepSize.Value.TotalSeconds, 0)
-                       : 1
+                       : 1,
+                   VAT.HasValue
+                       ? TaxRates.VAT(VAT.Value)
+                       : null
                );
 
         #endregion
@@ -448,10 +423,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    TariffDimension.RESERVATION_HOURS,
                    Price,
-                   TaxRates,
                    StepSize.HasValue
                        ? (UInt32) Math.Round(StepSize.Value.TotalSeconds, 0)
-                       : 1
+                       : 1,
+                   TaxRates
                );
 
         #endregion
@@ -472,12 +447,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    TariffDimension.CHARGE_HOURS,
                    Price,
-                   VAT.     HasValue
-                       ? TaxRates.VAT(VAT.Value)
-                       : null,
                    StepSize.HasValue
                        ? (UInt32) Math.Round(StepSize.Value.TotalSeconds, 0)
-                       : 1
+                       : 1,
+                   VAT.HasValue
+                       ? TaxRates.VAT(VAT.Value)
+                       : null
                );
 
         #endregion
@@ -497,10 +472,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    TariffDimension.CHARGE_HOURS,
                    Price,
-                   TaxRates,
                    StepSize.HasValue
                        ? (UInt32) Math.Round(StepSize.Value.TotalSeconds, 0)
-                       : 1
+                       : 1,
+                   TaxRates
                );
 
         #endregion
@@ -518,14 +493,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                Decimal?   VAT        = null,
                                                TimeSpan?  StepSize   = null)
 
-            => new (TariffDimension.IDLE_HOURS,
-                    Price,
-                    VAT.HasValue
-                        ? TaxRates.VAT(VAT.Value)
-                        : null,
-                    StepSize.HasValue
-                        ? (UInt32) Math.Round(StepSize.Value.TotalSeconds, 0)
-                        : 1);
+            => new (
+                   TariffDimension.IDLE_HOURS,
+                   Price,
+                   StepSize.HasValue
+                       ? (UInt32) Math.Round(StepSize.Value.TotalSeconds, 0)
+                       : 1,
+                   VAT.HasValue
+                       ? TaxRates.VAT(VAT.Value)
+                       : null
+               );
 
         #endregion
 
@@ -544,10 +521,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    TariffDimension.IDLE_HOURS,
                    Price,
-                   TaxRates,
                    StepSize.HasValue
                        ? (UInt32) Math.Round(StepSize.Value.TotalSeconds, 0)
-                       : 1
+                       : 1,
+                   TaxRates
                );
 
         #endregion
@@ -565,10 +542,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PriceComponent1">A price component.</param>
         /// <param name="PriceComponent2">Another price component.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (PriceComponent PriceComponent1,
-                                           PriceComponent PriceComponent2)
+        public static Boolean operator == (PriceComponent? PriceComponent1,
+                                           PriceComponent? PriceComponent2)
+        {
 
-            => PriceComponent1.Equals(PriceComponent2);
+            // If both are null, or both are same instance, return true.
+            if (ReferenceEquals(PriceComponent1, PriceComponent2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (PriceComponent1 is null || PriceComponent2 is null)
+                return false;
+
+            return PriceComponent1.Equals(PriceComponent2);
+
+        }
 
         #endregion
 
@@ -580,10 +568,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PriceComponent1">A price component.</param>
         /// <param name="PriceComponent2">Another price component.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (PriceComponent PriceComponent1,
-                                           PriceComponent PriceComponent2)
+        public static Boolean operator != (PriceComponent? PriceComponent1,
+                                           PriceComponent? PriceComponent2)
 
-            => !PriceComponent1.Equals(PriceComponent2);
+            => !(PriceComponent1 == PriceComponent2);
 
         #endregion
 
@@ -595,10 +583,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PriceComponent1">A price component.</param>
         /// <param name="PriceComponent2">Another price component.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (PriceComponent PriceComponent1,
-                                          PriceComponent PriceComponent2)
+        public static Boolean operator < (PriceComponent? PriceComponent1,
+                                          PriceComponent? PriceComponent2)
 
-            => PriceComponent1.CompareTo(PriceComponent2) < 0;
+            => PriceComponent1 is null || PriceComponent2 is null
+                   ? throw new ArgumentNullException(PriceComponent1 is null ? nameof(PriceComponent1) : nameof(PriceComponent2), "The given price component must not be null!")
+                   : PriceComponent1.CompareTo(PriceComponent2) < 0;
 
         #endregion
 
@@ -610,10 +600,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PriceComponent1">A price component.</param>
         /// <param name="PriceComponent2">Another price component.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (PriceComponent PriceComponent1,
-                                           PriceComponent PriceComponent2)
+        public static Boolean operator <= (PriceComponent? PriceComponent1,
+                                           PriceComponent? PriceComponent2)
 
-            => PriceComponent1.CompareTo(PriceComponent2) <= 0;
+            => !(PriceComponent1 > PriceComponent2);
 
         #endregion
 
@@ -625,10 +615,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PriceComponent1">A price component.</param>
         /// <param name="PriceComponent2">Another price component.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (PriceComponent PriceComponent1,
-                                          PriceComponent PriceComponent2)
+        public static Boolean operator > (PriceComponent? PriceComponent1,
+                                          PriceComponent? PriceComponent2)
 
-            => PriceComponent1.CompareTo(PriceComponent2) > 0;
+            => PriceComponent1 is null || PriceComponent2 is null
+                   ? throw new ArgumentNullException(PriceComponent1 is null ? nameof(PriceComponent1) : nameof(PriceComponent2), "The given price component must not be null!")
+                   : PriceComponent1.CompareTo(PriceComponent2) > 0;
 
         #endregion
 
@@ -640,10 +632,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="PriceComponent1">A price component.</param>
         /// <param name="PriceComponent2">Another price component.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (PriceComponent PriceComponent1,
-                                           PriceComponent PriceComponent2)
+        public static Boolean operator >= (PriceComponent? PriceComponent1,
+                                           PriceComponent? PriceComponent2)
 
-            => PriceComponent1.CompareTo(PriceComponent2) >= 0;
+            => !(PriceComponent1 < PriceComponent2);
 
         #endregion
 
@@ -672,19 +664,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Compares two price components.
         /// </summary>
         /// <param name="PriceComponent">A price component to compare with.</param>
-        public Int32 CompareTo(PriceComponent PriceComponent)
+        public Int32 CompareTo(PriceComponent? PriceComponent)
         {
 
-            var c = Type.           CompareTo(PriceComponent.Type);
+            if (PriceComponent is null)
+                throw new ArgumentNullException(nameof(PriceComponent), "The given price component must not be null!");
+
+            var c = Type.    CompareTo(PriceComponent.Type);
 
             if (c == 0)
-                c = Price.          CompareTo(PriceComponent.Price);
+                c = Price.   CompareTo(PriceComponent.Price);
 
             if (c == 0)
-                c = (StepSize ?? 1).CompareTo(PriceComponent.StepSize ?? 1);
+                c = StepSize.CompareTo(PriceComponent.StepSize);
 
             if (c == 0)
-                c = Price.          CompareTo(PriceComponent.Price);
+                c = TaxRates.CompareTo(PriceComponent.TaxRates);
 
             return c;
 
@@ -715,12 +710,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Compares two price components for equality.
         /// </summary>
         /// <param name="PriceComponent">A price component to compare with.</param>
-        public Boolean Equals(PriceComponent PriceComponent)
+        public Boolean Equals(PriceComponent? PriceComponent)
 
-            => Type.    Equals(PriceComponent.Type)     &&
+            => PriceComponent is not null &&
+
+               Type.    Equals(PriceComponent.Type)     &&
                Price.   Equals(PriceComponent.Price)    &&
-               TaxRates.Equals(PriceComponent.TaxRates) &&
-               StepSize.Equals(PriceComponent.StepSize);
+               StepSize.Equals(PriceComponent.StepSize) &&
+               TaxRates.Equals(PriceComponent.TaxRates);
 
         #endregion
 
@@ -756,7 +753,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => String.Concat(
 
-                   $"{Type}, {StepSize}, {Price}",
+                   $"{Type}, {Price}, {StepSize}",
 
                    TaxRates.Any()
                        ? ", " + TaxRates.ToString()
@@ -765,6 +762,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                );
 
         #endregion
+
 
     }
 

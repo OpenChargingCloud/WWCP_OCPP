@@ -136,21 +136,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         [Optional]
         public Watt?                            MaxPower                   { get; }
 
+
         /// <summary>
-        /// The minimum duration in seconds the charging session MUST last (inclusive). When the
+        /// The minimum duration in seconds the charging session (charging & idle) MUST last (inclusive).
+        /// When the duration of a charging session is longer than the defined value, this tariff element
+        /// is or becomes active. Before that moment, this tariff element is not yet active.
+        /// </summary>
+        [Optional]
+        public TimeSpan?                        MinHours                   { get; }
+
+        /// <summary>
+        /// The maximum duration in seconds the charging session (charging & idle) MUST last (exclusive).
+        /// When the duration of a charging session is shorter than the defined value, this tariff element
+        /// is or becomes active. After that moment, this tariff element is no longer active.
+        /// </summary>
+        [Optional]
+        public TimeSpan?                        MaxHours                   { get; }
+
+        /// <summary>
+        /// The minimum duration in seconds the charging MUST last (inclusive). When the
         /// duration of a charging session is longer than the defined value, this tariff element is
         /// or becomes active. Before that moment, this tariff element is not yet active.
         /// </summary>
         [Optional]
-        public TimeSpan?                        MinDuration                { get; }
+        public TimeSpan?                        MinChargeHours             { get; }
 
         /// <summary>
-        /// The maximum duration in seconds the charging session MUST last (exclusive). When the
-        /// duration of a Charging Session is shorter than the defined value, this tariff element
+        /// The maximum duration in seconds the charging MUST last (exclusive). When the
+        /// duration of a charging session is shorter than the defined value, this tariff element
         /// is or becomes active. After that moment, this tariff element is no longer active.
         /// </summary>
         [Optional]
-        public TimeSpan?                        MaxDuration                { get; }
+        public TimeSpan?                        MaxChargeHours             { get; }
+
+        /// <summary>
+        /// The minimum duration in seconds the charging session (i.e. not charging) MUST last (inclusive).
+        /// When the duration of a charging session is longer than the defined value, this tariff element
+        /// is or becomes active. Before that moment, this tariff element is not yet active.
+        /// </summary>
+        [Optional]
+        public TimeSpan?                        MinIdleHours               { get; }
+
+        /// <summary>
+        /// The maximum duration in seconds the charging session (i.e. not charging) MUST last (exclusive).
+        /// When the duration of a Charging Session is shorter than the defined value, this tariff element
+        /// is or becomes active. After that moment, this tariff element is no longer active.
+        /// </summary>
+        [Optional]
+        public TimeSpan?                        MaxIdleHours               { get; }
 
 
         /// <summary>
@@ -228,8 +261,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="MaxCurrent">A sum of the maximum current (in Amperes) over all phases, for example 20.</param>
         /// <param name="MinPower">A minimum power in kW, for example 5.</param>
         /// <param name="MaxPower">A maximum power in kW, for example 20.</param>
-        /// <param name="MinDuration">A minimum duration in seconds the charging session MUST last (inclusive).</param>
-        /// <param name="MaxDuration">A maximum duration in seconds the charging session MUST last (exclusive).</param>
+        /// 
+        /// <param name="MinHours">A minimum duration in seconds the charging session (charging & idle) MUST last (inclusive).</param>
+        /// <param name="MaxHours">A maximum duration in seconds the charging session (charging & idle) MUST last (exclusive).</param>
+        /// <param name="MinChargeHours">A minimum duration in seconds the charging MUST last (inclusive).</param>
+        /// <param name="MaxChargeHours">A maximum duration in seconds the charging MUST last (exclusive).</param>
+        /// <param name="MinIdleHours">A minimum duration in seconds the idle period (i.e. not charging) MUST last (inclusive).</param>
+        /// <param name="MaxIdleHours">A maximum duration in seconds the idle period (i.e. not charging) MUST last (exclusive).</param>
         /// 
         /// <param name="ValidOperators">An enumeration of charging station operators where this charging ticket can be used.</param>
         /// <param name="ValidChargingPools">An enumeration of charging pools where this charging ticket can be used.</param>
@@ -255,8 +293,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                   Ampere?                           MaxCurrent                = null,
                                   Watt?                             MinPower                  = null,
                                   Watt?                             MaxPower                  = null,
-                                  TimeSpan?                         MinDuration               = null,
-                                  TimeSpan?                         MaxDuration               = null,
+
+                                  TimeSpan?                         MinHours                  = null,
+                                  TimeSpan?                         MaxHours                  = null,
+                                  TimeSpan?                         MinChargeHours            = null,
+                                  TimeSpan?                         MaxChargeHours            = null,
+                                  TimeSpan?                         MinIdleHours              = null,
+                                  TimeSpan?                         MaxIdleHours              = null,
 
                                   IEnumerable<CSOOperator_Id>?      ValidOperators            = null,
                                   IEnumerable<ChargingPool_Id>?     ValidChargingPools        = null,
@@ -285,8 +328,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.MaxCurrent               = MaxCurrent;
             this.MinPower                 = MinPower;
             this.MaxPower                 = MaxPower;
-            this.MinDuration              = MinDuration;
-            this.MaxDuration              = MaxDuration;
+
+            this.MinHours                 = MinHours;
+            this.MaxHours                 = MaxHours;
+            this.MinChargeHours           = MinChargeHours;
+            this.MaxChargeHours           = MaxChargeHours;
+            this.MinIdleHours             = MinIdleHours;
+            this.MaxIdleHours             = MaxIdleHours;
 
             this.ValidOperators           = ValidOperators?.         Distinct() ?? Array.Empty<CSOOperator_Id>();
             this.ValidChargingPools       = ValidChargingPools?.     Distinct() ?? Array.Empty<ChargingPool_Id>();
@@ -302,31 +350,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                hashCode = (this.NotBefore?.             GetHashCode() ?? 0) * 41 ^
-                           (this.NotAfter?.              GetHashCode() ?? 0) * 37 ^
+                hashCode = (this.NotBefore?.             GetHashCode() ?? 0) * 101 ^
+                           (this.NotAfter?.              GetHashCode() ?? 0) *  97 ^
 
-                            this.DaysOfWeek.             CalcHashCode()      * 47 ^
-                           (this.StartTimeOfDay?.        GetHashCode() ?? 0) * 47 ^
-                           (this.EndTimeOfDay?.          GetHashCode() ?? 0) * 43 ^
+                            this.DaysOfWeek.             CalcHashCode()      *  89 ^
+                           (this.StartTimeOfDay?.        GetHashCode() ?? 0) *  83 ^
+                           (this.EndTimeOfDay?.          GetHashCode() ?? 0) *  79 ^
 
-                           (this.CurrentType?.           GetHashCode() ?? 0) * 31 ^
-                           (this.MinEnergy?.             GetHashCode() ?? 0) * 31 ^
-                           (this.MaxEnergy?.             GetHashCode() ?? 0) * 29 ^
-                           (this.MinCurrent?.            GetHashCode() ?? 0) * 23 ^
-                           (this.MaxCurrent?.            GetHashCode() ?? 0) * 19 ^
-                           (this.MinPower?.              GetHashCode() ?? 0) * 13^
-                           (this.MaxPower?.              GetHashCode() ?? 0) * 11 ^
-                           (this.MinDuration?.           GetHashCode() ?? 0) *  7 ^
-                           (this.MaxDuration?.           GetHashCode() ?? 0) *  5 ^
+                           (this.CurrentType?.           GetHashCode() ?? 0) *  73 ^
+                           (this.MinEnergy?.             GetHashCode() ?? 0) *  71 ^
+                           (this.MaxEnergy?.             GetHashCode() ?? 0) *  67 ^
+                           (this.MinCurrent?.            GetHashCode() ?? 0) *  61 ^
+                           (this.MaxCurrent?.            GetHashCode() ?? 0) *  59 ^
+                           (this.MinPower?.              GetHashCode() ?? 0) *  53 ^
+                           (this.MaxPower?.              GetHashCode() ?? 0) *  47 ^
 
-                            this.ValidOperators.         CalcHashCode()      * 19 ^
-                            this.ValidChargingPools.     CalcHashCode()      * 17 ^
-                            this.ValidChargingStations.  CalcHashCode()      * 13 ^
-                            this.ValidEVSEs.             CalcHashCode()      * 11 ^
+                           (this.MinHours?.              GetHashCode() ?? 0) *  43 ^
+                           (this.MaxHours?.              GetHashCode() ?? 0) *  41 ^
+                           (this.MinChargeHours?.        GetHashCode() ?? 0) *  37 ^
+                           (this.MaxChargeHours?.        GetHashCode() ?? 0) *  31 ^
+                           (this.MinIdleHours?.          GetHashCode() ?? 0) *  29 ^
+                           (this.MaxIdleHours?.          GetHashCode() ?? 0) *  23 ^
 
-                            this.InvalidChargingPools.   CalcHashCode()      *  7 ^
-                            this.InvalidChargingStations.CalcHashCode()      *  5 ^
-                            this.InvalidEVSEs.           CalcHashCode()      *  3 ^
+                            this.ValidOperators.         CalcHashCode()      *  19 ^
+                            this.ValidChargingPools.     CalcHashCode()      *  17 ^
+                            this.ValidChargingStations.  CalcHashCode()      *  13 ^
+                            this.ValidEVSEs.             CalcHashCode()      *  11 ^
+
+                            this.InvalidChargingPools.   CalcHashCode()      *   7 ^
+                            this.InvalidChargingStations.CalcHashCode()      *   5 ^
+                            this.InvalidEVSEs.           CalcHashCode()      *   3 ^
 
                             this.Reservation?.           GetHashCode() ?? 0;
 
@@ -570,36 +623,105 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Parse MinDuration                [optional]
 
-                if (JSON.ParseOptional("minDuration",
-                                       "minimum duration",
-                                       out Double? minDurationSec,
+                #region Parse MinHours                   [optional]
+
+                if (JSON.ParseOptional("minHours",
+                                       "minimum hours",
+                                       out Double? minHoursSec,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
 
-                var MinDuration = minDurationSec.HasValue
-                                      ? new TimeSpan?(TimeSpan.FromSeconds(minDurationSec.Value))
-                                      : null;
+                var MinHours = minHoursSec.HasValue
+                                   ? new TimeSpan?(TimeSpan.FromSeconds(minHoursSec.Value))
+                                   : null;
 
                 #endregion
 
-                #region Parse MaxDuration                [optional]
+                #region Parse MaxHours                   [optional]
 
-                if (JSON.ParseOptional("maxDuration",
-                                       "maximum duration",
-                                       out Double? maxDurationSec,
+                if (JSON.ParseOptional("maxHours",
+                                       "maximum hours",
+                                       out Double? maxHoursSec,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
 
-                var MaxDuration = maxDurationSec.HasValue
-                                      ? new TimeSpan?(TimeSpan.FromSeconds(maxDurationSec.Value))
+                var MaxHours = maxHoursSec.HasValue
+                                   ? new TimeSpan?(TimeSpan.FromSeconds(maxHoursSec.Value))
+                                   : null;
+
+                #endregion
+
+                #region Parse MinChargeHours             [optional]
+
+                if (JSON.ParseOptional("minChargeHours",
+                                       "minimum charge hours",
+                                       out Double? minChargeHours,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                var MinChargeHours = minChargeHours.HasValue
+                                         ? new TimeSpan?(TimeSpan.FromSeconds(minChargeHours.Value))
+                                         : null;
+
+                #endregion
+
+                #region Parse MaxChargeHours             [optional]
+
+                if (JSON.ParseOptional("maxChargeHours",
+                                       "maximum duration",
+                                       out Double? maxChargeHoursSec,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                var MaxChargeHours = maxChargeHoursSec.HasValue
+                                         ? new TimeSpan?(TimeSpan.FromSeconds(maxChargeHoursSec.Value))
+                                         : null;
+
+                #endregion
+
+                #region Parse MinIdleHours               [optional]
+
+                if (JSON.ParseOptional("minIdleHours",
+                                       "minimum idle hours",
+                                       out Double? minIdleHoursSec,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                var MinIdleHours = minIdleHoursSec.HasValue
+                                       ? new TimeSpan?(TimeSpan.FromSeconds(minIdleHoursSec.Value))
+                                       : null;
+
+                #endregion
+
+                #region Parse MaxIdleHours               [optional]
+
+                if (JSON.ParseOptional("maxIdleHours",
+                                       "maximum idle hours",
+                                       out Double? maxIdleHoursSec,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                var MaxIdleHours = maxIdleHoursSec.HasValue
+                                      ? new TimeSpan?(TimeSpan.FromSeconds(maxIdleHoursSec.Value))
                                       : null;
 
                 #endregion
@@ -734,8 +856,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        MaxCurrent.             HasValue ||
                                        MinPower.               HasValue ||
                                        MaxPower.               HasValue ||
-                                       MinDuration.            HasValue ||
-                                       MaxDuration.            HasValue ||
+
+                                       MinHours.               HasValue ||
+                                       MaxHours.               HasValue ||
+                                       MinChargeHours.         HasValue ||
+                                       MaxChargeHours.         HasValue ||
+                                       MinIdleHours.           HasValue ||
+                                       MaxIdleHours.           HasValue ||
 
                                        ValidOperators.         Any()    ||
                                        ValidChargingPools.     Any()    ||
@@ -764,8 +891,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                  MaxCurrent,
                                                  MinPower,
                                                  MaxPower,
-                                                 MinDuration,
-                                                 MaxDuration,
+
+                                                 MinHours,
+                                                 MaxHours,
+                                                 MinChargeHours,
+                                                 MaxChargeHours,
+                                                 MinIdleHours,
+                                                 MaxIdleHours,
 
                                                  ValidOperators,
                                                  ValidChargingPools,
@@ -777,6 +909,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                  InvalidEVSEs,
 
                                                  Reservation
+
                                              )
 
                                            : null;
@@ -858,12 +991,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                ? new JProperty("maxPower",                  MaxPower.      Value)
                                : null,
 
-                           MinDuration.HasValue
-                               ? new JProperty("minDuration",               MinDuration.   Value.TotalSeconds)
+
+                           MinHours.HasValue
+                               ? new JProperty("minHours",                  MinHours.      Value.TotalSeconds)
                                : null,
 
-                           MaxDuration.HasValue
-                               ? new JProperty("maxDuration",               MaxDuration.   Value.TotalSeconds)
+                           MaxHours.HasValue
+                               ? new JProperty("maxHours",                  MaxHours.      Value.TotalSeconds)
+                               : null,
+
+                           MinChargeHours.HasValue
+                               ? new JProperty("minChargeHours",            MinChargeHours.Value.TotalSeconds)
+                               : null,
+
+                           MaxChargeHours.HasValue
+                               ? new JProperty("maxChargeHours",            MaxChargeHours.Value.TotalSeconds)
+                               : null,
+
+                           MinIdleHours.HasValue
+                               ? new JProperty("minIdleHours",              MinIdleHours.  Value.TotalSeconds)
+                               : null,
+
+                           MaxIdleHours.HasValue
+                               ? new JProperty("maxIdleHours",              MaxIdleHours.  Value.TotalSeconds)
                                : null,
 
 
@@ -922,33 +1072,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public TariffRestrictions Clone()
 
-            => new (NotBefore,
-                    NotAfter,
+            => new (
+                   NotBefore,
+                   NotAfter,
 
-                    DaysOfWeek.ToArray(),
-                    StartTimeOfDay,
-                    EndTimeOfDay,
+                   DaysOfWeek.ToArray(),
+                   StartTimeOfDay,
+                   EndTimeOfDay,
 
-                    CurrentType,
-                    MinEnergy,
-                    MaxEnergy,
-                    MinCurrent,
-                    MaxCurrent,
-                    MinPower,
-                    MaxPower,
-                    MinDuration,
-                    MaxDuration,
+                   CurrentType,
+                   MinEnergy,
+                   MaxEnergy,
+                   MinCurrent,
+                   MaxCurrent,
+                   MinPower,
+                   MaxPower,
 
-                    ValidOperators,
-                    ValidChargingPools,
-                    ValidChargingStations,
-                    ValidEVSEs,
+                   MinHours,
+                   MaxHours,
+                   MinChargeHours,
+                   MaxChargeHours,
+                   MinIdleHours,
+                   MaxIdleHours,
 
-                    InvalidChargingPools,
-                    InvalidChargingStations,
-                    InvalidEVSEs,
+                   ValidOperators,
+                   ValidChargingPools,
+                   ValidChargingStations,
+                   ValidEVSEs,
 
-                    Reservation);
+                   InvalidChargingPools,
+                   InvalidChargingStations,
+                   InvalidEVSEs,
+
+                   Reservation
+               );
 
         #endregion
 
@@ -1022,10 +1179,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => TariffRestrictions is not null &&
 
             ((!NotBefore.     HasValue && !TariffRestrictions.NotBefore.     HasValue) ||
-             ( NotBefore.     HasValue &&  TariffRestrictions.NotBefore.     HasValue && NotBefore.     Value.Equals(TariffRestrictions.NotBefore.  Value))) &&
+             ( NotBefore.     HasValue &&  TariffRestrictions.NotBefore.     HasValue && NotBefore.     Value.Equals(TariffRestrictions.NotBefore.     Value))) &&
 
             ((!NotAfter.      HasValue && !TariffRestrictions.NotAfter.      HasValue) ||
-             ( NotAfter.      HasValue &&  TariffRestrictions.NotAfter.      HasValue && NotAfter.      Value.Equals(TariffRestrictions.NotAfter.    Value))) &&
+             ( NotAfter.      HasValue &&  TariffRestrictions.NotAfter.      HasValue && NotAfter.      Value.Equals(TariffRestrictions.NotAfter.      Value))) &&
 
 
                DaysOfWeek.Count().Equals(TariffRestrictions.DaysOfWeek.Count())   &&
@@ -1047,23 +1204,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             ((!MaxEnergy.     HasValue && !TariffRestrictions.MaxEnergy.     HasValue) ||
               (MaxEnergy.     HasValue &&  TariffRestrictions.MaxEnergy.     HasValue && MaxEnergy.     Value.Equals(TariffRestrictions.MaxEnergy.     Value))) &&
 
-            ((!MinCurrent. HasValue && !TariffRestrictions.MinCurrent. HasValue) ||
-              (MinCurrent. HasValue &&  TariffRestrictions.MinCurrent. HasValue && MinCurrent. Value.Equals(TariffRestrictions.MinCurrent. Value))) &&
+            ((!MinCurrent.    HasValue && !TariffRestrictions.MinCurrent.    HasValue) ||
+              (MinCurrent.    HasValue &&  TariffRestrictions.MinCurrent.    HasValue && MinCurrent.    Value.Equals(TariffRestrictions.MinCurrent.    Value))) &&
 
-            ((!MaxCurrent. HasValue && !TariffRestrictions.MaxCurrent. HasValue) ||
-              (MaxCurrent. HasValue &&  TariffRestrictions.MaxCurrent. HasValue && MaxCurrent. Value.Equals(TariffRestrictions.MaxCurrent. Value))) &&
+            ((!MaxCurrent.    HasValue && !TariffRestrictions.MaxCurrent.    HasValue) ||
+              (MaxCurrent.    HasValue &&  TariffRestrictions.MaxCurrent.    HasValue && MaxCurrent.    Value.Equals(TariffRestrictions.MaxCurrent.    Value))) &&
 
-            ((!MinPower.   HasValue && !TariffRestrictions.MinPower.   HasValue) ||
-              (MinPower.   HasValue &&  TariffRestrictions.MinPower.   HasValue && MinPower.   Value.Equals(TariffRestrictions.MinPower.   Value))) &&
+            ((!MinPower.      HasValue && !TariffRestrictions.MinPower.      HasValue) ||
+              (MinPower.      HasValue &&  TariffRestrictions.MinPower.      HasValue && MinPower.      Value.Equals(TariffRestrictions.MinPower.      Value))) &&
 
-            ((!MaxPower.   HasValue && !TariffRestrictions.MaxPower.   HasValue) ||
-              (MaxPower.   HasValue &&  TariffRestrictions.MaxPower.   HasValue && MaxPower.   Value.Equals(TariffRestrictions.MaxPower.   Value))) &&
+            ((!MaxPower.      HasValue && !TariffRestrictions.MaxPower.      HasValue) ||
+              (MaxPower.      HasValue &&  TariffRestrictions.MaxPower.      HasValue && MaxPower.      Value.Equals(TariffRestrictions.MaxPower.      Value))) &&
 
-            ((!MinDuration.HasValue && !TariffRestrictions.MinDuration.HasValue) ||
-              (MinDuration.HasValue &&  TariffRestrictions.MinDuration.HasValue && MinDuration.Value.Equals(TariffRestrictions.MinDuration.Value))) &&
 
-            ((!MaxDuration.HasValue && !TariffRestrictions.MaxDuration.HasValue) ||
-              (MaxDuration.HasValue &&  TariffRestrictions.MaxDuration.HasValue && MaxDuration.Value.Equals(TariffRestrictions.MaxDuration.Value))) &&
+            ((!MinHours.      HasValue && !TariffRestrictions.MinHours.      HasValue) ||
+              (MinHours.      HasValue &&  TariffRestrictions.MinHours.      HasValue && MinHours.      Value.Equals(TariffRestrictions.MinHours.      Value))) &&
+
+            ((!MaxHours.      HasValue && !TariffRestrictions.MaxHours.      HasValue) ||
+              (MaxHours.      HasValue &&  TariffRestrictions.MaxHours.      HasValue && MaxHours.      Value.Equals(TariffRestrictions.MaxHours.      Value))) &&
+
+            ((!MinChargeHours.HasValue && !TariffRestrictions.MinChargeHours.HasValue) ||
+              (MinChargeHours.HasValue &&  TariffRestrictions.MinChargeHours.HasValue && MinChargeHours.Value.Equals(TariffRestrictions.MinChargeHours.Value))) &&
+
+            ((!MaxChargeHours.HasValue && !TariffRestrictions.MaxChargeHours.HasValue) ||
+              (MaxChargeHours.HasValue &&  TariffRestrictions.MaxChargeHours.HasValue && MaxChargeHours.Value.Equals(TariffRestrictions.MaxChargeHours.Value))) &&
+
+            ((!MinIdleHours.  HasValue && !TariffRestrictions.MinIdleHours.  HasValue) ||
+              (MinIdleHours.  HasValue &&  TariffRestrictions.MinIdleHours.  HasValue && MinIdleHours.  Value.Equals(TariffRestrictions.MinIdleHours.  Value))) &&
+
+            ((!MaxIdleHours.  HasValue && !TariffRestrictions.MaxIdleHours.  HasValue) ||
+              (MaxIdleHours.  HasValue &&  TariffRestrictions.MaxIdleHours.  HasValue && MaxIdleHours.  Value.Equals(TariffRestrictions.MaxIdleHours.  Value))) &&
 
 
                ValidOperators.         Count().          Equals(TariffRestrictions.ValidOperators.         Count())                     &&
@@ -1118,19 +1288,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => String.Concat(
 
                    StartTimeOfDay.  HasValue
-                       ?            StartTimeOfDay.  Value.ToString()
+                       ?            StartTimeOfDay.Value.ToString()
                        : "",
 
                    EndTimeOfDay.    HasValue
-                       ? " - "    + EndTimeOfDay.    Value.ToString()
+                       ? " - "    + EndTimeOfDay.  Value.ToString()
                        : "",
 
                    NotBefore.  HasValue
-                       ? " from " + NotBefore.  Value.ToString()
+                       ? " from " + NotBefore.     Value.ToString()
                        : "",
 
                    NotAfter.    HasValue
-                       ? " to "   + NotAfter.    Value.ToString()
+                       ? " to "   + NotAfter.      Value.ToString()
                        : "",
 
                    MinEnergy.     HasValue
@@ -1142,28 +1312,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        : "",
 
                    MinCurrent. HasValue
-                       ? ", >= "  + MinCurrent. Value.ToString() + " A"
+                       ? ", >= "  + MinCurrent.    Value.ToString() + " A"
                        : "",
 
                    MaxCurrent. HasValue
-                       ? ", <= "  + MaxCurrent. Value.ToString() + " A"
+                       ? ", <= "  + MaxCurrent.    Value.ToString() + " A"
                        : "",
 
                    MinPower.   HasValue
-                       ? ", >= "  + MinPower.   Value.ToString() + " kW"
+                       ? ", >= "  + MinPower.      Value.ToString() + " kW"
                        : "",
 
                    MaxPower.   HasValue
-                       ? ", <= "  + MaxPower.   Value.ToString() + " kW"
+                       ? ", <= "  + MaxPower.      Value.ToString() + " kW"
                        : "",
 
-                   MinDuration.HasValue
-                       ? ", > "   + MinDuration.Value.TotalMinutes.ToString("0.00") + " min"
+
+                   MinHours.HasValue
+                       ? ", > "   + MinHours.      Value.TotalMinutes.ToString("0.00") + " min"
                        : "",
 
-                   MaxDuration.HasValue
-                       ? ", < "   + MaxDuration.Value.TotalMinutes.ToString("0.00") + " min"
+                   MaxHours.HasValue
+                       ? ", < "   + MaxHours.      Value.TotalMinutes.ToString("0.00") + " min"
                        : "",
+
+                   MinChargeHours.HasValue
+                       ? ", > "   + MinChargeHours.Value.TotalMinutes.ToString("0.00") + " min"
+                       : "",
+
+                   MaxChargeHours.HasValue
+                       ? ", < "   + MaxChargeHours.Value.TotalMinutes.ToString("0.00") + " min"
+                       : "",
+
+                   MinIdleHours.HasValue
+                       ? ", > "   + MinIdleHours.  Value.TotalMinutes.ToString("0.00") + " min"
+                       : "",
+
+                   MaxIdleHours.HasValue
+                       ? ", < "   + MaxIdleHours.  Value.TotalMinutes.ToString("0.00") + " min"
+                       : "",
+
 
                    Reservation.HasValue
                        ? ", reservation: " + Reservation.Value.AsText()

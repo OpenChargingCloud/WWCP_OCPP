@@ -21,9 +21,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A charging rate unit value (Watt or Ampere).
     /// </summary>
-    public readonly struct ChargingRateValue : IEquatable <ChargingRateValue>,
-                                              IComparable<ChargingRateValue>,
-                                              IComparable
+    public readonly struct ChargingRateValue : IEquatable<ChargingRateValue>,
+                                               IComparable<ChargingRateValue>,
+                                               IComparable
     {
 
         #region Properties

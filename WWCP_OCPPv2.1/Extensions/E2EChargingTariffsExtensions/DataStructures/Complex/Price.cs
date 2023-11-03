@@ -254,6 +254,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        public static Price Zero
+            => new (0);
+
+
         #region Operator overloading
 
         #region Operator == (Price1, Price2)

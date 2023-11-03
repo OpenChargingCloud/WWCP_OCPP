@@ -326,18 +326,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="AppliesToParkingFee">Whether the tax applies to the parking fee.</param>
         /// <param name="AppliesToOverstayFee">Whether the tax applies to the overstay fee.</param>
         /// <param name="AppliesToMinimumMaximumCost">Whether the tax applies to minimum/maximum cost.</param>
-        public TaxRate? Get(String  TaxRateType,
-                            Boolean AppliesToEnergyFee            = false,
-                            Boolean AppliesToParkingFee           = false,
-                            Boolean AppliesToOverstayFee          = false,
-                            Boolean AppliesToMinimumMaximumCost   = false)
+        public TaxRate? Get(String   TaxRateType,
+                            Boolean? AppliesToEnergyFee            = null,
+                            Boolean? AppliesToParkingFee           = null,
+                            Boolean? AppliesToOverstayFee          = null,
+                            Boolean? AppliesToMinimumMaximumCost   = null)
         {
 
-            var matches = taxRates.Where(taxRate => taxRate.Type                        == TaxRateType          &&
-                                                    taxRate.AppliesToEnergyFee          == AppliesToEnergyFee   &&
-                                                    taxRate.AppliesToParkingFee         == AppliesToParkingFee  &&
-                                                    taxRate.AppliesToOverstayFee        == AppliesToOverstayFee &&
-                                                    taxRate.AppliesToMinimumMaximumCost == AppliesToMinimumMaximumCost);
+            var matches = taxRates.Where(taxRate => (AppliesToEnergyFee.         HasValue ? taxRate.AppliesToEnergyFee          == AppliesToEnergyFee          : true) &&
+                                                    (AppliesToParkingFee.        HasValue ? taxRate.AppliesToParkingFee         == AppliesToParkingFee         : true) &&
+                                                    (AppliesToOverstayFee.       HasValue ? taxRate.AppliesToOverstayFee        == AppliesToOverstayFee        : true) &&
+                                                    (AppliesToMinimumMaximumCost.HasValue ? taxRate.AppliesToMinimumMaximumCost == AppliesToMinimumMaximumCost : true) &&
+                                                     taxRate.Type == TaxRateType);
 
             return matches.Any()
                        ? matches.First()

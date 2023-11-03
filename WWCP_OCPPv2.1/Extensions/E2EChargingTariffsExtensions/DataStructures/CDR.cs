@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// A read-only signable charging tariff.
+    /// A read-only signable charge detail record.
     /// </summary>
     public class CDR : ACustomSignableData,
                        IHasId<CDR_Id>,
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The global unique and unique in time identification of the charging tariff.
+        /// The global unique and unique in time identification of the charge detail record.
         /// </summary>
         [Mandatory]
         public   CDR_Id                         Id                    { get; }
@@ -64,13 +64,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public   DateTime                       Created               { get; }
 
         /// <summary>
-        /// Optional references to other tariffs, which will be replaced by this charging tariff.
+        /// Optional references to other tariffs, which will be replaced by this charge detail record.
         /// </summary>
         [Optional]
         public  IEnumerable<CDR_Id>             Replaces              { get; }
 
         /// <summary>
-        /// Optional references to other tariffs, e.g. because some local adaption of a charging tariff was required.
+        /// Optional references to other tariffs, e.g. because some local adaption of a charge detail record was required.
         /// </summary>
         [Optional]
         public IEnumerable<CDR_Id>              References            { get; }
@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public ChargingPool_Id?                 ChargingPoolId        { get; }
 
         /// <summary>
-        /// The optional charging tariff.
+        /// The optional charge detail record.
         /// </summary>
         [Optional]
         public   ChargingTariff?                ChargingTariff        { get; }
@@ -165,23 +165,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charging tariff.
+        /// Create a new charge detail record.
         /// </summary>
-        /// <param name="Id">A global unique and unique in time identification of the charging tariff.</param>
+        /// <param name="Id">A global unique and unique in time identification of the charge detail record.</param>
         /// <param name="ProviderId">An unique identification of the e-mobility provider responsible for this tariff.</param>
         /// <param name="ProviderName">An multi-language name of the e-mobility provider responsible for this tariff.</param>
         /// <param name="Currency">An ISO 4217 code of the currency used for this tariff.</param>
         /// <param name="MeteringValues">An enumeration of metering values.</param>
         /// 
         /// <param name="Created">An optional timestamp when this tariff was created.</param>
-        /// <param name="Replaces">Optional references to other tariffs, which will be replaced by this charging tariff.</param>
-        /// <param name="References">Optional references to other tariffs, e.g. because some local adaption of a charging tariff was required.</param>
+        /// <param name="Replaces">Optional references to other tariffs, which will be replaced by this charge detail record.</param>
+        /// <param name="References">Optional references to other tariffs, e.g. because some local adaption of a charge detail record was required.</param>
         /// 
         /// <param name="Description">An optional multi-language tariff description.</param>
         /// <param name="URL">An optional informative (not legally binding) URL to a web page that contains an explanation of the tariff information in human readable form.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this charging tariff.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this charging tariff.</param>
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this charge detail record.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this charge detail record.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
         /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
@@ -299,19 +299,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        public static Boolean TryParse(Provider_Id              ProviderId,
-                                       DisplayTexts             ProviderName,
-                                       CSOOperator_Id           CSOOperatorId,
-                                       GlobalEVSE_Id            EVSEId,
-                                       IEnumerable<MeterValue>  MeterValues,
-                                       ChargingTariff           ChargingTariff,
-                                       out CDR?                 CDR,
-                                       out String?              ErrorResponse,
+        public static Boolean CalculateCosts(Provider_Id              ProviderId,
+                                             DisplayTexts             ProviderName,
+                                             CSOOperator_Id           CSOOperatorId,
+                                             GlobalEVSE_Id            EVSEId,
+                                             IEnumerable<MeterValue>  MeterValues,
+                                             ChargingTariff           ChargingTariff,
+                                             out CDR?                 CDR,
+                                             out String?              ErrorResponse,
 
-                                       ChargingStation_Id?      ChargingStationId     = null,
-                                       ChargingPool_Id?         ChargingPoolId        = null,
-                                       Measurands               Measurand             = Measurands.          Current_Import_Offered,
-                                       MeasurementLocations     MeasurementLocation   = MeasurementLocations.Outlet)
+                                             ChargingStation_Id?      ChargingStationId     = null,
+                                             ChargingPool_Id?         ChargingPoolId        = null,
+                                             Measurands               Measurand             = Measurands.          Current_Import_Offered,
+                                             MeasurementLocations     MeasurementLocation   = MeasurementLocations.Outlet)
         {
 
             CDR                     = null;
@@ -428,11 +428,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             if (!ChargingTariff.TariffElements.Any())
             {
-                ErrorResponse = "No charging tariff elements found!";
+                ErrorResponse = "No charge detail record elements found!";
                 return false;
             }
 
-            #region Get first matching charging tariff element
+            #region Get first matching charge detail record element
 
             var tariffElement               = ChargingTariff.TariffElements.First();
 
@@ -442,13 +442,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region Calculate FlatPrice
 
             var flatPriceComponent          = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.FLAT);
-            var flatPrice                   = flatPriceComponent.Price;
-            var flatVAT                     = flatPriceComponent.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;
+            var flatPrice                   = flatPriceComponent?.Price;
+            var flatVAT                     = flatPriceComponent?.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;
 
-            var totalFixedCost              = new Price(
-                                                  ExcludingVAT:  flatPrice,
-                                                  IncludingVAT:  flatPrice + (flatVAT ?? 0)
-                                              );
+            var totalFixedCost              = flatPrice.HasValue
+                                                  ? new Price(
+                                                        ExcludingVAT:  flatPrice.Value,
+                                                        IncludingVAT:  flatPrice.Value + flatPrice.Value * (flatVAT ?? 0) / 100
+                                                    )
+                                                  : OCPPv2_1.Price.Zero;
 
             #endregion
 
@@ -456,9 +458,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var chargingTimePriceComponent  = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.CHARGE_HOURS,
                                                                                            PriceComponent.ChargeHours(0));
-            var chargingTimeStepSize        = chargingTimePriceComponent.StepSize ?? 1;
-            var chargingTimePrice           = chargingTimePriceComponent.Price;
-            var chargingTimeVAT             = chargingTimePriceComponent.TaxRates.Get("VAT", AppliesToEnergyFee: true)?.Tax;
+            var chargingTimeStepSize        = chargingTimePriceComponent?.StepSize ?? 1;
+            var chargingTimePrice           = chargingTimePriceComponent?.Price;
+            var chargingTimeVAT             = chargingTimePriceComponent?.TaxRates.Get("VAT", AppliesToEnergyFee: true)?.Tax;
 
             var billedChargingTimeSteps     = Math.Ceiling(totalChargingTime.TotalSeconds / chargingTimeStepSize);
             var billedChargingTime          = TimeSpan.FromSeconds(billedChargingTimeSteps * chargingTimeStepSize);
@@ -469,9 +471,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var timePriceComponent          = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.CHARGE_HOURS,
                                                                                            PriceComponent.ChargeHours(0));
-            var timeStepSize                = timePriceComponent.StepSize ?? 1;
-            var timePrice                   = timePriceComponent.Price;
-            var timeVAT                     = timePriceComponent.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;
+            var timeStepSize                = timePriceComponent?.StepSize ?? 1;
+            var timePrice                   = timePriceComponent?.Price;
+            var timeVAT                     = timePriceComponent?.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;
 
             var billedTimeSteps             = Math.Ceiling(totalTime.TotalSeconds / timeStepSize);
             var billedTime                  = TimeSpan.FromSeconds(billedTimeSteps * timeStepSize);
@@ -481,16 +483,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #region Calculate BilledEnergy
 
             var energyPriceComponent        = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.ENERGY);
-            var energyStepSize              = energyPriceComponent.StepSize ?? 1;
-            var energyPrice                 = energyPriceComponent.Price;
-            var energyVAT                   = energyPriceComponent.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;
+            var energyStepSize              = energyPriceComponent?.StepSize ?? 1;
+            var energyPrice                 = energyPriceComponent?.Price;
+            var energyVAT                   = energyPriceComponent?.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;
 
             var billedEnergySteps           = Math.Ceiling(totalEnergy.Value / energyStepSize);
             var billedEnergy                = WattHour.Parse(billedEnergySteps * energyStepSize);
-            var totalEnergyCost             = new Price(
-                                                  ExcludingVAT:  billedEnergy.Value / 1000 *  energyPrice,
-                                                  IncludingVAT:  billedEnergy.Value / 1000 * (energyPrice + energyVAT)
-                                              );
+            var totalEnergyCost             = energyPrice.HasValue
+                                                  ? new Price(
+                                                        ExcludingVAT:  billedEnergy.Value / 1000 *  energyPrice.Value,
+                                                        IncludingVAT:  billedEnergy.Value / 1000 * (energyPrice.Value + energyPrice.Value * (energyVAT ?? 0) / 100)
+                                                    )
+                                                  : OCPPv2_1.Price.Zero;
 
             #endregion
 
@@ -552,11 +556,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (JSON, CountryCodeURL = null, PartyIdURL = null, CDRIdURL = null, CustomCDRParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a charging tariff.
+        /// Parse the given JSON representation of a charge detail record.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CDRIdURL">An optional charging tariff identification, e.g. from the HTTP URL.</param>
-        /// <param name="CustomCDRParser">A delegate to parse custom charging tariff JSON objects.</param>
+        /// <param name="CDRIdURL">An optional charge detail record identification, e.g. from the HTTP URL.</param>
+        /// <param name="CustomCDRParser">A delegate to parse custom charge detail record JSON objects.</param>
         public static CDR Parse(JObject                                       JSON,
                                            CDR_Id?                            CDRIdURL   = null,
                                            CustomJObjectParserDelegate<CDR>?  CustomCDRParser    = null)
@@ -571,7 +575,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return tariff!;
             }
 
-            throw new ArgumentException("The given JSON representation of a charging tariff is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a charge detail record is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -583,10 +587,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a charging tariff.
+        /// Try to parse the given JSON representation of a charge detail record.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CDR">The parsed charging tariff.</param>
+        /// <param name="CDR">The parsed charge detail record.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject      JSON,
                                        out CDR?     CDR,
@@ -599,13 +603,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         null);
 
         /// <summary>
-        /// Try to parse the given JSON representation of a charging tariff.
+        /// Try to parse the given JSON representation of a charge detail record.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CDR">The parsed charging tariff.</param>
+        /// <param name="CDR">The parsed charge detail record.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CDRIdURL">An optional charging tariff identification, e.g. from the HTTP URL.</param>
-        /// <param name="CustomCDRParser">A delegate to parse custom charging tariff JSON objects.</param>
+        /// <param name="CDRIdURL">An optional charge detail record identification, e.g. from the HTTP URL.</param>
+        /// <param name="CustomCDRParser">A delegate to parse custom charge detail record JSON objects.</param>
         public static Boolean TryParse(JObject                            JSON,
                                        out CDR?                           CDR,
                                        out String?                        ErrorResponse,
@@ -1038,7 +1042,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 CDR            = default;
-                ErrorResponse  = "The given JSON representation of a charging tariff is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of a charge detail record is invalid: " + e.Message;
                 return false;
             }
 
@@ -1112,7 +1116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Clone()
 
         /// <summary>
-        /// Clone this charging tariff.
+        /// Clone this charge detail record.
         /// </summary>
         public CDR Clone()
 
@@ -1175,8 +1179,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CDR1">A charging tariff.</param>
-        /// <param name="CDR2">Another charging tariff.</param>
+        /// <param name="CDR1">A charge detail record.</param>
+        /// <param name="CDR2">Another charge detail record.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (CDR? CDR1,
                                            CDR? CDR2)
@@ -1199,8 +1203,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CDR1">A charging tariff.</param>
-        /// <param name="CDR2">Another charging tariff.</param>
+        /// <param name="CDR1">A charge detail record.</param>
+        /// <param name="CDR2">Another charge detail record.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (CDR? CDR1,
                                            CDR? CDR2)
@@ -1214,14 +1218,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CDR1">A charging tariff.</param>
-        /// <param name="CDR2">Another charging tariff.</param>
+        /// <param name="CDR1">A charge detail record.</param>
+        /// <param name="CDR2">Another charge detail record.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (CDR? CDR1,
                                           CDR? CDR2)
 
             => CDR1 is null
-                   ? throw new ArgumentNullException(nameof(CDR1), "The given tariff must not be null!")
+                   ? throw new ArgumentNullException(nameof(CDR1), "The given charge detail record must not be null!")
                    : CDR1.CompareTo(CDR2) < 0;
 
         #endregion
@@ -1231,8 +1235,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CDR1">A charging tariff.</param>
-        /// <param name="CDR2">Another charging tariff.</param>
+        /// <param name="CDR1">A charge detail record.</param>
+        /// <param name="CDR2">Another charge detail record.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (CDR? CDR1,
                                            CDR? CDR2)
@@ -1246,14 +1250,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CDR1">A charging tariff.</param>
-        /// <param name="CDR2">Another charging tariff.</param>
+        /// <param name="CDR1">A charge detail record.</param>
+        /// <param name="CDR2">Another charge detail record.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (CDR? CDR1,
                                           CDR? CDR2)
 
             => CDR1 is null
-                   ? throw new ArgumentNullException(nameof(CDR1), "The given tariff must not be null!")
+                   ? throw new ArgumentNullException(nameof(CDR1), "The given charge detail record must not be null!")
                    : CDR1.CompareTo(CDR2) > 0;
 
         #endregion
@@ -1263,8 +1267,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="CDR1">A charging tariff.</param>
-        /// <param name="CDR2">Another charging tariff.</param>
+        /// <param name="CDR1">A charge detail record.</param>
+        /// <param name="CDR2">Another charge detail record.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (CDR? CDR1,
                                            CDR? CDR2)
@@ -1280,14 +1284,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two charging tariffs.
+        /// Compares two charge detail records.
         /// </summary>
-        /// <param name="Object">A charging tariff to compare with.</param>
+        /// <param name="Object">A charge detail record to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is CDR chargingTariff
                    ? CompareTo(chargingTariff)
-                   : throw new ArgumentException("The given object is not a charging tariff!",
+                   : throw new ArgumentException("The given object is not a charge detail record!",
                                                  nameof(Object));
 
         #endregion
@@ -1295,14 +1299,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CompareTo(CDR)
 
         /// <summary>
-        /// Compares two charging tariffs.
+        /// Compares two charge detail records.
         /// </summary>
-        /// <param name="CDR">A charging tariff to compare with.</param>
+        /// <param name="CDR">A charge detail record to compare with.</param>
         public Int32 CompareTo(CDR? CDR)
         {
 
             if (CDR is null)
-                throw new ArgumentNullException(nameof(CDR), "The given charging tariff must not be null!");
+                throw new ArgumentNullException(nameof(CDR), "The given charge detail record must not be null!");
 
             var c = Id.         CompareTo(CDR.Id);
 
@@ -1339,9 +1343,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two charging tariffs for equality.
+        /// Compares two charge detail records for equality.
         /// </summary>
-        /// <param name="Object">A charging tariff to compare with.</param>
+        /// <param name="Object">A charge detail record to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is CDR chargingTariff &&
@@ -1352,9 +1356,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Equals(CDR)
 
         /// <summary>
-        /// Compares two charging tariffs for equality.
+        /// Compares two charge detail records for equality.
         /// </summary>
-        /// <param name="CDR">A charging tariff to compare with.</param>
+        /// <param name="CDR">A charge detail record to compare with.</param>
         public Boolean Equals(CDR? CDR)
 
             => CDR is not null &&
