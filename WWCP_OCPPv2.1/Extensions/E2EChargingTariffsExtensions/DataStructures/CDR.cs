@@ -51,112 +51,113 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The global unique and unique in time identification of the charge detail record.
         /// </summary>
         [Mandatory]
-        public   CDR_Id                         Id                    { get; }
+        public   CDR_Id                         Id                       { get; }
 
         /// <summary>
         /// The timestamp when this tariff was created.
         /// </summary>
         [Mandatory] //, NonStandard("Pagination")]
-        public   DateTime                       Created               { get; }
+        public   DateTime                       Created                  { get; }
 
         /// <summary>
         /// Optional references to other tariffs, which will be replaced by this charge detail record.
         /// </summary>
         [Optional]
-        public  IEnumerable<CDR_Id>             Replaces              { get; }
+        public  IEnumerable<CDR_Id>             Replaces                 { get; }
 
         /// <summary>
         /// Optional references to other tariffs, e.g. because some local adaption of a charge detail record was required.
         /// </summary>
         [Optional]
-        public IEnumerable<CDR_Id>              References            { get; }
+        public IEnumerable<CDR_Id>              References               { get; }
 
         /// <summary>
         /// The unique identification of the e-mobility provider responsible for this tariff.
         /// </summary>
         [Mandatory]
-        public   Provider_Id                    ProviderId            { get; }
+        public   Provider_Id                    ProviderId               { get; }
 
         /// <summary>
         /// The multi-language name of the e-mobility provider responsible for this tariff.
         /// </summary>
         [Mandatory]
-        public   DisplayTexts                   ProviderName          { get; }
+        public   DisplayTexts                   ProviderName             { get; }
 
         /// <summary>
         /// The charging station operator identification.
         /// </summary>
         [Mandatory]
-        public CSOOperator_Id                   CSOOperatorId         { get; }
+        public CSOOperator_Id                   CSOOperatorId            { get; }
 
         /// <summary>
         /// The EVSE identification.
         /// </summary>
         [Mandatory]
-        public GlobalEVSE_Id                    EVSEId                { get; }
+        public GlobalEVSE_Id                    EVSEId                   { get; }
 
         /// <summary>
         /// An optional enumeration of charging station identifications, this tariff is valid for.
         /// </summary>
         [Optional]
-        public ChargingStation_Id?              ChargingStationId     { get; }
+        public ChargingStation_Id?              ChargingStationId        { get; }
 
         /// <summary>
         /// An optional enumeration of charging pool identifications, this tariff is valid for.
         /// </summary>
         [Optional]
-        public ChargingPool_Id?                 ChargingPoolId        { get; }
+        public ChargingPool_Id?                 ChargingPoolId           { get; }
 
         /// <summary>
         /// The optional charge detail record.
         /// </summary>
         [Optional]
-        public   ChargingTariff?                ChargingTariff        { get; }
+        public   ChargingTariff?                ChargingTariff           { get; }
 
         /// <summary>
         /// When this optional field is set, a charging session with this tariff will NOT
         /// cost more than this amount.
         /// </summary>
         [Optional]
-        public   Price?                         Price                 { get; }
+        public   Price?                         Price                    { get; }
 
         /// <summary>
         /// The ISO 4217 code of the currency used for this tariff.
         /// </summary>
         [Optional]
-        public   Currency                       Currency              { get; }
+        public   Currency                       Currency                 { get; }
 
 
-        public   IEnumerable<MeteringValue>     MeteringValues        { get; }
+        public   IEnumerable<MeteringValue>     MeteringValues           { get; }
 
-        public   IEnumerable<ChargingPeriod>    ChargingPeriods       { get; }
-
-
+        public   IEnumerable<ChargingPeriod>    ChargingPeriods          { get; }
 
 
-        public   Price                          TotalFixedCost        { get; }
-        public   Price                          TotalReservationCost  { get; }
-
-        public   TimeSpan                       TotalTime             { get; }
-        public   TimeSpan                       BilledTime            { get; }
-        public   Price                          TotalTimeCost         { get; }
 
 
-        public   TimeSpan                       TotalChargingTime     { get; }
-        public   TimeSpan                       BilledChargingTime    { get; }
+        public   Price                          TotalFixedCost           { get; }
+        public   Price                          TotalReservationCost     { get; }
+
+        public   TimeSpan                       TotalTime                { get; }
+        public   TimeSpan                       BilledTime               { get; }
+        public   Price                          TotalTimeCost            { get; }
 
 
-        public   WattHour                       TotalEnergy           { get; }
-        public   WattHour                       BilledEnergy          { get; }
-        public   Price                          TotalEnergyCost       { get; }
+        public   TimeSpan                       TotalChargingTime        { get; }
+        public   TimeSpan                       BilledChargingTime       { get; }
+        public   Price                          BilledChargingTimeCost    { get; }
 
 
-        public   TimeSpan                       TotalParkingTime      { get; }
-        public   TimeSpan                       BilledParkingTime     { get; }
-        public   Price                          TotalParkingCost      { get; }
+        public   WattHour                       TotalEnergy              { get; }
+        public   WattHour                       BilledEnergy             { get; }
+        public   Price                          BilledEnergyCost          { get; }
 
 
-        public   Price                          TotalCost             { get; }
+        public   TimeSpan                       TotalParkingTime         { get; }
+        public   TimeSpan                       BilledParkingTime        { get; }
+        public   Price                          TotalParkingCost         { get; }
+
+
+        public   Price                          TotalCost                { get; }
 
         #endregion
 
@@ -203,6 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                    TimeSpan                      TotalChargingTime,
                    TimeSpan                      BilledChargingTime,
+                   Price                         TotalChargingTimeCost,
 
                    WattHour                      TotalEnergy,
                    WattHour                      BilledEnergy,
@@ -240,42 +242,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (!MeteringValues.Any())
                 throw new ArgumentNullException(nameof(MeteringValues), "The given enumeration of tariff elements must not be null or empty!");
 
-            this.Id                    = Id;
-            this.ProviderId            = ProviderId;
-            this.ProviderName          = ProviderName;
-            this.Currency              = Currency;
+            this.Id                     = Id;
+            this.ProviderId             = ProviderId;
+            this.ProviderName           = ProviderName;
+            this.Currency               = Currency;
 
-            this.CSOOperatorId         = CSOOperatorId;
-            this.EVSEId                = EVSEId;
-            this.ChargingStationId     = ChargingStationId;
-            this.ChargingPoolId        = ChargingPoolId;
-            this.MeteringValues        = MeteringValues.  Distinct();
-            this.ChargingPeriods       = ChargingPeriods?.Distinct() ?? Array.Empty<ChargingPeriod>();
+            this.CSOOperatorId          = CSOOperatorId;
+            this.EVSEId                 = EVSEId;
+            this.ChargingStationId      = ChargingStationId;
+            this.ChargingPoolId         = ChargingPoolId;
+            this.MeteringValues         = MeteringValues.  Distinct();
+            this.ChargingPeriods        = ChargingPeriods?.Distinct() ?? Array.Empty<ChargingPeriod>();
 
-            this.TotalFixedCost        = TotalFixedCost;
-            this.TotalReservationCost  = TotalReservationCost;
+            this.TotalFixedCost         = TotalFixedCost;
+            this.TotalReservationCost   = TotalReservationCost;
 
-            this.TotalTime             = TotalTime;
-            this.BilledTime            = BilledTime;
-            this.TotalTimeCost         = TotalTimeCost;
+            this.TotalTime              = TotalTime;
+            this.BilledTime             = BilledTime;
+            this.TotalTimeCost          = TotalTimeCost;
 
-            this.TotalChargingTime     = TotalChargingTime;
-            this.BilledChargingTime    = BilledChargingTime;
+            this.TotalChargingTime      = TotalChargingTime;
+            this.BilledChargingTime     = BilledChargingTime;
+            this.BilledChargingTimeCost  = TotalChargingTimeCost;
 
-            this.TotalEnergy           = TotalEnergy;
-            this.BilledEnergy          = BilledEnergy;
-            this.TotalEnergyCost       = TotalEnergyCost;
+            this.TotalEnergy            = TotalEnergy;
+            this.BilledEnergy           = BilledEnergy;
+            this.BilledEnergyCost        = TotalEnergyCost;
 
-            this.TotalParkingTime      = TotalParkingTime;
-            this.BilledParkingTime     = BilledParkingTime;
-            this.TotalParkingCost      = TotalParkingCost;
+            this.TotalParkingTime       = TotalParkingTime;
+            this.BilledParkingTime      = BilledParkingTime;
+            this.TotalParkingCost       = TotalParkingCost;
 
-            this.TotalCost             = TotalCost;
+            this.TotalCost              = TotalCost;
 
-            this.Created               = Created     ?? Timestamp.Now;
-            this.Replaces              = Replaces?.  Distinct() ?? Array.Empty<CDR_Id>();
-            this.References            = References?.Distinct() ?? Array.Empty<CDR_Id>();
-            this.ChargingTariff        = ChargingTariff;
+            this.Created                = Created     ?? Timestamp.Now;
+            this.Replaces               = Replaces?.  Distinct() ?? Array.Empty<CDR_Id>();
+            this.References             = References?.Distinct() ?? Array.Empty<CDR_Id>();
+            this.ChargingTariff         = ChargingTariff;
 
 
             unchecked
@@ -456,27 +459,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region Calculate BilledChargingTime
 
-            var chargingTimePriceComponent  = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.CHARGE_HOURS,
-                                                                                           PriceComponent.ChargeHours(0));
+            var chargingTimePriceComponent  = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.CHARGE_HOURS);
             var chargingTimeStepSize        = chargingTimePriceComponent?.StepSize ?? 1;
             var chargingTimePrice           = chargingTimePriceComponent?.Price;
             var chargingTimeVAT             = chargingTimePriceComponent?.TaxRates.Get("VAT", AppliesToEnergyFee: true)?.Tax;
 
             var billedChargingTimeSteps     = Math.Ceiling(totalChargingTime.TotalSeconds / chargingTimeStepSize);
-            var billedChargingTime          = TimeSpan.FromSeconds(billedChargingTimeSteps * chargingTimeStepSize);
+            var billedChargingTime          = chargingTimePriceComponent is not null
+                                                  ? TimeSpan.FromSeconds(billedChargingTimeSteps * chargingTimeStepSize)
+                                                  : TimeSpan.Zero;
+            var totalChargingTimeCost       = chargingTimePrice.HasValue
+                                                  ? new Price(
+                                                        ExcludingVAT:  ((Decimal) billedChargingTime.TotalSeconds) / 3600 *  chargingTimePrice.Value,
+                                                        IncludingVAT:  ((Decimal) billedChargingTime.TotalSeconds) / 3600 * (chargingTimePrice.Value + chargingTimePrice.Value * (chargingTimeVAT ?? 0) / 100)
+                                                    )
+                                                  : OCPPv2_1.Price.Zero;
 
             #endregion
 
             #region Calculate BilledTime
 
-            var timePriceComponent          = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.CHARGE_HOURS,
-                                                                                           PriceComponent.ChargeHours(0));
+            var timePriceComponent          = tariffElement.PriceComponents.FirstOrDefault(priceComponent => priceComponent.Type == TariffDimension.CHARGE_HOURS);
             var timeStepSize                = timePriceComponent?.StepSize ?? 1;
             var timePrice                   = timePriceComponent?.Price;
             var timeVAT                     = timePriceComponent?.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;
 
             var billedTimeSteps             = Math.Ceiling(totalTime.TotalSeconds / timeStepSize);
-            var billedTime                  = TimeSpan.FromSeconds(billedTimeSteps * timeStepSize);
+            var billedTime                  = timePriceComponent is not null
+                                                  ? TimeSpan.FromSeconds(billedTimeSteps * timeStepSize)
+                                                  : TimeSpan.Zero;
 
             #endregion
 
@@ -488,7 +499,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var energyVAT                   = energyPriceComponent?.TaxRates.Get("VAT", AppliesToMinimumMaximumCost: true)?.Tax;
 
             var billedEnergySteps           = Math.Ceiling(totalEnergy.Value / energyStepSize);
-            var billedEnergy                = WattHour.Parse(billedEnergySteps * energyStepSize);
+            var billedEnergy                = energyPriceComponent is not null
+                                                  ? WattHour.Parse(billedEnergySteps * energyStepSize)
+                                                  : WattHour.Zero;
             var totalEnergyCost             = energyPrice.HasValue
                                                   ? new Price(
                                                         ExcludingVAT:  billedEnergy.Value / 1000 *  energyPrice.Value,
@@ -505,7 +518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var billedParkingTime           = TimeSpan.Zero;
             var totalParkingCost            = new Price(0);
 
-            var totalCost                   = totalFixedCost + totalReservationCost + totalEnergyCost + totalParkingCost + totalTimeCost;
+            var totalCost                   = totalFixedCost + totalReservationCost + totalChargingTimeCost + totalEnergyCost + totalParkingCost + totalTimeCost;
             var currency                    = ChargingTariff.Currency;
 
 
@@ -534,6 +547,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                       totalChargingTime,
                       billedChargingTime,
+                      totalChargingTimeCost,
 
                       totalEnergy,
                       billedEnergy,
@@ -986,6 +1000,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var TotalChargingTime      = TimeSpan.Zero;
             var BilledChargingTime     = TimeSpan.Zero;
+            var TotalChargingTimeCost  = new Price(0);
 
             var TotalEnergy            = WattHour.Parse(0);
             var BilledEnergy           = WattHour.Parse(0);
@@ -1019,6 +1034,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                           TotalChargingTime,
                           BilledChargingTime,
+                          TotalChargingTimeCost,
 
                           TotalEnergy,
                           BilledEnergy,
@@ -1138,9 +1154,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (
 
-                   Id.                  Clone,
-                   ProviderId.          Clone,
-                   ProviderName.        Clone(),
+                   Id.                   Clone,
+                   ProviderId.           Clone,
+                   ProviderName.         Clone(),
 
                    CSOOperatorId,
                    EVSEId,
@@ -1148,25 +1164,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    ChargingPoolId,
                    MeteringValues. Select(meteringValue  => meteringValue.Clone()). ToArray(),
 
-                   TotalFixedCost.      Clone(),
-                   TotalReservationCost.Clone(),
+                   TotalFixedCost.       Clone(),
+                   TotalReservationCost. Clone(),
 
                    TotalTime,
                    BilledTime,
-                   TotalTimeCost.       Clone(),
+                   TotalTimeCost.        Clone(),
 
                    TotalChargingTime,
                    BilledChargingTime,
+                   BilledChargingTimeCost.Clone(),
 
                    TotalEnergy,
                    BilledEnergy,
-                   TotalEnergyCost.     Clone(),
+                   BilledEnergyCost.      Clone(),
 
                    TotalParkingTime,
                    BilledParkingTime,
-                   TotalParkingCost.    Clone(),
+                   TotalParkingCost.     Clone(),
 
-                   TotalCost.           Clone(),
+                   TotalCost.            Clone(),
                    Currency,
 
                    Created,
