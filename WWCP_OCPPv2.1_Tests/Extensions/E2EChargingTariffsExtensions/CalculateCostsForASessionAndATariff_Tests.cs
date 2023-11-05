@@ -185,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
-                                             TriggerReason:             TriggerReasons.ChargingStateChanged,
+                                             TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            1,
                                              TransactionInfo:           new Transaction(
                                                                             TransactionId:             transactionId,
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TimeSpentCharging:         TimeSpan.Zero,
                                                                             StoppedReason:             null,
                                                                             RemoteStartId:             null,
-                                                                            OperationMode:             OperationModes.ChargingOnly,
+                                                                            OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
                                                                         ),
 
@@ -248,7 +248,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
-                                             TriggerReason:             TriggerReasons.ChargingStateChanged,
+                                             TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            2,
                                              TransactionInfo:           new Transaction(
                                                                             TransactionId:             transactionId,
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
                                                                             StoppedReason:             StopTransactionReasons.Local,
                                                                             RemoteStartId:             null,
-                                                                            OperationMode:             OperationModes.ChargingOnly,
+                                                                            OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
                                                                         ),
 
@@ -469,7 +469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
-                                             TriggerReason:             TriggerReasons.ChargingStateChanged,
+                                             TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            1,
                                              TransactionInfo:           new Transaction(
                                                                             TransactionId:             transactionId,
@@ -477,7 +477,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TimeSpentCharging:         TimeSpan.Zero,
                                                                             StoppedReason:             null,
                                                                             RemoteStartId:             null,
-                                                                            OperationMode:             OperationModes.ChargingOnly,
+                                                                            OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
                                                                         ),
 
@@ -532,7 +532,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
-                                             TriggerReason:             TriggerReasons.ChargingStateChanged,
+                                             TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            2,
                                              TransactionInfo:           new Transaction(
                                                                             TransactionId:             transactionId,
@@ -540,7 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
                                                                             StoppedReason:             StopTransactionReasons.Local,
                                                                             RemoteStartId:             null,
-                                                                            OperationMode:             OperationModes.ChargingOnly,
+                                                                            OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
                                                                         ),
 
@@ -757,7 +757,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
-                                             TriggerReason:             TriggerReasons.ChargingStateChanged,
+                                             TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            1,
                                              TransactionInfo:           new Transaction(
                                                                             TransactionId:             transactionId,
@@ -765,7 +765,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TimeSpentCharging:         TimeSpan.Zero,
                                                                             StoppedReason:             null,
                                                                             RemoteStartId:             null,
-                                                                            OperationMode:             OperationModes.ChargingOnly,
+                                                                            OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
                                                                         ),
 
@@ -820,7 +820,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
-                                             TriggerReason:             TriggerReasons.ChargingStateChanged,
+                                             TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            2,
                                              TransactionInfo:           new Transaction(
                                                                             TransactionId:             transactionId,
@@ -828,7 +828,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
                                                                             StoppedReason:             StopTransactionReasons.Local,
                                                                             RemoteStartId:             null,
-                                                                            OperationMode:             OperationModes.ChargingOnly,
+                                                                            OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
                                                                         ),
 
@@ -1062,7 +1062,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
-                                             TriggerReason:             TriggerReasons.ChargingStateChanged,
+                                             TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            1,
                                              TransactionInfo:           new Transaction(
                                                                             TransactionId:             transactionId,
@@ -1070,7 +1070,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TimeSpentCharging:         TimeSpan.Zero,
                                                                             StoppedReason:             null,
                                                                             RemoteStartId:             null,
-                                                                            OperationMode:             OperationModes.ChargingOnly,
+                                                                            OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
                                                                         ),
 
@@ -1125,7 +1125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
-                                             TriggerReason:             TriggerReasons.ChargingStateChanged,
+                                             TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            2,
                                              TransactionInfo:           new Transaction(
                                                                             TransactionId:             transactionId,
@@ -1133,7 +1133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
                                                                             StoppedReason:             StopTransactionReasons.Local,
                                                                             RemoteStartId:             null,
-                                                                            OperationMode:             OperationModes.ChargingOnly,
+                                                                            OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
                                                                         ),
 
@@ -1392,7 +1392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
-                                             TriggerReason:             TriggerReasons.ChargingStateChanged,
+                                             TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            1,
                                              TransactionInfo:           new Transaction(
                                                                             TransactionId:             transactionId,
@@ -1400,7 +1400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TimeSpentCharging:         TimeSpan.Zero,
                                                                             StoppedReason:             null,
                                                                             RemoteStartId:             null,
-                                                                            OperationMode:             OperationModes.ChargingOnly,
+                                                                            OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
                                                                         ),
 
@@ -1455,7 +1455,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
-                                             TriggerReason:             TriggerReasons.ChargingStateChanged,
+                                             TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            2,
                                              TransactionInfo:           new Transaction(
                                                                             TransactionId:             transactionId,
@@ -1463,7 +1463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
                                                                             StoppedReason:             StopTransactionReasons.Local,
                                                                             RemoteStartId:             null,
-                                                                            OperationMode:             OperationModes.ChargingOnly,
+                                                                            OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
                                                                         ),
 
@@ -1690,7 +1690,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
-                                             TriggerReason:             TriggerReasons.ChargingStateChanged,
+                                             TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            1,
                                              TransactionInfo:           new Transaction(
                                                                             TransactionId:             transactionId,
@@ -1698,7 +1698,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TimeSpentCharging:         TimeSpan.Zero,
                                                                             StoppedReason:             null,
                                                                             RemoteStartId:             null,
-                                                                            OperationMode:             OperationModes.ChargingOnly,
+                                                                            OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
                                                                         ),
 
@@ -1753,7 +1753,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
-                                             TriggerReason:             TriggerReasons.ChargingStateChanged,
+                                             TriggerReason:             TriggerReason.ChargingStateChanged,
                                              SequenceNumber:            2,
                                              TransactionInfo:           new Transaction(
                                                                             TransactionId:             transactionId,
@@ -1761,7 +1761,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
                                                                             StoppedReason:             StopTransactionReasons.Local,
                                                                             RemoteStartId:             null,
-                                                                            OperationMode:             OperationModes.ChargingOnly,
+                                                                            OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
                                                                         ),
 

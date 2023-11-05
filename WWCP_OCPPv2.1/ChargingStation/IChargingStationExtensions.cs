@@ -1123,7 +1123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                  TransactionEvents         EventType,
                                  DateTime                  Timestamp,
-                                 TriggerReasons            TriggerReason,
+                                 TriggerReason            TriggerReason,
                                  UInt32                    SequenceNumber,
                                  Transaction               TransactionInfo,
 

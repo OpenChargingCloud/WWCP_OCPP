@@ -65,12 +65,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional remote start identification of the related request start transaction
         /// request to match the request with this transaction.
         /// </summary>
+        [Optional]
         public RemoteStart_Id?          RemoteStartId        { get; }
 
         /// <summary>
         /// The optional operation mode that is in use at this time.
         /// </summary>
-        public OperationModes?          OperationMode        { get; }
+        [Optional]
+        public OperationMode?           OperationMode        { get; }
+
+        /// <summary>
+        /// Optional maximum cost/energy/time limits for this transaction.
+        /// </summary>
+        [Optional]
+        public TransactionLimits?       TransactionLimits    { get; }
+
+        /// <summary>
+        /// The optional unique charging tariff identification used for the transaction.
+        /// </summary>
+        [Optional]
+        public ChargingTariff_Id?       ChargingTariffId     { get; }
 
         #endregion
 
@@ -85,13 +99,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="StoppedReason">The optional reason why the transaction was stopped. MAY only be omitted when reason is "Local".</param>
         /// <param name="RemoteStartId">The optional remote start identification of the related request start transaction request to match the request with this transaction.</param>
         /// <param name="OperationMode">An optional operation mode that is in use at this time.</param>
+        /// <param name="TransactionLimits">Optional maximum cost/energy/time limits for this transaction.</param>
+        /// <param name="ChargingTariffId">An optional unique charging tariff identification used for the transaction.</param>
+        /// 
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public Transaction(Transaction_Id           TransactionId,
                            ChargingStates?          ChargingState       = null,
                            TimeSpan?                TimeSpentCharging   = null,
                            StopTransactionReasons?  StoppedReason       = null,
                            RemoteStart_Id?          RemoteStartId       = null,
-                           OperationModes?          OperationMode       = null,
+                           OperationMode?           OperationMode       = null,
+                           TransactionLimits?       TransactionLimits   = null,
+                           ChargingTariff_Id?       ChargingTariffId    = null,
+
                            CustomData?              CustomData          = null)
 
             : base(CustomData)
@@ -104,6 +124,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.StoppedReason      = StoppedReason;
             this.OperationMode      = OperationMode;
             this.RemoteStartId      = RemoteStartId;
+            this.TransactionLimits  = TransactionLimits;
+            this.ChargingTariffId   = ChargingTariffId;
+
+
+            unchecked
+            {
+
+                hashCode = this.TransactionId.     GetHashCode()       * 23 ^
+                          (this.ChargingState?.    GetHashCode() ?? 0) * 19 ^
+                          (this.TimeSpentCharging?.GetHashCode() ?? 0) * 17 ^
+                          (this.StoppedReason?.    GetHashCode() ?? 0) * 13 ^
+                          (this.RemoteStartId?.    GetHashCode() ?? 0) * 11 ^
+                          (this.OperationMode?.    GetHashCode() ?? 0) *  7 ^
+                          (this.TransactionLimits?.GetHashCode() ?? 0) *  5 ^
+                          (this.ChargingTariffId?. GetHashCode() ?? 0) *  3 ^
+                           base.                   GetHashCode();
+
+            }
 
         }
 
@@ -253,8 +291,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("operationMode",
                                        "operation mode",
-                                       OperationModesExtensions.TryParse,
-                                       out OperationModes? OperationMode,
+                                       OCPPv2_1.OperationMode.TryParse,
+                                       out OperationMode? OperationMode,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -262,6 +300,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
 
                 #endregion
+
+                #region TransactionLimits    [optional]
+
+                if (JSON.ParseOptionalJSON("transactionLimit",
+                                           "transaction limit",
+                                           OCPPv2_1.TransactionLimits.TryParse,
+                                           out TransactionLimits? TransactionLimits,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region ChargingTariffId     [optional]
+
+                if (JSON.ParseOptional("tariffId",
+                                       "charging tariff identification",
+                                       ChargingTariff_Id.TryParse,
+                                       out ChargingTariff_Id? ChargingTariffId,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 #region CustomData           [optional]
 
@@ -279,13 +346,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                 Transaction = new Transaction(
+
                                   TransactionId,
                                   ChargingState,
                                   TimeSpentCharging,
                                   StoppedReason,
                                   RemoteStartId,
                                   OperationMode,
+                                  TransactionLimits,
+                                  ChargingTariffId,
+
                                   CustomData
+
                               );
 
                 if (CustomTransactionParser is not null)
@@ -319,10 +391,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("transactionId",       TransactionId.Value),
+                                 new JProperty("transactionId",       TransactionId.   Value),
 
                            ChargingState.HasValue
-                               ? new JProperty("chargingState",       ChargingState.Value.AsText())
+                               ? new JProperty("chargingState",       ChargingState.   Value.AsText())
                                : null,
 
                            TimeSpentCharging.HasValue
@@ -330,19 +402,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            StoppedReason.HasValue
-                               ? new JProperty("stoppedReason",       StoppedReason.Value.AsText())
+                               ? new JProperty("stoppedReason",       StoppedReason.   Value.AsText())
                                : null,
 
                            RemoteStartId.HasValue
-                               ? new JProperty("remoteStartId",       RemoteStartId.Value.Value)
+                               ? new JProperty("remoteStartId",       RemoteStartId.   Value.Value)
                                : null,
 
                            OperationMode.HasValue
-                               ? new JProperty("operationMode",       OperationMode.Value.AsText())
+                               ? new JProperty("operationMode",       OperationMode.   Value.ToString())
                                : null,
 
+                           TransactionLimits is not null
+                               ? new JProperty("transactionLimit",    TransactionLimits.     ToJSON())
+                               : null,
+
+                           ChargingTariffId.HasValue
+                               ? new JProperty("tariffId",            ChargingTariffId.Value.ToString())
+                               : null,
+
+
                            CustomData is not null
-                               ? new JProperty("customData",          CustomData.         ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",          CustomData.            ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -428,20 +509,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                TransactionId.Equals(Transaction.TransactionId) &&
 
-            ((!ChargingState.    HasValue && !Transaction.ChargingState.    HasValue) ||
-               ChargingState.    HasValue &&  Transaction.ChargingState.    HasValue && ChargingState.    Value.Equals(Transaction.ChargingState.    Value)) &&
+            ((!ChargingState.    HasValue    && !Transaction.ChargingState.    HasValue) ||
+               ChargingState.    HasValue    &&  Transaction.ChargingState.    HasValue    && ChargingState.    Value.Equals(Transaction.ChargingState.    Value)) &&
 
-            ((!TimeSpentCharging.HasValue && !Transaction.TimeSpentCharging.HasValue) ||
-               TimeSpentCharging.HasValue &&  Transaction.TimeSpentCharging.HasValue && TimeSpentCharging.Value.Equals(Transaction.TimeSpentCharging.Value)) &&
+            ((!TimeSpentCharging.HasValue    && !Transaction.TimeSpentCharging.HasValue)    ||
+               TimeSpentCharging.HasValue    &&  Transaction.TimeSpentCharging.HasValue    && TimeSpentCharging.Value.Equals(Transaction.TimeSpentCharging.Value)) &&
 
-            ((!StoppedReason.    HasValue && !Transaction.StoppedReason.    HasValue) ||
-               StoppedReason.    HasValue &&  Transaction.StoppedReason.    HasValue && StoppedReason.    Value.Equals(Transaction.StoppedReason.    Value)) &&
+            ((!StoppedReason.    HasValue    && !Transaction.StoppedReason.    HasValue)    ||
+               StoppedReason.    HasValue    &&  Transaction.StoppedReason.    HasValue    && StoppedReason.    Value.Equals(Transaction.StoppedReason.    Value)) &&
 
-            ((!RemoteStartId.    HasValue && !Transaction.RemoteStartId.    HasValue) ||
-               RemoteStartId.    HasValue &&  Transaction.RemoteStartId.    HasValue && RemoteStartId.    Value.Equals(Transaction.RemoteStartId.    Value)) &&
+            ((!RemoteStartId.    HasValue    && !Transaction.RemoteStartId.    HasValue)    ||
+               RemoteStartId.    HasValue    &&  Transaction.RemoteStartId.    HasValue    && RemoteStartId.    Value.Equals(Transaction.RemoteStartId.    Value)) &&
 
-            ((!OperationMode.    HasValue && !Transaction.OperationMode.    HasValue) ||
-               OperationMode.    HasValue &&  Transaction.OperationMode.    HasValue && OperationMode.    Value.Equals(Transaction.OperationMode.    Value)) &&
+            ((!OperationMode.    HasValue    && !Transaction.OperationMode.    HasValue)    ||
+               OperationMode.    HasValue    &&  Transaction.OperationMode.    HasValue    && OperationMode.    Value.Equals(Transaction.OperationMode.    Value)) &&
+
+             ((TransactionLimits is null     &&  Transaction.TransactionLimits is null     ) ||
+               TransactionLimits is not null &&  Transaction.TransactionLimits is not null && TransactionLimits.      Equals(Transaction.TransactionLimits))       &&
+
+            ((!ChargingTariffId. HasValue    && !Transaction.ChargingTariffId. HasValue) ||
+               ChargingTariffId. HasValue    &&  Transaction.ChargingTariffId. HasValue    && ChargingTariffId. Value.Equals(Transaction.ChargingTariffId. Value)) &&
 
                base.Equals(Transaction);
 
@@ -451,26 +538,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return TransactionId.     GetHashCode()       * 17 ^
-                      (ChargingState?.    GetHashCode() ?? 0) * 13 ^
-                      (TimeSpentCharging?.GetHashCode() ?? 0) * 11 ^
-                      (StoppedReason?.    GetHashCode() ?? 0) *  7 ^
-                      (RemoteStartId?.    GetHashCode() ?? 0) *  5 ^
-                      (OperationMode?.    GetHashCode() ?? 0) *  3 ^
-
-                       base.              GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

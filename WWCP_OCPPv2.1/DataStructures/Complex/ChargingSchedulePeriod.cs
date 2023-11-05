@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional V2X operation mode that should be used during this time interval.
         /// When absent it defaults to "charging only".
         /// </summary>
-        public OperationModes?                  OperationMode             { get; }
+        public OperationMode?                   OperationMode             { get; }
 
         /// <summary>
         /// The optional power baseline value that is used on top of all values of
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       ChargingRateValue?                SetpointReactive_L3      = null,
 
                                       Boolean?                          PreconditioningRequest   = null,
-                                      OperationModes?                   OperationMode            = null,
+                                      OperationMode?                    OperationMode            = null,
                                       Decimal?                          V2XBaseline              = null,
                                       IEnumerable<V2XFreqWattEntry>?    V2XFreqWattCurve         = null,
                                       IEnumerable<V2XSignalWattEntry>?  V2XSignalWattCurve       = null,
@@ -604,8 +604,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("operationMode",
                                        "V2X operation mode",
-                                       OperationModesExtensions.TryParse,
-                                       out OperationModes? OperationMode,
+                                       OCPPv2_1.OperationMode.TryParse,
+                                       out OperationMode? OperationMode,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

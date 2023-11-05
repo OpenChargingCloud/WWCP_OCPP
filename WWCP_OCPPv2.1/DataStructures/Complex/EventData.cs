@@ -184,6 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.TransactionId          = TransactionId;
             this.VariableMonitoringId   = VariableMonitoringId;
 
+
             unchecked
             {
 

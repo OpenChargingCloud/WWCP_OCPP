@@ -7090,7 +7090,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                           EventType:            TransactionEvents.Started,
                                           Timestamp:            evse.StartTimestamp.Value,
-                                          TriggerReason:        TriggerReasons.RemoteStart,
+                                          TriggerReason:        TriggerReason.RemoteStart,
                                           SequenceNumber:       1,
                                           TransactionInfo:      new Transaction(
                                                                     TransactionId:       evse.TransactionId.Value,
@@ -7325,7 +7325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                           EventType:            TransactionEvents.Ended,
                                           Timestamp:            evse.StopTimestamp.Value,
-                                          TriggerReason:        TriggerReasons.RemoteStop,
+                                          TriggerReason:        TriggerReason.RemoteStop,
                                           SequenceNumber:       2,
                                           TransactionInfo:      new Transaction(
                                                                     TransactionId:       evse.TransactionId!.Value,

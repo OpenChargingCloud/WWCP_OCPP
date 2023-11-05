@@ -1222,7 +1222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                                           EventType:               TransactionEvents.Started,
                                           Timestamp:               startTimestamp,
-                                          TriggerReason:           TriggerReasons.Authorized,
+                                          TriggerReason:           TriggerReason.Authorized,
                                           SequenceNumber:          0,
                                           TransactionInfo:         new Transaction(
                                                                        TransactionId:       Transaction_Id.NewRandom,

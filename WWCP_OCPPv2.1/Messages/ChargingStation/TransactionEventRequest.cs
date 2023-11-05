@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The reason the charging station sends this message.
         /// </summary>
         [Mandatory]
-        public TriggerReasons           TriggerReason            { get; }
+        public TriggerReason           TriggerReason            { get; }
 
         /// <summary>
         /// This incremental sequence number, helps to determine whether all messages of a transaction have been received.
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public TransactionEventRequest(ChargingStation_Id        ChargingStationId,
                                        TransactionEvents         EventType,
                                        DateTime                  Timestamp,
-                                       TriggerReasons            TriggerReason,
+                                       TriggerReason             TriggerReason,
                                        UInt32                    SequenceNumber,
                                        Transaction               TransactionInfo,
 
@@ -220,6 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.EVSE                   = EVSE;
             this.MeterValues            = MeterValues?.Distinct() ?? Array.Empty<MeterValue>();
             this.PreconditioningStatus  = PreconditioningStatus;
+
 
             unchecked
             {
@@ -857,8 +858,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (!JSON.ParseMandatory("triggerReason",
                                          "trigger reason",
-                                         TriggerReasonsExtensions.TryParse,
-                                         out TriggerReasons TriggerReason,
+                                         OCPPv2_1.TriggerReason.TryParse,
+                                         out TriggerReason TriggerReason,
                                          out ErrorResponse))
                 {
                     return false;
@@ -1134,7 +1135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                  new JProperty("eventType",               EventType.      AsText()),
                                  new JProperty("timestamp",               Timestamp.      ToIso8601()),
-                                 new JProperty("triggerReason",           TriggerReason.  AsText()),
+                                 new JProperty("triggerReason",           TriggerReason.  ToString()),
                                  new JProperty("seqNo",                   SequenceNumber),
                                  new JProperty("transactionInfo",         TransactionInfo.ToJSON(CustomTransactionSerializer,
                                                                                                  CustomCustomDataSerializer)),
@@ -1321,7 +1322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => $"{Timestamp} {EventType}, {TriggerReason.AsText()}";
+            => $"{Timestamp} {EventType}, {TriggerReason}";
 
         #endregion
 
