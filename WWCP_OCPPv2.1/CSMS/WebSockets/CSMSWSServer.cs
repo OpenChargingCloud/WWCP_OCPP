@@ -2174,9 +2174,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                                 { get; set; }
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                            { get; set; }
-        
+
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer                      { get; set; }
+
+        public CustomJObjectSerializerDelegate<TransactionLimits>?                                   CustomTransactionLimitsSerializer                            { get; set; }
 
 
         // E2E Security Extensions
@@ -9835,6 +9837,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                                          CustomPriceLevelScheduleSerializer,
                                                          CustomPriceLevelScheduleEntrySerializer,
+
+                                                         CustomTransactionLimitsSerializer,
 
                                                          CustomSignatureSerializer,
                                                          CustomCustomDataSerializer

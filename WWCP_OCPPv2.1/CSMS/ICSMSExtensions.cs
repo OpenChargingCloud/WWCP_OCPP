@@ -1696,7 +1696,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region StartCharging              (this CSMS, ChargingStationId, RequestStartTransactionRequestId, IdToken, EVSEId, ChargingProfile, GroupIdToken, ...)
+        #region StartCharging              (this CSMS, ChargingStationId, RequestStartTransactionRequestId, IdToken, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
@@ -1707,6 +1707,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EVSEId">An optional EVSE identification on which the charging transaction should be started (SHALL be > 0).</param>
         /// <param name="ChargingProfile">An optional charging profile to be used by the charging station for the requested charging transaction.</param>
         /// <param name="GroupIdToken">An optional group identifier.</param>
+        /// <param name="TransactionLimits">Optional maximum cost, energy, or time allowed for this transaction.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -1725,6 +1726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                           EVSE_Id?                 EVSEId              = null,
                           ChargingProfile?         ChargingProfile     = null,
                           IdToken?                 GroupIdToken        = null,
+                          TransactionLimits?       TransactionLimits   = null,
 
                           IEnumerable<KeyPair>?    SignKeys            = null,
                           IEnumerable<SignInfo>?   SignInfos           = null,
@@ -1747,6 +1749,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            EVSEId,
                            ChargingProfile,
                            GroupIdToken,
+                           TransactionLimits,
 
                            SignKeys,
                            SignInfos,

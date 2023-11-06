@@ -687,6 +687,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer                      { get; set; }
 
+        public CustomJObjectSerializerDelegate<TransactionLimits>?                                   CustomTransactionLimitsSerializer                            { get; set; }
+
         public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<MessageInfo>?                                         CustomMessageInfoSerializer                                  { get; set; }
@@ -7034,6 +7036,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  CustomPriceLevelScheduleSerializer,
                                  CustomPriceLevelScheduleEntrySerializer,
+
+                                 CustomTransactionLimitsSerializer,
 
                                  CustomSignatureSerializer,
                                  CustomCustomDataSerializer

@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext     Context
+        public JSONLDContext       Context
             => DefaultJSONLDContext;
 
         /// <summary>
@@ -55,33 +55,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The charging station might return this in the TransactionEventRequest, letting the server know which transaction was started for this request.
         /// </summary>
         [Mandatory]
-        public RemoteStart_Id    RequestStartTransactionRequestId    { get; }
+        public RemoteStart_Id      RequestStartTransactionRequestId    { get; }
 
         /// <summary>
         /// The identification token to start the charging transaction.
         /// </summary>
         [Mandatory]
-        public IdToken           IdToken                             { get; }
+        public IdToken             IdToken                             { get; }
 
         /// <summary>
         /// An optional EVSE identification on which the charging
         /// transaction should be started (SHALL be > 0).
         /// </summary>
         [Optional]
-        public EVSE_Id?          EVSEId                              { get; }
+        public EVSE_Id?            EVSEId                              { get; }
 
         /// <summary>
         /// An optional charging profile to be used by the charging station
         /// for the requested charging transaction.
         /// The 'ChargingProfilePurpose' MUST be set to 'TxProfile'.
         /// </summary>
-        public ChargingProfile?  ChargingProfile                     { get; }
+        public ChargingProfile?    ChargingProfile                     { get; }
 
         /// <summary>
         /// The optional group identification that the charging station must use to start a transaction.
         /// </summary>
         [Optional]
-        public IdToken?          GroupIdToken                        { get; }
+        public IdToken?            GroupIdToken                        { get; }
+
+        /// <summary>
+        /// The optional maximum cost, energy, or time allowed for this transaction.
+        /// </summary>
+        [Optional]
+        public TransactionLimits?  TransactionLimits                   { get; }
 
         #endregion
 
@@ -96,6 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EVSEId">An optional EVSE identification on which the charging transaction should be started (SHALL be > 0).</param>
         /// <param name="ChargingProfile">An optional charging profile to be used by the charging station for the requested charging transaction.</param>
         /// <param name="GroupIdToken">An optional group identifier.</param>
+        /// <param name="TransactionLimits">Optional maximum cost, energy, or time allowed for this transaction.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -111,6 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               EVSE_Id?                 EVSEId              = null,
                                               ChargingProfile?         ChargingProfile     = null,
                                               IdToken?                 GroupIdToken        = null,
+                                              TransactionLimits?       TransactionLimits   = null,
 
                                               IEnumerable<KeyPair>?    SignKeys            = null,
                                               IEnumerable<SignInfo>?   SignInfos           = null,
@@ -146,15 +154,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.EVSEId                            = EVSEId;
             this.ChargingProfile                   = ChargingProfile;
             this.GroupIdToken                      = GroupIdToken;
+            this.TransactionLimits                 = TransactionLimits;
+
 
             unchecked
             {
 
-                hashCode = this.RequestStartTransactionRequestId.GetHashCode()       * 13 ^
-                           this.IdToken.                         GetHashCode()       * 11 ^
-                          (this.EVSEId?.                         GetHashCode() ?? 0) *  7 ^
-                          (this.ChargingProfile?.                GetHashCode() ?? 0) *  5 ^
-                          (this.GroupIdToken?.                   GetHashCode() ?? 0) *  3 ^
+                hashCode = this.RequestStartTransactionRequestId.GetHashCode()       * 17 ^
+                           this.IdToken.                         GetHashCode()       * 13 ^
+                          (this.EVSEId?.                         GetHashCode() ?? 0) * 11 ^
+                          (this.ChargingProfile?.                GetHashCode() ?? 0) *  7 ^
+                          (this.GroupIdToken?.                   GetHashCode() ?? 0) *  5 ^
+                          (this.TransactionLimits?.              GetHashCode() ?? 0) *  3 ^
                            base.                                 GetHashCode();
 
             }
@@ -775,6 +786,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
+                #region TransactionLimits                   [optional]
+
+                if (JSON.ParseOptionalJSON("transactionLimit",
+                                           "transaction limit",
+                                           OCPPv2_1.TransactionLimits.TryParse,
+                                           out TransactionLimits? TransactionLimits,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
                 #region Signatures                          [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
@@ -824,17 +850,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 RequestStartTransactionRequest = new RequestStartTransactionRequest(
+
                                                      ChargingStationId,
                                                      RequestStartTransactionRequestId,
                                                      IdToken,
                                                      EVSEId,
                                                      ChargingProfile,
                                                      GroupIdToken,
+                                                     TransactionLimits,
+
                                                      null,
                                                      null,
                                                      Signatures,
+
                                                      CustomData,
                                                      RequestId
+
                                                  );
 
                 if (CustomRequestStartTransactionRequestParser is not null)
@@ -886,6 +917,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomPriceLevelScheduleSerializer">A delegate to serialize custom price level schedules.</param>
         /// <param name="CustomPriceLevelScheduleEntrySerializer">A delegate to serialize custom price level schedule entries.</param>
         /// 
+        /// <param name="CustomTransactionLimitsSerializer">A delegate to serialize custom transaction limits.</param>
+        /// 
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<RequestStartTransactionRequest>?                      CustomRequestStartTransactionRequestSerializer   = null,
@@ -914,61 +947,69 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer               = null,
                               CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer          = null,
 
+                              CustomJObjectSerializerDelegate<TransactionLimits>?                                   CustomTransactionLimitsSerializer                = null,
+
                               CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                        = null,
                               CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                       = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("remoteStartId",     RequestStartTransactionRequestId.Value),
-                                 new JProperty("idToken",           IdToken.        ToJSON(CustomIdTokenSerializer,
-                                                                                           CustomAdditionalInfoSerializer,
-                                                                                           CustomCustomDataSerializer)),
+                                 new JProperty("remoteStartId",      RequestStartTransactionRequestId.Value),
+                                 new JProperty("idToken",            IdToken.          ToJSON(CustomIdTokenSerializer,
+                                                                                              CustomAdditionalInfoSerializer,
+                                                                                              CustomCustomDataSerializer)),
 
                            EVSEId.HasValue
-                               ? new JProperty("evseId",            EVSEId.Value.Value)
+                               ? new JProperty("evseId",             EVSEId.Value.Value)
                                : null,
 
                            ChargingProfile is not null
-                               ? new JProperty("chargingProfile",   ChargingProfile.ToJSON(CustomChargingProfileSerializer,
-                                                                                           CustomLimitBeyondSoCSerializer,
-                                                                                           CustomChargingScheduleSerializer,
-                                                                                           CustomChargingSchedulePeriodSerializer,
-                                                                                           CustomV2XFreqWattEntrySerializer,
-                                                                                           CustomV2XSignalWattEntrySerializer,
-                                                                                           CustomSalesTariffSerializer,
-                                                                                           CustomSalesTariffEntrySerializer,
-                                                                                           CustomRelativeTimeIntervalSerializer,
-                                                                                           CustomConsumptionCostSerializer,
-                                                                                           CustomCostSerializer,
+                               ? new JProperty("chargingProfile",    ChargingProfile.  ToJSON(CustomChargingProfileSerializer,
+                                                                                              CustomLimitBeyondSoCSerializer,
+                                                                                              CustomChargingScheduleSerializer,
+                                                                                              CustomChargingSchedulePeriodSerializer,
+                                                                                              CustomV2XFreqWattEntrySerializer,
+                                                                                              CustomV2XSignalWattEntrySerializer,
+                                                                                              CustomSalesTariffSerializer,
+                                                                                              CustomSalesTariffEntrySerializer,
+                                                                                              CustomRelativeTimeIntervalSerializer,
+                                                                                              CustomConsumptionCostSerializer,
+                                                                                              CustomCostSerializer,
 
-                                                                                           CustomAbsolutePriceScheduleSerializer,
-                                                                                           CustomPriceRuleStackSerializer,
-                                                                                           CustomPriceRuleSerializer,
-                                                                                           CustomTaxRuleSerializer,
-                                                                                           CustomOverstayRuleListSerializer,
-                                                                                           CustomOverstayRuleSerializer,
-                                                                                           CustomAdditionalServiceSerializer,
+                                                                                              CustomAbsolutePriceScheduleSerializer,
+                                                                                              CustomPriceRuleStackSerializer,
+                                                                                              CustomPriceRuleSerializer,
+                                                                                              CustomTaxRuleSerializer,
+                                                                                              CustomOverstayRuleListSerializer,
+                                                                                              CustomOverstayRuleSerializer,
+                                                                                              CustomAdditionalServiceSerializer,
 
-                                                                                           CustomPriceLevelScheduleSerializer,
-                                                                                           CustomPriceLevelScheduleEntrySerializer,
+                                                                                              CustomPriceLevelScheduleSerializer,
+                                                                                              CustomPriceLevelScheduleEntrySerializer,
 
-                                                                                           CustomCustomDataSerializer))
+                                                                                              CustomCustomDataSerializer))
                                : null,
 
-                           GroupIdToken is not null
-                               ? new JProperty("groupIdToken",      GroupIdToken.   ToJSON(CustomIdTokenSerializer,
-                                                                                           CustomAdditionalInfoSerializer,
-                                                                                           CustomCustomDataSerializer))
+                           GroupIdToken      is not null
+                               ? new JProperty("groupIdToken",       GroupIdToken.     ToJSON(CustomIdTokenSerializer,
+                                                                                              CustomAdditionalInfoSerializer,
+                                                                                              CustomCustomDataSerializer))
                                : null,
+
+                           TransactionLimits is not null
+                               ? new JProperty("transactionLimit",   TransactionLimits.ToJSON(CustomTransactionLimitsSerializer,
+                                                                                              CustomCustomDataSerializer))
+                               : null,
+
 
                            Signatures.Any()
-                               ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                               CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",          new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                 CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",        CustomData.     ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",          CustomData.     ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

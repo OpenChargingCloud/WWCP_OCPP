@@ -259,8 +259,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="CustomTransactionLimitsSerializer">A delegate to serialize custom transaction limits.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<TransactionLimits>?        CustomTransactionLimitsSerializer         = null,
-                              CustomJObjectSerializerDelegate<CustomData>?  CustomCustomDataSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<TransactionLimits>?  CustomTransactionLimitsSerializer   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
             var json = JSONObject.Create(
