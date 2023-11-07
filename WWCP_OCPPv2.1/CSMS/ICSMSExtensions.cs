@@ -927,13 +927,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ChangeAvailability         (this CSMS, ChargingStationId, OperationalStatus, EVSE, ...)
+        #region ChangeAvailability         (this CSMS, ChargingStationId, OperationalStatus, EVSE = null, ...)
 
         /// <summary>
         /// Change the availability of the given charging station.
         /// </summary>
         /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="OperationalStatus">A new operational status of the charging station or EVSE.</param>
+        /// 
         /// <param name="EVSE">Optional identification of an EVSE/connector for which the operational status should be changed.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -949,7 +950,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             ChangeAvailability(this ICSMS               CSMS,
                                ChargingStation_Id       ChargingStationId,
                                OperationalStatus        OperationalStatus,
-                               EVSE?                    EVSE,
+
+                               EVSE?                    EVSE                = null,
 
                                IEnumerable<KeyPair>?    SignKeys            = null,
                                IEnumerable<SignInfo>?   SignInfos           = null,
@@ -986,7 +988,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region TriggerMessage             (this CSMS, ChargingStationId, RequestedMessage, EVSEId = null, ...)
+        #region TriggerMessage             (this CSMS, ChargingStationId, RequestedMessage, EVSEId = null, CustomTrigger = null, ...)
 
         /// <summary>
         /// Create a trigger for the given message at the given charging station connector.
@@ -994,6 +996,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
+        /// <param name="CustomTrigger">An optional custom trigger.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -1007,8 +1010,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             TriggerMessage(this ICSMS               CSMS,
                            ChargingStation_Id       ChargingStationId,
-                           MessageTriggers          RequestedMessage,
+                           MessageTrigger           RequestedMessage,
                            EVSE?                    EVSE                = null,
+                           String?                  CustomTrigger       = null,
 
                            IEnumerable<KeyPair>?    SignKeys            = null,
                            IEnumerable<SignInfo>?   SignInfos           = null,
@@ -1028,6 +1032,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            ChargingStationId,
                            RequestedMessage,
                            EVSE,
+                           CustomTrigger,
 
                            SignKeys,
                            SignInfos,

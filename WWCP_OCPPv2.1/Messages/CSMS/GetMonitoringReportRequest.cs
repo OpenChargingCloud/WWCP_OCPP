@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Create a new get monitoring report request.
         /// </summary>
         /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="GetMonitoringReportRequestId">The charging station identification.</param>
+        /// <param name="GetMonitoringReportRequestId">A get monitoring report request identification.</param>
         /// <param name="MonitoringCriteria">An optional enumeration of criteria for components for which a monitoring report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a monitoring report is requested.</param>
         /// 

@@ -1161,7 +1161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var evseId          = EVSE_Id.Parse(1);
-                var messageTrigger  = MessageTriggers.StatusNotification;
+                var messageTrigger  = MessageTrigger.StatusNotification;
 
                 var response        = await testCSMS01.TriggerMessage(
                                           ChargingStationId:  chargingStation1.Id,

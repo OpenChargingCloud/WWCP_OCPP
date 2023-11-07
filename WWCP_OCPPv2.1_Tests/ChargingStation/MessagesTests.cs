@@ -843,9 +843,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 };
 
                 var response = await chargingStation1.SendCertificateSigningRequest(
-                                   CSR:               "0x1234",
-                                   CertificateType:   CertificateSigningUse.ChargingStationCertificate,
-                                   CustomData:        null
+                                   CSR:                        "0x1234",
+                                   SignCertificateRequestId:   1,
+                                   CertificateType:            CertificateSigningUse.ChargingStationCertificate,
+                                   CustomData:                 null
                                );
 
 

@@ -8,6 +8,14 @@ aspects between an e-mobility charging station and its operator backend.
 For more details on this protocol please visit http://www.openchargealliance.org.
 
 
+## Breaking Changes since v2.0.1
+
+### Charging Station
+
+- 17.32. SignCertificateRequest (p. 202)
+  - `requestId [integer]` is now mandatory
+
+
 ## Differences to the official protocol specification
 
 The following desribes differences of this implementation to the official protocol specification.

@@ -682,12 +682,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendCertificateSigningRequest        (CSR, CertificateType = null, ...)
+        #region SendCertificateSigningRequest        (CSR, SignCertificateRequestId, CertificateType = null, ...)
 
         /// <summary>
         /// Send a heartbeat.
         /// </summary>
         /// <param name="CSR">The PEM encoded RFC 2986 certificate signing request (CSR) [max 5500].</param>
+        /// <param name="SignCertificateRequestId">A sign certificate request identification.</param>
         /// <param name="CertificateType">Whether the certificate is to be used for both the 15118 connection (if implemented) and the charging station to central system (CSMS) connection.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
@@ -701,6 +702,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             SendCertificateSigningRequest(this IChargingStation    ChargingStation,
 
                                           String                   CSR,
+                                          Int32                    SignCertificateRequestId,
                                           CertificateSigningUse?   CertificateType     = null,
 
                                           IEnumerable<KeyPair>?    SignKeys            = null,
@@ -720,6 +722,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                        new SignCertificateRequest(
                            ChargingStation.Id,
                            CSR,
+                           SignCertificateRequestId,
                            CertificateType,
 
                            SignKeys,

@@ -4972,21 +4972,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     else
                     {
 
-                        DebugX.Log($"Charging station '{Id}': Incoming TriggerMessage request for '{request.RequestedMessage.AsText()}'{(request.EVSE is not null ? $" at EVSE '{request.EVSE.Id}'" : "")}!");
+                        DebugX.Log($"Charging station '{Id}': Incoming TriggerMessage request for '{request.RequestedMessage}'{(request.EVSE is not null ? $" at EVSE '{request.EVSE.Id}'" : "")}!");
 
                         // RequestedMessage
                         // EVSE
 
                         _ = Task.Run(async () => {
 
-                            switch (request.RequestedMessage) {
+                            if (request.RequestedMessage == MessageTrigger.BootNotification)
+                            {
+                                await this.SendBootNotification(
+                                          BootReason: BootReason.Triggered,
+                                          CustomData: null
+                                      );
+                            }
 
-                                case MessageTriggers.BootNotification:
-                                    await this.SendBootNotification(
-                                              BootReason:   BootReason.Triggered,
-                                              CustomData:   null
-                                          );
-                                    break;
 
                                 // LogStatusNotification
                                 // DiagnosticsStatusNotification
@@ -5002,60 +5002,66 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 // MeterValues
                                 // SignChargingStationCertificate
 
-                                case MessageTriggers.StatusNotification:
-                                    if (request.EVSE is not null)
-                                        await this.SendStatusNotification(
-                                                  EVSEId:        request.EVSE.Id,
-                                                  ConnectorId:   Connector_Id.Parse(1),
-                                                  Timestamp:     Timestamp.Now,
-                                                  Status:        evses[request.EVSE.Id].Status,
-                                                  CustomData:    null
-                                              );
-                                    break;
-
+                            else if (request.RequestedMessage == MessageTrigger.StatusNotification &&
+                                     request.EVSE is not null)
+                            {
+                                await this.SendStatusNotification(
+                                          EVSEId:        request.EVSE.Id,
+                                          ConnectorId:   Connector_Id.Parse(1),
+                                          Timestamp:     Timestamp.Now,
+                                          Status:        evses[request.EVSE.Id].Status,
+                                          CustomData:    null
+                                      );
                             }
 
                         },
                         CancellationToken.None);
 
 
-                        response = request.RequestedMessage switch {
+                        if (request.RequestedMessage == MessageTrigger.BootNotification ||
+                            request.RequestedMessage == MessageTrigger.LogStatusNotification ||
+                            request.RequestedMessage == MessageTrigger.DiagnosticsStatusNotification ||
+                            request.RequestedMessage == MessageTrigger.FirmwareStatusNotification ||
+                          //MessageTriggers.Heartbeat
+                            request.RequestedMessage == MessageTrigger.SignChargingStationCertificate)
+                        {
 
-                                       MessageTriggers.BootNotification              or
-                                       MessageTriggers.LogStatusNotification         or
-                                       MessageTriggers.DiagnosticsStatusNotification or
-                                       MessageTriggers.FirmwareStatusNotification    or
-                                       //MessageTriggers.Heartbeat                     or
-                                       MessageTriggers.SignChargingStationCertificate
+                            response = new TriggerMessageResponse(
+                                           request,
+                                           TriggerMessageStatus.Accepted
+                                       );
 
-                                           => new TriggerMessageResponse(
-                                                  request,
-                                                  TriggerMessageStatus.Accepted
-                                              ),
+                        }
 
-                                       MessageTriggers.MeterValues or
-                                       MessageTriggers.StatusNotification
 
-                                           => request.EVSE is not null
-                                                  ? new TriggerMessageResponse(
-                                                        request,
-                                                        TriggerMessageStatus.Accepted
-                                                    )
-                                                  : new TriggerMessageResponse(
-                                                        request,
-                                                        TriggerMessageStatus.Rejected
-                                                    ),
 
-                                       _   => new TriggerMessageResponse(
-                                                  request,
-                                                  TriggerMessageStatus.Rejected
-                                              ),
+                        if (response == null &&
+                           (request.RequestedMessage == MessageTrigger.MeterValues ||
+                            request.RequestedMessage == MessageTrigger.StatusNotification))
+                        {
 
-                                   };
+                            response = request.EVSE is not null
+
+                                           ? new TriggerMessageResponse(
+                                                 request,
+                                                 TriggerMessageStatus.Accepted
+                                             )
+
+                                           : new TriggerMessageResponse(
+                                                 request,
+                                                 TriggerMessageStatus.Rejected
+                                             );
+
+                        }
 
                     }
 
                 }
+
+                response ??= new TriggerMessageResponse(
+                                 request,
+                                 TriggerMessageStatus.Rejected
+                             );
 
                 #region Sign response message
 
@@ -13409,6 +13415,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     CustomIdTokenSerializer,
                     CustomAdditionalInfoSerializer,
                     CustomMessageContentSerializer,
+                    CustomTransactionLimitsSerializer,
                     CustomSignatureSerializer,
                     CustomCustomDataSerializer
                 ),

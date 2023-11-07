@@ -51,18 +51,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
+        /// The sign certificate request identification.
+        /// </summary>
+        [Mandatory]
+        public String                  CSR                         { get; }
+
+        /// <summary>
         /// The PEM encoded RFC 2986 certificate signing request (CSR)
         /// [max 5500].
         /// </summary>
         [Mandatory]
-        public String                  CSR                { get; }
+        public Int32                   SignCertificateRequestId    { get; }
 
         /// <summary>
         /// Whether the certificate is to be used for both the 15118 connection (if implemented)
         /// and the charging station to central system (CSMS) connection.
         /// </summary>
         [Optional]
-        public CertificateSigningUse?  CertificateType    { get; }
+        public CertificateSigningUse?  CertificateType             { get; }
 
         #endregion
 
@@ -73,6 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="CSR">The PEM encoded RFC 2986 certificate signing request (CSR) [max 5500].</param>
+        /// <param name="SignCertificateRequestId">A sign certificate request identification.</param>
         /// <param name="CertificateType">Whether the certificate is to be used for both the 15118 connection (if implemented) and the charging station to central system (CSMS) connection.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -85,6 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public SignCertificateRequest(ChargingStation_Id       ChargingStationId,
                                       String                   CSR,
+                                      Int32                    SignCertificateRequestId,
                                       CertificateSigningUse?   CertificateType     = null,
 
                                       IEnumerable<KeyPair>?    SignKeys            = null,
@@ -116,15 +124,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            this.CSR              = CSR;
-            this.CertificateType  = CertificateType;
+            this.CSR                       = CSR;
+            this.SignCertificateRequestId  = SignCertificateRequestId;
+            this.CertificateType           = CertificateType;
+
 
             unchecked
             {
 
-                hashCode = this.CSR.             GetHashCode()       * 5 ^
-                          (this.CertificateType?.GetHashCode() ?? 0) * 3 ^
-                           base.                 GetHashCode();
+                hashCode = this.CSR.                     GetHashCode()       * 7 ^
+                           this.SignCertificateRequestId.GetHashCode()       * 5 ^
+                          (this.CertificateType?.        GetHashCode() ?? 0) * 3 ^
+                           base.                         GetHashCode();
 
             }
 
@@ -132,6 +143,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+
+        //ToDo: Update schema documentation after the official release of OCPP v2.1!
 
         #region Documentation
 
@@ -267,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 SignCertificateRequest = null;
 
-                #region CSR                  [mandatory]
+                #region CSR                         [mandatory]
 
                 if (!JSON.ParseMandatoryText("csr",
                                              "certificate signing request",
@@ -279,7 +292,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region CertificateType      [optional]
+                #region SignCertificateRequestId    [mandatory]
+
+                if (!JSON.ParseMandatory("requestId",
+                                         "sign certificate request identification",
+                                         out Int32 SignCertificateRequestId,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region CertificateType             [optional]
 
                 if (JSON.ParseOptional("certificateType",
                                        "certificate type",
@@ -293,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region Signatures           [optional, OCPP_CSE]
+                #region Signatures                  [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -307,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region CustomData           [optional]
+                #region CustomData                  [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -321,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
+                #region ChargingStationId           [optional, OCPP_CSE]
 
                 if (JSON.ParseOptional("chargingStationId",
                                        "charging station identification",
@@ -342,14 +367,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
                 SignCertificateRequest = new SignCertificateRequest(
+
                                              ChargingStationId,
                                              CSR,
+                                             SignCertificateRequestId,
                                              CertificateType,
+
                                              null,
                                              null,
                                              Signatures,
+
                                              CustomData,
                                              RequestId
+
                                          );
 
                 if (CustomSignCertificateRequestParser is not null)
@@ -386,6 +416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             var json = JSONObject.Create(
 
                                  new JProperty("csr",               CSR),
+                                 new JProperty("requestId",         SignCertificateRequestId),
 
                            CertificateType.HasValue
                                ? new JProperty("certificateType",   CertificateType.Value.AsText())
@@ -482,7 +513,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => SignCertificateRequest is not null &&
 
-               CSR.        Equals(SignCertificateRequest.CSR) &&
+               CSR.                     Equals(SignCertificateRequest.CSR)                      &&
+               SignCertificateRequestId.Equals(SignCertificateRequest.SignCertificateRequestId) &&
 
                base.GenericEquals(SignCertificateRequest);
 
@@ -509,9 +541,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => $"{CSR.SubstringMax(20)}{(CertificateType.HasValue
-                                             ? $" ({CertificateType})"
-                                             : "")}";
+            => String.Concat(
+
+                   $"{CSR.SubstringMax(20)},",
+
+                   CertificateType.HasValue
+                       ? $" ({CertificateType})"
+                       : ""
+
+               );
 
         #endregion
 

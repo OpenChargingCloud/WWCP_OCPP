@@ -1258,6 +1258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                         CustomIdTokenSerializer,
                                                                                         CustomAdditionalInfoSerializer,
                                                                                         CustomMessageContentSerializer,
+                                                                                        CustomTransactionLimitsSerializer,
                                                                                         CustomSignatureSerializer,
                                                                                         CustomCustomDataSerializer)));
 

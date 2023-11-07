@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The message to trigger.
         /// </summary>
         [Mandatory]
-        public MessageTriggers  RequestedMessage    { get; }
+        public MessageTrigger  RequestedMessage    { get; }
 
         /// <summary>
         /// The optional EVSE (and connector) identification whenever the message
@@ -62,6 +62,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         [Optional]
         public EVSE?            EVSE                { get; }
+
+        /// <summary>
+        /// The optional custom trigger, when requestedMessage == "CustomTrigger".
+        /// </summary>
+        [Optional]
+        public String?          CustomTrigger       { get; }
 
         #endregion
 
@@ -73,6 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
+        /// <param name="CustomTrigger">An optional custom trigger, when requestedMessage == "CustomTrigger".</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -83,8 +90,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public TriggerMessageRequest(ChargingStation_Id       ChargingStationId,
-                                     MessageTriggers          RequestedMessage,
+                                     MessageTrigger           RequestedMessage,
                                      EVSE?                    EVSE                = null,
+                                     String?                  CustomTrigger       = null,
 
                                      IEnumerable<KeyPair>?    SignKeys            = null,
                                      IEnumerable<SignInfo>?   SignInfos           = null,
@@ -117,12 +125,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             this.RequestedMessage  = RequestedMessage;
             this.EVSE              = EVSE;
+            this.CustomTrigger     = CustomTrigger;
+
 
             unchecked
             {
 
-                hashCode = this.RequestedMessage.GetHashCode()       * 5 ^
-                          (this.EVSE?.           GetHashCode() ?? 0) * 3 ^
+                hashCode = this.RequestedMessage.GetHashCode()       * 7 ^
+                          (this.EVSE?.           GetHashCode() ?? 0) * 5 ^
+                          (this.CustomTrigger?.  GetHashCode() ?? 0) * 3 ^
                            base.                 GetHashCode();
 
             }
@@ -131,6 +142,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+
+        //ToDo: Update schema documentation after the official release of OCPP v2.1!
 
         #region Documentation
 
@@ -295,12 +308,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 TriggerMessageRequest = null;
 
-                #region MessageTriggers      [mandatory]
+                #region MessageTrigger       [mandatory]
 
                 if (!JSON.ParseMandatory("requestedMessage",
                                          "requested message",
-                                         MessageTriggersExtensions.TryParse,
-                                         out MessageTriggers MessageTriggers,
+                                         OCPPv2_1.MessageTrigger.TryParse,
+                                         out MessageTrigger MessageTrigger,
                                          out ErrorResponse))
                 {
                     return false;
@@ -321,6 +334,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 }
 
                 #endregion
+
+                #region CustomTrigger        [optional]
+
+                var CustomTrigger = JSON["customTrigger"]?.Value<String>();
+
+                #endregion
+
 
                 #region Signatures           [optional, OCPP_CSE]
 
@@ -371,14 +391,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 TriggerMessageRequest = new TriggerMessageRequest(
+
                                             ChargingStationId,
-                                            MessageTriggers,
+                                            MessageTrigger,
                                             EVSE,
+                                            CustomTrigger,
+
                                             null,
                                             null,
                                             Signatures,
+
                                             CustomData,
                                             RequestId
+
                                         );
 
                 if (CustomTriggerMessageRequestParser is not null)
@@ -416,7 +441,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestedMessage",   RequestedMessage.AsText()),
+                                 new JProperty("requestedMessage",   RequestedMessage.ToString()),
 
                            EVSE is not null
                                ? new JProperty("evse",               EVSE.            ToJSON(CustomEVSESerializer,
@@ -515,8 +540,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                RequestedMessage.Equals(TriggerMessageRequest.RequestedMessage) &&
 
-             ((EVSE is null     && TriggerMessageRequest.EVSE is null) ||
-              (EVSE is not null && TriggerMessageRequest.EVSE is not null && EVSE.Equals(TriggerMessageRequest.EVSE))) &&
+             ((EVSE          is null     && TriggerMessageRequest.EVSE          is null) ||
+              (EVSE          is not null && TriggerMessageRequest.EVSE          is not null && EVSE.         Equals(TriggerMessageRequest.EVSE)))          &&
+
+             ((CustomTrigger is null     && TriggerMessageRequest.CustomTrigger is null) ||
+              (CustomTrigger is not null && TriggerMessageRequest.CustomTrigger is not null && CustomTrigger.Equals(TriggerMessageRequest.CustomTrigger))) &&
 
                base.     GenericEquals(TriggerMessageRequest);
 

@@ -55,14 +55,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The identification token info.
         /// </summary>
         [Mandatory]
-        public IdTokenInfo                  IdTokenInfo          { get; }
+        public IdTokenInfo                  IdTokenInfo              { get; }
 
         /// <summary>
         /// The optional certificate status information.
         /// When all certificates are valid: return 'Accepted', but when one of the certificates was revoked, return 'CertificateRevoked'.
         /// </summary>
         [Optional]
-        public AuthorizeCertificateStatus?  CertificateStatus    { get; }
+        public AuthorizeCertificateStatus?  CertificateStatus        { get; }
+
+        /// <summary>
+        /// The optional energy transfer modes accepted by the CSMS.
+        /// </summary>
+        [Optional]
+        public EnergyTransferModes?         AllowedEnergyTransfer    { get; }
+
+        /// <summary>
+        /// The optional maximum cost/energy/time limit allowed for this charging session.
+        /// </summary>
+        [Optional]
+        public TransactionLimits?           TransactionLimits        { get; }
 
         #endregion
 
@@ -76,6 +88,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="IdTokenInfo">The identification token info.</param>
         /// <param name="CertificateStatus">The optional certificate status information.</param>
+        /// <param name="AllowedEnergyTransfer">Optional energy transfer modes accepted by the CSMS.</param>
+        /// <param name="TransactionLimits">Optional maximum cost/energy/time limit allowed for this charging session.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
@@ -84,15 +98,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public AuthorizeResponse(CS.AuthorizeRequest          Request,
                                  IdTokenInfo                  IdTokenInfo,
-                                 AuthorizeCertificateStatus?  CertificateStatus   = null,
+                                 AuthorizeCertificateStatus?  CertificateStatus       = null,
+                                 EnergyTransferModes?         AllowedEnergyTransfer   = null,
+                                 TransactionLimits?           TransactionLimits       = null,
 
-                                 DateTime?                    ResponseTimestamp   = null,
+                                 DateTime?                    ResponseTimestamp       = null,
 
-                                 IEnumerable<KeyPair>?        SignKeys            = null,
-                                 IEnumerable<SignInfo>?       SignInfos           = null,
-                                 IEnumerable<Signature>?      Signatures          = null,
+                                 IEnumerable<KeyPair>?        SignKeys                = null,
+                                 IEnumerable<SignInfo>?       SignInfos               = null,
+                                 IEnumerable<Signature>?      Signatures              = null,
 
-                                 CustomData?                  CustomData          = null)
+                                 CustomData?                  CustomData              = null)
 
             : base(Request,
                    Result.OK(),
@@ -106,8 +122,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.IdTokenInfo        = IdTokenInfo;
-            this.CertificateStatus  = CertificateStatus;
+            this.IdTokenInfo            = IdTokenInfo;
+            this.CertificateStatus      = CertificateStatus;
+            this.AllowedEnergyTransfer  = AllowedEnergyTransfer;
+            this.TransactionLimits      = TransactionLimits;
+
+
+            unchecked
+            {
+
+                hashCode = this.IdTokenInfo.           GetHashCode()       * 5 ^
+                          (this.CertificateStatus?.    GetHashCode() ?? 0) * 3 ^
+                          (this.AllowedEnergyTransfer?.GetHashCode() ?? 0) * 3 ^
+                          (this.TransactionLimits?.    GetHashCode() ?? 0) * 3 ^
+                           base.                       GetHashCode();
+
+            }
 
         }
 
@@ -136,6 +166,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+
+        //ToDo: Update schema documentation after the official release of OCPP v2.1!
 
         #region Documentation
 
@@ -427,7 +459,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 AuthorizeResponse = null;
 
-                #region IdTokenInfo          [mandatory]
+                #region IdTokenInfo              [mandatory]
 
                 if (!JSON.ParseMandatoryJSON("idTokenInfo",
                                              "identification tag information",
@@ -443,7 +475,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CertificateStatus    [optional]
+                #region CertificateStatus        [optional]
 
                 if (JSON.ParseOptional("certificateStatus",
                                        "certificate status",
@@ -457,7 +489,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Signatures           [optional, OCPP_CSE]
+                #region AllowedEnergyTransfer    [optional]
+
+                if (JSON.ParseOptional("allowedEnergyTransfer",
+                                       "allowed energy transfer",
+                                       EnergyTransferModesExtensions.TryParse,
+                                       out EnergyTransferModes? AllowedEnergyTransfer,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region TransactionLimits        [optional]
+
+                if (JSON.ParseOptionalJSON("transactionLimit",
+                                           "transaction limits",
+                                           OCPPv2_1.TransactionLimits.TryParse,
+                                           out TransactionLimits? TransactionLimits,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                #region Signatures               [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -471,7 +532,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region CustomData           [optional]
+                #region CustomData               [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -487,14 +548,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 AuthorizeResponse = new AuthorizeResponse(
+
                                         Request,
                                         IdTokenInfo,
                                         CertificateStatus,
+                                        AllowedEnergyTransfer,
+                                        TransactionLimits,
                                         null,
+
                                         null,
                                         null,
                                         Signatures,
+
                                         CustomData
+
                                     );
 
                 if (CustomAuthorizeResponseParser is not null)
@@ -525,6 +592,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
         /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional infos.</param>
         /// <param name="CustomMessageContentSerializer">A delegate to serialize custom message contents.</param>
+        /// <param name="CustomTransactionLimitsSerializer">A delegate to serialize custom transaction limits.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizeResponse>?  CustomAuthorizeResponseSerializer   = null,
@@ -532,29 +600,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CustomJObjectSerializerDelegate<IdToken>?            CustomIdTokenSerializer             = null,
                               CustomJObjectSerializerDelegate<AdditionalInfo>?     CustomAdditionalInfoSerializer      = null,
                               CustomJObjectSerializerDelegate<MessageContent>?     CustomMessageContentSerializer      = null,
+                              CustomJObjectSerializerDelegate<TransactionLimits>?  CustomTransactionLimitsSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?          CustomSignatureSerializer           = null,
                               CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 
             var json = JSONObject.Create(
 
-                                 new JProperty("idTokenInfo",         IdTokenInfo.ToJSON(CustomIdTokenInfoSerializer,
-                                                                                         CustomIdTokenSerializer,
-                                                                                         CustomAdditionalInfoSerializer,
-                                                                                         CustomMessageContentSerializer,
-                                                                                         CustomCustomDataSerializer)),
+                                 new JProperty("idTokenInfo",             IdTokenInfo.                ToJSON(CustomIdTokenInfoSerializer,
+                                                                                                             CustomIdTokenSerializer,
+                                                                                                             CustomAdditionalInfoSerializer,
+                                                                                                             CustomMessageContentSerializer,
+                                                                                                             CustomCustomDataSerializer)),
 
                            CertificateStatus.HasValue
-                               ? new JProperty("certificateStatus",   CertificateStatus.Value.AsText())
+                               ? new JProperty("certificateStatus",       CertificateStatus.    Value.AsText())
                                : null,
 
+                           AllowedEnergyTransfer.HasValue
+                               ? new JProperty("allowedEnergyTransfer",   AllowedEnergyTransfer.Value.AsText())
+                               : null,
+
+                           TransactionLimits is not null
+                               ? new JProperty("transactionLimits",       TransactionLimits.          ToJSON(CustomTransactionLimitsSerializer,
+                                                                                                             CustomCustomDataSerializer))
+                               : null,
+
+
                            Signatures.Any()
-                               ? new JProperty("signatures",          new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                                 CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",              new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                     CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",          CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",              CustomData.                 ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -656,8 +735,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                IdTokenInfo.Equals(AuthorizeResponse.IdTokenInfo) &&
 
-            ((!CertificateStatus.HasValue && !AuthorizeResponse.CertificateStatus.HasValue) ||
-               CertificateStatus.HasValue &&  AuthorizeResponse.CertificateStatus.HasValue && CertificateStatus.Value.Equals(AuthorizeResponse.CertificateStatus.Value)) &&
+            ((!CertificateStatus.    HasValue    && !AuthorizeResponse.CertificateStatus.    HasValue) ||
+               CertificateStatus.    HasValue    &&  AuthorizeResponse.CertificateStatus.    HasValue    && CertificateStatus.    Value.Equals(AuthorizeResponse.CertificateStatus.Value))     &&
+
+            ((!AllowedEnergyTransfer.HasValue    && !AuthorizeResponse.AllowedEnergyTransfer.HasValue) ||
+               AllowedEnergyTransfer.HasValue    &&  AuthorizeResponse.AllowedEnergyTransfer.HasValue    && AllowedEnergyTransfer.Value.Equals(AuthorizeResponse.AllowedEnergyTransfer.Value)) &&
+
+             ((TransactionLimits     is null     &&  AuthorizeResponse.TransactionLimits     is null)  ||
+               TransactionLimits     is not null &&  AuthorizeResponse.TransactionLimits     is not null && TransactionLimits.          Equals(AuthorizeResponse.TransactionLimits))           &&
 
                base.GenericEquals(AuthorizeResponse);
 
@@ -667,22 +752,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return IdTokenInfo.       GetHashCode()       * 5 ^
-                      (CertificateStatus?.GetHashCode() ?? 0) * 3 ^
-
-                       base.              GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
