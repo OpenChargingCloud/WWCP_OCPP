@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var priceAlgorithmId))
                 return priceAlgorithmId;
 
-            throw new ArgumentException("Invalid text representation of a price algorithm identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a price algorithm identification: '{Text}'!",
                                         nameof(Text));
 
         }

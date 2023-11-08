@@ -114,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             if (TryParse(Text, out var absolutePriceScheduleId))
                 return absolutePriceScheduleId;
 
-            throw new ArgumentException("Invalid text representation of an absolute price schedule identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of an absolute price schedule identification: '{Text}'!",
                                         nameof(Text));
 
         }

@@ -113,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonTypes
             if (TryParse(Text, out var description))
                 return description;
 
-            throw new ArgumentException("Invalid text representation of a description: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a description: '{Text}'!",
                                         nameof(Text));
 
         }

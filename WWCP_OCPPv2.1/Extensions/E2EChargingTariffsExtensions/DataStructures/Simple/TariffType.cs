@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var tariffDimension))
                 return tariffDimension;
 
-            throw new ArgumentException($"Invalid text representation of a tariff type: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a tariff type: '{Text}'!",
                                         nameof(Text));
 
         }

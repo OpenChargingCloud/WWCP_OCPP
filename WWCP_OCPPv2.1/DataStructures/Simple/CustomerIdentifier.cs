@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var customerIdentifier))
                 return customerIdentifier;
 
-            throw new ArgumentException("Invalid text representation of a customer identifier: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a customer identifier: '{Text}'!",
                                         nameof(Text));
 
         }

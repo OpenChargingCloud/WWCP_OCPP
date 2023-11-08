@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var variableMonitoringId))
                 return variableMonitoringId;
 
-            throw new ArgumentException("Invalid text representation of a variable monitoring identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a variable monitoring identification: '{Text}'!",
                                         nameof(Text));
 
         }

@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var securityEventType))
                 return securityEventType;
 
-            throw new ArgumentException("Invalid text representation of a security event type: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a security event type: '{Text}'!",
                                         nameof(Text));
 
         }

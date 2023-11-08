@@ -194,7 +194,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    SecurityProfiles.SecurityProfile2  => 2,
                    SecurityProfiles.SecurityProfile3  => 3,
                    SecurityProfiles.SecurityProfile4  => 4,
-                   _                                  => throw new ArgumentException("Invalid security profile!", nameof(SecurityProfile))
+                   _                                  => throw new ArgumentException($"Invalid security profile!", nameof(SecurityProfile))
                };
 
         #endregion

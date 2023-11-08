@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var displayMessageId))
                 return displayMessageId;
 
-            throw new ArgumentException("Invalid text representation of a display message identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a display message identification: '{Text}'!",
                                         nameof(Text));
 
         }

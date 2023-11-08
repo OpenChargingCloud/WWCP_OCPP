@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var evseId))
                 return evseId;
 
-            throw new ArgumentException("Invalid text representation of an EVSE identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of an EVSE identification: '{Text}'!",
                                         nameof(Text));
 
         }

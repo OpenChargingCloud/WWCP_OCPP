@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var costDimension))
                 return costDimension;
 
-            throw new ArgumentException($"Invalid text representation of a cost dimension: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a cost dimension: '{Text}'!",
                                         nameof(Text));
 
         }

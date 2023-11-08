@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var chargingScheduleId))
                 return chargingScheduleId;
 
-            throw new ArgumentException("Invalid text representation of a charging schedule identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a charging schedule identification: '{Text}'!",
                                         nameof(Text));
 
         }

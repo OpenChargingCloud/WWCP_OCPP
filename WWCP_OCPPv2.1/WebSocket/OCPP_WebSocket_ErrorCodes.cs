@@ -112,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var errorCode))
                 return errorCode;
 
-            throw new ArgumentException("Invalid text representation of an OCPP WebSocket error code: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of an OCPP WebSocket error code: '{Text}'!",
                                         nameof(Text));
 
         }

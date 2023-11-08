@@ -110,7 +110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var environmentalImpactCategory))
                 return environmentalImpactCategory;
 
-            throw new ArgumentException($"Invalid text representation of an environmental impact category: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of an environmental impact category: '{Text}'!",
                                         nameof(Text));
 
         }

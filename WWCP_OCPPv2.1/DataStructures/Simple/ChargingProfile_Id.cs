@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var chargingProfileId))
                 return chargingProfileId;
 
-            throw new ArgumentException("Invalid text representation of a charging profile identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a charging profile identification: '{Text}'!",
                                         nameof(Text));
 
         }

@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var centralSystemId))
                 return centralSystemId;
 
-            throw new ArgumentException("Invalid text representation of a central system identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a central system identification: '{Text}'!",
                                         nameof(Text));
 
         }

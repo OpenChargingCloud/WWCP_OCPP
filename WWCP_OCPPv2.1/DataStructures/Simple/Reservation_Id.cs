@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var reservationId))
                 return reservationId;
 
-            throw new ArgumentException("Invalid text representation of a reservation identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a reservation identification: '{Text}'!",
                                         nameof(Text));
 
         }

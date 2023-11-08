@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var evseId))
                 return evseId;
 
-            throw new ArgumentException("Invalid text representation of an event identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of an event identification: '{Text}'!",
                                         nameof(Text));
 
         }
