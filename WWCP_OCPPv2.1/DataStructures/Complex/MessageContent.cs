@@ -37,23 +37,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         /// <summary>
         /// The message content.
-        /// [max 512]
         /// </summary>
         [Mandatory]
         public String          Content     { get; }
 
         /// <summary>
-        /// The message format.
+        /// The message language identifier, as defined in rfc5646 (default: EN).
+        /// (Can not be null within this implementation!)
+        /// </summary>
+        [Mandatory]
+        public Language_Id     Language    { get; }
+
+        /// <summary>
+        /// The message format (default: UTF8).
         /// </summary>
         [Mandatory]
         public MessageFormats  Format      { get; }
-
-        /// <summary>
-        /// The optional message language identifier, as defined in rfc5646.
-        /// [max 8]
-        /// </summary>
-        [Optional]
-        public Language_Id?    Language    { get; }
 
         #endregion
 
@@ -62,25 +61,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new message to be displayed at a charging station.
         /// </summary>
-        /// <param name="Content">The message content [max 512].</param>
-        /// <param name="Format">The message format.</param>
-        /// <param name="Language">The optional message language identifier, as defined in rfc5646 [max 8].</param>
+        /// <param name="Content">The message content.</param>
+        /// <param name="Language">An optional message language identifier, as defined in rfc5646.</param>
+        /// <param name="Format">An optional message format.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public MessageContent(String          Content,
-                              MessageFormats  Format,
-                              Language_Id?    Language,
-                              CustomData?     CustomData   = null)
+        public MessageContent(String           Content,
+                              Language_Id?     Language     = null,
+                              MessageFormats?  Format       = null,
+                              CustomData?      CustomData   = null)
 
             : base(CustomData)
 
         {
 
             this.Content   = Content.Trim();
-            this.Language  = Language;
-            this.Format    = Format;
+            this.Language  = Language ?? Language_Id.EN;
+            this.Format    = Format   ?? MessageFormats.UTF8;
 
             if (this.Content.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Content), "The given message content must not be null or empty!");
+
+
+            unchecked
+            {
+
+                hashCode = this.Content. GetHashCode() * 7 ^
+                           this.Language.GetHashCode() * 5 ^
+                           this.Format.  GetHashCode() * 3 ^
+                           base.         GetHashCode();
+
+            }
 
         }
 
@@ -196,25 +206,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Format        [mandatory]
-
-                if (!JSON.ParseMandatory("format",
-                                         "message format",
-                                         MessageFormatsExtensions.TryParse,
-                                         out MessageFormats Format,
-                                         out ErrorResponse))
-                {
-                    return false;
-                }
-
-                #endregion
-
                 #region Language      [optional]
 
                 if (JSON.ParseOptional("language",
                                        "message language",
                                        Language_Id.TryParse,
                                        out Language_Id? Language,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Format        [optional]
+
+                if (JSON.ParseOptional("format",
+                                       "message format",
+                                       MessageFormatsExtensions.TryParse,
+                                       out MessageFormats? Format,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -238,10 +249,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                MessageContent = new MessageContent(Content.Trim(),
-                                                    Format,
-                                                    Language,
-                                                    CustomData);
+                MessageContent = new MessageContent(
+                                     Content.Trim(),
+                                     Language,
+                                     Format,
+                                     CustomData
+                                 );
 
                 if (CustomMessageContentParser is not null)
                     MessageContent = CustomMessageContentParser(JSON,
@@ -275,11 +288,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("content",      Content),
+                                 new JProperty("language",     Language.  ToString()),
                                  new JProperty("format",       Format.    AsText()),
-
-                           Language.HasValue
-                               ? new JProperty("language",     Language.  ToString())
-                               : null,
 
                            CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
@@ -292,6 +302,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        : json;
 
         }
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this multi-language text/string.
+        /// </summary>
+        public MessageContent Clone()
+
+            => new (
+                   new String(Content.ToCharArray()),
+                   Language,
+                   Format,
+                   CustomData
+               );
 
         #endregion
 
@@ -370,11 +396,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                MessageContent.Content,
                                StringComparison.OrdinalIgnoreCase) &&
 
-             ((!Language.HasValue && !MessageContent.Language.HasValue) ||
-                Language.HasValue &&  MessageContent.Language.HasValue && Language.Value.Equals(MessageContent.Language.Value)) &&
+               Language.Equals(MessageContent.Language) &&
+               Format.  Equals(MessageContent.Format)   &&
 
-               Format.Equals(MessageContent.Format) &&
-               base.  Equals(MessageContent);
+               base.    Equals(MessageContent);
 
         #endregion
 
@@ -382,23 +407,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Content.  GetHashCode()       * 7 ^
-                       Format.   GetHashCode()       * 5 ^
-                      (Language?.GetHashCode() ?? 0) * 3 ^
-
-                       base.     GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -409,22 +424,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-
-                   Content,
-                   " (",
-
-                   Format,
-
-                   Language.HasValue
-                       ? Language.Value.ToString()
-                       : "",
-
-                   ")"
-
-               );
+            => $"'{Content}' ({Language}, {Format})";
 
         #endregion
+
 
     }
 

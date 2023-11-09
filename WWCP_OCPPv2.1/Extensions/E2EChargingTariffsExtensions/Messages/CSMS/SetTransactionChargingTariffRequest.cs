@@ -26,14 +26,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
-    //Note: This command is a draft version of the OCPP 2.1 specification
-    //       and might be subject to change in future versions of the specification!
-
     /// <summary>
-    /// An set default charging tariff request.
+    /// An set transaction charging tariff request.
     /// </summary>
-    public class SetDefaultChargingTariffRequest : ARequest<SetDefaultChargingTariffRequest>,
-                                                   IRequest
+    public class SetTransactionChargingTariffRequest : ARequest<SetTransactionChargingTariffRequest>,
+                                                       IRequest
     {
 
         #region Data
@@ -41,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/setDefaultChargingTariffRequest");
+        public readonly static JSONLDContext TransactionJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/SetTransactionChargingTariffRequest");
 
         #endregion
 
@@ -50,31 +47,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext         Context
-            => DefaultJSONLDContext;
+        public JSONLDContext  Context
+            => TransactionJSONLDContext;
+
+        /// <summary>
+        /// The transaction identification for which the applicable charging tariff is requested.
+        /// </summary>
+        [Mandatory]
+        public Transaction_Id  TransactionId     { get; }
 
         /// <summary>
         /// The charging tariff.
         /// </summary>
         [Mandatory]
-        public ChargingTariff        ChargingTariff    { get; }
-
-        /// <summary>
-        /// The optional enumeration of EVSEs the default charging tariff applies to.
-        /// </summary>
-        [Optional]
-        public IEnumerable<EVSE_Id>  EVSEIds           { get; }
+        public ChargingTariff  ChargingTariff    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new set default charging tariff request.
+        /// Create a new set transaction charging tariff request.
         /// </summary>
         /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="TransactionId">An transaction identification for which the applicable charging tariff is requested.</param>
         /// <param name="ChargingTariff">A charging tariff.</param>
-        /// <param name="EVSEIds">An optional enumeration of EVSEs the default charging tariff applies to.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -84,24 +81,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetDefaultChargingTariffRequest(ChargingStation_Id       ChargingStationId,
-                                               ChargingTariff           ChargingTariff,
-                                               IEnumerable<EVSE_Id>?    EVSEIds             = null,
+        public SetTransactionChargingTariffRequest(ChargingStation_Id       ChargingStationId,
+                                                   Transaction_Id           TransactionId,
+                                                   ChargingTariff           ChargingTariff,
 
-                                               IEnumerable<KeyPair>?    SignKeys            = null,
-                                               IEnumerable<SignInfo>?   SignInfos           = null,
-                                               IEnumerable<Signature>?  Signatures          = null,
+                                                   IEnumerable<KeyPair>?    SignKeys            = null,
+                                                   IEnumerable<SignInfo>?   SignInfos           = null,
+                                                   IEnumerable<Signature>?  Signatures          = null,
 
-                                               CustomData?              CustomData          = null,
+                                                   CustomData?              CustomData          = null,
 
-                                               Request_Id?              RequestId           = null,
-                                               DateTime?                RequestTimestamp    = null,
-                                               TimeSpan?                RequestTimeout      = null,
-                                               EventTracking_Id?        EventTrackingId     = null,
-                                               CancellationToken        CancellationToken   = default)
+                                                   Request_Id?              RequestId           = null,
+                                                   DateTime?                RequestTimestamp    = null,
+                                                   TimeSpan?                RequestTimeout      = null,
+                                                   EventTracking_Id?        EventTrackingId     = null,
+                                                   CancellationToken        CancellationToken   = default)
 
             : base(ChargingStationId,
-                   "SetDefaultChargingTariff",
+                   "SetTransactionChargingTariff",
 
                    SignKeys,
                    SignInfos,
@@ -117,15 +114,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
+            this.TransactionId   = TransactionId;
             this.ChargingTariff  = ChargingTariff;
-            this.EVSEIds         = EVSEIds?.Distinct() ?? Array.Empty<EVSE_Id>();
 
 
             unchecked
             {
 
-                hashCode = this.EVSEIds.       CalcHashCode() * 5 ^
-                           this.ChargingTariff.GetHashCode()  * 3 ^
+                hashCode = this.TransactionId. GetHashCode() * 5 ^
+                           this.ChargingTariff.GetHashCode() * 3 ^
                            base.               GetHashCode();
 
             }
@@ -141,86 +138,99 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomSetDefaultChargingTariffRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomSetTransactionChargingTariffRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of an setDefaultChargingTariffs request.
+        /// Parse the given JSON representation of an SetTransactionChargingTariff request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="CustomSetDefaultChargingTariffRequestParser">A delegate to parse custom setDefaultChargingTariffs requests.</param>
-        public static SetDefaultChargingTariffRequest Parse(JObject                                                        JSON,
-                                                            Request_Id                                                     RequestId,
-                                                            ChargingStation_Id                                             ChargingStationId,
-                                                            CustomJObjectParserDelegate<SetDefaultChargingTariffRequest>?  CustomSetDefaultChargingTariffRequestParser   = null)
+        /// <param name="CustomSetTransactionChargingTariffRequestParser">A delegate to parse custom SetTransactionChargingTariff requests.</param>
+        public static SetTransactionChargingTariffRequest Parse(JObject                                                            JSON,
+                                                                Request_Id                                                         RequestId,
+                                                                ChargingStation_Id                                                 ChargingStationId,
+                                                                CustomJObjectParserDelegate<SetTransactionChargingTariffRequest>?  CustomSetTransactionChargingTariffRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
                          ChargingStationId,
-                         out var setDefaultChargingTariffRequest,
+                         out var SetTransactionChargingTariffRequest,
                          out var errorResponse,
-                         CustomSetDefaultChargingTariffRequestParser))
+                         CustomSetTransactionChargingTariffRequestParser))
             {
-                return setDefaultChargingTariffRequest!;
+                return SetTransactionChargingTariffRequest!;
             }
 
-            throw new ArgumentException("The given JSON representation of a SetDefaultChargingTariff request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a SetTransactionChargingTariff request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out setDefaultChargingTariffRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out SetTransactionChargingTariffRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a SetDefaultChargingTariff request.
+        /// Try to parse the given JSON representation of a SetTransactionChargingTariff request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="setDefaultChargingTariffRequest">The parsed setDefaultChargingTariffs request.</param>
+        /// <param name="SetTransactionChargingTariffRequest">The parsed SetTransactionChargingTariff request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                               JSON,
-                                       Request_Id                            RequestId,
-                                       ChargingStation_Id                    ChargingStationId,
-                                       out SetDefaultChargingTariffRequest?  setDefaultChargingTariffRequest,
-                                       out String?                           ErrorResponse)
+        public static Boolean TryParse(JObject                                   JSON,
+                                       Request_Id                                RequestId,
+                                       ChargingStation_Id                        ChargingStationId,
+                                       out SetTransactionChargingTariffRequest?  SetTransactionChargingTariffRequest,
+                                       out String?                               ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
                         ChargingStationId,
-                        out setDefaultChargingTariffRequest,
+                        out SetTransactionChargingTariffRequest,
                         out ErrorResponse,
                         null);
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a SetDefaultChargingTariff request.
+        /// Try to parse the given JSON representation of a SetTransactionChargingTariff request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="SetDefaultChargingTariffRequest">The parsed setDefaultChargingTariffs request.</param>
+        /// <param name="SetTransactionChargingTariffRequest">The parsed SetTransactionChargingTariff request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomSetDefaultChargingTariffRequestParser">A delegate to parse custom setDefaultChargingTariffs requests.</param>
-        public static Boolean TryParse(JObject                                                        JSON,
-                                       Request_Id                                                     RequestId,
-                                       ChargingStation_Id                                             ChargingStationId,
-                                       out SetDefaultChargingTariffRequest?                           SetDefaultChargingTariffRequest,
-                                       out String?                                                    ErrorResponse,
-                                       CustomJObjectParserDelegate<SetDefaultChargingTariffRequest>?  CustomSetDefaultChargingTariffRequestParser)
+        /// <param name="CustomSetTransactionChargingTariffRequestParser">A delegate to parse custom SetTransactionChargingTariff requests.</param>
+        public static Boolean TryParse(JObject                                                     JSON,
+                                       Request_Id                                                  RequestId,
+                                       ChargingStation_Id                                          ChargingStationId,
+                                       out SetTransactionChargingTariffRequest?                           SetTransactionChargingTariffRequest,
+                                       out String?                                                 ErrorResponse,
+                                       CustomJObjectParserDelegate<SetTransactionChargingTariffRequest>?  CustomSetTransactionChargingTariffRequestParser)
         {
 
             try
             {
 
-                SetDefaultChargingTariffRequest = null;
+                SetTransactionChargingTariffRequest = null;
+
+                #region TransactionId        [mandatory]
+
+                if (!JSON.ParseMandatory("transactionId",
+                                         "transaction identification",
+                                         Transaction_Id.TryParse,
+                                         out Transaction_Id TransactionId,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
 
                 #region ChargingTariff       [mandatory]
 
@@ -236,19 +246,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region EVSEIds              [optional]
-
-                if (JSON.ParseOptionalHashSet("evseIds",
-                                              "EVSE identifications",
-                                              EVSE_Id.TryParse,
-                                              out HashSet<EVSE_Id> EVSEIds,
-                                              out ErrorResponse))
-                {
-                    if (ErrorResponse is not null)
-                        return false;
-                }
-
-                #endregion
 
                 #region Signatures           [optional, OCPP_CSE]
 
@@ -298,28 +295,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                SetDefaultChargingTariffRequest = new SetDefaultChargingTariffRequest(
-                                                      ChargingStationId,
-                                                      ChargingTariff,
-                                                      EVSEIds,
-                                                      null,
-                                                      null,
-                                                      Signatures,
-                                                      CustomData,
-                                                      RequestId
-                                                  );
+                SetTransactionChargingTariffRequest = new SetTransactionChargingTariffRequest(
 
-                if (CustomSetDefaultChargingTariffRequestParser is not null)
-                    SetDefaultChargingTariffRequest = CustomSetDefaultChargingTariffRequestParser(JSON,
-                                                                                                  SetDefaultChargingTariffRequest);
+                                                          ChargingStationId,
+                                                          TransactionId,
+                                                          ChargingTariff,
+
+                                                          null,
+                                                          null,
+                                                          Signatures,
+
+                                                          CustomData,
+                                                          RequestId
+
+                                                      );
+
+                if (CustomSetTransactionChargingTariffRequestParser is not null)
+                    SetTransactionChargingTariffRequest = CustomSetTransactionChargingTariffRequestParser(JSON,
+                                                                                                          SetTransactionChargingTariffRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                SetDefaultChargingTariffRequest  = null;
-                ErrorResponse                    = "The given JSON representation of a SetDefaultChargingTariff request is invalid: " + e.Message;
+                SetTransactionChargingTariffRequest  = null;
+                ErrorResponse                        = "The given JSON representation of a SetTransactionChargingTariff request is invalid: " + e.Message;
                 return false;
             }
 
@@ -327,12 +328,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomSetDefaultChargingTariffRequestSerializer = null, CustomChargingTariffSerializer = null, ...)
+        #region ToJSON(CustomSetTransactionChargingTariffRequestSerializer = null, CustomIdTokenSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomSetDefaultChargingTariffRequestSerializer">A delegate to serialize custom setDefaultChargingTariffs requests.</param>
+        /// <param name="CustomSetTransactionChargingTariffRequestSerializer">A delegate to serialize custom SetTransactionChargingTariff requests.</param>
+        /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
+        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomChargingTariffSerializer">A delegate to serialize custom charging tariff JSON objects.</param>
         /// <param name="CustomPriceSerializer">A delegate to serialize custom price JSON objects.</param>
         /// <param name="CustomTariffElementSerializer">A delegate to serialize custom tariff element JSON objects.</param>
@@ -342,11 +345,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomEnergyMixSerializer">A delegate to serialize custom hours JSON objects.</param>
         /// <param name="CustomEnergySourceSerializer">A delegate to serialize custom energy source JSON objects.</param>
         /// <param name="CustomEnvironmentalImpactSerializer">A delegate to serialize custom environmental impact JSON objects.</param>
-        /// <param name="CustomIdTokenSerializer">A delegate to serialize custom identification tokens.</param>
-        /// <param name="CustomAdditionalInfoSerializer">A delegate to serialize custom additional information objects.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SetDefaultChargingTariffRequest>?  CustomSetDefaultChargingTariffRequestSerializer   = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SetTransactionChargingTariffRequest>?     CustomSetTransactionChargingTariffRequestSerializer      = null,
+                              CustomJObjectSerializerDelegate<IdToken>?                          CustomIdTokenSerializer                           = null,
+                              CustomJObjectSerializerDelegate<AdditionalInfo>?                   CustomAdditionalInfoSerializer                    = null,
                               CustomJObjectSerializerDelegate<ChargingTariff>?                   CustomChargingTariffSerializer                    = null,
                               CustomJObjectSerializerDelegate<Price>?                            CustomPriceSerializer                             = null,
                               CustomJObjectSerializerDelegate<TariffElement>?                    CustomTariffElementSerializer                     = null,
@@ -356,13 +359,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CustomJObjectSerializerDelegate<EnergyMix>?                        CustomEnergyMixSerializer                         = null,
                               CustomJObjectSerializerDelegate<EnergySource>?                     CustomEnergySourceSerializer                      = null,
                               CustomJObjectSerializerDelegate<EnvironmentalImpact>?              CustomEnvironmentalImpactSerializer               = null,
-                              CustomJObjectSerializerDelegate<IdToken>?                          CustomIdTokenSerializer                           = null,
-                              CustomJObjectSerializerDelegate<AdditionalInfo>?                   CustomAdditionalInfoSerializer                    = null,
                               CustomJObjectSerializerDelegate<Signature>?                        CustomSignatureSerializer                         = null,
                               CustomJObjectSerializerDelegate<CustomData>?                       CustomCustomDataSerializer                        = null)
         {
 
             var json = JSONObject.Create(
+
+                                 new JProperty("transactionId",    TransactionId.       ToString()),
 
                                  new JProperty("chargingTariff",   ChargingTariff.ToJSON(CustomChargingTariffSerializer,
                                                                                          CustomPriceSerializer,
@@ -378,9 +381,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                          CustomSignatureSerializer,
                                                                                          CustomCustomDataSerializer)),
 
-                           EVSEIds.Any()
-                               ? new JProperty("evseIds",          new JArray(EVSEIds.   Select(evseId    => evseId.   ToString())))
-                               : null,
 
                            Signatures.Any()
                                ? new JProperty("signatures",       new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
@@ -388,13 +388,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",       CustomData.    ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
 
-            return CustomSetDefaultChargingTariffRequestSerializer is not null
-                       ? CustomSetDefaultChargingTariffRequestSerializer(this, json)
+            return CustomSetTransactionChargingTariffRequestSerializer is not null
+                       ? CustomSetTransactionChargingTariffRequestSerializer(this, json)
                        : json;
 
         }
@@ -404,80 +404,78 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Operator overloading
 
-        #region Operator == (SetDefaultChargingTariffRequest1, SetDefaultChargingTariffRequest2)
+        #region Operator == (SetTransactionChargingTariffRequest1, SetTransactionChargingTariffRequest2)
 
         /// <summary>
-        /// Compares two SetDefaultChargingTariff requests for equality.
+        /// Compares two SetTransactionChargingTariff requests for equality.
         /// </summary>
-        /// <param name="SetDefaultChargingTariffRequest1">A SetDefaultChargingTariff request.</param>
-        /// <param name="SetDefaultChargingTariffRequest2">Another setDefaultChargingTariff request.</param>
+        /// <param name="SetTransactionChargingTariffRequest1">A SetTransactionChargingTariff request.</param>
+        /// <param name="SetTransactionChargingTariffRequest2">Another setTransactionChargingTariff request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (SetDefaultChargingTariffRequest? SetDefaultChargingTariffRequest1,
-                                           SetDefaultChargingTariffRequest? SetDefaultChargingTariffRequest2)
+        public static Boolean operator == (SetTransactionChargingTariffRequest? SetTransactionChargingTariffRequest1,
+                                           SetTransactionChargingTariffRequest? SetTransactionChargingTariffRequest2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(SetDefaultChargingTariffRequest1, SetDefaultChargingTariffRequest2))
+            if (ReferenceEquals(SetTransactionChargingTariffRequest1, SetTransactionChargingTariffRequest2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (SetDefaultChargingTariffRequest1 is null || SetDefaultChargingTariffRequest2 is null)
+            if (SetTransactionChargingTariffRequest1 is null || SetTransactionChargingTariffRequest2 is null)
                 return false;
 
-            return SetDefaultChargingTariffRequest1.Equals(SetDefaultChargingTariffRequest2);
+            return SetTransactionChargingTariffRequest1.Equals(SetTransactionChargingTariffRequest2);
 
         }
 
         #endregion
 
-        #region Operator != (SetDefaultChargingTariffRequest1, SetDefaultChargingTariffRequest2)
+        #region Operator != (SetTransactionChargingTariffRequest1, SetTransactionChargingTariffRequest2)
 
         /// <summary>
-        /// Compares two SetDefaultChargingTariff requests for inequality.
+        /// Compares two SetTransactionChargingTariff requests for inequality.
         /// </summary>
-        /// <param name="SetDefaultChargingTariffRequest1">A SetDefaultChargingTariff request.</param>
-        /// <param name="SetDefaultChargingTariffRequest2">Another setDefaultChargingTariff request.</param>
+        /// <param name="SetTransactionChargingTariffRequest1">A SetTransactionChargingTariff request.</param>
+        /// <param name="SetTransactionChargingTariffRequest2">Another setTransactionChargingTariff request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (SetDefaultChargingTariffRequest? SetDefaultChargingTariffRequest1,
-                                           SetDefaultChargingTariffRequest? SetDefaultChargingTariffRequest2)
+        public static Boolean operator != (SetTransactionChargingTariffRequest? SetTransactionChargingTariffRequest1,
+                                           SetTransactionChargingTariffRequest? SetTransactionChargingTariffRequest2)
 
-            => !(SetDefaultChargingTariffRequest1 == SetDefaultChargingTariffRequest2);
-
-        #endregion
+            => !(SetTransactionChargingTariffRequest1 == SetTransactionChargingTariffRequest2);
 
         #endregion
 
-        #region IEquatable<SetDefaultChargingTariffRequest> Members
+        #endregion
+
+        #region IEquatable<SetTransactionChargingTariffRequest> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two SetDefaultChargingTariffRequest requests for equality.
+        /// Compares two SetTransactionChargingTariffRequest requests for equality.
         /// </summary>
-        /// <param name="Object">A SetDefaultChargingTariffRequest request to compare with.</param>
+        /// <param name="Object">A SetTransactionChargingTariffRequest request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is SetDefaultChargingTariffRequest setDefaultChargingTariffRequest &&
-                   Equals(setDefaultChargingTariffRequest);
+            => Object is SetTransactionChargingTariffRequest SetTransactionChargingTariffRequest &&
+                   Equals(SetTransactionChargingTariffRequest);
 
         #endregion
 
-        #region Equals(SetDefaultChargingTariffRequest)
+        #region Equals(SetTransactionChargingTariffRequest)
 
         /// <summary>
-        /// Compares two SetDefaultChargingTariffRequest requests for equality.
+        /// Compares two SetTransactionChargingTariffRequest requests for equality.
         /// </summary>
-        /// <param name="SetDefaultChargingTariffRequest">A SetDefaultChargingTariffRequest request to compare with.</param>
-        public override Boolean Equals(SetDefaultChargingTariffRequest? SetDefaultChargingTariffRequest)
+        /// <param name="SetTransactionChargingTariffRequest">A SetTransactionChargingTariffRequest request to compare with.</param>
+        public override Boolean Equals(SetTransactionChargingTariffRequest? SetTransactionChargingTariffRequest)
 
-            => SetDefaultChargingTariffRequest is not null &&
+            => SetTransactionChargingTariffRequest is not null &&
 
-               ChargingTariff.Equals(SetDefaultChargingTariffRequest.ChargingTariff) &&
+               TransactionId. Equals(SetTransactionChargingTariffRequest.TransactionId)  &&
+               ChargingTariff.Equals(SetTransactionChargingTariffRequest.ChargingTariff) &&
 
-               EVSEIds.Count().Equals(SetDefaultChargingTariffRequest.EVSEIds.Count())     &&
-               EVSEIds.All(evseId => SetDefaultChargingTariffRequest.EVSEIds.Contains(evseId)) &&
-
-               base.   GenericEquals(SetDefaultChargingTariffRequest);
+               base.   GenericEquals(SetTransactionChargingTariffRequest);
 
         #endregion
 
@@ -502,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => $"Set default charging tariff '{ChargingTariff.Id}'{(EVSEIds.Any() ? $" on EVSEs: {EVSEIds.AggregateWith(", ")}!" : "")}";
+            => $"'{ChargingTariff.Id}' for '{TransactionId}'";
 
         #endregion
 

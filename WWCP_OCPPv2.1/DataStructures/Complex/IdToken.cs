@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The type of the identification token.
         /// </summary>
         [Mandatory]
-        public IdTokenTypes                 Type               { get; }
+        public IdTokenType                 Type               { get; }
 
         /// <summary>
         /// Optional information which can be validated by the CSMS in addition to the regular authorization with identification token.
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="AdditionalInfos">Optional information which can be validated by the CSMS in addition to the regular authorization with identification token.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public IdToken(String                        Value,
-                       IdTokenTypes                  Type,
+                       IdTokenType                  Type,
                        IEnumerable<AdditionalInfo>?  AdditionalInfos   = null,
                        CustomData?                   CustomData        = null)
 
@@ -127,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static IdToken NewRandomRFID(Byte Length = 8)
 
             => new (RandomExtensions.RandomString(Length).ToUpper(),
-                    IdTokenTypes.ISO14443);
+                    IdTokenType.ISO14443);
 
         #endregion
 
@@ -213,8 +213,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("type",
                                          "type",
-                                         IdTokenTypesExtensions.TryParse,
-                                         out IdTokenTypes Type,
+                                         IdTokenType.TryParse,
+                                         out IdTokenType Type,
                                          out ErrorResponse))
                 {
                     return false;
@@ -294,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("idToken",          Value),
-                                 new JProperty("type",             Type.      AsText()),
+                                 new JProperty("type",             Type.      ToString()),
 
                            AdditionalInfos.Any()
                                ? new JProperty("additionalInfo",   new JArray(AdditionalInfos.Select(additionalInfo => additionalInfo.ToJSON(CustomAdditionalInfoSerializer,

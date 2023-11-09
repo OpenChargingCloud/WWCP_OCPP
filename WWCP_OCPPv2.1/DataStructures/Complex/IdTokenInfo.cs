@@ -38,43 +38,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The authorization status.
         /// </summary>
-        public AuthorizationStatus   Status                 { get; }
+        public AuthorizationStatus   Status                  { get; }
 
         /// <summary>
         /// The optional charging priority from a business point of view, ranging from -9 to 9 with a default value of 0.
         /// Higher values indicate a higher priority.
         /// </summary>
-        public Int16                 ChargingPriority       { get; }
+        public Int16                 ChargingPriority        { get; }
 
         /// <summary>
         /// The optional timestamp after which the token must be considered invalid.
         /// </summary>
-        public DateTime?             CacheExpiryDateTime    { get; }
+        public DateTime?             CacheExpiryDateTime     { get; }
 
         /// <summary>
         /// The identification token is only valid fot the given optional enumeration of EVSE identifications.
         /// </summary>
-        public IEnumerable<EVSE_Id>  ValidEVSEIds           { get; }
+        public IEnumerable<EVSE_Id>  ValidEVSEIds            { get; }
+
+
+        public Boolean?              HasChargingTariff       { get; }
 
         /// <summary>
         /// Additional identification token.
         /// </summary>
-        public IdToken?              GroupIdToken           { get; }
+        public IdToken?              GroupIdToken            { get; }
 
         /// <summary>
         /// The first optional preferred user interface language of identifier user. [max 8]
         /// </summary>
-        public Language_Id?          Language1              { get; }
+        public Language_Id?          Language1               { get; }
 
         /// <summary>
         /// The second optional preferred user interface language of identifier user. [max 8]
         /// </summary>
-        public Language_Id?          Language2              { get; }
+        public Language_Id?          Language2               { get; }
 
         /// <summary>
-        /// An optional message to be displayed at a charging station.
+        /// The optional personal message to be displayed at a charging station.
         /// </summary>
-        public MessageContent?       PersonalMessage        { get; }
+        public MessageContents       PersonalMessage         { get; }
 
         #endregion
 
@@ -90,16 +93,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="GroupIdToken">Additional identification token.</param>
         /// <param name="Language1">The first optional preferred user interface language of identifier user.</param>
         /// <param name="Language2">The second optional preferred user interface language of identifier user.</param>
-        /// <param name="PersonalMessage">An optional message to be displayed at a charging station.</param>
+        /// <param name="PersonalMessage">An optional personal message to be displayed at a charging station.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public IdTokenInfo(AuthorizationStatus    Status,
                            Int16?                 ChargingPriority      = 0,
                            DateTime?              CacheExpiryDateTime   = null,
                            IEnumerable<EVSE_Id>?  ValidEVSEIds          = null,
+                           Boolean?               HasChargingTariff     = null,
                            IdToken?               GroupIdToken          = null,
                            Language_Id?           Language1             = null,
                            Language_Id?           Language2             = null,
-                           MessageContent?        PersonalMessage       = null,
+                           MessageContents?       PersonalMessage       = null,
                            CustomData?            CustomData            = null)
 
             : base(CustomData)
@@ -110,10 +114,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.ChargingPriority     = ChargingPriority ?? 0;
             this.CacheExpiryDateTime  = CacheExpiryDateTime;
             this.ValidEVSEIds         = ValidEVSEIds?.Distinct() ?? Array.Empty<EVSE_Id>();
+            this.HasChargingTariff    = HasChargingTariff;
             this.GroupIdToken         = GroupIdToken;
             this.Language1            = Language1;
             this.Language2            = Language2;
-            this.PersonalMessage      = PersonalMessage;
+            this.PersonalMessage      = PersonalMessage ?? MessageContents.Empty;
 
         }
 
@@ -240,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 IdTokenInfo = default;
 
-                #region AuthorizationStatus    [mandatory]
+                #region AuthorizationStatus     [mandatory]
 
                 if (!JSON.ParseMandatory("status",
                                          "authorization status",
@@ -253,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region ChargingPriority       [optional]
+                #region ChargingPriority        [optional]
 
                 if (JSON.ParseOptional("chargingPriority",
                                        "charging priority",
@@ -267,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region CacheExpiryDateTime    [optional]
+                #region CacheExpiryDateTime     [optional]
 
                 if (JSON.ParseOptional("cacheExpiryDateTime",
                                        "cache expiry timestamp",
@@ -280,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region ValidEVSEIds           [optional]
+                #region ValidEVSEIds            [optional]
 
                 if (JSON.ParseOptionalHashSet("evseId",
                                               "valid EVSE identifications",
@@ -294,7 +299,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region GroupIdToken           [optional]
+                #region HasChargingTariff       [optional]
+
+                if (JSON.ParseOptional("hasTariff",
+                                       "has charging tariff",
+                                       out Boolean? HasChargingTariff,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region GroupIdToken            [optional]
 
                 if (JSON.ParseOptionalJSON("groupIdToken",
                                            "group identification token",
@@ -308,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Language1              [optional]
+                #region Language1               [optional]
 
                 if (JSON.ParseOptional("language1",
                                        "first preferred user interface language",
@@ -322,7 +340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Language2              [optional]
+                #region Language2               [optional]
 
                 if (JSON.ParseOptional("language2",
                                        "second preferred user interface language",
@@ -336,12 +354,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region PersonalMessage        [optional]
+                #region PersonalMessage         [optional]
 
                 if (JSON.ParseOptionalJSON("personalMessage",
                                            "personal message",
                                            MessageContent.TryParse,
-                                           out MessageContent PersonalMessage,
+                                           out MessageContent? PersonalMessage,
                                            out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -350,7 +368,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region CustomData             [optional]
+                #region PersonalMessageExtra    [optional]
+
+                if (JSON.ParseOptionalJSONArray("personalMessageExtra",
+                                                "personal message extra",
+                                                MessageContents.TryParse,
+                                                out MessageContents? PersonalMessageExtra,
+                                                out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                var personalMessages = PersonalMessageExtra ?? MessageContents.Empty;
+
+                if (PersonalMessage is not null)
+                    personalMessages.Set(PersonalMessage);
+
+                #endregion
+
+                #region CustomData              [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -365,15 +402,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                IdTokenInfo = new IdTokenInfo(AuthorizationStatus,
-                                              ChargingPriority,
-                                              CacheExpiryDateTime,
-                                              ValidEVSEIds,
-                                              GroupIdToken,
-                                              Language1,
-                                              Language2,
-                                              PersonalMessage,
-                                              CustomData);
+                IdTokenInfo = new IdTokenInfo(
+                                  AuthorizationStatus,
+                                  ChargingPriority,
+                                  CacheExpiryDateTime,
+                                  ValidEVSEIds,
+                                  HasChargingTariff,
+                                  GroupIdToken,
+                                  Language2,
+                                  Language1,
+                                  personalMessages,
+                                  CustomData
+                              );
 
                 if (CustomIdTokenInfoParser is not null)
                     IdTokenInfo = CustomIdTokenInfoParser(JSON,
@@ -412,41 +452,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",                Status.                   ToString()),
+                                 new JProperty("status",                 Status.                   ToString()),
 
                            ChargingPriority != 0
-                               ? new JProperty("chargingPriority",      ChargingPriority)
+                               ? new JProperty("chargingPriority",       ChargingPriority)
                                : null,
 
                            CacheExpiryDateTime.HasValue
-                               ? new JProperty("cacheExpiryDateTime",   CacheExpiryDateTime.Value.ToIso8601())
+                               ? new JProperty("cacheExpiryDateTime",    CacheExpiryDateTime.Value.ToIso8601())
                                : null,
 
                            ValidEVSEIds.Any()
-                               ? new JProperty("evseId",                new JArray(ValidEVSEIds.Select(evseId => evseId.Value)))
+                               ? new JProperty("evseId",                 new JArray(ValidEVSEIds.Select(evseId => evseId.Value)))
                                : null,
 
                            GroupIdToken is not null
-                               ? new JProperty("groupIdToken",          GroupIdToken.             ToJSON(CustomIdTokenSerializer,
-                                                                                                         CustomAdditionalInfoSerializer,
-                                                                                                         CustomCustomDataSerializer))
+                               ? new JProperty("groupIdToken",           GroupIdToken.             ToJSON(CustomIdTokenSerializer,
+                                                                                                          CustomAdditionalInfoSerializer,
+                                                                                                          CustomCustomDataSerializer))
                                : null,
 
                            Language1.HasValue
-                               ? new JProperty("language1",             Language1.          Value.ToString())
+                               ? new JProperty("language1",              Language1.          Value.ToString())
                                : null,
 
                            Language2.HasValue
-                               ? new JProperty("language2",             Language2.          Value.ToString())
+                               ? new JProperty("language2",              Language2.          Value.ToString())
                                : null,
 
-                           PersonalMessage is not null
-                               ? new JProperty("personalMessage",       PersonalMessage.          ToJSON(CustomMessageContentSerializer,
-                                                                                                         CustomCustomDataSerializer))
+                           PersonalMessage is not null && PersonalMessage.Any()
+                               ? new JProperty("personalMessage",        PersonalMessage.First().  ToJSON(CustomMessageContentSerializer,
+                                                                                                          CustomCustomDataSerializer))
+                               : null,
+
+                           PersonalMessage is not null && PersonalMessage.Count > 1
+                               ? new JProperty("personalMessageExtra",   new JArray(PersonalMessage.Skip(1).Select(messageContent => messageContent.ToJSON(CustomMessageContentSerializer,
+                                                                                                                                                           CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",            CustomData.               ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",             CustomData.               ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

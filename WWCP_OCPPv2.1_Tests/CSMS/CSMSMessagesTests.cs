@@ -2011,7 +2011,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                   new AuthorizationData(
                                                                       IdToken:       new IdToken(
                                                                                          Value:                 "aabbccdd",
-                                                                                         Type:                  IdTokenTypes.ISO14443,
+                                                                                         Type:                  IdTokenType.ISO14443,
                                                                                          AdditionalInfos:       new[] {
                                                                                                                     new AdditionalInfo(
                                                                                                                         AdditionalIdToken:   "1234",
@@ -2030,7 +2030,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                                                                 },
                                                                                          GroupIdToken:          new IdToken(
                                                                                                                     Value:                 "55667788",
-                                                                                                                    Type:                  IdTokenTypes.ISO14443,
+                                                                                                                    Type:                  IdTokenType.ISO14443,
                                                                                                                     AdditionalInfos:       new[] {
                                                                                                                                                new AdditionalInfo(
                                                                                                                                                    AdditionalIdToken:   "1234",
@@ -2042,7 +2042,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                                                                 ),
                                                                                          Language1:             Language_Id.Parse("de"),
                                                                                          Language2:             Language_Id.Parse("en"),
-                                                                                         PersonalMessage:       new MessageContent(
+                                                                                         PersonalMessage:       new MessageContents(
                                                                                                                     Content:      "Hello world!",
                                                                                                                     Format:       MessageFormats.UTF8,
                                                                                                                     Language:     Language_Id.Parse("en"),
@@ -2156,7 +2156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                           ExpiryDate:          Timestamp.Now + TimeSpan.FromHours(2),
                                           IdToken:             new IdToken(
                                                                    Value:             "22334455",
-                                                                   Type:              IdTokenTypes.ISO14443,
+                                                                   Type:              IdTokenType.ISO14443,
                                                                    AdditionalInfos:   new[] {
                                                                                           new AdditionalInfo(
                                                                                               AdditionalIdToken:   "123",
@@ -2170,7 +2170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                           EVSEId:              evseId,
                                           GroupIdToken:        new IdToken(
                                                                    Value:             "55667788",
-                                                                   Type:              IdTokenTypes.ISO14443,
+                                                                   Type:              IdTokenType.ISO14443,
                                                                    AdditionalInfos:   new[] {
                                                                                           new AdditionalInfo(
                                                                                               AdditionalIdToken:   "567",
@@ -2286,7 +2286,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                         RequestStartTransactionRequestId:   RemoteStart_Id.NewRandom,
                                         IdToken:                            new IdToken(
                                                                                 Value:             "aabbccdd",
-                                                                                Type:              IdTokenTypes.ISO14443,
+                                                                                Type:              IdTokenType.ISO14443,
                                                                                 AdditionalInfos:   null,
                                                                                 CustomData:        null
                                                                             ),
@@ -2294,7 +2294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                         ChargingProfile:                    null,
                                         GroupIdToken:                       new IdToken(
                                                                                 Value:             "cafebabe",
-                                                                                Type:              IdTokenTypes.ISO14443,
+                                                                                Type:              IdTokenType.ISO14443,
                                                                                 AdditionalInfos:   null,
                                                                                 CustomData:        null
                                                                             ),
@@ -3478,7 +3478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                          CustomerIdentifier:             CustomerIdentifier.Parse("123"),
                                          IdToken:                        new IdToken(
                                                                              Value:                 "aabbccdd",
-                                                                             Type:                  IdTokenTypes.ISO14443,
+                                                                             Type:                  IdTokenType.ISO14443,
                                                                              AdditionalInfos:       new[] {
                                                                                                         new AdditionalInfo(
                                                                                                             AdditionalIdToken:   "1234",

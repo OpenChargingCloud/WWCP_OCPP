@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
             var idToken            = new IdToken(
                                          Value:                     "",
-                                         Type:                      IdTokenTypes.ISO14443,
+                                         Type:                      IdTokenType.ISO14443,
                                          AdditionalInfos:           null,
                                          CustomData:                null
                                      );
@@ -448,7 +448,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
             var idToken            = new IdToken(
                                          Value:                     "",
-                                         Type:                      IdTokenTypes.ISO14443,
+                                         Type:                      IdTokenType.ISO14443,
                                          AdditionalInfos:           null,
                                          CustomData:                null
                                      );
@@ -736,7 +736,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
             var idToken            = new IdToken(
                                          Value:                     "",
-                                         Type:                      IdTokenTypes.ISO14443,
+                                         Type:                      IdTokenType.ISO14443,
                                          AdditionalInfos:           null,
                                          CustomData:                null
                                      );
@@ -1041,7 +1041,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
             var idToken            = new IdToken(
                                          Value:                     "",
-                                         Type:                      IdTokenTypes.ISO14443,
+                                         Type:                      IdTokenType.ISO14443,
                                          AdditionalInfos:           null,
                                          CustomData:                null
                                      );
@@ -1371,7 +1371,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
             var idToken            = new IdToken(
                                          Value:                     "",
-                                         Type:                      IdTokenTypes.ISO14443,
+                                         Type:                      IdTokenType.ISO14443,
                                          AdditionalInfos:           null,
                                          CustomData:                null
                                      );
@@ -1669,7 +1669,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
 
             var idToken            = new IdToken(
                                          Value:                     "",
-                                         Type:                      IdTokenTypes.ISO14443,
+                                         Type:                      IdTokenType.ISO14443,
                                          AdditionalInfos:           null,
                                          CustomData:                null
                                      );

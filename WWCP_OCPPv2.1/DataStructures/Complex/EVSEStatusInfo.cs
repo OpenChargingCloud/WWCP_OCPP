@@ -289,13 +289,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("evseId",           EVSEId.Value),
                                  new JProperty("status",           CustomStatusSerializer(Status)),
-                                 new JProperty("reasonCode",       ReasonCode),
+
+                           ReasonCode     is not null
+                               ? new JProperty("reasonCode",       ReasonCode)
+                               : null,
 
                            AdditionalInfo is not null
                                ? new JProperty("additionalInfo",   AdditionalInfo)
                                : null,
 
-                           CustomData is not null
+                           CustomData     is not null
                                ? new JProperty("customData",       CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 

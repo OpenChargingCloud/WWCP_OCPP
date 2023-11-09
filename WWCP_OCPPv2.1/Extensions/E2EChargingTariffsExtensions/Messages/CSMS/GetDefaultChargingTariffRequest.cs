@@ -108,6 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             this.EVSEIds = EVSEIds?.Distinct() ?? Array.Empty<EVSE_Id>();
 
+
             unchecked
             {
 
