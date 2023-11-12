@@ -1249,23 +1249,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                            SampledValues:   new[] {
 
                                                                                                 new SampledValue(
-                                                                                                    Value:              meterStart,
-                                                                                                    Context:            ReadingContexts.TransactionBegin,
-                                                                                                    Measurand:          Measurands.Energy_Active_Export_Interval,
-                                                                                                    Phase:              Phases.L1,
-                                                                                                    Location:           MeasurementLocations.Outlet,
-                                                                                                    SignedMeterValue:   new SignedMeterValue(
-                                                                                                                            SignedMeterData:   meterStart.ToString(),
-                                                                                                                            SigningMethod:     "secp256r1",
-                                                                                                                            EncodingMethod:    "base64",
-                                                                                                                            PublicKey:         "0x1234",
-                                                                                                                            CustomData:        null
-                                                                                                                        ),
-                                                                                                    UnitOfMeasure:      UnitsOfMeasure.kW(
-                                                                                                                            Multiplier:   0,
-                                                                                                                            CustomData:   null
-                                                                                                                        ),
-                                                                                                    CustomData:         null
+                                                                                                    Value:                 meterStart,
+                                                                                                    Context:               ReadingContexts.TransactionBegin,
+                                                                                                    Measurand:             Measurand.Energy_Active_Export_Interval,
+                                                                                                    Phase:                 Phases.L1,
+                                                                                                    MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                    SignedMeterValue:      new SignedMeterValue(
+                                                                                                                               SignedMeterData:   meterStart.ToString(),
+                                                                                                                               SigningMethod:     "secp256r1",
+                                                                                                                               EncodingMethod:    "base64",
+                                                                                                                               PublicKey:         "0x1234",
+                                                                                                                               CustomData:        null
+                                                                                                                           ),
+                                                                                                    UnitOfMeasure:         UnitsOfMeasure.kW(
+                                                                                                                               Multiplier:   0,
+                                                                                                                               CustomData:   null
+                                                                                                                           ),
+                                                                                                    CustomData:            null
                                                                                                 )
 
                                                                                             },
@@ -1396,42 +1396,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                            Timestamp.Now - TimeSpan.FromMinutes(5),
                                            new[] {
                                                new SampledValue(
-                                                   Value:              1.01M,
-                                                   Context:            ReadingContexts.TransactionBegin,
-                                                   Measurand:          Measurands.Current_Import,
-                                                   Phase:              Phases.L1,
-                                                   Location:           MeasurementLocations.Outlet,
-                                                   SignedMeterValue:   new SignedMeterValue(
-                                                                           SignedMeterData:   "1.01",
-                                                                           SigningMethod:     "secp256r1_1.01",
-                                                                           EncodingMethod:    "base64_1.01",
-                                                                           PublicKey:         "pubkey_1.01",
-                                                                           CustomData:        null
-                                                                       ),
-                                                   UnitOfMeasure:      UnitsOfMeasure.kW(
-                                                                           Multiplier:   1,
-                                                                           CustomData:   null
-                                                                       ),
-                                                   CustomData:         null
+                                                   Value:                 1.01M,
+                                                   Context:               ReadingContexts.TransactionBegin,
+                                                   Measurand:             Measurand.Current_Import,
+                                                   Phase:                 Phases.L1,
+                                                   MeasurementLocation:   MeasurementLocation.Outlet,
+                                                   SignedMeterValue:      new SignedMeterValue(
+                                                                              SignedMeterData:   "1.01",
+                                                                              SigningMethod:     "secp256r1_1.01",
+                                                                              EncodingMethod:    "base64_1.01",
+                                                                              PublicKey:         "pubkey_1.01",
+                                                                              CustomData:        null
+                                                                          ),
+                                                   UnitOfMeasure:         UnitsOfMeasure.kW(
+                                                                              Multiplier:   1,
+                                                                              CustomData:   null
+                                                                          ),
+                                                   CustomData:            null
                                                ),
                                                new SampledValue(
-                                                   Value:              1.02M,
-                                                   Context:            ReadingContexts.TransactionBegin,
-                                                   Measurand:          Measurands.Voltage,
-                                                   Phase:              Phases.L2,
-                                                   Location:           MeasurementLocations.Inlet,
-                                                   SignedMeterValue:   new SignedMeterValue(
-                                                                           SignedMeterData:   "1.02",
-                                                                           SigningMethod:     "secp256r1_1.02",
-                                                                           EncodingMethod:    "base64_1.02",
-                                                                           PublicKey:         "pubkey_1.02",
-                                                                           CustomData:        null
-                                                                       ),
-                                                   UnitOfMeasure:      UnitsOfMeasure.kW(
-                                                                           Multiplier:   2,
-                                                                           CustomData:   null
-                                                                       ),
-                                                   CustomData:         null
+                                                   Value:                 1.02M,
+                                                   Context:               ReadingContexts.TransactionBegin,
+                                                   Measurand:             Measurand.Voltage,
+                                                   Phase:                 Phases.L2,
+                                                   MeasurementLocation:   MeasurementLocation.Inlet,
+                                                   SignedMeterValue:      new SignedMeterValue(
+                                                                              SignedMeterData:   "1.02",
+                                                                              SigningMethod:     "secp256r1_1.02",
+                                                                              EncodingMethod:    "base64_1.02",
+                                                                              PublicKey:         "pubkey_1.02",
+                                                                              CustomData:        null
+                                                                          ),
+                                                   UnitOfMeasure:         UnitsOfMeasure.kW(
+                                                                              Multiplier:   2,
+                                                                              CustomData:   null
+                                                                          ),
+                                                   CustomData:            null
                                                )
                                            }
                                        ),
@@ -1439,42 +1439,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                            Timestamp.Now,
                                            new[] {
                                                new SampledValue(
-                                                   Value:              2.01M,
-                                                   Context:            ReadingContexts.TransactionEnd,
-                                                   Measurand:          Measurands.Current_Import_Offered,
-                                                   Phase:              Phases.L3,
-                                                   Location:           MeasurementLocations.Cable,
-                                                   SignedMeterValue:   new SignedMeterValue(
-                                                                           SignedMeterData:   "2.01",
-                                                                           SigningMethod:     "secp256r1_2.01",
-                                                                           EncodingMethod:    "base64_2.01",
-                                                                           PublicKey:         "pubkey_2.01",
-                                                                           CustomData:        null
-                                                                       ),
-                                                   UnitOfMeasure:      UnitsOfMeasure.kW(
-                                                                           Multiplier:   3,
-                                                                           CustomData:   null
-                                                                       ),
-                                                   CustomData:         null
+                                                   Value:                 2.01M,
+                                                   Context:               ReadingContexts.TransactionEnd,
+                                                   Measurand:             Measurand.Current_Import_Offered,
+                                                   Phase:                 Phases.L3,
+                                                   MeasurementLocation:   MeasurementLocation.Cable,
+                                                   SignedMeterValue:      new SignedMeterValue(
+                                                                              SignedMeterData:   "2.01",
+                                                                              SigningMethod:     "secp256r1_2.01",
+                                                                              EncodingMethod:    "base64_2.01",
+                                                                              PublicKey:         "pubkey_2.01",
+                                                                              CustomData:        null
+                                                                          ),
+                                                   UnitOfMeasure:         UnitsOfMeasure.kW(
+                                                                              Multiplier:   3,
+                                                                              CustomData:   null
+                                                                          ),
+                                                   CustomData:            null
                                                ),
                                                new SampledValue(
-                                                   Value:              2.02M,
-                                                   Context:            ReadingContexts.TransactionEnd,
-                                                   Measurand:          Measurands.Frequency,
-                                                   Phase:              Phases.N,
-                                                   Location:           MeasurementLocations.EV,
-                                                   SignedMeterValue:   new SignedMeterValue(
-                                                                           SignedMeterData:   "2.02",
-                                                                           SigningMethod:     "secp256r1_2.02",
-                                                                           EncodingMethod:    "base64_2.02",
-                                                                           PublicKey:         "pubkey_2.02",
-                                                                           CustomData:        null
-                                                                       ),
-                                                   UnitOfMeasure:      UnitsOfMeasure.kW(
-                                                                           Multiplier:   4,
-                                                                           CustomData:   null
-                                                                       ),
-                                                   CustomData:         null
+                                                   Value:                 2.02M,
+                                                   Context:               ReadingContexts.TransactionEnd,
+                                                   Measurand:             Measurand.Frequency,
+                                                   Phase:                 Phases.N,
+                                                   MeasurementLocation:   MeasurementLocation.EV,
+                                                   SignedMeterValue:      new SignedMeterValue(
+                                                                              SignedMeterData:   "2.02",
+                                                                              SigningMethod:     "secp256r1_2.02",
+                                                                              EncodingMethod:    "base64_2.02",
+                                                                              PublicKey:         "pubkey_2.02",
+                                                                              CustomData:        null
+                                                                          ),
+                                                   UnitOfMeasure:         UnitsOfMeasure.kW(
+                                                                              Multiplier:   4,
+                                                                              CustomData:   null
+                                                                          ),
+                                                   CustomData:            null
                                                )
                                            }
                                        )
@@ -1527,10 +1527,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Phase,       meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Phase);
                 Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Phase,       meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Phase);
 
-                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Location,    meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Location);
-                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Location,    meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Location);
-                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Location,    meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Location);
-                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Location,    meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Location);
+                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).MeasurementLocation,    meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).MeasurementLocation);
+                Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).MeasurementLocation,    meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).MeasurementLocation);
+                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).MeasurementLocation,    meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).MeasurementLocation);
+                Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).MeasurementLocation,    meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).MeasurementLocation);
 
                 //Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Unit,        meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Unit);
                 //Assert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Unit,        meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Unit);
@@ -1580,7 +1580,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var response = await chargingStation1.NotifyChargingLimit(
                                          ChargingLimit:       new ChargingLimit(
-                                                                  ChargingLimitSource:   ChargingLimitSources.SO,
+                                                                  ChargingLimitSource:   ChargingLimitSource.SO,
                                                                   IsGridCritical:        true,
                                                                   IsLocalGeneration:     false,
                                                                   CustomData:            null
@@ -1684,7 +1684,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 };
 
                 var response = await chargingStation1.SendClearedChargingLimit(
-                                   ChargingLimitSource:   ChargingLimitSources.SO,
+                                   ChargingLimitSource:   ChargingLimitSource.SO,
                                    EVSEId:                EVSE_Id.Parse("1"),
                                    CustomData:            null
                                );
@@ -1732,7 +1732,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var response = await chargingStation1.ReportChargingProfiles(
                                    ReportChargingProfilesRequestId:   1,
-                                   ChargingLimitSource:               ChargingLimitSources.SO,
+                                   ChargingLimitSource:               ChargingLimitSource.SO,
                                    EVSEId:                            EVSE_Id.Parse("1"),
                                    ChargingProfiles:                  new[] {
                                                                           new ChargingProfile(

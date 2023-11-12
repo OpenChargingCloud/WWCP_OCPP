@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The type of the certificates requested.
         /// </summary>
         [Mandatory]
-        public LogTypes       LogType          { get; }
+        public LogType        LogType          { get; }
 
         /// <summary>
         /// The unique identification of this request.
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public GetLogRequest(ChargingStation_Id       ChargingStationId,
-                             LogTypes                 LogType,
+                             LogType                  LogType,
                              Int32                    LogRequestId,
                              LogParameters            Log,
                              Byte?                    Retries             = null,
@@ -342,8 +342,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (!JSON.ParseMandatory("logType",
                                          "log type",
-                                         LogTypesExtensions.TryParse,
-                                         out LogTypes LogType,
+                                         OCPPv2_1.LogType.TryParse,
+                                         out LogType LogType,
                                          out ErrorResponse))
                 {
                     return false;
@@ -500,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("logType",         LogType.   AsText()),
+                                 new JProperty("logType",         LogType.   ToString()),
                                  new JProperty("requestId",       LogRequestId),
                                  new JProperty("log",             Log.       ToJSON(CustomLogParametersSerializer)),
 

@@ -57,7 +57,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        private readonly String InternalId;
+        private readonly static Dictionary<String, MessageTrigger>  lookup = new (StringComparer.OrdinalIgnoreCase);
+        private readonly        String                              InternalId;
 
         #endregion
 
@@ -97,6 +98,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        #region (private static) Register(Text)
+
+        private static MessageTrigger Register(String Text)
+
+            => lookup.AddAndReturnValue(
+                   Text,
+                   new MessageTrigger(Text)
+               );
+
+        #endregion
+
+
         #region (static) Parse   (Text)
 
         /// <summary>
@@ -109,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var messageTrigger))
                 return messageTrigger;
 
-            throw new ArgumentException("The given text representation of a message trigger is invalid!",
+            throw new ArgumentException($"Invalid text representation of a message trigger: '{Text}'!",
                                         nameof(Text));
 
         }
@@ -144,25 +157,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static Boolean TryParse(String Text, out MessageTrigger MessageTrigger)
         {
 
-            #region Initial checks
-
             Text = Text.Trim();
 
-            if (Text.IsNullOrEmpty())
+            if (Text.IsNotNullOrEmpty())
             {
-                MessageTrigger = default;
-                return false;
-            }
 
-            #endregion
+                if (!lookup.TryGetValue(Text, out MessageTrigger))
+                    MessageTrigger = Register(Text);
 
-            try
-            {
-                MessageTrigger = new MessageTrigger(Text);
                 return true;
+
             }
-            catch (Exception)
-            { }
 
             MessageTrigger = default;
             return false;
@@ -179,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public MessageTrigger Clone
 
             => new (
-                   new String(InternalId.ToCharArray())
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion
@@ -190,80 +195,80 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// To trigger a BootNotification request
         /// </summary>
-        public static MessageTrigger BootNotification
-            => new ("BootNotification");
+        public static MessageTrigger BootNotification                     { get; }
+            = Register("BootNotification");
 
         /// <summary>
         /// To trigger LogStatusNotification request
         /// </summary>
-        public static MessageTrigger LogStatusNotification
-            => new ("LogStatusNotification");
+        public static MessageTrigger LogStatusNotification                { get; }
+            = Register("LogStatusNotification");
 
         /// <summary>
         /// To trigger a DiagnosticsStatusNotification request
         /// </summary>
-        public static MessageTrigger DiagnosticsStatusNotification
-            => new ("DiagnosticsStatusNotification");
+        public static MessageTrigger DiagnosticsStatusNotification        { get; }
+            = Register("DiagnosticsStatusNotification");
 
         /// <summary>
         /// To trigger a FirmwareStatusNotification request
         /// </summary>
-        public static MessageTrigger FirmwareStatusNotification
-            => new ("FirmwareStatusNotification");
+        public static MessageTrigger FirmwareStatusNotification           { get; }
+            = Register("FirmwareStatusNotification");
 
         /// <summary>
         /// To trigger a Heartbeat request
         /// </summary>
-        public static MessageTrigger Heartbeat
-            => new ("Heartbeat");
+        public static MessageTrigger Heartbeat                            { get; }
+            = Register("Heartbeat");
 
         /// <summary>
         /// To trigger a MeterValues request
         /// </summary>
-        public static MessageTrigger MeterValues
-            => new ("MeterValues");
+        public static MessageTrigger MeterValues                          { get; }
+            = Register("MeterValues");
 
         /// <summary>
         /// To trigger a SignCertificate.req with certificateType: ChargingStationCertificate
         /// </summary>
-        public static MessageTrigger SignChargingStationCertificate
-            => new ("SignChargingStationCertificate");
+        public static MessageTrigger SignChargingStationCertificate       { get; }
+            = Register("SignChargingStationCertificate");
 
         /// <summary>
         /// To trigger a SignCertificate with typeOfCertificate: V2GCertificate
         /// </summary>
-        public static MessageTrigger SignV2GCertificate
-            => new ("SignV2GCertificate");
+        public static MessageTrigger SignV2GCertificate                   { get; }
+            = Register("SignV2GCertificate");
 
         /// <summary>
         /// To trigger a StatusNotification request
         /// </summary>
-        public static MessageTrigger StatusNotification
-            => new ("StatusNotification");
+        public static MessageTrigger StatusNotification                   { get; }
+            = Register("StatusNotification");
 
         /// <summary>
         /// To trigger TransactionEvents
         /// </summary>
-        public static MessageTrigger TransactionEvent
-            => new ("TransactionEvent");
+        public static MessageTrigger TransactionEvent                     { get; }
+            = Register("TransactionEvent");
 
         /// <summary>
         /// To trigger a SignCertificate with typeOfCertificate: ChargingStationCertificate AND V2GCertificate
         /// </summary>
-        public static MessageTrigger SignCombinedCertificate
-            => new ("SignCombinedCertificate");
+        public static MessageTrigger SignCombinedCertificate              { get; }
+            = Register("SignCombinedCertificate");
 
         /// <summary>
         /// To trigger PublishFirmwareStatusNotifications
         /// </summary>
-        public static MessageTrigger PublishFirmwareStatusNotification
-            => new ("PublishFirmwareStatusNotification");
+        public static MessageTrigger PublishFirmwareStatusNotification    { get; }
+            = Register("PublishFirmwareStatusNotification");
 
         /// <summary>
         /// Custom trigger
         /// </summary>
-        public static MessageTrigger CustomTrigger
-            => new ("CustomTrigger");
+        public static MessageTrigger CustomTrigger                        { get; }
+            = Register("CustomTrigger");
 
         #endregion
 
@@ -434,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => InternalId?.ToLower()?.GetHashCode() ?? 0;
+            => InternalId?.ToLower().GetHashCode() ?? 0;
 
         #endregion
 
@@ -445,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => InternalId;
+            => InternalId ?? "";
 
         #endregion
 

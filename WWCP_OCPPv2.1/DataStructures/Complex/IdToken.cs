@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The type of the identification token.
         /// </summary>
         [Mandatory]
-        public IdTokenType                 Type               { get; }
+        public IdTokenType                  Type               { get; }
 
         /// <summary>
         /// Optional information which can be validated by the CSMS in addition to the regular authorization with identification token.
@@ -126,8 +126,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Length">The expected length of the random identification token.</param>
         public static IdToken NewRandomRFID(Byte Length = 8)
 
-            => new (RandomExtensions.RandomString(Length).ToUpper(),
-                    IdTokenType.ISO14443);
+            => new (
+                   RandomExtensions.RandomString(Length).ToUpper(),
+                   IdTokenType.ISO14443
+               );
 
         #endregion
 

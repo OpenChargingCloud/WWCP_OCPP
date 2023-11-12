@@ -39,20 +39,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The source of the charging limit.
         /// </summary>
         [Mandatory]
-        public ChargingLimitSources  ChargingLimitSource    { get; }
+        public ChargingLimitSource  ChargingLimitSource    { get; }
 
         /// <summary>
         /// Optional indication whether the charging limit is critical for the grid.
         /// </summary>
         [Optional]
-        public Boolean?              IsGridCritical         { get; }
+        public Boolean?             IsGridCritical         { get; }
 
         /// <summary>
         /// Optional indication whether the reported limit concerns local generation
         /// that is provides extra capacity, instead of a limitation.
         /// </summary>
         [Optional]
-        public Boolean?              IsLocalGeneration      { get; }
+        public Boolean?             IsLocalGeneration      { get; }
 
         #endregion
 
@@ -64,10 +64,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingLimitSource">The source of the charging limit.</param>
         /// <param name="IsGridCritical">Optional indication whether the charging limit is critical for the grid.</param>
         /// <param name="IsLocalGeneration">Optional indication whether the reported limit concerns local generation that is provides extra capacity, instead of a limitation.</param>
-        public ChargingLimit(ChargingLimitSources  ChargingLimitSource,
-                             Boolean?              IsGridCritical      = null,
-                             Boolean?              IsLocalGeneration   = null,
-                             CustomData?           CustomData          = null)
+        public ChargingLimit(ChargingLimitSource  ChargingLimitSource,
+                             Boolean?             IsGridCritical      = null,
+                             Boolean?             IsLocalGeneration   = null,
+                             CustomData?          CustomData          = null)
 
             : base(CustomData)
 
@@ -178,8 +178,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("chargingLimitSource",
                                          "charging limit source",
-                                         ChargingLimitSourcesExtensions.TryParse,
-                                         out ChargingLimitSources ChargingLimitSource,
+                                         OCPPv2_1.ChargingLimitSource.TryParse,
+                                         out ChargingLimitSource ChargingLimitSource,
                                          out ErrorResponse))
                 {
                     return false;
@@ -267,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("chargingLimitSource",   ChargingLimitSource.AsText()),
+                                 new JProperty("chargingLimitSource",   ChargingLimitSource.ToString()),
 
                            IsGridCritical.HasValue
                                ? new JProperty("isGridCritical",        IsGridCritical)

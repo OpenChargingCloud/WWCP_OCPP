@@ -17,8 +17,6 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -57,44 +55,57 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         IComparable<BootReason>
     {
 
+        #region Data
+
+        private readonly static Dictionary<String, BootReason>  lookup = new (StringComparer.OrdinalIgnoreCase);
+        private readonly        String                          InternalId;
+
+        #endregion
+
         #region Properties
 
         /// <summary>
-        /// The boot reason.
-        /// </summary>
-        public String    Text           { get; }
-
-
-        /// <summary>
-        /// Indicates whether this identification is null or empty.
+        /// Indicates whether this boot reason is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
-            => Text.IsNullOrEmpty();
+            => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// Indicates whether this identification is NOT null or empty.
+        /// Indicates whether this boot reason is NOT null or empty.
         /// </summary>
         public Boolean IsNotNullOrEmpty
-            => Text.IsNotNullOrEmpty();
+            => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the boot reason.
         /// </summary>
         public UInt64 Length
-            => (UInt64) (Text?.Length ?? 0);
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new boot reason.
+        /// Create a new boot reason based on the given text.
         /// </summary>
-        /// <param name="Text">The string representation of the boot reason.</param>
+        /// <param name="Text">The text representation of a boot reason.</param>
         private BootReason(String Text)
         {
-            this.Text = Text;
+            this.InternalId = Text;
         }
+
+        #endregion
+
+
+        #region (private static) Register(Text)
+
+        private static BootReason Register(String Text)
+
+            => lookup.AddAndReturnValue(
+                   Text,
+                   new BootReason(Text)
+               );
 
         #endregion
 
@@ -150,8 +161,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             if (Text.IsNotNullOrEmpty())
             {
-                BootReason = new BootReason(Text);
+
+                if (!lookup.TryGetValue(Text, out BootReason))
+                    BootReason = Register(Text);
+
                 return true;
+
             }
 
             BootReason = default;
@@ -169,67 +184,67 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public BootReason Clone
 
             => new (
-                   new String(Text?.ToCharArray())
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion
 
 
-        #region Statics
+        #region Static definitions
 
         /// <summary>
         /// Application reset
         /// </summary>
-        public readonly static BootReason ApplicationReset
-            = new ("ApplicationReset");
+        public static BootReason ApplicationReset    { get; }
+            = Register("ApplicationReset");
 
         /// <summary>
         /// Firmware update
         /// </summary>
-        public readonly static BootReason FirmwareUpdate
-            = new ("FirmwareUpdate");
+        public static BootReason FirmwareUpdate      { get; }
+            = Register("FirmwareUpdate");
 
         /// <summary>
         /// Local reset
         /// </summary>
-        public readonly static BootReason LocalReset
-            = new ("LocalReset");
+        public static BootReason LocalReset          { get; }
+            = Register("LocalReset");
 
         /// <summary>
         /// Power up
         /// </summary>
-        public readonly static BootReason PowerUp
-            = new ("PowerUp");
+        public static BootReason PowerUp             { get; }
+            = Register("PowerUp");
 
         /// <summary>
         /// Remote reset
         /// </summary>
-        public readonly static BootReason RemoteReset
-            = new ("RemoteReset");
+        public static BootReason RemoteReset         { get; }
+            = Register("RemoteReset");
 
         /// <summary>
         /// Scheduled reset
         /// </summary>
-        public readonly static BootReason ScheduledReset
-            = new ("ScheduledReset");
+        public static BootReason ScheduledReset      { get; }
+            = Register("ScheduledReset");
 
         /// <summary>
         /// Triggered
         /// </summary>
-        public readonly static BootReason Triggered
-            = new ("Triggered");
+        public static BootReason Triggered           { get; }
+            = Register("Triggered");
 
         /// <summary>
         /// Unknown boot reason
         /// </summary>
-        public readonly static BootReason Unknown
-            = new ("Unknown");
+        public static BootReason Unknown             { get; }
+            = Register("Unknown");
 
         /// <summary>
         /// Watchdog
         /// </summary>
-        public readonly static BootReason Watchdog
-            = new ("Watchdog");
+        public static BootReason Watchdog            { get; }
+            = Register("Watchdog");
 
         #endregion
 
@@ -353,8 +368,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="BootReason">A boot reason to compare with.</param>
         public Int32 CompareTo(BootReason BootReason)
 
-            => String.Compare(Text,
-                              BootReason.Text,
+            => String.Compare(InternalId,
+                              BootReason.InternalId,
                               StringComparison.OrdinalIgnoreCase);
 
         #endregion
@@ -384,8 +399,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="BootReason">A boot reason to compare with.</param>
         public Boolean Equals(BootReason BootReason)
 
-            => String.Equals(Text,
-                             BootReason.Text,
+            => String.Equals(InternalId,
+                             BootReason.InternalId,
                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
@@ -400,7 +415,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
 
-            => Text?.ToLower().GetHashCode() ?? 0;
+            => InternalId?.ToLower().GetHashCode() ?? 0;
 
         #endregion
 
@@ -411,7 +426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => Text ?? "";
+            => InternalId ?? "";
 
         #endregion
 

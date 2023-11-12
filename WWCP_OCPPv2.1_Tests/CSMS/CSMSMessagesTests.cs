@@ -540,7 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var response = await testCSMS01.GetLog(
                                    ChargingStationId:   chargingStation1.Id,
-                                   LogType:             LogTypes.DiagnosticsLog,
+                                   LogType:             LogType.DiagnosticsLog,
                                    LogRequestId:        1,
                                    Log:                 new LogParameters(
                                                             RemoteLocation:    URL.Parse("https://example.org/log0001.log"),
@@ -774,7 +774,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                    ChargingStationId:              chargingStation1.Id,
                                    GetMonitoringReportRequestId:   1,
                                    MonitoringCriteria:             new[] {
-                                                                       MonitoringCriteria.PeriodicMonitoring
+                                                                       MonitoringCriterion.PeriodicMonitoring
                                                                    },
                                    ComponentVariables:             new[] {
                                                                        new ComponentVariable(
@@ -1006,7 +1006,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                    ChargingStationId:          chargingStation1.Id,
                                    ConfigurationSlot:          1,
                                    NetworkConnectionProfile:   new NetworkConnectionProfile(
-                                                                   Version:             OCPPVersions.OCPP20,
+                                                                   Version:             OCPPVersion.OCPP201,
                                                                    Transport:           TransportProtocols.JSON,
                                                                    CentralServiceURL:   URL.Parse("https://example.com/OCPPv2.0/"),
                                                                    MessageTimeout:      TimeSpan.FromSeconds(30),
@@ -1544,7 +1544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var response = await testCSMS01.InstallCertificate(
                                    ChargingStationId:   chargingStation1.Id,
-                                   CertificateType:     CertificateUse.V2GRootCertificate,
+                                   CertificateType:     InstallCertificateUse.V2GRootCertificate,
                                    Certificate:         Certificate.Parse(
                                                             String.Concat(
                                                                 "-----BEGIN CERTIFICATE-----\n",
@@ -1628,7 +1628,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var response1 = await testCSMS01.InstallCertificate(
                                     ChargingStationId:   chargingStation1.Id,
-                                    CertificateType:     CertificateUse.V2GRootCertificate,
+                                    CertificateType:     InstallCertificateUse.V2GRootCertificate,
                                     Certificate:         Certificate.Parse(
                                                              String.Concat(
                                                                  "-----BEGIN CERTIFICATE-----\n",
@@ -1689,7 +1689,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var response2  = await testCSMS01.GetInstalledCertificateIds(
                                            ChargingStationId:  chargingStation1.Id,
                                            CertificateTypes:   new[] {
-                                                                   CertificateUse.V2GRootCertificate
+                                                                   GetCertificateIdUse.V2GRootCertificate
                                                                },
                                            CustomData:         null
                                        );
@@ -1740,7 +1740,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var response1 = await testCSMS01.InstallCertificate(
                                     ChargingStationId:   chargingStation1.Id,
-                                    CertificateType:     CertificateUse.V2GRootCertificate,
+                                    CertificateType:     InstallCertificateUse.V2GRootCertificate,
                                     Certificate:         Certificate.Parse(
                                                              String.Concat(
                                                                  "-----BEGIN CERTIFICATE-----\n",
@@ -1804,7 +1804,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var response2 = await testCSMS01.GetInstalledCertificateIds(
                                     ChargingStationId:   chargingStation1.Id,
                                     CertificateTypes:    new[] {
-                                                             CertificateUse.V2GRootCertificate
+                                                             GetCertificateIdUse.V2GRootCertificate
                                                          },
                                     CustomData:          null
                                 );
@@ -1851,7 +1851,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var response4  = await testCSMS01.GetInstalledCertificateIds(
                                            ChargingStationId:   chargingStation1.Id,
                                            CertificateTypes:    new[] {
-                                                                    CertificateUse.V2GRootCertificate
+                                                                    GetCertificateIdUse.V2GRootCertificate
                                                                 },
                                            CustomData:          null
                                        );
@@ -2148,7 +2148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var reservationId   = Reservation_Id.NewRandom;
                 var evseId          = EVSE_Id.       Parse(1);
-                var connectorType   = ConnectorTypes.sType2;
+                var connectorType   = ConnectorType.sType2;
 
                 var response        = await testCSMS01.ReserveNow(
                                           ChargingStationId:   chargingStation1.Id,
@@ -2530,7 +2530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                                                      ChargingProfile_Id.Parse(123)
                                                                                                  },
                                                                        ChargingLimitSources:     new[] {
-                                                                                                     ChargingLimitSources.SO
+                                                                                                     ChargingLimitSource.SO
                                                                                                  },
                                                                        CustomData:               null
                                                                    ),

@@ -1382,7 +1382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             SendClearedChargingLimit(this IChargingStation    ChargingStation,
 
-                                     ChargingLimitSources     ChargingLimitSource,
+                                     ChargingLimitSource      ChargingLimitSource,
                                      EVSE_Id?                 EVSEId,
 
                                      IEnumerable<KeyPair>?    SignKeys            = null,
@@ -1442,7 +1442,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             ReportChargingProfiles(this IChargingStation         ChargingStation,
 
                                    Int32                         ReportChargingProfilesRequestId,
-                                   ChargingLimitSources          ChargingLimitSource,
+                                   ChargingLimitSource           ChargingLimitSource,
                                    EVSE_Id                       EVSEId,
                                    IEnumerable<ChargingProfile>  ChargingProfiles,
                                    Boolean?                      ToBeContinued       = null,

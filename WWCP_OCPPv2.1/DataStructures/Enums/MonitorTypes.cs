@@ -92,6 +92,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     MonitorType = MonitorTypes.PeriodicClockAligned;
                     return true;
 
+                case "TargetDelta":
+                    MonitorType = MonitorTypes.TargetDelta;
+                    return true;
+
+                case "TargetDeltaRelative":
+                    MonitorType = MonitorTypes.TargetDeltaRelative;
+                    return true;
+
                 default:
                     MonitorType = MonitorTypes.Unknown;
                     return false;
@@ -112,6 +120,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    MonitorTypes.Delta                 => "Delta",
                    MonitorTypes.Periodic              => "Periodic",
                    MonitorTypes.PeriodicClockAligned  => "PeriodicClockAligned",
+                   MonitorTypes.TargetDelta           => "TargetDelta",
+                   MonitorTypes.TargetDeltaRelative   => "TargetDeltaRelative",
                    _                                  => "Unknown"
                };
 
@@ -159,7 +169,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// after this monitor was set.
         /// </summary>
         /// <example>A monitorValue of 900 will trigger event notices at 0, 15, 30 and 45 minutes after the hour, every hour.</example>
-        PeriodicClockAligned
+        PeriodicClockAligned,
+
+        /// <summary>
+        /// Triggers an event notice when the actual value differs from the target value more than plus
+        /// or minus monitorValue since the time that this monitor was set or since the last time this
+        /// event notice was sent, whichever was last. Behavior of this type of monitor for a variable that
+        /// is not numeric, is not defined.
+        /// Example: when target = 100, monitorValue = 10, then an event is triggered when actual < 90 or actual > 110.
+        /// </summary>
+        TargetDelta,
+
+        /// <summary>
+        /// Triggers an event notice when the actual value differs from the target value more than plus
+        /// or minus (monitorValue * target value) since the time that this monitor was set or since the
+        /// last time this event notice was sent, whichever was last. Behavior of this type of monitor for a
+        /// variable that is not numeric, is not defined.
+        /// Example: when target = 100, monitorValue = 0.1, then an event is triggered when actual < 90 or actual > 110.
+        /// </summary>
+        TargetDeltaRelative
 
     }
 

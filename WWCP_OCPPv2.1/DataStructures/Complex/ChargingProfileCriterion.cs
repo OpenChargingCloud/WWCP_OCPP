@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional purpose of the schedule transferred by this charging profile.
         /// </summary>
         [Optional]
-        public ChargingProfilePurposes?           ChargingProfilePurpose    { get; }
+        public ChargingProfilePurposes?          ChargingProfilePurpose    { get; }
 
         /// <summary>
         /// The optional stack level in hierarchy of profiles.
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Lowest stack level is 0.
         /// </summary>
         [Optional]
-        public UInt32?                            StackLevel                {  get; }
+        public UInt32?                           StackLevel                {  get; }
 
         /// <summary>
         /// The optional enumeration of all the charging profile identifications requested.
@@ -56,14 +56,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// This field SHALL NOT contain more ids than set in ChargingProfileEntries.maxLimit.
         /// </summary>
         [Optional]
-        public IEnumerable<ChargingProfile_Id>    ChargingProfileIds        { get; }
+        public IEnumerable<ChargingProfile_Id>   ChargingProfileIds        { get; }
 
 
         /// <summary>
         /// The optional enumeration of charging limit sources.
         /// </summary>
         [Optional]
-        public IEnumerable<ChargingLimitSources>  ChargingLimitSources      { get; }
+        public IEnumerable<ChargingLimitSource>  ChargingLimitSources      { get; }
 
 
         /// <summary>
@@ -95,11 +95,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingProfileIds">An optional enumeration of all the charging profile identifications requested.</param>
         /// <param name="ChargingLimitSources">An optional enumeration of charging limit sources.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
-        public ChargingProfileCriterion(ChargingProfilePurposes?            ChargingProfilePurpose   = null,
-                                        UInt32?                             StackLevel               = null,
-                                        IEnumerable<ChargingProfile_Id>?    ChargingProfileIds       = null,
-                                        IEnumerable<ChargingLimitSources>?  ChargingLimitSources     = null,
-                                        CustomData?                         CustomData               = null)
+        public ChargingProfileCriterion(ChargingProfilePurposes?           ChargingProfilePurpose   = null,
+                                        UInt32?                            StackLevel               = null,
+                                        IEnumerable<ChargingProfile_Id>?   ChargingProfileIds       = null,
+                                        IEnumerable<ChargingLimitSource>?  ChargingLimitSources     = null,
+                                        CustomData?                        CustomData               = null)
 
             : base(CustomData)
 
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.ChargingProfilePurpose  = ChargingProfilePurpose;
             this.StackLevel              = StackLevel;
             this.ChargingProfileIds      = ChargingProfileIds?.  Distinct() ?? Array.Empty<ChargingProfile_Id>();
-            this.ChargingLimitSources    = ChargingLimitSources?.Distinct() ?? Array.Empty<ChargingLimitSources>();
+            this.ChargingLimitSources    = ChargingLimitSources?.Distinct() ?? Array.Empty<ChargingLimitSource>();
 
         }
 
@@ -266,8 +266,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalHashSet("chargingLimitSource",
                                               "charging limit sources",
-                                              ChargingLimitSourcesExtensions.TryParse,
-                                              out HashSet<ChargingLimitSources> ChargingLimitSources,
+                                              ChargingLimitSource.TryParse,
+                                              out HashSet<ChargingLimitSource> ChargingLimitSources,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -291,11 +291,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                ChargingProfileCriterion = new ChargingProfileCriterion(ChargingProfilePurpose,
-                                                                        StackLevel,
-                                                                        ChargingProfileIds,
-                                                                        ChargingLimitSources,
-                                                                        CustomData);
+                ChargingProfileCriterion = new ChargingProfileCriterion(
+                                               ChargingProfilePurpose,
+                                               StackLevel,
+                                               ChargingProfileIds,
+                                               ChargingLimitSources,
+                                               CustomData
+                                           );
 
                 if (CustomChargingProfileCriterionParser is not null)
                     ChargingProfileCriterion = CustomChargingProfileCriterionParser(JSON,
@@ -338,23 +340,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                            ChargingProfilePurpose.HasValue
-                               ? new JProperty("chargingProfilePurpose",  ChargingProfilePurpose.Value.ToString())
+                               ? new JProperty("chargingProfilePurpose",   ChargingProfilePurpose.Value.ToString())
                                : null,
 
                            StackLevel.HasValue
-                               ? new JProperty("stackLevel",              StackLevel.            Value.ToString())
+                               ? new JProperty("stackLevel",               StackLevel.            Value.ToString())
                                : null,
 
                            ChargingProfileIds.Any()
-                               ? new JProperty("chargingProfileId",       new JArray(ChargingProfileIds.  Select(chargingProfileId   => chargingProfileId.  Value)))
+                               ? new JProperty("chargingProfileId",        new JArray(ChargingProfileIds.  Select(chargingProfileId   => chargingProfileId.  Value)))
                                : null,
 
                            ChargingLimitSources.Any()
-                               ? new JProperty("chargingLimitSource",     new JArray(ChargingLimitSources.Select(chargingLimitSource => chargingLimitSource.AsText())))
+                               ? new JProperty("chargingLimitSource",      new JArray(ChargingLimitSources.Select(chargingLimitSource => chargingLimitSource.ToString())))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",              CustomData.                  ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",               CustomData.                  ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -497,11 +499,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        : null,
 
                    ChargingProfileIds.Any()
-                       ? "ChargingProfileIds: "     + ChargingProfileIds.  Select(chargingProfileId   => chargingProfileId.  Value).   AggregateWith(",")
+                       ? "ChargingProfileIds: "     + ChargingProfileIds.  Select(chargingProfileId   => chargingProfileId.  Value).     AggregateWith(",")
                        : null,
 
                    ChargingLimitSources.Any()
-                       ? "ChargingLimitSources: "   + ChargingLimitSources.Select(chargingLimitSource => chargingLimitSource.AsText()).AggregateWith(",")
+                       ? "ChargingLimitSources: "   + ChargingLimitSources.Select(chargingLimitSource => chargingLimitSource.ToString()).AggregateWith(",")
                        : null
 
                }.Where(text => text is not null).

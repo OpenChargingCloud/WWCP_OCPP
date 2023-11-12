@@ -182,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public IdToken Clone
 
             => new (
-                   new String(InternalId.ToCharArray())
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion

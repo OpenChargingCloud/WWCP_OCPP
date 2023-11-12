@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Language_Id Clone
 
             => new (
-                   new String(InternalId.ToCharArray())
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion
@@ -379,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => InternalId;
+            => InternalId ?? "";
 
         #endregion
 

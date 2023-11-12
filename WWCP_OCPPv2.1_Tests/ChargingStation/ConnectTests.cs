@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                       Connectors:          new[] {
                                                                                                new ChargingStationConnector(
                                                                                                    Id:              Connector_Id.Parse(1),
-                                                                                                   ConnectorType:   ConnectorTypes.sType2
+                                                                                                   ConnectorType:   ConnectorType.sType2
                                                                                                )
                                                                                            }
                                                                   )

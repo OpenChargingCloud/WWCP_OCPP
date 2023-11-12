@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// determines min/target state-of-charge and departure time.
         /// </summary>
         [Optional]
-        public MobilityNeedsModes?               MobilityNeedsMode               { get; }
+        public MobilityNeedsMode?               MobilityNeedsMode               { get; }
 
         /// <summary>
         /// The optional pricing structure type that will be offered.
@@ -121,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public ChargingNeeds(EnergyTransferModes                RequestedEnergyTransferMode,
                              IEnumerable<EnergyTransferModes>?  AvailableEnergyTransferModes   = null,
                              ControlModes?                      ControlMode                    = null,
-                             MobilityNeedsModes?                MobilityNeedsMode              = null,
+                             MobilityNeedsMode?                MobilityNeedsMode              = null,
                              PricingTypes?                      Pricing                        = null,
                              DateTime?                          DepartureTime                  = null,
                              ACChargingParameters?              ACChargingParameters           = null,
@@ -284,8 +284,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("mobilityNeedsMode",
                                        "mobility needs mode",
-                                       MobilityNeedsModesExtensions.TryParse,
-                                       out MobilityNeedsModes? MobilityNeedsMode,
+                                       OCPPv2_1.MobilityNeedsMode.TryParse,
+                                       out MobilityNeedsMode? MobilityNeedsMode,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -467,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            MobilityNeedsMode.HasValue
-                               ? new JProperty("mobilityNeedsMode",         MobilityNeedsMode.    Value.AsText())
+                               ? new JProperty("mobilityNeedsMode",         MobilityNeedsMode.    Value.ToString())
                                : null,
 
                            Pricing.          HasValue
@@ -655,7 +655,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                       : "",
 
                    MobilityNeedsMode.HasValue
-                      ? $", mobility needs mode: {MobilityNeedsMode.Value.AsText()}"
+                      ? $", mobility needs mode: {MobilityNeedsMode.Value.ToString()}"
                       : "",
 
                    Pricing.HasValue

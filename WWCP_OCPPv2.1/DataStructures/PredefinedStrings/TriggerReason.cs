@@ -57,7 +57,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        private readonly String InternalId;
+        private readonly static Dictionary<String, TriggerReason>  lookup = new (StringComparer.OrdinalIgnoreCase);
+        private readonly        String                             InternalId;
 
         #endregion
 
@@ -93,6 +94,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
             this.InternalId = Text;
         }
+
+        #endregion
+
+
+        #region (private static) Register(Text)
+
+        private static TriggerReason Register(String Text)
+
+            => lookup.AddAndReturnValue(
+                   Text,
+                   new TriggerReason(Text)
+               );
 
         #endregion
 
@@ -144,25 +157,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static Boolean TryParse(String Text, out TriggerReason TriggerReason)
         {
 
-            #region Initial checks
-
             Text = Text.Trim();
 
-            if (Text.IsNullOrEmpty())
+            if (Text.IsNotNullOrEmpty())
             {
-                TriggerReason = default;
-                return false;
-            }
 
-            #endregion
+                if (!lookup.TryGetValue(Text, out TriggerReason))
+                    TriggerReason = Register(Text);
 
-            try
-            {
-                TriggerReason = new TriggerReason(Text);
                 return true;
+
             }
-            catch (Exception)
-            { }
 
             TriggerReason = default;
             return false;
@@ -179,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public TriggerReason Clone
 
             => new (
-                   new String(InternalId.ToCharArray())
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion
@@ -190,146 +195,146 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An abnormal error or fault condition has occurred.
         /// </summary>
-        public static TriggerReason AbnormalCondition
-            => new ("AbnormalCondition");
+        public static TriggerReason AbnormalCondition       { get; }
+            = Register("AbnormalCondition");
 
         /// <summary>
         /// Charging is authorized, by any means. Might be an RFID, or other authorization means
         /// </summary>
-        public static TriggerReason Authorized
-            => new ("Authorized");
+        public static TriggerReason Authorized              { get; }
+            = Register("Authorized");
 
         /// <summary>
         /// Cable is plugged in and an EV is detected.
         /// </summary>
-        public static TriggerReason CablePluggedIn
-            => new ("CablePluggedIn");
+        public static TriggerReason CablePluggedIn          { get; }
+            = Register("CablePluggedIn");
 
         /// <summary>
         /// Rate of charging changed by more than LimitChangeSignificance.
         /// </summary>
-        public static TriggerReason ChargingRateChanged
-            => new ("ChargingRateChanged");
+        public static TriggerReason ChargingRateChanged     { get; }
+            = Register("ChargingRateChanged");
 
         /// <summary>
         /// Charging State changed.
         /// </summary>
-        public static TriggerReason ChargingStateChanged
-            => new ("ChargingStateChanged");
+        public static TriggerReason ChargingStateChanged    { get; }
+            = Register("ChargingStateChanged");
 
         /// <summary>
         /// The transaction was stopped because of the authorization status in the response to a transactionEventRequest.
         /// </summary>
-        public static TriggerReason Deauthorized
-            => new ("Deauthorized");
+        public static TriggerReason Deauthorized            { get; }
+            = Register("Deauthorized");
 
         /// <summary>
         /// Maximum energy of charging reached. For example: in a pre-paid charging solution.
         /// </summary>
-        public static TriggerReason EnergyLimitReached
-            => new ("EnergyLimitReached");
+        public static TriggerReason EnergyLimitReached      { get; }
+            = Register("EnergyLimitReached");
 
         /// <summary>
         /// Communication with EV lost, for example: cable disconnected.
         /// </summary>
-        public static TriggerReason EVCommunicationLost
-            => new ("EVCommunicationLost");
+        public static TriggerReason EVCommunicationLost     { get; }
+            = Register("EVCommunicationLost");
 
         /// <summary>
         /// EV not connected before the connection is timed out.
         /// </summary>
-        public static TriggerReason EVConnectTimeout
-            => new ("EVConnectTimeout");
+        public static TriggerReason EVConnectTimeout        { get; }
+            = Register("EVConnectTimeout");
 
         /// <summary>
         /// EV departed. For example: When a departing EV triggers a parking bay detector.
         /// </summary>
-        public static TriggerReason EVDeparted
-            => new ("EVDeparted");
+        public static TriggerReason EVDeparted              { get; }
+            = Register("EVDeparted");
 
         /// <summary>
         /// EV detected. For example: When an arriving EV triggers a parking bay detector.
         /// </summary>
-        public static TriggerReason EVDetected
-            => new ("EVDetected");
+        public static TriggerReason EVDetected              { get; }
+            = Register("EVDetected");
 
         /// <summary>
         /// Needed to send a clock aligned meter value.
         /// </summary>
-        public static TriggerReason MeterValueClock
-            => new ("MeterValueClock");
+        public static TriggerReason MeterValueClock         { get; }
+            = Register("MeterValueClock");
 
         /// <summary>
         /// Needed to send a periodic meter value.
         /// </summary>
-        public static TriggerReason MeterValuePeriodic
-            => new ("MeterValuePeriodic");
+        public static TriggerReason MeterValuePeriodic      { get; }
+            = Register("MeterValuePeriodic");
 
         /// <summary>
         /// A RequestStopTransactionRequest has been sent.
         /// </summary>
-        public static TriggerReason RemoteStop
-            => new ("RemoteStop");
+        public static TriggerReason RemoteStop              { get; }
+            = Register("RemoteStop");
 
         /// <summary>
         /// A RequestStartTransactionRequest has been sent.
         /// </summary>
-        public static TriggerReason RemoteStart
-            => new ("RemoteStart");
+        public static TriggerReason RemoteStart             { get; }
+            = Register("RemoteStart");
 
         /// <summary>
         /// CSMS sent a Reset Charging Station command.
         /// </summary>
-        public static TriggerReason ResetCommand
-            => new ("ResetCommand");
+        public static TriggerReason ResetCommand            { get; }
+            = Register("ResetCommand");
 
         /// <summary>
         /// Signed data is received from the energy meter.
         /// </summary>
-        public static TriggerReason SignedDataReceived
-            => new ("SignedDataReceived");
+        public static TriggerReason SignedDataReceived      { get; }
+            = Register("SignedDataReceived");
 
         /// <summary>
         /// An EV Driver has been authorized to stop charging. For example: By swiping an RFID card.
         /// </summary>
-        public static TriggerReason StopAuthorized
-            => new ("StopAuthorized");
+        public static TriggerReason StopAuthorized          { get; }
+            = Register("StopAuthorized");
 
         /// <summary>
         /// Maximum time of charging reached. For example: in a pre-paid charging solution.
         /// </summary>
-        public static TriggerReason TimeLimitReached
-            => new ("TimeLimitReached");
+        public static TriggerReason TimeLimitReached        { get; }
+            = Register("TimeLimitReached");
 
         /// <summary>
         /// Requested by the CSMS via a TriggerMessageRequest.
         /// </summary>
-        public static TriggerReason Trigger
-            => new ("Trigger");
+        public static TriggerReason Trigger                 { get; }
+            = Register("Trigger");
 
         /// <summary>
         /// CSMS sent an Unlock Connector command.
         /// </summary>
-        public static TriggerReason UnlockCommand
-            => new ("UnlockCommand");
+        public static TriggerReason UnlockCommand           { get; }
+            = Register("UnlockCommand");
 
         /// <summary>
         /// The (V2X) operation mode in charging schedule period has changed.
         /// </summary>
-        public static TriggerReason OperationModeChanged
-            => new ("OperationModeChanged");
+        public static TriggerReason OperationModeChanged    { get; }
+            = Register("OperationModeChanged");
 
         /// <summary>
         /// The charging tariff for the transaction changed.
         /// </summary>
-        public static TriggerReason TariffChanged
-            => new("TariffChanged");
+        public static TriggerReason TariffChanged           { get; }
+            = Register("TariffChanged");
 
         /// <summary>
         /// Trigger used when TranactionEvent is sent (only) to report a running cost update.
         /// </summary>
-        public static TriggerReason RunningCost
-            => new ("RunningCost");
+        public static TriggerReason RunningCost             { get; }
+            = Register("RunningCost");
 
         #endregion
 
@@ -500,7 +505,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => InternalId?.ToLower()?.GetHashCode() ?? 0;
+            => InternalId?.ToLower().GetHashCode() ?? 0;
 
         #endregion
 
@@ -511,7 +516,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => InternalId;
+            => InternalId ?? "";
 
         #endregion
 

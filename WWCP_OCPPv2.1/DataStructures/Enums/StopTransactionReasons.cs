@@ -15,44 +15,118 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using org.GraphDefined.Vanaheimr.Illias;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
     /// Extension methods for stop transaction reasons.
     /// </summary>
-    public static class ReasonsExtensions
+    public static class StopTransactionReasonExtensions
     {
 
-        #region Parse   (Text)
+        /// <summary>
+        /// Indicates whether this stop transaction reason is null or empty.
+        /// </summary>
+        /// <param name="StopTransactionReason">A stop transaction reason.</param>
+        public static Boolean IsNullOrEmpty(this StopTransactionReason? StopTransactionReason)
+            => !StopTransactionReason.HasValue || StopTransactionReason.Value.IsNullOrEmpty;
 
         /// <summary>
-        /// Parse the given text as a stop transaction reason.
+        /// Indicates whether this stop transaction reason is null or empty.
+        /// </summary>
+        /// <param name="StopTransactionReason">A stop transaction reason.</param>
+        public static Boolean IsNotNullOrEmpty(this StopTransactionReason? StopTransactionReason)
+            => StopTransactionReason.HasValue && StopTransactionReason.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
+    /// A stop transaction reason.
+    /// </summary>
+    public readonly struct StopTransactionReason : IId,
+                                                   IEquatable<StopTransactionReason>,
+                                                   IComparable<StopTransactionReason>
+    {
+
+        #region Data
+
+        private readonly String InternalId;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Indicates whether this stop transaction reason is null or empty.
+        /// </summary>
+        public Boolean IsNullOrEmpty
+            => InternalId.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this stop transaction reason is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
+
+        /// <summary>
+        /// The length of the stop transaction reason.
+        /// </summary>
+        public UInt64 Length
+            => (UInt64) (InternalId?.Length ?? 0);
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new stop transaction reason based on the given text.
+        /// </summary>
+        /// <param name="Text">The text representation of a stop transaction reason.</param>
+        private StopTransactionReason(String Text)
+        {
+            this.InternalId = Text;
+        }
+
+        #endregion
+
+
+        #region (static) Parse   (Text)
+
+        /// <summary>
+        /// Parse the given string as a stop transaction reason.
         /// </summary>
         /// <param name="Text">A text representation of a stop transaction reason.</param>
-        public static StopTransactionReasons Parse(String Text)
+        public static StopTransactionReason Parse(String Text)
         {
 
-            if (TryParse(Text, out var reason))
-                return reason;
+            if (TryParse(Text, out var stopTransactionReason))
+                return stopTransactionReason;
 
-            return StopTransactionReasons.Unknown;
+            throw new ArgumentException("The given text representation of a stop transaction reason is invalid!",
+                                        nameof(Text));
 
         }
 
         #endregion
 
-        #region TryParse(Text)
+        #region (static) TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given text as a stop transaction reason.
+        /// Try to parse the given text as stop transaction reason.
         /// </summary>
         /// <param name="Text">A text representation of a stop transaction reason.</param>
-        public static StopTransactionReasons? TryParse(String Text)
+        public static StopTransactionReason? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var reason))
-                return reason;
+            if (TryParse(Text, out var stopTransactionReason))
+                return stopTransactionReason;
 
             return null;
 
@@ -60,251 +134,366 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region TryParse(Text, out Reason)
+        #region (static) TryParse(Text, out StopTransactionReason)
 
         /// <summary>
-        /// Try to parse the given text as a stop transaction reason.
+        /// Try to parse the given text as stop transaction reason.
         /// </summary>
         /// <param name="Text">A text representation of a stop transaction reason.</param>
-        /// <param name="Reason">The parsed stop transaction reason.</param>
-        public static Boolean TryParse(String Text, out StopTransactionReasons Reason)
+        /// <param name="StopTransactionReason">The parsed stop transaction reason.</param>
+        public static Boolean TryParse(String Text, out StopTransactionReason StopTransactionReason)
         {
-            switch (Text.Trim())
+
+            #region Initial checks
+
+            Text = Text.Trim();
+
+            if (Text.IsNullOrEmpty())
             {
-
-                case "ChargingNeedsNotAccepted":
-                    Reason = StopTransactionReasons.ChargingNeedsNotAccepted;
-                    return true;
-
-                case "DeAuthorized":
-                    Reason = StopTransactionReasons.DeAuthorized;
-                    return true;
-
-                case "EmergencyStop":
-                    Reason = StopTransactionReasons.EmergencyStop;
-                    return true;
-
-                case "EnergyLimitReached":
-                    Reason = StopTransactionReasons.EnergyLimitReached;
-                    return true;
-
-                case "EVDisconnected":
-                    Reason = StopTransactionReasons.EVDisconnected;
-                    return true;
-
-                case "GroundFault":
-                    Reason = StopTransactionReasons.GroundFault;
-                    return true;
-
-                case "ImmediateReset":
-                    Reason = StopTransactionReasons.ImmediateReset;
-                    return true;
-
-                case "LocalOutOfCredit":
-                    Reason = StopTransactionReasons.LocalOutOfCredit;
-                    return true;
-
-                case "MasterPass":
-                    Reason = StopTransactionReasons.MasterPass;
-                    return true;
-
-                case "Other":
-                    Reason = StopTransactionReasons.Other;
-                    return true;
-
-                case "OvercurrentFault":
-                    Reason = StopTransactionReasons.OvercurrentFault;
-                    return true;
-
-                case "PowerLoss":
-                    Reason = StopTransactionReasons.PowerLoss;
-                    return true;
-
-                case "PowerQuality":
-                    Reason = StopTransactionReasons.PowerQuality;
-                    return true;
-
-                case "Reboot":
-                    Reason = StopTransactionReasons.Reboot;
-                    return true;
-
-                case "Remote":
-                    Reason = StopTransactionReasons.Remote;
-                    return true;
-
-                case "SOCLimitReached":
-                    Reason = StopTransactionReasons.SOCLimitReached;
-                    return true;
-
-                case "StoppedByEV":
-                    Reason = StopTransactionReasons.StoppedByEV;
-                    return true;
-
-                case "TimeLimitReached":
-                    Reason = StopTransactionReasons.TimeLimitReached;
-                    return true;
-
-                case "Timeout":
-                    Reason = StopTransactionReasons.Timeout;
-                    return true;
-
-                default:
-                    Reason = StopTransactionReasons.Unknown;
-                    return false;
-
+                StopTransactionReason = default;
+                return false;
             }
+
+            #endregion
+
+            try
+            {
+                StopTransactionReason = new StopTransactionReason(Text);
+                return true;
+            }
+            catch (Exception)
+            { }
+
+            StopTransactionReason = default;
+            return false;
+
         }
 
         #endregion
 
-        #region AsText  (this Reason)
+        #region Clone
 
-        public static String AsText(this StopTransactionReasons Reason)
+        /// <summary>
+        /// Clone this stop transaction reason.
+        /// </summary>
+        public StopTransactionReason Clone
 
-            => Reason switch {
-                   StopTransactionReasons.ChargingNeedsNotAccepted  => "ChargingNeedsNotAccepted",
-                   StopTransactionReasons.DeAuthorized              => "DeAuthorized",
-                   StopTransactionReasons.EmergencyStop             => "EmergencyStop",
-                   StopTransactionReasons.EnergyLimitReached        => "EnergyLimitReached",
-                   StopTransactionReasons.EVDisconnected            => "EVDisconnected",
-                   StopTransactionReasons.GroundFault               => "GroundFault",
-                   StopTransactionReasons.ImmediateReset            => "ImmediateReset",
-                   StopTransactionReasons.Local                     => "Local",
-                   StopTransactionReasons.LocalOutOfCredit          => "LocalOutOfCredit",
-                   StopTransactionReasons.MasterPass                => "MasterPass",
-                   StopTransactionReasons.Other                     => "Other",
-                   StopTransactionReasons.OvercurrentFault          => "OvercurrentFault",
-                   StopTransactionReasons.PowerLoss                 => "PowerLoss",
-                   StopTransactionReasons.PowerQuality              => "PowerQuality",
-                   StopTransactionReasons.Reboot                    => "Reboot",
-                   StopTransactionReasons.Remote                    => "Remote",
-                   StopTransactionReasons.SOCLimitReached           => "SOCLimitReached",
-                   StopTransactionReasons.StoppedByEV               => "StoppedByEV",
-                   StopTransactionReasons.TimeLimitReached          => "TimeLimitReached",
-                   StopTransactionReasons.Timeout                   => "Timeout",
-                   _                                                => "Unknown"
-               };
+            => new (
+                   new String(InternalId?.ToCharArray())
+               );
 
         #endregion
 
-    }
 
-
-    /// <summary>
-    /// Stop transaction reasons.
-    /// </summary>
-    public enum StopTransactionReasons
-    {
-
-        /// <summary>
-        /// Unknown reason.
-        /// </summary>
-        Unknown,
-
+        #region Static definitions
 
         /// <summary>
         /// CSMS cannot accept the requested energy transfer type or other part of the EV charging needs.
         /// </summary>
-        ChargingNeedsNotAccepted,
+        public static StopTransactionReason ChargingNeedsNotAccepted    { get; }
+            = new ("ChargingNeedsNotAccepted");
 
         /// <summary>
         /// The transaction was stopped because of the authorization
         /// status in a StartTransaction response.
         /// </summary>
-        DeAuthorized,
+        public static StopTransactionReason DeAuthorized                { get; }
+            = new ("DeAuthorized");
 
         /// <summary>
         /// The emergency stop button was used.
         /// </summary>
-        EmergencyStop,
+        public static StopTransactionReason EmergencyStop               { get; }
+            = new ("EmergencyStop");
 
         /// <summary>
         /// EV charging session reached a locally enforced maximum energy transfer limit.
         /// </summary>
-        EnergyLimitReached,
+        public static StopTransactionReason EnergyLimitReached          { get; }
+            = new ("EnergyLimitReached");
 
         /// <summary>
         /// Disconnection of the cable or vehicle moved away from inductive charge unit.
         /// </summary>
-        EVDisconnected,
+        public static StopTransactionReason EVDisconnected              { get; }
+            = new ("EVDisconnected");
 
         /// <summary>
         /// A GroundFault has occurred.
         /// </summary>
-        GroundFault,
+        public static StopTransactionReason GroundFault                 { get; }
+            = new ("GroundFault");
 
         /// <summary>
         /// A Reset(Immediate) command was received.
         /// </summary>
-        ImmediateReset,
+        public static StopTransactionReason ImmediateReset              { get; }
+            = new ("ImmediateReset");
 
         /// <summary>
         /// Stopped locally on request of the EV Driver at the charging station.
         /// This is a regular termination of a transaction.
         /// Examples: presenting an IdToken tag, pressing a button to stop.
         /// </summary>
-        Local,
+        public static StopTransactionReason Local                       { get; }
+            = new ("Local");
 
         /// <summary>
         /// A local credit limit enforced through the charging station has been exceeded.
         /// </summary>
-        LocalOutOfCredit,
+        public static StopTransactionReason LocalOutOfCredit            { get; }
+            = new ("LocalOutOfCredit");
 
         /// <summary>
         /// The transaction was stopped using a token with a MasterPassGroupId.
         /// </summary>
-        MasterPass,
+        public static StopTransactionReason MasterPass                  { get; }
+            = new ("MasterPass");
 
         /// <summary>
         /// Any other reason.
         /// </summary>
-        Other,
+        public static StopTransactionReason Other                       { get; }
+            = new ("Other");
 
         /// <summary>
         /// A larger than intended electric current has occurred.
         /// </summary>
-        OvercurrentFault,
+        public static StopTransactionReason OvercurrentFault            { get; }
+            = new ("OvercurrentFault");
 
         /// <summary>
         /// Complete loss of power.
         /// </summary>
-        PowerLoss,
+        public static StopTransactionReason PowerLoss                   { get; }
+            = new ("PowerLoss");
 
         /// <summary>
         /// Quality of power too low, e.g. voltage too low/high, phase imbalance, etc
         /// </summary>
-        PowerQuality,
+        public static StopTransactionReason PowerQuality                { get; }
+            = new ("PowerQuality");
 
         /// <summary>
         /// A locally initiated reset/reboot occurred, e.g. the watchdog kicked in.
         /// </summary>
-        Reboot,
+        public static StopTransactionReason Reboot                      { get; }
+            = new ("Reboot");
 
         /// <summary>
         /// Stopped remotely on request of the CSMS. This is a regular termination of a transaction.
         /// Examples: termination using a smartphone app, exceeding a(non local) prepaid credit.
         /// </summary>
-        Remote,
+        public static StopTransactionReason Remote                      { get; }
+            = new ("Remote");
 
         /// <summary>
         /// Electric vehicle has reported reaching a locally enforced maximum battery state-of-charge.
         /// </summary>
-        SOCLimitReached,
+        public static StopTransactionReason SOCLimitReached             { get; }
+            = new ("SOCLimitReached");
 
         /// <summary>
         /// The transaction was stopped by the EV.
         /// </summary>
-        StoppedByEV,
+        public static StopTransactionReason StoppedByEV                 { get; }
+            = new ("StoppedByEV");
 
         /// <summary>
         /// EV charging session reached a locally enforced time limit.
         /// </summary>
-        TimeLimitReached,
+        public static StopTransactionReason TimeLimitReached            { get; }
+            = new ("TimeLimitReached");
 
         /// <summary>
         /// EV not connected within timeout.
         /// </summary>
-        Timeout
+        public static StopTransactionReason Timeout                     { get; }
+            = new ("Timeout");
+
+        #endregion
+
+
+        #region Operator overloading
+
+        #region Operator == (StopTransactionReason1, StopTransactionReason2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="StopTransactionReason1">A stop transaction reason.</param>
+        /// <param name="StopTransactionReason2">Another stop transaction reason.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (StopTransactionReason StopTransactionReason1,
+                                           StopTransactionReason StopTransactionReason2)
+
+            => StopTransactionReason1.Equals(StopTransactionReason2);
+
+        #endregion
+
+        #region Operator != (StopTransactionReason1, StopTransactionReason2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="StopTransactionReason1">A stop transaction reason.</param>
+        /// <param name="StopTransactionReason2">Another stop transaction reason.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (StopTransactionReason StopTransactionReason1,
+                                           StopTransactionReason StopTransactionReason2)
+
+            => !StopTransactionReason1.Equals(StopTransactionReason2);
+
+        #endregion
+
+        #region Operator <  (StopTransactionReason1, StopTransactionReason2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="StopTransactionReason1">A stop transaction reason.</param>
+        /// <param name="StopTransactionReason2">Another stop transaction reason.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (StopTransactionReason StopTransactionReason1,
+                                          StopTransactionReason StopTransactionReason2)
+
+            => StopTransactionReason1.CompareTo(StopTransactionReason2) < 0;
+
+        #endregion
+
+        #region Operator <= (StopTransactionReason1, StopTransactionReason2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="StopTransactionReason1">A stop transaction reason.</param>
+        /// <param name="StopTransactionReason2">Another stop transaction reason.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (StopTransactionReason StopTransactionReason1,
+                                           StopTransactionReason StopTransactionReason2)
+
+            => StopTransactionReason1.CompareTo(StopTransactionReason2) <= 0;
+
+        #endregion
+
+        #region Operator >  (StopTransactionReason1, StopTransactionReason2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="StopTransactionReason1">A stop transaction reason.</param>
+        /// <param name="StopTransactionReason2">Another stop transaction reason.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (StopTransactionReason StopTransactionReason1,
+                                          StopTransactionReason StopTransactionReason2)
+
+            => StopTransactionReason1.CompareTo(StopTransactionReason2) > 0;
+
+        #endregion
+
+        #region Operator >= (StopTransactionReason1, StopTransactionReason2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="StopTransactionReason1">A stop transaction reason.</param>
+        /// <param name="StopTransactionReason2">Another stop transaction reason.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (StopTransactionReason StopTransactionReason1,
+                                           StopTransactionReason StopTransactionReason2)
+
+            => StopTransactionReason1.CompareTo(StopTransactionReason2) >= 0;
+
+        #endregion
+
+        #endregion
+
+        #region IComparable<StopTransactionReason> Members
+
+        #region CompareTo(Object)
+
+        /// <summary>
+        /// Compares two stop transaction reasons.
+        /// </summary>
+        /// <param name="Object">A stop transaction reason to compare with.</param>
+        public Int32 CompareTo(Object? Object)
+
+            => Object is StopTransactionReason stopTransactionReason
+                   ? CompareTo(stopTransactionReason)
+                   : throw new ArgumentException("The given object is not stop transaction reason!",
+                                                 nameof(Object));
+
+        #endregion
+
+        #region CompareTo(StopTransactionReason)
+
+        /// <summary>
+        /// Compares two stop transaction reasons.
+        /// </summary>
+        /// <param name="StopTransactionReason">A stop transaction reason to compare with.</param>
+        public Int32 CompareTo(StopTransactionReason StopTransactionReason)
+
+            => String.Compare(InternalId,
+                              StopTransactionReason.InternalId,
+                              StringComparison.Ordinal);
+
+        #endregion
+
+        #endregion
+
+        #region IEquatable<StopTransactionReason> Members
+
+        #region Equals(Object)
+
+        /// <summary>
+        /// Compares two stop transaction reasons for equality.
+        /// </summary>
+        /// <param name="Object">A stop transaction reason to compare with.</param>
+        public override Boolean Equals(Object? Object)
+
+            => Object is StopTransactionReason stopTransactionReason &&
+                   Equals(stopTransactionReason);
+
+        #endregion
+
+        #region Equals(StopTransactionReason)
+
+        /// <summary>
+        /// Compares two stop transaction reasons for equality.
+        /// </summary>
+        /// <param name="StopTransactionReason">A stop transaction reason to compare with.</param>
+        public Boolean Equals(StopTransactionReason StopTransactionReason)
+
+            => String.Equals(InternalId,
+                             StopTransactionReason.InternalId,
+                             StringComparison.Ordinal);
+
+        #endregion
+
+        #endregion
+
+        #region (override) GetHashCode()
+
+        /// <summary>
+        /// Return the HashCode of this object.
+        /// </summary>
+        /// <returns>The HashCode of this object.</returns>
+        public override Int32 GetHashCode()
+
+            => InternalId?.GetHashCode() ?? 0;
+
+        #endregion
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
+        public override String ToString()
+
+            => InternalId ?? "";
+
+        #endregion
 
     }
 

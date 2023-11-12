@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The source that has installed this charging profile.
         /// </summary>
         [Mandatory]
-        public ChargingLimitSources          ChargingLimitSource                { get; }
+        public ChargingLimitSource           ChargingLimitSource                { get; }
 
         /// <summary>
         /// The evse to which the charging profile applies.
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ReportChargingProfilesRequest(ChargingStation_Id            ChargingStationId,
                                              Int32                         ReportChargingProfilesRequestId,
-                                             ChargingLimitSources          ChargingLimitSource,
+                                             ChargingLimitSource           ChargingLimitSource,
                                              EVSE_Id                       EVSEId,
                                              IEnumerable<ChargingProfile>  ChargingProfiles,
                                              Boolean?                      ToBeContinued       = null,
@@ -676,8 +676,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (!JSON.ParseMandatory("chargingLimitSource",
                                          "charging limit source",
-                                         ChargingLimitSourcesExtensions.TryParse,
-                                         out ChargingLimitSources ChargingLimitSource,
+                                         OCPPv2_1.ChargingLimitSource.TryParse,
+                                         out ChargingLimitSource ChargingLimitSource,
                                          out ErrorResponse))
                 {
                     return false;
@@ -866,7 +866,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             var json = JSONObject.Create(
 
                                  new JProperty("requestId",             ReportChargingProfilesRequestId),
-                                 new JProperty("chargingLimitSource",   ChargingLimitSource.AsText()),
+                                 new JProperty("chargingLimitSource",   ChargingLimitSource.ToString()),
                                  new JProperty("evseId",                EVSEId.             Value),
 
                                  new JProperty("chargingProfile",       new JArray(ChargingProfiles.Select(chargingProfile => chargingProfile.ToJSON(CustomChargingProfileSerializer,

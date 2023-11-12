@@ -39,20 +39,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The measured value.
         /// </summary>
         [Mandatory]
-        public Decimal                Value               { get; }
+        public Decimal               Value                  { get; }
 
         /// <summary>
         /// The optional type of the value.
         /// </summary>
         [Optional]
-        public ReadingContexts?       Context             { get; }
+        public ReadingContexts?      Context                { get; }
 
         /// <summary>
         /// The optional type of the measurement.
         /// Default: "Energy.Active.Import.Register".
         /// </summary>
         [Optional]
-        public Measurands?            Measurand           { get; }
+        public Measurand?            Measurand              { get; }
 
         /// <summary>
         /// The optional indication how to interpret the measured value.
@@ -60,26 +60,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// When phase is absent, the measured value is interpreted as an overall value.
         /// </summary>
         [Optional]
-        public Phases?                Phase               { get; }
+        public Phases?               Phase                  { get; }
 
         /// <summary>
         /// The optional indication where the measured value has been sampled.
         /// Default: "Outlet".
         /// </summary>
         [Optional]
-        public MeasurementLocations?  Location            { get; }
+        public MeasurementLocation?  MeasurementLocation    { get; }
 
         /// <summary>
         /// The optional meter value with signature and encoding information.
         /// </summary>
         [Optional]
-        public SignedMeterValue?      SignedMeterValue    { get; }
+        public SignedMeterValue?     SignedMeterValue       { get; }
 
         /// <summary>
         /// The optional unit of measure including a multiplier.
         /// </summary>
         [Optional]
-        public UnitsOfMeasure?        UnitOfMeasure       { get; }
+        public UnitsOfMeasure?       UnitOfMeasure          { get; }
 
         #endregion
 
@@ -92,44 +92,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Context">An optional type of the value.</param>
         /// <param name="Measurand">An optional type of the measurement. Default: "Energy.Active.Import.Register".</param>
         /// <param name="Phase">An optional indication how to interpret the measured value.</param>
-        /// <param name="Location">An optional indication where the measured value has been sampled. Default: "Outlet".</param>
+        /// <param name="MeasurementLocation">An optional indication where the measured value has been sampled. Default: "Outlet".</param>
         /// <param name="SignedMeterValue">An optional meter value with signature and encoding information.</param>
         /// <param name="UnitOfMeasure">An optional unit of measure including a multiplier.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SampledValue(Decimal                Value,
-                            ReadingContexts?       Context            = null,
-                            Measurands?            Measurand          = null,
-                            Phases?                Phase              = null,
-                            MeasurementLocations?  Location           = null,
-                            SignedMeterValue?      SignedMeterValue   = null,
-                            UnitsOfMeasure?        UnitOfMeasure      = null,
-                            CustomData?            CustomData         = null)
+        public SampledValue(Decimal               Value,
+                            ReadingContexts?      Context               = null,
+                            Measurand?            Measurand             = null,
+                            Phases?               Phase                 = null,
+                            MeasurementLocation?  MeasurementLocation   = null,
+                            SignedMeterValue?     SignedMeterValue      = null,
+                            UnitsOfMeasure?       UnitOfMeasure         = null,
+                            CustomData?           CustomData            = null)
 
             : base(CustomData)
 
         {
 
-            this.Value             = Value;
-            this.Context           = Context;
-            this.Measurand         = Measurand;
-            this.Phase             = Phase;
-            this.Location          = Location;
-            this.SignedMeterValue  = SignedMeterValue;
-            this.UnitOfMeasure     = UnitOfMeasure;
+            this.Value                = Value;
+            this.Context              = Context;
+            this.Measurand            = Measurand;
+            this.Phase                = Phase;
+            this.MeasurementLocation  = MeasurementLocation;
+            this.SignedMeterValue     = SignedMeterValue;
+            this.UnitOfMeasure        = UnitOfMeasure;
+
 
             unchecked
             {
 
-                hashCode = Value.            GetHashCode()       * 19 ^
-
-                          (Context?.         GetHashCode() ?? 0) * 17 ^
-                          (Measurand?.       GetHashCode() ?? 0) * 13 ^
-                          (Phase?.           GetHashCode() ?? 0) * 11 ^
-                          (Location?.        GetHashCode() ?? 0) *  7 ^
-                          (SignedMeterValue?.GetHashCode() ?? 0) *  5 ^
-                          (UnitOfMeasure?.   GetHashCode() ?? 0) *  3 ^
-
-                          base.              GetHashCode();
+                hashCode = Value.               GetHashCode()       * 19 ^
+                          (Context?.            GetHashCode() ?? 0) * 17 ^
+                          (Measurand?.          GetHashCode() ?? 0) * 13 ^
+                          (Phase?.              GetHashCode() ?? 0) * 11 ^
+                          (MeasurementLocation?.GetHashCode() ?? 0) *  7 ^
+                          (SignedMeterValue?.   GetHashCode() ?? 0) *  5 ^
+                          (UnitOfMeasure?.      GetHashCode() ?? 0) *  3 ^
+                          base.                 GetHashCode();
 
             }
 
@@ -243,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SampledValue = default;
 
-                #region Value               [mandatory]
+                #region Value                  [mandatory]
 
                 if (!JSON.ParseMandatory("value",
                                          "value",
@@ -255,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Context             [optional]
+                #region Context                [optional]
 
                 if (JSON.ParseOptional("context",
                                        "context",
@@ -269,12 +268,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Measurand           [optional]
+                #region Measurand              [optional]
 
                 if (JSON.ParseOptional("measurand",
                                        "measurand",
-                                       MeasurandsExtensions.TryParse,
-                                       out Measurands? Measurand,
+                                       OCPPv2_1.Measurand.TryParse,
+                                       out Measurand? Measurand,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -283,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Phase               [optional]
+                #region Phase                  [optional]
 
                 if (JSON.ParseOptional("phase",
                                        "phase",
@@ -297,12 +296,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Location            [optional]
+                #region MeasurementLocation    [optional]
 
                 if (JSON.ParseOptional("location",
                                        "measurment location",
-                                       MeasurementLocationsExtensions.TryParse,
-                                       out MeasurementLocations? Location,
+                                       OCPPv2_1.MeasurementLocation.TryParse,
+                                       out MeasurementLocation? MeasurementLocation,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -311,7 +310,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region SignedMeterValue    [optional]
+                #region SignedMeterValue       [optional]
 
                 if (JSON.ParseOptionalJSON("signedMeterValue",
                                            "signed meter value",
@@ -325,7 +324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region UnitOfMeasure       [optional]
+                #region UnitOfMeasure          [optional]
 
                 if (JSON.ParseOptionalJSON("unitOfMeasure",
                                            "unit of measure",
@@ -339,7 +338,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region CustomData          [optional]
+                #region CustomData             [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -359,7 +358,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    Context,
                                    Measurand,
                                    Phase,
-                                   Location,
+                                   MeasurementLocation,
                                    SignedMeterValue,
                                    UnitOfMeasure,
                                    CustomData
@@ -402,34 +401,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("value",              Value),
 
-                           Context.HasValue
-                               ? new JProperty("context",            Context.   Value.AsText())
+                           Context.            HasValue
+                               ? new JProperty("context",            Context.            Value.AsText())
                                : null,
 
-                           Measurand.HasValue
-                               ? new JProperty("measurand",          Measurand. Value.AsText())
+                           Measurand.          HasValue
+                               ? new JProperty("measurand",          Measurand.          Value.ToString())
                                : null,
 
-                           Phase.HasValue
-                               ? new JProperty("phase",              Phase.     Value.AsText())
+                           Phase.              HasValue
+                               ? new JProperty("phase",              Phase.              Value.AsText())
                                : null,
 
-                           Location.HasValue
-                               ? new JProperty("location",           Location.  Value.AsText())
+                           MeasurementLocation.HasValue
+                               ? new JProperty("location",           MeasurementLocation.Value.ToString())
                                : null,
 
                            SignedMeterValue is not null
-                               ? new JProperty("signedMeterValue",   SignedMeterValue.ToJSON(CustomSignedMeterValueSerializer,
-                                                                                             CustomCustomDataSerializer))
+                               ? new JProperty("signedMeterValue",   SignedMeterValue.         ToJSON(CustomSignedMeterValueSerializer,
+                                                                                                      CustomCustomDataSerializer))
                                : null,
 
-                           UnitOfMeasure is not null
-                               ? new JProperty("unitOfMeasure",      UnitOfMeasure.   ToJSON(CustomUnitsOfMeasureSerializer,
-                                                                                             CustomCustomDataSerializer))
+                           UnitOfMeasure    is not null
+                               ? new JProperty("unitOfMeasure",      UnitOfMeasure.            ToJSON(CustomUnitsOfMeasureSerializer,
+                                                                                                      CustomCustomDataSerializer))
                                : null,
 
-                           CustomData is not null
-                               ? new JProperty("customData",         CustomData.      ToJSON(CustomCustomDataSerializer))
+                           CustomData       is not null
+                               ? new JProperty("customData",         CustomData.               ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -454,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Context,
                    Measurand,
                    Phase,
-                   Location,
+                   MeasurementLocation,
                    SignedMeterValue?.Clone(),
                    UnitOfMeasure?.   Clone(),
                    CustomData
@@ -535,23 +534,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                Value.Equals(SampledValue.Value) &&
 
-            ((!Context.HasValue   && !SampledValue.Context.HasValue)   ||
-              (Context.HasValue   &&  SampledValue.Context.HasValue   && Context.  Value.Equals(SampledValue.Context.  Value))) &&
+            ((!Context.            HasValue    && !SampledValue.Context.            HasValue)    ||
+              (Context.            HasValue    &&  SampledValue.Context.            HasValue      && Context.            Value.Equals(SampledValue.Context.            Value))) &&
 
-            ((!Measurand.HasValue && !SampledValue.Measurand.HasValue) ||
-              (Measurand.HasValue &&  SampledValue.Measurand.HasValue && Measurand.Value.Equals(SampledValue.Measurand.Value))) &&
+            ((!Measurand.          HasValue    && !SampledValue.Measurand.          HasValue)    ||
+              (Measurand.          HasValue    &&  SampledValue.Measurand.          HasValue      && Measurand.          Value.Equals(SampledValue.Measurand.          Value))) &&
 
-            ((!Phase.HasValue     && !SampledValue.Phase.HasValue)     ||
-              (Phase.HasValue     &&  SampledValue.Phase.HasValue     && Phase.    Value.Equals(SampledValue.Phase.    Value))) &&
+            ((!Phase.              HasValue    && !SampledValue.Phase.              HasValue)    ||
+              (Phase.              HasValue    &&  SampledValue.Phase.              HasValue      && Phase.              Value.Equals(SampledValue.Phase.              Value))) &&
 
-            ((!Location.HasValue  && !SampledValue.Location.HasValue)  ||
-              (Location.HasValue  &&  SampledValue.Location.HasValue  && Location. Value.Equals(SampledValue.Location. Value))) &&
+            ((!MeasurementLocation.HasValue    && !SampledValue.MeasurementLocation.HasValue)    ||
+              (MeasurementLocation.HasValue    &&  SampledValue.MeasurementLocation.HasValue      && MeasurementLocation.Value.Equals(SampledValue.MeasurementLocation.Value))) &&
 
-            ((SignedMeterValue is     null && SampledValue.SignedMeterValue is     null) ||
-             (SignedMeterValue is not null && SampledValue.SignedMeterValue is not null   && SignedMeterValue.Equals(SampledValue.SignedMeterValue))) &&
+            ((SignedMeterValue     is     null &&  SampledValue.SignedMeterValue    is     null) ||
+             (SignedMeterValue     is not null &&  SampledValue.SignedMeterValue    is not null   && SignedMeterValue.         Equals(SampledValue.SignedMeterValue)))          &&
 
-            ((UnitOfMeasure    is     null && SampledValue.UnitOfMeasure    is     null) ||
-             (UnitOfMeasure    is not null && SampledValue.UnitOfMeasure    is not null   && UnitOfMeasure.   Equals(SampledValue.UnitOfMeasure)))    &&
+            ((UnitOfMeasure        is     null &&  SampledValue.UnitOfMeasure       is     null) ||
+             (UnitOfMeasure        is not null &&  SampledValue.UnitOfMeasure       is not null   && UnitOfMeasure.            Equals(SampledValue.UnitOfMeasure)))             &&
 
               base.Equals(SampledValue);
 

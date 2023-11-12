@@ -55,31 +55,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                            IComparable<UnitOfMeasure>
     {
 
+        #region Data
+
+        private readonly static Dictionary<String, UnitOfMeasure>  lookup = new (StringComparer.OrdinalIgnoreCase);
+        private readonly        String                             InternalId;
+
+        #endregion
+
         #region Properties
 
         /// <summary>
-        /// The unit of measure.
+        /// Indicates whether this unit of measure is null or empty.
         /// </summary>
-        public String   Text    { get; }
-
-
-        /// <summary>
-        /// Indicates whether this identification is null or empty.
-        /// </summary>
-        public Boolean  IsNullOrEmpty
-            => Text.IsNullOrEmpty();
+        public Boolean IsNullOrEmpty
+            => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// Indicates whether this identification is NOT null or empty.
+        /// Indicates whether this unit of measure is NOT null or empty.
         /// </summary>
-        public Boolean  IsNotNullOrEmpty
-            => Text.IsNotNullOrEmpty();
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the unit of measure.
         /// </summary>
-        public UInt64   Length
-            => (UInt64) (Text?.Length ?? 0);
+        public UInt64 Length
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
@@ -88,11 +89,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new unit of measure.
         /// </summary>
-        /// <param name="Text">The string representation of the unit of measure.</param>
+        /// <param name="Text">The text representation of an unit of measure.</param>
         private UnitOfMeasure(String Text)
         {
-            this.Text = Text;
+            this.InternalId = Text;
         }
+
+        #endregion
+
+
+        #region (private static) Register(Text)
+
+        private static UnitOfMeasure Register(String Text)
+
+            => lookup.AddAndReturnValue(
+                   Text,
+                   new UnitOfMeasure(Text)
+               );
 
         #endregion
 
@@ -148,8 +161,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             if (Text.IsNotNullOrEmpty())
             {
-                UnitOfMeasure = new UnitOfMeasure(Text);
+
+                if (!lookup.TryGetValue(Text, out UnitOfMeasure))
+                    UnitOfMeasure = Register(Text);
+
                 return true;
+
             }
 
             UnitOfMeasure = default;
@@ -167,115 +184,119 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public UnitOfMeasure Clone
 
             => new (
-                   new String(Text?.ToCharArray())
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion
 
 
-        #region Statics
+        #region Static definitions
+
+#pragma warning disable IDE1006 // Naming Styles
 
         /// <summary>
         /// Celsius
         /// </summary>
-        public readonly static UnitOfMeasure Celsius
-            = new ("Celsius");
+        public static UnitOfMeasure Celsius { get; }
+            = Register("Celsius");
 
         /// <summary>
         /// Fahrenheit
         /// </summary>
-        public readonly static UnitOfMeasure Fahrenheit
-            = new ("Fahrenheit");
+        public static UnitOfMeasure Fahrenheit { get; }
+            = Register("Fahrenheit");
 
         /// <summary>
         /// Wh
         /// </summary>
-        public readonly static UnitOfMeasure Wh
-            = new ("Wh");
+        public static UnitOfMeasure Wh { get; }
+            = Register("Wh");
 
         /// <summary>
         /// kWh
         /// </summary>
-        public readonly static UnitOfMeasure kWh
-            = new ("kWh");
+        public static UnitOfMeasure kWh { get; }
+            = Register("kWh");
 
         /// <summary>
         /// varh
         /// </summary>
-        public readonly static UnitOfMeasure varh
-            = new ("varh");
+        public static UnitOfMeasure varh { get; }
+            = Register("varh");
 
         /// <summary>
         /// kvarh
         /// </summary>
-        public readonly static UnitOfMeasure kvarh
-            = new ("kvarh");
+        public static UnitOfMeasure kvarh { get; }
+            = Register("kvarh");
 
         /// <summary>
         /// Watts
         /// </summary>
-        public readonly static UnitOfMeasure Watts
-            = new ("Watts");
+        public static UnitOfMeasure Watts { get; }
+            = Register("Watts");
 
         /// <summary>
         /// kW
         /// </summary>
-        public readonly static UnitOfMeasure kW
-            = new ("kW");
+        public static UnitOfMeasure kW { get; }
+            = Register("kW");
 
         /// <summary>
         /// Watchdog.
         /// </summary>
-        public readonly static UnitOfMeasure Watchdog
-            = new ("Watchdog");
+        public static UnitOfMeasure Watchdog { get; }
+            = Register("Watchdog");
 
         /// <summary>
         /// VoltAmpere
         /// </summary>
-        public readonly static UnitOfMeasure VoltAmpere
-            = new ("VoltAmpere");
+        public static UnitOfMeasure VoltAmpere { get; }
+            = Register("VoltAmpere");
 
         /// <summary>
         /// kVA
         /// </summary>
-        public readonly static UnitOfMeasure kVA
-            = new ("kVA");
+        public static UnitOfMeasure kVA { get; }
+            = Register("kVA");
 
         /// <summary>
         /// var
         /// </summary>
-        public readonly static UnitOfMeasure var
-            = new ("var");
+        public static UnitOfMeasure var { get; }
+            = Register("var");
 
         /// <summary>
         /// kvar
         /// </summary>
-        public readonly static UnitOfMeasure kvar
-            = new ("kvar");
+        public static UnitOfMeasure kvar { get; }
+            = Register("kvar");
 
         /// <summary>
         /// Amperes
         /// </summary>
-        public readonly static UnitOfMeasure Amperes
-            = new ("Amperes");
+        public static UnitOfMeasure Amperes { get; }
+            = Register("Amperes");
 
         /// <summary>
         /// Voltage
         /// </summary>
-        public readonly static UnitOfMeasure Voltage
-            = new ("Voltage");
+        public static UnitOfMeasure Voltage { get; }
+            = Register("Voltage");
 
         /// <summary>
         /// Kelvin
         /// </summary>
-        public readonly static UnitOfMeasure Kelvin
-            = new ("Kelvin");
+        public static UnitOfMeasure Kelvin { get; }
+            = Register("Kelvin");
 
         /// <summary>
         /// Percent
         /// </summary>
-        public readonly static UnitOfMeasure Percent
-            = new ("Percent");
+        public static UnitOfMeasure Percent { get; }
+            = Register("Percent");
+
+#pragma warning restore IDE1006 // Naming Styles
 
         #endregion
 
@@ -399,8 +420,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="UnitOfMeasure">A unit of measure to compare with.</param>
         public Int32 CompareTo(UnitOfMeasure UnitOfMeasure)
 
-            => String.Compare(Text,
-                              UnitOfMeasure.Text,
+            => String.Compare(InternalId,
+                              UnitOfMeasure.InternalId,
                               StringComparison.OrdinalIgnoreCase);
 
         #endregion
@@ -430,8 +451,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="UnitOfMeasure">A unit of measure to compare with.</param>
         public Boolean Equals(UnitOfMeasure UnitOfMeasure)
 
-            => String.Equals(Text,
-                             UnitOfMeasure.Text,
+            => String.Equals(InternalId,
+                             UnitOfMeasure.InternalId,
                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
@@ -446,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
 
-            => Text?.ToLower().GetHashCode() ?? 0;
+            => InternalId?.ToLower().GetHashCode() ?? 0;
 
         #endregion
 
@@ -457,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => Text ?? "";
+            => InternalId ?? "";
 
         #endregion
 

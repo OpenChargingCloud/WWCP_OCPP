@@ -19,7 +19,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extension methods for monitoring criteria.
+    /// Extension methods for monitoring criterions.
     /// </summary>
     public static class MonitoringCriteriaExtensions
     {
@@ -27,16 +27,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Parse   (Text)
 
         /// <summary>
-        /// Parse the given text as a monitoring criterium.
+        /// Parse the given text as a monitoring criterion.
         /// </summary>
-        /// <param name="Text">A text representation of a monitoring criterium.</param>
-        public static MonitoringCriteria Parse(String Text)
+        /// <param name="Text">A text representation of a monitoring criterion.</param>
+        public static MonitoringCriterion Parse(String Text)
         {
 
-            if (TryParse(Text, out var criterium))
-                return criterium;
+            if (TryParse(Text, out var criterion))
+                return criterion;
 
-            return MonitoringCriteria.Unknown;
+            return MonitoringCriterion.Unknown;
 
         }
 
@@ -45,14 +45,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given text as a monitoring criterium.
+        /// Try to parse the given text as a monitoring criterion.
         /// </summary>
-        /// <param name="Text">A text representation of a monitoring criterium.</param>
-        public static MonitoringCriteria? TryParse(String Text)
+        /// <param name="Text">A text representation of a monitoring criterion.</param>
+        public static MonitoringCriterion? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var criterium))
-                return criterium;
+            if (TryParse(Text, out var criterion))
+                return criterion;
 
             return null;
 
@@ -60,32 +60,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region TryParse(Text, out MonitoringCriterium)
+        #region TryParse(Text, out MonitoringCriterion)
 
         /// <summary>
-        /// Try to parse the given text as a monitoring criterium.
+        /// Try to parse the given text as a monitoring criterion.
         /// </summary>
-        /// <param name="Text">A text representation of a monitoring criterium.</param>
-        /// <param name="MonitoringCriterium">The parsed monitoring criterium.</param>
-        public static Boolean TryParse(String Text, out MonitoringCriteria MonitoringCriterium)
+        /// <param name="Text">A text representation of a monitoring criterion.</param>
+        /// <param name="MonitoringCriterion">The parsed monitoring criterion.</param>
+        public static Boolean TryParse(String Text, out MonitoringCriterion MonitoringCriterion)
         {
             switch (Text.Trim())
             {
 
                 case "ThresholdMonitoring":
-                    MonitoringCriterium = MonitoringCriteria.ThresholdMonitoring;
+                    MonitoringCriterion = MonitoringCriterion.ThresholdMonitoring;
                     return true;
 
                 case "DeltaMonitoring":
-                    MonitoringCriterium = MonitoringCriteria.DeltaMonitoring;
+                    MonitoringCriterion = MonitoringCriterion.DeltaMonitoring;
                     return true;
 
                 case "PeriodicMonitoring":
-                    MonitoringCriterium = MonitoringCriteria.PeriodicMonitoring;
+                    MonitoringCriterion = MonitoringCriterion.PeriodicMonitoring;
                     return true;
 
                 default:
-                    MonitoringCriterium = MonitoringCriteria.Unknown;
+                    MonitoringCriterion = MonitoringCriterion.Unknown;
                     return false;
 
             }
@@ -94,15 +94,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region AsText(this MonitoringCriterium)
+        #region AsText(this MonitoringCriterion)
 
-        public static String AsText(this MonitoringCriteria MonitoringCriterium)
+        public static String AsText(this MonitoringCriterion MonitoringCriterion)
 
-            => MonitoringCriterium switch {
-                   MonitoringCriteria.ThresholdMonitoring  => "ThresholdMonitoring",
-                   MonitoringCriteria.DeltaMonitoring      => "DeltaMonitoring",
-                   MonitoringCriteria.PeriodicMonitoring   => "PeriodicMonitoring",
-                   _                                       => "Unknown"
+            => MonitoringCriterion switch {
+                   MonitoringCriterion.ThresholdMonitoring  => "ThresholdMonitoring",
+                   MonitoringCriterion.DeltaMonitoring      => "DeltaMonitoring",
+                   MonitoringCriterion.PeriodicMonitoring   => "PeriodicMonitoring",
+                   _                                        => "Unknown"
                };
 
         #endregion
@@ -111,9 +111,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
     /// <summary>
-    /// Monitoring criteria.
+    /// Monitoring criterion.
     /// </summary>
-    public enum MonitoringCriteria
+    public enum MonitoringCriterion
     {
 
         /// <summary>

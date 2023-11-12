@@ -25,7 +25,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// Extension methods for an identification token type.
+    /// Extension methods for identification token types.
     /// </summary>
     public static class IdTokenTypeExtensions
     {
@@ -57,7 +57,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        private readonly String InternalId;
+        private readonly static Dictionary<String, IdTokenType>  lookup = new (StringComparer.OrdinalIgnoreCase);
+        private readonly        String                           InternalId;
 
         #endregion
 
@@ -97,6 +98,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        #region (private static) Register(Text)
+
+        private static IdTokenType Register(String Text)
+
+            => lookup.AddAndReturnValue(
+                   Text,
+                   new IdTokenType(Text)
+               );
+
+        #endregion
+
+
         #region (static) Parse   (Text)
 
         /// <summary>
@@ -109,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var idTokenType))
                 return idTokenType;
 
-            throw new ArgumentException("The given text representation of an identification token type is invalid!",
+            throw new ArgumentException($"Invalid text representation of an identification token type: '{Text}'!",
                                         nameof(Text));
 
         }
@@ -144,25 +157,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static Boolean TryParse(String Text, out IdTokenType IdTokenType)
         {
 
-            #region Initial checks
-
             Text = Text.Trim();
 
-            if (Text.IsNullOrEmpty())
+            if (Text.IsNotNullOrEmpty())
             {
-                IdTokenType = default;
-                return false;
-            }
 
-            #endregion
+                if (!lookup.TryGetValue(Text, out IdTokenType))
+                    IdTokenType = Register(Text);
 
-            try
-            {
-                IdTokenType = new IdTokenType(Text);
                 return true;
+
             }
-            catch (Exception)
-            { }
 
             IdTokenType = default;
             return false;
@@ -179,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public IdTokenType Clone
 
             => new (
-                   new String(InternalId.ToCharArray())
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion
@@ -187,81 +192,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Static definitions
 
+#pragma warning disable IDE1006 // Naming Styles
+
         /// <summary>
         /// A centrally, in the CSMS (or other server) generated id (for example used for a remotely started
         /// transaction that is activated by SMS). No format defined, might be an UUID.
         /// </summary>
-        public static IdTokenType Central
-            => new("Central");
+        public static IdTokenType Central            { get; }
+            = Register("Central");
 
         /// <summary>
         /// An electro-mobility account identification, as defined in ISO 15118.
         /// </summary>
-        public static IdTokenType eMAID
-            => new("eMAID");
+        public static IdTokenType eMAID              { get; }
+            = Register("eMAID");
 
         /// <summary>
         /// EVCCID of EV.
         /// For ISO 15118-2  this is the MAC address of the communication controller.
         /// For ISO 15118-20 this is an identifier up to 255 characters.
         /// </summary>
-        public static IdTokenType EVCCID
-            => new("EVCCID");
+        public static IdTokenType EVCCID             { get; }
+            = Register("EVCCID");
 
         /// <summary>
         /// ISO14443 UID of an RFID card.
         /// It is represented as an array of 4 or 7 bytes in hexadecimal representation.
         /// </summary>
-        public static IdTokenType ISO14443
-            => new("ISO14443");
+        public static IdTokenType ISO14443           { get; }
+            = Register("ISO14443");
 
         /// <summary>
         /// ISO15693 UID of RFID card.
         /// It is represented as an array of 8 bytes in hexadecimal representation.
         /// </summary>
-        public static IdTokenType ISO15693
-            => new("ISO15693");
+        public static IdTokenType ISO15693           { get; }
+            = Register("ISO15693");
 
         /// <summary>
         /// A private key-code to authorize a charging transaction.
         /// For example: PIN-code.
         /// </summary>
-        public static IdTokenType KeyCode
-            => new("KeyCode");
+        public static IdTokenType KeyCode            { get; }
+            = Register("KeyCode");
 
         /// <summary>
         /// A locally generated id (e.g. internal id created by the charging station).
         /// Needs no checking by CSMS. No format defined, might e.g. be an UUID.
         /// </summary>
-        public static IdTokenType Local
-            => new("Local");
+        public static IdTokenType Local              { get; }
+            = Register("Local");
 
         /// <summary>
         /// The MAC Address of the EVCC (electric vehicle communication controller) that is connected to the EVSE.
         /// Used when MAC address is used for authorization (AutoCharge).
         /// </summary>
-        public static IdTokenType MACAddress
-            => new("MACAddress");
+        public static IdTokenType MACAddress         { get; }
+            = Register("MACAddress");
 
         /// <summary>
         /// NEMA EVSE1 2018 token.
         /// </summary>
-        public static IdTokenType NEMA
-            => new("NEMA");
+        public static IdTokenType NEMA               { get; }
+            = Register("NEMA");
 
         /// <summary>
         /// Transaction is started and no authorization possible.
         /// The charging station only has a start button or mechanical key etc.
         /// IdToken field SHALL be left empty.
         /// </summary>
-        public static IdTokenType NoAuthorization
-            => new("NoAuthorization");
+        public static IdTokenType NoAuthorization    { get; }
+            = Register("NoAuthorization");
 
         /// <summary>
         /// Vehicle Identification Number of EV.
         /// </summary>
-        public static IdTokenType VIN
-            => new("VIN");
+        public static IdTokenType VIN                { get; }
+            = Register("VIN");
+
+#pragma warning restore IDE1006 // Naming Styles
 
         #endregion
 
@@ -432,7 +441,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => InternalId?.GetHashCode() ?? 0;
+            => InternalId?.ToLower().GetHashCode() ?? 0;
 
         #endregion
 
@@ -443,7 +452,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => InternalId;
+            => InternalId ?? "";
 
         #endregion
 

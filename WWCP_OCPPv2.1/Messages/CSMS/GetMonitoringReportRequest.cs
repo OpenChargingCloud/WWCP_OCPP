@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The optional enumeration of criteria for components for which a monitoring report is requested.
         /// </summary>
         [Mandatory]
-        public IEnumerable<MonitoringCriteria>  MonitoringCriteria              { get; }
+        public IEnumerable<MonitoringCriterion>  MonitoringCriteria              { get; }
 
         /// <summary>
         /// The optional enumeration of components and variables for which a monitoring report is requested.
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public GetMonitoringReportRequest(ChargingStation_Id               ChargingStationId,
                                           Int32                            GetMonitoringReportRequestId,
-                                          IEnumerable<MonitoringCriteria>  MonitoringCriteria,
+                                          IEnumerable<MonitoringCriterion>  MonitoringCriteria,
                                           IEnumerable<ComponentVariable>   ComponentVariables,
 
                                           IEnumerable<KeyPair>?            SignKeys            = null,
@@ -407,7 +407,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (!JSON.ParseMandatoryHashSet("monitoringCriteria",
                                                 "monitoring criteria",
                                                 MonitoringCriteriaExtensions.TryParse,
-                                                out HashSet<MonitoringCriteria> MonitoringCriteria,
+                                                out HashSet<MonitoringCriterion> MonitoringCriteria,
                                                 out ErrorResponse))
                 {
                     return false;

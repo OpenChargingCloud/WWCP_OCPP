@@ -47,20 +47,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext         Context
+        public JSONLDContext        Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The source of the charging limit.
         /// </summary>
         [Mandatory]
-        public ChargingLimitSources  ChargingLimitSource    { get; }
+        public ChargingLimitSource  ChargingLimitSource    { get; }
 
         /// <summary>
         /// The optional EVSE identification.
         /// </summary>
         [Optional]
-        public EVSE_Id?              EVSEId                 { get; }
+        public EVSE_Id?             EVSEId                 { get; }
 
         #endregion
 
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ClearedChargingLimitRequest(ChargingStation_Id       ChargingStationId,
-                                           ChargingLimitSources     ChargingLimitSource,
+                                           ChargingLimitSource      ChargingLimitSource,
                                            EVSE_Id?                 EVSEId,
 
                                            IEnumerable<KeyPair>?    SignKeys            = null,
@@ -270,10 +270,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (!JSON.ParseMandatory("chargingLimitSource",
                                          "charging limit source",
-                                         ChargingLimitSourcesExtensions.TryParse,
-                                         out ChargingLimitSources ChargingLimitSource,
+                                         OCPPv2_1.ChargingLimitSource.TryParse,
+                                         out ChargingLimitSource ChargingLimitSource,
                                          out ErrorResponse))
-                {              
+                {
                     return false;
                 }
 
@@ -387,7 +387,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("chargingLimitSource",   ChargingLimitSource.AsText()),
+                                 new JProperty("chargingLimitSource",   ChargingLimitSource.ToString()),
 
                            EVSEId.HasValue
                                ? new JProperty("evseId",                EVSEId.             Value.Value)
@@ -513,7 +513,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => String.Concat(
 
-                   ChargingLimitSource.AsText(),
+                   ChargingLimitSource.ToString(),
 
                    EVSEId.HasValue
                        ? " at " + EVSEId.Value

@@ -51,13 +51,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A operation mode.
     /// </summary>
     public readonly struct OperationMode : IId,
-                                                   IEquatable<OperationMode>,
-                                                   IComparable<OperationMode>
+                                           IEquatable<OperationMode>,
+                                           IComparable<OperationMode>
     {
 
         #region Data
 
-        private readonly String InternalId;
+        private readonly static Dictionary<String, OperationMode>  lookup = new (StringComparer.OrdinalIgnoreCase);
+        private readonly        String                             InternalId;
 
         #endregion
 
@@ -97,6 +98,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        #region (private static) Register(Text)
+
+        private static OperationMode Register(String Text)
+
+            => lookup.AddAndReturnValue(
+                   Text,
+                   new OperationMode(Text)
+               );
+
+        #endregion
+
+
         #region (static) Parse   (Text)
 
         /// <summary>
@@ -109,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var operationMode))
                 return operationMode;
 
-            throw new ArgumentException("The given text representation of an operation mode is invalid!",
+            throw new ArgumentException($"Invalid text representation of an operation mode: '{Text}'!",
                                         nameof(Text));
 
         }
@@ -144,25 +157,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static Boolean TryParse(String Text, out OperationMode OperationMode)
         {
 
-            #region Initial checks
-
             Text = Text.Trim();
 
-            if (Text.IsNullOrEmpty())
+            if (Text.IsNotNullOrEmpty())
             {
-                OperationMode = default;
-                return false;
-            }
 
-            #endregion
+                if (!lookup.TryGetValue(Text, out OperationMode))
+                    OperationMode = Register(Text);
 
-            try
-            {
-                OperationMode = new OperationMode(Text);
                 return true;
+
             }
-            catch (Exception)
-            { }
 
             OperationMode = default;
             return false;
@@ -179,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public OperationMode Clone
 
             => new (
-                   new String(InternalId.ToCharArray())
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion
@@ -188,58 +193,52 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Static definitions
 
         /// <summary>
-        /// Unknown operation modes.
-        /// </summary>
-        public static OperationMode Unknown
-            => new("AbnormalCondition");
-
-        /// <summary>
         /// Minimize energy consumption by having the EV either on standby or in sleep.
         /// </summary>
-        public static OperationMode Idle
-            => new("AbnormalCondition");
+        public static OperationMode Idle                  { get; }
+            = Register("Idle");
 
         /// <summary>
         /// Classic charging or smart charging mode.
         /// </summary>
-        public static OperationMode ChargingOnly
-            => new("AbnormalCondition");
+        public static OperationMode ChargingOnly          { get; }
+            = Register("ChargingOnly");
 
         /// <summary>
         /// Control of setpoint by the CSMS or some secondary actor that relais through the CSMS.
         /// </summary>
-        public static OperationMode CentralSetpoint
-            => new("AbnormalCondition");
+        public static OperationMode CentralSetpoint       { get; }
+            = Register("CentralSetpoint");
 
         /// <summary>
         /// Control of setpoint by an external actor on the charging station.
         /// </summary>
-        public static OperationMode ExternalSetpoint
-            => new("AbnormalCondition");
+        public static OperationMode ExternalSetpoint      { get; }
+            = Register("ExternalSetpoint");
 
         /// <summary>
         /// Control of (dis)charging limits by an external actor on the charging station.
         /// </summary>
-        public static OperationMode ExternalLimits
-            => new("AbnormalCondition");
+        public static OperationMode ExternalLimits        { get; }
+            = Register("ExternalLimits");
 
         /// <summary>
         /// Frequency support with control by the CSMS or some secondary actor that relais through the CSMS.
         /// </summary>
-        public static OperationMode CentralFrequency
-            => new("AbnormalCondition");
+        public static OperationMode CentralFrequency      { get; }
+            = Register("CentralFrequency");
 
         /// <summary>
         /// Frequency support with control in the charging station.
         /// </summary>
-        public static OperationMode LocalFrequency
-            => new("AbnormalCondition");
+        public static OperationMode LocalFrequency        { get; }
+            = Register("LocalFrequency");
 
         /// <summary>
         /// Load balancing by the charging station.
         /// </summary>
-        public static OperationMode LocalLoadBalancing
-            => new("AbnormalCondition");
+        public static OperationMode LocalLoadBalancing    { get; }
+            = Register("LocalLoadBalancing");
 
         #endregion
 
@@ -410,7 +409,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => InternalId?.ToLower()?.GetHashCode() ?? 0;
+            => InternalId?.ToLower().GetHashCode() ?? 0;
 
         #endregion
 
@@ -421,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => InternalId;
+            => InternalId ?? "";
 
         #endregion
 

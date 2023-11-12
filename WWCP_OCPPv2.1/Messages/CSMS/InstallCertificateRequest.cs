@@ -47,21 +47,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext   Context
+        public JSONLDContext          Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The type of the certificate.
         /// </summary>
         [Mandatory]
-        public CertificateUse  CertificateType    { get; }
+        public InstallCertificateUse  CertificateType    { get; }
 
         /// <summary>
         /// The PEM encoded X.509 certificate.
         /// [max 5500]
         /// </summary>
         [Mandatory]
-        public Certificate     Certificate        { get; }
+        public Certificate            Certificate        { get; }
 
         #endregion
 
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public InstallCertificateRequest(ChargingStation_Id       ChargingStationId,
-                                         CertificateUse           CertificateType,
+                                         InstallCertificateUse    CertificateType,
                                          Certificate              Certificate,
 
                                          IEnumerable<KeyPair>?    SignKeys            = null,
@@ -118,6 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             this.CertificateType  = CertificateType;
             this.Certificate      = Certificate;
+
 
             unchecked
             {
@@ -274,8 +275,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (!JSON.ParseMandatory("certificateType",
                                          "certificate type",
-                                         CertificateUseExtensions.TryParse,
-                                         out CertificateUse CertificateType,
+                                         InstallCertificateUse.TryParse,
+                                         out InstallCertificateUse CertificateType,
                                          out ErrorResponse))
                 {
                     return false;
@@ -397,7 +398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("certificateType",   CertificateType.AsText()),
+                                 new JProperty("certificateType",   CertificateType.ToString()),
                                  new JProperty("certificate",       Certificate.    ToString()),
 
                            Signatures.Any()

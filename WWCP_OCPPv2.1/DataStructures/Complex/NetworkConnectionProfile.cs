@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The OCPP version to be used.
         /// </summary>
         [Mandatory]
-        public OCPPVersions        Version              { get; }
+        public OCPPVersion         Version              { get; }
 
         /// <summary>
         /// The OCPP transport protocol to be used.
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="VPNConfiguration">An optional VPN configuration to use when connecting to the central service (CSMS).</param>
         /// <param name="APNConfiguration">An optional APN configuration to use when connecting to the central service (CSMS).</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public NetworkConnectionProfile(OCPPVersions        Version,
+        public NetworkConnectionProfile(OCPPVersion         Version,
                                         TransportProtocols  Transport,
                                         URL                 CentralServiceURL,
                                         TimeSpan            MessageTimeout,
@@ -250,8 +250,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("ocppVersion",
                                          "OCPP version",
-                                         OCPPVersionsExtensions.TryParse,
-                                         out OCPPVersions Version,
+                                         OCPPVersion.TryParse,
+                                         out OCPPVersion Version,
                                          out ErrorResponse))
                 {
                     return false;
@@ -413,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("ocppVersion",       Version.          AsText()),
+                                 new JProperty("ocppVersion",       Version.          ToString()),
                                  new JProperty("ocppTransport",     Transport.        AsText()),
                                  new JProperty("ocppCsmsUrl",       CentralServiceURL.ToString()),
                                  new JProperty("messageTimeout",    (UInt32) Math.Round(MessageTimeout.TotalSeconds, 0)),
@@ -571,7 +571,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => String.Concat(
 
                    CentralServiceURL,
-                   " (", Version.        AsText(),
+                   " (", Version.        ToString(),
                    ", ", SecurityProfile.AsText(),
                    ") ",
 

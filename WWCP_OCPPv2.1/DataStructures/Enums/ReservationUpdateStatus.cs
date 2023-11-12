@@ -124,7 +124,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The reservation was removed.
         /// </summary>
-        Removed
+        Removed,
+
+        /// <summary>
+        /// The reservation was used, but no transaction was started.
+        /// </summary>
+        NoTransaction
 
     }
 

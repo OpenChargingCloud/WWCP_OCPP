@@ -208,20 +208,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(10),
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
-                                                                                                         Value:              1,
-                                                                                                         Context:            ReadingContexts.TransactionBegin,
-                                                                                                         Measurand:          Measurands.Current_Import_Offered,
-                                                                                                         Phase:              null,
-                                                                                                         Location:           MeasurementLocations.Outlet,
-                                                                                                         SignedMeterValue:   new SignedMeterValue(
-                                                                                                                                 SignedMeterData:   "",
-                                                                                                                                 SigningMethod:     "",
-                                                                                                                                 EncodingMethod:    "",
-                                                                                                                                 PublicKey:         "",
-                                                                                                                                 CustomData:        null
-                                                                                                                             ),
-                                                                                                         UnitOfMeasure:      UnitsOfMeasure.Wh(1),
-                                                                                                         CustomData:         null
+                                                                                                         Value:                 1,
+                                                                                                         Context:               ReadingContexts.TransactionBegin,
+                                                                                                         Measurand:             Measurand.Current_Import_Offered,
+                                                                                                         Phase:                 null,
+                                                                                                         MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                         SignedMeterValue:      new SignedMeterValue(
+                                                                                                                                    SignedMeterData:   "",
+                                                                                                                                    SigningMethod:     "",
+                                                                                                                                    EncodingMethod:    "",
+                                                                                                                                    PublicKey:         "",
+                                                                                                                                    CustomData:        null
+                                                                                                                                ),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         CustomData:            null
                                                                                                      )
                                                                                                  },
                                                                                 CustomData:      null
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TransactionId:             transactionId,
                                                                             ChargingState:             ChargingStates.SuspendedEVSE,
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
-                                                                            StoppedReason:             StopTransactionReasons.Local,
+                                                                            StoppedReason:             StopTransactionReason.Local,
                                                                             RemoteStartId:             null,
                                                                             OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
@@ -271,20 +271,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(49),
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
-                                                                                                         Value:              10000,
-                                                                                                         Context:            ReadingContexts.TransactionEnd,
-                                                                                                         Measurand:          Measurands.Current_Import_Offered,
-                                                                                                         Phase:              null,
-                                                                                                         Location:           MeasurementLocations.Outlet,
-                                                                                                         SignedMeterValue:   new SignedMeterValue(
-                                                                                                                                 SignedMeterData:   "",
-                                                                                                                                 SigningMethod:     "",
-                                                                                                                                 EncodingMethod:    "",
-                                                                                                                                 PublicKey:         "",
-                                                                                                                                 CustomData:        null
-                                                                                                                             ),
-                                                                                                         UnitOfMeasure:      UnitsOfMeasure.Wh(1),
-                                                                                                         CustomData:         null
+                                                                                                         Value:                 10000,
+                                                                                                         Context:               ReadingContexts.TransactionEnd,
+                                                                                                         Measurand:             Measurand.Current_Import_Offered,
+                                                                                                         Phase:                 null,
+                                                                                                         MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                         SignedMeterValue:      new SignedMeterValue(
+                                                                                                                                    SignedMeterData:   "",
+                                                                                                                                    SigningMethod:     "",
+                                                                                                                                    EncodingMethod:    "",
+                                                                                                                                    PublicKey:         "",
+                                                                                                                                    CustomData:        null
+                                                                                                                                ),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         CustomData:            null
                                                                                                      )
                                                                                                  },
                                                                                 CustomData:      null
@@ -329,8 +329,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                   CDR:                   out var cdr,
                                   ErrorResponse:         out var errorString,
 
-                                  Measurand:             Measurands.Current_Import_Offered,
-                                  MeasurementLocation:   MeasurementLocations.Outlet
+                                  Measurand:             Measurand.Current_Import_Offered,
+                                  MeasurementLocation:   MeasurementLocation.Outlet
 
                               ),
                               errorString);
@@ -492,20 +492,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(10),
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
-                                                                                                         Value:              1,
-                                                                                                         Context:            ReadingContexts.TransactionBegin,
-                                                                                                         Measurand:          Measurands.Current_Import_Offered,
-                                                                                                         Phase:              null,
-                                                                                                         Location:           MeasurementLocations.Outlet,
-                                                                                                         SignedMeterValue:   new SignedMeterValue(
-                                                                                                                                 SignedMeterData:   "",
-                                                                                                                                 SigningMethod:     "",
-                                                                                                                                 EncodingMethod:    "",
-                                                                                                                                 PublicKey:         "",
-                                                                                                                                 CustomData:        null
-                                                                                                                             ),
-                                                                                                         UnitOfMeasure:      UnitsOfMeasure.Wh(1),
-                                                                                                         CustomData:         null
+                                                                                                         Value:                 1,
+                                                                                                         Context:               ReadingContexts.TransactionBegin,
+                                                                                                         Measurand:             Measurand.Current_Import_Offered,
+                                                                                                         Phase:                 null,
+                                                                                                         MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                         SignedMeterValue:      new SignedMeterValue(
+                                                                                                                                    SignedMeterData:   "",
+                                                                                                                                    SigningMethod:     "",
+                                                                                                                                    EncodingMethod:    "",
+                                                                                                                                    PublicKey:         "",
+                                                                                                                                    CustomData:        null
+                                                                                                                                ),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         CustomData:            null
                                                                                                      )
                                                                                                  },
                                                                                 CustomData:      null
@@ -538,7 +538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TransactionId:             transactionId,
                                                                             ChargingState:             ChargingStates.SuspendedEVSE,
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
-                                                                            StoppedReason:             StopTransactionReasons.Local,
+                                                                            StoppedReason:             StopTransactionReason.Local,
                                                                             RemoteStartId:             null,
                                                                             OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
@@ -555,20 +555,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(49),
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
-                                                                                                         Value:              10000,
-                                                                                                         Context:            ReadingContexts.TransactionEnd,
-                                                                                                         Measurand:          Measurands.Current_Import_Offered,
-                                                                                                         Phase:              null,
-                                                                                                         Location:           MeasurementLocations.Outlet,
-                                                                                                         SignedMeterValue:   new SignedMeterValue(
-                                                                                                                                 SignedMeterData:   "",
-                                                                                                                                 SigningMethod:     "",
-                                                                                                                                 EncodingMethod:    "",
-                                                                                                                                 PublicKey:         "",
-                                                                                                                                 CustomData:        null
-                                                                                                                             ),
-                                                                                                         UnitOfMeasure:      UnitsOfMeasure.Wh(1),
-                                                                                                         CustomData:         null
+                                                                                                         Value:                 10000,
+                                                                                                         Context:               ReadingContexts.TransactionEnd,
+                                                                                                         Measurand:             Measurand.Current_Import_Offered,
+                                                                                                         Phase:                 null,
+                                                                                                         MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                         SignedMeterValue:      new SignedMeterValue(
+                                                                                                                                    SignedMeterData:   "",
+                                                                                                                                    SigningMethod:     "",
+                                                                                                                                    EncodingMethod:    "",
+                                                                                                                                    PublicKey:         "",
+                                                                                                                                    CustomData:        null
+                                                                                                                                ),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         CustomData:            null
                                                                                                      )
                                                                                                  },
                                                                                 CustomData:      null
@@ -613,8 +613,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                   CDR:                   out var cdr,
                                   ErrorResponse:         out var errorString,
 
-                                  Measurand:             Measurands.Current_Import_Offered,
-                                  MeasurementLocation:   MeasurementLocations.Outlet
+                                  Measurand:             Measurand.Current_Import_Offered,
+                                  MeasurementLocation:   MeasurementLocation.Outlet
 
                               ),
                               errorString);
@@ -780,20 +780,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(10),
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
-                                                                                                         Value:              1,
-                                                                                                         Context:            ReadingContexts.TransactionBegin,
-                                                                                                         Measurand:          Measurands.Current_Import_Offered,
-                                                                                                         Phase:              null,
-                                                                                                         Location:           MeasurementLocations.Outlet,
-                                                                                                         SignedMeterValue:   new SignedMeterValue(
-                                                                                                                                 SignedMeterData:   "",
-                                                                                                                                 SigningMethod:     "",
-                                                                                                                                 EncodingMethod:    "",
-                                                                                                                                 PublicKey:         "",
-                                                                                                                                 CustomData:        null
-                                                                                                                             ),
-                                                                                                         UnitOfMeasure:      UnitsOfMeasure.Wh(1),
-                                                                                                         CustomData:         null
+                                                                                                         Value:                 1,
+                                                                                                         Context:               ReadingContexts.TransactionBegin,
+                                                                                                         Measurand:             Measurand.Current_Import_Offered,
+                                                                                                         Phase:                 null,
+                                                                                                         MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                         SignedMeterValue:      new SignedMeterValue(
+                                                                                                                                    SignedMeterData:   "",
+                                                                                                                                    SigningMethod:     "",
+                                                                                                                                    EncodingMethod:    "",
+                                                                                                                                    PublicKey:         "",
+                                                                                                                                    CustomData:        null
+                                                                                                                                ),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         CustomData:            null
                                                                                                      )
                                                                                                  },
                                                                                 CustomData:      null
@@ -826,7 +826,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TransactionId:             transactionId,
                                                                             ChargingState:             ChargingStates.SuspendedEVSE,
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
-                                                                            StoppedReason:             StopTransactionReasons.Local,
+                                                                            StoppedReason:             StopTransactionReason.Local,
                                                                             RemoteStartId:             null,
                                                                             OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
@@ -843,20 +843,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(49),
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
-                                                                                                         Value:              10000,
-                                                                                                         Context:            ReadingContexts.TransactionEnd,
-                                                                                                         Measurand:          Measurands.Current_Import_Offered,
-                                                                                                         Phase:              null,
-                                                                                                         Location:           MeasurementLocations.Outlet,
-                                                                                                         SignedMeterValue:   new SignedMeterValue(
-                                                                                                                                 SignedMeterData:   "",
-                                                                                                                                 SigningMethod:     "",
-                                                                                                                                 EncodingMethod:    "",
-                                                                                                                                 PublicKey:         "",
-                                                                                                                                 CustomData:        null
-                                                                                                                             ),
-                                                                                                         UnitOfMeasure:      UnitsOfMeasure.Wh(1),
-                                                                                                         CustomData:         null
+                                                                                                         Value:                 10000,
+                                                                                                         Context:               ReadingContexts.TransactionEnd,
+                                                                                                         Measurand:             Measurand.Current_Import_Offered,
+                                                                                                         Phase:                 null,
+                                                                                                         MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                         SignedMeterValue:      new SignedMeterValue(
+                                                                                                                                    SignedMeterData:   "",
+                                                                                                                                    SigningMethod:     "",
+                                                                                                                                    EncodingMethod:    "",
+                                                                                                                                    PublicKey:         "",
+                                                                                                                                    CustomData:        null
+                                                                                                                                ),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         CustomData:            null
                                                                                                      )
                                                                                                  },
                                                                                 CustomData:      null
@@ -901,8 +901,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                   CDR:                   out var cdr,
                                   ErrorResponse:         out var errorString,
 
-                                  Measurand:             Measurands.Current_Import_Offered,
-                                  MeasurementLocation:   MeasurementLocations.Outlet
+                                  Measurand:             Measurand.Current_Import_Offered,
+                                  MeasurementLocation:   MeasurementLocation.Outlet
 
                               ),
                               errorString);
@@ -1085,20 +1085,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(10),
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
-                                                                                                         Value:              1,
-                                                                                                         Context:            ReadingContexts.TransactionBegin,
-                                                                                                         Measurand:          Measurands.Current_Import_Offered,
-                                                                                                         Phase:              null,
-                                                                                                         Location:           MeasurementLocations.Outlet,
-                                                                                                         SignedMeterValue:   new SignedMeterValue(
-                                                                                                                                 SignedMeterData:   "",
-                                                                                                                                 SigningMethod:     "",
-                                                                                                                                 EncodingMethod:    "",
-                                                                                                                                 PublicKey:         "",
-                                                                                                                                 CustomData:        null
-                                                                                                                             ),
-                                                                                                         UnitOfMeasure:      UnitsOfMeasure.Wh(1),
-                                                                                                         CustomData:         null
+                                                                                                         Value:                 1,
+                                                                                                         Context:               ReadingContexts.TransactionBegin,
+                                                                                                         Measurand:             Measurand.Current_Import_Offered,
+                                                                                                         Phase:                 null,
+                                                                                                         MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                         SignedMeterValue:      new SignedMeterValue(
+                                                                                                                                    SignedMeterData:   "",
+                                                                                                                                    SigningMethod:     "",
+                                                                                                                                    EncodingMethod:    "",
+                                                                                                                                    PublicKey:         "",
+                                                                                                                                    CustomData:        null
+                                                                                                                                ),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         CustomData:            null
                                                                                                      )
                                                                                                  },
                                                                                 CustomData:      null
@@ -1131,7 +1131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TransactionId:             transactionId,
                                                                             ChargingState:             ChargingStates.SuspendedEVSE,
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
-                                                                            StoppedReason:             StopTransactionReasons.Local,
+                                                                            StoppedReason:             StopTransactionReason.Local,
                                                                             RemoteStartId:             null,
                                                                             OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
@@ -1148,20 +1148,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(49),
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
-                                                                                                         Value:              10000,
-                                                                                                         Context:            ReadingContexts.TransactionEnd,
-                                                                                                         Measurand:          Measurands.Current_Import_Offered,
-                                                                                                         Phase:              null,
-                                                                                                         Location:           MeasurementLocations.Outlet,
-                                                                                                         SignedMeterValue:   new SignedMeterValue(
-                                                                                                                                 SignedMeterData:   "",
-                                                                                                                                 SigningMethod:     "",
-                                                                                                                                 EncodingMethod:    "",
-                                                                                                                                 PublicKey:         "",
-                                                                                                                                 CustomData:        null
-                                                                                                                             ),
-                                                                                                         UnitOfMeasure:      UnitsOfMeasure.Wh(1),
-                                                                                                         CustomData:         null
+                                                                                                         Value:                 10000,
+                                                                                                         Context:               ReadingContexts.TransactionEnd,
+                                                                                                         Measurand:             Measurand.Current_Import_Offered,
+                                                                                                         Phase:                 null,
+                                                                                                         MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                         SignedMeterValue:      new SignedMeterValue(
+                                                                                                                                    SignedMeterData:   "",
+                                                                                                                                    SigningMethod:     "",
+                                                                                                                                    EncodingMethod:    "",
+                                                                                                                                    PublicKey:         "",
+                                                                                                                                    CustomData:        null
+                                                                                                                                ),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         CustomData:            null
                                                                                                      )
                                                                                                  },
                                                                                 CustomData:      null
@@ -1206,8 +1206,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                   CDR:                   out var cdr,
                                   ErrorResponse:         out var errorString,
 
-                                  Measurand:             Measurands.Current_Import_Offered,
-                                  MeasurementLocation:   MeasurementLocations.Outlet
+                                  Measurand:             Measurand.Current_Import_Offered,
+                                  MeasurementLocation:   MeasurementLocation.Outlet
 
                               ),
                               errorString);
@@ -1415,20 +1415,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(10),
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
-                                                                                                         Value:              1,
-                                                                                                         Context:            ReadingContexts.TransactionBegin,
-                                                                                                         Measurand:          Measurands.Current_Import_Offered,
-                                                                                                         Phase:              null,
-                                                                                                         Location:           MeasurementLocations.Outlet,
-                                                                                                         SignedMeterValue:   new SignedMeterValue(
-                                                                                                                                 SignedMeterData:   "",
-                                                                                                                                 SigningMethod:     "",
-                                                                                                                                 EncodingMethod:    "",
-                                                                                                                                 PublicKey:         "",
-                                                                                                                                 CustomData:        null
-                                                                                                                             ),
-                                                                                                         UnitOfMeasure:      UnitsOfMeasure.Wh(1),
-                                                                                                         CustomData:         null
+                                                                                                         Value:                 1,
+                                                                                                         Context:               ReadingContexts.TransactionBegin,
+                                                                                                         Measurand:             Measurand.Current_Import_Offered,
+                                                                                                         Phase:                 null,
+                                                                                                         MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                         SignedMeterValue:      new SignedMeterValue(
+                                                                                                                                    SignedMeterData:   "",
+                                                                                                                                    SigningMethod:     "",
+                                                                                                                                    EncodingMethod:    "",
+                                                                                                                                    PublicKey:         "",
+                                                                                                                                    CustomData:        null
+                                                                                                                                ),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         CustomData:            null
                                                                                                      )
                                                                                                  },
                                                                                 CustomData:      null
@@ -1461,7 +1461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TransactionId:             transactionId,
                                                                             ChargingState:             ChargingStates.SuspendedEVSE,
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
-                                                                            StoppedReason:             StopTransactionReasons.Local,
+                                                                            StoppedReason:             StopTransactionReason.Local,
                                                                             RemoteStartId:             null,
                                                                             OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
@@ -1478,20 +1478,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(49),
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
-                                                                                                         Value:              10000,
-                                                                                                         Context:            ReadingContexts.TransactionEnd,
-                                                                                                         Measurand:          Measurands.Current_Import_Offered,
-                                                                                                         Phase:              null,
-                                                                                                         Location:           MeasurementLocations.Outlet,
-                                                                                                         SignedMeterValue:   new SignedMeterValue(
-                                                                                                                                 SignedMeterData:   "",
-                                                                                                                                 SigningMethod:     "",
-                                                                                                                                 EncodingMethod:    "",
-                                                                                                                                 PublicKey:         "",
-                                                                                                                                 CustomData:        null
-                                                                                                                             ),
-                                                                                                         UnitOfMeasure:      UnitsOfMeasure.Wh(1),
-                                                                                                         CustomData:         null
+                                                                                                         Value:                 10000,
+                                                                                                         Context:               ReadingContexts.TransactionEnd,
+                                                                                                         Measurand:             Measurand.Current_Import_Offered,
+                                                                                                         Phase:                 null,
+                                                                                                         MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                         SignedMeterValue:      new SignedMeterValue(
+                                                                                                                                    SignedMeterData:   "",
+                                                                                                                                    SigningMethod:     "",
+                                                                                                                                    EncodingMethod:    "",
+                                                                                                                                    PublicKey:         "",
+                                                                                                                                    CustomData:        null
+                                                                                                                                ),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         CustomData:            null
                                                                                                      )
                                                                                                  },
                                                                                 CustomData:      null
@@ -1536,8 +1536,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                   CDR:                   out var cdr,
                                   ErrorResponse:         out var errorString,
 
-                                  Measurand:             Measurands.Current_Import_Offered,
-                                  MeasurementLocation:   MeasurementLocations.Outlet
+                                  Measurand:             Measurand.Current_Import_Offered,
+                                  MeasurementLocation:   MeasurementLocation.Outlet
 
                               ),
                               errorString);
@@ -1713,20 +1713,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(10),
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
-                                                                                                         Value:              1,
-                                                                                                         Context:            ReadingContexts.TransactionBegin,
-                                                                                                         Measurand:          Measurands.Current_Import_Offered,
-                                                                                                         Phase:              null,
-                                                                                                         Location:           MeasurementLocations.Outlet,
-                                                                                                         SignedMeterValue:   new SignedMeterValue(
-                                                                                                                                 SignedMeterData:   "",
-                                                                                                                                 SigningMethod:     "",
-                                                                                                                                 EncodingMethod:    "",
-                                                                                                                                 PublicKey:         "",
-                                                                                                                                 CustomData:        null
-                                                                                                                             ),
-                                                                                                         UnitOfMeasure:      UnitsOfMeasure.Wh(1),
-                                                                                                         CustomData:         null
+                                                                                                         Value:                 1,
+                                                                                                         Context:               ReadingContexts.TransactionBegin,
+                                                                                                         Measurand:             Measurand.Current_Import_Offered,
+                                                                                                         Phase:                 null,
+                                                                                                         MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                         SignedMeterValue:      new SignedMeterValue(
+                                                                                                                                    SignedMeterData:   "",
+                                                                                                                                    SigningMethod:     "",
+                                                                                                                                    EncodingMethod:    "",
+                                                                                                                                    PublicKey:         "",
+                                                                                                                                    CustomData:        null
+                                                                                                                                ),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         CustomData:            null
                                                                                                      )
                                                                                                  },
                                                                                 CustomData:      null
@@ -1759,7 +1759,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                             TransactionId:             transactionId,
                                                                             ChargingState:             ChargingStates.SuspendedEVSE,
                                                                             TimeSpentCharging:         TimeSpan.FromHours(2),
-                                                                            StoppedReason:             StopTransactionReasons.Local,
+                                                                            StoppedReason:             StopTransactionReason.Local,
                                                                             RemoteStartId:             null,
                                                                             OperationMode:             OperationMode.ChargingOnly,
                                                                             CustomData:                null
@@ -1776,20 +1776,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(49),
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
-                                                                                                         Value:              10000,
-                                                                                                         Context:            ReadingContexts.TransactionEnd,
-                                                                                                         Measurand:          Measurands.Current_Import_Offered,
-                                                                                                         Phase:              null,
-                                                                                                         Location:           MeasurementLocations.Outlet,
-                                                                                                         SignedMeterValue:   new SignedMeterValue(
-                                                                                                                                 SignedMeterData:   "",
-                                                                                                                                 SigningMethod:     "",
-                                                                                                                                 EncodingMethod:    "",
-                                                                                                                                 PublicKey:         "",
-                                                                                                                                 CustomData:        null
-                                                                                                                             ),
-                                                                                                         UnitOfMeasure:      UnitsOfMeasure.Wh(1),
-                                                                                                         CustomData:         null
+                                                                                                         Value:                 10000,
+                                                                                                         Context:               ReadingContexts.TransactionEnd,
+                                                                                                         Measurand:             Measurand.Current_Import_Offered,
+                                                                                                         Phase:                 null,
+                                                                                                         MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                         SignedMeterValue:      new SignedMeterValue(
+                                                                                                                                    SignedMeterData:   "",
+                                                                                                                                    SigningMethod:     "",
+                                                                                                                                    EncodingMethod:    "",
+                                                                                                                                    PublicKey:         "",
+                                                                                                                                    CustomData:        null
+                                                                                                                                ),
+                                                                                                         UnitOfMeasure:         UnitsOfMeasure.Wh(1),
+                                                                                                         CustomData:            null
                                                                                                      )
                                                                                                  },
                                                                                 CustomData:      null
@@ -1834,8 +1834,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                   CDR:                   out var cdr,
                                   ErrorResponse:         out var errorString,
 
-                                  Measurand:             Measurands.Current_Import_Offered,
-                                  MeasurementLocation:   MeasurementLocations.Outlet
+                                  Measurand:             Measurand.Current_Import_Offered,
+                                  MeasurementLocation:   MeasurementLocation.Outlet
 
                               ),
                               errorString);

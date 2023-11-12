@@ -48,14 +48,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         public Connector_Id    Id               { get; }
-        public ConnectorTypes  ConnectorType    { get; }
+        public ConnectorType  ConnectorType    { get; }
 
         #endregion
 
         #region ChargingStationConnector(Id, ConnectorType)
 
         public ChargingStationConnector(Connector_Id    Id,
-                                        ConnectorTypes  ConnectorType)
+                                        ConnectorType  ConnectorType)
         {
 
             this.Id             = Id;
@@ -2200,11 +2200,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region WireEvents(ChargingStationServer)
 
 
-        private readonly ConcurrentDictionary<DisplayMessage_Id, MessageInfo>     displayMessages   = new ();
-        private readonly ConcurrentDictionary<Reservation_Id,    Reservation_Id>  reservations      = new ();
-        private readonly ConcurrentDictionary<Transaction_Id,    Transaction>     transactions      = new ();
-        private readonly ConcurrentDictionary<Transaction_Id,    Decimal>         totalCosts        = new ();
-        private readonly ConcurrentDictionary<CertificateUse,    Certificate>     certificates      = new ();
+        private readonly ConcurrentDictionary<DisplayMessage_Id,     MessageInfo>     displayMessages   = new ();
+        private readonly ConcurrentDictionary<Reservation_Id,        Reservation_Id>  reservations      = new ();
+        private readonly ConcurrentDictionary<Transaction_Id,        Transaction>     transactions      = new ();
+        private readonly ConcurrentDictionary<Transaction_Id,        Decimal>         totalCosts        = new ();
+        private readonly ConcurrentDictionary<InstallCertificateUse, Certificate>     certificates      = new ();
 
         public void WireEvents(IChargingStationServer ChargingStationServer)
         {
@@ -5571,7 +5571,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     else
                     {
 
-                        DebugX.Log($"Charging station '{Id}': Incoming InstallCertificate request (certificate type: {request.CertificateType.AsText()}!");
+                        DebugX.Log($"Charging station '{Id}': Incoming InstallCertificate request (certificate type: {request.CertificateType}!");
 
                         // CertificateType
                         // Certificate
@@ -5735,7 +5735,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     else
                     {
 
-                        DebugX.Log($"Charging station '{Id}': Incoming GetInstalledCertificateIds request for certificate types: {request.CertificateTypes.Select(certificateType => certificateType.AsText()).AggregateWith(", ")}!");
+                        DebugX.Log($"Charging station '{Id}': Incoming GetInstalledCertificateIds request for certificate types: {request.CertificateTypes.Select(certificateType => certificateType).AggregateWith(", ")}!");
 
                         // CertificateTypes
 
@@ -5744,7 +5744,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         foreach (var certificateType in request.CertificateTypes)
                         {
 
-                            if (certificates.TryGetValue(certificateType, out var cert))
+                            if (certificates.TryGetValue(InstallCertificateUse.Parse(certificateType.ToString()), out var cert))
                                 certs.Add(new CertificateHashData(
                                               HashAlgorithm:         HashAlgorithms.SHA256,
                                               IssuerNameHash:        cert.Parsed?.Issuer               ?? "-",
@@ -7126,20 +7126,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                         Timestamp:       evse.StartTimestamp.Value,
                                                                         SampledValues:   new[] {
                                                                                              new SampledValue(
-                                                                                                 Value:              evse.MeterStartValue.Value,
-                                                                                                 Context:            ReadingContexts.TransactionBegin,
-                                                                                                 Measurand:          Measurands.Current_Export,
-                                                                                                 Phase:              null,
-                                                                                                 Location:           MeasurementLocations.Outlet,
-                                                                                                 SignedMeterValue:   new SignedMeterValue(
-                                                                                                                         SignedMeterData:   evse.SignedStartMeterValue,
-                                                                                                                         SigningMethod:     "secp256r1",
-                                                                                                                         EncodingMethod:    "base64",
-                                                                                                                         PublicKey:         "04cafebabe",
-                                                                                                                         CustomData:        null
-                                                                                                                     ),
-                                                                                                 UnitOfMeasure:      null,
-                                                                                                 CustomData:         null
+                                                                                                 Value:                 evse.MeterStartValue.Value,
+                                                                                                 Context:               ReadingContexts.TransactionBegin,
+                                                                                                 Measurand:             Measurand.Current_Export,
+                                                                                                 Phase:                 null,
+                                                                                                 MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                 SignedMeterValue:      new SignedMeterValue(
+                                                                                                                            SignedMeterData:   evse.SignedStartMeterValue,
+                                                                                                                            SigningMethod:     "secp256r1",
+                                                                                                                            EncodingMethod:    "base64",
+                                                                                                                            PublicKey:         "04cafebabe",
+                                                                                                                            CustomData:        null
+                                                                                                                        ),
+                                                                                                 UnitOfMeasure:         null,
+                                                                                                 CustomData:            null
                                                                                              )
                                                                                          }
                                                                     )
@@ -7341,7 +7341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                     TransactionId:       evse.TransactionId!.Value,
                                                                     ChargingState:       ChargingStates.Idle,
                                                                     TimeSpentCharging:   evse.StopTimestamp - evse.StartTimestamp,
-                                                                    StoppedReason:       StopTransactionReasons.Remote,
+                                                                    StoppedReason:       StopTransactionReason.Remote,
                                                                     RemoteStartId:       evse.RemoteStartId,
                                                                     CustomData:          null
                                                                 ),
@@ -7361,20 +7361,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                         Timestamp:       evse.StopTimestamp.Value,
                                                                         SampledValues:   new[] {
                                                                                              new SampledValue(
-                                                                                                 Value:              evse.MeterStopValue.Value,
-                                                                                                 Context:            ReadingContexts.TransactionEnd,
-                                                                                                 Measurand:          Measurands.Current_Export,
-                                                                                                 Phase:              null,
-                                                                                                 Location:           MeasurementLocations.Outlet,
-                                                                                                 SignedMeterValue:   new SignedMeterValue(
-                                                                                                                         SignedMeterData:   evse.SignedStopMeterValue,
-                                                                                                                         SigningMethod:     "secp256r1",
-                                                                                                                         EncodingMethod:    "base64",
-                                                                                                                         PublicKey:         "04cafebabe",
-                                                                                                                         CustomData:        null
-                                                                                                                     ),
-                                                                                                 UnitOfMeasure:      null,
-                                                                                                 CustomData:         null
+                                                                                                 Value:                 evse.MeterStopValue.Value,
+                                                                                                 Context:               ReadingContexts.TransactionEnd,
+                                                                                                 Measurand:             Measurand.Current_Export,
+                                                                                                 Phase:                 null,
+                                                                                                 MeasurementLocation:   MeasurementLocation.Outlet,
+                                                                                                 SignedMeterValue:      new SignedMeterValue(
+                                                                                                                            SignedMeterData:   evse.SignedStopMeterValue,
+                                                                                                                            SigningMethod:     "secp256r1",
+                                                                                                                            EncodingMethod:    "base64",
+                                                                                                                            PublicKey:         "04cafebabe",
+                                                                                                                            CustomData:        null
+                                                                                                                        ),
+                                                                                                 UnitOfMeasure:         null,
+                                                                                                 CustomData:            null
                                                                                              )
                                                                                          }
                                                                     )

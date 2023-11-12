@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetLog(this ICSMS               CSMS,
                    ChargingStation_Id       ChargingStationId,
-                   LogTypes                 LogType,
+                   LogType                  LogType,
                    Int32                    LogRequestId,
                    LogParameters            Log,
                    Byte?                    Retries             = null,
@@ -661,7 +661,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             GetMonitoringReport(this ICSMS                       CSMS,
                                 ChargingStation_Id               ChargingStationId,
                                 Int32                            GetMonitoringReportRequestId,
-                                IEnumerable<MonitoringCriteria>  MonitoringCriteria,
+                                IEnumerable<MonitoringCriterion>  MonitoringCriteria,
                                 IEnumerable<ComponentVariable>   ComponentVariables,
 
                                 IEnumerable<KeyPair>?            SignKeys            = null,
@@ -1192,7 +1192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             InstallCertificate(this ICSMS               CSMS,
                                ChargingStation_Id       ChargingStationId,
-                               CertificateUse           CertificateType,
+                               InstallCertificateUse    CertificateType,
                                Certificate              Certificate,
 
                                IEnumerable<KeyPair>?    SignKeys            = null,
@@ -1248,21 +1248,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetInstalledCertificateIdsResponse>
 
-            GetInstalledCertificateIds(this ICSMS                    CSMS,
-                                       ChargingStation_Id            ChargingStationId,
-                                       IEnumerable<CertificateUse>?  CertificateTypes    = null,
+            GetInstalledCertificateIds(this ICSMS                         CSMS,
+                                       ChargingStation_Id                 ChargingStationId,
+                                       IEnumerable<GetCertificateIdUse>?  CertificateTypes    = null,
 
-                                       IEnumerable<KeyPair>?         SignKeys            = null,
-                                       IEnumerable<SignInfo>?        SignInfos           = null,
-                                       IEnumerable<Signature>?       Signatures          = null,
+                                       IEnumerable<KeyPair>?              SignKeys            = null,
+                                       IEnumerable<SignInfo>?             SignInfos           = null,
+                                       IEnumerable<Signature>?            Signatures          = null,
 
-                                       CustomData?                   CustomData          = null,
+                                       CustomData?                        CustomData          = null,
 
-                                       Request_Id?                   RequestId           = null,
-                                       DateTime?                     RequestTimestamp    = null,
-                                       TimeSpan?                     RequestTimeout      = null,
-                                       EventTracking_Id?             EventTrackingId     = null,
-                                       CancellationToken             CancellationToken   = default)
+                                       Request_Id?                        RequestId           = null,
+                                       DateTime?                          RequestTimestamp    = null,
+                                       TimeSpan?                          RequestTimeout      = null,
+                                       EventTracking_Id?                  EventTrackingId     = null,
+                                       CancellationToken                  CancellationToken   = default)
 
 
                 => CSMS.GetInstalledCertificateIds(
@@ -1602,7 +1602,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                        Reservation_Id           ReservationId,
                        DateTime                 ExpiryDate,
                        IdToken                  IdToken,
-                       ConnectorTypes?          ConnectorType       = null,
+                       ConnectorType?          ConnectorType       = null,
                        EVSE_Id?                 EVSEId              = null,
                        IdToken?                 GroupIdToken        = null,
 

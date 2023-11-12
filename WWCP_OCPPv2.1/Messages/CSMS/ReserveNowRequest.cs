@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The optional connector type to be reserved.
         /// </summary>
         [Optional]
-        public ConnectorTypes?  ConnectorType    { get; }
+        public ConnectorType?  ConnectorType    { get; }
 
         /// <summary>
         /// The identification of the EVSE to be reserved.
@@ -115,7 +115,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  Reservation_Id           Id,
                                  DateTime                 ExpiryDate,
                                  IdToken                  IdToken,
-                                 ConnectorTypes?          ConnectorType       = null,
+                                 ConnectorType?          ConnectorType       = null,
                                  EVSE_Id?                 EVSEId              = null,
                                  IdToken?                 GroupIdToken        = null,
 
@@ -460,8 +460,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("connectorType",
                                        "connector type",
-                                       ConnectorTypesExtensions.TryParse,
-                                       out ConnectorTypes? ConnectorType,
+                                       OCPPv2_1.ConnectorType.TryParse,
+                                       out ConnectorType? ConnectorType,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -605,7 +605,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                               CustomCustomDataSerializer)),
 
                            ConnectorType.HasValue
-                               ? new JProperty("connectorType",    ConnectorType.Value.AsText())
+                               ? new JProperty("connectorType",    ConnectorType.Value.ToString())
                                : null,
 
                            EVSEId.HasValue
@@ -755,7 +755,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    IdToken.ToString(),
 
                    ConnectorType.HasValue
-                       ? ", connector type: " + ConnectorType.Value.AsText()
+                       ? ", connector type: " + ConnectorType.Value.ToString()
                        : "",
 
                    EVSEId.HasValue
