@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                              Timestamp:               Timestamp.Now,
                                                              Trigger:                 EventTriggers.Alerting,
                                                              ActualValue:             "ALERTA!",
-                                                             EventNotificationType:   EventNotificationTypes.HardWiredMonitor,
+                                                             EventNotificationType:   EventNotificationType.HardWiredMonitor,
                                                              Component:               new Component(
                                                                                           Name:         "Alert System!",
                                                                                           Instance:     "Alert System #1",
@@ -561,7 +561,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                                                              Id:            VariableMonitoring_Id.NewRandom,
                                                                                                              Transaction:   true,
                                                                                                              Value:         1.01M,
-                                                                                                             Type:          MonitorTypes.Periodic,
+                                                                                                             Type:          MonitorType.Periodic,
                                                                                                              Severity:      Severities.Warning,
                                                                                                              CustomData:    null
                                                                                                          )
@@ -1145,7 +1145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 var response = await chargingStation1.NotifyEVChargingNeeds(
                                          EVSEId:              EVSE_Id.Parse(1),
                                          ChargingNeeds:       new ChargingNeeds(
-                                                                  RequestedEnergyTransferMode:   EnergyTransferModes.AC_ThreePhases,
+                                                                  RequestedEnergyTransferMode:   EnergyTransferMode.AC_ThreePhases,
                                                                   DepartureTime:                 Timestamp.Now + TimeSpan.FromHours(3),
                                                                   ACChargingParameters:          new ACChargingParameters(
                                                                                                      EnergyAmount:       WattHour.     Parse( 20),
@@ -1250,7 +1250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                                                                                                 new SampledValue(
                                                                                                     Value:                 meterStart,
-                                                                                                    Context:               ReadingContexts.TransactionBegin,
+                                                                                                    Context:               ReadingContext.TransactionBegin,
                                                                                                     Measurand:             Measurand.Energy_Active_Export_Interval,
                                                                                                     Phase:                 Phases.L1,
                                                                                                     MeasurementLocation:   MeasurementLocation.Outlet,
@@ -1397,7 +1397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                            new[] {
                                                new SampledValue(
                                                    Value:                 1.01M,
-                                                   Context:               ReadingContexts.TransactionBegin,
+                                                   Context:               ReadingContext.TransactionBegin,
                                                    Measurand:             Measurand.Current_Import,
                                                    Phase:                 Phases.L1,
                                                    MeasurementLocation:   MeasurementLocation.Outlet,
@@ -1416,7 +1416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                ),
                                                new SampledValue(
                                                    Value:                 1.02M,
-                                                   Context:               ReadingContexts.TransactionBegin,
+                                                   Context:               ReadingContext.TransactionBegin,
                                                    Measurand:             Measurand.Voltage,
                                                    Phase:                 Phases.L2,
                                                    MeasurementLocation:   MeasurementLocation.Inlet,
@@ -1440,7 +1440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                            new[] {
                                                new SampledValue(
                                                    Value:                 2.01M,
-                                                   Context:               ReadingContexts.TransactionEnd,
+                                                   Context:               ReadingContext.TransactionEnd,
                                                    Measurand:             Measurand.Current_Import_Offered,
                                                    Phase:                 Phases.L3,
                                                    MeasurementLocation:   MeasurementLocation.Cable,
@@ -1459,7 +1459,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                ),
                                                new SampledValue(
                                                    Value:                 2.02M,
-                                                   Context:               ReadingContexts.TransactionEnd,
+                                                   Context:               ReadingContext.TransactionEnd,
                                                    Measurand:             Measurand.Frequency,
                                                    Phase:                 Phases.N,
                                                    MeasurementLocation:   MeasurementLocation.EV,
@@ -1738,7 +1738,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                                           new ChargingProfile(
                                                                               ChargingProfileId:        ChargingProfile_Id.NewRandom,
                                                                               StackLevel:               1,
-                                                                              ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
+                                                                              ChargingProfilePurpose:   ChargingProfilePurpose.TxDefaultProfile,
                                                                               ChargingProfileKind:      ChargingProfileKinds.   Absolute,
                                                                               ChargingSchedules:        new[] {
                                                                                                             new ChargingSchedule(
@@ -2064,14 +2064,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                          MessageInfos:                     new[] {
                                                                                new MessageInfo(
                                                                                    Id:               DisplayMessage_Id.NewRandom,
-                                                                                   Priority:         MessagePriorities.InFront,
+                                                                                   Priority:         MessagePriority.InFront,
                                                                                    Message:          new MessageContent(
                                                                                                          Content:      "Hello World!",
-                                                                                                         Format:       MessageFormats.UTF8,
+                                                                                                         Format:       MessageFormat.UTF8,
                                                                                                          Language:     Language_Id.Parse("EN"),
                                                                                                          CustomData:   null
                                                                                                      ),
-                                                                                   State:            MessageStates.Charging,
+                                                                                   State:            MessageState.Charging,
                                                                                    StartTimestamp:   Timestamp.Now,
                                                                                    EndTimestamp:     Timestamp.Now + TimeSpan.FromHours(3),
                                                                                    TransactionId:    Transaction_Id.NewRandom,

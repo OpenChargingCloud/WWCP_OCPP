@@ -39,20 +39,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The message content.
         /// </summary>
         [Mandatory]
-        public String          Content     { get; }
+        public String         Content     { get; }
 
         /// <summary>
         /// The message language identifier, as defined in rfc5646 (default: EN).
         /// (Can not be null within this implementation!)
         /// </summary>
         [Mandatory]
-        public Language_Id     Language    { get; }
+        public Language_Id    Language    { get; }
 
         /// <summary>
         /// The message format (default: UTF8).
         /// </summary>
         [Mandatory]
-        public MessageFormats  Format      { get; }
+        public MessageFormat  Format      { get; }
 
         #endregion
 
@@ -65,10 +65,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Language">An optional message language identifier, as defined in rfc5646.</param>
         /// <param name="Format">An optional message format.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public MessageContent(String           Content,
-                              Language_Id?     Language     = null,
-                              MessageFormats?  Format       = null,
-                              CustomData?      CustomData   = null)
+        public MessageContent(String          Content,
+                              Language_Id?    Language     = null,
+                              MessageFormat?  Format       = null,
+                              CustomData?     CustomData   = null)
 
             : base(CustomData)
 
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.Content   = Content.Trim();
             this.Language  = Language ?? Language_Id.EN;
-            this.Format    = Format   ?? MessageFormats.UTF8;
+            this.Format    = Format   ?? MessageFormat.UTF8;
 
             if (this.Content.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Content), "The given message content must not be null or empty!");
@@ -224,8 +224,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("format",
                                        "message format",
-                                       MessageFormatsExtensions.TryParse,
-                                       out MessageFormats? Format,
+                                       MessageFormat.TryParse,
+                                       out MessageFormat? Format,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("content",      Content),
                                  new JProperty("language",     Language.  ToString()),
-                                 new JProperty("format",       Format.    AsText()),
+                                 new JProperty("format",       Format.    ToString()),
 
                            CustomData is not null
                                ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))

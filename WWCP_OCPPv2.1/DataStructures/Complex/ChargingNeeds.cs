@@ -40,19 +40,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The energy transfer mode requested by the EV.
         /// </summary>
         [Mandatory]
-        public EnergyTransferModes               RequestedEnergyTransferMode    { get; }
+        public EnergyTransferMode               RequestedEnergyTransferMode    { get; }
 
         /// <summary>
         /// The optional enumeration of energy transfer modes marked as available by the EV.
         /// </summary>
         [Optional]
-        public IEnumerable<EnergyTransferModes>  AvailableEnergyTransferModes    { get; }
+        public IEnumerable<EnergyTransferMode>  AvailableEnergyTransferModes    { get; }
 
         /// <summary>
         /// Optional indication whether the EV wants to operate in dynamic or scheduled mode (default).
         /// </summary>
         [Optional]
-        public ControlModes?                     ControlMode                     { get; }
+        public ControlModes?                    ControlMode                     { get; }
 
         /// <summary>
         /// Optional indication whether only the EV or also the EVSE or CSMS
@@ -65,31 +65,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional pricing structure type that will be offered.
         /// </summary>
         [Optional]
-        public PricingTypes?                     Pricing                         { get; }
+        public PricingTypes?                    Pricing                         { get; }
 
         /// <summary>
         /// The optional estimated departure time of the EV.
         /// </summary>
         [Optional]
-        public DateTime?                         DepartureTime                   { get; }
+        public DateTime?                        DepartureTime                   { get; }
 
         /// <summary>
         /// Optional ISO 15118-2 EV AC charging parameters.
         /// </summary>
         [Optional]
-        public ACChargingParameters?             ACChargingParameters            { get; }
+        public ACChargingParameters?            ACChargingParameters            { get; }
 
         /// <summary>
         /// Optional ISO 15118-2 EV DC charging parameters.
         /// </summary>
         [Optional]
-        public DCChargingParameters?             DCChargingParameters            { get; }
+        public DCChargingParameters?            DCChargingParameters            { get; }
 
         /// <summary>
         /// Optional ISO 15118-20 EV charging parameters.
         /// </summary>
         [Optional]
-        public V2XChargingParameters?            V2XChargingParameters           { get; }
+        public V2XChargingParameters?           V2XChargingParameters           { get; }
 
         /// <summary>
         /// Optional discharging and associated price offered by EV.
@@ -98,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// ISO 15118-20: Scheduled_SEReqControlModeType: EVEnergyOffer
         /// </summary>
         [Optional]
-        public EVEnergyOffer?                    EVEnergyOffer                   { get; }
+        public EVEnergyOffer?                   EVEnergyOffer                   { get; }
 
         #endregion
 
@@ -118,24 +118,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="V2XChargingParameters">Optional ISO 15118-20 EV charging parameters.</param>
         /// <param name="EVEnergyOffer"></param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
-        public ChargingNeeds(EnergyTransferModes                RequestedEnergyTransferMode,
-                             IEnumerable<EnergyTransferModes>?  AvailableEnergyTransferModes   = null,
-                             ControlModes?                      ControlMode                    = null,
+        public ChargingNeeds(EnergyTransferMode                RequestedEnergyTransferMode,
+                             IEnumerable<EnergyTransferMode>?  AvailableEnergyTransferModes   = null,
+                             ControlModes?                     ControlMode                    = null,
                              MobilityNeedsMode?                MobilityNeedsMode              = null,
-                             PricingTypes?                      Pricing                        = null,
-                             DateTime?                          DepartureTime                  = null,
-                             ACChargingParameters?              ACChargingParameters           = null,
-                             DCChargingParameters?              DCChargingParameters           = null,
-                             V2XChargingParameters?             V2XChargingParameters          = null,
-                             EVEnergyOffer?                     EVEnergyOffer                  = null,
-                             CustomData?                        CustomData                     = null)
+                             PricingTypes?                     Pricing                        = null,
+                             DateTime?                         DepartureTime                  = null,
+                             ACChargingParameters?             ACChargingParameters           = null,
+                             DCChargingParameters?             DCChargingParameters           = null,
+                             V2XChargingParameters?            V2XChargingParameters          = null,
+                             EVEnergyOffer?                    EVEnergyOffer                  = null,
+                             CustomData?                       CustomData                     = null)
 
             : base(CustomData)
 
         {
 
             this.RequestedEnergyTransferMode   = RequestedEnergyTransferMode;
-            this.AvailableEnergyTransferModes  = AvailableEnergyTransferModes?.Distinct() ?? Array.Empty<EnergyTransferModes>();
+            this.AvailableEnergyTransferModes  = AvailableEnergyTransferModes?.Distinct() ?? Array.Empty<EnergyTransferMode>();
             this.ControlMode                   = ControlMode;
             this.MobilityNeedsMode             = MobilityNeedsMode;
             this.Pricing                       = Pricing;
@@ -144,6 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.DCChargingParameters          = DCChargingParameters;
             this.V2XChargingParameters         = V2XChargingParameters;
             this.EVEnergyOffer                 = EVEnergyOffer;
+
 
             unchecked
             {
@@ -158,7 +159,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                           (this.DCChargingParameters?.       GetHashCode() ?? 0) *  7 ^
                           (this.V2XChargingParameters?.      GetHashCode() ?? 0) *  5 ^
                           (this.EVEnergyOffer?.              GetHashCode() ?? 0) *  3 ^
-
                            base.                             GetHashCode();
 
             }
@@ -243,8 +243,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("requestedEnergyTransfer",
                                          "requested energy transfer mode",
-                                         EnergyTransferModesExtensions.TryParse,
-                                         out EnergyTransferModes RequestedEnergyTransferMode,
+                                         EnergyTransferMode.TryParse,
+                                         out EnergyTransferMode RequestedEnergyTransferMode,
                                          out ErrorResponse))
                 {
                     return false;
@@ -256,8 +256,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalHashSet("availableEnergyTransfer",
                                               "available energy transfer modes",
-                                              EnergyTransferModesExtensions.TryParse,
-                                              out HashSet<EnergyTransferModes> AvailableEnergyTransferModes,
+                                              EnergyTransferMode.TryParse,
+                                              out HashSet<EnergyTransferMode> AvailableEnergyTransferModes,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -456,10 +456,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestedEnergyTransfer",   RequestedEnergyTransferMode.AsText()),
+                                 new JProperty("requestedEnergyTransfer",   RequestedEnergyTransferMode.ToString()),
 
                            DepartureTime.HasValue
-                               ? new JProperty("availableEnergyTransfer",   new JArray(AvailableEnergyTransferModes.Select(availableEnergyTransferMode => availableEnergyTransferMode.AsText())))
+                               ? new JProperty("availableEnergyTransfer",   new JArray(AvailableEnergyTransferModes.Select(availableEnergyTransferMode => availableEnergyTransferMode.ToString())))
                                : null,
 
                            ControlMode.      HasValue
@@ -644,7 +644,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => String.Concat(
 
-                   RequestedEnergyTransferMode.AsText(),
+                   RequestedEnergyTransferMode.ToString(),
 
                    AvailableEnergyTransferModes.Any()
                       ? $", available energy transfer modes: {AvailableEnergyTransferModes.AggregateWith(", ")}"

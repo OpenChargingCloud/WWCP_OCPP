@@ -47,14 +47,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext                     Context
+        public JSONLDContext                    Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The enumeration of allowed energy transfer modes.
         /// </summary>
         [Mandatory]
-        public IEnumerable<EnergyTransferModes>  AllowedEnergyTransferModes    { get; }
+        public IEnumerable<EnergyTransferMode>  AllowedEnergyTransferModes    { get; }
 
         #endregion
 
@@ -74,20 +74,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyAllowedEnergyTransferRequest(ChargingStation_Id                ChargingStationId,
-                                                  IEnumerable<EnergyTransferModes>  AllowedEnergyTransferModes,
+        public NotifyAllowedEnergyTransferRequest(ChargingStation_Id               ChargingStationId,
+                                                  IEnumerable<EnergyTransferMode>  AllowedEnergyTransferModes,
 
-                                                  IEnumerable<KeyPair>?             SignKeys            = null,
-                                                  IEnumerable<SignInfo>?            SignInfos           = null,
-                                                  IEnumerable<Signature>?           Signatures          = null,
+                                                  IEnumerable<KeyPair>?            SignKeys            = null,
+                                                  IEnumerable<SignInfo>?           SignInfos           = null,
+                                                  IEnumerable<Signature>?          Signatures          = null,
 
-                                                  CustomData?                       CustomData          = null,
+                                                  CustomData?                      CustomData          = null,
 
-                                                  Request_Id?                       RequestId           = null,
-                                                  DateTime?                         RequestTimestamp    = null,
-                                                  TimeSpan?                         RequestTimeout      = null,
-                                                  EventTracking_Id?                 EventTrackingId     = null,
-                                                  CancellationToken                 CancellationToken   = default)
+                                                  Request_Id?                      RequestId           = null,
+                                                  DateTime?                        RequestTimestamp    = null,
+                                                  TimeSpan?                        RequestTimeout      = null,
+                                                  EventTracking_Id?                EventTrackingId     = null,
+                                                  CancellationToken                CancellationToken   = default)
 
             : base(ChargingStationId,
                    "NotifyAllowedEnergyTransfer",
@@ -216,8 +216,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (!JSON.ParseMandatoryHashSet("allowedEnergyTransfer",
                                                 "allowed energy transfer modes",
-                                                EnergyTransferModesExtensions.TryParse,
-                                                out HashSet<EnergyTransferModes> AllowedEnergyTransferModes,
+                                                EnergyTransferMode.TryParse,
+                                                out HashSet<EnergyTransferMode> AllowedEnergyTransferModes,
                                                 out ErrorResponse))
                 {
                     return false;
@@ -316,7 +316,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("allowedEnergyTransfer",   new JArray(AllowedEnergyTransferModes.Select(allowedEnergyTransferMode => allowedEnergyTransferMode.AsText()))),
+                                 new JProperty("allowedEnergyTransfer",   new JArray(AllowedEnergyTransferModes.Select(allowedEnergyTransferMode => allowedEnergyTransferMode.ToString()))),
 
                            Signatures.Any()
                                ? new JProperty("signatures",              new JArray(Signatures.                Select(signature                 => signature.                ToJSON(CustomSignatureSerializer,

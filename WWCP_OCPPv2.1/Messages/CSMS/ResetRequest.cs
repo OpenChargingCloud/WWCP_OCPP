@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The type of reset that the charging station should perform.
         /// </summary>
         [Mandatory]
-        public ResetTypes     ResetType    { get; }
+        public ResetType      ResetType    { get; }
 
         /// <summary>
         /// The optional EVSE identification.
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public ResetRequest(ChargingStation_Id       ChargingStationId,
-                            ResetTypes               ResetType,
+                            ResetType                ResetType,
                             EVSE_Id?                 EVSEId              = null,
 
                             IEnumerable<KeyPair>?    SignKeys            = null,
@@ -117,6 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             this.ResetType  = ResetType;
             this.EVSEId     = EVSEId;
+
 
             unchecked
             {
@@ -269,8 +270,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (!JSON.ParseMandatory("type",
                                          "reset type",
-                                         ResetTypesExtensions.TryParse,
-                                         out ResetTypes ResetType,
+                                         OCPPv2_1.ResetType.TryParse,
+                                         out ResetType ResetType,
                                          out ErrorResponse))
                 {
                     return false;
@@ -384,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("type",         ResetType. AsText()),
+                                 new JProperty("type",         ResetType. ToString()),
 
                            EVSEId.HasValue
                                ? new JProperty("evseId",       EVSEId.Value.Value)

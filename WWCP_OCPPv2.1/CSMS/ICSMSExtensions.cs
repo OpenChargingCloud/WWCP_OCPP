@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             Reset(this ICSMS               CSMS,
                   ChargingStation_Id       ChargingStationId,
-                  ResetTypes               ResetType,
+                  ResetType                ResetType,
                   EVSE_Id?                 EVSEId              = null,
 
                   IEnumerable<Signature>?  Signatures          = null,
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             GetBaseReport(this ICSMS               CSMS,
                           ChargingStation_Id       ChargingStationId,
                           Int64                    GetBaseReportRequestId,
-                          ReportBases              ReportBase,
+                          ReportBase               ReportBase,
 
                           IEnumerable<KeyPair>?    SignKeys            = null,
                           IEnumerable<SignInfo>?   SignInfos           = null,
@@ -602,7 +602,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             SetMonitoringBase(this ICSMS               CSMS,
                               ChargingStation_Id       ChargingStationId,
-                              MonitoringBases          MonitoringBase,
+                              MonitoringBase           MonitoringBase,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
                               IEnumerable<SignInfo>?   SignInfos           = null,
@@ -658,23 +658,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.GetMonitoringReportResponse>
 
-            GetMonitoringReport(this ICSMS                       CSMS,
-                                ChargingStation_Id               ChargingStationId,
-                                Int32                            GetMonitoringReportRequestId,
+            GetMonitoringReport(this ICSMS                        CSMS,
+                                ChargingStation_Id                ChargingStationId,
+                                Int32                             GetMonitoringReportRequestId,
                                 IEnumerable<MonitoringCriterion>  MonitoringCriteria,
-                                IEnumerable<ComponentVariable>   ComponentVariables,
+                                IEnumerable<ComponentVariable>    ComponentVariables,
 
-                                IEnumerable<KeyPair>?            SignKeys            = null,
-                                IEnumerable<SignInfo>?           SignInfos           = null,
-                                IEnumerable<Signature>?          Signatures          = null,
+                                IEnumerable<KeyPair>?             SignKeys            = null,
+                                IEnumerable<SignInfo>?            SignInfos           = null,
+                                IEnumerable<Signature>?           Signatures          = null,
 
-                                CustomData?                      CustomData          = null,
+                                CustomData?                       CustomData          = null,
 
-                                Request_Id?                      RequestId           = null,
-                                DateTime?                        RequestTimestamp    = null,
-                                TimeSpan?                        RequestTimeout      = null,
-                                EventTracking_Id?                EventTrackingId     = null,
-                                CancellationToken                CancellationToken   = default)
+                                Request_Id?                       RequestId           = null,
+                                DateTime?                         RequestTimestamp    = null,
+                                TimeSpan?                         RequestTimeout      = null,
+                                EventTracking_Id?                 EventTrackingId     = null,
+                                CancellationToken                 CancellationToken   = default)
 
 
                 => CSMS.GetMonitoringReport(
@@ -2249,21 +2249,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<CS.NotifyAllowedEnergyTransferResponse>
 
-            NotifyAllowedEnergyTransfer(this ICSMS                        CSMS,
-                                        ChargingStation_Id                ChargingStationId,
-                                        IEnumerable<EnergyTransferModes>  AllowedEnergyTransferModes,
+            NotifyAllowedEnergyTransfer(this ICSMS                       CSMS,
+                                        ChargingStation_Id               ChargingStationId,
+                                        IEnumerable<EnergyTransferMode>  AllowedEnergyTransferModes,
 
-                                        IEnumerable<KeyPair>?             SignKeys            = null,
-                                        IEnumerable<SignInfo>?            SignInfos           = null,
-                                        IEnumerable<Signature>?           Signatures          = null,
+                                        IEnumerable<KeyPair>?            SignKeys            = null,
+                                        IEnumerable<SignInfo>?           SignInfos           = null,
+                                        IEnumerable<Signature>?          Signatures          = null,
 
-                                        CustomData?                       CustomData          = null,
+                                        CustomData?                      CustomData          = null,
 
-                                        Request_Id?                       RequestId           = null,
-                                        DateTime?                         RequestTimestamp    = null,
-                                        TimeSpan?                         RequestTimeout      = null,
-                                        EventTracking_Id?                 EventTrackingId     = null,
-                                        CancellationToken                 CancellationToken   = default)
+                                        Request_Id?                      RequestId           = null,
+                                        DateTime?                        RequestTimestamp    = null,
+                                        TimeSpan?                        RequestTimeout      = null,
+                                        EventTracking_Id?                EventTrackingId     = null,
+                                        CancellationToken                CancellationToken   = default)
 
 
                 => CSMS.NotifyAllowedEnergyTransfer(
@@ -2546,8 +2546,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                ChargingStation_Id               ChargingStationId,
                                Int32                            GetDisplayMessagesRequestId,
                                IEnumerable<DisplayMessage_Id>?  Ids                 = null,
-                               MessagePriorities?               Priority            = null,
-                               MessageStates?                   State               = null,
+                               MessagePriority?                 Priority            = null,
+                               MessageState?                    State               = null,
 
                                IEnumerable<KeyPair>?            SignKeys            = null,
                                IEnumerable<SignInfo>?           SignInfos           = null,

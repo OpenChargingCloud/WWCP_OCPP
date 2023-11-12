@@ -165,10 +165,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Language">An optional message language.</param>
         /// <param name="Format">An optional message format.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public MessageContents(String           Content,
-                               Language_Id?     Language     = null,
-                               MessageFormats?  Format       = null,
-                               CustomData?      CustomData   = null)
+        public MessageContents(String          Content,
+                               Language_Id?    Language     = null,
+                               MessageFormat?  Format       = null,
+                               CustomData?     CustomData   = null)
             : this()
         {
 
@@ -301,10 +301,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (value is not null)
                     messageContents.Add(new MessageContent(
-                                        value,
-                                        Language,
-                                        MessageFormats.UTF8
-                                    ));
+                                            value,
+                                            Language,
+                                            MessageFormat.UTF8
+                                        ));
 
             }
 
@@ -332,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             messageContents.Add(new MessageContent(
                                     Text,
                                     Language,
-                                    MessageFormats.UTF8
+                                    MessageFormat.UTF8
                                 ));
 
             GenerateHashCode();

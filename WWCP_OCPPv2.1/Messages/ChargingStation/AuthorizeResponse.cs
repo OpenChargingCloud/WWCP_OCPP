@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The optional energy transfer modes accepted by the CSMS.
         /// </summary>
         [Optional]
-        public EnergyTransferModes?         AllowedEnergyTransfer    { get; }
+        public EnergyTransferMode?          AllowedEnergyTransfer    { get; }
 
         /// <summary>
         /// The optional maximum cost/energy/time limit allowed for this charging session.
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public AuthorizeResponse(CS.AuthorizeRequest          Request,
                                  IdTokenInfo                  IdTokenInfo,
                                  AuthorizeCertificateStatus?  CertificateStatus       = null,
-                                 EnergyTransferModes?         AllowedEnergyTransfer   = null,
+                                 EnergyTransferMode?          AllowedEnergyTransfer   = null,
                                  TransactionLimits?           TransactionLimits       = null,
 
                                  DateTime?                    ResponseTimestamp       = null,
@@ -493,8 +493,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("allowedEnergyTransfer",
                                        "allowed energy transfer",
-                                       EnergyTransferModesExtensions.TryParse,
-                                       out EnergyTransferModes? AllowedEnergyTransfer,
+                                       EnergyTransferMode.TryParse,
+                                       out EnergyTransferMode? AllowedEnergyTransfer,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -618,7 +618,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                            AllowedEnergyTransfer.HasValue
-                               ? new JProperty("allowedEnergyTransfer",   AllowedEnergyTransfer.Value.AsText())
+                               ? new JProperty("allowedEnergyTransfer",   AllowedEnergyTransfer.Value.ToString())
                                : null,
 
                            TransactionLimits is not null

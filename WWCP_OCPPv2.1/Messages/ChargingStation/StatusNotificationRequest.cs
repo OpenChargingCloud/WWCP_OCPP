@@ -291,7 +291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (!JSON.ParseMandatory("connectorStatus",
                                          "connector status",
-                                         ConnectorStatusExtensions.TryParse,
+                                         OCPPv2_1.ConnectorStatus.TryParse,
                                          out ConnectorStatus ConnectorStatus,
                                          out ErrorResponse))
                 {
@@ -423,7 +423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             var json = JSONObject.Create(
 
                                  new JProperty("timestamp",         Timestamp.      ToIso8601()),
-                                 new JProperty("connectorStatus",   ConnectorStatus.AsText()),
+                                 new JProperty("connectorStatus",   ConnectorStatus.ToString()),
                                  new JProperty("evseId",            EVSEId.         Value),
                                  new JProperty("connectorId",       ConnectorId.    Value),
 
@@ -545,7 +545,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => $"{Timestamp}: {EVSEId} / {ConnectorId} => {ConnectorStatus.AsText()}";
+            => $"{Timestamp}: {EVSEId} / {ConnectorId} => {ConnectorStatus}";
 
         #endregion
 

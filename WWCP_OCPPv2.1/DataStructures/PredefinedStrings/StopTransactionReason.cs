@@ -57,7 +57,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        private readonly String InternalId;
+        private readonly static Dictionary<String, StopTransactionReason>  lookup = new (StringComparer.OrdinalIgnoreCase);
+        private readonly        String                                     InternalId;
 
         #endregion
 
@@ -93,6 +94,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
             this.InternalId = Text;
         }
+
+        #endregion
+
+
+        #region (private static) Register(Text)
+
+        private static StopTransactionReason Register(String Text)
+
+            => lookup.AddAndReturnValue(
+                   Text,
+                   new StopTransactionReason(Text)
+               );
 
         #endregion
 
@@ -144,25 +157,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static Boolean TryParse(String Text, out StopTransactionReason StopTransactionReason)
         {
 
-            #region Initial checks
-
             Text = Text.Trim();
 
-            if (Text.IsNullOrEmpty())
+            if (Text.IsNotNullOrEmpty())
             {
-                StopTransactionReason = default;
-                return false;
-            }
 
-            #endregion
+                if (!lookup.TryGetValue(Text, out StopTransactionReason))
+                    StopTransactionReason = Register(Text);
 
-            try
-            {
-                StopTransactionReason = new StopTransactionReason(Text);
                 return true;
+
             }
-            catch (Exception)
-            { }
 
             StopTransactionReason = default;
             return false;
@@ -191,44 +196,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// CSMS cannot accept the requested energy transfer type or other part of the EV charging needs.
         /// </summary>
         public static StopTransactionReason ChargingNeedsNotAccepted    { get; }
-            = new ("ChargingNeedsNotAccepted");
+            = Register("ChargingNeedsNotAccepted");
 
         /// <summary>
         /// The transaction was stopped because of the authorization
         /// status in a StartTransaction response.
         /// </summary>
         public static StopTransactionReason DeAuthorized                { get; }
-            = new ("DeAuthorized");
+            = Register("DeAuthorized");
 
         /// <summary>
         /// The emergency stop button was used.
         /// </summary>
         public static StopTransactionReason EmergencyStop               { get; }
-            = new ("EmergencyStop");
+            = Register("EmergencyStop");
 
         /// <summary>
         /// EV charging session reached a locally enforced maximum energy transfer limit.
         /// </summary>
         public static StopTransactionReason EnergyLimitReached          { get; }
-            = new ("EnergyLimitReached");
+            = Register("EnergyLimitReached");
 
         /// <summary>
         /// Disconnection of the cable or vehicle moved away from inductive charge unit.
         /// </summary>
         public static StopTransactionReason EVDisconnected              { get; }
-            = new ("EVDisconnected");
+            = Register("EVDisconnected");
 
         /// <summary>
         /// A GroundFault has occurred.
         /// </summary>
         public static StopTransactionReason GroundFault                 { get; }
-            = new ("GroundFault");
+            = Register("GroundFault");
 
         /// <summary>
         /// A Reset(Immediate) command was received.
         /// </summary>
         public static StopTransactionReason ImmediateReset              { get; }
-            = new ("ImmediateReset");
+            = Register("ImmediateReset");
 
         /// <summary>
         /// Stopped locally on request of the EV Driver at the charging station.
@@ -236,80 +241,80 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Examples: presenting an IdToken tag, pressing a button to stop.
         /// </summary>
         public static StopTransactionReason Local                       { get; }
-            = new ("Local");
+            = Register("Local");
 
         /// <summary>
         /// A local credit limit enforced through the charging station has been exceeded.
         /// </summary>
         public static StopTransactionReason LocalOutOfCredit            { get; }
-            = new ("LocalOutOfCredit");
+            = Register("LocalOutOfCredit");
 
         /// <summary>
         /// The transaction was stopped using a token with a MasterPassGroupId.
         /// </summary>
         public static StopTransactionReason MasterPass                  { get; }
-            = new ("MasterPass");
+            = Register("MasterPass");
 
         /// <summary>
         /// Any other reason.
         /// </summary>
         public static StopTransactionReason Other                       { get; }
-            = new ("Other");
+            = Register("Other");
 
         /// <summary>
         /// A larger than intended electric current has occurred.
         /// </summary>
         public static StopTransactionReason OvercurrentFault            { get; }
-            = new ("OvercurrentFault");
+            = Register("OvercurrentFault");
 
         /// <summary>
         /// Complete loss of power.
         /// </summary>
         public static StopTransactionReason PowerLoss                   { get; }
-            = new ("PowerLoss");
+            = Register("PowerLoss");
 
         /// <summary>
         /// Quality of power too low, e.g. voltage too low/high, phase imbalance, etc
         /// </summary>
         public static StopTransactionReason PowerQuality                { get; }
-            = new ("PowerQuality");
+            = Register("PowerQuality");
 
         /// <summary>
         /// A locally initiated reset/reboot occurred, e.g. the watchdog kicked in.
         /// </summary>
         public static StopTransactionReason Reboot                      { get; }
-            = new ("Reboot");
+            = Register("Reboot");
 
         /// <summary>
         /// Stopped remotely on request of the CSMS. This is a regular termination of a transaction.
         /// Examples: termination using a smartphone app, exceeding a(non local) prepaid credit.
         /// </summary>
         public static StopTransactionReason Remote                      { get; }
-            = new ("Remote");
+            = Register("Remote");
 
         /// <summary>
         /// Electric vehicle has reported reaching a locally enforced maximum battery state-of-charge.
         /// </summary>
         public static StopTransactionReason SOCLimitReached             { get; }
-            = new ("SOCLimitReached");
+            = Register("SOCLimitReached");
 
         /// <summary>
         /// The transaction was stopped by the EV.
         /// </summary>
         public static StopTransactionReason StoppedByEV                 { get; }
-            = new ("StoppedByEV");
+            = Register("StoppedByEV");
 
         /// <summary>
         /// EV charging session reached a locally enforced time limit.
         /// </summary>
         public static StopTransactionReason TimeLimitReached            { get; }
-            = new ("TimeLimitReached");
+            = Register("TimeLimitReached");
 
         /// <summary>
         /// EV not connected within timeout.
         /// </summary>
         public static StopTransactionReason Timeout                     { get; }
-            = new ("Timeout");
+            = Register("Timeout");
 
         #endregion
 
@@ -435,7 +440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => String.Compare(InternalId,
                               StopTransactionReason.InternalId,
-                              StringComparison.Ordinal);
+                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -466,7 +471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => String.Equals(InternalId,
                              StopTransactionReason.InternalId,
-                             StringComparison.Ordinal);
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -480,7 +485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => InternalId?.GetHashCode() ?? 0;
+            => InternalId?.ToLower().GetHashCode() ?? 0;
 
         #endregion
 

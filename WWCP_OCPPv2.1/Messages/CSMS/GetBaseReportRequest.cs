@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The requested reporting base.
         /// </summary>
         [Mandatory]
-        public ReportBases    ReportBase                { get; }
+        public ReportBase     ReportBase                { get; }
 
         #endregion
 
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public GetBaseReportRequest(ChargingStation_Id       ChargingStationId,
                                     Int64                    GetBaseReportRequestId,
-                                    ReportBases              ReportBase,
+                                    ReportBase               ReportBase,
 
                                     IEnumerable<KeyPair>?    SignKeys            = null,
                                     IEnumerable<SignInfo>?   SignInfos           = null,
@@ -282,8 +282,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (!JSON.ParseMandatory("reportBase",
                                          "report base",
-                                         ReportBasesExtensions.TryParse,
-                                         out ReportBases ReportBase,
+                                         OCPPv2_1.ReportBase.TryParse,
+                                         out ReportBase ReportBase,
                                          out ErrorResponse))
                 {
                     return false;
@@ -384,7 +384,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             var json = JSONObject.Create(
 
                                  new JProperty("requestId",    GetBaseReportRequestId),
-                                 new JProperty("reportBase",   ReportBase.AsText()),
+                                 new JProperty("reportBase",   ReportBase.ToString()),
 
                            Signatures.Any()
                                ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,

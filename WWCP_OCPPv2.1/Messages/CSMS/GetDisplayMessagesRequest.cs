@@ -67,13 +67,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The optional filter on message priorities.
         /// </summary>
         [Optional]
-        public MessagePriorities?              Priority                       { get; }
+        public MessagePriority?                Priority                       { get; }
 
         /// <summary>
         /// The optional filter on message states.
         /// </summary>
         [Optional]
-        public MessageStates?                  State                          { get; }
+        public MessageState?                   State                          { get; }
 
         #endregion
 
@@ -99,8 +99,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public GetDisplayMessagesRequest(ChargingStation_Id               ChargingStationId,
                                          Int32                            GetDisplayMessagesRequestId,
                                          IEnumerable<DisplayMessage_Id>?  Ids                 = null,
-                                         MessagePriorities?               Priority            = null,
-                                         MessageStates?                   State               = null,
+                                         MessagePriority?                 Priority            = null,
+                                         MessageState?                    State               = null,
 
                                          IEnumerable<KeyPair>?            SignKeys            = null,
                                          IEnumerable<SignInfo>?           SignInfos           = null,
@@ -135,6 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.Ids                          = Ids?.Distinct() ?? Array.Empty<DisplayMessage_Id>();
             this.Priority                     = Priority;
             this.State                        = State;
+
 
             unchecked
             {
@@ -340,8 +341,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("priority",
                                        "display message priority",
-                                       MessagePrioritiesExtensions.TryParse,
-                                       out MessagePriorities? Priority,
+                                       MessagePriority.TryParse,
+                                       out MessagePriority? Priority,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -354,8 +355,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptional("state",
                                        "display message state",
-                                       MessageStatesExtensions.TryParse,
-                                       out MessageStates? State,
+                                       MessageState.TryParse,
+                                       out MessageState? State,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -465,11 +466,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                : null,
 
                            Priority.HasValue
-                               ? new JProperty("priority",     Priority.Value.AsText())
+                               ? new JProperty("priority",     Priority.Value.ToString())
                                : null,
 
                            State.HasValue
-                               ? new JProperty("state",        State.   Value.AsText())
+                               ? new JProperty("state",        State.   Value.ToString())
                                : null,
 
                            Signatures.Any()
@@ -598,19 +599,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(GetDisplayMessagesRequestId,
+            => String.Concat(
 
-                             Ids.Any()
-                                 ? ": " + Ids.AggregateWith(",")
-                                 : "",
+                   GetDisplayMessagesRequestId,
 
-                             Priority.HasValue
-                                 ? " with priority: " + Priority.Value.AsText()
-                                 : "",
+                   Ids.Any()
+                       ? ": " + Ids.AggregateWith(",")
+                       : "",
 
-                             State.HasValue
-                                 ? " having state: "  + State.   Value.AsText()
-                                 : "");
+                   Priority.HasValue
+                       ? " with priority: " + Priority.Value.ToString()
+                       : "",
+
+                   State.HasValue
+                       ? " having state: "  + State.   Value.ToString()
+                       : ""
+
+               );
 
         #endregion
 

@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The type of this monitor, e.g. a threshold, delta or periodic monitor.
         /// </summary>
         [Mandatory]
-        public MonitorTypes            MonitorType             { get; }
+        public MonitorType             MonitorType             { get; }
 
         /// <summary>
         /// The severity that will be assigned to an event that is triggered by this monitor.
@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public SetMonitoringResult(SetMonitoringStatus     Status,
-                                   MonitorTypes            MonitorType,
+                                   MonitorType             MonitorType,
                                    Severities              Severity,
                                    Component               Component,
                                    Variable                Variable,
@@ -247,8 +247,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("type",
                                          "monitor type",
-                                         MonitorTypesExtensions.TryParse,
-                                         out MonitorTypes Type,
+                                         MonitorType.TryParse,
+                                         out MonitorType Type,
                                          out ErrorResponse))
                 {
                     return false;
@@ -348,14 +348,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                SetMonitoringResult = new SetMonitoringResult(Status,
-                                                              Type,
-                                                              Severity.Value,
-                                                              Component,
-                                                              Variable,
-                                                              VariableMonitoringId,
-                                                              StatusInfo,
-                                                              CustomData);
+                SetMonitoringResult = new SetMonitoringResult(
+                                          Status,
+                                          Type,
+                                          Severity.Value,
+                                          Component,
+                                          Variable,
+                                          VariableMonitoringId,
+                                          StatusInfo,
+                                          CustomData
+                                      );
 
                 if (CustomSetMonitoringResultParser is not null)
                     SetMonitoringResult = CustomSetMonitoringResultParser(JSON,
@@ -398,7 +400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("status",       Status.     AsText()),
 
-                                 new JProperty("type",         MonitorType.AsText()),
+                                 new JProperty("type",         MonitorType.ToString()),
 
                                  new JProperty("severity",     Severity.   AsNumber()),
 
@@ -557,7 +559,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => String.Concat(
 
                    VariableMonitoringId,
-                   " (",            MonitorType.AsText(),
+                   " (",            MonitorType.ToString(),
                    ", ",            Severity.   AsText(),
                    ", component: ", Component.  ToString(),
                    ", variable: ",  Variable.   ToString(),

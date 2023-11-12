@@ -308,7 +308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (JSON.ParseOptional("certificateType",
                                        "certificate type",
-                                       CertificateSigningUseExtensions.TryParse,
+                                       CertificateSigningUse.TryParse,
                                        out CertificateSigningUse CertificateType,
                                        out ErrorResponse))
                 {
@@ -419,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  new JProperty("requestId",         SignCertificateRequestId),
 
                            CertificateType.HasValue
-                               ? new JProperty("certificateType",   CertificateType.Value.AsText())
+                               ? new JProperty("certificateType",   CertificateType.Value.ToString())
                                : null,
 
                            Signatures.Any()

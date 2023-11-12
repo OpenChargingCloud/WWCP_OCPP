@@ -45,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional type of the value.
         /// </summary>
         [Optional]
-        public ReadingContexts?      Context                { get; }
+        public ReadingContext?       Context                { get; }
 
         /// <summary>
         /// The optional type of the measurement.
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="UnitOfMeasure">An optional unit of measure including a multiplier.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public SampledValue(Decimal               Value,
-                            ReadingContexts?      Context               = null,
+                            ReadingContext?       Context               = null,
                             Measurand?            Measurand             = null,
                             Phases?               Phase                 = null,
                             MeasurementLocation?  MeasurementLocation   = null,
@@ -258,8 +258,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("context",
                                        "context",
-                                       ReadingContextsExtensions.TryParse,
-                                       out ReadingContexts? Context,
+                                       ReadingContext.TryParse,
+                                       out ReadingContext? Context,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -402,7 +402,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("value",              Value),
 
                            Context.            HasValue
-                               ? new JProperty("context",            Context.            Value.AsText())
+                               ? new JProperty("context",            Context.            Value.ToString())
                                : null,
 
                            Measurand.          HasValue

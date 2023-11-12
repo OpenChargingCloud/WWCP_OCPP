@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var resetType  = ResetTypes.Immediate;
+                var resetType  = ResetType.Immediate;
                 var response   = await testCSMS01.Reset(
                                      ChargingStationId:   chargingStation1.Id,
                                      ResetType:           resetType,
@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var resetType  = ResetTypes.Immediate;
+                var resetType  = ResetType.Immediate;
                 var response   = await testCSMS01.Reset(
                                      ChargingStationId:   chargingStation2.Id,
                                      ResetType:           resetType,
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var resetType  = ResetTypes.Immediate;
+                var resetType  = ResetType.Immediate;
                 var response   = await testCSMS01.Reset(
                                      ChargingStationId:   chargingStation1.Id,
                                      ResetType:           resetType,
@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var resetType  = ResetTypes.Immediate;
+                var resetType  = ResetType.Immediate;
                 var response   = await testCSMS01.Reset(
                                      ChargingStationId:   chargingStation1.Id,
                                      ResetType:           resetType,
@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var response = await testCSMS01.GetBaseReport(
                                    ChargingStationId:        chargingStation1.Id,
                                    GetBaseReportRequestId:   1,
-                                   ReportBase:               ReportBases.FullInventory,
+                                   ReportBase:               ReportBase.FullInventory,
                                    CustomData:               null
                                );
 
@@ -726,7 +726,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var response = await testCSMS01.SetMonitoringBase(
                                    ChargingStationId:   chargingStation1.Id,
-                                   MonitoringBase:      MonitoringBases.All,
+                                   MonitoringBase:      MonitoringBase.All,
                                    CustomData:          null
                                );
 
@@ -889,7 +889,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                    MonitoringData:      new[] {
                                                             new SetMonitoringData(
                                                                 Value:                  23.2M,
-                                                                MonitorType:            MonitorTypes.Delta,
+                                                                MonitorType:            MonitorType.Delta,
                                                                 Severity:               Severities.Critical,
                                                                 Component:              new Component(
                                                                                             Name:         "Alert System!",
@@ -1011,7 +1011,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                    CentralServiceURL:   URL.Parse("https://example.com/OCPPv2.0/"),
                                                                    MessageTimeout:      TimeSpan.FromSeconds(30),
                                                                    SecurityProfile:     SecurityProfiles.SecurityProfile3,
-                                                                   NetworkInterface:    NetworkInterfaces.Wireless1,
+                                                                   NetworkInterface:    NetworkInterface.Wireless1,
                                                                    VPNConfiguration:    new VPNConfiguration(
                                                                                             ServerURL:              URL.Parse("https://example.com/OCPPv2.0/"),
                                                                                             Login:                  "vpn",
@@ -2044,7 +2044,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                                                          Language2:             Language_Id.Parse("en"),
                                                                                          PersonalMessage:       new MessageContents(
                                                                                                                     Content:      "Hello world!",
-                                                                                                                    Format:       MessageFormats.UTF8,
+                                                                                                                    Format:       MessageFormat.UTF8,
                                                                                                                     Language:     Language_Id.Parse("en"),
                                                                                                                     CustomData:   null
                                                                                                                 ),
@@ -2418,7 +2418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                    ChargingProfile:     new ChargingProfile(
                                                             ChargingProfileId:        ChargingProfile_Id.NewRandom,
                                                             StackLevel:               1,
-                                                            ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
+                                                            ChargingProfilePurpose:   ChargingProfilePurpose.TxDefaultProfile,
                                                             ChargingProfileKind:      ChargingProfileKinds.   Absolute,
                                                             ChargingSchedules:        new[] {
                                                                                           new ChargingSchedule(
@@ -2524,7 +2524,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                    ChargingStationId:              chargingStation1.Id,
                                    GetChargingProfilesRequestId:   1,
                                    ChargingProfile:                new ChargingProfileCriterion(
-                                                                       ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
+                                                                       ChargingProfilePurpose:   ChargingProfilePurpose.TxDefaultProfile,
                                                                        StackLevel:               1,
                                                                        ChargingProfileIds:       new[] {
                                                                                                      ChargingProfile_Id.Parse(123)
@@ -2585,7 +2585,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                    ChargingProfileId:         ChargingProfile_Id.Parse(123),
                                    ChargingProfileCriteria:   new ClearChargingProfile(
                                                                   EVSEId:                   EVSE_Id.Parse(1),
-                                                                  ChargingProfilePurpose:   ChargingProfilePurposes.TxDefaultProfile,
+                                                                  ChargingProfilePurpose:   ChargingProfilePurpose.TxDefaultProfile,
                                                                   StackLevel:               1,
                                                                   CustomData:               null
                                                               ),
@@ -2755,8 +2755,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var response = await testCSMS01.NotifyAllowedEnergyTransfer(
                                    ChargingStationId:            chargingStation1.Id,
                                    AllowedEnergyTransferModes:   new[] {
-                                                                     EnergyTransferModes.AC_SinglePhase,
-                                                                     EnergyTransferModes.AC_ThreePhases
+                                                                     EnergyTransferMode.AC_SinglePhase,
+                                                                     EnergyTransferMode.AC_ThreePhases
                                                                  },
                                    CustomData:                   null
                                );
@@ -2958,14 +2958,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                     ChargingStationId:   chargingStation1.Id,
                                     Message:             new MessageInfo(
                                                              Id:               DisplayMessage_Id.NewRandom,
-                                                             Priority:         MessagePriorities.AlwaysFront,
+                                                             Priority:         MessagePriority.AlwaysFront,
                                                              Message:          new MessageContent(
                                                                                    Content:      message,
-                                                                                   Format:       MessageFormats.UTF8,
+                                                                                   Format:       MessageFormat.UTF8,
                                                                                    Language:     Language_Id.Parse("de"),
                                                                                    CustomData:   null
                                                                                ),
-                                                             State:            MessageStates.Charging,
+                                                             State:            MessageState.Charging,
                                                              StartTimestamp:   Timestamp.Now,
                                                              EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
                                                              TransactionId:    null,
@@ -3054,14 +3054,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                            ChargingStationId:   chargingStation1.Id,
                                            Message:       new MessageInfo(
                                                               Id:               messageIds[i-1],
-                                                              Priority:         i > 7 ? MessagePriorities.AlwaysFront : MessagePriorities.NormalCycle,
+                                                              Priority:         i > 7 ? MessagePriority.AlwaysFront : MessagePriority.NormalCycle,
                                                               Message:          new MessageContent(
                                                                                     Content:      $"{i}:{setMessage}",
-                                                                                    Format:       MessageFormats.UTF8,
+                                                                                    Format:       MessageFormat.UTF8,
                                                                                     Language:     Language_Id.Parse("de"),
                                                                                     CustomData:   null
                                                                                 ),
-                                                              State:            i > 5 ? MessageStates.Charging : MessageStates.Idle,
+                                                              State:            i > 5 ? MessageState.Charging : MessageState.Idle,
                                                               StartTimestamp:   Timestamp.Now,
                                                               EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
                                                               TransactionId:    null,
@@ -3153,7 +3153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                               GetDisplayMessagesRequestId:   3,
                                               Ids:                           null,
                                               Priority:                      null,
-                                              State:                         MessageStates.Charging,
+                                              State:                         MessageState.Charging,
                                               CustomData:                    null
                                           );
 
@@ -3167,7 +3167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                               ChargingStationId:             chargingStation1.Id,
                                               GetDisplayMessagesRequestId:   4,
                                               Ids:                           null,
-                                              Priority:                      MessagePriorities.AlwaysFront,
+                                              Priority:                      MessagePriority.AlwaysFront,
                                               State:                         null,
                                               CustomData:                    null
                                           );
@@ -3241,14 +3241,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                         ChargingStationId:   chargingStation1.Id,
                                         Message:             new MessageInfo(
                                                                  Id:               messageId1,
-                                                                 Priority:         MessagePriorities.AlwaysFront,
+                                                                 Priority:         MessagePriority.AlwaysFront,
                                                                  Message:          new MessageContent(
                                                                                        Content:      message1,
-                                                                                       Format:       MessageFormats.UTF8,
+                                                                                       Format:       MessageFormat.UTF8,
                                                                                        Language:     Language_Id.Parse("de"),
                                                                                        CustomData:   null
                                                                                    ),
-                                                                 State:            MessageStates.Charging,
+                                                                 State:            MessageState.Charging,
                                                                  StartTimestamp:   Timestamp.Now,
                                                                  EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
                                                                  TransactionId:    null,
@@ -3268,14 +3268,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                         ChargingStationId:   chargingStation1.Id,
                                         Message:             new MessageInfo(
                                                                  Id:               messageId2,
-                                                                 Priority:         MessagePriorities.AlwaysFront,
+                                                                 Priority:         MessagePriority.AlwaysFront,
                                                                  Message:          new MessageContent(
                                                                                        Content:      message2,
-                                                                                       Format:       MessageFormats.UTF8,
+                                                                                       Format:       MessageFormat.UTF8,
                                                                                        Language:     Language_Id.Parse("de"),
                                                                                        CustomData:   null
                                                                                    ),
-                                                                 State:            MessageStates.Charging,
+                                                                 State:            MessageState.Charging,
                                                                  StartTimestamp:   Timestamp.Now,
                                                                  EndTimestamp:     Timestamp.Now + TimeSpan.FromDays(1),
                                                                  TransactionId:    null,

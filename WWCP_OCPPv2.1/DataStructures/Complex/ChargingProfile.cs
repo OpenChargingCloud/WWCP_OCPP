@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Defines the purpose of the schedule transferred by this message.
         /// </summary>
         [Mandatory]
-        public ChargingProfilePurposes        ChargingProfilePurpose    { get; }
+        public ChargingProfilePurpose         ChargingProfilePurpose    { get; }
 
         /// <summary>
         /// Indicates the kind of schedule.
@@ -145,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public ChargingProfile(ChargingProfile_Id             ChargingProfileId,
                                UInt32                         StackLevel,
-                               ChargingProfilePurposes        ChargingProfilePurpose,
+                               ChargingProfilePurpose         ChargingProfilePurpose,
                                ChargingProfileKinds           ChargingProfileKind,
                                IEnumerable<ChargingSchedule>  ChargingSchedules,
 
@@ -364,8 +364,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("chargingProfilePurpose",
                                          "charging profile purpose",
-                                         ChargingProfilePurposesExtensions.TryParse,
-                                         out ChargingProfilePurposes ChargingProfilePurpose,
+                                         OCPPv2_1.ChargingProfilePurpose.TryParse,
+                                         out ChargingProfilePurpose ChargingProfilePurpose,
                                          out ErrorResponse))
                 {
                     return false;
@@ -609,7 +609,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                                  new JProperty("stackLevel",               StackLevel),
-                                 new JProperty("chargingProfilePurpose",   ChargingProfilePurpose. AsText()),
+                                 new JProperty("chargingProfilePurpose",   ChargingProfilePurpose. ToString()),
                                  new JProperty("chargingProfileKind",      ChargingProfileKind.    AsText()),
 
                            ValidFrom.             HasValue

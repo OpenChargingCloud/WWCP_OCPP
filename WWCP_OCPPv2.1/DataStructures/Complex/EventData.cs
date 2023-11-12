@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The event notification type of the message.
         /// </summary>
         [Mandatory]
-        public EventNotificationTypes  EventNotificationType    { get; }
+        public EventNotificationType   EventNotificationType    { get; }
 
         /// <summary>
         /// The component for which event is notified.
@@ -151,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          DateTime                Timestamp,
                          EventTriggers           Trigger,
                          String                  ActualValue,
-                         EventNotificationTypes  EventNotificationType,
+                         EventNotificationType   EventNotificationType,
                          Component               Component,
                          Variable                Variable,
 
@@ -409,8 +409,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("eventNotificationType",
                                          "event notification type",
-                                         EventNotificationTypesExtensions.TryParse,
-                                         out EventNotificationTypes EventNotificationType,
+                                         OCPPv2_1.EventNotificationType.TryParse,
+                                         out EventNotificationType EventNotificationType,
                                          out ErrorResponse))
                 {
                     return false;
@@ -601,7 +601,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("timestamp",              Timestamp.                 ToIso8601()),
                                  new JProperty("trigger",                Trigger.                   AsText()),
                                  new JProperty("actualValue",            ActualValue),
-                                 new JProperty("eventNotificationType",  EventNotificationType.     AsText()),
+                                 new JProperty("eventNotificationType",  EventNotificationType.     ToString()),
 
                                  new JProperty("component",              Component.                 ToJSON(CustomComponentSerializer,
                                                                                                            CustomEVSESerializer)),

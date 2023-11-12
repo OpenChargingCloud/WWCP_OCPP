@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
                                                                                                          Value:                 1,
-                                                                                                         Context:               ReadingContexts.TransactionBegin,
+                                                                                                         Context:               ReadingContext.TransactionBegin,
                                                                                                          Measurand:             Measurand.Current_Import_Offered,
                                                                                                          Phase:                 null,
                                                                                                          MeasurementLocation:   MeasurementLocation.Outlet,
@@ -272,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
                                                                                                          Value:                 10000,
-                                                                                                         Context:               ReadingContexts.TransactionEnd,
+                                                                                                         Context:               ReadingContext.TransactionEnd,
                                                                                                          Measurand:             Measurand.Current_Import_Offered,
                                                                                                          Phase:                 null,
                                                                                                          MeasurementLocation:   MeasurementLocation.Outlet,
@@ -493,7 +493,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
                                                                                                          Value:                 1,
-                                                                                                         Context:               ReadingContexts.TransactionBegin,
+                                                                                                         Context:               ReadingContext.TransactionBegin,
                                                                                                          Measurand:             Measurand.Current_Import_Offered,
                                                                                                          Phase:                 null,
                                                                                                          MeasurementLocation:   MeasurementLocation.Outlet,
@@ -556,7 +556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
                                                                                                          Value:                 10000,
-                                                                                                         Context:               ReadingContexts.TransactionEnd,
+                                                                                                         Context:               ReadingContext.TransactionEnd,
                                                                                                          Measurand:             Measurand.Current_Import_Offered,
                                                                                                          Phase:                 null,
                                                                                                          MeasurementLocation:   MeasurementLocation.Outlet,
@@ -781,7 +781,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
                                                                                                          Value:                 1,
-                                                                                                         Context:               ReadingContexts.TransactionBegin,
+                                                                                                         Context:               ReadingContext.TransactionBegin,
                                                                                                          Measurand:             Measurand.Current_Import_Offered,
                                                                                                          Phase:                 null,
                                                                                                          MeasurementLocation:   MeasurementLocation.Outlet,
@@ -844,7 +844,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
                                                                                                          Value:                 10000,
-                                                                                                         Context:               ReadingContexts.TransactionEnd,
+                                                                                                         Context:               ReadingContext.TransactionEnd,
                                                                                                          Measurand:             Measurand.Current_Import_Offered,
                                                                                                          Phase:                 null,
                                                                                                          MeasurementLocation:   MeasurementLocation.Outlet,
@@ -1086,7 +1086,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
                                                                                                          Value:                 1,
-                                                                                                         Context:               ReadingContexts.TransactionBegin,
+                                                                                                         Context:               ReadingContext.TransactionBegin,
                                                                                                          Measurand:             Measurand.Current_Import_Offered,
                                                                                                          Phase:                 null,
                                                                                                          MeasurementLocation:   MeasurementLocation.Outlet,
@@ -1149,7 +1149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
                                                                                                          Value:                 10000,
-                                                                                                         Context:               ReadingContexts.TransactionEnd,
+                                                                                                         Context:               ReadingContext.TransactionEnd,
                                                                                                          Measurand:             Measurand.Current_Import_Offered,
                                                                                                          Phase:                 null,
                                                                                                          MeasurementLocation:   MeasurementLocation.Outlet,
@@ -1416,7 +1416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
                                                                                                          Value:                 1,
-                                                                                                         Context:               ReadingContexts.TransactionBegin,
+                                                                                                         Context:               ReadingContext.TransactionBegin,
                                                                                                          Measurand:             Measurand.Current_Import_Offered,
                                                                                                          Phase:                 null,
                                                                                                          MeasurementLocation:   MeasurementLocation.Outlet,
@@ -1479,7 +1479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
                                                                                                          Value:                 10000,
-                                                                                                         Context:               ReadingContexts.TransactionEnd,
+                                                                                                         Context:               ReadingContext.TransactionEnd,
                                                                                                          Measurand:             Measurand.Current_Import_Offered,
                                                                                                          Phase:                 null,
                                                                                                          MeasurementLocation:   MeasurementLocation.Outlet,
@@ -1714,7 +1714,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
                                                                                                          Value:                 1,
-                                                                                                         Context:               ReadingContexts.TransactionBegin,
+                                                                                                         Context:               ReadingContext.TransactionBegin,
                                                                                                          Measurand:             Measurand.Current_Import_Offered,
                                                                                                          Phase:                 null,
                                                                                                          MeasurementLocation:   MeasurementLocation.Outlet,
@@ -1777,7 +1777,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                 SampledValues:   new[] {
                                                                                                      new SampledValue(
                                                                                                          Value:                 10000,
-                                                                                                         Context:               ReadingContexts.TransactionEnd,
+                                                                                                         Context:               ReadingContext.TransactionEnd,
                                                                                                          Measurand:             Measurand.Current_Import_Offered,
                                                                                                          Phase:                 null,
                                                                                                          MeasurementLocation:   MeasurementLocation.Outlet,

@@ -5411,7 +5411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     else
                     {
 
-                        DebugX.Log($"Charging station '{Id}': Incoming CertificateSigned request{(request.CertificateType.HasValue ? $"(certificate type: {request.CertificateType.Value.AsText()})" : "")}!");
+                        DebugX.Log($"Charging station '{Id}': Incoming CertificateSigned request{(request.CertificateType.HasValue ? $"(certificate type: {request.CertificateType.Value})" : "")}!");
 
                         // CertificateChain
                         // CertificateType
@@ -7127,7 +7127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                         SampledValues:   new[] {
                                                                                              new SampledValue(
                                                                                                  Value:                 evse.MeterStartValue.Value,
-                                                                                                 Context:               ReadingContexts.TransactionBegin,
+                                                                                                 Context:               ReadingContext.TransactionBegin,
                                                                                                  Measurand:             Measurand.Current_Export,
                                                                                                  Phase:                 null,
                                                                                                  MeasurementLocation:   MeasurementLocation.Outlet,
@@ -7362,7 +7362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                         SampledValues:   new[] {
                                                                                              new SampledValue(
                                                                                                  Value:                 evse.MeterStopValue.Value,
-                                                                                                 Context:               ReadingContexts.TransactionEnd,
+                                                                                                 Context:               ReadingContext.TransactionEnd,
                                                                                                  Measurand:             Measurand.Current_Export,
                                                                                                  Phase:                 null,
                                                                                                  MeasurementLocation:   MeasurementLocation.Outlet,
@@ -8610,7 +8610,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     else
                     {
 
-                        DebugX.Log($"Charging station '{Id}': Incoming NotifyAllowedEnergyTransfer request allowing energy transfer modes: '{request.AllowedEnergyTransferModes.Select(mode => mode.AsText()).AggregateWith(", ")}'!");
+                        DebugX.Log($"Charging station '{Id}': Incoming NotifyAllowedEnergyTransfer request allowing energy transfer modes: '{request.AllowedEnergyTransferModes.Select(mode => mode.ToString()).AggregateWith(", ")}'!");
 
                         // AllowedEnergyTransferModes
 

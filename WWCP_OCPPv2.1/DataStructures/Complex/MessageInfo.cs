@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The priority of this message.
         /// </summary>
-        public MessagePriorities  Priority          { get; }
+        public MessagePriority    Priority          { get; }
 
         /// <summary>
         /// The message info.
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Optional state during the message should be shown.
         /// When omitted this message should be shown in any state of the charging station.
         /// </summary>
-        public MessageStates?     State             { get; }
+        public MessageState?      State             { get; }
 
         /// <summary>
         /// Optional timestamp after which the message should be shown.
@@ -95,9 +95,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Display">When the charging station has multiple displays, this optional field can be used to define to which display the message should be shown on.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public MessageInfo(DisplayMessage_Id  Id,
-                           MessagePriorities  Priority,
+                           MessagePriority    Priority,
                            MessageContent     Message,
-                           MessageStates?     State            = null,
+                           MessageState?      State            = null,
                            DateTime?          StartTimestamp   = null,
                            DateTime?          EndTimestamp     = null,
                            Transaction_Id?    TransactionId    = null,
@@ -255,8 +255,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("priority",
                                          "message priority",
-                                         MessagePrioritiesExtensions.TryParse,
-                                         out MessagePriorities Priority,
+                                         MessagePriority.TryParse,
+                                         out MessagePriority Priority,
                                          out ErrorResponse))
                 {
                     return false;
@@ -284,8 +284,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("state",
                                        "message state",
-                                       MessageStatesExtensions.TryParse,
-                                       out MessageStates? State,
+                                       MessageState.TryParse,
+                                       out MessageState? State,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -363,15 +363,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                MessageInfo = new MessageInfo(Id,
-                                              Priority,
-                                              Message,
-                                              State,
-                                              StartTimestamp,
-                                              EndTimestamp,
-                                              TransactionId,
-                                              Display,
-                                              CustomData);
+                MessageInfo = new MessageInfo(
+                                  Id,
+                                  Priority,
+                                  Message,
+                                  State,
+                                  StartTimestamp,
+                                  EndTimestamp,
+                                  TransactionId,
+                                  Display,
+                                  CustomData
+                              );
 
                 if (CustomMessageInfoParser is not null)
                     MessageInfo = CustomMessageInfoParser(JSON,
@@ -411,7 +413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             var json = JSONObject.Create(
 
                                  new JProperty("id",              Id.                  Value),
-                                 new JProperty("priority",        Priority.            AsText()),
+                                 new JProperty("priority",        Priority.            ToString()),
                                  new JProperty("message",         Message.             ToJSON(CustomMessageContentSerializer,
                                                                                               CustomCustomDataSerializer)),
 

@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The network interface to use when connecting to the central service (CSMS).
         /// </summary>
         [Mandatory]
-        public NetworkInterfaces   NetworkInterface     { get; }
+        public NetworkInterface    NetworkInterface     { get; }
 
         /// <summary>
         /// The optional VPN configuration to use when connecting to the central service (CSMS).
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                         URL                 CentralServiceURL,
                                         TimeSpan            MessageTimeout,
                                         SecurityProfiles    SecurityProfile,
-                                        NetworkInterfaces   NetworkInterface,
+                                        NetworkInterface    NetworkInterface,
                                         VPNConfiguration?   VPNConfiguration,
                                         APNConfiguration?   APNConfiguration,
                                         CustomData?         CustomData   = null)
@@ -314,8 +314,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("ocppInterface",
                                          "OCPP network interface",
-                                         NetworkInterfacesExtensions.TryParse,
-                                         out NetworkInterfaces NetworkInterface,
+                                         OCPPv2_1.NetworkInterface.TryParse,
+                                         out NetworkInterface NetworkInterface,
                                          out ErrorResponse))
                 {
                     return false;
@@ -418,7 +418,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("ocppCsmsUrl",       CentralServiceURL.ToString()),
                                  new JProperty("messageTimeout",    (UInt32) Math.Round(MessageTimeout.TotalSeconds, 0)),
                                  new JProperty("securityProfile",   SecurityProfile.  AsNumber()),
-                                 new JProperty("ocppInterface",     NetworkInterface. AsText()),
+                                 new JProperty("ocppInterface",     NetworkInterface. ToString()),
 
                            VPNConfiguration is not null
                                ? new JProperty("vpn",               VPNConfiguration. ToJSON(CustomVPNConfigurationSerializer,

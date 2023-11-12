@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The enumeration of monitors for the given variable monitoring pair.
         /// </summary>
         [Mandatory]
-        public MonitorTypes           Type           { get; }
+        public MonitorType            Type           { get; }
 
         /// <summary>
         /// The severity that will be assigned to an event that is triggered by this monitor.
@@ -82,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public VariableMonitoring(VariableMonitoring_Id  Id,
                                   Boolean                Transaction,
                                   Decimal                Value,
-                                  MonitorTypes           Type,
+                                  MonitorType            Type,
                                   Severities             Severity,
                                   CustomData?            CustomData   = null)
 
@@ -248,8 +248,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("type",
                                          "monitor type",
-                                         MonitorTypesExtensions.TryParse,
-                                         out MonitorTypes Type,
+                                         MonitorType.TryParse,
+                                         out MonitorType Type,
                                          out ErrorResponse))
                 {
                     return false;
@@ -289,12 +289,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                VariableMonitoring = new VariableMonitoring(Id,
-                                                            Transaction,
-                                                            Value,
-                                                            Type,
-                                                            Severity!.Value,
-                                                            CustomData);
+                VariableMonitoring = new VariableMonitoring(
+                                         Id,
+                                         Transaction,
+                                         Value,
+                                         Type,
+                                         Severity!.Value,
+                                         CustomData
+                                     );
 
                 if (CustomVariableMonitoringParser is not null)
                     VariableMonitoring = CustomVariableMonitoringParser(JSON,
@@ -330,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("id",            Id.        Value),
                                  new JProperty("transaction",   Transaction),
                                  new JProperty("value",         Value),
-                                 new JProperty("type",          Type.      AsText()),
+                                 new JProperty("type",          Type.      ToString()),
                                  new JProperty("severity",      Severity.  AsNumber()),
 
                            CustomData is not null

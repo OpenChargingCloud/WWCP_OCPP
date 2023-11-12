@@ -47,7 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The type of this monitor, e.g. a threshold, delta or periodic monitor.
         /// </summary>
         [Mandatory]
-        public MonitorTypes            MonitorType             { get; }
+        public MonitorType             MonitorType             { get; }
 
         /// <summary>
         /// The severity that will be assigned to an event that is triggered by this monitor.
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Transaction">This variable monitoring is only active when a transaction is ongoing on a setMonitoringData relevant to this transaction. Default: false</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public SetMonitoringData(Decimal                 Value,
-                                 MonitorTypes            MonitorType,
+                                 MonitorType             MonitorType,
                                  Severities              Severity,
                                  Component               Component,
                                  Variable                Variable,
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                        CustomData?             CustomData             = null)
 
             => new (Value,
-                    MonitorTypes.UpperThreshold,
+                    MonitorType.UpperThreshold,
                     Severity,
                     Component,
                     Variable,
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                        CustomData?             CustomData             = null)
 
             => new (Value,
-                    MonitorTypes.LowerThreshold,
+                    MonitorType.LowerThreshold,
                     Severity,
                     Component,
                     Variable,
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                               CustomData?             CustomData             = null)
 
             => new (Value,
-                    MonitorTypes.LowerThreshold,
+                    MonitorType.LowerThreshold,
                     Severity,
                     Component,
                     Variable,
@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                  CustomData?             CustomData             = null)
 
             => new ((Int32) Math.Round(Interval.TotalSeconds, 0),
-                    MonitorTypes.Periodic,
+                    MonitorType.Periodic,
                     Severity,
                     Component,
                     Variable,
@@ -225,7 +225,57 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                              CustomData?             CustomData             = null)
 
             => new ((Int32) Math.Round(Interval.TotalSeconds, 0),
-                    MonitorTypes.PeriodicClockAligned,
+                    MonitorType.PeriodicClockAligned,
+                    Severity,
+                    Component,
+                    Variable,
+                    VariableMonitoringId,
+                    Transaction,
+                    CustomData);
+
+
+        /// <summary>
+        /// Triggers an event notice when the actual value differs from the target value more than plus
+        /// or minus monitorValue since the time that this monitor was set or since the last time this
+        /// event notice was sent, whichever was last. Behavior of this type of monitor for a variable that
+        /// is not numeric, is not defined.
+        /// </summary>
+        /// <example>When target = 100, monitorValue = 10, then an event is triggered when actual &lt; 90 or actual &gt; 110.</example>
+        public static SetMonitoringData TargetDelta(TimeSpan                Interval,
+                                                    Severities              Severity,
+                                                    Component               Component,
+                                                    Variable                Variable,
+                                                    VariableMonitoring_Id?  VariableMonitoringId   = null,
+                                                    Boolean?                Transaction            = null,
+                                                    CustomData?             CustomData             = null)
+
+            => new ((Int32) Math.Round(Interval.TotalSeconds, 0),
+                    MonitorType.TargetDelta,
+                    Severity,
+                    Component,
+                    Variable,
+                    VariableMonitoringId,
+                    Transaction,
+                    CustomData);
+
+
+        /// <summary>
+        /// Triggers an event notice when the actual value differs from the target value more than plus
+        /// or minus (monitorValue * target value) since the time that this monitor was set or since the
+        /// last time this event notice was sent, whichever was last. Behavior of this type of monitor for a
+        /// variable that is not numeric, is not defined.
+        /// </summary>
+        /// <example>When target = 100, monitorValue = 0.1, then an event is triggered when actual &lt; 90 or actual &gt; 110.</example>
+        public static SetMonitoringData TargetDeltaRelative(TimeSpan                Interval,
+                                                            Severities              Severity,
+                                                            Component               Component,
+                                                            Variable                Variable,
+                                                            VariableMonitoring_Id?  VariableMonitoringId   = null,
+                                                            Boolean?                Transaction            = null,
+                                                            CustomData?             CustomData             = null)
+
+            => new ((Int32) Math.Round(Interval.TotalSeconds, 0),
+                    MonitorType.TargetDeltaRelative,
                     Severity,
                     Component,
                     Variable,
@@ -365,8 +415,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (!JSON.ParseMandatory("type",
                                          "monitor type",
-                                         MonitorTypesExtensions.TryParse,
-                                         out MonitorTypes MonitorType,
+                                         OCPPv2_1.MonitorType.TryParse,
+                                         out MonitorType MonitorType,
                                          out ErrorResponse))
                 {
                     return false;
@@ -461,14 +511,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                SetMonitoringData = new SetMonitoringData(Value,
-                                                          MonitorType,
-                                                          Severity.Value,
-                                                          Component,
-                                                          Variable,
-                                                          VariableMonitoringId,
-                                                          Transaction,
-                                                          CustomData);
+                SetMonitoringData = new SetMonitoringData(
+                                        Value,
+                                        MonitorType,
+                                        Severity.Value,
+                                        Component,
+                                        Variable,
+                                        VariableMonitoringId,
+                                        Transaction,
+                                        CustomData
+                                    );
 
                 if (CustomSetMonitoringDataParser is not null)
                     SetMonitoringData = CustomSetMonitoringDataParser(JSON,
@@ -509,7 +561,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                  new JProperty("value",         Value),
 
-                                 new JProperty("type",          MonitorType.AsText()),
+                                 new JProperty("type",          MonitorType.ToString()),
 
                                  new JProperty("severity",      Severity.   AsNumber()),
 

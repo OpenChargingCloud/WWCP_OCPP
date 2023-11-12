@@ -47,14 +47,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext    Context
+        public JSONLDContext   Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The monitoring base to be set.
         /// </summary>
         [Mandatory]
-        public MonitoringBases  MonitoringBase    { get; }
+        public MonitoringBase  MonitoringBase    { get; }
 
         #endregion
 
@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public SetMonitoringBaseRequest(ChargingStation_Id       ChargingStationId,
-                                        MonitoringBases          MonitoringBase,
+                                        MonitoringBase           MonitoringBase,
 
                                         IEnumerable<KeyPair>?    SignKeys            = null,
                                         IEnumerable<SignInfo>?   SignInfos           = null,
@@ -107,6 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         {
 
             this.MonitoringBase = MonitoringBase;
+
 
             unchecked
             {
@@ -255,8 +256,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (!JSON.ParseMandatory("monitoringBase",
                                          "display message",
-                                         MonitoringBases.TryParse,
-                                         out MonitoringBases MonitoringBase,
+                                         OCPPv2_1.MonitoringBase.TryParse,
+                                         out MonitoringBase MonitoringBase,
                                          out ErrorResponse))
                 {
                     return false;
@@ -355,7 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("monitoringBase",   MonitoringBase.AsText()),
+                                 new JProperty("monitoringBase",   MonitoringBase.ToString()),
 
 
                            Signatures.Any()

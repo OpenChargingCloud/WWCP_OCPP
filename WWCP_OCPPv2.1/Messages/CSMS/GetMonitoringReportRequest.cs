@@ -47,14 +47,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public JSONLDContext                    Context
+        public JSONLDContext                     Context
             => DefaultJSONLDContext;
 
         /// <summary>
         /// The get monitoring report request identification.
         /// </summary>
         [Mandatory]
-        public Int32                            GetMonitoringReportRequestId    { get; }
+        public Int32                             GetMonitoringReportRequestId    { get; }
 
         /// <summary>
         /// The optional enumeration of criteria for components for which a monitoring report is requested.
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The optional enumeration of components and variables for which a monitoring report is requested.
         /// </summary>
         [Mandatory]
-        public IEnumerable<ComponentVariable>   ComponentVariables              { get; }
+        public IEnumerable<ComponentVariable>    ComponentVariables              { get; }
 
         #endregion
 
@@ -88,22 +88,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetMonitoringReportRequest(ChargingStation_Id               ChargingStationId,
-                                          Int32                            GetMonitoringReportRequestId,
+        public GetMonitoringReportRequest(ChargingStation_Id                ChargingStationId,
+                                          Int32                             GetMonitoringReportRequestId,
                                           IEnumerable<MonitoringCriterion>  MonitoringCriteria,
-                                          IEnumerable<ComponentVariable>   ComponentVariables,
+                                          IEnumerable<ComponentVariable>    ComponentVariables,
 
-                                          IEnumerable<KeyPair>?            SignKeys            = null,
-                                          IEnumerable<SignInfo>?           SignInfos           = null,
-                                          IEnumerable<Signature>?          Signatures          = null,
+                                          IEnumerable<KeyPair>?             SignKeys            = null,
+                                          IEnumerable<SignInfo>?            SignInfos           = null,
+                                          IEnumerable<Signature>?           Signatures          = null,
 
-                                          CustomData?                      CustomData          = null,
+                                          CustomData?                       CustomData          = null,
 
-                                          Request_Id?                      RequestId           = null,
-                                          DateTime?                        RequestTimestamp    = null,
-                                          TimeSpan?                        RequestTimeout      = null,
-                                          EventTracking_Id?                EventTrackingId     = null,
-                                          CancellationToken                CancellationToken   = default)
+                                          Request_Id?                       RequestId           = null,
+                                          DateTime?                         RequestTimestamp    = null,
+                                          TimeSpan?                         RequestTimeout      = null,
+                                          EventTracking_Id?                 EventTrackingId     = null,
+                                          CancellationToken                 CancellationToken   = default)
 
             : base(ChargingStationId,
                    "GetMonitoringReport",
@@ -402,12 +402,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region MonitoringCriteria              [mandatory]
+                #region MonitoringCriterions            [mandatory]
 
                 if (!JSON.ParseMandatoryHashSet("monitoringCriteria",
                                                 "monitoring criteria",
                                                 MonitoringCriteriaExtensions.TryParse,
-                                                out HashSet<MonitoringCriterion> MonitoringCriteria,
+                                                out HashSet<MonitoringCriterion> MonitoringCriterions,
                                                 out ErrorResponse))
                 {
                     return false;
@@ -479,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 GetMonitoringReportRequest = new GetMonitoringReportRequest(
                                                  ChargingStationId,
                                                  GetMonitoringReportRequestId,
-                                                 MonitoringCriteria,
+                                                 MonitoringCriterions,
                                                  ComponentVariables,
                                                  null,
                                                  null,

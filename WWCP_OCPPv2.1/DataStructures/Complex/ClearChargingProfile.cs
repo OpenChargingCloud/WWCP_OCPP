@@ -42,19 +42,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// applies to all charging profiles that match the other criteria in
         /// the request.
         /// </summary>
-        public EVSE_Id?                  EVSEId                    { get; }
+        public EVSE_Id?                 EVSEId                    { get; }
 
         /// <summary>
         /// The optional purpose of the charging profiles that will be cleared,
         /// if they meet the other criteria in the request.
         /// </summary>
-        public ChargingProfilePurposes?  ChargingProfilePurpose    { get; }
+        public ChargingProfilePurpose?  ChargingProfilePurpose    { get; }
 
         /// <summary>
         /// The optional stack level for which charging profiles will be cleared,
         /// if they meet the other criteria in the request.
         /// </summary>
-        public UInt32?                   StackLevel                { get; }
+        public UInt32?                  StackLevel                { get; }
 
         #endregion
 
@@ -67,10 +67,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingProfilePurpose">The optional purpose of the charging profiles that will be cleared, if they meet the other criteria in the request.</param>
         /// <param name="StackLevel">The optional stack level for which charging profiles will be cleared, if they meet the other criteria in the request.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
-        public ClearChargingProfile(EVSE_Id?                  EVSEId                   = null,
-                                    ChargingProfilePurposes?  ChargingProfilePurpose   = null,
-                                    UInt32?                   StackLevel               = null,
-                                    CustomData?               CustomData               = null)
+        public ClearChargingProfile(EVSE_Id?                 EVSEId                   = null,
+                                    ChargingProfilePurpose?  ChargingProfilePurpose   = null,
+                                    UInt32?                  StackLevel               = null,
+                                    CustomData?              CustomData               = null)
 
             : base(CustomData)
 
@@ -194,8 +194,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("chargingProfilePurpose",
                                        "charging profile purpose",
-                                       ChargingProfilePurposesExtensions.TryParse,
-                                       out ChargingProfilePurposes? ChargingProfilePurpose,
+                                       OCPPv2_1.ChargingProfilePurpose.TryParse,
+                                       out ChargingProfilePurpose? ChargingProfilePurpose,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -232,10 +232,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #endregion
 
 
-                ClearChargingProfile = new ClearChargingProfile(EVSEId,
-                                                                ChargingProfilePurpose,
-                                                                StackLevel,
-                                                                CustomData);
+                ClearChargingProfile = new ClearChargingProfile(
+                                           EVSEId,
+                                           ChargingProfilePurpose,
+                                           StackLevel,
+                                           CustomData
+                                       );
 
                 if (CustomClearChargingProfileParser is not null)
                     ClearChargingProfile = CustomClearChargingProfileParser(JSON,
@@ -280,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                : null,
 
                            ChargingProfilePurpose.HasValue
-                               ? new JProperty("chargingProfilePurpose",  ChargingProfilePurpose.Value.AsText())
+                               ? new JProperty("chargingProfilePurpose",  ChargingProfilePurpose.Value.ToString())
                                : null,
 
                            StackLevel.HasValue

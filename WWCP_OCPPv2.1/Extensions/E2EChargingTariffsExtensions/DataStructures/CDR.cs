@@ -326,9 +326,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region Get Start Metering Value
 
-            var startMeterValues    = meterValues.Where(meterValue => meterValue.SampledValues.Any(sampledValue => sampledValue.Measurand == Measurand           &&
-                                                                                                                   sampledValue.MeasurementLocation  == MeasurementLocation &&
-                                                                                                                   sampledValue.Context   == ReadingContexts.TransactionBegin)).ToArray();
+            var startMeterValues    = meterValues.Where(meterValue => meterValue.SampledValues.Any(sampledValue => sampledValue.Measurand           == Measurand           &&
+                                                                                                                   sampledValue.MeasurementLocation == MeasurementLocation &&
+                                                                                                                   sampledValue.Context             == ReadingContext.TransactionBegin)).ToArray();
             if (startMeterValues.Length != 1)
             {
                 ErrorResponse = startMeterValues.Length == 0
@@ -337,9 +337,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return false;
             }
 
-            var startSampledValues  = startMeterValues.First().SampledValues.Where(sampledValue => sampledValue.Measurand == Measurand           &&
-                                                                                                   sampledValue.MeasurementLocation  == MeasurementLocation &&
-                                                                                                   sampledValue.Context   == ReadingContexts.TransactionBegin).ToArray();
+            var startSampledValues  = startMeterValues.First().SampledValues.Where(sampledValue => sampledValue.Measurand           == Measurand           &&
+                                                                                                   sampledValue.MeasurementLocation == MeasurementLocation &&
+                                                                                                   sampledValue.Context             == ReadingContext.TransactionBegin).ToArray();
             if (startSampledValues.Length != 1)
             {
                 ErrorResponse = startMeterValues.Length == 0
@@ -364,9 +364,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region Get Stop  Metering Value
 
-            var stopMeterValues     = meterValues.Where(meterValue => meterValue.SampledValues.Any(sampledValue => sampledValue.Measurand == Measurand           &&
-                                                                                                                   sampledValue.MeasurementLocation  == MeasurementLocation &&
-                                                                                                                   sampledValue.Context   == ReadingContexts.TransactionEnd)).ToArray();
+            var stopMeterValues     = meterValues.Where(meterValue => meterValue.SampledValues.Any(sampledValue => sampledValue.Measurand           == Measurand           &&
+                                                                                                                   sampledValue.MeasurementLocation == MeasurementLocation &&
+                                                                                                                   sampledValue.Context             == ReadingContext.TransactionEnd)).ToArray();
             if (stopMeterValues.Length != 1)
             {
                 ErrorResponse = stopMeterValues.Length == 0
@@ -375,9 +375,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 return false;
             }
 
-            var stopSampledValues   = stopMeterValues.First().SampledValues.Where(sampledValue => sampledValue.Measurand == Measurand           &&
-                                                                                                  sampledValue.MeasurementLocation  == MeasurementLocation &&
-                                                                                                  sampledValue.Context   == ReadingContexts.TransactionEnd).ToArray();
+            var stopSampledValues   = stopMeterValues.First().SampledValues.Where(sampledValue => sampledValue.Measurand           == Measurand           &&
+                                                                                                  sampledValue.MeasurementLocation == MeasurementLocation &&
+                                                                                                  sampledValue.Context             == ReadingContext.TransactionEnd).ToArray();
             if (stopSampledValues.Length != 1)
             {
                 ErrorResponse = stopMeterValues.Length == 0

@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The optional purpose of the schedule transferred by this charging profile.
         /// </summary>
         [Optional]
-        public ChargingProfilePurposes?          ChargingProfilePurpose    { get; }
+        public ChargingProfilePurpose?           ChargingProfilePurpose    { get; }
 
         /// <summary>
         /// The optional stack level in hierarchy of profiles.
@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ChargingProfileIds">An optional enumeration of all the charging profile identifications requested.</param>
         /// <param name="ChargingLimitSources">An optional enumeration of charging limit sources.</param>
         /// <param name="CustomData">Optional custom data to allow to store any kind of customer specific data.</param>
-        public ChargingProfileCriterion(ChargingProfilePurposes?           ChargingProfilePurpose   = null,
+        public ChargingProfileCriterion(ChargingProfilePurpose?            ChargingProfilePurpose   = null,
                                         UInt32?                            StackLevel               = null,
                                         IEnumerable<ChargingProfile_Id>?   ChargingProfileIds       = null,
                                         IEnumerable<ChargingLimitSource>?  ChargingLimitSources     = null,
@@ -225,8 +225,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptional("chargingProfilePurpose",
                                        "charging profile purpose",
-                                       ChargingProfilePurposesExtensions.TryParse,
-                                       out ChargingProfilePurposes? ChargingProfilePurpose,
+                                       OCPPv2_1.ChargingProfilePurpose.TryParse,
+                                       out ChargingProfilePurpose? ChargingProfilePurpose,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)

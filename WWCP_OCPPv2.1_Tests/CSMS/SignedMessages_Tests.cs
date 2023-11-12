@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var keyPair    = KeyPair.GenerateKeys()!;
 
-                var resetType  = ResetTypes.Immediate;
+                var resetType  = ResetType.Immediate;
                 var now        = Timestamp.Now;
                 var response   = await testCSMS01.Reset(
                                      ChargingStationId:   chargingStation1.Id,
