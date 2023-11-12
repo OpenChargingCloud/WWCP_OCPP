@@ -163,9 +163,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var getLocalListVersionRequest,
                          out var errorResponse,
-                         CustomGetLocalListVersionRequestParser))
+                         CustomGetLocalListVersionRequestParser) &&
+                getLocalListVersionRequest is not null)
             {
-                return getLocalListVersionRequest!;
+                return getLocalListVersionRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a get local list version request is invalid: " + errorResponse,

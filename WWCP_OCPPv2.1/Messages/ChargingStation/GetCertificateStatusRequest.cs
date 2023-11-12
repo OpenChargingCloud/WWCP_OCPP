@@ -228,9 +228,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var getCertificateStatusRequest,
                          out var errorResponse,
-                         CustomGetCertificateStatusRequestParser))
+                         CustomGetCertificateStatusRequestParser) &&
+                getCertificateStatusRequest is not null)
             {
-                return getCertificateStatusRequest!;
+                return getCertificateStatusRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a get certificate status request is invalid: " + errorResponse,

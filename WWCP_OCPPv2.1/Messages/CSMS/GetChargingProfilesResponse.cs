@@ -225,9 +225,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getChargingProfilesResponse,
                          out var errorResponse,
-                         CustomGetChargingProfilesResponseParser))
+                         CustomGetChargingProfilesResponseParser) &&
+                getChargingProfilesResponse is not null)
             {
-                return getChargingProfilesResponse!;
+                return getChargingProfilesResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get charging profiles response is invalid: " + errorResponse,

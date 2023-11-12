@@ -394,9 +394,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var customerInformationRequest,
                          out var errorResponse,
-                         CustomCustomerInformationRequestParser))
+                         CustomCustomerInformationRequestParser) &&
+                customerInformationRequest is not null)
             {
-                return customerInformationRequest!;
+                return customerInformationRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a customer information request is invalid: " + errorResponse,

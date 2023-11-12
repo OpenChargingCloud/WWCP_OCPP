@@ -227,9 +227,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getBaseReportResponse,
                          out var errorResponse,
-                         CustomGetBaseReportResponseParser))
+                         CustomGetBaseReportResponseParser) &&
+                getBaseReportResponse is not null)
             {
-                return getBaseReportResponse!;
+                return getBaseReportResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get base report response is invalid: " + errorResponse,

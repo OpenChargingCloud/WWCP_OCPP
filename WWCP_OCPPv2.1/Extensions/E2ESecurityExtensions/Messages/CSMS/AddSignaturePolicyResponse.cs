@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/addSignaturePolicyResponse");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/addSignaturePolicyResponse");
 
         #endregion
 
@@ -160,9 +160,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var addSignaturePolicyResponse,
                          out var errorResponse,
-                         CustomAddSignaturePolicyResponseParser))
+                         CustomAddSignaturePolicyResponseParser) &&
+                addSignaturePolicyResponse is not null)
             {
-                return addSignaturePolicyResponse!;
+                return addSignaturePolicyResponse;
             }
 
             throw new ArgumentException("The given JSON representation of an add signature policy response is invalid: " + errorResponse,

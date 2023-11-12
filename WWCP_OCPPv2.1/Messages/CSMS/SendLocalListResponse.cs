@@ -226,9 +226,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var sendLocalListResponse,
                          out var errorResponse,
-                         CustomSendLocalListResponseParser))
+                         CustomSendLocalListResponseParser) &&
+                sendLocalListResponse is not null)
             {
-                return sendLocalListResponse!;
+                return sendLocalListResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a send local list response is invalid: " + errorResponse,

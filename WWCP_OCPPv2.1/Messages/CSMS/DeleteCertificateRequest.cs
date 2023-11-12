@@ -225,9 +225,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var deleteCertificateRequest,
                          out var errorResponse,
-                         CustomDeleteCertificateRequestParser))
+                         CustomDeleteCertificateRequestParser) &&
+                deleteCertificateRequest is not null)
             {
-                return deleteCertificateRequest!;
+                return deleteCertificateRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a delete certificate request is invalid: " + errorResponse,

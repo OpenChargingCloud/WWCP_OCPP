@@ -318,9 +318,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var updateDynamicScheduleRequest,
                          out var errorResponse,
-                         CustomUpdateDynamicScheduleRequestParser))
+                         CustomUpdateDynamicScheduleRequestParser) &&
+                updateDynamicScheduleRequest is not null)
             {
-                return updateDynamicScheduleRequest!;
+                return updateDynamicScheduleRequest;
             }
 
             throw new ArgumentException("The given JSON representation of an update dynamic schedule request is invalid: " + errorResponse,

@@ -475,9 +475,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var notifyReportRequest,
                          out var errorResponse,
-                         CustomNotifyReportRequestParser))
+                         CustomNotifyReportRequestParser) &&
+                notifyReportRequest is not null)
             {
-                return notifyReportRequest!;
+                return notifyReportRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a notify report request is invalid: " + errorResponse,

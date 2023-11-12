@@ -247,9 +247,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var notifyCustomerInformationRequest,
                          out var errorResponse,
-                         CustomNotifyCustomerInformationRequestParser))
+                         CustomNotifyCustomerInformationRequestParser) &&
+                notifyCustomerInformationRequest is not null)
             {
-                return notifyCustomerInformationRequest!;
+                return notifyCustomerInformationRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a notify customer information request is invalid: " + errorResponse,

@@ -407,9 +407,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var transactionEventResponse,
                          out var errorResponse,
-                         CustomTransactionEventResponseParser))
+                         CustomTransactionEventResponseParser) &&
+                transactionEventResponse is not null)
             {
-                return transactionEventResponse!;
+                return transactionEventResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a transaction event response is invalid: " + errorResponse,

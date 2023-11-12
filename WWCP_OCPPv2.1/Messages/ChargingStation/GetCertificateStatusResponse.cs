@@ -240,9 +240,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var getCertificateStatusResponse,
                          out var errorResponse,
-                         CustomGetCertificateStatusResponseParser))
+                         CustomGetCertificateStatusResponseParser) &&
+                getCertificateStatusResponse is not null)
             {
-                return getCertificateStatusResponse!;
+                return getCertificateStatusResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get certificate status response is invalid: " + errorResponse,

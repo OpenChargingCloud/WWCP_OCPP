@@ -396,9 +396,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var setNetworkProfileRequest,
                          out var errorResponse,
-                         CustomSetNetworkProfileRequestParser))
+                         CustomSetNetworkProfileRequestParser) &&
+                setNetworkProfileRequest is not null)
             {
-                return setNetworkProfileRequest!;
+                return setNetworkProfileRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a set network profile request is invalid: " + errorResponse,

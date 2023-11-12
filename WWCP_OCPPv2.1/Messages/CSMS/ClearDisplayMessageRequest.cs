@@ -181,9 +181,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var clearDisplayMessageRequest,
                          out var errorResponse,
-                         CustomClearDisplayMessageRequestParser))
+                         CustomClearDisplayMessageRequestParser) &&
+                clearDisplayMessageRequest is not null)
             {
-                return clearDisplayMessageRequest!;
+                return clearDisplayMessageRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a clear display message request is invalid: " + errorResponse,

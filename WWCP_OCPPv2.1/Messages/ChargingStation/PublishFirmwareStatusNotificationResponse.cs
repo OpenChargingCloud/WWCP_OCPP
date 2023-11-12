@@ -161,9 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var publishFirmwareStatusNotificationResponse,
                          out var errorResponse,
-                         CustomPublishFirmwareStatusNotificationResponseParser))
+                         CustomPublishFirmwareStatusNotificationResponseParser) &&
+                publishFirmwareStatusNotificationResponse is not null)
             {
-                return publishFirmwareStatusNotificationResponse!;
+                return publishFirmwareStatusNotificationResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a publish firmware status notification response is invalid: " + errorResponse,

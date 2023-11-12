@@ -156,9 +156,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var updateDynamicScheduleResponse,
                          out var errorResponse,
-                         CustomUpdateDynamicScheduleResponseParser))
+                         CustomUpdateDynamicScheduleResponseParser) &&
+                updateDynamicScheduleResponse is not null)
             {
-                return updateDynamicScheduleResponse!;
+                return updateDynamicScheduleResponse;
             }
 
             throw new ArgumentException("The given JSON representation of an update dynamic schedule response is invalid: " + errorResponse,

@@ -179,9 +179,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var getTransactionStatusRequest,
                          out var errorResponse,
-                         CustomGetTransactionStatusRequestParser))
+                         CustomGetTransactionStatusRequestParser) &&
+                getTransactionStatusRequest is not null)
             {
-                return getTransactionStatusRequest!;
+                return getTransactionStatusRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a get transaction status request is invalid: " + errorResponse,

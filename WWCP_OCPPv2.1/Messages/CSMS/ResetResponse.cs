@@ -217,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">The reset request leading to this response.</param>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomResetResponseParser">A delegate to parse custom reset responses.</param>
-        public static ResetResponse Parse(CSMS.ResetRequest                              Request,
+        public static ResetResponse Parse(CSMS.ResetRequest                            Request,
                                           JObject                                      JSON,
                                           CustomJObjectParserDelegate<ResetResponse>?  CustomResetResponseParser   = null)
         {
@@ -226,9 +226,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var resetResponse,
                          out var errorResponse,
-                         CustomResetResponseParser))
+                         CustomResetResponseParser) &&
+                resetResponse is not null)
             {
-                return resetResponse!;
+                return resetResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a reset response is invalid: " + errorResponse,

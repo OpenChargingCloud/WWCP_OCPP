@@ -243,9 +243,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var dataTransferResponse,
                          out var errorResponse,
-                         CustomDataTransferResponseParser))
+                         CustomDataTransferResponseParser) &&
+                dataTransferResponse is not null)
             {
-                return dataTransferResponse!;
+                return dataTransferResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a data transfer response is invalid: " + errorResponse,

@@ -226,9 +226,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var deleteCertificateResponse,
                          out var errorResponse,
-                         CustomDeleteCertificateResponseParser))
+                         CustomDeleteCertificateResponseParser) &&
+                deleteCertificateResponse is not null)
             {
-                return deleteCertificateResponse!;
+                return deleteCertificateResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a delete certificate response is invalid: " + errorResponse,

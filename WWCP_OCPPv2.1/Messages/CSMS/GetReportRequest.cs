@@ -323,9 +323,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var getReportRequest,
                          out var errorResponse,
-                         CustomGetReportRequestParser))
+                         CustomGetReportRequestParser) &&
+                getReportRequest is not null)
             {
-                return getReportRequest!;
+                return getReportRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a get report request is invalid: " + errorResponse,

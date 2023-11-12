@@ -189,9 +189,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var unpublishFirmwareResponse,
                          out var errorResponse,
-                         CustomUnpublishFirmwareResponseParser))
+                         CustomUnpublishFirmwareResponseParser) &&
+                unpublishFirmwareResponse is not null)
             {
-                return unpublishFirmwareResponse!;
+                return unpublishFirmwareResponse;
             }
 
             throw new ArgumentException("The given JSON representation of an unpublish firmware response is invalid: " + errorResponse,

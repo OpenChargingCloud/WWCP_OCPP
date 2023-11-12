@@ -366,7 +366,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 return Component.GetHashCode()       * 5 ^
                       (Variable?.GetHashCode() ?? 0) * 3 ^
-
                        base.     GetHashCode();
 
             }

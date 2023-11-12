@@ -247,9 +247,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var get15118EVCertificateRequest,
                          out var errorResponse,
-                         CustomGet15118EVCertificateRequestParser))
+                         CustomGet15118EVCertificateRequestParser) &&
+                get15118EVCertificateRequest is not null)
             {
-                return get15118EVCertificateRequest!;
+                return get15118EVCertificateRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a get 15118 EV certificate request is invalid: " + errorResponse,

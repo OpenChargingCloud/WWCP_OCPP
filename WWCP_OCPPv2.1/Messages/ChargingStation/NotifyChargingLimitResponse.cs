@@ -161,9 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var notifyChargingLimitResponse,
                          out var errorResponse,
-                         CustomNotifyChargingLimitResponseParser))
+                         CustomNotifyChargingLimitResponseParser) &&
+                notifyChargingLimitResponse is not null)
             {
-                return notifyChargingLimitResponse!;
+                return notifyChargingLimitResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a notify charging limit response is invalid: " + errorResponse,

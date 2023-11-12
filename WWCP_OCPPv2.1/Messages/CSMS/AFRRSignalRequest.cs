@@ -158,9 +158,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var afrrSignalRequest,
                          out var errorResponse,
-                         CustomAFRRSignalRequestParser))
+                         CustomAFRRSignalRequestParser) &&
+                afrrSignalRequest is not null)
             {
-                return afrrSignalRequest!;
+                return afrrSignalRequest;
             }
 
             throw new ArgumentException("The given JSON representation of an AFRR signal request is invalid: " + errorResponse,

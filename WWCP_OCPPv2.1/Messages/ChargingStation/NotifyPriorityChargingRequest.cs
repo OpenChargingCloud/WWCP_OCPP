@@ -159,9 +159,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var notifyPriorityChargingRequest,
                          out var errorResponse,
-                         CustomNotifyPriorityChargingRequestParser))
+                         CustomNotifyPriorityChargingRequestParser) &&
+                notifyPriorityChargingRequest is not null)
             {
-                return notifyPriorityChargingRequest!;
+                return notifyPriorityChargingRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a notify priority charging request is invalid: " + errorResponse,

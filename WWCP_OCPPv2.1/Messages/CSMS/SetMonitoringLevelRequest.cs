@@ -182,9 +182,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var setMonitoringLevelRequest,
                          out var errorResponse,
-                         CustomSetMonitoringLevelRequestParser))
+                         CustomSetMonitoringLevelRequestParser) &&
+                setMonitoringLevelRequest is not null)
             {
-                return setMonitoringLevelRequest!;
+                return setMonitoringLevelRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a set monitoring level request is invalid: " + errorResponse,

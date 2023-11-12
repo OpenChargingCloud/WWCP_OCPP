@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/setDefaultChargingTariffResponse");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/setDefaultChargingTariffResponse");
 
         #endregion
 
@@ -186,8 +186,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomSetDefaultChargingTariffResponseParser">A delegate to parse custom set default charging tariff responses.</param>
         public static SetDefaultChargingTariffResponse Parse(CSMS.SetDefaultChargingTariffRequest                            Request,
-                                                       JObject                                                   JSON,
-                                                       CustomJObjectParserDelegate<SetDefaultChargingTariffResponse>?  CustomSetDefaultChargingTariffResponseParser   = null)
+                                                             JObject                                                         JSON,
+                                                             CustomJObjectParserDelegate<SetDefaultChargingTariffResponse>?  CustomSetDefaultChargingTariffResponseParser   = null)
         {
 
 
@@ -195,9 +195,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var setDefaultChargingTariffResponse,
                          out var errorResponse,
-                         CustomSetDefaultChargingTariffResponseParser))
+                         CustomSetDefaultChargingTariffResponseParser) &&
+                setDefaultChargingTariffResponse is not null)
             {
-                return setDefaultChargingTariffResponse!;
+                return setDefaultChargingTariffResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a set default charging tariff response is invalid: " + errorResponse,

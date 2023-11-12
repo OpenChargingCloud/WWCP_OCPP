@@ -162,9 +162,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var setDefaultChargingTariffRequest,
                          out var errorResponse,
-                         CustomSetDefaultChargingTariffRequestParser))
+                         CustomSetDefaultChargingTariffRequestParser) &&
+                setDefaultChargingTariffRequest is not null)
             {
-                return setDefaultChargingTariffRequest!;
+                return setDefaultChargingTariffRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a SetDefaultChargingTariff request is invalid: " + errorResponse,

@@ -221,9 +221,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var getCompositeScheduleRequest,
                          out var errorResponse,
-                         CustomGetCompositeScheduleRequestParser))
+                         CustomGetCompositeScheduleRequestParser) &&
+                getCompositeScheduleRequest is not null)
             {
-                return getCompositeScheduleRequest!;
+                return getCompositeScheduleRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a get composite schedule request is invalid: " + errorResponse,

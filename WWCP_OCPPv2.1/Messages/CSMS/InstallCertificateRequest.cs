@@ -211,9 +211,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var installCertificateRequest,
                          out var errorResponse,
-                         CustomInstallCertificateRequestParser))
+                         CustomInstallCertificateRequestParser) &&
+                installCertificateRequest is not null)
             {
-                return installCertificateRequest!;
+                return installCertificateRequest;
             }
 
             throw new ArgumentException("The given JSON representation of an install certificate request is invalid: " + errorResponse,

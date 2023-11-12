@@ -190,9 +190,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var clearVariableMonitoringRequest,
                          out var errorResponse,
-                         CustomClearVariableMonitoringRequestParser))
+                         CustomClearVariableMonitoringRequestParser) &&
+                clearVariableMonitoringRequest is not null)
             {
-                return clearVariableMonitoringRequest!;
+                return clearVariableMonitoringRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a clear variable monitoring request is invalid: " + errorResponse,

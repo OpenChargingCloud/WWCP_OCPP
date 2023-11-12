@@ -2142,6 +2142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                                    { get; set; }
         public CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                                         { get; set; }
         public CustomJObjectSerializerDelegate<Variable>?                                            CustomVariableSerializer                                     { get; set; }
+        public CustomJObjectSerializerDelegate<PeriodicEventStreamParameters>?                       CustomPeriodicEventStreamParametersSerializer                { get; set; }
         public CustomJObjectSerializerDelegate<LogParameters>?                                       CustomLogParametersSerializer                                { get; set; }
         public CustomJObjectSerializerDelegate<SetVariableData>?                                     CustomSetVariableDataSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<GetVariableData>?                                     CustomGetVariableDataSerializer                              { get; set; }
@@ -8396,6 +8397,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                          CustomComponentSerializer,
                                                          CustomEVSESerializer,
                                                          CustomVariableSerializer,
+                                                         CustomPeriodicEventStreamParametersSerializer,
                                                          CustomSignatureSerializer,
                                                          CustomCustomDataSerializer
                                                      ),

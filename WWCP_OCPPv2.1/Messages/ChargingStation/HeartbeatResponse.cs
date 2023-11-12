@@ -184,9 +184,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var heartbeatResponse,
                          out var errorResponse,
-                         CustomHeartbeatResponseParser))
+                         CustomHeartbeatResponseParser) &&
+                heartbeatResponse is not null)
             {
-                return heartbeatResponse!;
+                return heartbeatResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a heartbeat response is invalid: " + errorResponse,

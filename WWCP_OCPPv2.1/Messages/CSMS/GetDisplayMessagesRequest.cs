@@ -251,9 +251,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var getDisplayMessagesRequest,
                          out var errorResponse,
-                         CustomGetDisplayMessagesRequestParser))
+                         CustomGetDisplayMessagesRequestParser) &&
+                getDisplayMessagesRequest is not null)
             {
-                return getDisplayMessagesRequest!;
+                return getDisplayMessagesRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a get display messages request is invalid: " + errorResponse,

@@ -225,9 +225,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var clearChargingProfileRequest,
                          out var errorResponse,
-                         CustomClearChargingProfileRequestParser))
+                         CustomClearChargingProfileRequestParser) &&
+                clearChargingProfileRequest is not null)
             {
-                return clearChargingProfileRequest!;
+                return clearChargingProfileRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a clear charging profile request is invalid: " + errorResponse,

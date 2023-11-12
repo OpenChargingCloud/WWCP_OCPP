@@ -161,9 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var reportChargingProfilesResponse,
                          out var errorResponse,
-                         CustomReportChargingProfilesResponseParser))
+                         CustomReportChargingProfilesResponseParser) &&
+                reportChargingProfilesResponse is not null)
             {
-                return reportChargingProfilesResponse!;
+                return reportChargingProfilesResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a report charging profiles response is invalid: " + errorResponse,

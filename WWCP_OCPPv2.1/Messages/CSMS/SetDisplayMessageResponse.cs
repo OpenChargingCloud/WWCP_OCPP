@@ -229,9 +229,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var setDisplayMessageResponse,
                          out var errorResponse,
-                         CustomSetDisplayMessageResponseParser))
+                         CustomSetDisplayMessageResponseParser) &&
+                setDisplayMessageResponse is not null)
             {
-                return setDisplayMessageResponse!;
+                return setDisplayMessageResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a set display message response is invalid: " + errorResponse,

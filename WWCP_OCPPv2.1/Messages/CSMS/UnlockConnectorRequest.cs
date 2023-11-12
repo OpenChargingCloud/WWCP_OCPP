@@ -196,9 +196,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var unlockConnectorRequest,
                          out var errorResponse,
-                         CustomUnlockConnectorRequestParser))
+                         CustomUnlockConnectorRequestParser) &&
+                unlockConnectorRequest is not null)
             {
-                return unlockConnectorRequest!;
+                return unlockConnectorRequest;
             }
 
             throw new ArgumentException("The given JSON representation of an unlock connector request is invalid: " + errorResponse,

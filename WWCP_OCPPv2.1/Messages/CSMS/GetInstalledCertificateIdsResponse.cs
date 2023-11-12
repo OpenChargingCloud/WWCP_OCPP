@@ -334,9 +334,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getInstalledCertificateIdsResponse,
                          out var errorResponse,
-                         CustomGetInstalledCertificateIdsResponseParser))
+                         CustomGetInstalledCertificateIdsResponseParser) &&
+                getInstalledCertificateIdsResponse is not null)
             {
-                return getInstalledCertificateIdsResponse!;
+                return getInstalledCertificateIdsResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get installed certificate ids response is invalid: " + errorResponse,

@@ -160,11 +160,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             if (TryParse(JSON,
                          RequestId,
                          ChargingStationId,
-                         out var SetUserChargingTariffRequest,
+                         out var setUserChargingTariffRequest,
                          out var errorResponse,
-                         CustomSetUserChargingTariffRequestParser))
+                         CustomSetUserChargingTariffRequestParser) &&
+                setUserChargingTariffRequest is not null)
             {
-                return SetUserChargingTariffRequest!;
+                return setUserChargingTariffRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a SetUserChargingTariff request is invalid: " + errorResponse,

@@ -185,9 +185,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var getUserChargingTariffResponse,
                          out var errorResponse,
-                         CustomGetUserChargingTariffResponseParser))
+                         CustomGetUserChargingTariffResponseParser) &&
+                getUserChargingTariffResponse is not null)
             {
-                return getUserChargingTariffResponse!;
+                return getUserChargingTariffResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get user charging tariff response is invalid: " + errorResponse,

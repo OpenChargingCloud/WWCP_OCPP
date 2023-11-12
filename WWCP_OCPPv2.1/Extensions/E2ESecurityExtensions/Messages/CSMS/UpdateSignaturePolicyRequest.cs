@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/bootNotificationRequest");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/updateSignaturePolicyRequest");
 
         #endregion
 
@@ -273,11 +273,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             if (TryParse(JSON,
                          RequestId,
                          ChargingStationId,
-                         out var bootNotificationRequest,
+                         out var updateSignaturePolicyRequest,
                          out var errorResponse,
-                         CustomUpdateSignaturePolicyRequestParser))
+                         CustomUpdateSignaturePolicyRequestParser) &&
+                updateSignaturePolicyRequest is not null)
             {
-                return bootNotificationRequest!;
+                return updateSignaturePolicyRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a boot notification request is invalid: " + errorResponse,
@@ -534,8 +535,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Object">A boot notification request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is UpdateSignaturePolicyRequest bootNotificationRequest &&
-                   Equals(bootNotificationRequest);
+            => Object is UpdateSignaturePolicyRequest updateSignaturePolicyRequest &&
+                   Equals(updateSignaturePolicyRequest);
 
         #endregion
 

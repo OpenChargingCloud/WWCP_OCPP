@@ -225,9 +225,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var setMonitoringLevelResponse,
                          out var errorResponse,
-                         CustomSetMonitoringLevelResponseParser))
+                         CustomSetMonitoringLevelResponseParser) &&
+                setMonitoringLevelResponse is not null)
             {
-                return setMonitoringLevelResponse!;
+                return setMonitoringLevelResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a set monitoring level response is invalid: " + errorResponse,

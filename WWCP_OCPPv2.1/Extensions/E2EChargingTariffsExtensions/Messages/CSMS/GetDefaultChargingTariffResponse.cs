@@ -18,7 +18,6 @@
 #region Usings
 
 using System.Collections.ObjectModel;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -41,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/getDefaultChargingTariffResponse");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/getDefaultChargingTariffResponse");
 
         #endregion
 
@@ -205,9 +204,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getDefaultChargingTariffResponse,
                          out var errorResponse,
-                         CustomGetDefaultChargingTariffResponseParser))
+                         CustomGetDefaultChargingTariffResponseParser) &&
+                getDefaultChargingTariffResponse is not null)
             {
-                return getDefaultChargingTariffResponse!;
+                return getDefaultChargingTariffResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get default charging tariff response is invalid: " + errorResponse,

@@ -159,9 +159,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var usePriorityChargingRequest,
                          out var errorResponse,
-                         CustomUsePriorityChargingRequestParser))
+                         CustomUsePriorityChargingRequestParser) &&
+                usePriorityChargingRequest is not null)
             {
-                return usePriorityChargingRequest!;
+                return usePriorityChargingRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a use priority charging request is invalid: " + errorResponse,

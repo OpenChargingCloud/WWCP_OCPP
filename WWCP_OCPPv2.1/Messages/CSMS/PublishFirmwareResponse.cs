@@ -225,9 +225,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var publishFirmwareResponse,
                          out var errorResponse,
-                         CustomPublishFirmwareResponseParser))
+                         CustomPublishFirmwareResponseParser) &&
+                publishFirmwareResponse is not null)
             {
-                return publishFirmwareResponse!;
+                return publishFirmwareResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a publish firmware response is invalid: " + errorResponse,

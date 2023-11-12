@@ -342,9 +342,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var setVariablesResponse,
                          out var errorResponse,
-                         CustomSetVariablesResponseParser))
+                         CustomSetVariablesResponseParser) &&
+                setVariablesResponse is not null)
             {
-                return setVariablesResponse!;
+                return setVariablesResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a set variables response is invalid: " + errorResponse,

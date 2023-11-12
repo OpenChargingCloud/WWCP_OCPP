@@ -227,9 +227,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getMonitoringReportResponse,
                          out var errorResponse,
-                         CustomGetMonitoringReportResponseParser))
+                         CustomGetMonitoringReportResponseParser) &&
+                getMonitoringReportResponse is not null)
             {
-                return getMonitoringReportResponse!;
+                return getMonitoringReportResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get monitoring report response is invalid: " + errorResponse,

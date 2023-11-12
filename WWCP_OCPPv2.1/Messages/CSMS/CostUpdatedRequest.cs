@@ -197,11 +197,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             if (TryParse(JSON,
                          RequestId,
                          ChargingStationId,
-                         out var CostUpdatedRequest,
+                         out var costUpdatedRequest,
                          out var errorResponse,
-                         CustomCostUpdatedRequestParser))
+                         CustomCostUpdatedRequestParser) &&
+                costUpdatedRequest is not null)
             {
-                return CostUpdatedRequest!;
+                return costUpdatedRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a cost updated request is invalid: " + errorResponse,

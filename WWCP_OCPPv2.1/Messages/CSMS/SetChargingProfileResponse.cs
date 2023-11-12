@@ -225,9 +225,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var setChargingProfileResponse,
                          out var errorResponse,
-                         CustomSetChargingProfileResponseParser))
+                         CustomSetChargingProfileResponseParser) &&
+                setChargingProfileResponse is not null)
             {
-                return setChargingProfileResponse!;
+                return setChargingProfileResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a set charging profile response is invalid: " + errorResponse,

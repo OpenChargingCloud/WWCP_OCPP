@@ -161,9 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var costUpdatedResponse,
                          out var errorResponse,
-                         CustomCostUpdatedResponseParser))
+                         CustomCostUpdatedResponseParser) &&
+                costUpdatedResponse is not null)
             {
-                return costUpdatedResponse!;
+                return costUpdatedResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a cost updated response is invalid: " + errorResponse,

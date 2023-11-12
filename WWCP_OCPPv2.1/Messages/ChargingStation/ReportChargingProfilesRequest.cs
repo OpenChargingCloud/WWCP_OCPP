@@ -600,9 +600,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var reportChargingProfilesRequest,
                          out var errorResponse,
-                         CustomReportChargingProfilesRequestParser))
+                         CustomReportChargingProfilesRequestParser) &&
+                reportChargingProfilesRequest is not null)
             {
-                return reportChargingProfilesRequest!;
+                return reportChargingProfilesRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a report charging profiles request is invalid: " + errorResponse,

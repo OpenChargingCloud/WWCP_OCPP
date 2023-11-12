@@ -226,9 +226,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var customerInformationResponse,
                          out var errorResponse,
-                         CustomCustomerInformationResponseParser))
+                         CustomCustomerInformationResponseParser) &&
+                customerInformationResponse is not null)
             {
-                return customerInformationResponse!;
+                return customerInformationResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a customer information response is invalid: " + errorResponse,

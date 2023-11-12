@@ -275,9 +275,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var getChargingProfilesRequest,
                          out var errorResponse,
-                         CustomGetChargingProfilesRequestParser))
+                         CustomGetChargingProfilesRequestParser) &&
+                getChargingProfilesRequest is not null)
             {
-                return getChargingProfilesRequest!;
+                return getChargingProfilesRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a get charging profiles request is invalid: " + errorResponse,

@@ -228,9 +228,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var signCertificateResponse,
                          out var errorResponse,
-                         CustomSignCertificateResponseParser))
+                         CustomSignCertificateResponseParser) &&
+                signCertificateResponse is not null)
             {
-                return signCertificateResponse!;
+                return signCertificateResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a sign certificate response is invalid: " + errorResponse,

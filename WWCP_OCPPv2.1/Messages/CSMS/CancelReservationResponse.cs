@@ -225,9 +225,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var cancelReservationResponse,
                          out var errorResponse,
-                         CustomCancelReservationResponseParser))
+                         CustomCancelReservationResponseParser) &&
+                cancelReservationResponse is not null)
             {
-                return cancelReservationResponse!;
+                return cancelReservationResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a cancel reservation response is invalid: " + errorResponse,

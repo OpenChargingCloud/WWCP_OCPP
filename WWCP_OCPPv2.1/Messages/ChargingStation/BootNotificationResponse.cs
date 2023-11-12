@@ -268,9 +268,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var bootNotificationResponse,
                          out var errorResponse,
-                         CustomBootNotificationResponseParser))
+                         CustomBootNotificationResponseParser) &&
+                bootNotificationResponse is not null)
             {
-                return bootNotificationResponse!;
+                return bootNotificationResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a boot notification response is invalid: " + errorResponse,

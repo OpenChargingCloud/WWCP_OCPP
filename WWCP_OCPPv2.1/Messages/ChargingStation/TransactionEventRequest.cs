@@ -769,9 +769,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var transactionEventRequest,
                          out var errorResponse,
-                         CustomTransactionEventRequestParser))
+                         CustomTransactionEventRequestParser) &&
+                transactionEventRequest is not null)
             {
-                return transactionEventRequest!;
+                return transactionEventRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a transaction event request is invalid: " + errorResponse,

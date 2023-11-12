@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/bootNotificationResponse");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/updateSignaturePolicyResponse");
 
         #endregion
 
@@ -260,11 +260,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             if (TryParse(Request,
                          JSON,
-                         out var bootNotificationResponse,
+                         out var updateSignaturePolicyResponse,
                          out var errorResponse,
-                         CustomUpdateSignaturePolicyResponseParser))
+                         CustomUpdateSignaturePolicyResponseParser) &&
+                updateSignaturePolicyResponse is not null)
             {
-                return bootNotificationResponse!;
+                return updateSignaturePolicyResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a boot notification response is invalid: " + errorResponse,
@@ -525,8 +526,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Object">A boot notification response to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is UpdateSignaturePolicyResponse bootNotificationResponse &&
-                   Equals(bootNotificationResponse);
+            => Object is UpdateSignaturePolicyResponse updateSignaturePolicyResponse &&
+                   Equals(updateSignaturePolicyResponse);
 
         #endregion
 

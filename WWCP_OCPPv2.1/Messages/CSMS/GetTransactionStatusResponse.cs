@@ -193,9 +193,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getTransactionStatusResponse,
                          out var errorResponse,
-                         CustomGetTransactionStatusResponseParser))
+                         CustomGetTransactionStatusResponseParser) &&
+                getTransactionStatusResponse is not null)
             {
-                return getTransactionStatusResponse!;
+                return getTransactionStatusResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get transaction status response is invalid: " + errorResponse,

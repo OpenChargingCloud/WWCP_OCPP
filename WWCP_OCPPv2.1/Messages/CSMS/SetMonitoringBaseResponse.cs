@@ -227,9 +227,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var setDisplayMessageResponse,
                          out var errorResponse,
-                         CustomSetMonitoringBaseResponseParser))
+                         CustomSetMonitoringBaseResponseParser) &&
+                setDisplayMessageResponse is not null)
             {
-                return setDisplayMessageResponse!;
+                return setDisplayMessageResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a set monitoring base response is invalid: " + errorResponse,

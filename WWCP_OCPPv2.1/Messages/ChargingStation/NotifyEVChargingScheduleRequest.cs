@@ -189,11 +189,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             if (TryParse(JSON,
                          RequestId,
                          ChargingStationId,
-                         out var notifyEVChargingNeedsRequest,
+                         out var notifyEVChargingScheduleRequest,
                          out var errorResponse,
-                         CustomNotifyEVChargingScheduleRequestParser))
+                         CustomNotifyEVChargingScheduleRequestParser) &&
+                notifyEVChargingScheduleRequest is not null)
             {
-                return notifyEVChargingNeedsRequest!;
+                return notifyEVChargingScheduleRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a notify EV charging schedule request is invalid: " + errorResponse,
@@ -552,8 +553,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Object">A notify EV charging schedule request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is NotifyEVChargingScheduleRequest notifyEVChargingNeedsRequest &&
-                   Equals(notifyEVChargingNeedsRequest);
+            => Object is NotifyEVChargingScheduleRequest notifyEVChargingScheduleRequest &&
+                   Equals(notifyEVChargingScheduleRequest);
 
         #endregion
 

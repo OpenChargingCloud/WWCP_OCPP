@@ -243,9 +243,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var requestStartTransactionResponse,
                          out var errorResponse,
-                         CustomRequestStartTransactionResponseParser))
+                         CustomRequestStartTransactionResponseParser) &&
+                requestStartTransactionResponse is not null)
             {
-                return requestStartTransactionResponse!;
+                return requestStartTransactionResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a request start transaction response is invalid: " + errorResponse,

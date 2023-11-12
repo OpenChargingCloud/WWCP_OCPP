@@ -155,9 +155,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var usePriorityChargingResponse,
                          out var errorResponse,
-                         CustomUsePriorityChargingResponseParser))
+                         CustomUsePriorityChargingResponseParser) &&
+                usePriorityChargingResponse is not null)
             {
-                return usePriorityChargingResponse!;
+                return usePriorityChargingResponse;
             }
 
             throw new ArgumentException("The given JSON representation of an use priority charging response is invalid: " + errorResponse,

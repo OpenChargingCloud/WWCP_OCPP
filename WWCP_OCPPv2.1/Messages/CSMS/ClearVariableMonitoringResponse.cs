@@ -251,9 +251,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var clearVariableMonitoringResponse,
                          out var errorResponse,
-                         CustomClearVariableMonitoringResponseParser))
+                         CustomClearVariableMonitoringResponseParser) &&
+                clearVariableMonitoringResponse is not null)
             {
-                return clearVariableMonitoringResponse!;
+                return clearVariableMonitoringResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a clear variable monitoring response is invalid: " + errorResponse,

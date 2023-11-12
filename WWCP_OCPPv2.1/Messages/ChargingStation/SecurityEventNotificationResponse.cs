@@ -161,9 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var securityEventNotificationResponse,
                          out var errorResponse,
-                         CustomSecurityEventNotificationResponseParser))
+                         CustomSecurityEventNotificationResponseParser) &&
+                securityEventNotificationResponse is not null)
             {
-                return securityEventNotificationResponse!;
+                return securityEventNotificationResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a security event notification response is invalid: " + errorResponse,

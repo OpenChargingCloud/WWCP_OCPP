@@ -247,9 +247,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var publishFirmwareRequest,
                          out var errorResponse,
-                         CustomPublishFirmwareRequestParser))
+                         CustomPublishFirmwareRequestParser) &&
+                publishFirmwareRequest is not null)
             {
-                return publishFirmwareRequest!;
+                return publishFirmwareRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a publish firmware request is invalid: " + errorResponse,

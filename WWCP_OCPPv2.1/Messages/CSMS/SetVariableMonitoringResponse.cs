@@ -353,9 +353,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var setNetworkProfileResponse,
                          out var errorResponse,
-                         CustomSetVariableMonitoringResponseParser))
+                         CustomSetVariableMonitoringResponseParser) &&
+                setNetworkProfileResponse is not null)
             {
-                return setNetworkProfileResponse!;
+                return setNetworkProfileResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a set variable monitoring response is invalid: " + errorResponse,

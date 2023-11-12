@@ -351,9 +351,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getVariablesResponse,
                          out var errorResponse,
-                         CustomGetVariablesResponseParser))
+                         CustomGetVariablesResponseParser) &&
+                getVariablesResponse is not null)
             {
-                return getVariablesResponse!;
+                return getVariablesResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get variables response is invalid: " + errorResponse,

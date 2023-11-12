@@ -299,9 +299,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var getVariablesRequest,
                          out var errorResponse,
-                         CustomGetVariablesRequestParser))
+                         CustomGetVariablesRequestParser) &&
+                getVariablesRequest is not null)
             {
-                return getVariablesRequest!;
+                return getVariablesRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a get variables request is invalid: " + errorResponse,

@@ -659,9 +659,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var requestStartTransactionRequest,
                          out var errorResponse,
-                         CustomRequestStartTransactionRequestParser))
+                         CustomRequestStartTransactionRequestParser) &&
+                requestStartTransactionRequest is not null)
             {
-                return requestStartTransactionRequest!;
+                return requestStartTransactionRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a request start transaction request is invalid: " + errorResponse,

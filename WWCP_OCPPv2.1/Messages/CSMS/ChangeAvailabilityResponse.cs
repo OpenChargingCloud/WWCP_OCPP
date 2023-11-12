@@ -226,9 +226,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var changeAvailabilityResponse,
                          out var errorResponse,
-                         CustomChangeAvailabilityResponseParser))
+                         CustomChangeAvailabilityResponseParser) &&
+                changeAvailabilityResponse is not null)
             {
-                return changeAvailabilityResponse!;
+                return changeAvailabilityResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a change availability response is invalid: " + errorResponse,

@@ -278,9 +278,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var getLogRequest,
                          out var errorResponse,
-                         CustomGetLogRequestParser))
+                         CustomGetLogRequestParser) &&
+                getLogRequest is not null)
             {
-                return getLogRequest!;
+                return getLogRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a get log request is invalid: " + errorResponse,

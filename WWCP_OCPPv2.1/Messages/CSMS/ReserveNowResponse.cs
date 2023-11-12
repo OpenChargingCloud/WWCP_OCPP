@@ -228,9 +228,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var reserveNowResponse,
                          out var errorResponse,
-                         CustomReserveNowResponseParser))
+                         CustomReserveNowResponseParser) &&
+                reserveNowResponse is not null)
             {
-                return reserveNowResponse!;
+                return reserveNowResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a reserve now response is invalid: " + errorResponse,

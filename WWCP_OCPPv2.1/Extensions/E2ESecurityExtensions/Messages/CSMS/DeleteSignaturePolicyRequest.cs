@@ -148,9 +148,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var deleteSignaturePolicyRequest,
                          out var errorResponse,
-                         CustomDeleteSignaturePolicyRequestParser))
+                         CustomDeleteSignaturePolicyRequestParser) &&
+                deleteSignaturePolicyRequest is not null)
             {
-                return deleteSignaturePolicyRequest!;
+                return deleteSignaturePolicyRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a DeleteSignaturePolicy request is invalid: " + errorResponse,

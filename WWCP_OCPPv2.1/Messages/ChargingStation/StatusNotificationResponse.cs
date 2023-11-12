@@ -161,9 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var statusNotificationResponse,
                          out var errorResponse,
-                         CustomStatusNotificationResponseParser))
+                         CustomStatusNotificationResponseParser) &&
+                statusNotificationResponse is not null)
             {
-                return statusNotificationResponse!;
+                return statusNotificationResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a status notification response is invalid: " + errorResponse,

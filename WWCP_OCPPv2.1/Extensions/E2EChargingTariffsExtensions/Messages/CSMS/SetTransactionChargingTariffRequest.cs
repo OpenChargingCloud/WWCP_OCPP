@@ -157,11 +157,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             if (TryParse(JSON,
                          RequestId,
                          ChargingStationId,
-                         out var SetTransactionChargingTariffRequest,
+                         out var setTransactionChargingTariffRequest,
                          out var errorResponse,
-                         CustomSetTransactionChargingTariffRequestParser))
+                         CustomSetTransactionChargingTariffRequestParser) &&
+                setTransactionChargingTariffRequest is not null)
             {
-                return SetTransactionChargingTariffRequest!;
+                return setTransactionChargingTariffRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a SetTransactionChargingTariff request is invalid: " + errorResponse,
@@ -206,11 +207,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="SetTransactionChargingTariffRequest">The parsed SetTransactionChargingTariff request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetTransactionChargingTariffRequestParser">A delegate to parse custom SetTransactionChargingTariff requests.</param>
-        public static Boolean TryParse(JObject                                                     JSON,
-                                       Request_Id                                                  RequestId,
-                                       ChargingStation_Id                                          ChargingStationId,
+        public static Boolean TryParse(JObject                                                            JSON,
+                                       Request_Id                                                         RequestId,
+                                       ChargingStation_Id                                                 ChargingStationId,
                                        out SetTransactionChargingTariffRequest?                           SetTransactionChargingTariffRequest,
-                                       out String?                                                 ErrorResponse,
+                                       out String?                                                        ErrorResponse,
                                        CustomJObjectParserDelegate<SetTransactionChargingTariffRequest>?  CustomSetTransactionChargingTariffRequestParser)
         {
 

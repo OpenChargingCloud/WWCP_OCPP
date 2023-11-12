@@ -163,9 +163,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var clearCacheRequest,
                          out var errorResponse,
-                         CustomClearCacheRequestParser))
+                         CustomClearCacheRequestParser) &&
+                clearCacheRequest is not null)
             {
-                return clearCacheRequest!;
+                return clearCacheRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a clear cache request is invalid: " + errorResponse,

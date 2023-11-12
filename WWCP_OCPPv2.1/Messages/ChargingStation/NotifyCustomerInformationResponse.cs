@@ -161,9 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var notifyCustomerInformationResponse,
                          out var errorResponse,
-                         CustomNotifyCustomerInformationResponseParser))
+                         CustomNotifyCustomerInformationResponseParser) &&
+                notifyCustomerInformationResponse is not null)
             {
-                return notifyCustomerInformationResponse!;
+                return notifyCustomerInformationResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a notify customer information response is invalid: " + errorResponse,

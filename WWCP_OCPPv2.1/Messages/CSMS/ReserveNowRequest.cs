@@ -357,9 +357,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var reserveNowRequest,
                          out var errorResponse,
-                         CustomReserveNowRequestParser))
+                         CustomReserveNowRequestParser) &&
+                reserveNowRequest is not null)
             {
-                return reserveNowRequest!;
+                return reserveNowRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a reserve now response is invalid: " + errorResponse,

@@ -379,9 +379,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var notifyDisplayMessagesRequest,
                          out var errorResponse,
-                         CustomNotifyDisplayMessagesRequestParser))
+                         CustomNotifyDisplayMessagesRequestParser) &&
+                notifyDisplayMessagesRequest is not null)
             {
-                return notifyDisplayMessagesRequest!;
+                return notifyDisplayMessagesRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a notify display messages request is invalid: " + errorResponse,

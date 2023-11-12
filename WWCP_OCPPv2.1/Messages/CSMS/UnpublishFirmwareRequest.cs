@@ -183,9 +183,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var unpublishFirmwareRequest,
                          out var errorResponse,
-                         CustomUnpublishFirmwareRequestParser))
+                         CustomUnpublishFirmwareRequestParser) &&
+                unpublishFirmwareRequest is not null)
             {
-                return unpublishFirmwareRequest!;
+                return unpublishFirmwareRequest;
             }
 
             throw new ArgumentException("The given JSON representation of an unpublish firmware request is invalid: " + errorResponse,

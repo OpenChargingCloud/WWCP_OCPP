@@ -409,9 +409,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var meterValuesRequest,
                          out var errorResponse,
-                         CustomMeterValuesRequestParser))
+                         CustomMeterValuesRequestParser) &&
+                meterValuesRequest is not null)
             {
-                return meterValuesRequest!;
+                return meterValuesRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a meter values request is invalid: " + errorResponse,

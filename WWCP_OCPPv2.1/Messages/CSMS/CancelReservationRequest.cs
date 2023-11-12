@@ -181,9 +181,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var cancelReservationRequest,
                          out var errorResponse,
-                         CustomCancelReservationRequestParser))
+                         CustomCancelReservationRequestParser) &&
+                cancelReservationRequest is not null)
             {
-                return cancelReservationRequest!;
+                return cancelReservationRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a cancel reservation request is invalid: " + errorResponse,

@@ -135,9 +135,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var notifyCRLResponse,
                          out var errorResponse,
-                         CustomNotifyCRLResponseParser))
+                         CustomNotifyCRLResponseParser) &&
+                notifyCRLResponse is not null)
             {
-                return notifyCRLResponse!;
+                return notifyCRLResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a notify certificate revocation list response is invalid: " + errorResponse,

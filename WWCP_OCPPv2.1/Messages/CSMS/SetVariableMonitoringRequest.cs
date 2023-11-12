@@ -112,6 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             this.MonitoringData = MonitoringData.Distinct();
 
+
             unchecked
             {
 
@@ -319,9 +320,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var setVariableMonitoringRequest,
                          out var errorResponse,
-                         CustomSetVariableMonitoringRequestParser))
+                         CustomSetVariableMonitoringRequestParser) &&
+                setVariableMonitoringRequest is not null)
             {
-                return setVariableMonitoringRequest!;
+                return setVariableMonitoringRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a set variable monitoring request is invalid: " + errorResponse,
@@ -478,15 +480,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomComponentSerializer">A delegate to serialize custom components.</param>
         /// <param name="CustomEVSESerializer">A delegate to serialize custom EVSEs.</param>
         /// <param name="CustomVariableSerializer">A delegate to serialize custom variables.</param>
+        /// <param name="CustomPeriodicEventStreamParametersSerializer">A delegate to serialize custom periodic event stream parameterss.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SetVariableMonitoringRequest>?  CustomSetVariableMonitoringRequestSerializer   = null,
-                              CustomJObjectSerializerDelegate<SetMonitoringData>?             CustomSetMonitoringDataSerializer              = null,
-                              CustomJObjectSerializerDelegate<Component>?                     CustomComponentSerializer                      = null,
-                              CustomJObjectSerializerDelegate<EVSE>?                          CustomEVSESerializer                           = null,
-                              CustomJObjectSerializerDelegate<Variable>?                      CustomVariableSerializer                       = null,
-                              CustomJObjectSerializerDelegate<Signature>?                     CustomSignatureSerializer                      = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SetVariableMonitoringRequest>?   CustomSetVariableMonitoringRequestSerializer    = null,
+                              CustomJObjectSerializerDelegate<SetMonitoringData>?              CustomSetMonitoringDataSerializer               = null,
+                              CustomJObjectSerializerDelegate<Component>?                      CustomComponentSerializer                       = null,
+                              CustomJObjectSerializerDelegate<EVSE>?                           CustomEVSESerializer                            = null,
+                              CustomJObjectSerializerDelegate<Variable>?                       CustomVariableSerializer                        = null,
+                              CustomJObjectSerializerDelegate<PeriodicEventStreamParameters>?  CustomPeriodicEventStreamParametersSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                      CustomSignatureSerializer                       = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                     CustomCustomDataSerializer                      = null)
         {
 
             var json = JSONObject.Create(
@@ -495,6 +499,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                                                                                     CustomComponentSerializer,
                                                                                                                                                     CustomEVSESerializer,
                                                                                                                                                     CustomVariableSerializer,
+                                                                                                                                                    CustomPeriodicEventStreamParametersSerializer,
                                                                                                                                                     CustomCustomDataSerializer)))),
 
                            Signatures.Any()

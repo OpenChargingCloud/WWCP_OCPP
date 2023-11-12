@@ -163,9 +163,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var heartbeatRequest,
                          out var errorResponse,
-                         CustomHeartbeatRequestParser))
+                         CustomHeartbeatRequestParser) &&
+                heartbeatRequest is not null)
             {
-                return heartbeatRequest!;
+                return heartbeatRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a heartbeat request is invalid: " + errorResponse,

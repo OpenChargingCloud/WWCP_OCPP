@@ -158,9 +158,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var removeDefaultChargingTariffRequest,
                          out var errorResponse,
-                         CustomRemoveDefaultChargingTariffRequestParser))
+                         CustomRemoveDefaultChargingTariffRequestParser) &&
+                removeDefaultChargingTariffRequest is not null)
             {
-                return removeDefaultChargingTariffRequest!;
+                return removeDefaultChargingTariffRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a RemoveDefaultChargingTariff request is invalid: " + errorResponse,

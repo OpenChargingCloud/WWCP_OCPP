@@ -157,9 +157,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var notifyEVChargingNeedsResponse,
                          out var errorResponse,
-                         CustomNotifyEVChargingNeedsResponseParser))
+                         CustomNotifyEVChargingNeedsResponseParser) &&
+                notifyEVChargingNeedsResponse is not null)
             {
-                return notifyEVChargingNeedsResponse!;
+                return notifyEVChargingNeedsResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a notify EV charging needs response is invalid: " + errorResponse,

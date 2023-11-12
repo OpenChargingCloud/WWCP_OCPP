@@ -321,9 +321,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getCompositeScheduleResponse,
                          out var errorResponse,
-                         CustomGetCompositeScheduleResponseParser))
+                         CustomGetCompositeScheduleResponseParser) &&
+                getCompositeScheduleResponse is not null)
             {
-                return getCompositeScheduleResponse!;
+                return getCompositeScheduleResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get composite schedule response is invalid: " + errorResponse,

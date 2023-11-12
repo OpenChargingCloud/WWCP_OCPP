@@ -161,9 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var reservationStatusUpdateResponse,
                          out var errorResponse,
-                         CustomReservationStatusUpdateResponseParser))
+                         CustomReservationStatusUpdateResponseParser) &&
+                reservationStatusUpdateResponse is not null)
             {
-                return reservationStatusUpdateResponse!;
+                return reservationStatusUpdateResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a reservation status update response is invalid: " + errorResponse,

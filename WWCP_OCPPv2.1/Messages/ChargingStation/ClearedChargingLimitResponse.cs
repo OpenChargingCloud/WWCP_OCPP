@@ -161,9 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var clearedChargingLimitResponse,
                          out var errorResponse,
-                         CustomClearedChargingLimitResponseParser))
+                         CustomClearedChargingLimitResponseParser) &&
+                clearedChargingLimitResponse is not null)
             {
-                return clearedChargingLimitResponse!;
+                return clearedChargingLimitResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a cleared charging limit response is invalid: " + errorResponse,

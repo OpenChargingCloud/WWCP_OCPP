@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext UserJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/getUserChargingTariffRequest");
+        public readonly static JSONLDContext UserJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/getUserChargingTariffRequest");
 
         #endregion
 
@@ -151,9 +151,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var getUserChargingTariffRequest,
                          out var errorResponse,
-                         CustomGetUserChargingTariffRequestParser))
+                         CustomGetUserChargingTariffRequestParser) &&
+                getUserChargingTariffRequest is not null)
             {
-                return getUserChargingTariffRequest!;
+                return getUserChargingTariffRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a GetUserChargingTariff request is invalid: " + errorResponse,

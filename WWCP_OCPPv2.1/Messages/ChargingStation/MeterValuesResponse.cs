@@ -161,9 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var meterValuesResponse,
                          out var errorResponse,
-                         CustomMeterValuesResponseParser))
+                         CustomMeterValuesResponseParser) &&
+                meterValuesResponse is not null)
             {
-                return meterValuesResponse!;
+                return meterValuesResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a meter values response is invalid: " + errorResponse,

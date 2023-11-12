@@ -128,16 +128,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomMonitoringDataParser">A delegate to parse custom component variable JSON objects.</param>
-        public static MonitoringData Parse(JObject                                          JSON,
-                                              CustomJObjectParserDelegate<MonitoringData>?  CustomMonitoringDataParser   = null)
+        public static MonitoringData Parse(JObject                                       JSON,
+                                           CustomJObjectParserDelegate<MonitoringData>?  CustomMonitoringDataParser   = null)
         {
 
             if (TryParse(JSON,
                          out var componentVariable,
                          out var errorResponse,
-                         CustomMonitoringDataParser))
+                         CustomMonitoringDataParser) &&
+                componentVariable is not null)
             {
-                return componentVariable!;
+                return componentVariable;
             }
 
             throw new ArgumentException("The given JSON representation of a component variable is invalid: " + errorResponse,

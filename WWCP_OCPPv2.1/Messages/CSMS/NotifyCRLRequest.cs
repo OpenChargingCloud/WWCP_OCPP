@@ -169,9 +169,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var notifyCRLRequest,
                          out var errorResponse,
-                         CustomNotifyCRLRequestParser))
+                         CustomNotifyCRLRequestParser) &&
+                notifyCRLRequest is not null)
             {
-                return notifyCRLRequest!;
+                return notifyCRLRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a notify certificate revocation list request is invalid: " + errorResponse,

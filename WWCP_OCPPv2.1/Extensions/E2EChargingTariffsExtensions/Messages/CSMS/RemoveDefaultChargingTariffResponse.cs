@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/removeDefaultChargingTariffResponse");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/removeDefaultChargingTariffResponse");
 
         #endregion
 
@@ -195,9 +195,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var removeDefaultChargingTariffResponse,
                          out var errorResponse,
-                         CustomRemoveDefaultChargingTariffResponseParser))
+                         CustomRemoveDefaultChargingTariffResponseParser) &&
+                removeDefaultChargingTariffResponse is not null)
             {
-                return removeDefaultChargingTariffResponse!;
+                return removeDefaultChargingTariffResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a remove default charging tariff response is invalid: " + errorResponse,

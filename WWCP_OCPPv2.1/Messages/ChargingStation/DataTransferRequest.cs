@@ -210,9 +210,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var dataTransferRequest,
                          out var errorResponse,
-                         CustomDataTransferRequestParser))
+                         CustomDataTransferRequestParser) &&
+                dataTransferRequest is not null)
             {
-                return dataTransferRequest!;
+                return dataTransferRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a data transfer request is invalid: " + errorResponse,

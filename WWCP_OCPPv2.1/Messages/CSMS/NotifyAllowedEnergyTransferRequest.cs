@@ -152,9 +152,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var notifyAllowedEnergyTransferRequest,
                          out var errorResponse,
-                         CustomNotifyAllowedEnergyTransferRequestParser))
+                         CustomNotifyAllowedEnergyTransferRequestParser) &&
+                notifyAllowedEnergyTransferRequest is not null)
             {
-                return notifyAllowedEnergyTransferRequest!;
+                return notifyAllowedEnergyTransferRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a notify allowed energy transfer request is invalid: " + errorResponse,

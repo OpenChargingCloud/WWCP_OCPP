@@ -155,9 +155,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var afrrSignalResponse,
                          out var errorResponse,
-                         CustomAFRRSignalResponseParser))
+                         CustomAFRRSignalResponseParser) &&
+                afrrSignalResponse is not null)
             {
-                return afrrSignalResponse!;
+                return afrrSignalResponse;
             }
 
             throw new ArgumentException("The given JSON representation of an AFRR signal response is invalid: " + errorResponse,

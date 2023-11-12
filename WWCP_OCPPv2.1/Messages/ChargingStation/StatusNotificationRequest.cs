@@ -239,9 +239,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var statusNotificationRequest,
                          out var errorResponse,
-                         CustomStatusNotificationRequestParser))
+                         CustomStatusNotificationRequestParser) &&
+                statusNotificationRequest is not null)
             {
-                return statusNotificationRequest!;
+                return statusNotificationRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a status notification request is invalid: " + errorResponse,

@@ -236,9 +236,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var publishFirmwareStatusNotificationRequest,
                          out var errorResponse,
-                         CustomPublishFirmwareStatusNotificationRequestParser))
+                         CustomPublishFirmwareStatusNotificationRequestParser) &&
+                publishFirmwareStatusNotificationRequest is not null)
             {
-                return publishFirmwareStatusNotificationRequest!;
+                return publishFirmwareStatusNotificationRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a publish firmware status notification request is invalid: " + errorResponse,

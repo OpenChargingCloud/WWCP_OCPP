@@ -156,9 +156,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var notifyAllowedEnergyTransferResponse,
                          out var errorResponse,
-                         CustomNotifyAllowedEnergyTransferResponseParser))
+                         CustomNotifyAllowedEnergyTransferResponseParser) &&
+                notifyAllowedEnergyTransferResponse is not null)
             {
-                return notifyAllowedEnergyTransferResponse!;
+                return notifyAllowedEnergyTransferResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a notify allowed energy transfer response is invalid: " + errorResponse,

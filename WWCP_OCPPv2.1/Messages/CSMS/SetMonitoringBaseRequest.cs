@@ -192,9 +192,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var setMonitoringBaseRequest,
                          out var errorResponse,
-                         CustomSetMonitoringBaseRequestParser))
+                         CustomSetMonitoringBaseRequestParser) &&
+                setMonitoringBaseRequest is not null)
             {
-                return setMonitoringBaseRequest!;
+                return setMonitoringBaseRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a set monitoring base request is invalid: " + errorResponse,

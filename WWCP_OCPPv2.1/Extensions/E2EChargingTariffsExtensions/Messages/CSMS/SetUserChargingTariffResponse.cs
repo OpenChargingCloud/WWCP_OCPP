@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext UserJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/setUserChargingTariffResponse");
+        public readonly static JSONLDContext UserJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/setUserChargingTariffResponse");
 
         #endregion
 
@@ -185,9 +185,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var setUserChargingTariffResponse,
                          out var errorResponse,
-                         CustomSetUserChargingTariffResponseParser))
+                         CustomSetUserChargingTariffResponseParser) &&
+                setUserChargingTariffResponse is not null)
             {
-                return setUserChargingTariffResponse!;
+                return setUserChargingTariffResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a set user charging tariff response is invalid: " + errorResponse,

@@ -135,9 +135,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var notifyPriorityChargingResponse,
                          out var errorResponse,
-                         CustomNotifyPriorityChargingResponseParser))
+                         CustomNotifyPriorityChargingResponseParser) &&
+                notifyPriorityChargingResponse is not null)
             {
-                return notifyPriorityChargingResponse!;
+                return notifyPriorityChargingResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a notify priority charging response is invalid: " + errorResponse,

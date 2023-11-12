@@ -410,9 +410,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var notifyEventRequest,
                          out var errorResponse,
-                         CustomNotifyEventRequestParser))
+                         CustomNotifyEventRequestParser) &&
+                notifyEventRequest is not null)
             {
-                return notifyEventRequest!;
+                return notifyEventRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a notify event request is invalid: " + errorResponse,

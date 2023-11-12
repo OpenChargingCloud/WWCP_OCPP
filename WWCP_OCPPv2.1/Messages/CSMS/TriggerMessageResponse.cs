@@ -226,9 +226,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var triggerMessageResponse,
                          out var errorResponse,
-                         CustomTriggerMessageResponseParser))
+                         CustomTriggerMessageResponseParser) &&
+                triggerMessageResponse is not null)
             {
-                return triggerMessageResponse!;
+                return triggerMessageResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a trigger message response is invalid: " + errorResponse,

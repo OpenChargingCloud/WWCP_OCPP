@@ -425,9 +425,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var authorizeResponse,
                          out var errorResponse,
-                         CustomAuthorizeResponseParser))
+                         CustomAuthorizeResponseParser) &&
+                authorizeResponse is not null)
             {
-                return authorizeResponse!;
+                return authorizeResponse;
             }
 
             throw new ArgumentException("The given JSON representation of an authorize response is invalid: " + errorResponse,

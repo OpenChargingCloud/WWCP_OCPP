@@ -180,9 +180,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getLocalListVersionResponse,
                          out var errorResponse,
-                         CustomGetLocalListVersionResponseParser))
+                         CustomGetLocalListVersionResponseParser) &&
+                getLocalListVersionResponse is not null)
             {
-                return getLocalListVersionResponse!;
+                return getLocalListVersionResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get local list version response is invalid: " + errorResponse,

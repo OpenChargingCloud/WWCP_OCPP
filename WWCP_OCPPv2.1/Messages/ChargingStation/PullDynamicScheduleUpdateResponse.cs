@@ -315,9 +315,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var pullDynamicScheduleUpdateResponse,
                          out var errorResponse,
-                         CustomPullDynamicScheduleUpdateResponseParser))
+                         CustomPullDynamicScheduleUpdateResponseParser) &&
+                pullDynamicScheduleUpdateResponse is not null)
             {
-                return pullDynamicScheduleUpdateResponse!;
+                return pullDynamicScheduleUpdateResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a pull dynamic schedule update response is invalid: " + errorResponse,

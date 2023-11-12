@@ -225,9 +225,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var requestStopTransactionResponse,
                          out var errorResponse,
-                         CustomRequestStopTransactionResponseParser))
+                         CustomRequestStopTransactionResponseParser) &&
+                requestStopTransactionResponse is not null)
             {
-                return requestStopTransactionResponse!;
+                return requestStopTransactionResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a request stop transaction response is invalid: " + errorResponse,

@@ -206,9 +206,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var resetRequest,
                          out var errorResponse,
-                         CustomResetRequestParser))
+                         CustomResetRequestParser) &&
+                resetRequest is not null)
             {
-                return resetRequest!;
+                return resetRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a reset request is invalid: " + errorResponse,

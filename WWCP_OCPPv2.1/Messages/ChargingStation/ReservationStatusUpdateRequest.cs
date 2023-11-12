@@ -206,9 +206,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var reservationStatusUpdateRequest,
                          out var errorResponse,
-                         CustomReservationStatusUpdateRequestParser))
+                         CustomReservationStatusUpdateRequestParser) &&
+                reservationStatusUpdateRequest is not null)
             {
-                return reservationStatusUpdateRequest!;
+                return reservationStatusUpdateRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a reservation status update request is invalid: " + errorResponse,

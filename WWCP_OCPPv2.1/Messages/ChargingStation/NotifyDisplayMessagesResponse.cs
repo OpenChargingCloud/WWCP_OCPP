@@ -161,9 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var notifyDisplayMessagesResponse,
                          out var errorResponse,
-                         CustomNotifyDisplayMessagesResponseParser))
+                         CustomNotifyDisplayMessagesResponseParser) &&
+                notifyDisplayMessagesResponse is not null)
             {
-                return notifyDisplayMessagesResponse!;
+                return notifyDisplayMessagesResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a notify display messages response is invalid: " + errorResponse,

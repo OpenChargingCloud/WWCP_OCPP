@@ -304,9 +304,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var setVariableRequest,
                          out var errorResponse,
-                         CustomSetVariablesRequestParser))
+                         CustomSetVariablesRequestParser) &&
+                setVariableRequest is not null)
             {
-                return setVariableRequest!;
+                return setVariableRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a set variables request is invalid: " + errorResponse,

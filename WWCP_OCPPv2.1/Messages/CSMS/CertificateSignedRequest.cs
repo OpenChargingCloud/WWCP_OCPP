@@ -220,9 +220,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var certificateSignedRequest,
                          out var errorResponse,
-                         CustomCertificateSignedRequestParser))
+                         CustomCertificateSignedRequestParser) &&
+                certificateSignedRequest is not null)
             {
-                return certificateSignedRequest!;
+                return certificateSignedRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a certificate signed request is invalid: " + errorResponse,

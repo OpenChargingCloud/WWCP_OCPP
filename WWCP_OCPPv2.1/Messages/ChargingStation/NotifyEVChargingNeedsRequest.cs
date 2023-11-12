@@ -179,9 +179,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var notifyEVChargingNeedsRequest,
                          out var errorResponse,
-                         CustomNotifyEVChargingNeedsRequestParser))
+                         CustomNotifyEVChargingNeedsRequestParser) &&
+                notifyEVChargingNeedsRequest is not null)
             {
-                return notifyEVChargingNeedsRequest!;
+                return notifyEVChargingNeedsRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a notify EV charging needs request is invalid: " + errorResponse,

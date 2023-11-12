@@ -206,9 +206,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var clearedChargingLimitRequest,
                          out var errorResponse,
-                         CustomClearedChargingLimitRequestParser))
+                         CustomClearedChargingLimitRequestParser) &&
+                clearedChargingLimitRequest is not null)
             {
-                return clearedChargingLimitRequest!;
+                return clearedChargingLimitRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a cleared charging limit request is invalid: " + errorResponse,

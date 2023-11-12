@@ -226,9 +226,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var changeAvailabilityRequest,
                          out var errorResponse,
-                         CustomChangeAvailabilityRequestSerializer))
+                         CustomChangeAvailabilityRequestSerializer) &&
+                changeAvailabilityRequest is not null)
             {
-                return changeAvailabilityRequest!;
+                return changeAvailabilityRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a change availability request is invalid: " + errorResponse,

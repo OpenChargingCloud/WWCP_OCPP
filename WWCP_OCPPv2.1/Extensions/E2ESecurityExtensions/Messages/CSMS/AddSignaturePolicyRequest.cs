@@ -148,9 +148,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          ChargingStationId,
                          out var addSignaturePolicyRequest,
                          out var errorResponse,
-                         CustomAddSignaturePolicyRequestParser))
+                         CustomAddSignaturePolicyRequestParser) &&
+                addSignaturePolicyRequest is not null)
             {
-                return addSignaturePolicyRequest!;
+                return addSignaturePolicyRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a AddSignaturePolicy request is invalid: " + errorResponse,

@@ -225,9 +225,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var clearCacheResponse,
                          out var errorResponse,
-                         CustomClearCacheResponseParser))
+                         CustomClearCacheResponseParser) &&
+                clearCacheResponse is not null)
             {
-                return clearCacheResponse!;
+                return clearCacheResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a clear cache response is invalid: " + errorResponse,

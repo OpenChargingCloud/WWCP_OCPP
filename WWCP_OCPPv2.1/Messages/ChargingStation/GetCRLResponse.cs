@@ -165,9 +165,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var getCRLResponse,
                          out var errorResponse,
-                         CustomGetCRLResponseParser))
+                         CustomGetCRLResponseParser) &&
+                getCRLResponse is not null)
             {
-                return getCRLResponse!;
+                return getCRLResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get certificate revocation list response is invalid: " + errorResponse,

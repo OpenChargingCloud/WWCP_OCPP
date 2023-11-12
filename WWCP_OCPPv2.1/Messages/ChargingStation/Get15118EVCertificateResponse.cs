@@ -252,9 +252,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                          JSON,
                          out var get15118EVCertificateResponse,
                          out var errorResponse,
-                         CustomGet15118EVCertificateResponseParser))
+                         CustomGet15118EVCertificateResponseParser) &&
+                get15118EVCertificateResponse is not null)
             {
-                return get15118EVCertificateResponse!;
+                return get15118EVCertificateResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get 15118 EV certificate response is invalid: " + errorResponse,

@@ -193,9 +193,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var getLogResponse,
                          out var errorResponse,
-                         CustomGetLogResponseParser))
+                         CustomGetLogResponseParser) &&
+                getLogResponse is not null)
             {
-                return getLogResponse!;
+                return getLogResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get log response is invalid: " + errorResponse,

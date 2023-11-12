@@ -225,9 +225,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var clearDisplayMessageResponse,
                          out var errorResponse,
-                         CustomClearDisplayMessageResponseParser))
+                         CustomClearDisplayMessageResponseParser) &&
+                clearDisplayMessageResponse is not null)
             {
-                return clearDisplayMessageResponse!;
+                return clearDisplayMessageResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a clear display message response is invalid: " + errorResponse,

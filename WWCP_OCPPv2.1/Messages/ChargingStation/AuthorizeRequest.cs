@@ -339,9 +339,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          ChargingStationId,
                          out var authorizeRequest,
                          out var errorResponse,
-                         CustomAuthorizeRequestParser))
+                         CustomAuthorizeRequestParser) &&
+                authorizeRequest is not null)
             {
-                return authorizeRequest!;
+                return authorizeRequest;
             }
 
             throw new ArgumentException("The given JSON representation of an authorize request is invalid: " + errorResponse,

@@ -226,9 +226,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          JSON,
                          out var unlockConnectorResponse,
                          out var errorResponse,
-                         CustomUnlockConnectorResponseParser))
+                         CustomUnlockConnectorResponseParser) &&
+                unlockConnectorResponse is not null)
             {
-                return unlockConnectorResponse!;
+                return unlockConnectorResponse;
             }
 
             throw new ArgumentException("The given JSON representation of an unlock connector response is invalid: " + errorResponse,
