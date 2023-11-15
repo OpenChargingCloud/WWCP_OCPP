@@ -336,7 +336,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => StatusInfo is not null &&
 
-               ReasonCode.Equals(StatusInfo.ReasonCode) &&
+             ((ReasonCode     is     null && StatusInfo.ReasonCode     is     null) ||
+              (ReasonCode     is not null && StatusInfo.ReasonCode     is not null && ReasonCode.    Equals(StatusInfo.ReasonCode)))     &&
 
              ((AdditionalInfo is     null && StatusInfo.AdditionalInfo is     null) ||
               (AdditionalInfo is not null && StatusInfo.AdditionalInfo is not null && AdditionalInfo.Equals(StatusInfo.AdditionalInfo))) &&
@@ -358,11 +359,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             unchecked
             {
 
-                return ReasonCode.     GetHashCode()       * 5 ^
-
-                      (AdditionalInfo?.GetHashCode() ?? 0) * 3 ^
-
-                       base.           GetHashCode();
+                return (ReasonCode?.    GetHashCode() ?? 0) * 5 ^
+                       (AdditionalInfo?.GetHashCode() ?? 0) * 3 ^
+                        base.           GetHashCode();
 
             }
         }
@@ -376,7 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{ReasonCode}{(AdditionalInfo is not null ? $"({AdditionalInfo})" : "")}";
+            => $"{ReasonCode ?? "-"}{(AdditionalInfo is not null ? $"({AdditionalInfo})" : "")}";
 
         #endregion
 
@@ -619,7 +618,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-
         #region Operator overloading
 
         #region Operator == (StatusInfo1, StatusInfo2)
@@ -690,8 +688,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => StatusInfo is not null &&
 
-               Status.    Equals(StatusInfo.Status)     &&
-               ReasonCode.Equals(StatusInfo.ReasonCode) &&
+               Status.Equals(StatusInfo.Status) &&
+
+             ((ReasonCode     is     null && StatusInfo.ReasonCode     is     null) ||
+              (ReasonCode     is not null && StatusInfo.ReasonCode     is not null && ReasonCode.    Equals(StatusInfo.ReasonCode)))     &&
 
              ((AdditionalInfo is     null && StatusInfo.AdditionalInfo is     null) ||
               (AdditionalInfo is not null && StatusInfo.AdditionalInfo is not null && AdditionalInfo.Equals(StatusInfo.AdditionalInfo))) &&
@@ -714,7 +714,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             {
 
                 return Status.         GetHashCode()       * 7 ^
-                       ReasonCode.     GetHashCode()       * 5 ^
+                      (ReasonCode?.    GetHashCode() ?? 0) * 5 ^
                       (AdditionalInfo?.GetHashCode() ?? 0) * 3 ^
                        base.           GetHashCode();
 

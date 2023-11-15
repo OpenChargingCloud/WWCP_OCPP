@@ -120,7 +120,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var imageLink,
                          out var errorResponse,
-                         CustomImageLinkParser))
+                         CustomImageLinkParser) &&
+                imageLink is not null)
             {
                 return imageLink;
             }

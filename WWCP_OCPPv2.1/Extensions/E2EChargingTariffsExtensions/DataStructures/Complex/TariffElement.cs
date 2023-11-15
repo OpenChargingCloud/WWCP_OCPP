@@ -121,7 +121,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var tariffElement,
                          out var errorResponse,
-                         CustomTariffElementParser))
+                         CustomTariffElementParser) &&
+                tariffElement is not null)
             {
                 return tariffElement;
             }
@@ -168,9 +169,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="TariffElement">The parsed tariff element.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject            JSON,
-                                       out TariffElement  TariffElement,
-                                       out String?        ErrorResponse)
+        public static Boolean TryParse(JObject             JSON,
+                                       out TariffElement?  TariffElement,
+                                       out String?         ErrorResponse)
 
             => TryParse(JSON,
                         out TariffElement,
@@ -186,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomTariffElementParser">A delegate to parse custom tariff element JSON objects.</param>
         public static Boolean TryParse(JObject                                      JSON,
-                                       out TariffElement                            TariffElement,
+                                       out TariffElement?                           TariffElement,
                                        out String?                                  ErrorResponse,
                                        CustomJObjectParserDelegate<TariffElement>?  CustomTariffElementParser   = null)
         {

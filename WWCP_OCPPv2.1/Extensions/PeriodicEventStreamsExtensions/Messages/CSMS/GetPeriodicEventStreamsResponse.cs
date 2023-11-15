@@ -147,7 +147,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            this.Status = GenericStatus.Rejected;
+            this.ConstantStreamData  = Array.Empty<ConstantStreamData>();
+            this.Status              = GenericStatus.Rejected;
 
         }
 

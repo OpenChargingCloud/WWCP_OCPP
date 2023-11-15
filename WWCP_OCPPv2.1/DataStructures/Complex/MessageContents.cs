@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System;
 
 #endregion
 
@@ -150,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public MessageContents()
         {
-            this.messageContents = new HashSet<MessageContent>();
+            this.messageContents = [];
         }
 
         #endregion
@@ -666,8 +667,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Generate the hashcode of this object.
         /// </summary>
         public void GenerateHashCode()
-
-            => messageContents.CalcHashCode();
+        {
+            hashCode = messageContents.CalcHashCode();
+        }
 
         #endregion
 
