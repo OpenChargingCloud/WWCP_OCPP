@@ -64,19 +64,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this AFRR signal is null or empty.
         /// </summary>
-        public Boolean IsNullOrEmpty
+        public readonly Boolean IsNullOrEmpty
             => false;
 
         /// <summary>
         /// Indicates whether this AFRR signal is NOT null or empty.
         /// </summary>
-        public Boolean IsNotNullOrEmpty
+        public readonly Boolean IsNotNullOrEmpty
             => true;
 
         /// <summary>
         /// The length of the AFRR signal.
         /// </summary>
-        public UInt64 Length
+        public readonly UInt64 Length
             => 1;
 
         #endregion

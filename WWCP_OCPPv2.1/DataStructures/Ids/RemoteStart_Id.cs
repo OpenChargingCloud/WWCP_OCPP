@@ -69,19 +69,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
-        public Boolean IsNullOrEmpty
+        public readonly Boolean IsNullOrEmpty
             => Value == 0;
 
         /// <summary>
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
-        public Boolean IsNotNullOrEmpty
+        public readonly Boolean IsNotNullOrEmpty
             => Value != 0;
 
         /// <summary>
         /// The length of the remote start identification.
         /// </summary>
-        public UInt64 Length
+        public readonly UInt64 Length
             => (UInt64) Value.ToString().Length;
 
         #endregion

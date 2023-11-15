@@ -67,19 +67,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this measurement location is null or empty.
         /// </summary>
-        public Boolean IsNullOrEmpty
+        public readonly Boolean IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this measurement location is NOT null or empty.
         /// </summary>
-        public Boolean IsNotNullOrEmpty
+        public readonly Boolean IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the measurement location.
         /// </summary>
-        public UInt64 Length
+        public readonly UInt64 Length
             => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion

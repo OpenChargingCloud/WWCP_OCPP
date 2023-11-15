@@ -78,19 +78,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
-        public Boolean IsNullOrEmpty
+        public readonly Boolean IsNullOrEmpty
             => Text.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
-        public Boolean IsNotNullOrEmpty
+        public readonly Boolean IsNotNullOrEmpty
             => Text.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the security event type.
         /// </summary>
-        public UInt64 Length
+        public readonly UInt64 Length
             => (UInt64) (Text?.Length ?? 0);
 
         #endregion

@@ -69,19 +69,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
-        public Boolean IsNullOrEmpty
+        public readonly Boolean IsNullOrEmpty
             => false;
 
         /// <summary>
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
-        public Boolean IsNotNullOrEmpty
+        public readonly Boolean IsNotNullOrEmpty
             => false;
 
         /// <summary>
         /// The length of this identification.
         /// </summary>
-        public UInt64 Length
+        public readonly UInt64 Length
             => (UInt64) Value.ToString().Length;
 
         #endregion

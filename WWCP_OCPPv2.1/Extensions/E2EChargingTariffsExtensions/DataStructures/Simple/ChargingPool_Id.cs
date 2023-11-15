@@ -92,19 +92,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Indicates whether this charging pool identification is null or empty.
         /// </summary>
-        public Boolean IsNullOrEmpty
+        public readonly Boolean IsNullOrEmpty
             => Suffix.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this charging pool identification is NOT null or empty.
         /// </summary>
-        public Boolean IsNotNullOrEmpty
+        public readonly Boolean IsNotNullOrEmpty
             => Suffix.IsNotNullOrEmpty();
 
         /// <summary>
         /// Returns the length of the identification.
         /// </summary>
-        public UInt64 Length
+        public readonly UInt64 Length
             => (UInt64) (RAW?.Length ?? 0);
 
         #endregion
