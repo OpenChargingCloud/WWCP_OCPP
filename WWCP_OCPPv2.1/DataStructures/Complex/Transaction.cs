@@ -169,9 +169,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var transaction,
                          out var errorResponse,
-                         CustomTransactionParser))
+                         CustomTransactionParser) &&
+                transaction is not null)
             {
-                return transaction!;
+                return transaction;
             }
 
             throw new ArgumentException("The given JSON representation of a transaction is invalid: " + errorResponse,

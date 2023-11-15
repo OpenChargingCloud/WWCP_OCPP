@@ -109,9 +109,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var energyMix,
                          out var errorResponse,
-                         CustomEnergyMixParser))
+                         CustomEnergyMixParser) &&
+                energyMix is not null)
             {
-                return energyMix!;
+                return energyMix;
             }
 
             throw new ArgumentException("The given JSON representation of an energy mix is invalid: " + errorResponse,

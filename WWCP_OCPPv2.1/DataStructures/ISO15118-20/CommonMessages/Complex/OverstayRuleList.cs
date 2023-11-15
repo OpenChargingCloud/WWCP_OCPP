@@ -98,9 +98,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             if (TryParse(JSON,
                          out var overstayRuleList,
                          out var errorResponse,
-                         CustomOverstayRuleListParser))
+                         CustomOverstayRuleListParser) &&
+                overstayRuleList is not null)
             {
-                return overstayRuleList!;
+                return overstayRuleList;
             }
 
             throw new ArgumentException("The given JSON representation of an overstay rule list is invalid: " + errorResponse,

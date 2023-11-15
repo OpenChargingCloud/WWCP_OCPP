@@ -115,18 +115,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomEVSEStatusInfoParser">A delegate to parse custom status information.</param>
-        public static EVSEStatusInfo<T> Parse(JObject                                      JSON,
-                                          TryParser<T>                                 StatusParser,
-                                          CustomJObjectParserDelegate<EVSEStatusInfo<T>>?  CustomEVSEStatusInfoParser   = null)
+        public static EVSEStatusInfo<T> Parse(JObject                                          JSON,
+                                              TryParser<T>                                     StatusParser,
+                                              CustomJObjectParserDelegate<EVSEStatusInfo<T>>?  CustomEVSEStatusInfoParser   = null)
         {
 
             if (TryParse(JSON,
                          out var statusInfo,
                          out var errorResponse,
                          StatusParser,
-                         CustomEVSEStatusInfoParser))
+                         CustomEVSEStatusInfoParser) &&
+                statusInfo is not null)
             {
-                return statusInfo!;
+                return statusInfo;
             }
 
             throw new ArgumentException("The given JSON representation of status information is invalid: " + errorResponse,

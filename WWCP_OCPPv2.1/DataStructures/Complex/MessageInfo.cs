@@ -188,9 +188,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var messageInfo,
                          out var errorResponse,
-                         CustomMessageInfoParser))
+                         CustomMessageInfoParser) &&
+                messageInfo is not null)
             {
-                return messageInfo!;
+                return messageInfo;
             }
 
             throw new ArgumentException("The given JSON representation of message info is invalid: " + errorResponse,

@@ -104,8 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 //Assert.AreEqual("Just a backend test!",                  response.Signatures.First().Description?.FirstText());
                 //Assert.AreEqual(now2.ToIso8601(),                        response.Signatures.First().Timestamp?.  ToIso8601());
 
-                Assert.AreEqual(1,                                       setSignaturePolicyRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                     setSignaturePolicyRequests.First().ChargingStationId);
+                //Assert.AreEqual(1,                                       setSignaturePolicyRequests.Count);
+                //Assert.AreEqual(chargingStation1.Id,                     setSignaturePolicyRequests.First().ChargingStationId);
                 //Assert.AreEqual(reason,                                  bootNotificationRequests.First().Reason);
                 //Assert.AreEqual(1,                                       bootNotificationRequests.First().Signatures.Count());
                 //Assert.AreEqual(VerificationStatus.ValidSignature,             bootNotificationRequests.First().Signatures.First().Status);

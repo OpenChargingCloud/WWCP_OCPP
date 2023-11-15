@@ -101,9 +101,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var customData,
                          out var errorResponse,
-                         CustomCustomDataParser))
+                         CustomCustomDataParser) &&
+                customData is not null)
             {
-                return customData!;
+                return customData;
             }
 
             throw new ArgumentException("The given JSON representation of custom data is invalid: " + errorResponse,

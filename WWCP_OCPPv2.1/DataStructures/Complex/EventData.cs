@@ -305,9 +305,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var eventData,
                          out var errorResponse,
-                         CustomEventDataParser))
+                         CustomEventDataParser) &&
+                eventData is not null)
             {
-                return eventData!;
+                return eventData;
             }
 
             throw new ArgumentException("The given JSON representation of event data is invalid: " + errorResponse,

@@ -167,9 +167,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var publicKey,
                          out var errorResponse,
-                         CustomPublicKeyParser))
+                         CustomPublicKeyParser) &&
+                publicKey is not null)
             {
-                return publicKey!;
+                return publicKey;
             }
 
             throw new ArgumentException("The given JSON representation of a public key is invalid: " + errorResponse,

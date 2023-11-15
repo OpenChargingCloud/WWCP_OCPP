@@ -145,9 +145,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var component,
                          out var errorResponse,
-                         CustomComponentParser))
+                         CustomComponentParser) &&
+                component is not null)
             {
-                return component!;
+                return component;
             }
 
             throw new ArgumentException("The given JSON representation of a component is invalid: " + errorResponse,

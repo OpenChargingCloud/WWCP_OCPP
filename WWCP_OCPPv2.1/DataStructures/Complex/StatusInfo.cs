@@ -117,9 +117,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var statusInfo,
                          out var errorResponse,
-                         CustomStatusInfoParser))
+                         CustomStatusInfoParser) &&
+                statusInfo is not null)
             {
-                return statusInfo!;
+                return statusInfo;
             }
 
             throw new ArgumentException("The given JSON representation of status information is invalid: " + errorResponse,
@@ -447,9 +448,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          out var statusInfo,
                          out var errorResponse,
                          StatusParser,
-                         CustomStatusInfoParser))
+                         CustomStatusInfoParser) &&
+                statusInfo is not null)
             {
-                return statusInfo!;
+                return statusInfo;
             }
 
             throw new ArgumentException("The given JSON representation of status information is invalid: " + errorResponse,
@@ -733,6 +735,5 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
     }
-
 
 }

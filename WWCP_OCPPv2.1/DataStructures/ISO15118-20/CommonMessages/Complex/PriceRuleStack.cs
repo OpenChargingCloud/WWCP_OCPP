@@ -101,9 +101,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             if (TryParse(JSON,
                          out var priceRuleStack,
                          out var errorResponse,
-                         CustomPriceRuleStackParser))
+                         CustomPriceRuleStackParser) &&
+                priceRuleStack is not null)
             {
-                return priceRuleStack!;
+                return priceRuleStack;
             }
 
             throw new ArgumentException("The given JSON representation of a price rule stack is invalid: " + errorResponse,

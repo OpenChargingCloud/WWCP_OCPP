@@ -116,9 +116,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var transactionLimits,
                          out var errorResponse,
-                         CustomTransactionLimitsParser))
+                         CustomTransactionLimitsParser) &&
+                transactionLimits is not null)
             {
-                return transactionLimits!;
+                return transactionLimits;
             }
 
             throw new ArgumentException("The given JSON representation of transaction limits is invalid: " + errorResponse,

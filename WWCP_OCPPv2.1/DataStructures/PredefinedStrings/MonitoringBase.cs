@@ -196,20 +196,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Activate all pre-configured monitors.
         /// </summary>
         public static MonitoringBase All               { get; }
-            = Register("Watchdog");
+            = Register("All");
 
         /// <summary>
         /// Activate the default monitoring settings as recommended by the manufacturer.
         /// This is a subset of all preconfigured monitors.
         /// </summary>
         public static MonitoringBase FactoryDefault    { get; }
-            = Register("Watchdog");
+            = Register("FactoryDefault");
 
         /// <summary>
         /// Clears all custom monitors and disables all pre-configured monitors.
         /// </summary>
         public static MonitoringBase HardWiredOnly     { get; }
-            = Register("Watchdog");
+            = Register("HardWiredOnly");
 
         #endregion
 

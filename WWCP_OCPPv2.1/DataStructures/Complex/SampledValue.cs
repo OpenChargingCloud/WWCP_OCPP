@@ -192,9 +192,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var sampledValue,
                          out var errorResponse,
-                         CustomSampledValueParser))
+                         CustomSampledValueParser) &&
+                sampledValue is not null)
             {
-                return sampledValue!;
+                return sampledValue;
             }
 
             throw new ArgumentException("The given JSON representation of a sampled value is invalid: " + errorResponse,

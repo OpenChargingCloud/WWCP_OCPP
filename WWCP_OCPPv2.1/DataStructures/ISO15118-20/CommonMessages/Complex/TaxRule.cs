@@ -161,9 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             if (TryParse(JSON,
                          out var taxRule,
                          out var errorResponse,
-                         CustomTaxRuleParser))
+                         CustomTaxRuleParser) &&
+                taxRule is not null)
             {
-                return taxRule!;
+                return taxRule;
             }
 
             throw new ArgumentException("The given JSON representation of a tax rule is invalid: " + errorResponse,

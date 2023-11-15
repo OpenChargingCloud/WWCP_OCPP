@@ -259,9 +259,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var signaturePolicy,
                          out var errorResponse,
-                         CustomSignaturePolicyParser))
+                         CustomSignaturePolicyParser) &&
+                signaturePolicy is not null)
             {
-                return signaturePolicy!;
+                return signaturePolicy;
             }
 
             throw new ArgumentException("The given JSON representation of a signature policy is invalid: " + errorResponse,

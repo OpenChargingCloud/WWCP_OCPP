@@ -157,9 +157,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var acChargingParameters,
                          out var errorResponse,
-                         CustomACChargingParametersParser))
+                         CustomACChargingParametersParser) &&
+                acChargingParameters is not null)
             {
-                return acChargingParameters!;
+                return acChargingParameters;
             }
 
             throw new ArgumentException("The given JSON representation of AC charging parameters is invalid: " + errorResponse,

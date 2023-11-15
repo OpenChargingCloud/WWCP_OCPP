@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text, out var currentType))
                 return currentType;
 
-            return CurrentTypes.ACDC;
+            return CurrentTypes.Any;
 
         }
 
@@ -80,8 +80,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     CurrentType = CurrentTypes.DC;
                     return true;
 
+                case "HPC":
+                    CurrentType = CurrentTypes.HPC;
+                    return true;
+
                 default:
-                    CurrentType = CurrentTypes.ACDC;
+                    CurrentType = CurrentTypes.Any;
                     return false;
 
             }
@@ -95,9 +99,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this CurrentTypes CurrentType)
 
             => CurrentType switch {
-                   CurrentTypes.AC  => "AC",
-                   CurrentTypes.DC  => "DC",
-                   _                => "ACDC"
+                   CurrentTypes.AC   => "AC",
+                   CurrentTypes.DC   => "DC",
+                   CurrentTypes.HPC  => "HPC",
+                   _                 => "any"
                };
 
         #endregion
@@ -112,6 +117,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     {
 
         /// <summary>
+        /// Any type of current allowed
+        /// </summary>
+        Any,
+
+        /// <summary>
         /// Only AC charging allowed
         /// </summary>
         AC,
@@ -122,9 +132,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         DC,
 
         /// <summary>
-        /// AC and DC charging allowed
+        /// High power DC charging allowed
         /// </summary>
-        ACDC,
+        HPC
 
     }
 

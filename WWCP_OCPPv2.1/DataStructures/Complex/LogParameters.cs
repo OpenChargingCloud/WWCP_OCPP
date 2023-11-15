@@ -131,9 +131,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var logParameters,
                          out var errorResponse,
-                         CustomLogParametersParser))
+                         CustomLogParametersParser) &&
+                logParameters is not null)
             {
-                return logParameters!;
+                return logParameters;
             }
 
             throw new ArgumentException("The given JSON representation of log parameters is invalid: " + errorResponse,

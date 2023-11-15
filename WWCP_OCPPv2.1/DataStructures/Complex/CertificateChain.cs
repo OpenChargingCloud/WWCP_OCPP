@@ -79,9 +79,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text,
                          out var certificateChain,
                          out var errorResponse,
-                         CustomCertificateParser))
+                         CustomCertificateParser) &&
+                certificateChain is not null)
             {
-                return certificateChain!;
+                return certificateChain;
             }
 
             throw new ArgumentException($"Invalid text representation of a PEM encoded X.509 certificate chain: '{Text.SubstringMax(40)}'!",
@@ -105,9 +106,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Lines,
                          out var certificateChain,
                          out var errorResponse,
-                         CustomCertificateParser))
+                         CustomCertificateParser) &&
+                certificateChain is not null)
             {
-                return certificateChain!;
+                return certificateChain;
             }
 
             throw new ArgumentException($"Invalid text representation of a PEM encoded X.509 certificate chain: '{Lines.AggregateWith("").SubstringMax(40)}'!",

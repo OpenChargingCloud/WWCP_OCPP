@@ -125,9 +125,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var additionalInfo,
                          out var errorResponse,
-                         CustomAdditionalInfoParser))
+                         CustomAdditionalInfoParser) &&
+                additionalInfo is not null)
             {
-                return additionalInfo!;
+                return additionalInfo;
             }
 
             throw new ArgumentException("The given JSON representation of an additional info is invalid: " + errorResponse,

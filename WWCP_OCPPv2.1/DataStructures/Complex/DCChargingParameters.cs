@@ -219,9 +219,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var dcChargingParameters,
                          out var errorResponse,
-                         CustomDCChargingParametersParser))
+                         CustomDCChargingParametersParser) &&
+                dcChargingParameters is not null)
             {
-                return dcChargingParameters!;
+                return dcChargingParameters;
             }
 
             throw new ArgumentException("The given JSON representation of DC charging parameters is invalid: " + errorResponse,

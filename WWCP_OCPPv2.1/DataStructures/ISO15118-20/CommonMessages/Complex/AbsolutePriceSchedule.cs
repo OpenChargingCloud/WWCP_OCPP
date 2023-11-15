@@ -198,9 +198,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             if (TryParse(JSON,
                          out var absolutePriceSchedule,
                          out var errorResponse,
-                         CustomAbsolutePriceScheduleParser))
+                         CustomAbsolutePriceScheduleParser) &&
+                absolutePriceSchedule is not null)
             {
-                return absolutePriceSchedule!;
+                return absolutePriceSchedule;
             }
 
             throw new ArgumentException("The given JSON representation of an absolute price schedule is invalid: " + errorResponse,

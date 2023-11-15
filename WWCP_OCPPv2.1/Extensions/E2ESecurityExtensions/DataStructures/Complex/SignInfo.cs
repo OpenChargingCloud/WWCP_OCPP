@@ -236,9 +236,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var signInfo,
                          out var errorResponse,
-                         CustomSignInfoParser))
+                         CustomSignInfoParser) &&
+                signInfo is not null)
             {
-                return signInfo!;
+                return signInfo;
             }
 
             throw new ArgumentException("The given JSON representation of a signature information is invalid: " + errorResponse,

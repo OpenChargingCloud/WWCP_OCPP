@@ -166,9 +166,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var signedMeterValue,
                          out var errorResponse,
-                         CustomSignedMeterValueParser))
+                         CustomSignedMeterValueParser) &&
+                signedMeterValue is not null)
             {
-                return signedMeterValue!;
+                return signedMeterValue;
             }
 
             throw new ArgumentException("The given JSON representation of a signed meter value is invalid: " + errorResponse,

@@ -234,11 +234,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             if (TryParse(JSON,
-                         out var signInfo,
+                         out var userRole,
                          out var errorResponse,
-                         CustomUserRoleParser))
+                         CustomUserRoleParser) &&
+                userRole is not null)
             {
-                return signInfo!;
+                return userRole;
             }
 
             throw new ArgumentException("The given JSON representation of a signature information is invalid: " + errorResponse,
@@ -518,8 +519,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Object">A signature information to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is UserRole signInfo &&
-                   Equals(signInfo);
+            => Object is UserRole userRole &&
+                   Equals(userRole);
 
         #endregion
 

@@ -147,9 +147,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var reportData,
                          out var errorResponse,
-                         CustomReportDataParser))
+                         CustomReportDataParser) &&
+                reportData is not null)
             {
-                return reportData!;
+                return reportData;
             }
 
             throw new ArgumentException("The given JSON representation of report data is invalid: " + errorResponse,

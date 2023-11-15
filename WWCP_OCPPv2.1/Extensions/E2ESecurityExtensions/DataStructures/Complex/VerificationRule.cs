@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// An OCPP CSE cryptographic signature verification entry.
+    /// An OCPP CSE cryptographic verificationRule verification entry.
     /// </summary>
     public class VerificationRule : ACustomData,
                                     IEquatable<VerificationRule>
@@ -45,12 +45,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The context of the cryptographic signature verification entry.
+        /// The context of the cryptographic verificationRule verification entry.
         /// </summary>
         public JSONLDContext            Context     { get; }
 
         /// <summary>
-        /// The priority of the cryptographic signature verification entry.
+        /// The priority of the cryptographic verificationRule verification entry.
         /// </summary>
         public UInt32                   Priority    { get; }
 
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public KeyPair?                 KeyPair     { get; }
 
         /// <summary>
-        /// The context of the cryptographic signature verification action.
+        /// The context of the cryptographic verificationRule verification action.
         /// </summary>
         public VerificationRuleActions  Action      { get; }
 
@@ -69,11 +69,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new OCPP CSE cryptographic signature verification entry.
+        /// Create a new OCPP CSE cryptographic verificationRule verification entry.
         /// </summary>
-        /// <param name="Context">The context of the cryptographic signature entry.</param>
-        /// <param name="Priority">The priority of the cryptographic signature entry.</param>
-        /// <param name="Action">The context of the cryptographic signature action.</param>
+        /// <param name="Context">The context of the cryptographic verificationRule entry.</param>
+        /// <param name="Priority">The priority of the cryptographic verificationRule entry.</param>
+        /// <param name="Action">The context of the cryptographic verificationRule action.</param>
         /// <param name="KeyPair">The optional cryptographic key pair for verification.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
         public VerificationRule(JSONLDContext            Context,
@@ -116,23 +116,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (static) Parse   (JSON, CustomVerificationRuleParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a cryptographic signature.
+        /// Parse the given JSON representation of a cryptographic verificationRule.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
-        /// <param name="CustomVerificationRuleParser">A delegate to parse custom cryptographic signatures.</param>
+        /// <param name="CustomVerificationRuleParser">A delegate to parse custom cryptographic verification rules.</param>
         public static VerificationRule Parse(JObject                                         JSON,
                                              CustomJObjectParserDelegate<VerificationRule>?  CustomVerificationRuleParser   = null)
         {
 
             if (TryParse(JSON,
-                         out var signature,
+                         out var verificationRule,
                          out var errorResponse,
-                         CustomVerificationRuleParser))
+                         CustomVerificationRuleParser) &&
+                verificationRule is not null)
             {
-                return signature!;
+                return verificationRule;
             }
 
-            throw new ArgumentException("The given JSON representation of a signature is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a verificationRule is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
@@ -144,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a signature.
+        /// Try to parse the given JSON representation of a verificationRule.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="VerificationRule">The parsed connector type.</param>
@@ -160,12 +161,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a signature.
+        /// Try to parse the given JSON representation of a verificationRule.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="VerificationRule">The parsed connector type.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomVerificationRuleParser">A delegate to parse custom signatures.</param>
+        /// <param name="CustomVerificationRuleParser">A delegate to parse custom verification rules.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        out VerificationRule?                           VerificationRule,
                                        out String?                                     ErrorResponse,
@@ -180,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 #region Priority      [mandatory]
 
                 if (!JSON.ParseMandatory("priority",
-                                         "signature policy priority",
+                                         "verificationRule policy priority",
                                          out UInt32 Priority,
                                          out ErrorResponse))
                 {
@@ -249,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 VerificationRule      = default;
-                ErrorResponse  = "The given JSON representation of a signature is invalid: " + e.Message;
+                ErrorResponse  = "The given JSON representation of a verificationRule is invalid: " + e.Message;
                 return false;
             }
 
@@ -262,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomVerificationRuleSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomVerificationRuleSerializer">A delegate to serialize cryptographic verificationRule objects.</param>
         /// <param name="CustomKeyPairSerializer">A delegate to serialize cryptographic key pairs.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<VerificationRule>?  CustomVerificationRuleSerializer   = null,

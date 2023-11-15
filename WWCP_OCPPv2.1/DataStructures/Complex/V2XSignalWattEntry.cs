@@ -94,9 +94,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var v2xSignalWattEntry,
                          out var errorResponse,
-                         CustomV2XSignalWattEntryParser))
+                         CustomV2XSignalWattEntryParser) &&
+                v2xSignalWattEntry is not null)
             {
-                return v2xSignalWattEntry!;
+                return v2xSignalWattEntry;
             }
 
             throw new ArgumentException("The given JSON representation of a V2X Signal-Watt entry is invalid: " + errorResponse,

@@ -145,9 +145,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var certificateHashData,
                          out var errorResponse,
-                         CustomCertificateHashDataParser))
+                         CustomCertificateHashDataParser) &&
+                certificateHashData is not null)
             {
-                return certificateHashData!;
+                return certificateHashData;
             }
 
             throw new ArgumentException("The given JSON representation of certificate hash data is invalid: " + errorResponse,

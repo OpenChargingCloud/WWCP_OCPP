@@ -113,9 +113,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var modem,
                          out var errorResponse,
-                         CustomModemParser))
+                         CustomModemParser) &&
+                modem is not null)
             {
-                return modem!;
+                return modem;
             }
 
             throw new ArgumentException("The given JSON representation of a modem is invalid: " + errorResponse,

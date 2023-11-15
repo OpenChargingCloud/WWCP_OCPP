@@ -117,9 +117,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var unitsOfMeasure,
                          out var errorResponse,
-                         CustomUnitsOfMeasureParser))
+                         CustomUnitsOfMeasureParser) &&
+                unitsOfMeasure is not null)
             {
-                return unitsOfMeasure!;
+                return unitsOfMeasure;
             }
 
             throw new ArgumentException("The given JSON representation of a unit of measure is invalid: " + errorResponse,

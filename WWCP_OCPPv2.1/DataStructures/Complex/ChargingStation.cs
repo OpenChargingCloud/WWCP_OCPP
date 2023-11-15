@@ -155,9 +155,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var chargingStation,
                          out var errorResponse,
-                         CustomChargingStationParser))
+                         CustomChargingStationParser) &&
+                chargingStation is not null)
             {
-                return chargingStation!;
+                return chargingStation;
             }
 
             throw new ArgumentException("The given JSON representation of a charging station is invalid: " + errorResponse,

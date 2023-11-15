@@ -128,9 +128,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var cost,
                          out var errorResponse,
-                         CustomCostParser))
+                         CustomCostParser) &&
+                cost is not null)
             {
-                return cost!;
+                return cost;
             }
 
             throw new ArgumentException("The given JSON representation of a cost is invalid: " + errorResponse,

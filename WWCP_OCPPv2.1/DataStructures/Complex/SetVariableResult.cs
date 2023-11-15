@@ -161,9 +161,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var setVariableResult,
                          out var errorResponse,
-                         CustomSetVariableResultParser))
+                         CustomSetVariableResultParser) &&
+                setVariableResult is not null)
             {
-                return setVariableResult!;
+                return setVariableResult;
             }
 
             throw new ArgumentException("The given JSON representation of a set variable result is invalid: " + errorResponse,

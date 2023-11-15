@@ -114,9 +114,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var relativeTimeInterval,
                          out var errorResponse,
-                         CustomRelativeTimeIntervalParser))
+                         CustomRelativeTimeIntervalParser) &&
+                relativeTimeInterval is not null)
             {
-                return relativeTimeInterval!;
+                return relativeTimeInterval;
             }
 
             throw new ArgumentException("The given JSON representation of a relative time interval is invalid: " + errorResponse,

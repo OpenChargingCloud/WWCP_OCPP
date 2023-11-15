@@ -125,16 +125,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="CustomSignaturePolicyAction2Parser">A delegate to parse custom cryptographic signatures.</param>
-        public static SignaturePolicyAction2 Parse(JObject                                  JSON,
-                                      CustomJObjectParserDelegate<SignaturePolicyAction2>?  CustomSignaturePolicyAction2Parser   = null)
+        public static SignaturePolicyAction2 Parse(JObject                                               JSON,
+                                                   CustomJObjectParserDelegate<SignaturePolicyAction2>?  CustomSignaturePolicyAction2Parser   = null)
         {
 
             if (TryParse(JSON,
-                         out var signature,
+                         out var signaturePolicyAction2,
                          out var errorResponse,
-                         CustomSignaturePolicyAction2Parser))
+                         CustomSignaturePolicyAction2Parser) &&
+                signaturePolicyAction2 is not null)
             {
-                return signature!;
+                return signaturePolicyAction2;
             }
 
             throw new ArgumentException("The given JSON representation of a signature is invalid: " + errorResponse,

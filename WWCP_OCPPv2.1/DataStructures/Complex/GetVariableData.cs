@@ -125,9 +125,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var componentVariable,
                          out var errorResponse,
-                         CustomGetVariableDataParser))
+                         CustomGetVariableDataParser) &&
+                componentVariable is not null)
             {
-                return componentVariable!;
+                return componentVariable;
             }
 
             throw new ArgumentException("The given JSON representation of a component variable is invalid: " + errorResponse,

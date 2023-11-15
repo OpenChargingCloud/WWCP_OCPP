@@ -233,9 +233,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var keyPair,
                          out var errorResponse,
-                         CustomKeyPairParser))
+                         CustomKeyPairParser) &&
+                keyPair is not null)
             {
-                return keyPair!;
+                return keyPair;
             }
 
             throw new ArgumentException("The given JSON representation of a key pair is invalid: " + errorResponse,

@@ -121,11 +121,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             if (TryParse(JSON,
-                         out var tariff,
+                         out var chargingPeriod,
                          out var errorResponse,
-                         CustomChargingPeriodParser))
+                         CustomChargingPeriodParser) &&
+                chargingPeriod is not null)
             {
-                return tariff!;
+                return chargingPeriod;
             }
 
             throw new ArgumentException("The given JSON representation of a charging period is invalid: " + errorResponse,

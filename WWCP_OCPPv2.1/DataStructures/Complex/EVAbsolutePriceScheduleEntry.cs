@@ -104,9 +104,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var evAbsolutePriceScheduleEntry,
                          out var errorResponse,
-                         CustomEVAbsolutePriceScheduleEntryParser))
+                         CustomEVAbsolutePriceScheduleEntryParser) &&
+                evAbsolutePriceScheduleEntry is not null)
             {
-                return evAbsolutePriceScheduleEntry!;
+                return evAbsolutePriceScheduleEntry;
             }
 
             throw new ArgumentException("The given JSON representation of a charging limit is invalid: " + errorResponse,

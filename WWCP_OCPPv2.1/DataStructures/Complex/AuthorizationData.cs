@@ -115,9 +115,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var authorizationData,
                          out var errorResponse,
-                         CustomAuthorizationDataParser))
+                         CustomAuthorizationDataParser) &&
+                authorizationData is not null)
             {
-                return authorizationData!;
+                return authorizationData;
             }
 
             throw new ArgumentException("The given JSON representation of authorization data is invalid: " + errorResponse,

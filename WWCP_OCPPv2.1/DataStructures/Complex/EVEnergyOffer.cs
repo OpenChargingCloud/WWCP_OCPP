@@ -105,9 +105,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var evEnergyOffer,
                          out var errorResponse,
-                         CustomEVEnergyOfferParser))
+                         CustomEVEnergyOfferParser) &&
+                evEnergyOffer is not null)
             {
-                return evEnergyOffer!;
+                return evEnergyOffer;
             }
 
             throw new ArgumentException("The given JSON representation of a ev energy offer is invalid: " + errorResponse,

@@ -180,9 +180,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var setMonitoringResult,
                          out var errorResponse,
-                         CustomSetMonitoringResultParser))
+                         CustomSetMonitoringResultParser) &&
+                setMonitoringResult is not null)
             {
-                return setMonitoringResult!;
+                return setMonitoringResult;
             }
 
             throw new ArgumentException("The given JSON representation of a set monitoring result is invalid: " + errorResponse,

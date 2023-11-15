@@ -285,9 +285,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var chargingProfile,
                          out var errorResponse,
-                         CustomChargingProfileParser))
+                         CustomChargingProfileParser) &&
+                chargingProfile is not null)
             {
-                return chargingProfile!;
+                return chargingProfile;
             }
 
             throw new ArgumentException("The given JSON representation of a charging profile is invalid: " + errorResponse,

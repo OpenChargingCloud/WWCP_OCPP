@@ -196,9 +196,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var networkConnectionProfile,
                          out var errorResponse,
-                         CustomNetworkConnectionProfileParser))
+                         CustomNetworkConnectionProfileParser) &&
+                networkConnectionProfile is not null)
             {
-                return networkConnectionProfile!;
+                return networkConnectionProfile;
             }
 
             throw new ArgumentException("The given JSON representation of a network connection profile is invalid: " + errorResponse,

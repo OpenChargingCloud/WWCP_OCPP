@@ -124,9 +124,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var chargingLimit,
                          out var errorResponse,
-                         CustomChargingLimitParser))
+                         CustomChargingLimitParser) &&
+                chargingLimit is not null)
             {
-                return chargingLimit!;
+                return chargingLimit;
             }
 
             throw new ArgumentException("The given JSON representation of a charging limit is invalid: " + errorResponse,

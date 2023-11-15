@@ -169,9 +169,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var ocspRequestData,
                          out var errorResponse,
-                         CustomOCSPRequestDataParser))
+                         CustomOCSPRequestDataParser) &&
+                ocspRequestData is not null)
             {
-                return ocspRequestData!;
+                return ocspRequestData;
             }
 
             throw new ArgumentException("The given JSON representation of OCSP request data is invalid: " + errorResponse,

@@ -124,9 +124,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var evAbsolutePriceSchedule,
                          out var errorResponse,
-                         CustomEVAbsolutePriceScheduleParser))
+                         CustomEVAbsolutePriceScheduleParser) &&
+                evAbsolutePriceSchedule is not null)
             {
-                return evAbsolutePriceSchedule!;
+                return evAbsolutePriceSchedule;
             }
 
             throw new ArgumentException("The given JSON representation of a ev absolute price schedule is invalid: " + errorResponse,

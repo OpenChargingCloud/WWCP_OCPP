@@ -404,9 +404,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var tariffRestrictions,
                          out var errorResponse,
-                         CustomTariffRestrictionsParser))
+                         CustomTariffRestrictionsParser) &&
+                tariffRestrictions is not null)
             {
-                return tariffRestrictions!;
+                return tariffRestrictions;
             }
 
             throw new ArgumentException("The given JSON representation of tariff restrictions is invalid: " + errorResponse,

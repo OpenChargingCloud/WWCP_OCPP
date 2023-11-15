@@ -94,9 +94,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var v2xFreqWattEntry,
                          out var errorResponse,
-                         CustomV2XFreqWattEntryParser))
+                         CustomV2XFreqWattEntryParser) &&
+                v2xFreqWattEntry is not null)
             {
-                return v2xFreqWattEntry!;
+                return v2xFreqWattEntry;
             }
 
             throw new ArgumentException("The given JSON representation of a V2X Frequency-Watt entry is invalid: " + errorResponse,

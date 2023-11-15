@@ -583,12 +583,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             if (TryParse(JSON,
-                         out var tariff,
+                         out var cdr,
                          out var errorResponse,
                          CDRIdURL,
-                         CustomCDRParser))
+                         CustomCDRParser) &&
+                cdr is not null)
             {
-                return tariff!;
+                return cdr;
             }
 
             throw new ArgumentException("The given JSON representation of a charge detail record is invalid: " + errorResponse,
@@ -618,6 +619,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         null,
                         null);
 
+
         /// <summary>
         /// Try to parse the given JSON representation of a charge detail record.
         /// </summary>
@@ -629,7 +631,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static Boolean TryParse(JObject                            JSON,
                                        out CDR?                           CDR,
                                        out String?                        ErrorResponse,
-                                       CDR_Id?                            CDRIdURL       = null,
+                                       CDR_Id?                            CDRIdURL          = null,
                                        CustomJObjectParserDelegate<CDR>?  CustomCDRParser   = null)
         {
 

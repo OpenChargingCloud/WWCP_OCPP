@@ -175,9 +175,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var vpnConfiguration,
                          out var errorResponse,
-                         CustomVPNConfigurationParser))
+                         CustomVPNConfigurationParser) &&
+                vpnConfiguration is not null)
             {
-                return vpnConfiguration!;
+                return vpnConfiguration;
             }
 
             throw new ArgumentException("The given JSON representation of a VPN configuration is invalid: " + errorResponse,

@@ -253,8 +253,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="InvalidEVSEs">An enumeration of EVSEs where this charging ticket can NOT be used.</param>
         /// 
         /// <param name="AllowedCurrentType">The allowed current type: AC, DC, or both.</param>
-        /// <param name="MaxKWh">The maximum allowed charging power during a charging session authorized by this charging ticket.</param>
-        /// <param name="MaxKW">The maximum allowed charging power during a charging session authorized by this charging ticket.</param>
+        /// <param name="MaxEnergy">The maximum allowed charging power during a charging session authorized by this charging ticket.</param>
+        /// <param name="MaxPower">The maximum allowed charging power during a charging session authorized by this charging ticket.</param>
         /// <param name="MaxCurrent">The maximum allowed current of a charging session authorized by this charging ticket.</param>
         /// <param name="MaxDuration">The maximum allowed duration of a charging session authorized by this charging ticket.</param>
         /// <param name="MaxPrice">The maximum allowed price of a charging session authorized by this charging ticket.</param>
@@ -293,8 +293,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                               IEnumerable<GlobalEVSE_Id>?              InvalidEVSEs               = null,
 
                               CurrentTypes?                            AllowedCurrentType         = null,
-                              WattHour?                                MaxKWh                     = null,
-                              Watt?                                    MaxKW                      = null,
+                              WattHour?                                MaxEnergy                  = null,
+                              Watt?                                    MaxPower                   = null,
                               Ampere?                                  MaxCurrent                 = null,
                               TimeSpan?                                MaxDuration                = null,
                               Price?                                   MaxPrice                   = null,
@@ -343,9 +343,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.InvalidChargingStations   = InvalidChargingStations?.Distinct() ?? Array.Empty<ChargingStation_Id>();
             this.InvalidEVSEs              = InvalidEVSEs?.           Distinct() ?? Array.Empty<GlobalEVSE_Id>();
 
-            this.CurrentType        = AllowedCurrentType                  ?? CurrentTypes.ACDC;
-            this.MaxEnergy                    = MaxKWh;
-            this.MaxPower                     = MaxKW;
+            this.CurrentType               = AllowedCurrentType                  ?? CurrentTypes.Any;
+            this.MaxEnergy                 = MaxEnergy;
+            this.MaxPower                  = MaxPower;
             this.MaxCurrent                = MaxCurrent;
             this.MaxDuration               = MaxDuration;
             this.MaxPrice                  = MaxPrice;
@@ -356,6 +356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.SmartChargingMode         = SmartChargingMode                   ?? ChargingTicketSmartChargingModes.      NotAllowed;
             this.MeterValueSignatureMode   = MeterValueSignatureMode             ?? ChargingTicketMeterValueSignatureModes.WhenAvailable;
             this.E2ECommunicationSecurity  = E2ECommunicationSecurity            ?? ChargingTicketE2ECommunicationSecurity.EphemeralKeyAgreement;
+
 
             unchecked
             {
@@ -381,9 +382,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                            this.InvalidChargingStations. CalcHashCode()      *  53 ^
                            this.InvalidEVSEs.            CalcHashCode()      *  47 ^
 
-                           this.CurrentType.      GetHashCode()       *  43 ^
-                          (this.MaxEnergy?.                 GetHashCode() ?? 0) *  37 ^
-                          (this.MaxPower?.                  GetHashCode() ?? 0) *  31 ^
+                           this.CurrentType.             GetHashCode()       *  43 ^
+                          (this.MaxEnergy?.              GetHashCode() ?? 0) *  37 ^
+                          (this.MaxPower?.               GetHashCode() ?? 0) *  31 ^
                           (this.MaxCurrent?.             GetHashCode() ?? 0) *  29 ^
                           (this.MaxDuration?.            GetHashCode() ?? 0) *  23 ^
                           (this.MaxPrice?.               GetHashCode() ?? 0) *  19 ^
@@ -418,12 +419,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             if (TryParse(JSON,
-                         out var ticket,
+                         out var chargingTicket,
                          out var errorResponse,
                          ChargingTicketIdURL,
-                         CustomTicketParser))
+                         CustomTicketParser) &&
+                chargingTicket is not null)
             {
-                return ticket!;
+                return chargingTicket;
             }
 
             throw new ArgumentException("The given JSON representation of a charging ticket is invalid: " + errorResponse,

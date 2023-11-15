@@ -231,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Optional references to other tariffs, e.g. because some local adaption of a charging tariff was required.
         /// </summary>
         [Optional]
-        public IEnumerable<ChargingTariff_Id>   References            { get; }
+        public  IEnumerable<ChargingTariff_Id>  References            { get; }
 
         /// <summary>
         /// The unique identification of the e-mobility provider responsible for this tariff.
@@ -473,12 +473,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             if (TryParse(JSON,
-                         out var tariff,
+                         out var chargingTariff,
                          out var errorResponse,
                          ChargingTariffIdURL,
-                         CustomChargingTariffParser))
+                         CustomChargingTariffParser) &&
+                chargingTariff is not null)
             {
-                return tariff!;
+                return chargingTariff;
             }
 
             throw new ArgumentException("The given JSON representation of a charging tariff is invalid: " + errorResponse,

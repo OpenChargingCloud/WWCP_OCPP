@@ -144,9 +144,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var messageContent,
                          out var errorResponse,
-                         CustomMessageContentParser))
+                         CustomMessageContentParser) &&
+                messageContent is not null)
             {
-                return messageContent!;
+                return messageContent;
             }
 
             throw new ArgumentException("The given JSON representation of message content is invalid: " + errorResponse,

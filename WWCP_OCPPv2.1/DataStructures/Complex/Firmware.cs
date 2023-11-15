@@ -160,9 +160,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var firmware,
                          out var errorResponse,
-                         CustomFirmwareParser))
+                         CustomFirmwareParser) &&
+                firmware is not null)
             {
-                return firmware!;
+                return firmware;
             }
 
             throw new ArgumentException("The given JSON representation of a firmware is invalid: " + errorResponse,

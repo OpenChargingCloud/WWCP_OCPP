@@ -94,9 +94,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var limitBeyondSoC,
                          out var errorResponse,
-                         CustomLimitBeyondSoCParser))
+                         CustomLimitBeyondSoCParser) &&
+                limitBeyondSoC is not null)
             {
-                return limitBeyondSoC!;
+                return limitBeyondSoC;
             }
 
             throw new ArgumentException("The given JSON representation of a limit beyond state-of-charge is invalid: " + errorResponse,

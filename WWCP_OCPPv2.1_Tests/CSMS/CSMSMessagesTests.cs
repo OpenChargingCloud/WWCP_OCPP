@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetType  = ResetType.Immediate;
                 var response   = await testCSMS01.Reset(
-                                     ChargingStationId:   chargingStation2.Id,
+                                     ChargingStationId:   chargingStation3.Id,
                                      ResetType:           resetType,
                                      CustomData:          null
                                  );

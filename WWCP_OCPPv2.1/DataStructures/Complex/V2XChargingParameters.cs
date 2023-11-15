@@ -376,9 +376,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var v2xChargingParameters,
                          out var errorResponse,
-                         CustomV2XChargingParametersParser))
+                         CustomV2XChargingParametersParser) &&
+                v2xChargingParameters is not null)
             {
-                return v2xChargingParameters!;
+                return v2xChargingParameters;
             }
 
             throw new ArgumentException("The given JSON representation of V2X charging parameters is invalid: " + errorResponse,

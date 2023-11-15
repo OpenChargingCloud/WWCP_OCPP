@@ -108,9 +108,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var evPowerScheduleEntry,
                          out var errorResponse,
-                         CustomEVPowerScheduleEntryParser))
+                         CustomEVPowerScheduleEntryParser) &&
+                evPowerScheduleEntry is not null)
             {
-                return evPowerScheduleEntry!;
+                return evPowerScheduleEntry;
             }
 
             throw new ArgumentException("The given JSON representation of an ev power schedule entry is invalid: " + errorResponse,

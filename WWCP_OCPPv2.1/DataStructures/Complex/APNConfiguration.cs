@@ -187,9 +187,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var apnConfiguration,
                          out var errorResponse,
-                         CustomAPNConfigurationParser))
+                         CustomAPNConfigurationParser) &&
+                apnConfiguration is not null)
             {
-                return apnConfiguration!;
+                return apnConfiguration;
             }
 
             throw new ArgumentException("The given JSON representation of a APN configuration is invalid: " + errorResponse,

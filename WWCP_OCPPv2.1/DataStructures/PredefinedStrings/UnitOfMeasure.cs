@@ -197,103 +197,97 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Celsius
         /// </summary>
-        public static UnitOfMeasure Celsius { get; }
+        public static UnitOfMeasure Celsius       { get; }
             = Register("Celsius");
 
         /// <summary>
         /// Fahrenheit
         /// </summary>
-        public static UnitOfMeasure Fahrenheit { get; }
+        public static UnitOfMeasure Fahrenheit    { get; }
             = Register("Fahrenheit");
 
         /// <summary>
         /// Wh
         /// </summary>
-        public static UnitOfMeasure Wh { get; }
+        public static UnitOfMeasure Wh            { get; }
             = Register("Wh");
 
         /// <summary>
         /// kWh
         /// </summary>
-        public static UnitOfMeasure kWh { get; }
+        public static UnitOfMeasure kWh           { get; }
             = Register("kWh");
 
         /// <summary>
         /// varh
         /// </summary>
-        public static UnitOfMeasure varh { get; }
+        public static UnitOfMeasure varh          { get; }
             = Register("varh");
 
         /// <summary>
         /// kvarh
         /// </summary>
-        public static UnitOfMeasure kvarh { get; }
+        public static UnitOfMeasure kvarh         { get; }
             = Register("kvarh");
 
         /// <summary>
         /// Watts
         /// </summary>
-        public static UnitOfMeasure Watts { get; }
+        public static UnitOfMeasure Watts         { get; }
             = Register("Watts");
 
         /// <summary>
         /// kW
         /// </summary>
-        public static UnitOfMeasure kW { get; }
+        public static UnitOfMeasure kW            { get; }
             = Register("kW");
-
-        /// <summary>
-        /// Watchdog.
-        /// </summary>
-        public static UnitOfMeasure Watchdog { get; }
-            = Register("Watchdog");
 
         /// <summary>
         /// VoltAmpere
         /// </summary>
-        public static UnitOfMeasure VoltAmpere { get; }
+        public static UnitOfMeasure VoltAmpere    { get; }
             = Register("VoltAmpere");
 
         /// <summary>
         /// kVA
         /// </summary>
-        public static UnitOfMeasure kVA { get; }
+        public static UnitOfMeasure kVA           { get; }
             = Register("kVA");
 
         /// <summary>
         /// var
         /// </summary>
-        public static UnitOfMeasure var { get; }
+        public static UnitOfMeasure var           { get; }
             = Register("var");
 
         /// <summary>
         /// kvar
         /// </summary>
-        public static UnitOfMeasure kvar { get; }
+        public static UnitOfMeasure kvar          { get; }
             = Register("kvar");
 
         /// <summary>
         /// Amperes
         /// </summary>
-        public static UnitOfMeasure Amperes { get; }
+        public static UnitOfMeasure Amperes       { get; }
             = Register("Amperes");
 
         /// <summary>
         /// Voltage
         /// </summary>
-        public static UnitOfMeasure Voltage { get; }
+        public static UnitOfMeasure Voltage       { get; }
             = Register("Voltage");
 
         /// <summary>
         /// Kelvin
         /// </summary>
-        public static UnitOfMeasure Kelvin { get; }
+        public static UnitOfMeasure Kelvin        { get; }
             = Register("Kelvin");
 
         /// <summary>
         /// Percent
         /// </summary>
-        public static UnitOfMeasure Percent { get; }
+        public static UnitOfMeasure Percent       { get; }
             = Register("Percent");
 
 #pragma warning restore IDE1006 // Naming Styles

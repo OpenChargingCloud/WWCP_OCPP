@@ -140,9 +140,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var setVariableData,
                          out var errorResponse,
-                         CustomVariableDataParser))
+                         CustomVariableDataParser) &&
+                setVariableData is not null)
             {
-                return setVariableData!;
+                return setVariableData;
             }
 
             throw new ArgumentException("The given JSON representation of set variable data is invalid: " + errorResponse,

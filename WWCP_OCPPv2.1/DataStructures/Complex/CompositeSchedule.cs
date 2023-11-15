@@ -163,9 +163,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var compositeSchedule,
                          out var errorResponse,
-                         CustomCompositeScheduleParser))
+                         CustomCompositeScheduleParser) &&
+                compositeSchedule is not null)
             {
-                return compositeSchedule!;
+                return compositeSchedule;
             }
 
             throw new ArgumentException("The given JSON representation of a composite schedule is invalid: " + errorResponse,

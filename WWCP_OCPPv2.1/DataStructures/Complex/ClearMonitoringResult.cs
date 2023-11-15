@@ -126,9 +126,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var clearMonitoringResult,
                          out var errorResponse,
-                         CustomClearMonitoringResultParser))
+                         CustomClearMonitoringResultParser) &&
+                clearMonitoringResult is not null)
             {
-                return clearMonitoringResult!;
+                return clearMonitoringResult;
             }
 
             throw new ArgumentException("The given JSON representation of a clear monitoring result is invalid: " + errorResponse,

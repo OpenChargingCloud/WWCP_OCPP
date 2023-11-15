@@ -106,9 +106,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var evPriceRule,
                          out var errorResponse,
-                         CustomEVPriceRuleParser))
+                         CustomEVPriceRuleParser) &&
+                evPriceRule is not null)
             {
-                return evPriceRule!;
+                return evPriceRule;
             }
 
             throw new ArgumentException("The given JSON representation of an ev price rule is invalid: " + errorResponse,

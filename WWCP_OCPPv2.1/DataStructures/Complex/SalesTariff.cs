@@ -155,9 +155,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var salesTariff,
                          out var errorResponse,
-                         CustomSalesTariffParser))
+                         CustomSalesTariffParser) &&
+                salesTariff is not null)
             {
-                return salesTariff!;
+                return salesTariff;
             }
 
             throw new ArgumentException("The given JSON representation of a sales tariff is invalid: " + errorResponse,

@@ -380,17 +380,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                         "GraphDefined EMP"
                                                                     ),
                                          Currency:                  Currency.EUR,
-                                         TariffElements:            new[] {
+                                         TariffElements:            [
                                                                         new TariffElement(
-                                                                            new[] {
+                                                                            [
                                                                                 PriceComponent.ChargeHours(
                                                                                     Price:      6.50M,
                                                                                     VAT:        19,
                                                                                     StepSize:   TimeSpan.FromMinutes(15)
                                                                                 )
-                                                                            }
+                                                                            ]
                                                                         )
-                                                                    },
+                                                                    ],
 
                                          Created:                   timeReference,
                                          Replaces:                  null,
@@ -487,10 +487,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                              ReservationId:             null,
                                              IdToken:                   idToken,
                                              EVSE:                      evse,
-                                             MeterValues:               new[] {
+                                             MeterValues:               [
                                                                             new MeterValue(
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(10),
-                                                                                SampledValues:   new[] {
+                                                                                SampledValues:   [
                                                                                                      new SampledValue(
                                                                                                          Value:                 1,
                                                                                                          Context:               ReadingContext.TransactionBegin,
@@ -507,10 +507,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                                          UnitOfMeasure:         UnitsOfMeasure.Wh(1),
                                                                                                          CustomData:            null
                                                                                                      )
-                                                                                                 },
+                                                                                                 ],
                                                                                 CustomData:      null
                                                                             )
-                                                                        },
+                                                                        ],
                                              PreconditioningStatus:     null,
 
                                              SignKeys:                  null,
@@ -550,7 +550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                              ReservationId:             null,
                                              IdToken:                   idToken,
                                              EVSE:                      evse,
-                                             MeterValues:               new[] {
+                                             MeterValues:               [
                                                                             new MeterValue(
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(49),
                                                                                 SampledValues:   new[] {
@@ -573,7 +573,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                                  },
                                                                                 CustomData:      null
                                                                             )
-                                                                        },
+                                                                        ],
                                              PreconditioningStatus:     null,
 
                                              SignKeys:                  null,
@@ -669,16 +669,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                         "GraphDefined EMP"
                                                                     ),
                                          Currency:                  Currency.EUR,
-                                         TariffElements:            new[] {
+                                         TariffElements:            [
                                                                         new TariffElement(
-                                                                            new[] {
+                                                                            [
                                                                                 PriceComponent.Energy(
                                                                                     Price:  0.51M,
                                                                                     VAT:    19
                                                                                 )
-                                                                            }
+                                                                            ]
                                                                         )
-                                                                    },
+                                                                    ],
 
                                          Created:                   timeReference,
                                          Replaces:                  null,
@@ -775,10 +775,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                              ReservationId:             null,
                                              IdToken:                   idToken,
                                              EVSE:                      evse,
-                                             MeterValues:               new[] {
+                                             MeterValues:               [
                                                                             new MeterValue(
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(10),
-                                                                                SampledValues:   new[] {
+                                                                                SampledValues:   [
                                                                                                      new SampledValue(
                                                                                                          Value:                 1,
                                                                                                          Context:               ReadingContext.TransactionBegin,
@@ -795,10 +795,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                                          UnitOfMeasure:         UnitsOfMeasure.Wh(1),
                                                                                                          CustomData:            null
                                                                                                      )
-                                                                                                 },
+                                                                                                 ],
                                                                                 CustomData:      null
                                                                             )
-                                                                        },
+                                                                        ],
                                              PreconditioningStatus:     null,
 
                                              SignKeys:                  null,
@@ -838,10 +838,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                              ReservationId:             null,
                                              IdToken:                   idToken,
                                              EVSE:                      evse,
-                                             MeterValues:               new[] {
+                                             MeterValues:               [
                                                                             new MeterValue(
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(49),
-                                                                                SampledValues:   new[] {
+                                                                                SampledValues:   [
                                                                                                      new SampledValue(
                                                                                                          Value:                 10000,
                                                                                                          Context:               ReadingContext.TransactionEnd,
@@ -858,10 +858,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                                          UnitOfMeasure:         UnitsOfMeasure.Wh(1),
                                                                                                          CustomData:            null
                                                                                                      )
-                                                                                                 },
+                                                                                                 ],
                                                                                 CustomData:      null
                                                                             )
-                                                                        },
+                                                                        ],
                                              PreconditioningStatus:     null,
 
                                              SignKeys:                  null,
@@ -954,10 +954,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                         "GraphDefined EMP"
                                                                     ),
                                          Currency:                  Currency.EUR,
-                                         TariffElements:            new[] {
+                                         TariffElements:            [
 
                                                                         new TariffElement(
-                                                                            new[] {
+                                                                            [
                                                                                 PriceComponent.Energy(
                                                                                     Price:       0.40M,
                                                                                     TaxRates:   TaxRates.VAT(10)
@@ -966,7 +966,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                     Price:      10.00M,
                                                                                     TaxRates:   TaxRates.VAT(10)
                                                                                 )
-                                                                            },
+                                                                            ],
                                                                             new TariffRestrictions(
                                                                                 StartTimeOfDay:   Time.FromHourMin( 8, 0),
                                                                                 EndTimeOfDay:     Time.FromHourMin(18, 0)
@@ -974,19 +974,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                         ),
 
                                                                         new TariffElement(
-                                                                            new[] {
+                                                                            [
                                                                                 PriceComponent.Energy(
                                                                                     Price:      0.25M,
                                                                                     TaxRates:   TaxRates.VAT(10)
                                                                                 )
-                                                                            },
+                                                                            ],
                                                                             new TariffRestrictions(
                                                                                 StartTimeOfDay:   Time.FromHourMin(18, 0),
                                                                                 EndTimeOfDay:     Time.FromHourMin( 8, 0)
                                                                             )
                                                                         )
 
-                                                                    },
+                                                                    ],
 
                                          Created:                   timeReference,
                                          Replaces:                  null,
@@ -1080,10 +1080,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                              ReservationId:             null,
                                              IdToken:                   idToken,
                                              EVSE:                      evse,
-                                             MeterValues:               new[] {
+                                             MeterValues:               [
                                                                             new MeterValue(
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(10),
-                                                                                SampledValues:   new[] {
+                                                                                SampledValues:   [
                                                                                                      new SampledValue(
                                                                                                          Value:                 1,
                                                                                                          Context:               ReadingContext.TransactionBegin,
@@ -1100,10 +1100,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                                          UnitOfMeasure:         UnitsOfMeasure.Wh(1),
                                                                                                          CustomData:            null
                                                                                                      )
-                                                                                                 },
+                                                                                                 ],
                                                                                 CustomData:      null
                                                                             )
-                                                                        },
+                                                                        ],
                                              PreconditioningStatus:     null,
 
                                              SignKeys:                  null,
@@ -1143,10 +1143,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                              ReservationId:             null,
                                              IdToken:                   idToken,
                                              EVSE:                      evse,
-                                             MeterValues:               new[] {
+                                             MeterValues:               [
                                                                             new MeterValue(
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(49),
-                                                                                SampledValues:   new[] {
+                                                                                SampledValues:   [
                                                                                                      new SampledValue(
                                                                                                          Value:                 10000,
                                                                                                          Context:               ReadingContext.TransactionEnd,
@@ -1163,10 +1163,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                                          UnitOfMeasure:         UnitsOfMeasure.Wh(1),
                                                                                                          CustomData:            null
                                                                                                      )
-                                                                                                 },
+                                                                                                 ],
                                                                                 CustomData:      null
                                                                             )
-                                                                        },
+                                                                        ],
                                              PreconditioningStatus:     null,
 
                                              SignKeys:                  null,
@@ -1258,65 +1258,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                         "GraphDefined EMP"
                                                                     ),
                                          Currency:                  Currency.EUR,
-                                         TariffElements:            new[] {
+                                         TariffElements:            [
 
                                                                         new TariffElement(
-                                                                            new[] {
+                                                                            [
                                                                                 PriceComponent.FlatRate(
                                                                                     Price:      2.50M,
                                                                                     TaxRates:   TaxRates.VAT(15)
                                                                                 )
-                                                                            }
+                                                                            ]
                                                                         ),
 
                                                                         new TariffElement(
-                                                                            new[] {
+                                                                            [
                                                                                 PriceComponent.ChargeHours(
                                                                                     Price:      1.00M,
                                                                                     TaxRates:   TaxRates.VAT(20),
                                                                                     StepSize:   TimeSpan.FromSeconds(900)
                                                                                 )
-                                                                            },
+                                                                            ],
                                                                             new TariffRestrictions(
                                                                                 MinEnergy:   WattHour.Parse(11)
                                                                             )
                                                                         ),
 
                                                                         new TariffElement(
-                                                                            new[] {
+                                                                            [
                                                                                 PriceComponent.ChargeHours(
                                                                                     Price:      2.00M,
                                                                                     TaxRates:   TaxRates.VAT(20),
                                                                                     StepSize:   TimeSpan.FromSeconds(600)
                                                                                 )
-                                                                            },
+                                                                            ],
                                                                             new TariffRestrictions(
                                                                                 MinEnergy:   WattHour.Parse(11)
                                                                             )
                                                                         ),
 
                                                                         new TariffElement(
-                                                                            new[] {
+                                                                            [
                                                                                 PriceComponent.IdleHours(
                                                                                     Price:      5.00M,
                                                                                     TaxRates:   TaxRates.VAT(10),
                                                                                     StepSize:   TimeSpan.FromSeconds(300)
                                                                                 )
-                                                                            },
+                                                                            ],
                                                                             new TariffRestrictions(
                                                                                 StartTimeOfDay:   Time.FromHourMin( 9,00),
                                                                                 EndTimeOfDay:     Time.FromHourMin(18,00),
-                                                                                DaysOfWeek:       new[] {
+                                                                                DaysOfWeek:       [
                                                                                                       DayOfWeek.Monday,
                                                                                                       DayOfWeek.Tuesday,
                                                                                                       DayOfWeek.Wednesday,
                                                                                                       DayOfWeek.Thursday,
                                                                                                       DayOfWeek.Friday
-                                                                                                  }
+                                                                                                  ]
                                                                             )
                                                                         )
 
-                                                                    },
+                                                                    ],
 
                                          Created:                   timeReference,
                                          Replaces:                  null,
@@ -1410,10 +1410,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                              ReservationId:             null,
                                              IdToken:                   idToken,
                                              EVSE:                      evse,
-                                             MeterValues:               new[] {
+                                             MeterValues:               [
                                                                             new MeterValue(
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(10),
-                                                                                SampledValues:   new[] {
+                                                                                SampledValues:   [
                                                                                                      new SampledValue(
                                                                                                          Value:                 1,
                                                                                                          Context:               ReadingContext.TransactionBegin,
@@ -1430,10 +1430,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                                          UnitOfMeasure:         UnitsOfMeasure.Wh(1),
                                                                                                          CustomData:            null
                                                                                                      )
-                                                                                                 },
+                                                                                                 ],
                                                                                 CustomData:      null
                                                                             )
-                                                                        },
+                                                                        ],
                                              PreconditioningStatus:     null,
 
                                              SignKeys:                  null,
@@ -1473,10 +1473,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                              ReservationId:             null,
                                              IdToken:                   idToken,
                                              EVSE:                      evse,
-                                             MeterValues:               new[] {
+                                             MeterValues:               [
                                                                             new MeterValue(
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(49),
-                                                                                SampledValues:   new[] {
+                                                                                SampledValues:   [
                                                                                                      new SampledValue(
                                                                                                          Value:                 10000,
                                                                                                          Context:               ReadingContext.TransactionEnd,
@@ -1493,10 +1493,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                                          UnitOfMeasure:         UnitsOfMeasure.Wh(1),
                                                                                                          CustomData:            null
                                                                                                      )
-                                                                                                 },
+                                                                                                 ],
                                                                                 CustomData:      null
                                                                             )
-                                                                        },
+                                                                        ],
                                              PreconditioningStatus:     null,
 
                                              SignKeys:                  null,
@@ -1588,30 +1588,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                         "GraphDefined EMP"
                                                                     ),
                                          Currency:                  Currency.EUR,
-                                         TariffElements:            new[] {
+                                         TariffElements:            [
 
                                                                         new TariffElement(
-                                                                            new[] {
+                                                                            [
                                                                                 PriceComponent.Energy(
                                                                                     Price:  0.40M,
                                                                                     VAT:    10
                                                                                 )
-                                                                            }
+                                                                            ]
                                                                         ),
 
                                                                         new TariffElement(
-                                                                            new[] {
+                                                                            [
                                                                                 PriceComponent.IdleHours(
                                                                                     Price:  10.00M,
                                                                                     VAT:    10
                                                                                 )
-                                                                            },
+                                                                            ],
                                                                             new TariffRestrictions(
                                                                                 MinIdleHours:   TimeSpan.FromHours(2)
                                                                             )
                                                                         )
 
-                                                                    },
+                                                                    ],
 
                                          Created:                   timeReference,
                                          Replaces:                  null,
@@ -1708,10 +1708,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                              ReservationId:             null,
                                              IdToken:                   idToken,
                                              EVSE:                      evse,
-                                             MeterValues:               new[] {
+                                             MeterValues:               [
                                                                             new MeterValue(
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(10),
-                                                                                SampledValues:   new[] {
+                                                                                SampledValues:   [
                                                                                                      new SampledValue(
                                                                                                          Value:                 1,
                                                                                                          Context:               ReadingContext.TransactionBegin,
@@ -1728,10 +1728,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                                          UnitOfMeasure:         UnitsOfMeasure.Wh(1),
                                                                                                          CustomData:            null
                                                                                                      )
-                                                                                                 },
+                                                                                                 ],
                                                                                 CustomData:      null
                                                                             )
-                                                                        },
+                                                                        ],
                                              PreconditioningStatus:     null,
 
                                              SignKeys:                  null,
@@ -1771,10 +1771,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                              ReservationId:             null,
                                              IdToken:                   idToken,
                                              EVSE:                      evse,
-                                             MeterValues:               new[] {
+                                             MeterValues:               [
                                                                             new MeterValue(
                                                                                 Timestamp:       timeReference + TimeSpan.FromMinutes(49),
-                                                                                SampledValues:   new[] {
+                                                                                SampledValues:   [
                                                                                                      new SampledValue(
                                                                                                          Value:                 10000,
                                                                                                          Context:               ReadingContext.TransactionEnd,
@@ -1791,10 +1791,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.E2EChargingTariffsExtensi
                                                                                                          UnitOfMeasure:         UnitsOfMeasure.Wh(1),
                                                                                                          CustomData:            null
                                                                                                      )
-                                                                                                 },
+                                                                                                 ],
                                                                                 CustomData:      null
                                                                             )
-                                                                        },
+                                                                        ],
                                              PreconditioningStatus:     null,
 
                                              SignKeys:                  null,

@@ -165,9 +165,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var meteringValue,
                          out var errorResponse,
-                         CustomMeteringValueParser))
+                         CustomMeteringValueParser) &&
+                meteringValue is not null)
             {
-                return meteringValue!;
+                return meteringValue;
             }
 
             throw new ArgumentException("The given JSON representation of a metering value is invalid: " + errorResponse,

@@ -119,9 +119,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages
             if (TryParse(JSON,
                          out var priceLevelSchedule,
                          out var errorResponse,
-                         CustomPriceLevelScheduleParser))
+                         CustomPriceLevelScheduleParser) &&
+                priceLevelSchedule is not null)
             {
-                return priceLevelSchedule!;
+                return priceLevelSchedule;
             }
 
             throw new ArgumentException("The given JSON representation of a price level schedule is invalid: " + errorResponse,

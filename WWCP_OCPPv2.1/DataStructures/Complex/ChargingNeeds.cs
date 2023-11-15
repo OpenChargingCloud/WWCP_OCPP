@@ -189,9 +189,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var chargingNeeds,
                          out var errorResponse,
-                         CustomChargingNeedsParser))
+                         CustomChargingNeedsParser) &&
+                chargingNeeds is not null)
             {
-                return chargingNeeds!;
+                return chargingNeeds;
             }
 
             throw new ArgumentException("The given JSON representation of charging needs is invalid: " + errorResponse,

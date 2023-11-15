@@ -112,9 +112,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var evse,
                          out var errorResponse,
-                         CustomEVSEParser))
+                         CustomEVSEParser) &&
+                evse is not null)
             {
-                return evse!;
+                return evse;
             }
 
             throw new ArgumentException("The given JSON representation of an EVSE is invalid: " + errorResponse,

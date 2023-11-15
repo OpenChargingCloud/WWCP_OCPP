@@ -251,9 +251,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var chargingSchedule,
                          out var errorResponse,
-                         CustomChargingScheduleParser))
+                         CustomChargingScheduleParser) &&
+                chargingSchedule is not null)
             {
-                return chargingSchedule!;
+                return chargingSchedule;
             }
 
             throw new ArgumentException("The given JSON representation of a charging schedule is invalid: " + errorResponse,

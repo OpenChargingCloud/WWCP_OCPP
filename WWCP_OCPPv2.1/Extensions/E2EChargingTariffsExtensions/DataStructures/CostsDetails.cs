@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The ISO 4217 code of the currency used for this tariff.
+        /// The ISO 4217 code of the currency used for this costDetails.
         /// </summary>
         [Optional]
         public Currency                     Currency                { get; }
@@ -167,11 +167,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             if (TryParse(JSON,
-                         out var tariff,
+                         out var costDetails,
                          out var errorResponse,
-                         CustomCostDetailsParser))
+                         CustomCostDetailsParser) &&
+                costDetails is not null)
             {
-                return tariff!;
+                return costDetails;
             }
 
             throw new ArgumentException("The given JSON representation of cost details is invalid: " + errorResponse,
@@ -464,9 +465,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="CustomCostDetailsSerializer">A delegate to serialize custom cost details JSON objects.</param>
         /// <param name="CustomDisplayTextSerializer">A delegate to serialize custom multi-language text JSON objects.</param>
         /// <param name="CustomPriceSerializer">A delegate to serialize custom price JSON objects.</param>
-        /// <param name="CustomTariffElementSerializer">A delegate to serialize custom tariff element JSON objects.</param>
+        /// <param name="CustomTariffElementSerializer">A delegate to serialize custom costDetails element JSON objects.</param>
         /// <param name="CustomPriceComponentSerializer">A delegate to serialize custom price component JSON objects.</param>
-        /// <param name="CustomTariffRestrictionsSerializer">A delegate to serialize custom tariff restrictions JSON objects.</param>
+        /// <param name="CustomTariffRestrictionsSerializer">A delegate to serialize custom costDetails restrictions JSON objects.</param>
         /// <param name="CustomEnergyMixSerializer">A delegate to serialize custom hours JSON objects.</param>
         /// <param name="CustomEnergySourceSerializer">A delegate to serialize custom energy source JSON objects.</param>
         /// <param name="CustomEnvironmentalImpactSerializer">A delegate to serialize custom environmental impact JSON objects.</param>
@@ -766,7 +767,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             //  (EnergyMix  is not null &&  CostDetails.EnergyMix  is not null && EnergyMix.       Equals(CostDetails.EnergyMix)))        &&
 
             //   TariffElements.Count().Equals(CostDetails.TariffElements.Count())     &&
-            //   TariffElements.All(tariffElement => CostDetails.TariffElements.Contains(tariffElement)) &&
+            //   TariffElements.All(costDetailsElement => CostDetails.TariffElements.Contains(costDetailsElement)) &&
 
             //   Description.Count().Equals(CostDetails.Description.Count())     &&
             //   Description.All(displayText => CostDetails.Description.Contains(displayText));

@@ -157,9 +157,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var variableMonitoring,
                          out var errorResponse,
-                         CustomVariableMonitoringParser))
+                         CustomVariableMonitoringParser) &&
+                variableMonitoring is not null)
             {
-                return variableMonitoring!;
+                return variableMonitoring;
             }
 
             throw new ArgumentException("The given JSON representation of a variable monitoring is invalid: " + errorResponse,

@@ -19,8 +19,6 @@
 
 using System.Security.Cryptography.X509Certificates;
 
-using Org.BouncyCastle.X509;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -138,9 +136,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text,
                          out var certificate,
                          out var errorResponse,
-                         CustomCertificateParser))
+                         CustomCertificateParser) &&
+                certificate is not null)
             {
-                return certificate!;
+                return certificate;
             }
 
             throw new ArgumentException($"Invalid text representation of a PEM encoded X.509 certificate: '{Text.SubstringMax(40)}'!",
@@ -164,9 +163,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Lines,
                          out var certificate,
                          out var errorResponse,
-                         CustomCertificateParser))
+                         CustomCertificateParser) &&
+                certificate is not null)
             {
-                return certificate!;
+                return certificate;
             }
 
             throw new ArgumentException($"Invalid text representation of a PEM encoded X.509 certificate: '{Lines.AggregateWith("").SubstringMax(40)}'!",
@@ -190,9 +190,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Text,
                          out var certificate,
                          out var errorResponse,
-                         CustomCertificateParser))
+                         CustomCertificateParser) &&
+                certificate is not null)
             {
-                return certificate!;
+                return certificate;
             }
 
             return null;
@@ -215,9 +216,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(Lines,
                          out var certificate,
                          out var errorResponse,
-                         CustomCertificateParser))
+                         CustomCertificateParser) &&
+                certificate is not null)
             {
-                return certificate!;
+                return certificate;
             }
 
             return null;
@@ -328,8 +330,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                     var parsedCertificate  = X509Certificate2.CreateFromPem(lines);
 
-                    var certificate        = new Certificate(lines,
-                                                             parsedCertificate);
+                    var certificate        = new Certificate(
+                                                 lines,
+                                                 parsedCertificate
+                                             );
 
                     Certificate            = CustomCertificateParser is not null
                                                  ? CustomCertificateParser(lines,

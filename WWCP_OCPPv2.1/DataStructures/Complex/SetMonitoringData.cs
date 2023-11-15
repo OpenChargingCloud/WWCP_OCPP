@@ -412,9 +412,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var setMonitoringData,
                          out var errorResponse,
-                         CustomSetMonitoringDataParser))
+                         CustomSetMonitoringDataParser) &&
+                setMonitoringData is not null)
             {
-                return setMonitoringData!;
+                return setMonitoringData;
             }
 
             throw new ArgumentException("The given JSON representation of set monitoring data is invalid: " + errorResponse,

@@ -195,9 +195,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             if (TryParse(JSON,
                          out var idTokenInfo,
                          out var errorResponse,
-                         CustomIdTokenInfoParser))
+                         CustomIdTokenInfoParser) &&
+                idTokenInfo is not null)
             {
-                return idTokenInfo!;
+                return idTokenInfo;
             }
 
             throw new ArgumentException("The given JSON representation of id token information is invalid: " + errorResponse,
