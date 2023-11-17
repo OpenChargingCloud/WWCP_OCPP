@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext UserJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/setUserChargingTariffResponse");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/setUserChargingTariffResponse");
 
         #endregion
 
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// The JSON-LD context of this object.
         /// </summary>
         public JSONLDContext  Context
-            => UserJSONLDContext;
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The generic status.

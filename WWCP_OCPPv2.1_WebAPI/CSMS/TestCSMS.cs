@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Reflection;
 using System.Collections.Concurrent;
 
 using Newtonsoft.Json.Linq;
@@ -30,7 +31,6 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-//using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -1860,6 +1860,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         #endregion
+
+
+        public static void ShowAllRequests()
+        {
+
+            var interfaceType      = typeof(IRequest);
+            var implementingTypes  = Assembly.GetAssembly(interfaceType)?.
+                                              GetTypes().
+                                              Where(t => interfaceType.IsAssignableFrom(t) &&
+                                                         !t.IsInterface &&
+                                                          t.FullName is not null &&
+                                                          t.FullName.StartsWith("cloud.charging.open.protocols.OCPPv2_1.CSMS.")).
+                                              ToArray() ?? [];
+
+            foreach (var type in implementingTypes)
+            {
+
+                var jsonJDContextProp  = type.GetField("DefaultJSONLDContext", BindingFlags.Public | BindingFlags.Static);
+                var jsonJDContextValue = jsonJDContextProp?.GetValue(null)?.ToString();
+
+                Console.WriteLine($"{type.Name}: JSONJDContext = {jsonJDContextValue}");
+
+            }
+
+        }
+
+        public static void ShowAllResponses()
+        {
+
+            var interfaceType      = typeof(IResponse);
+            var implementingTypes  = Assembly.GetAssembly(interfaceType)?.
+                                              GetTypes().
+                                              Where(t => interfaceType.IsAssignableFrom(t) &&
+                                                         !t.IsInterface &&
+                                                          t.FullName is not null &&
+                                                          t.FullName.StartsWith("cloud.charging.open.protocols.OCPPv2_1.CS.")).
+                                              ToArray() ?? [];
+
+            foreach (var type in implementingTypes)
+            {
+
+                var jsonJDContextProp  = type.GetField("DefaultJSONLDContext", BindingFlags.Public | BindingFlags.Static);
+                var jsonJDContextValue = jsonJDContextProp?.GetValue(null)?.ToString();
+
+                Console.WriteLine($"{type.Name}: JSONJDContext = {jsonJDContextValue}");
+
+            }
+
+        }
 
 
         #region CreateWebSocketService(...)
