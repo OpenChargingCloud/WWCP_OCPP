@@ -57,11 +57,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        private readonly String InternalId;
+        private readonly static Dictionary<String, Vendor_Id>  lookup = new (StringComparer.OrdinalIgnoreCase);
 
         #endregion
 
         #region Properties
+
+        public String  InternalId    { get; }
+
+        public UInt32  NumericId     { get; }
+
 
         /// <summary>
         /// Indicates whether this identification is null or empty.
@@ -86,27 +91,46 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new vendor identification based on the given text.
+        /// Create a new vendor identification based on the given text and optional number.
         /// </summary>
         /// <param name="Text">A text representation of a vendor identification.</param>
-        private Vendor_Id(String Text)
+        /// <param name="NumericId">An optional numeric representation of a vendor identification.</param>
+        private Vendor_Id(String  Text,
+                          UInt32  NumericId   = 0)
         {
-            this.InternalId = Text;
+
+            this.InternalId  = Text;
+            this.NumericId   = NumericId;
+
         }
 
         #endregion
 
 
-        #region (static) Parse   (Text)
+        #region (private static) Register(Text, NumericId = 0)
+
+        private static Vendor_Id Register(String  Text,
+                                          UInt32  NumericId   = 0)
+
+            => lookup.AddAndReturnValue(
+                   Text,
+                   new Vendor_Id(Text, NumericId)
+               );
+
+        #endregion
+
+
+        #region (static) Parse   (Text, NumericId = 0)
 
         /// <summary>
         /// Parse the given string as a vendor identification.
         /// </summary>
         /// <param name="Text">A text representation of a vendor identification.</param>
-        public static Vendor_Id Parse(String Text)
+        public static Vendor_Id Parse(String  Text,
+                                      UInt32  NumericId   = 0)
         {
 
-            if (TryParse(Text, out var vendorId))
+            if (TryParse(Text, out var vendorId, NumericId))
                 return vendorId;
 
             throw new ArgumentException("The given text representation of a vendor identification is invalid!",
@@ -116,7 +140,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(Text)
+        #region (static) TryParse(Text, NumericId = 0)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given text as a vendor identification.
@@ -132,37 +158,126 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         }
 
+
+        /// <summary>
+        /// Try to parse the given text as a vendor identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a vendor identification.</param>
+        public static Vendor_Id? TryParse(String Text,
+                                          UInt32 NumericId)
+        {
+
+            if (TryParse(Text, out var vendorId, NumericId))
+                return vendorId;
+
+            return null;
+
+        }
+
         #endregion
 
-        #region (static) TryParse(Text, out VendorId)
+        #region (static) TryParse(Text, out VendorId, NumericId = 0)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given text as a vendor identification.
         /// </summary>
         /// <param name="Text">A text representation of a vendor identification.</param>
         /// <param name="VendorId">The parsed vendor identification.</param>
-        public static Boolean TryParse(String Text, out Vendor_Id VendorId)
-        {
+        public static Boolean TryParse(String         Text,
+                                       out Vendor_Id  VendorId)
 
-            #region Initial checks
+            => TryParse(Text,
+                        out VendorId,
+                        0);
+
+
+        /// <summary>
+        /// Try to parse the given text as a vendor identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a vendor identification.</param>
+        /// <param name="VendorId">The parsed vendor identification.</param>
+        public static Boolean TryParse(String         Text,
+                                       out Vendor_Id  VendorId,
+                                       UInt32         NumericId)
+        {
 
             Text = Text.Trim();
 
-            if (Text.IsNullOrEmpty())
+            if (Text.IsNotNullOrEmpty())
             {
-                VendorId = default;
-                return false;
+
+                if (!lookup.TryGetValue(Text, out VendorId))
+                    VendorId = Register(Text, NumericId);
+
+                return true;
+
             }
 
-            #endregion
+            VendorId = default;
+            return false;
 
-            try
+        }
+
+        #endregion
+
+
+        #region (static) Parse   (Number)
+
+        /// <summary>
+        /// Parse the given number as a vendor identification.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a vendor identification.</param>
+        public static Vendor_Id Parse(UInt32 Number)
+        {
+
+            if (TryParse(Number, out var vendorId))
+                return vendorId;
+
+            throw new ArgumentException("The given numeric representation of a vendor identification is invalid!",
+                                        nameof(Number));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Number)
+
+        /// <summary>
+        /// Try to parse the given number as a vendor identification.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a vendor identification.</param>
+        public static Vendor_Id? TryParse(UInt32 Number)
+        {
+
+            if (TryParse(Number, out var vendorId))
+                return vendorId;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Number, out VendorId)
+
+        /// <summary>
+        /// Try to parse the given number as a vendor identification.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a vendor identification.</param>
+        /// <param name="VendorId">The parsed vendor identification.</param>
+        public static Boolean TryParse(UInt32         Number,
+                                       out Vendor_Id  VendorId)
+        {
+
+            var matches = lookup.Values.Where(vendorId => vendorId.NumericId == Number);
+
+            if (matches.Any())
             {
-                VendorId = new Vendor_Id(Text);
+                VendorId = matches.First();
                 return true;
             }
-            catch (Exception)
-            { }
 
             VendorId = default;
             return false;
@@ -179,8 +294,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public Vendor_Id Clone
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   new String(InternalId?.ToCharArray()),
+                   NumericId
                );
+
+        #endregion
+
+
+        #region Static definitions
+
+        /// <summary>
+        /// Open Charge Alliance
+        /// </summary>
+        public static Vendor_Id OpenChargeAlliance    { get; }
+            = Register("Open Charge Alliance", 1);
+
+        /// <summary>
+        /// Open Charging Cloud
+        /// </summary>
+        public static Vendor_Id OpenChargingCloud     { get; }
+            = Register("Open Charging Cloud",  2);
+
+        /// <summary>
+        /// GraphDefined GmbH
+        /// </summary>
+        public static Vendor_Id GraphDefined          { get; }
+            = Register("GraphDefined",         3);
 
         #endregion
 
@@ -362,7 +501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => InternalId ?? "";
+            => $"{InternalId ?? ""} ({NumericId})";
 
         #endregion
 

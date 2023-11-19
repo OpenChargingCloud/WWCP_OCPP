@@ -26,10 +26,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
+namespace cloud.charging.open.protocols.OCPPv2_1.tests.BinaryStreamsExtensions
 {
 
     /// <summary>
@@ -68,9 +69,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     return Task.CompletedTask;
                 };
 
-                var vendorId   = Vendor_Id.       Parse       ("GraphDefined OEM");
-                var messageId  = Message_Id.      Parse       (RandomExtensions.RandomString(10));
-                var data       = RandomExtensions.RandomString(40).ToUTF8Bytes();
+                var vendorId   = Vendor_Id. GraphDefined;
+                var messageId  = Message_Id.GraphDefined_TestMessage;
+                var data       = "Hello world!".ToUTF8Bytes();
+
+
+                var aa = new OCPPv2_1.CS.BinaryDataTransferRequest(chargingStation1.Id,
+                                                                   vendorId,
+                                                                   messageId,
+                                                                   data,
+                                                                   BinaryFormats.Compact);
+
+                var bb = aa.ToBinary();
+
+                var cc = OCPPv2_1.CS.BinaryDataTransferRequest.TryParse(bb, Request_Id.Parse("2"), chargingStation1.Id,
+                                                                        out var dd, out var err);
+
+
 
                 var response   = await chargingStation1.TransferBinaryData(
                                      VendorId:    vendorId,

@@ -67,9 +67,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.BinaryStreamsExtensions
                     return Task.CompletedTask;
                 };
 
-                var vendorId   = Vendor_Id.       Parse       ("GraphDefined OEM");
-                var messageId  = Message_Id.      Parse       (RandomExtensions.RandomString(10));
-                var data       = RandomExtensions.RandomString(40).ToUTF8Bytes();
+                var vendorId   = Vendor_Id. GraphDefined;
+                var messageId  = Message_Id.GraphDefined_TestMessage;
+                var data       = "Hello world!".ToUTF8Bytes();
 
                 var response   = await testCSMS01.TransferBinaryData(
                                      ChargingStationId:   chargingStation1.Id,

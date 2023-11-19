@@ -2797,6 +2797,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                Vendor_Id                VendorId,
                                Message_Id?              MessageId           = null,
                                Byte[]?                  Data                = null,
+                               BinaryFormats?           Format              = null,
 
                                IEnumerable<KeyPair>?    SignKeys            = null,
                                IEnumerable<SignInfo>?   SignInfos           = null,
@@ -2817,6 +2818,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            VendorId,
                            MessageId,
                            Data,
+                           Format,
 
                            SignKeys,
                            SignInfos,

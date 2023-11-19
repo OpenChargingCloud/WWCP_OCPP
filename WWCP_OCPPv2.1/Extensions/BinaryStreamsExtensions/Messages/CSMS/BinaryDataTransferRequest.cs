@@ -49,6 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
+        /// The binary format of the given message.
+        /// </summary>
+        [Mandatory]
+        public BinaryFormats  Format       { get; }
+
+        /// <summary>
         /// The vendor identification or namespace of the given message.
         /// </summary>
         [Mandatory]
@@ -90,6 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          Vendor_Id                VendorId,
                                          Message_Id?              MessageId           = null,
                                          Byte[]?                  Data                = null,
+                                         BinaryFormats?           Format              = null,
 
                                          IEnumerable<KeyPair>?    SignKeys            = null,
                                          IEnumerable<SignInfo>?   SignInfos           = null,
@@ -123,6 +130,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.VendorId   = VendorId;
             this.MessageId  = MessageId;
             this.Data       = Data;
+            this.Format     = Format ?? BinaryFormats.Extensible;
+
 
             unchecked
             {
@@ -329,46 +338,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToBinary(CustomDataTransferRequestSerializer = null, CustomSignatureSerializer = null, ...)
+        #region ToBinary(CustomBinaryDataTransferRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a binary representation of this object.
         /// </summary>
-        /// <param name="CustomDataTransferRequestSerializer">A delegate to serialize custom binary data transfer requests.</param>
+        /// <param name="CustomBinaryDataTransferRequestSerializer">A delegate to serialize custom binary data transfer requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public Byte[] ToBinary(CustomBinarySerializerDelegate<BinaryDataTransferRequest>?  CustomDataTransferRequestSerializer   = null,
-                               CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer             = null,
-                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer            = null)
+        public Byte[] ToBinary(CustomBinarySerializerDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer   = null,
+                               CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                   = null,
+                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                  = null)
         {
 
-            //var json = JSONObject.Create(
+            var binaryStream = new MemoryStream();
 
-            //                     new JProperty("vendorId",     VendorId.  ToString()),
+            var vendorIdBytes = VendorId.   ToString().ToUTF8Bytes();
+            binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.VendorId),   0, 2);
+            binaryStream.Write(BitConverter.GetBytes((UInt16) 0),                     0, 2);
+            binaryStream.Write(BitConverter.GetBytes((UInt32) vendorIdBytes.Length),  0, 4);
+            binaryStream.Write(vendorIdBytes,                                         0, vendorIdBytes. Length);
 
-            //               MessageId.IsNotNullOrEmpty()
-            //                   ? new JProperty("messageId",    MessageId)
-            //                   : null,
+            var messageIdBytes = MessageId?.ToString().ToUTF8Bytes() ?? [];
+            binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.MessageId),  0, 2);
+            binaryStream.Write(BitConverter.GetBytes((UInt16) 0),                     0, 2);
+            binaryStream.Write(BitConverter.GetBytes((UInt32) messageIdBytes.Length), 0, 4);
+            binaryStream.Write(messageIdBytes,                                        0, messageIdBytes.Length);
 
-            //               BinaryData is not null
-            //                   ? new JProperty("binary data",         BinaryData)
-            //                   : null,
+            var data = Data                                          ?? [];
+            binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.Data),       0, 2);
+            binaryStream.Write(BitConverter.GetBytes((UInt16) 0),                     0, 2);
+            binaryStream.Write(BitConverter.GetBytes((UInt32) data.Length),           0, 4);
+            binaryStream.Write(data,                                                  0, data.          Length);
 
-            //               Signatures.Any()
-            //                   ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-            //                                                                                                              CustomCustomDataSerializer))))
-            //                   : null,
+            var binary = binaryStream.ToArray();
 
-            //               CustomData is not null
-            //                   ? new JProperty("customBinaryData",   CustomData.ToJSON(CustomCustomDataSerializer))
-            //                   : null
-
-            //           );
-
-            var binary = new Byte[0];
-
-            return CustomDataTransferRequestSerializer is not null
-                       ? CustomDataTransferRequestSerializer(this, binary)
+            return CustomBinaryDataTransferRequestSerializer is not null
+                       ? CustomBinaryDataTransferRequestSerializer(this, binary)
                        : binary;
 
         }

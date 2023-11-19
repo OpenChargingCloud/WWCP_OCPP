@@ -51,6 +51,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
+        /// The binary format of the given message.
+        /// </summary>
+        [Mandatory]
+        public BinaryFormats  Format       { get; }
+
+        /// <summary>
         /// The vendor identification or namespace of the given message.
         /// </summary>
         [Mandatory]
@@ -92,6 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          Vendor_Id                VendorId,
                                          Message_Id?              MessageId           = null,
                                          Byte[]?                  Data                = null,
+                                         BinaryFormats?           Format              = null,
 
                                          IEnumerable<KeyPair>?    SignKeys            = null,
                                          IEnumerable<SignInfo>?   SignInfos           = null,
@@ -125,6 +132,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.VendorId   = VendorId;
             this.MessageId  = MessageId;
             this.Data       = Data;
+            this.Format     = Format ?? BinaryFormats.Extensible;
+
 
             unchecked
             {
@@ -228,90 +237,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 BinaryDataTransferRequest = null;
 
-                //#region VendorId             [mandatory]
+                var span        = Binary.AsSpan<Byte>();
+                var signatures  = new List<Signature>();
 
-                //if (!JSON.ParseMandatory("vendorId",
-                //                         "vendor identification",
-                //                         Vendor_Id.TryParse,
-                //                         out Vendor_Id VendorId,
-                //                         out ErrorResponse))
-                //{
-                //    return false;
-                //}
+                var formatSpan  = span.Slice(0, 2);
+                var format      = BinaryFormatsExtensions.Parse(formatSpan);
 
-                //#endregion
+                #region Compact Format
 
-                //#region MessageId            [optional]
+                if (format == BinaryFormats.Compact)
+                {
 
-                //var MessageId = JSON.GetString("messageId");
+                    var vendorId         = Vendor_Id. Parse(BitConverter.ToUInt32(span.Slice( 2, 4)));
+                    var messageId        = Message_Id.Parse(BitConverter.ToUInt32(span.Slice( 6, 4)));
+                    var dataLength       =                  BitConverter.ToInt32 (span.Slice(10, 4));
+                    var data             = span.Slice(14, dataLength).ToArray();
 
-                //#endregion
+                    var text             = data.ToUTF8String();
 
-                //#region BinaryData                 [optional]
-
-                //var BinaryData = JSON["binary data"];
-
-                //#endregion
-
-                //#region Signatures           [optional, OCPP_CSE]
-
-                //if (JSON.ParseOptionalHashSet("signatures",
-                //                              "cryptographic signatures",
-                //                              Signature.TryParse,
-                //                              out HashSet<Signature> Signatures,
-                //                              out ErrorResponse))
-                //{
-                //    if (ErrorResponse is not null)
-                //        return false;
-                //}
-
-                //#endregion
-
-                //#region CustomData           [optional]
-
-                //if (JSON.ParseOptionalJSON("customBinaryData",
-                //                           "custom binary data",
-                //                           OCPPv2_1.CustomData.TryParse,
-                //                           out CustomData CustomData,
-                //                           out ErrorResponse))
-                //{
-                //    if (ErrorResponse is not null)
-                //        return false;
-                //}
-
-                //#endregion
-
-                //#region ChargingStationId    [optional, OCPP_CSE]
-
-                //if (JSON.ParseOptional("chargingStationId",
-                //                       "charging station identification",
-                //                       ChargingStation_Id.TryParse,
-                //                       out ChargingStation_Id? chargingStationId_PayLoad,
-                //                       out ErrorResponse))
-                //{
-
-                //    if (ErrorResponse is not null)
-                //        return false;
-
-                //    if (chargingStationId_PayLoad.HasValue)
-                //        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                //}
-
-                //#endregion
+                    var signaturesCount  = BitConverter.ToUInt16(span.Slice(14 + dataLength, 2));
 
 
-                //BinaryDataTransferRequest = new BinaryDataTransferRequest(
-                //                                ChargingStationId,
-                //                                VendorId,
-                //                                MessageId,
-                //                                null,
-                //                                null,
-                //                                null,
-                //                                Signatures,
-                //                                CustomData,
-                //                                RequestId
-                //                            );
+                    BinaryDataTransferRequest = new BinaryDataTransferRequest(
+
+                                                    ChargingStationId,
+                                                    vendorId,
+                                                    messageId,
+                                                    data,
+                                                    format,
+
+                                                    null,
+                                                    null,
+                                                    signatures,
+
+                                                    null,
+                                                    RequestId
+
+                                                );
+
+                }
+
+                #endregion
+
+                else
+                {
+                    do
+                    {
+
+                        var tagSpan     = span.Slice(2, 2);
+                        var tag         = BinaryTagsExtensions.   Parse(tagSpan);
+
+                        var lengthSpan  = span.Slice(4, 4);
+                        var length      = BitConverter.        ToUInt32(lengthSpan);
+
+
+                        //switch (tag)
+                        //{
+
+                        //    case BinaryTags.VendorId: // 1
+
+                        //        if (BitConverter.IsLittleEndian)
+                        //            Array.Reverse(span.Slice(4, 4).ToArray());
+
+                        //        var vendorIdLength = BitConverter.ToUInt32(span.Slice(4, 4));
+                        //        position += 8;
+
+                        //        var vendorId = Vendor_Id.Parse(span.Slice(position, (Int32) vendorIdLength).ToUTF8String());
+                        //        position += (Int32) vendorIdLength;
+
+                        //        break;
+
+
+                        //}
+
+                    }
+                    while (false);
+
+                }
 
                 ErrorResponse = null;
 
@@ -333,12 +335,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToJSON(CustomDataTransferRequestSerializer = null, CustomSignatureSerializer = null, ...)
+        #region ToBinary(CustomBinaryDataTransferRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomDataTransferRequestSerializer">A delegate to serialize custom binary data transfer requests.</param>
+        /// <param name="CustomBinaryDataTransferRequestSerializer">A delegate to serialize custom binary data transfer requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer   = null,
@@ -346,30 +348,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                  = null)
         {
 
-            //var json = JSONObject.Create(
+            var binaryStream = new MemoryStream();
 
-            //                     new JProperty("vendorId",     VendorId.  ToString()),
+            binaryStream.Write(Format.      AsBytes(),                                0, 2);
 
-            //               MessageId.IsNotNullOrEmpty()
-            //                   ? new JProperty("messageId",    MessageId)
-            //                   : null,
+            switch (Format)
+            {
 
-            //               Data is not null
-            //                   ? new JProperty("binary data",         Data)
-            //                   : null,
+                case BinaryFormats.Compact: {
 
-            //               Signatures.Any()
-            //                   ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-            //                                                                                                              CustomCustomDataSerializer))))
-            //                   : null,
+                    binaryStream.Write(BitConverter.GetBytes(VendorId.  NumericId),       0, 4);
+                    binaryStream.Write(BitConverter.GetBytes(MessageId?.NumericId ?? 0),  0, 4);
 
-            //               CustomData is not null
-            //                   ? new JProperty("customBinaryData",   CustomData.ToJSON(CustomCustomDataSerializer))
-            //                   : null
+                    var messageLengthBytes = BitConverter.GetBytes((UInt32) (Data?.LongLength ?? 0));
+                    binaryStream.Write(messageLengthBytes,                                0, 4);
 
-            //           );
+                    if (Data is not null)
+                        binaryStream.Write(Data,                                          0, (Int32) (Data?.LongLength ?? 0));
 
-            var binary = new Byte[0];
+                    var signaturesCountBytes = BitConverter.GetBytes((UInt16) Signatures.Count());
+                    binaryStream.Write(signaturesCountBytes,                              0, 2);
+
+                    if (Signatures.Any())
+                    {
+                        
+                    }
+
+                }
+                break;
+
+                case BinaryFormats.Extensible: {
+
+                    var vendorIdBytes = VendorId.   ToString().ToUTF8Bytes();
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.VendorId),   0, 2);
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) vendorIdBytes.Length),  0, 4);
+                    binaryStream.Write(vendorIdBytes,                                         0, vendorIdBytes. Length);
+
+                    var messageIdBytes = MessageId?.ToString().ToUTF8Bytes() ?? [];
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.MessageId),  0, 2);
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) messageIdBytes.Length), 0, 4);
+                    binaryStream.Write(messageIdBytes,                                        0, messageIdBytes.Length);
+
+                    var data = Data                                          ?? [];
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.Data),       0, 2);
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) 0),                     0, 2);
+                    binaryStream.Write(BitConverter.GetBytes((UInt32) data.Length),           0, 4);
+                    binaryStream.Write(data,                                                  0, data.          Length);
+
+                }
+                break;
+
+            }
+
+            var binary = binaryStream.ToArray();
 
             return CustomBinaryDataTransferRequestSerializer is not null
                        ? CustomBinaryDataTransferRequestSerializer(this, binary)

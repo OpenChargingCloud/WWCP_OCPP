@@ -3951,7 +3951,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                         await SendWebSocketFrame(WebSocketFrame.Text(
                                                      Text:        wsRequestMessage.ToText(),
                                                      Mask:        WebSocketFrame.MaskStatus.On,
-                                                     MaskingKey:  RandomExtensions.GetBytes(4)
+                                                     MaskingKey:  RandomExtensions.RandomBytes(4)
                                                  ));
 
                         requests.Add(RequestId,
