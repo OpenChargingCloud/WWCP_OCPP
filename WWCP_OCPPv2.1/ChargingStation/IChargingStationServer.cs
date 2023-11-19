@@ -435,6 +435,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
+        // Binary Data Streams Extensions
+
+        #region OnIncomingBinaryDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a binary data transfer was received.
+        /// </summary>
+        event OnIncomingBinaryDataTransferDelegate           OnIncomingBinaryDataTransfer;
+
+        #endregion
+
+
         // E2E Security Extensions
 
         #region OnAddSignaturePolicy

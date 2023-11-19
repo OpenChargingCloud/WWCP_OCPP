@@ -1073,7 +1073,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             TransferData(this ICSMS               CSMS,
                          ChargingStation_Id       ChargingStationId,
                          Vendor_Id                VendorId,
-                         String?                  MessageId           = null,
+                         Message_Id?              MessageId           = null,
                          JToken?                  Data                = null,
 
                          IEnumerable<KeyPair>?    SignKeys            = null,
@@ -2769,6 +2769,70 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+
+        // Binary Data Streams Extensions
+
+        #region TransferBinaryData         (this CSMS, ChargingStationId, VendorId, MessageId = null, Data = null, ...)
+
+        /// <summary>
+        /// Transfer the given binary data to the given charging station.
+        /// </summary>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+        /// <param name="MessageId">An optional message identification field.</param>
+        /// <param name="Data">Optional message data as text without specified length or format.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.BinaryDataTransferResponse>
+
+            TransferBinaryData(this ICSMS               CSMS,
+                               ChargingStation_Id       ChargingStationId,
+                               Vendor_Id                VendorId,
+                               Message_Id?              MessageId           = null,
+                               Byte[]?                  Data                = null,
+
+                               IEnumerable<KeyPair>?    SignKeys            = null,
+                               IEnumerable<SignInfo>?   SignInfos           = null,
+                               IEnumerable<Signature>?  Signatures          = null,
+
+                               CustomData?              CustomData          = null,
+
+                               Request_Id?              RequestId           = null,
+                               DateTime?                RequestTimestamp    = null,
+                               TimeSpan?                RequestTimeout      = null,
+                               EventTracking_Id?        EventTrackingId     = null,
+                               CancellationToken        CancellationToken   = default)
+
+
+                => CSMS.TransferBinaryData(
+                       new BinaryDataTransferRequest(
+                           ChargingStationId,
+                           VendorId,
+                           MessageId,
+                           Data,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
 
 
         // E2E Security Extensions

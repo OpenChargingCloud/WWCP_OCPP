@@ -702,6 +702,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
+        // Binary Data Streams Extensions
+
+        #region TransferBinaryData          (Request)
+
+        /// <summary>
+        /// Send the given vendor-specific binary data.
+        /// </summary>
+        /// <param name="Request">A binary data transfer request.</param>
+        Task<CS.BinaryDataTransferResponse> TransferBinaryData(BinaryDataTransferRequest Request);
+
+        #endregion
+
+
         // E2E Security Extensions
 
         #region AddSignaturePolicy          (Request)

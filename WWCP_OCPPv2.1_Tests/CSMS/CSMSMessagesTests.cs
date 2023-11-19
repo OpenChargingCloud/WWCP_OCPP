@@ -1188,7 +1188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         #region TransferTextData_Test()
 
         /// <summary>
-        /// A test for transfering text data to the CSMS.
+        /// A test for transfering text data to charging stations.
         /// </summary>
         [Test]
         public async Task TransferTextData_Test()
@@ -1215,7 +1215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var vendorId   = Vendor_Id.       Parse       ("GraphDefined OEM");
-                var messageId  = RandomExtensions.RandomString(10);
+                var messageId  = Message_Id.      Parse       (RandomExtensions.RandomString(10));
                 var data       = RandomExtensions.RandomString(40);
 
                 var response   = await testCSMS01.TransferData(
@@ -1245,7 +1245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         #region TransferJObjectData_Test()
 
         /// <summary>
-        /// A test for transfering JObject data to the CSMS.
+        /// A test for transfering JObject data to charging stations.
         /// </summary>
         [Test]
         public async Task TransferJObjectData_Test()
@@ -1271,8 +1271,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var vendorId   = Vendor_Id.       Parse       ("GraphDefined OEM");
-                var messageId  = RandomExtensions.RandomString(10);
+                var vendorId   = Vendor_Id. Parse("GraphDefined OEM");
+                var messageId  = Message_Id.Parse(RandomExtensions.RandomString(10));
                 var data       = new JObject(
                                      new JProperty(
                                          "key",
@@ -1309,7 +1309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         #region TransferJArrayData_Test()
 
         /// <summary>
-        /// A test for transfering JArray data to the CSMS.
+        /// A test for transfering JArray data to charging stations.
         /// </summary>
         [Test]
         public async Task TransferJArrayData_Test()
@@ -1335,8 +1335,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var vendorId   = Vendor_Id.       Parse       ("GraphDefined OEM");
-                var messageId  = RandomExtensions.RandomString(10);
+                var vendorId   = Vendor_Id. Parse("GraphDefined OEM");
+                var messageId  = Message_Id.Parse(RandomExtensions.RandomString(10));
                 var data       = new JArray(
                                      RandomExtensions.RandomString(40)
                                  );
@@ -1396,8 +1396,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     return Task.CompletedTask;
                 };
 
-                var vendorId   = Vendor_Id.Parse("ACME Inc.");
-                var messageId  = "hello";
+                var vendorId   = Vendor_Id. Parse("ACME Inc.");
+                var messageId  = Message_Id.Parse("hello");
                 var data       = "world!";
                 var response   = await testCSMS01.TransferData(
                                      ChargingStationId:   chargingStation1.Id,

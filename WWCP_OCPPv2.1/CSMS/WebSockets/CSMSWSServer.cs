@@ -1719,6 +1719,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
+
+        // Binary Data Streams Extensions
+
+        #region OnBinaryDataTransfer             (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a BinaryDataTransfer request was sent.
+        /// </summary>
+        public event OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a BinaryDataTransfer request was sent.
+        /// </summary>
+        public event OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
+
+        #endregion
+
+
         // E2E Security Extensions
 
         #region OnAddSignaturePolicy             (-Request/-Response)
@@ -11303,6 +11321,95 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnCustomerInformationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region TransferBinaryData               (Request)
+
+        public async Task<CS.BinaryDataTransferResponse> TransferBinaryData(BinaryDataTransferRequest Request)
+        {
+
+            #region Send OnBinaryDataTransferRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnBinaryDataTransferRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBinaryDataTransferRequest));
+            }
+
+            #endregion
+
+
+            CS.BinaryDataTransferResponse? response = null;
+
+            //var sendRequestState = await SendRequest(Request.EventTrackingId,
+            //                                         Request.RequestId,
+            //                                         Request.ChargingStationId,
+            //                                         Request.Action,
+            //                                         Request.ToJSON(
+            //                                             CustomBinaryDataTransferRequestSerializer,
+            //                                             CustomSignatureSerializer,
+            //                                             CustomCustomBinaryDataSerializer
+            //                                         ),
+            //                                         Request.RequestTimeout);
+
+            //if (sendRequestState.NoErrors &&
+            //    sendRequestState.Response is not null)
+            //{
+
+            //    if (CS.BinaryDataTransferResponse.TryParse(Request,
+            //                                         sendRequestState.Response,
+            //                                         out var dataTransferResponse,
+            //                                         out var errorResponse) &&
+            //        dataTransferResponse is not null)
+            //    {
+            //        response = dataTransferResponse;
+            //    }
+
+            //    response ??= new CS.BinaryDataTransferResponse(Request,
+            //                                             Result.Format(errorResponse));
+
+            //}
+
+            response ??= new CS.BinaryDataTransferResponse(Request,
+                                                           BinaryDataTransferStatus.Rejected);// Result.FromSendRequestState(sendRequestState));
+
+
+            #region Send OnBinaryDataTransferResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnBinaryDataTransferResponse?.Invoke(endTime,
+                                                     this,
+                                                     Request,
+                                                     response,
+                                                     endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBinaryDataTransferResponse));
             }
 
             #endregion

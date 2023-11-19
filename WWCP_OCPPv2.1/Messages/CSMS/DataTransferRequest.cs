@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// An optional message identification field.
         /// </summary>
         [Optional]
-        public String?        MessageId    { get; }
+        public Message_Id?    MessageId    { get; }
 
         /// <summary>
         /// Optional message data without specified length or format.
@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public DataTransferRequest(ChargingStation_Id       ChargingStationId,
                                    Vendor_Id                VendorId,
-                                   String?                  MessageId           = null,
+                                   Message_Id?              MessageId           = null,
                                    JToken?                  Data                = null,
 
                                    IEnumerable<KeyPair>?    SignKeys            = null,
@@ -123,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         {
 
             this.VendorId   = VendorId;
-            this.MessageId  = MessageId?.Trim();
+            this.MessageId  = MessageId;
             this.Data       = Data;
 
             unchecked
@@ -286,7 +286,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region MessageId            [optional]
 
-                var MessageId = JSON.GetString("messageId");
+                if (JSON.ParseOptional("messageId",
+                                       "message identification",
+                                       Message_Id.TryParse,
+                                       out Message_Id? MessageId,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
                 #endregion
 
@@ -391,8 +399,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                  new JProperty("vendorId",     VendorId.  ToString()),
 
-                           MessageId.IsNotNullOrEmpty()
-                               ? new JProperty("messageId",    MessageId)
+                           MessageId.HasValue
+                               ? new JProperty("messageId",    MessageId. ToString())
                                : null,
 
                            Data is not null
@@ -522,13 +530,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-                   VendorId,        ", ",
-                   MessageId ?? "", ", ",
-                   Data      ?? ""
-               );
+            => $"{VendorId}: {MessageId?.ToString() ?? "-"} => {Data?.ToString() ?? "-"}";
 
         #endregion
+
 
     }
 

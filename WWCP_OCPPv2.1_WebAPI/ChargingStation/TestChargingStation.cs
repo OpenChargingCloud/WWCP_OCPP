@@ -483,6 +483,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CSMS.CustomerInformationRequest>?                     CustomCustomerInformationRequestSerializer                   { get; set; }
 
 
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate<CSMS.BinaryDataTransferRequest>?                       CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+
+
         // E2E Security Extensions
         public CustomJObjectSerializerDelegate<CSMS.AddSignaturePolicyRequest>?                      CustomAddSignaturePolicyRequestSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.UpdateSignaturePolicyRequest>?                   CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
@@ -532,6 +536,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CSMS.NotifyDisplayMessagesResponse>?                  CustomNotifyDisplayMessagesResponseSerializer                { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.NotifyCustomerInformationResponse>?              CustomNotifyCustomerInformationResponseSerializer            { get; set; }
 
+
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate<CSMS.BinaryDataTransferResponse>?                      CustomBinaryDataTransferResponseSerializer                   { get; set; }
+
         #endregion
 
 
@@ -567,6 +575,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         public CustomJObjectSerializerDelegate<NotifyDisplayMessagesRequest>?                        CustomNotifyDisplayMessagesRequestSerializer                 { get; set; }
         public CustomJObjectSerializerDelegate<NotifyCustomerInformationRequest>?                    CustomNotifyCustomerInformationRequestSerializer             { get; set; }
+
+
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?                            CustomBinaryDataTransferRequestSerializer                    { get; set; }
 
         #endregion
 
@@ -623,19 +635,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CustomerInformationResponse>?                         CustomCustomerInformationResponseSerializer                  { get; set; }
 
 
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?                           CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
+
+
         // E2E Security Extensions
-        public CustomJObjectSerializerDelegate<AddSignaturePolicyResponse>?                          CustomAddSignaturePolicyResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<UpdateSignaturePolicyResponse>?                       CustomUpdateSignaturePolicyResponseSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteSignaturePolicyResponse>?                       CustomDeleteSignaturePolicyResponseSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<AddUserRoleResponse>?                                 CustomAddUserRoleResponseSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<UpdateUserRoleResponse>?                              CustomUpdateUserRoleResponseSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteUserRoleResponse>?                              CustomDeleteUserRoleResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<AddSignaturePolicyResponse>?                          CustomAddSignaturePolicyResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateSignaturePolicyResponse>?                       CustomUpdateSignaturePolicyResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteSignaturePolicyResponse>?                       CustomDeleteSignaturePolicyResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<AddUserRoleResponse>?                                 CustomAddUserRoleResponseSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateUserRoleResponse>?                              CustomUpdateUserRoleResponseSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteUserRoleResponse>?                              CustomDeleteUserRoleResponseSerializer                       { get; set; }
 
 
         // E2E Charging Tariff Extensions
-        public CustomJObjectSerializerDelegate<SetDefaultChargingTariffResponse>?                    CustomSetDefaultChargingTariffResponseSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<GetDefaultChargingTariffResponse>?                    CustomGetDefaultChargingTariffResponseSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<RemoveDefaultChargingTariffResponse>?                 CustomRemoveDefaultChargingTariffResponseSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<SetDefaultChargingTariffResponse>?                    CustomSetDefaultChargingTariffResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<GetDefaultChargingTariffResponse>?                    CustomGetDefaultChargingTariffResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<RemoveDefaultChargingTariffResponse>?                 CustomRemoveDefaultChargingTariffResponseSerializer          { get; set; }
 
         #endregion
 
@@ -1149,6 +1165,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        // Binary Data Streams Extensions
+
+        #region TransferBinaryData
+
+        /// <summary>
+        /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
+        /// </summary>
+        public event OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a BinaryDataTransfer request was received.
+        /// </summary>
+        public event OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
+
+        #endregion
+
         #endregion
 
         #region Charging Station <- CSMS
@@ -1204,6 +1237,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public event OnClearDisplayMessageDelegate?             OnClearDisplayMessage;
         public event OnCostUpdatedDelegate?                     OnCostUpdated;
         public event OnCustomerInformationDelegate?             OnCustomerInformation;
+
+        // Binary Data Streams Extensions
+        public event OnIncomingBinaryDataTransferDelegate?      OnIncomingBinaryDataTransfer;
 
         // E2E Security Extensions
         public event OnAddSignaturePolicyDelegate?              OnAddSignaturePolicy;
@@ -1846,6 +1882,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event fired whenever a response to a CustomerInformation request was sent.
         /// </summary>
         public event OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region OnIncomingBinaryDataTransferRequest/-Response
+
+        /// <summary>
+        /// An event sent whenever a binary data transfer request was sent.
+        /// </summary>
+        public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a binary data transfer request was sent.
+        /// </summary>
+        public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
 
         #endregion
 
@@ -5208,7 +5261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     else
                     {
 
-                        DebugX.Log($"Charging Station '{Id}': Incoming data transfer request: {request.VendorId}.{request.MessageId ?? "-"}: {request.Data ?? "-"}!");
+                        DebugX.Log($"Charging Station '{Id}': Incoming data transfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data ?? "-"}!");
 
                         // VendorId
                         // MessageId
@@ -10061,6 +10114,180 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
+            // Binary Data Streams Extensions
+
+            #region OnIncomingBinaryDataTransfer
+
+            ChargingStationServer.OnIncomingBinaryDataTransfer += async (timestamp,
+                                                                         sender,
+                                                                         connection,
+                                                                         request,
+                                                                         cancellationToken) => {
+
+                #region Send OnBinaryDataTransferRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnIncomingBinaryDataTransferRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnIncomingBinaryDataTransferRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnIncomingBinaryDataTransferRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check charging station identification
+
+                BinaryDataTransferResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new BinaryDataTransferResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid BinaryDataTransfer request for charging station '{request.ChargingStationId}'!"
+                                             )
+                               );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToBinary(
+                                 CustomIncomingBinaryDataTransferRequestSerializer
+                                 //CustomSignatureSerializer,
+                                 //CustomCustomBinaryDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
+                    {
+
+                        response = new BinaryDataTransferResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging Station '{Id}': Incoming binary data transfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data?.ToHexString() ?? "-"}!");
+
+                        // VendorId
+                        // MessageId
+                        // Data
+
+                        var responseBinaryData = request.Data;
+
+                        if (request.Data is not null)
+                            responseBinaryData = request.Data.Reverse();
+
+                        if (request.VendorId.ToString() == "GraphDefined OEM")
+                        {
+                            response = new BinaryDataTransferResponse(
+                                           request,
+                                           BinaryDataTransferStatus.Accepted,
+                                           responseBinaryData
+                                       );
+                        }
+                        else
+                            response = new BinaryDataTransferResponse(
+                                           request,
+                                           BinaryDataTransferStatus.Rejected
+                                       );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToBinary(
+                        CustomIncomingBinaryDataTransferResponseSerializer
+                        //CustomStatusInfoSerializer,
+                        //CustomSignatureSerializer,
+                        //CustomCustomBinaryDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnBinaryDataTransferResponse event
+
+                var responseLogger = OnIncomingBinaryDataTransferResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnIncomingBinaryDataTransferResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnIncomingBinaryDataTransferResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
             // E2E Security Extensions
 
             #region OnAddSignaturePolicy
@@ -14846,6 +15073,111 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         #endregion
+
+
+        #region TransferBinaryData                    (Request)
+
+        /// <summary>
+        /// Send the given vendor-specific binary data to the CSMS.
+        /// </summary>
+        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
+        /// <param name="MessageId">An optional message identification.</param>
+        /// <param name="BinaryData">A vendor-specific JSON token.</param>
+        /// <param name="CustomBinaryData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public async Task<CSMS.BinaryDataTransferResponse>
+            TransferBinaryData(BinaryDataTransferRequest Request)
+
+        {
+
+            #region Send OnBinaryDataTransferRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnBinaryDataTransferRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnBinaryDataTransferRequest));
+            }
+
+            #endregion
+
+
+            var response = CSClient is not null
+
+                               ? SignaturePolicy.SignRequestMessage(
+                                     Request,
+                                     Request.ToBinary(
+                                         CustomBinaryDataTransferRequestSerializer
+                                         //CustomSignatureSerializer,
+                                         //CustomCustomBinaryDataSerializer
+                                     ),
+                                     out var errorResponse
+                                 )
+
+                                     ? await CSClient.TransferBinaryData(Request)
+
+                                     : new CSMS.BinaryDataTransferResponse(
+                                           Request,
+                                           Result.SignatureError(errorResponse)
+                                       )
+
+                               : new CSMS.BinaryDataTransferResponse(
+                                     Request,
+                                     Result.Server("Unknown or unreachable charging station!")
+                                 );
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomBinaryDataTransferResponseSerializer
+                    //CustomStatusInfoSerializer,
+                    //CustomSignatureSerializer,
+                    //CustomCustomBinaryDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnBinaryDataTransferResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnBinaryDataTransferResponse?.Invoke(endTime,
+                                               this,
+                                               Request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnBinaryDataTransferResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
 
 
         #region Dispose()

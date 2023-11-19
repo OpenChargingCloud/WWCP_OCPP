@@ -1048,6 +1048,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+
+        // Binary Data Streams Extensions
+
+        #region OnBinaryDataTransferRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a binary data transfer request will be sent to the CSMS.
+        /// </summary>
+        public event OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
+
+        /// <summary>
+        /// An event fired whenever a binary data transfer request will be sent to the CSMS.
+        /// </summary>
+        public event ClientRequestLogHandler?                 OnBinaryDataTransferWSRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a binary data transfer request was received.
+        /// </summary>
+        public event ClientResponseLogHandler?                OnBinaryDataTransferWSResponse;
+
+        /// <summary>
+        /// An event fired whenever a response to a binary data transfer request was received.
+        /// </summary>
+        public event OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
+
+        #endregion
+
         #endregion
 
         #region Charging Station <- CSMS
@@ -2359,6 +2386,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// An event sent whenever a websocket response to a customer information request was sent.
         /// </summary>
         public event WSClientResponseLogHandler?               OnCustomerInformationWSResponse;
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region OnIncomingBinaryDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a binary data transfer websocket request was received.
+        /// </summary>
+        public event WSClientRequestLogHandler?                       OnIncomingBinaryDataTransferWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a binary data transfer request was received.
+        /// </summary>
+        public event OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a binary data transfer request was received.
+        /// </summary>
+        public event OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
+
+        /// <summary>
+        /// An event sent whenever a response to a binary data transfer request was sent.
+        /// </summary>
+        public event OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
+
+        /// <summary>
+        /// An event sent whenever a websocket response to a binary data transfer request was sent.
+        /// </summary>
+        public event WSClientResponseLogHandler?                      OnIncomingBinaryDataTransferWSResponse;
 
         #endregion
 
@@ -13144,6 +13203,110 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnNotifyCustomerInformationResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region TransferBinaryData                   (Request)
+
+        /// <summary>
+        /// Send vendor-specific binary data.
+        /// </summary>
+        /// <param name="Request">A BinaryDataTransfer request.</param>
+        public async Task<CSMS.BinaryDataTransferResponse>
+
+            TransferBinaryData(BinaryDataTransferRequest  Request)
+
+        {
+
+            #region Send OnBinaryDataTransferRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnBinaryDataTransferRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnBinaryDataTransferRequest));
+            }
+
+            #endregion
+
+
+            CSMS.BinaryDataTransferResponse? response = null;
+
+            //var requestMessage = await SendRequest(Request.Action,
+            //                                       Request.RequestId,
+            //                                       Request.ToJSON(
+            //                                           CustomBinaryDataTransferRequestSerializer,
+            //                                           CustomSignatureSerializer,
+            //                                           CustomCustomBinaryDataSerializer
+            //                                       ));
+
+            //if (requestMessage.NoErrors)
+            //{
+
+            //    var sendRequestState = await WaitForResponse(requestMessage);
+
+            //    if (sendRequestState.NoErrors &&
+            //        sendRequestState.Response is not null)
+            //    {
+
+            //        if (CSMS.BinaryDataTransferResponse.TryParse(Request,
+            //                                               sendRequestState.Response,
+            //                                               out var dataTransferResponse,
+            //                                               out var errorResponse) &&
+            //            dataTransferResponse is not null)
+            //        {
+            //            response = dataTransferResponse;
+            //        }
+
+            //        response ??= new CSMS.BinaryDataTransferResponse(Request,
+            //                                                   Result.Format(errorResponse));
+
+            //    }
+
+            //    response ??= new CSMS.BinaryDataTransferResponse(Request,
+            //                                               Result.FromSendRequestState(sendRequestState));
+
+            //}
+
+            response ??= new CSMS.BinaryDataTransferResponse(Request,
+                                                             Result.GenericError());// requestMessage.ErrorMessage));
+
+
+            #region Send OnBinaryDataTransferResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnBinaryDataTransferResponse?.Invoke(endTime,
+                                               this,
+                                               Request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnBinaryDataTransferResponse));
             }
 
             #endregion

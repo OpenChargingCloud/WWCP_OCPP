@@ -50,9 +50,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        PrivacyLevel                  PrivacyLevel  = PrivacyLevel.Private,
                                        DateTime?                     Created       = null)
 
-            : base(ChargeBoxA ?? throw new ArgumentNullException(nameof(ChargeBoxA), "The given charge box must not be null!"),
+            : base(ChargeBoxA ?? throw new ArgumentNullException(nameof(ChargeBoxA), "The given charging station must not be null!"),
                    EdgeLabel,
-                   ChargeBoxB ?? throw new ArgumentNullException(nameof(ChargeBoxB), "The given charge box must not be null!"),
+                   ChargeBoxB ?? throw new ArgumentNullException(nameof(ChargeBoxB), "The given charging station must not be null!"),
                    PrivacyLevel,
                    Created)
 

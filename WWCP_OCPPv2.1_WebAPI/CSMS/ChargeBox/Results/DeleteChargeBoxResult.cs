@@ -26,7 +26,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// The result of a delete charge box request.
+    /// The result of a delete charging station request.
     /// </summary>
     public class DeleteChargeBoxResult : AEnitityResult<ChargeBox, ChargingStation_Id>
     {

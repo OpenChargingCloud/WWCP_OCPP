@@ -2238,6 +2238,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     #endregion
 
 
+    // Binary Data Streams Extensions
+
+    #region OnIncomingBinaryDataTransfer
+
+    /// <summary>
+    /// An incoming binary data transfer request.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The binary data transfer request.</param>
+    public delegate Task
+
+        OnIncomingBinaryDataTransferRequestDelegate(DateTime                         Timestamp,
+                                                    IEventSender                     Sender,
+                                                    CSMS.BinaryDataTransferRequest   Request);
+
+
+    /// <summary>
+    /// An incoming binary data transfer request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The binary data transfer request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<BinaryDataTransferResponse>
+
+        OnIncomingBinaryDataTransferDelegate(DateTime                         Timestamp,
+                                             IEventSender                     Sender,
+                                             WebSocketClientConnection        Connection,
+                                             CSMS.BinaryDataTransferRequest   Request,
+                                             CancellationToken                CancellationToken);
+
+
+    /// <summary>
+    /// An incoming binary data transfer response.
+    /// </summary>
+    /// <param name="Timestamp">The log timestamp of the response.</param>
+    /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Request">The binary data transfer request.</param>
+    /// <param name="Response">The binary data transfer response.</param>
+    /// <param name="Runtime">The runtime of this request.</param>
+    public delegate Task
+
+        OnIncomingBinaryDataTransferResponseDelegate(DateTime                         Timestamp,
+                                                     IEventSender                     Sender,
+                                                     CSMS.BinaryDataTransferRequest   Request,
+                                                     CS.BinaryDataTransferResponse    Response,
+                                                     TimeSpan                         Runtime);
+
+    #endregion
+
+
     // E2E Security Extensions
 
     #region OnAddSignaturePolicy

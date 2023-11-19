@@ -25,22 +25,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                         IChargingStationServer
     {
 
-        ChargingStation_Id      Id                       { get; }
+        ChargingStation_Id  Id                       { get; }
 
-        TimeSpan          DefaultRequestTimeout    { get; }
+        TimeSpan            DefaultRequestTimeout    { get; }
 
-        Request_Id        NextRequestId            { get; }
+        Request_Id          NextRequestId            { get; }
 
-        SignaturePolicy?  SignaturePolicy          { get; }
+        SignaturePolicy?    SignaturePolicy          { get; }
 
 
-        String            Model                    { get; }
-        String            VendorName               { get; }
-        String?           SerialNumber             { get; }
-        Modem?            Modem                    { get; }
-        String?           FirmwareVersion          { get; }
+        String              Model                    { get; }
+        String              VendorName               { get; }
+        String?             SerialNumber             { get; }
+        Modem?              Modem                    { get; }
+        String?             FirmwareVersion          { get; }
 
-        CustomData        CustomData               { get; }
+        CustomData          CustomData               { get; }
 
 
     }

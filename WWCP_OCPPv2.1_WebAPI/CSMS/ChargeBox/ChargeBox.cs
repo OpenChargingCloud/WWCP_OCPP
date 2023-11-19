@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
     /// <summary>
-    /// A charge box.
+    /// A charging station.
     /// </summary>
     public class ChargeBox : AEntity<ChargingStation_Id,
                                      ChargeBox>
@@ -149,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Data
 
         /// <summary>
-        /// The default max size of the charge box status history.
+        /// The default max size of the charging station status history.
         /// </summary>
         public const UInt16 DefaultChargeBoxStatusHistorySize = 50;
 
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         /// <summary>
-        /// The optional multi-language charge box description.
+        /// The optional multi-language charging station description.
         /// </summary>
         public I18NString?              Description                 { get; }
 
@@ -634,12 +634,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new charge point for testing.
         /// </summary>
-        /// <param name="Id">The charge box identification.</param>
+        /// <param name="Id">The charging station identification.</param>
         /// <param name="NumberOfConnectors">Number of available connectors.</param>
         /// <param name="ChargePointVendor">The charge point vendor identification.</param>
         /// <param name="ChargePointModel">The charge point model identification.</param>
         /// 
-        /// <param name="Description">An optional multi-language charge box description.</param>
+        /// <param name="Description">An optional multi-language charging station description.</param>
         /// <param name="ChargePointSerialNumber">An optional serial number of the charge point.</param>
         /// <param name="ChargeBoxSerialNumber">An optional serial number of the charge point.</param>
         /// <param name="FirmwareVersion">An optional firmware version of the charge point.</param>
@@ -745,7 +745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomChargeBoxSerializer">A delegate to serialize custom charge boxes.</param>
+        /// <param name="CustomChargeBoxSerializer">A delegate to serialize custom charging stationes.</param>
         public JObject ToJSON(Boolean                                      Embedded                    = false,
                               InfoStatus                                   ExpandTags                  = InfoStatus.ShowIdOnly,
                               Boolean                                      IncludeLastChange           = true,
@@ -1105,7 +1105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
             /// <summary>
-            /// The optional multi-language charge box description.
+            /// The optional multi-language charging station description.
             /// </summary>
             public I18NString               Description                 { get; set; }
 

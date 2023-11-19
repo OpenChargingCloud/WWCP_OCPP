@@ -26,7 +26,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// The result of an update charge box request.
+    /// The result of an update charging station request.
     /// </summary>
     public class UpdateChargeBoxResult : AEnitityResult<ChargeBox, ChargingStation_Id>
     {

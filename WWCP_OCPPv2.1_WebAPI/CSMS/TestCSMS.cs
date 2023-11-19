@@ -653,6 +653,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        // Binary Data Streams Extensions
+
+        #region OnIncomingBinaryDataTransfer (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever an IncomingBinaryDataTransfer request was received.
+        /// </summary>
+        public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an IncomingBinaryDataTransfer request was sent.
+        /// </summary>
+        public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
+
+        #endregion
+
+
         #endregion
 
         #region CSMS -> Charging Station Messages
@@ -898,12 +916,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region OnDataTransfer                (-Request/-Response)
 
         /// <summary>
-        /// An event sent whenever a reset request was sent.
+        /// An event sent whenever a DataTransfer request will be sent to the charging station.
         /// </summary>
         public event CSMS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event sent whenever a response to a DataTransfer request was received.
         /// </summary>
         public event CSMS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
@@ -1293,6 +1311,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        // Binary Data Streams Extensions
+
+        #region OnBinaryDataTransfer          (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a BinaryDataTransfer request will be sent to the charging station.
+        /// </summary>
+        public event CSMS.OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a BinaryDataTransfer request was received.
+        /// </summary>
+        public event CSMS.OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
+
+        #endregion
+
+
         // E2E Security Extensions
 
         #region AddSignaturePolicy            (-Request/-Response)
@@ -1528,6 +1563,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CustomerInformationRequest>?                          CustomCustomerInformationRequestSerializer                   { get; set; }
 
 
+        // Binary Data Streams Extensions
+
+        public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
+
+
         // E2E Security Extensions
 
         public CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?                           CustomAddSignaturePolicyRequestSerializer                    { get; set; }
@@ -1671,6 +1711,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CS.ClearDisplayMessageResponse>?                      CustomClearDisplayMessageResponseSerializer                  { get; set; }
         public CustomJObjectSerializerDelegate<CS.CostUpdatedResponse>?                              CustomCostUpdatedResponseSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<CS.CustomerInformationResponse>?                      CustomCustomerInformationResponseSerializer                  { get; set; }
+
+
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate <CS.BinaryDataTransferResponse>?                       CustomBinaryDataTransferResponseSerializer                   { get; set; }
 
 
         // E2E Charging Tariff Extensions
@@ -7932,7 +7976,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ChangeAvailability          (Request)
 
         /// <summary>
-        /// Change the availability of the given charge box.
+        /// Change the availability of the given charging station.
         /// </summary>
         /// <param name="Request">A ChangeAvailability request.</param>
         public async Task<CS.ChangeAvailabilityResponse>
@@ -8028,7 +8072,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region TriggerMessage              (Request)
 
         /// <summary>
-        /// Create a trigger for the given message at the given charge box connector.
+        /// Create a trigger for the given message at the given charging station connector.
         /// </summary>
         /// <param name="Request">A TriggerMessage request.</param>
         public async Task<CS.TriggerMessageResponse>
@@ -8124,7 +8168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region TransferData                (Request)
 
         /// <summary>
-        /// Transfer the given data to the given charge box.
+        /// Transfer the given data to the given charging station.
         /// </summary>
         /// <param name="Request">A DataTransfer request.</param>
         public async Task<CS.DataTransferResponse>
@@ -8220,7 +8264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SendSignedCertificate       (Request)
 
         /// <summary>
-        /// Send the signed certificate to the given charge box.
+        /// Send the signed certificate to the given charging station.
         /// </summary>
         /// <param name="Request">A CertificateSigned request.</param>
         public async Task<CS.CertificateSignedResponse>
@@ -8697,7 +8741,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetLocalListVersion         (Request)
 
         /// <summary>
-        /// Return the local white list of the given charge box.
+        /// Return the local white list of the given charging station.
         /// </summary>
         /// <param name="Request">A GetLocalListVersion request.</param>
         public async Task<CS.GetLocalListVersionResponse>
@@ -8791,7 +8835,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SendLocalList               (Request)
 
         /// <summary>
-        /// Set the local white liste at the given charge box.
+        /// Set the local white liste at the given charging station.
         /// </summary>
         /// <param name="Request">A SendLocalList request.</param>
         public async Task<CS.SendLocalListResponse>
@@ -8891,7 +8935,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ClearCache                  (Request)
 
         /// <summary>
-        /// Clear the local white liste cache of the given charge box.
+        /// Clear the local white liste cache of the given charging station.
         /// </summary>
         /// <param name="Request">A ClearCache request.</param>
         public async Task<CS.ClearCacheResponse>
@@ -8987,7 +9031,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ReserveNow                  (Request)
 
         /// <summary>
-        /// Create a charging reservation of the given charge box connector.
+        /// Create a charging reservation of the given charging station connector.
         /// </summary>
         /// <param name="Request">A ReserveNow request.</param>
         public async Task<CS.ReserveNowResponse>
@@ -9084,7 +9128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region CancelReservation           (Request)
 
         /// <summary>
-        /// Cancel the given charging reservation at the given charge box.
+        /// Cancel the given charging reservation at the given charging station.
         /// </summary>
         /// <param name="Request">A CancelReservation request.</param>
         public async Task<CS.CancelReservationResponse>
@@ -9179,7 +9223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region StartCharging               (Request)
 
         /// <summary>
-        /// Set the charging profile of the given charge box connector.
+        /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A StartCharging request.</param>
         public async Task<CS.RequestStartTransactionResponse>
@@ -9301,7 +9345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region StopCharging                (Request)
 
         /// <summary>
-        /// Set the charging profile of the given charge box connector.
+        /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A StopCharging request.</param>
         public async Task<CS.RequestStopTransactionResponse>
@@ -9396,7 +9440,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetTransactionStatus        (Request)
 
         /// <summary>
-        /// Set the charging profile of the given charge box connector.
+        /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A GetTransactionStatus request.</param>
         public async Task<CS.GetTransactionStatusResponse>
@@ -9490,7 +9534,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region SetChargingProfile          (Request)
 
         /// <summary>
-        /// Set the charging profile of the given charge box connector.
+        /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A SetChargingProfile request.</param>
         public async Task<CS.SetChargingProfileResponse>
@@ -9608,7 +9652,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetChargingProfiles         (Request)
 
         /// <summary>
-        /// Set the charging profile of the given charge box connector.
+        /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A GetChargingProfiles request.</param>
         public async Task<CS.GetChargingProfilesResponse>
@@ -9704,7 +9748,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ClearChargingProfile        (Request)
 
         /// <summary>
-        /// Remove the charging profile at the given charge box connector.
+        /// Remove the charging profile at the given charging station connector.
         /// </summary>
         /// <param name="Request">A ClearChargingProfile request.</param>
         public async Task<CS.ClearChargingProfileResponse>
@@ -9800,7 +9844,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region GetCompositeSchedule        (Request)
 
         /// <summary>
-        /// Return the charging schedule of the given charge box connector.
+        /// Return the charging schedule of the given charging station connector.
         /// </summary>
         /// <param name="Request">A GetCompositeSchedule request.</param>
         public async Task<CS.GetCompositeScheduleResponse>
@@ -9992,7 +10036,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region NotifyAllowedEnergyTransfer (Request)
 
         /// <summary>
-        /// Unlock the given charge box connector.
+        /// Unlock the given charging station connector.
         /// </summary>
         /// <param name="Request">A NotifyAllowedEnergyTransfer request.</param>
         public async Task<CS.NotifyAllowedEnergyTransferResponse>
@@ -10182,7 +10226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region UnlockConnector             (Request)
 
         /// <summary>
-        /// Unlock the given charge box connector.
+        /// Unlock the given charging station connector.
         /// </summary>
         /// <param name="Request">A UnlockConnector request.</param>
         public async Task<CS.UnlockConnectorResponse>
@@ -10855,6 +10899,105 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region TransferBinaryData                (Request)
+
+        /// <summary>
+        /// Transfer the given data to the given charging station.
+        /// </summary>
+        /// <param name="Request">A BinaryDataTransfer request.</param>
+        public async Task<CS.BinaryDataTransferResponse>
+            TransferBinaryData(BinaryDataTransferRequest Request)
+
+        {
+
+            #region Send OnBinaryDataTransferRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnBinaryDataTransferRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnBinaryDataTransferRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToBinary(
+                                          CustomBinaryDataTransferRequestSerializer
+                                          //CustomSignatureSerializer,
+                                          //CustomCustomBinaryDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.TransferBinaryData(Request)
+
+                                      : new CS.BinaryDataTransferResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.BinaryDataTransferResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToBinary(
+                    CustomBinaryDataTransferResponseSerializer
+                    //CustomStatusInfoSerializer,
+                    //CustomSignatureSerializer,
+                    //CustomCustomBinaryDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnBinaryDataTransferResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnBinaryDataTransferResponse?.Invoke(endTime,
+                                               this,
+                                               Request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnBinaryDataTransferResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
 
 
         // E2E Security Extensions
@@ -11773,10 +11916,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region AddOrUpdateHTTPBasicAuth(ChargeBoxId, Password)
 
         /// <summary>
-        /// Add the given HTTP Basic Authentication password for the given charge box.
+        /// Add the given HTTP Basic Authentication password for the given charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of the charge box.</param>
-        /// <param name="Password">The password of the charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of the charging station.</param>
+        /// <param name="Password">The password of the charging station.</param>
         public void AddOrUpdateHTTPBasicAuth(ChargingStation_Id  ChargeBoxId,
                                              String        Password)
         {
@@ -11796,9 +11939,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region RemoveHTTPBasicAuth(ChargeBoxId)
 
         /// <summary>
-        /// Remove the given HTTP Basic Authentication for the given charge box.
+        /// Remove the given HTTP Basic Authentication for the given charging station.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of the charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of the charging station.</param>
         public void RemoveHTTPBasicAuth(ChargingStation_Id ChargeBoxId)
         {
 
@@ -11819,12 +11962,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Data
 
         /// <summary>
-        /// An enumeration of all charge boxes.
+        /// An enumeration of all charging stationes.
         /// </summary>
         protected internal readonly ConcurrentDictionary<ChargingStation_Id, ChargeBox> chargeBoxes = new();
 
         /// <summary>
-        /// An enumeration of all charge boxes.
+        /// An enumeration of all charging stationes.
         /// </summary>
         public IEnumerable<ChargeBox> ChargeBoxes
             => chargeBoxes.Values;
@@ -11837,9 +11980,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         ///// <summary>
         ///// Write the given chargeBox to the database and send out notifications.
         ///// </summary>
-        ///// <param name="ChargeBox">The charge box.</param>
+        ///// <param name="ChargeBox">The charging station.</param>
         ///// <param name="MessageType">The chargeBox notification.</param>
-        ///// <param name="OldChargeBox">The old/updated charge box.</param>
+        ///// <param name="OldChargeBox">The old/updated charging station.</param>
         ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         ///// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
         //protected internal async Task WriteToDatabaseFileAndNotify(ChargeBox             ChargeBox,
@@ -11892,9 +12035,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         ///// <summary>
         ///// Send chargeBox notifications.
         ///// </summary>
-        ///// <param name="ChargeBox">The charge box.</param>
+        ///// <param name="ChargeBox">The charging station.</param>
         ///// <param name="MessageType">The chargeBox notification.</param>
-        ///// <param name="OldChargeBox">The old/updated charge box.</param>
+        ///// <param name="OldChargeBox">The old/updated charging station.</param>
         ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         ///// <param name="CurrentUserId">The invoking chargeBox identification</param>
         //protected internal virtual Task SendNotifications(ChargeBox             ChargeBox,
@@ -11913,9 +12056,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         ///// <summary>
         ///// Send chargeBox notifications.
         ///// </summary>
-        ///// <param name="ChargeBox">The charge box.</param>
+        ///// <param name="ChargeBox">The charging station.</param>
         ///// <param name="MessageTypes">The chargeBox notifications.</param>
-        ///// <param name="OldChargeBox">The old/updated charge box.</param>
+        ///// <param name="OldChargeBox">The old/updated charging station.</param>
         ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         ///// <param name="CurrentUserId">The invoking chargeBox identification</param>
         //protected internal async virtual Task SendNotifications(ChargeBox                          ChargeBox,
@@ -12142,8 +12285,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         ///// <summary>
         ///// Send chargeBox notifications.
         ///// </summary>
-        ///// <param name="ChargeBox">The charge box.</param>
-        ///// <param name="ParentChargeBoxes">The enumeration of parent charge boxes.</param>
+        ///// <param name="ChargeBox">The charging station.</param>
+        ///// <param name="ParentChargeBoxes">The enumeration of parent charging stationes.</param>
         ///// <param name="MessageType">The chargeBox notification.</param>
         ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         ///// <param name="CurrentUserId">The invoking chargeBox identification</param>
@@ -12163,8 +12306,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         ///// <summary>
         ///// Send chargeBox notifications.
         ///// </summary>
-        ///// <param name="ChargeBox">The charge box.</param>
-        ///// <param name="ParentChargeBoxes">The enumeration of parent charge boxes.</param>
+        ///// <param name="ChargeBox">The charging station.</param>
+        ///// <param name="ParentChargeBoxes">The enumeration of parent charging stationes.</param>
         ///// <param name="MessageTypes">The user notifications.</param>
         ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         ///// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
@@ -12373,10 +12516,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region AddChargeBox           (ChargeBox, OnAdded = null, ...)
 
         /// <summary>
-        /// A delegate called whenever a charge box was added.
+        /// A delegate called whenever a charging station was added.
         /// </summary>
         /// <param name="Timestamp">The timestamp when the chargeBox was added.</param>
-        /// <param name="ChargeBox">The added charge box.</param>
+        /// <param name="ChargeBox">The added charging station.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
         public delegate Task OnChargeBoxAddedDelegate(DateTime           Timestamp,
@@ -12385,7 +12528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                       User_Id?           CurrentUserId     = null);
 
         /// <summary>
-        /// An event fired whenever a charge box was added.
+        /// An event fired whenever a charging station was added.
         /// </summary>
         public event OnChargeBoxAddedDelegate? OnChargeBoxAdded;
 
@@ -12485,9 +12628,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region AddChargeBox                      (ChargeBox, OnAdded = null, ...)
 
         /// <summary>
-        /// Add the given chargeBox and add him/her to the given charge box.
+        /// Add the given chargeBox and add him/her to the given charging station.
         /// </summary>
-        /// <param name="ChargeBox">A new charge box.</param>
+        /// <param name="ChargeBox">A new charging station.</param>
         /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
@@ -12647,9 +12790,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region AddChargeBoxIfNotExists                      (ChargeBox, OnAdded = null, ...)
 
         /// <summary>
-        /// Add the given chargeBox and add him/her to the given charge box.
+        /// Add the given chargeBox and add him/her to the given charging station.
         /// </summary>
-        /// <param name="ChargeBox">A new charge box.</param>
+        /// <param name="ChargeBox">A new charging station.</param>
         /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
@@ -12720,7 +12863,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Add or update the given chargeBox to/within the API.
         /// </summary>
-        /// <param name="ChargeBox">A charge box.</param>
+        /// <param name="ChargeBox">A charging station.</param>
         /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
@@ -12841,7 +12984,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Add or update the given chargeBox to/within the API.
         /// </summary>
-        /// <param name="ChargeBox">A charge box.</param>
+        /// <param name="ChargeBox">A charging station.</param>
         /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
@@ -12910,11 +13053,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region UpdateChargeBox        (ChargeBox,                 OnUpdated = null, ...)
 
         /// <summary>
-        /// A delegate called whenever a charge box was updated.
+        /// A delegate called whenever a charging station was updated.
         /// </summary>
         /// <param name="Timestamp">The timestamp when the chargeBox was updated.</param>
-        /// <param name="ChargeBox">The updated charge box.</param>
-        /// <param name="OldChargeBox">The old charge box.</param>
+        /// <param name="ChargeBox">The updated charging station.</param>
+        /// <param name="OldChargeBox">The old charging station.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
         public delegate Task OnChargeBoxUpdatedDelegate(DateTime           Timestamp,
@@ -12924,7 +13067,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                         User_Id?           CurrentUserId     = null);
 
         /// <summary>
-        /// An event fired whenever a charge box was updated.
+        /// An event fired whenever a charging station was updated.
         /// </summary>
         public event OnChargeBoxUpdatedDelegate? OnChargeBoxUpdated;
 
@@ -12934,7 +13077,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Update the given chargeBox to/within the API.
         /// </summary>
-        /// <param name="ChargeBox">A charge box.</param>
+        /// <param name="ChargeBox">A charging station.</param>
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
@@ -13012,7 +13155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Update the given chargeBox to/within the API.
         /// </summary>
-        /// <param name="ChargeBox">A charge box.</param>
+        /// <param name="ChargeBox">A charging station.</param>
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
@@ -13077,10 +13220,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (protected internal) _UpdateChargeBox(ChargeBox, UpdateDelegate, OnUpdated = null, ...)
 
         /// <summary>
-        /// Update the given charge box.
+        /// Update the given charging station.
         /// </summary>
-        /// <param name="ChargeBox">An charge box.</param>
-        /// <param name="UpdateDelegate">A delegate to update the given charge box.</param>
+        /// <param name="ChargeBox">An charging station.</param>
+        /// <param name="UpdateDelegate">A delegate to update the given charging station.</param>
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
@@ -13168,10 +13311,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region UpdateChargeBox                      (ChargeBox, UpdateDelegate, OnUpdated = null, ...)
 
         /// <summary>
-        /// Update the given charge box.
+        /// Update the given charging station.
         /// </summary>
-        /// <param name="ChargeBox">An charge box.</param>
-        /// <param name="UpdateDelegate">A delegate to update the given charge box.</param>
+        /// <param name="ChargeBox">An charging station.</param>
+        /// <param name="UpdateDelegate">A delegate to update the given charging station.</param>
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
@@ -13239,7 +13382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region DeleteChargeBox        (ChargeBox, OnDeleted = null, ...)
 
         /// <summary>
-        /// A delegate called whenever a charge box was deleted.
+        /// A delegate called whenever a charging station was deleted.
         /// </summary>
         /// <param name="Timestamp">The timestamp when the chargeBox was deleted.</param>
         /// <param name="ChargeBox">The chargeBox to be deleted.</param>
@@ -13251,7 +13394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                         User_Id?           CurrentUserId     = null);
 
         /// <summary>
-        /// An event fired whenever a charge box was deleted.
+        /// An event fired whenever a charging station was deleted.
         /// </summary>
         public event OnChargeBoxDeletedDelegate? OnChargeBoxDeleted;
 
@@ -13280,7 +13423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region (protected internal) _DeleteChargeBox(ChargeBox, OnDeleted = null, ...)
 
         /// <summary>
-        /// Delete the given charge box.
+        /// Delete the given charging station.
         /// </summary>
         /// <param name="ChargeBox">The chargeBox to be deleted.</param>
         /// <param name="OnDeleted">A delegate run whenever the chargeBox has been deleted successfully.</param>
@@ -13391,7 +13534,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region DeleteChargeBox                      (ChargeBox, OnDeleted = null, ...)
 
         /// <summary>
-        /// Delete the given charge box.
+        /// Delete the given charging station.
         /// </summary>
         /// <param name="ChargeBox">The chargeBox to be deleted.</param>
         /// <param name="OnDeleted">A delegate run whenever the chargeBox has been deleted successfully.</param>
@@ -13463,7 +13606,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Determines whether the given chargeBox identification exists within this API.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
         protected internal Boolean _ChargeBoxExists(ChargingStation_Id ChargeBoxId)
 
             => ChargeBoxId.IsNotNullOrEmpty && chargeBoxes.ContainsKey(ChargeBoxId);
@@ -13471,7 +13614,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Determines whether the given chargeBox identification exists within this API.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
         protected internal Boolean _ChargeBoxExists(ChargingStation_Id? ChargeBoxId)
 
             => ChargeBoxId.IsNotNullOrEmpty() && chargeBoxes.ContainsKey(ChargeBoxId.Value);
@@ -13480,7 +13623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Determines whether the given chargeBox identification exists within this API.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
         public Boolean ChargeBoxExists(ChargingStation_Id ChargeBoxId)
         {
 
@@ -13512,7 +13655,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Determines whether the given chargeBox identification exists within this API.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
         public Boolean ChargeBoxExists(ChargingStation_Id? ChargeBoxId)
         {
 
@@ -13548,7 +13691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
         protected internal ChargeBox? _GetChargeBox(ChargingStation_Id ChargeBoxId)
         {
 
@@ -13562,7 +13705,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
         protected internal ChargeBox? _GetChargeBox(ChargingStation_Id? ChargeBoxId)
         {
 
@@ -13577,7 +13720,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
         public ChargeBox? GetChargeBox(ChargingStation_Id ChargeBoxId)
         {
 
@@ -13609,7 +13752,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
         public ChargeBox? GetChargeBox(ChargingStation_Id? ChargeBoxId)
         {
 
@@ -13645,8 +13788,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Try to get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        /// <param name="ChargeBox">The charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
+        /// <param name="ChargeBox">The charging station.</param>
         protected internal Boolean _TryGetChargeBox(ChargingStation_Id    ChargeBoxId,
                                                     out ChargeBox?  ChargeBox)
         {
@@ -13665,8 +13808,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Try to get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        /// <param name="ChargeBox">The charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
+        /// <param name="ChargeBox">The charging station.</param>
         protected internal Boolean _TryGetChargeBox(ChargingStation_Id?   ChargeBoxId,
                                                     out ChargeBox?  ChargeBox)
         {
@@ -13686,8 +13829,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Try to get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        /// <param name="ChargeBox">The charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
+        /// <param name="ChargeBox">The charging station.</param>
         public Boolean TryGetChargeBox(ChargingStation_Id    ChargeBoxId,
                                        out ChargeBox?  ChargeBox)
         {
@@ -13721,8 +13864,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Try to get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        /// <param name="ChargeBox">The charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
+        /// <param name="ChargeBox">The charging station.</param>
         public Boolean TryGetChargeBox(ChargingStation_Id?   ChargeBoxId,
                                        out ChargeBox?  ChargeBox)
         {

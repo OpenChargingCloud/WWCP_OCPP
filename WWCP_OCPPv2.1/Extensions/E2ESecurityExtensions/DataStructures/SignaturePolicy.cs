@@ -624,7 +624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region SignMessage        (SignableMessage, JSONMessage, out ErrorResponse, params SignInfos)
+        #region SignMessage        (SignableMessage, JSONMessage,   out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given message.
@@ -775,7 +775,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SignRequestMessage (RequestMessage,  JSONMessage, out ErrorResponse, params SignInfos)
+        #region SignRequestMessage (RequestMessage,  JSONMessage,   out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given request message.
@@ -799,7 +799,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region SignResponseMessage(ResponseMessage, JSONMessage, out ErrorResponse, params SignInfos)
+        #region SignResponseMessage(ResponseMessage, JSONMessage,   out ErrorResponse, params SignInfos)
 
         /// <summary>
         /// Sign the given response message.
@@ -816,6 +816,204 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             return SignMessage(ResponseMessage,
                                JSONMessage,
+                               out ErrorResponse,
+                               SignInfos);
+
+        }
+
+        #endregion
+
+
+        #region SignMessage        (SignableMessage, BinaryMessage, out ErrorResponse, params SignInfos)
+
+        /// <summary>
+        /// Sign the given message.
+        /// </summary>
+        /// <param name="SignableMessage">A signable message.</param>
+        /// <param name="BinaryMessage">The binary representation of the signable message.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="SignInfos">An enumeration of cryptographic signature information or key pairs to sign the given message.</param>
+        public Boolean SignMessage(ISignableMessage   SignableMessage,
+                                   Byte[]             BinaryMessage,
+                                   out String?        ErrorResponse,
+                                   params SignInfo[]  SignInfos)
+        {
+
+            #region Initial checks
+
+            if (BinaryMessage is null)
+            {
+                ErrorResponse = "The given binary message must not be null!";
+                return false;
+            }
+
+            //if (SignInfos is null || !SignInfos.Any())
+            //{
+            //    ErrorResponse = "The given key pairs must not be null or empty!";
+            //    return false;
+            //}
+
+            #endregion
+
+            try
+            {
+
+                //if (BinaryMessage["@context"] is null)
+                //    BinaryMessage.AddFirst(new JProperty("@context", SignableMessage.Context.ToString()));
+
+                IEnumerable<SigningRule>? signaturePolicyEntries = null;
+
+                if ((SignInfos                 is not null && SignInfos.                Any()) ||
+                    (SignableMessage.SignKeys  is not null && SignableMessage.SignKeys. Any()) ||
+                    (SignableMessage.SignInfos is not null && SignableMessage.SignInfos.Any()) ||
+                     HasSigningRules(SignableMessage.Context, out signaturePolicyEntries))
+                {
+
+                    var signInfos = new List<SignInfo>();
+
+                    if (SignInfos                 is not null && SignInfos.Any())
+                        signInfos.AddRange(SignInfos);
+
+                    if (SignableMessage.SignKeys  is not null && SignableMessage.SignKeys. Any())
+                        signInfos.AddRange(SignableMessage.SignKeys.Select(keyPair => keyPair.ToSignInfo1()));
+
+                    if (SignableMessage.SignInfos is not null && SignableMessage.SignInfos.Any())
+                        signInfos.AddRange(SignableMessage.SignInfos);
+
+                    if (signaturePolicyEntries    is not null && signaturePolicyEntries.   Any())
+                    {
+                        foreach (var signaturePolicyEntry in signaturePolicyEntries)
+                        {
+
+                            var signInfo = signaturePolicyEntry.ToSignInfo();
+
+                            if (signInfo is not null)
+                                signInfos.Add(signInfo);
+
+                        }
+                    }
+
+
+                    foreach (var signInfo in signInfos)
+                    {
+
+                        #region Initial checks
+
+                        if (signInfo is null)
+                        {
+                            ErrorResponse = "The given key pair must not be null!";
+                            return false;
+                        }
+
+
+                        if (signInfo.Private is null || signInfo.Private.IsNullOrEmpty())
+                        {
+                            ErrorResponse = "The given key pair must contain a serialized private key!";
+                            return false;
+                        }
+
+                        if (signInfo.Public  is null || signInfo.Public. IsNullOrEmpty())
+                        {
+                            ErrorResponse = "The given key pair must contain a serialized public key!";
+                            return false;
+                        }
+
+
+                        if (signInfo.PrivateKey is null)
+                        {
+                            ErrorResponse = "The given key pair must contain a private key!";
+                            return false;
+                        }
+
+                        if (signInfo.PublicKey is null)
+                        {
+                            ErrorResponse = "The given key pair must contain a public key!";
+                            return false;
+                        }
+
+                        #endregion
+
+                        var cryptoHash  = signInfo.Algorithm switch {
+                                              "secp521r1"  => SHA512.HashData(BinaryMessage),
+                                              "secp384r1"  => SHA512.HashData(BinaryMessage),
+                                              _            => SHA256.HashData(BinaryMessage),
+                                          };
+
+                        var signer       = SignerUtilities.GetSigner("NONEwithECDSA");
+                        signer.Init(true, signInfo.PrivateKey);
+                        signer.BlockUpdate(cryptoHash);
+                        var signature    = signer.GenerateSignature();
+
+                        SignableMessage.AddSignature(new Signature(
+                                                         KeyId:            SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKeyData.GetBytes().ToBase64(),
+                                                         Value:            signature.ToBase64(),
+                                                         Algorithm:        signInfo.Algorithm,
+                                                         SigningMethod:    null,
+                                                         EncodingMethod:   signInfo.Encoding,
+                                                         Name:             signInfo.SignerName?. Invoke(SignableMessage),
+                                                         Description:      signInfo.Description?.Invoke(SignableMessage),
+                                                         Timestamp:        signInfo.Timestamp?.  Invoke(SignableMessage)
+                                                     ));
+
+                    }
+
+                }
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region SignRequestMessage (RequestMessage,  BinaryMessage, out ErrorResponse, params SignInfos)
+
+        /// <summary>
+        /// Sign the given request message.
+        /// </summary>
+        /// <param name="RequestMessage">The request message.</param>
+        /// <param name="BinaryMessage">The binary representation of the request message.</param>
+        /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
+        /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the request message.</param>
+        public Boolean SignRequestMessage(IRequest           RequestMessage,
+                                          Byte[]             BinaryMessage,
+                                          out String?        ErrorResponse,
+                                          params SignInfo[]  SignInfos)
+        {
+
+            return SignMessage(RequestMessage,
+                               BinaryMessage,
+                               out ErrorResponse,
+                               SignInfos);
+
+        }
+
+        #endregion
+
+        #region SignResponseMessage(ResponseMessage, BinaryMessage, out ErrorResponse, params SignInfos)
+
+        /// <summary>
+        /// Sign the given response message.
+        /// </summary>
+        /// <param name="ResponseMessage">A response message.</param>
+        /// <param name="BinaryMessage">The binary representation of the response message.</param>
+        /// <param name="ErrorResponse">An optional error response in case of signing errors.</param>
+        /// <param name="SignInfos">One or multiple cryptographic signature information or key pairs to sign the response message.</param>
+        public Boolean SignResponseMessage(IResponse          ResponseMessage,
+                                           Byte[]             BinaryMessage,
+                                           out String?        ErrorResponse,
+                                           params SignInfo[]  SignInfos)
+        {
+
+            return SignMessage(ResponseMessage,
+                               BinaryMessage,
                                out ErrorResponse,
                                SignInfos);
 
@@ -939,7 +1137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region VerifyMessage      (SignableMessage, JSONMessage, out ErrorResponse)
+        #region VerifyMessage      (SignableMessage, JSONMessage,   out ErrorResponse)
 
         /// <summary>
         /// Verify the given message.
@@ -1044,7 +1242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region VerifyMessage      (RequestMessage,  JSONMessage, out ErrorResponse)
+        #region VerifyMessage      (RequestMessage,  JSONMessage,   out ErrorResponse)
 
         /// <summary>
         /// Verify the given request message.
@@ -1065,7 +1263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region VerifyMessage      (RequestMessage,  JSONMessage, out ErrorResponse)
+        #region VerifyMessage      (RequestMessage,  JSONMessage,   out ErrorResponse)
 
         /// <summary>
         /// Verify the given request message.
@@ -1080,6 +1278,154 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             return VerifyMessage(ResponseMessage,
                                  JSONMessage,
+                                 out ErrorResponse);
+
+        }
+
+        #endregion
+
+
+        #region VerifyMessage      (SignableMessage, BinaryMessage, out ErrorResponse)
+
+        /// <summary>
+        /// Verify the given message.
+        /// </summary>
+        /// <param name="SignableMessage">A signable/verifiable message.</param>
+        /// <param name="BinaryMessage">The binary representation of the signable/verifiable message.</param>
+        /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
+        public Boolean VerifyMessage(ISignableMessage  SignableMessage,
+                                     Byte[]            BinaryMessage,
+                                     out String?       ErrorResponse)
+        {
+
+            ErrorResponse = null;
+
+            var verificationPolicyEntry = GetHighestVerificationRule(SignableMessage.Context);
+
+            if (!SignableMessage.Signatures.Any())
+            {
+
+                if (DefaultVerificationAction == VerificationRuleActions.AcceptUnverified)
+                    return true;
+
+                ErrorResponse = "The given message does not contain any signatures!";
+                return false;
+
+            }
+
+            try
+            {
+
+                //if (BinaryMessage["@context"] is null)
+                //    BinaryMessage.AddFirst(new JProperty("@context", SignableMessage.Context.ToString()));
+
+                //var jsonMessageCopy  = Byte[].Parse(BinaryMessage.ToString(Formatting.None, OCPPv2_1.SignableMessage.DefaultJSONConverters));
+                //jsonMessageCopy.Remove("signatures");
+
+                //var plainText = jsonMessageCopy.ToString(Formatting.None, OCPPv2_1.SignableMessage.DefaultJSONConverters);
+
+                switch (verificationPolicyEntry.Action)
+                {
+
+                    case VerificationRuleActions.AcceptUnverified:
+                        foreach (var signature in SignableMessage.Signatures)
+                            signature.Status = VerificationStatus.Unverified;
+                        return true;
+
+                    case VerificationRuleActions.Drop:
+                        foreach (var signature in SignableMessage.Signatures)
+                            signature.Status = VerificationStatus.DropMessage;
+                        return true;
+
+                    case VerificationRuleActions.Reject:
+                        foreach (var signature in SignableMessage.Signatures)
+                            signature.Status = VerificationStatus.RejectMessage;
+                        return true;
+
+                }
+
+                foreach (var signature in SignableMessage.Signatures)
+                {
+
+                    var ecp           = signature.Algorithm switch {
+                                            "secp521r1"  => SecNamedCurves.GetByName("secp521r1"),
+                                            "secp384r1"  => SecNamedCurves.GetByName("secp384r1"),
+                                            _            => SecNamedCurves.GetByName("secp256r1"),
+                                        };
+                    var ecParams      = new ECDomainParameters(ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
+                    var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId.FromBase64()), ecParams);
+
+                    var cryptoHash    = signature.Algorithm switch {
+                                            "secp521r1"  => SHA512.HashData(BinaryMessage),
+                                            "secp384r1"  => SHA512.HashData(BinaryMessage),
+                                            _            => SHA256.HashData(BinaryMessage),
+                                        };
+
+                    var verifier      = SignerUtilities.GetSigner("NONEwithECDSA");
+                    verifier.Init(false, pubKeyParams);
+                    verifier.BlockUpdate(cryptoHash);
+                    signature.Status  = verifier.VerifySignature(signature.Value.FromBase64())
+                                            ? VerificationStatus.ValidSignature
+                                            : VerificationStatus.InvalidSignature;
+
+                    if (verificationPolicyEntry?.Action == VerificationRuleActions.VerifyAny &&
+                        signature.Status == VerificationStatus.ValidSignature)
+                    {
+                        return true;
+                    }
+
+                }
+
+                // Default, and when there is no signature policy (entry) defined!
+                return SignableMessage.Signatures.All(signature => signature.Status == VerificationStatus.ValidSignature);
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region VerifyMessage      (RequestMessage,  BinaryMessage, out ErrorResponse)
+
+        /// <summary>
+        /// Verify the given request message.
+        /// </summary>
+        /// <param name="RequestMessage">The request message.</param>
+        /// <param name="BinaryMessage">The binary representation of the request message.</param>
+        /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
+        public Boolean VerifyRequestMessage(IRequest     RequestMessage,
+                                            Byte[]       BinaryMessage,
+                                            out String?  ErrorResponse)
+        {
+
+            return VerifyMessage(RequestMessage,
+                                 BinaryMessage,
+                                 out ErrorResponse);
+
+        }
+
+        #endregion
+
+        #region VerifyMessage      (RequestMessage,  BinaryMessage, out ErrorResponse)
+
+        /// <summary>
+        /// Verify the given request message.
+        /// </summary>
+        /// <param name="ResponseMessage">A response message.</param>
+        /// <param name="BinaryMessage">The binary representation of the request message.</param>
+        /// <param name="ErrorResponse">An optional error response in case of validation errors.</param>
+        public Boolean VerifyResponseMessage(IResponse    ResponseMessage,
+                                             Byte[]       BinaryMessage,
+                                             out String?  ErrorResponse)
+        {
+
+            return VerifyMessage(ResponseMessage,
+                                 BinaryMessage,
                                  out ErrorResponse);
 
         }

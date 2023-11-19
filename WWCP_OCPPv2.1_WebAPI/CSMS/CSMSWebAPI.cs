@@ -42,15 +42,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ParseChargeBoxId(this HTTPRequest, OCPPWebAPI, out ChargeBoxId,                out HTTPResponse)
 
         /// <summary>
-        /// Parse the given HTTP request and return the charge box identification
+        /// Parse the given HTTP request and return the charging station identification
         /// for the given HTTP hostname and HTTP query parameter
         /// or an HTTP error response.
         /// </summary>
         /// <param name="HTTPRequest">A HTTP request.</param>
         /// <param name="OCPPWebAPI">The OCPP WebAPI.</param>
-        /// <param name="ChargeBoxId">The parsed unique charge box identification.</param>
+        /// <param name="ChargeBoxId">The parsed unique charging station identification.</param>
         /// <param name="HTTPResponse">A HTTP error response.</param>
-        /// <returns>True, when charge box identification was found; false else.</returns>
+        /// <returns>True, when charging station identification was found; false else.</returns>
         public static Boolean ParseChargeBoxId(this HTTPRequest           HTTPRequest,
                                                CSMSWebAPI                 OCPPWebAPI,
                                                out ChargingStation_Id?          ChargeBoxId,
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Server          = OCPPWebAPI.HTTPServiceName,
                     Date            = Timestamp.Now,
                     ContentType     = HTTPContentType.JSON_UTF8,
-                    Content         = @"{ ""description"": ""Invalid charge box identification!"" }".ToUTF8Bytes(),
+                    Content         = @"{ ""description"": ""Invalid charging station identification!"" }".ToUTF8Bytes(),
                     Connection      = "close"
                 };
 
@@ -111,16 +111,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region ParseChargeBox  (this HTTPRequest, OCPPWebAPI, out ChargeBoxId, out ChargeBox, out HTTPResponse)
 
         /// <summary>
-        /// Parse the given HTTP request and return the charge box identification
+        /// Parse the given HTTP request and return the charging station identification
         /// for the given HTTP hostname and HTTP query parameter
         /// or an HTTP error response.
         /// </summary>
         /// <param name="HTTPRequest">A HTTP request.</param>
         /// <param name="OCPPWebAPI">The OCPP WebAPI.</param>
-        /// <param name="ChargeBoxId">The parsed unique charge box identification.</param>
-        /// <param name="ChargeBox">The resolved charge box.</param>
+        /// <param name="ChargeBoxId">The parsed unique charging station identification.</param>
+        /// <param name="ChargeBox">The resolved charging station.</param>
         /// <param name="HTTPResponse">A HTTP error response.</param>
-        /// <returns>True, when charge box identification was found; false else.</returns>
+        /// <returns>True, when charging station identification was found; false else.</returns>
         public static Boolean ParseChargeBox(this HTTPRequest           HTTPRequest,
                                              CSMSWebAPI                 OCPPWebAPI,
                                              out ChargingStation_Id?          ChargeBoxId,
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Server          = OCPPWebAPI.HTTPServiceName,
                     Date            = Timestamp.Now,
                     ContentType     = HTTPContentType.JSON_UTF8,
-                    Content         = @"{ ""description"": ""Invalid charge box identification!"" }".ToUTF8Bytes(),
+                    Content         = @"{ ""description"": ""Invalid charging station identification!"" }".ToUTF8Bytes(),
                     Connection      = "close"
                 };
 
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     Server          = OCPPWebAPI.HTTPServiceName,
                     Date            = Timestamp.Now,
                     ContentType     = HTTPContentType.JSON_UTF8,
-                    Content         = @"{ ""description"": ""Unknown charge box identification!"" }".ToUTF8Bytes(),
+                    Content         = @"{ ""description"": ""Unknown charging station identification!"" }".ToUTF8Bytes(),
                     Connection      = "close"
                 };
 

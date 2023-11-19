@@ -1383,4 +1383,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     #endregion
 
 
+    // Binary Data Streams Extensions
+
+    #region OnIncomingBinaryDataTransfer
+
+    /// <summary>
+    /// An incoming binary data transfer request.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The binary data transfer request.</param>
+    public delegate Task
+
+        OnIncomingBinaryDataTransferRequestDelegate(DateTime                       Timestamp,
+                                                    IEventSender                   Sender,
+                                                    CS.BinaryDataTransferRequest   Request);
+
+
+    /// <summary>
+    /// An incoming binary data transfer from the given charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The binary data transfer request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    public delegate Task<BinaryDataTransferResponse>
+
+        OnIncomingBinaryDataTransferDelegate(DateTime                       Timestamp,
+                                             IEventSender                   Sender,
+                                             CS.BinaryDataTransferRequest   Request,
+                                             CancellationToken              CancellationToken);
+
+
+    /// <summary>
+    /// An incoming binary data transfer response.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The binary data transfer request.</param>
+    /// <param name="Response">The stop transaction response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task
+
+        OnIncomingBinaryDataTransferResponseDelegate(DateTime                          Timestamp,
+                                                     IEventSender                      Sender,
+                                                     CS.BinaryDataTransferRequest      Request,
+                                                     CSMS.BinaryDataTransferResponse   Response,
+                                                     TimeSpan                          Runtime);
+
+    #endregion
+
 }

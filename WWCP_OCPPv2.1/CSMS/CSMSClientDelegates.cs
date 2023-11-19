@@ -1292,6 +1292,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     #endregion
 
 
+    // Binary Data Streams Extensions
+
+    #region OnBinaryDataTransfer             (-Request/-Response) Delegate
+
+    /// <summary>
+    /// A delegate called whenever a BinaryDataTransfer request will be sent to a charging station.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    public delegate Task OnBinaryDataTransferRequestDelegate(DateTime                    Timestamp,
+                                                             IEventSender                Sender,
+                                                             BinaryDataTransferRequest   Request);
+
+    /// <summary>
+    /// A delegate called whenever a response to a BinaryDataTransfer request was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the log request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
+    public delegate Task OnBinaryDataTransferResponseDelegate(DateTime                        Timestamp,
+                                                              IEventSender                    Sender,
+                                                              BinaryDataTransferRequest       Request,
+                                                              CS.BinaryDataTransferResponse   Response,
+                                                              TimeSpan                        Runtime);
+
+    #endregion
+
+
     // E2E Security Extensions
 
     #region OnAddSignaturePolicy             (-Request/-Response) Delegate

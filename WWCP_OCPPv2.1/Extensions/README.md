@@ -1,7 +1,8 @@
 # WWCP OCPP v2.1 Draft 2 Extensions
 
 This OCPP v2.1 Draft 2 implementation comes with a set of experimental extensions for improved
-security, metrology and new use cases. These extensions are not part of the official OCPP v2.1.
+data and protocol management, security, metrology and new use cases. These extensions are ***not***
+part of the official OCPP v2.1.
 
 
 ### Your participation
