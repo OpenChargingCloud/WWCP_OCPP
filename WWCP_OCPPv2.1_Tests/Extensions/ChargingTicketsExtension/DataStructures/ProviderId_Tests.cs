@@ -21,7 +21,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests.DataStructures
+namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicketsExtension
 {
 
     /// <summary>

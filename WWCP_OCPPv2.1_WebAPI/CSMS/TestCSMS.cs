@@ -1619,6 +1619,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<NotifyDisplayMessagesResponse>?                       CustomNotifyDisplayMessagesResponseSerializer                { get; set; }
         public CustomJObjectSerializerDelegate<NotifyCustomerInformationResponse>?                   CustomNotifyCustomerInformationResponseSerializer            { get; set; }
 
+
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?                           CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
+
         #endregion
 
 
@@ -6464,6 +6468,162 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         await HandleErrors(
                                   nameof(TestCSMS),
                                   nameof(OnNotifyCustomerInformationResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            // Binary Data Streams Extensions
+
+            #region OnIncomingBinaryDataTransfer
+
+            CSMSChannel.OnIncomingBinaryDataTransfer += async (timestamp,
+                                                               sender,
+                                                               request,
+                                                               cancellationToken) => {
+
+                #region Send OnIncomingBinaryDataTransferRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnIncomingBinaryDataTransferRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnIncomingBinaryDataTransferRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnSetDisplayMessageRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                // VendorId
+                // MessageId
+                // BinaryData
+
+                DebugX.Log("OnIncomingBinaryDataTransfer: " + request.VendorId  + ", " +
+                                                              request.MessageId + ", " +
+                                                              request.Data?.ToHexString().SubstringMax(20) ?? "-");
+
+                if (!reachableChargingStations.ContainsKey(request.ChargingStationId))
+                {
+                    if (sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingStations.TryAdd(request.ChargingStationId, new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
+                }
+                else
+                {
+                    if (sender is CSMSWSServer centralSystemWSServer)
+                        reachableChargingStations[request.ChargingStationId] = new Tuple<ICSMSChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
+                }
+
+
+                var responseBinaryData = new Byte[0];
+
+                if (request.Data is not null)
+                {
+                    responseBinaryData = ((Byte[]) request.Data.Clone()).Reverse();
+                }
+
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToBinary(
+                                       //CustomIncomingBinaryDataTransferRequestSerializer,
+                                       //CustomSignatureSerializer,
+                                       //CustomCustomBinaryDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new BinaryDataTransferResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : request.VendorId == Vendor_Id.GraphDefined
+
+                                         ? new (
+                                               Request:      request,
+                                               Status:       BinaryDataTransferStatus.Accepted,
+                                               Data:         responseBinaryData,
+                                               StatusInfo:   null,
+                                               CustomData:   null
+                                           )
+
+                                         : new BinaryDataTransferResponse(
+                                               Request:      request,
+                                               Status:       BinaryDataTransferStatus.Rejected,
+                                               Data:         null,
+                                               StatusInfo:   null,
+                                               CustomData:   null
+                                         );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToBinary(
+                        CustomIncomingBinaryDataTransferResponseSerializer
+                        //CustomStatusInfoSerializer,
+                        //CustomSignatureSerializer,
+                        //CustomCustomBinaryDataSerializer
+                    ),
+                    out var errorResponse2);
+
+
+                #region Send OnIncomingBinaryDataTransferResponse event
+
+                var responseLogger = OnIncomingBinaryDataTransferResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnIncomingBinaryDataTransferResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCSMS),
+                                  nameof(OnIncomingBinaryDataTransferResponse),
                                   e
                               );
                     }

@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return true;
 
                 case "extensible":
-                    BinaryFormat = BinaryFormats.Extensible;
+                    BinaryFormat = BinaryFormats.TagLengthValue;
                     return true;
 
                 default:
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return true;
 
                 case 2:
-                    BinaryFormat = BinaryFormats.Extensible;
+                    BinaryFormat = BinaryFormats.TagLengthValue;
                     return true;
 
                 default:
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return true;
 
                 case 2:
-                    BinaryFormat = BinaryFormats.Extensible;
+                    BinaryFormat = BinaryFormats.TagLengthValue;
                     return true;
 
                 default:
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => BinaryFormats switch {
                    BinaryFormats.Compact     => "compact",
-                   BinaryFormats.Extensible  => "extensible",
+                   BinaryFormats.TagLengthValue  => "extensible",
                    _                         => "unknown"
                };
 
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => BinaryFormats switch {
                    BinaryFormats.Compact     => 1,
-                   BinaryFormats.Extensible  => 2,
+                   BinaryFormats.TagLengthValue  => 2,
                    _                         => 0
                };
 
@@ -300,9 +300,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         Compact,
 
         /// <summary>
-        /// Extensible format
+        /// TextId format
         /// </summary>
-        Extensible
+        TextIds,
+
+        /// <summary>
+        /// Extensible Tag-Length-Value (TLV) format
+        /// </summary>
+        TagLengthValue
 
     }
 

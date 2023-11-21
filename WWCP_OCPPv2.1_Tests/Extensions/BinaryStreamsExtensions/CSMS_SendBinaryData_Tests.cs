@@ -28,7 +28,7 @@ using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests.BinaryStreamsExtensions
+namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsExtensions
 {
 
     /// <summary>

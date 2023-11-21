@@ -525,7 +525,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnDataTransfer
+        #region OnIncomingDataTransfer
 
         /// <summary>
         /// An event sent whenever a DataTransfer WebSocket request was received.
@@ -1076,6 +1076,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// An event sent whenever a WebSocket response to a NotifyCustomerInformation was sent.
         /// </summary>
         public event WebSocketResponseLogHandler?                    OnNotifyCustomerInformationWSResponse;
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region OnIncomingBinaryDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a BinaryDataTransfer WebSocket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                      OnIncomingBinaryDataTransferWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a BinaryDataTransfer request was received.
+        /// </summary>
+        public event OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a BinaryDataTransfer request was received.
+        /// </summary>
+        public event OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
+
+        /// <summary>
+        /// An event sent whenever a response to a BinaryDataTransfer request was sent.
+        /// </summary>
+        public event OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
+
+        /// <summary>
+        /// An event sent whenever a WebSocket response to a BinaryDataTransfer request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                     OnIncomingBinaryDataTransferWSResponse;
 
         #endregion
 
@@ -2020,6 +2052,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public CustomJObjectParserDelegate<NotifyCustomerInformationRequest>?          CustomNotifyCustomerInformationRequestParser            { get; set; }
 
+
+
+        // Binary Data Streams Extensions
+
+        /// <summary>
+        /// A delegate to parse custom DataTransfer requests.
+        /// </summary>
+        public CustomBinaryParserDelegate<CS.BinaryDataTransferRequest>?               CustomBinaryDataTransferRequestParser                   { get; set; }
+
         #endregion
 
         #endregion
@@ -2541,7 +2582,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region (protected) ProcessTextMessages          (RequestTimestamp, Connection, OCPPTextMessage, EventTrackingId, CancellationToken)
+        #region (protected) ProcessTextMessage           (RequestTimestamp, Connection, OCPPTextMessage,   EventTrackingId, CancellationToken)
 
         /// <summary>
         /// Process all text messages of this WebSocket API.
@@ -7105,6 +7146,188 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                        Timestamp.Now,
                        (OCPPResponse?.     ToJSON() ??
                         OCPPErrorResponse?.ToJSON())?.ToString(JSONFormatting) ?? String.Empty,
+                       EventTrackingId
+                   );
+
+        }
+
+        #endregion
+
+        #region (protected) ProcessBinaryMessage         (RequestTimestamp, Connection, OCPPBinaryMessage, EventTrackingId, CancellationToken)
+
+        /// <summary>
+        /// Process all text messages of this WebSocket API.
+        /// </summary>
+        /// <param name="RequestTimestamp">The timestamp of the request.</param>
+        /// <param name="Connection">The WebSocket connection.</param>
+        /// <param name="OCPPBinaryMessage">The received OCPP binary message.</param>
+        /// <param name="EventTrackingId">The event tracking identification.</param>
+        /// <param name="CancellationToken">The cancellation token.</param>
+        public override async Task<WebSocketBinaryMessageResponse> ProcessBinaryMessage(DateTime                   RequestTimestamp,
+                                                                                        WebSocketServerConnection  Connection,
+                                                                                        Byte[]                     OCPPBinaryMessage,
+                                                                                        EventTracking_Id           EventTrackingId,
+                                                                                        CancellationToken          CancellationToken)
+        {
+
+            var requestBinaryData  = OCPPBinaryMessage;
+            var requestId          = new Request_Id?        (Request_Id.        Parse("1"));
+            var chargingStationId  = new ChargingStation_Id?(ChargingStation_Id.Parse("2"));
+
+            OCPP_WebSocket_BinaryResponseMessage? OCPPResponse        = null;
+            OCPP_WebSocket_ErrorMessage?          OCPPErrorResponse   = null;
+
+            #region BinaryDataTransfer
+
+
+            #region Send OnIncomingBinaryDataTransferWSRequest event
+
+            //try
+            //{
+
+            //    OnIncomingBinaryDataTransferWSRequest?.Invoke(Timestamp.Now,
+            //                                                  this,
+            //                                                  OCPPBinaryMessage);
+
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingBinaryDataTransferWSRequest));
+            //}
+
+            #endregion
+
+            try
+            {
+
+                if (CS.BinaryDataTransferRequest.TryParse(requestBinaryData,
+                                                          requestId.Value,
+                                                          chargingStationId.Value,
+                                                          out var request,
+                                                          out var errorResponse,
+                                                          CustomBinaryDataTransferRequestParser) && request is not null) {
+
+                    #region Send OnIncomingBinaryDataTransferRequest event
+
+                    try
+                    {
+
+                        OnIncomingBinaryDataTransferRequest?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    request);
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingBinaryDataTransferRequest));
+                    }
+
+                    #endregion
+
+                    #region Call async subscribers
+
+                    BinaryDataTransferResponse? response = null;
+
+                    var responseTasks = OnIncomingBinaryDataTransfer?.
+                                            GetInvocationList()?.
+                                            SafeSelect(subscriber => (subscriber as OnIncomingBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                  this,
+                                                                                                                                  request,
+                                                                                                                                  CancellationToken)).
+                                            ToArray();
+
+                    if (responseTasks?.Length > 0)
+                    {
+                        await Task.WhenAll(responseTasks!);
+                        response = responseTasks.FirstOrDefault()?.Result;
+                    }
+
+                    response ??= BinaryDataTransferResponse.Failed(request);
+
+                    #endregion
+
+                    #region Send OnIncomingBinaryDataTransferResponse event
+
+                    try
+                    {
+
+                        OnIncomingBinaryDataTransferResponse?.Invoke(Timestamp.Now,
+                                                                     this,
+                                                                     request,
+                                                                     response,
+                                                                     response.Runtime);
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingBinaryDataTransferResponse));
+                    }
+
+                    #endregion
+
+                    OCPPResponse  = new OCPP_WebSocket_BinaryResponseMessage(
+                                        requestId.Value,
+                                        response.Data
+                                    );
+
+                }
+
+                else
+                    OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                            requestId.Value,
+                                            ResultCodes.FormationViolation,
+                                            "The given 'IncomingBinaryDataTransfer' request could not be parsed!",
+                                            new JObject(
+                                                new JProperty("request",       OCPPBinaryMessage.ToBase64()),
+                                                new JProperty("errorResponse", errorResponse)
+                                            )
+                                        );
+
+            }
+            catch (Exception e)
+            {
+
+                OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                                        requestId.Value,
+                                        ResultCodes.FormationViolation,
+                                        "Processing the given 'IncomingBinaryDataTransfer' request led to an exception!",
+                                        JSONObject.Create(
+                                            new JProperty("request",    OCPPBinaryMessage.ToBase64()),
+                                            new JProperty("exception",  e.Message),
+                                            new JProperty("stacktrace", e.StackTrace)
+                                        )
+                                    );
+
+            }
+
+            #region Send OnIncomingBinaryDataTransferWSResponse event
+
+            //try
+            //{
+
+            //    OnIncomingBinaryDataTransferWSResponse?.Invoke(Timestamp.Now,
+            //                                                   this,
+            //                                                   json,
+            //                                                   OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+
+            //}
+            //catch (Exception e)
+            //{
+            //    DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnIncomingBinaryDataTransferWSResponse));
+            //}
+
+            #endregion
+
+            #endregion
+
+
+
+
+            return new WebSocketBinaryMessageResponse(
+                       RequestTimestamp,
+                       OCPPBinaryMessage,
+                       Timestamp.Now,
+                       OCPPResponse.ToByteArray(),
                        EventTrackingId
                    );
 

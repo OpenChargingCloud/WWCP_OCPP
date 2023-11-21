@@ -39,52 +39,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// The unique key identification, e.g. the prefix of the public key.
         /// </summary>
         [Mandatory]
-        public String               KeyId             { get; }
+        public Byte[]                KeyId             { get; }
 
         /// <summary>
         /// The signature value.
         /// </summary>
         [Mandatory]
-        public String               Value             { get; }
+        public Byte[]                Value             { get; }
 
+        /// <summary>
+        /// The optional crypto algorithm used to create the digital signature.
+        /// </summary>
         [Optional]
-        public String               Algorithm         { get; }
+        public CryptoAlgorithm?      Algorithm         { get; }
 
         /// <summary>
         /// The optional method used to create the digital signature.
         /// </summary>
         [Optional]
-        public String?              SigningMethod     { get; }
+        public CryptoSigningMethod?  SigningMethod     { get; }
 
         /// <summary>
         /// The optional encoding method.
         /// </summary>
         [Optional]
-        public String?              EncodingMethod    { get; }
+        public CryptoEncoding?       EncodingMethod    { get; }
 
         /// <summary>
         /// The optional name of a person or process signing the message.
         /// </summary>
         [Optional]
-        public String?              Name              { get; }
+        public String?               Name              { get; }
 
         /// <summary>
         /// The optional multi-language description or explanation for signing the message.
         /// </summary>
         [Optional]
-        public I18NString?          Description       { get; }
+        public I18NString?           Description       { get; }
 
         /// <summary>
         /// The optional timestamp of the message signature.
         /// </summary>
         [Optional]
-        public DateTime?            Timestamp         { get; }
+        public DateTime?             Timestamp         { get; }
 
 
         /// <summary>
         /// The verification status of this signature.
         /// </summary>
-        public VerificationStatus?  Status            { get; set; }
+        public VerificationStatus?   Status            { get; set; }
 
         #endregion
 
@@ -101,15 +104,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
         /// <param name="Timestamp">An optional timestamp of the message signature.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public Signature(String       KeyId,
-                         String       Value,
-                         String?      Algorithm        = "secp256r1",
-                         String?      SigningMethod    = null,
-                         String?      EncodingMethod   = null,
-                         String?      Name             = null,
-                         I18NString?  Description      = null,
-                         DateTime?    Timestamp        = null,
-                         CustomData?  CustomData       = null)
+        public Signature(Byte[]                KeyId,
+                         Byte[]                Value,
+                         CryptoAlgorithm?      Algorithm        = null,
+                         CryptoSigningMethod?  SigningMethod    = null,
+                         CryptoEncoding?       EncodingMethod   = null,
+                         String?               Name             = null,
+                         I18NString?           Description      = null,
+                         DateTime?             Timestamp        = null,
+                         CustomData?           CustomData       = null)
 
             : base(CustomData)
 
@@ -117,24 +120,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.KeyId           = KeyId;
             this.Value           = Value;
-            this.Algorithm       = Algorithm ?? "secp256r1";
+            this.Algorithm       = Algorithm;
             this.SigningMethod   = SigningMethod;
             this.EncodingMethod  = EncodingMethod;
             this.Name            = Name;
             this.Description     = Description;
             this.Timestamp       = Timestamp;
 
+
             unchecked
             {
 
                 hashCode = KeyId.          GetHashCode()       * 23 ^
-                           Value.          GetHashCode()       * 17 ^
+                           Value.          GetHashCode()       * 19 ^
+                          (Algorithm?.     GetHashCode() ?? 0) * 17 ^
                           (SigningMethod?. GetHashCode() ?? 0) * 13 ^
                           (EncodingMethod?.GetHashCode() ?? 0) * 11 ^
                           (Name?.          GetHashCode() ?? 0) *  7 ^
                           (Description?.   GetHashCode() ?? 0) *  5 ^
                           (Timestamp?.     GetHashCode() ?? 0) *  3 ^
-
                            base.           GetHashCode();
 
             }
@@ -150,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) Parse   (JSON, CustomSignatureParser = null)
+        #region (static) Parse   (JSON,   CustomSignatureParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a cryptographic signature.
@@ -177,7 +181,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (static) TryParse(JSON, out Signature, out ErrorResponse, CustomSignatureParser = null)
+        #region (static) Parse   (Binary, CustomSignatureParser = null)
+
+        /// <summary>
+        /// Parse the given binary representation of a cryptographic signature.
+        /// </summary>
+        /// <param name="Binary">The binary to be parsed.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom cryptographic signatures.</param>
+        public static Signature Parse(Byte[]                                  Binary,
+                                      CustomBinaryParserDelegate<Signature>?  CustomSignatureParser   = null)
+        {
+
+            if (TryParse(Binary,
+                         out var signature,
+                         out var errorResponse,
+                         CustomSignatureParser) &&
+                signature is not null)
+            {
+                return signature;
+            }
+
+            throw new ArgumentException("The given binary representation of a signature is invalid: " + errorResponse,
+                                        nameof(Binary));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(JSON,   out Signature, out ErrorResponse, CustomSignatureParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -241,19 +272,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Algorithm         [optional]
 
-                var Algorithm = JSON.GetString("algorithm");
+                if (JSON.ParseOptional("algorithm",
+                                       "crypto algorithm",
+                                       CryptoAlgorithm.TryParse,
+                                       out CryptoAlgorithm? Algorithm,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
                 #endregion
 
                 #region SigningMethod     [optional]
 
-                var SigningMethod   = JSON.GetString("signingMethod");
+                if (JSON.ParseOptional("signingMethod",
+                                       "crypto signing method",
+                                       CryptoSigningMethod.TryParse,
+                                       out CryptoSigningMethod? SigningMethod,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
                 #endregion
 
                 #region EncodingMethod    [optional]
 
-                var EncodingMethod  = JSON.GetString("encodingMethod");
+                if (JSON.ParseOptional("encodingMethod",
+                                       "encoding method",
+                                       CryptoEncoding.TryParse,
+                                       out CryptoEncoding? EncodingMethod,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
                 #endregion
 
@@ -306,8 +361,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
                 Signature = new Signature(
-                                KeyId,
-                                Value,
+                                KeyId.FromBase64(),
+                                Value.FromBase64(),
                                 Algorithm,
                                 SigningMethod,
                                 EncodingMethod,
@@ -335,7 +390,78 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ToJSON(CustomSignatureSerializer = null, CustomCustomDataSerializer = null)
+        #region (static) TryParse(Binary, out Signature, out ErrorResponse, CustomSignatureParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
+        /// <summary>
+        /// Try to parse the given binary representation of a signature.
+        /// </summary>
+        /// <param name="Binary">The binary to be parsed.</param>
+        /// <param name="Signature">The parsed connector type.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(Byte[]          Binary,
+                                       out Signature?  Signature,
+                                       out String?     ErrorResponse)
+
+            => TryParse(Binary,
+                        out Signature,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given binary representation of a signature.
+        /// </summary>
+        /// <param name="Binary">The binary to be parsed.</param>
+        /// <param name="Signature">The parsed connector type.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSignatureParser">A delegate to parse custom signatures.</param>
+        public static Boolean TryParse(Byte[]                                  Binary,
+                                       out Signature?                          Signature,
+                                       out String?                             ErrorResponse,
+                                       CustomBinaryParserDelegate<Signature>?  CustomSignatureParser   = null)
+        {
+
+            try
+            {
+
+                Signature = default;
+
+                var span = Binary.AsSpan<Byte>();
+
+                var keyIdlength = BitConverter.ToUInt16(span.Slice(0, 2));
+                var keyId       = span.Slice(2,               keyIdlength).ToArray();
+
+                var valuelength = BitConverter.ToUInt16(span.Slice(2 + keyIdlength, 2));
+                var value       = span.Slice(4 + keyIdlength, valuelength).ToArray();
+
+
+                Signature = new Signature(
+                                keyId,
+                                value
+                            );
+
+                if (CustomSignatureParser is not null)
+                    Signature = CustomSignatureParser(Binary,
+                                                      Signature);
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Signature      = default;
+                ErrorResponse  = "The given JSON representation of a signature is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToJSON  (CustomSignatureSerializer = null, CustomCustomDataSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -351,12 +477,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("keyId",            KeyId),
                                  new JProperty("value",            Value),
                                  new JProperty("signingMethod",    SigningMethod),
-                                 new JProperty("encodingMethod",   EncodingMethod),
 
-                           String.Equals(Algorithm, "secp256r1",
-                                         StringComparison.OrdinalIgnoreCase)
-                               ? null
-                               : new JProperty("algorithm",        Algorithm),
+                           EncodingMethod.HasValue
+                               ? new JProperty("encodingMethod",   EncodingMethod.ToString())
+                               : null,
+
+                           Algorithm.HasValue && Algorithm.Value != CryptoAlgorithm.secp256r1
+                               ? new JProperty("algorithm",        Algorithm.Value.ToString())
+                               : null,
 
                            Name        is not null && Name.       IsNotNullOrEmpty()
                                ? new JProperty("name",             Name)
@@ -384,6 +512,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region ToBinary(CustomBinarySignatureSerializer = null)
+
+        /// <summary>
+        /// Return a binary representation of this object.
+        /// </summary>
+        /// <param name="CustomBinarySignatureSerializer">A delegate to serialize custom binary signatures.</param>
+        public Byte[] ToBinary(CustomBinarySerializerDelegate<Signature>?  CustomBinarySignatureSerializer   = null)
+        {
+
+            var binaryStream = new MemoryStream();
+
+            //binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.KeyId));
+            binaryStream.Write(BitConverter.GetBytes((UInt16) KeyId.Length));
+            binaryStream.Write(KeyId);
+
+            //binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.SignatureValue));
+            binaryStream.Write(BitConverter.GetBytes((UInt16) Value.Length));
+            binaryStream.Write(Value);
+
+            // Algorithm
+            // SigningMethod
+            // EncodingMethod
+
+            // Name
+            // Description
+            // Timestamp
+
+            var binary = binaryStream.ToArray();
+
+            return CustomBinarySignatureSerializer is not null
+                       ? CustomBinarySignatureSerializer(this, binary)
+                       : binary;
+
+        }
+
+        #endregion
+
         #region Clone()
 
         /// <summary>
@@ -391,15 +556,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public Signature Clone()
 
-            => new (new String(KeyId.    ToCharArray()),
-                    new String(Value.    ToCharArray()),
-                    new String(Algorithm.ToCharArray()),
-                    SigningMethod,
-                    EncodingMethod,
-                    Name,
-                    Description,
-                    Timestamp,
-                    CustomData);
+            => new (
+
+                   (Byte[]) KeyId.Clone(),
+                   (Byte[]) Value.Clone(),
+
+                   Algorithm?.     Clone,
+                   SigningMethod?. Clone,
+                   EncodingMethod?.Clone,
+
+                   Name,
+                   Description,
+                   Timestamp,
+                   CustomData
+
+               );
 
         #endregion
 
@@ -474,12 +645,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => Signature is not null &&
 
-               String.Equals(KeyId,           Signature.KeyId,           StringComparison.Ordinal) &&
-               String.Equals(Value,           Signature.EncodingMethod,  StringComparison.Ordinal) &&
-               String.Equals(SigningMethod,   Signature.SigningMethod,   StringComparison.Ordinal) &&
-               String.Equals(EncodingMethod,  Signature.EncodingMethod,  StringComparison.Ordinal) &&
+               KeyId.SequenceEqual(Signature.KeyId) &&
+               Value.SequenceEqual(Signature.Value) &&
 
-               base.  Equals(Signature);
+            ((!Algorithm.     HasValue && !Signature.Algorithm.     HasValue) ||
+              (Algorithm.     HasValue &&  Signature.Algorithm.     HasValue && Algorithm.     Value.Equals(Signature.Algorithm.     Value))) &&
+
+            ((!SigningMethod. HasValue && !Signature.SigningMethod. HasValue) ||
+              (SigningMethod. HasValue &&  Signature.SigningMethod. HasValue && SigningMethod. Value.Equals(Signature.SigningMethod. Value))) &&
+
+            ((!EncodingMethod.HasValue && !Signature.EncodingMethod.HasValue) ||
+              (EncodingMethod.HasValue &&  Signature.EncodingMethod.HasValue && EncodingMethod.Value.Equals(Signature.EncodingMethod.Value))) &&
+
+               // Name
+               // Description
+               // Timestamp
+
+               base.Equals(Signature);
 
         #endregion
 

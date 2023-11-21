@@ -736,9 +736,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         var plainText   = JSONMessage.ToString(Formatting.None, OCPPv2_1.SignableMessage.DefaultJSONConverters);
 
                         var cryptoHash  = signInfo.Algorithm switch {
-                                              "secp521r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                              "secp384r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                              _            => SHA256.HashData(plainText.ToUTF8Bytes()),
+                                              var s when s == CryptoAlgorithm.secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                              var s when s == CryptoAlgorithm.secp384r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                              _                                          => SHA256.HashData(plainText.ToUTF8Bytes()),
                                           };
 
                         var signer       = SignerUtilities.GetSigner("NONEwithECDSA");
@@ -746,16 +746,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         signer.BlockUpdate(cryptoHash);
                         var signature    = signer.GenerateSignature();
 
-                        SignableMessage.AddSignature(new Signature(
-                                                         KeyId:            SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKeyData.GetBytes().ToBase64(),
-                                                         Value:            signature.ToBase64(),
-                                                         Algorithm:        signInfo.Algorithm,
-                                                         SigningMethod:    null,
-                                                         EncodingMethod:   signInfo.Encoding,
-                                                         Name:             signInfo.SignerName?. Invoke(SignableMessage),
-                                                         Description:      signInfo.Description?.Invoke(SignableMessage),
-                                                         Timestamp:        signInfo.Timestamp?.  Invoke(SignableMessage)
-                                                     ));
+                        SignableMessage.AddSignature(
+                                            new Signature(
+                                                KeyId:           SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKeyData.GetBytes(),
+                                                Value:           signature,
+                                                Algorithm:       signInfo.Algorithm,
+                                                SigningMethod:   null,
+                                                EncodingMethod:  signInfo.Encoding,
+                                                Name:            signInfo.SignerName?. Invoke(SignableMessage),
+                                                Description:     signInfo.Description?.Invoke(SignableMessage),
+                                                Timestamp:       signInfo.Timestamp?.  Invoke(SignableMessage)
+                                            ));
 
                     }
 
@@ -934,9 +935,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         #endregion
 
                         var cryptoHash  = signInfo.Algorithm switch {
-                                              "secp521r1"  => SHA512.HashData(BinaryMessage),
-                                              "secp384r1"  => SHA512.HashData(BinaryMessage),
-                                              _            => SHA256.HashData(BinaryMessage),
+                                              var s when s == CryptoAlgorithm.secp521r1  => SHA512.HashData(BinaryMessage),
+                                              var s when s == CryptoAlgorithm.secp384r1  => SHA512.HashData(BinaryMessage),
+                                              _                                          => SHA256.HashData(BinaryMessage),
                                           };
 
                         var signer       = SignerUtilities.GetSigner("NONEwithECDSA");
@@ -944,16 +945,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         signer.BlockUpdate(cryptoHash);
                         var signature    = signer.GenerateSignature();
 
-                        SignableMessage.AddSignature(new Signature(
-                                                         KeyId:            SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKeyData.GetBytes().ToBase64(),
-                                                         Value:            signature.ToBase64(),
-                                                         Algorithm:        signInfo.Algorithm,
-                                                         SigningMethod:    null,
-                                                         EncodingMethod:   signInfo.Encoding,
-                                                         Name:             signInfo.SignerName?. Invoke(SignableMessage),
-                                                         Description:      signInfo.Description?.Invoke(SignableMessage),
-                                                         Timestamp:        signInfo.Timestamp?.  Invoke(SignableMessage)
-                                                     ));
+                        SignableMessage.AddSignature(
+                                            new Signature(
+                                                KeyId:           SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(signInfo.PublicKey).PublicKeyData.GetBytes(),
+                                                Value:           signature,
+                                                Algorithm:       signInfo.Algorithm,
+                                                SigningMethod:   null,
+                                                EncodingMethod:  signInfo.Encoding,
+                                                Name:            signInfo.SignerName?. Invoke(SignableMessage),
+                                                Description:     signInfo.Description?.Invoke(SignableMessage),
+                                                Timestamp:       signInfo.Timestamp?.  Invoke(SignableMessage)
+                                            ));
 
                     }
 
@@ -1200,23 +1202,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 {
 
                     var ecp           = signature.Algorithm switch {
-                                            "secp521r1"  => SecNamedCurves.GetByName("secp521r1"),
-                                            "secp384r1"  => SecNamedCurves.GetByName("secp384r1"),
-                                            _            => SecNamedCurves.GetByName("secp256r1"),
+                                            var s when s == CryptoAlgorithm.secp521r1  => SecNamedCurves.GetByName("secp521r1"),
+                                            var s when s == CryptoAlgorithm.secp384r1  => SecNamedCurves.GetByName("secp384r1"),
+                                            _                                          => SecNamedCurves.GetByName("secp256r1"),
                                         };
                     var ecParams      = new ECDomainParameters(ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
-                    var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId.FromBase64()), ecParams);
+                    var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId), ecParams);
 
                     var cryptoHash    = signature.Algorithm switch {
-                                            "secp521r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                            "secp384r1"  => SHA512.HashData(plainText.ToUTF8Bytes()),
-                                            _            => SHA256.HashData(plainText.ToUTF8Bytes()),
+                                            var s when s == CryptoAlgorithm.secp521r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                            var s when s == CryptoAlgorithm.secp384r1  => SHA512.HashData(plainText.ToUTF8Bytes()),
+                                            _                                          => SHA256.HashData(plainText.ToUTF8Bytes()),
                                         };
 
                     var verifier      = SignerUtilities.GetSigner("NONEwithECDSA");
                     verifier.Init(false, pubKeyParams);
                     verifier.BlockUpdate(cryptoHash);
-                    signature.Status  = verifier.VerifySignature(signature.Value.FromBase64())
+                    signature.Status  = verifier.VerifySignature(signature.Value)
                                             ? VerificationStatus.ValidSignature
                                             : VerificationStatus.InvalidSignature;
 
@@ -1348,23 +1350,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 {
 
                     var ecp           = signature.Algorithm switch {
-                                            "secp521r1"  => SecNamedCurves.GetByName("secp521r1"),
-                                            "secp384r1"  => SecNamedCurves.GetByName("secp384r1"),
-                                            _            => SecNamedCurves.GetByName("secp256r1"),
+                                            var s when s == CryptoAlgorithm.secp521r1  => SecNamedCurves.GetByName("secp521r1"),
+                                            var s when s == CryptoAlgorithm.secp384r1  => SecNamedCurves.GetByName("secp384r1"),
+                                            _                                          => SecNamedCurves.GetByName("secp256r1"),
                                         };
                     var ecParams      = new ECDomainParameters(ecp.Curve, ecp.G, ecp.N, ecp.H, ecp.GetSeed());
-                    var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId.FromBase64()), ecParams);
+                    var pubKeyParams  = new ECPublicKeyParameters("ECDSA", ecParams.Curve.DecodePoint(signature.KeyId), ecParams);
 
                     var cryptoHash    = signature.Algorithm switch {
-                                            "secp521r1"  => SHA512.HashData(BinaryMessage),
-                                            "secp384r1"  => SHA512.HashData(BinaryMessage),
-                                            _            => SHA256.HashData(BinaryMessage),
+                                            var s when s == CryptoAlgorithm.secp521r1  => SHA512.HashData(BinaryMessage),
+                                            var s when s == CryptoAlgorithm.secp384r1  => SHA512.HashData(BinaryMessage),
+                                            _                                          => SHA256.HashData(BinaryMessage),
                                         };
 
                     var verifier      = SignerUtilities.GetSigner("NONEwithECDSA");
                     verifier.Init(false, pubKeyParams);
                     verifier.BlockUpdate(cryptoHash);
-                    signature.Status  = verifier.VerifySignature(signature.Value.FromBase64())
+                    signature.Status  = verifier.VerifySignature(signature.Value)
                                             ? VerificationStatus.ValidSignature
                                             : VerificationStatus.InvalidSignature;
 

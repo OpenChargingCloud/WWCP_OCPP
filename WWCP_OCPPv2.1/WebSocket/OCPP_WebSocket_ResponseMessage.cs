@@ -41,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         public Request_Id                   RequestId      { get; }
 
         /// <summary>
-        /// The JSON request message payload.
+        /// The JSON response message payload.
         /// </summary>
         public JObject                      Message        { get; }
 
@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// Create a new OCPP WebSocket response message.
         /// </summary>
         /// <param name="RequestId">An unique request identification.</param>
-        /// <param name="Message">A JSON request message payload.</param>
+        /// <param name="Message">A JSON response message payload.</param>
         /// <param name="MessageType">A message type (default: CALLRESULT (3) )</param>
         public OCPP_WebSocket_ResponseMessage(Request_Id                   RequestId,
                                               JObject                      Message,
@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         {
 
             this.RequestId    = RequestId;
-            this.Message      = Message ?? new JObject();
+            this.Message      = Message;
             this.MessageType  = MessageType;
 
         }
@@ -97,19 +97,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
         #endregion
 
-        #region ToByteArray(Format = None)
-
-        /// <summary>
-        /// Return a binary representation of this object.
-        /// </summary>
-        /// <param name="Format">A JSON format.</param>
-        public Byte[] ToByteArray(Formatting Format = Formatting.None)
-
-            => Encoding.UTF8.GetBytes(ToJSON().ToString(Format));
-
-        #endregion
-
-
         #region TryParse(Text, out ResponseMessage)
 
         /// <summary>
@@ -137,12 +124,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
             try
             {
+
                 var json = JArray.Parse(Text);
 
                 if (json.Count != 3)
                     return false;
 
-                if (!Byte.TryParse(json[0].Value<String>(), out Byte messageTypeByte))
+                if (!Byte.TryParse(json[0].Value<String>(), out var messageTypeByte))
                     return false;
 
                 var messageType = OCPP_WebSocket_MessageTypesExtensions.ParseMessageType(messageTypeByte);
@@ -155,9 +143,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                 if (json[2] is not JObject jsonMessage)
                     return false;
 
-                ResponseMessage = new OCPP_WebSocket_ResponseMessage(responseId,
-                                                                   jsonMessage,
-                                                                   messageType);
+                ResponseMessage = new OCPP_WebSocket_ResponseMessage(
+                                      responseId,
+                                      jsonMessage,
+                                      messageType
+                                  );
 
                 return true;
 
@@ -179,9 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// </summary>
         public override String ToString()
 
-            => String.Concat(RequestId,
-                             " => ",
-                             Message.ToString());
+            => $"{RequestId} => {Message}";
 
         #endregion
 

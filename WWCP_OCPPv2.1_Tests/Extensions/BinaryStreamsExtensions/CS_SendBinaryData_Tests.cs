@@ -30,7 +30,7 @@ using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests.BinaryStreamsExtensions
+namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsExtensions
 {
 
     /// <summary>
@@ -72,19 +72,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.BinaryStreamsExtensions
                 var vendorId   = Vendor_Id. GraphDefined;
                 var messageId  = Message_Id.GraphDefined_TestMessage;
                 var data       = "Hello world!".ToUTF8Bytes();
-
-
-                var aa = new OCPPv2_1.CS.BinaryDataTransferRequest(chargingStation1.Id,
-                                                                   vendorId,
-                                                                   messageId,
-                                                                   data,
-                                                                   BinaryFormats.Compact);
-
-                var bb = aa.ToBinary();
-
-                var cc = OCPPv2_1.CS.BinaryDataTransferRequest.TryParse(bb, Request_Id.Parse("2"), chargingStation1.Id,
-                                                                        out var dd, out var err);
-
 
 
                 var response   = await chargingStation1.TransferBinaryData(

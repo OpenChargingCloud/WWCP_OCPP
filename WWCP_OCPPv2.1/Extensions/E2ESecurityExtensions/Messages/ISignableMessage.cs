@@ -26,22 +26,57 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
+    /// <summary>
+    /// Extension methods for signable OCPP CSE messages.
+    /// </summary>
     public static class ISignableMessageExtensions
     {
 
+        #region Sign(this SignableMessage, JSONMessage,   SignaturePolicy, out ErrorResponse, params SignInfos)
+
+        /// <summary>
+        /// Sign the given OCPP message.
+        /// </summary>
+        /// <param name="SignableMessage">A signable message.</param>
+        /// <param name="JSONMessage">The JSON representation of the signable message.</param>
+        /// <param name="SignaturePolicy">A signature policy.</param>
+        /// <param name="ErrorResponse">The optional error response-</param>
+        /// <param name="SignInfos">An optional enumeration of signature information.</param>
         public static Boolean Sign(this ISignableMessage  SignableMessage,
                                    JObject                JSONMessage,
                                    SignaturePolicy        SignaturePolicy,
                                    out String?            ErrorResponse,
                                    params SignInfo[]      SignInfos)
-        {
 
-            return SignaturePolicy.SignMessage(SignableMessage,
-                                               JSONMessage,
-                                               out ErrorResponse,
-                                               SignInfos);
+            => SignaturePolicy.SignMessage(SignableMessage,
+                                           JSONMessage,
+                                           out ErrorResponse,
+                                           SignInfos);
 
-        }
+        #endregion
+
+        #region Sign(this SignableMessage, BinaryMessage, SignaturePolicy, out ErrorResponse, params SignInfos)
+
+        /// <summary>
+        /// Sign the given binary OCPP message.
+        /// </summary>
+        /// <param name="SignableMessage">A signable message.</param>
+        /// <param name="JSONMessage">The binary representation of the signable message.</param>
+        /// <param name="SignaturePolicy">A signature policy.</param>
+        /// <param name="ErrorResponse">The optional error response-</param>
+        /// <param name="SignInfos">An optional enumeration of signature information.</param>
+        public static Boolean Sign(this ISignableMessage  SignableMessage,
+                                   Byte[]                 BinaryMessage,
+                                   SignaturePolicy        SignaturePolicy,
+                                   out String?            ErrorResponse,
+                                   params SignInfo[]      SignInfos)
+
+            => SignaturePolicy.SignMessage(SignableMessage,
+                                           BinaryMessage,
+                                           out ErrorResponse,
+                                           SignInfos);
+
+        #endregion
 
     }
 

@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region OnDataTransfer
+        #region OnIncomingDataTransfer
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
@@ -282,6 +282,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// An event sent whenever a notify customer information was received.
         /// </summary>
         event OnNotifyCustomerInformationDelegate           OnNotifyCustomerInformation;
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region OnIncomingBinaryDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a binary data transfer request was received.
+        /// </summary>
+        event OnIncomingBinaryDataTransferDelegate   OnIncomingBinaryDataTransfer;
 
         #endregion
 

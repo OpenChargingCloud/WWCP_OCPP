@@ -74,35 +74,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public class SendRequestState2
         {
 
-            public DateTime                       Timestamp            { get; }
-            public OCPP_WebSocket_RequestMessage  WSRequestMessage     { get; }
-            public DateTime                       Timeout              { get; }
+            public DateTime                              Timestamp                  { get; }
+            public OCPP_WebSocket_RequestMessage?        WSRequestMessage           { get; }
+            public OCPP_WebSocket_BinaryRequestMessage?  WSBinaryRequestMessage     { get; }
+            public DateTime                              Timeout                    { get; }
 
-            public DateTime?                      ResponseTimestamp    { get; set; }
-            public JObject?                       Response             { get; set; }
+            public DateTime?                             ResponseTimestamp          { get; set; }
+            public JObject?                              Response                   { get; set; }
 
-            public ResultCodes?                   ErrorCode            { get; set; }
-            public String?                        ErrorDescription     { get; set; }
-            public JObject?                       ErrorDetails         { get; set; }
+            public ResultCodes?                          ErrorCode                  { get; set; }
+            public String?                               ErrorDescription           { get; set; }
+            public JObject?                              ErrorDetails               { get; set; }
 
 
-            public Boolean                        NoErrors
+            public Boolean                              NoErrors
                  => !ErrorCode.HasValue;
 
-            public Boolean                        HasErrors
+            public Boolean                              HasErrors
                  =>  ErrorCode.HasValue;
 
 
-            public SendRequestState2(DateTime                       Timestamp,
-                                     OCPP_WebSocket_RequestMessage  WSRequestMessage,
-                                     DateTime                       Timeout,
+            public SendRequestState2(DateTime                             Timestamp,
+                                     OCPP_WebSocket_RequestMessage        WSRequestMessage,
+                                     DateTime                             Timeout,
 
-                                     DateTime?                      ResponseTimestamp   = null,
-                                     JObject?                       Response            = null,
+                                     DateTime?                            ResponseTimestamp   = null,
+                                     JObject?                             Response            = null,
 
-                                     ResultCodes?                   ErrorCode           = null,
-                                     String?                        ErrorDescription    = null,
-                                     JObject?                       ErrorDetails        = null)
+                                     ResultCodes?                         ErrorCode           = null,
+                                     String?                              ErrorDescription    = null,
+                                     JObject?                             ErrorDetails        = null)
             {
 
                 this.Timestamp          = Timestamp;
@@ -115,6 +116,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 this.ErrorCode          = ErrorCode;
                 this.ErrorDescription   = ErrorDescription;
                 this.ErrorDetails       = ErrorDetails;
+
+            }
+
+            public SendRequestState2(DateTime                             Timestamp,
+                                     OCPP_WebSocket_BinaryRequestMessage  WSBinaryRequestMessage,
+                                     DateTime                             Timeout,
+
+                                     DateTime?                            ResponseTimestamp   = null,
+                                     JObject?                             Response            = null,
+
+                                     ResultCodes?                         ErrorCode           = null,
+                                     String?                              ErrorDescription    = null,
+                                     JObject?                             ErrorDetails        = null)
+            {
+
+                this.Timestamp               = Timestamp;
+                this.WSBinaryRequestMessage  = WSBinaryRequestMessage;
+                this.Timeout                 = Timeout;
+
+                this.ResponseTimestamp       = ResponseTimestamp;
+                this.Response                = Response;
+
+                this.ErrorCode               = ErrorCode;
+                this.ErrorDescription        = ErrorDescription;
+                this.ErrorDetails            = ErrorDetails;
 
             }
 
@@ -10124,7 +10150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        public readonly Dictionary<Request_Id, SendRequestState2> requests = new ();
+        public readonly Dictionary<Request_Id, SendRequestState2> requests = [];
 
 
         #region SendRequest(Action, RequestId, Message)
@@ -10212,6 +10238,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region SendRequest(Action, RequestId, BinaryMessage)
+
+        public async Task<OCPP_WebSocket_BinaryRequestMessage> SendRequest(String      Action,
+                                                                           Request_Id  RequestId,
+                                                                           Byte[]      BinaryMessage)
+        {
+
+            OCPP_WebSocket_BinaryRequestMessage? wsRequestMessage = null;
+
+            if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
+                                           ConfigureAwait(false))
+            {
+                try
+                {
+
+                    if (HTTPStream is not null)
+                    {
+
+                        wsRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
+                                               RequestId,
+                                               Action,
+                                               BinaryMessage
+                                           );
+
+                        await SendBinary(wsRequestMessage.BinaryMessage); //ToDo: Fix me!
+
+                        requests.Add(RequestId,
+                                     new SendRequestState2(
+                                         Timestamp.Now,
+                                         wsRequestMessage,
+                                         Timestamp.Now + RequestTimeout
+                                     ));
+
+                    }
+                    else
+                    {
+
+                        wsRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
+                                               RequestId,
+                                               Action,
+                                               BinaryMessage,
+                                               ErrorMessage: "Invalid WebSocket connection!"
+                                           );
+
+                    }
+
+                }
+                catch (Exception e)
+                {
+
+                    while (e.InnerException is not null)
+                        e = e.InnerException;
+
+                    wsRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
+                                           RequestId,
+                                           Action,
+                                           BinaryMessage,
+                                           ErrorMessage: e.Message
+                                       );
+
+                    DebugX.LogException(e);
+
+                }
+                finally
+                {
+                    MaintenanceSemaphore.Release();
+                }
+            }
+
+            else
+                wsRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
+                                       RequestId,
+                                       Action,
+                                       BinaryMessage,
+                                       ErrorMessage: "Could not aquire the maintenance tasks lock!"
+                                   );
+
+            return wsRequestMessage;
+
+        }
+
+        #endregion
         #region (private) WaitForResponse(RequestMessage)
 
         private async Task<SendRequestState2> WaitForResponse(OCPP_WebSocket_RequestMessage RequestMessage)
@@ -13250,13 +13358,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             CSMS.BinaryDataTransferResponse? response = null;
 
-            //var requestMessage = await SendRequest(Request.Action,
-            //                                       Request.RequestId,
-            //                                       Request.ToJSON(
-            //                                           CustomBinaryDataTransferRequestSerializer,
-            //                                           CustomSignatureSerializer,
-            //                                           CustomCustomBinaryDataSerializer
-            //                                       ));
+            var requestMessage = await SendRequest(Request.Action,
+                                                   Request.RequestId,
+                                                   Request.ToBinary(
+                                                       //CustomBinaryDataTransferRequestSerializer,
+                                                       //CustomSignatureSerializer,
+                                                       //CustomCustomBinaryDataSerializer
+                                                   ));
 
             //if (requestMessage.NoErrors)
             //{

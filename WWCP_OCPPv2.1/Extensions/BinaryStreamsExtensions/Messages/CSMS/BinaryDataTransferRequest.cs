@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Optional message binary data without specified length or format.
         /// </summary>
         [Optional]
-        public Byte[]?        Data    { get; }
+        public Byte[]?        Data          { get; }
 
         #endregion
 
@@ -130,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.VendorId   = VendorId;
             this.MessageId  = MessageId;
             this.Data       = Data;
-            this.Format     = Format ?? BinaryFormats.Extensible;
+            this.Format     = Format ?? BinaryFormats.Compact;
 
 
             unchecked
@@ -346,30 +346,102 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomBinaryDataTransferRequestSerializer">A delegate to serialize custom binary data transfer requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer   = null,
                                CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                   = null,
-                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                  = null)
+                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                  = null,
+                               Boolean                                                     IncludeSignatures                           = true)
         {
 
             var binaryStream = new MemoryStream();
 
-            var vendorIdBytes = VendorId.   ToString().ToUTF8Bytes();
-            binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.VendorId),   0, 2);
-            binaryStream.Write(BitConverter.GetBytes((UInt16) 0),                     0, 2);
-            binaryStream.Write(BitConverter.GetBytes((UInt32) vendorIdBytes.Length),  0, 4);
-            binaryStream.Write(vendorIdBytes,                                         0, vendorIdBytes. Length);
+            binaryStream.Write(Format.AsBytes(), 0, 2);
 
-            var messageIdBytes = MessageId?.ToString().ToUTF8Bytes() ?? [];
-            binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.MessageId),  0, 2);
-            binaryStream.Write(BitConverter.GetBytes((UInt16) 0),                     0, 2);
-            binaryStream.Write(BitConverter.GetBytes((UInt32) messageIdBytes.Length), 0, 4);
-            binaryStream.Write(messageIdBytes,                                        0, messageIdBytes.Length);
+            switch (Format)
+            {
 
-            var data = Data                                          ?? [];
-            binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.Data),       0, 2);
-            binaryStream.Write(BitConverter.GetBytes((UInt16) 0),                     0, 2);
-            binaryStream.Write(BitConverter.GetBytes((UInt32) data.Length),           0, 4);
-            binaryStream.Write(data,                                                  0, data.          Length);
+                case BinaryFormats.Compact: {
+
+                    binaryStream.Write(BitConverter.GetBytes(VendorId.  NumericId));
+                    binaryStream.Write(BitConverter.GetBytes(MessageId?.NumericId ?? 0));
+                    binaryStream.Write(BitConverter.GetBytes((UInt32) (Data?.LongLength ?? 0)));
+
+                    if (Data is not null)
+                        binaryStream.Write(Data,                                          0, (Int32) (Data?.LongLength ?? 0));
+
+                    var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+                    binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
+
+                    if (IncludeSignatures) {
+                        foreach (var signature in Signatures)
+                        {
+                            var binarySignature = signature.ToBinary();
+                            binaryStream.Write(BitConverter.GetBytes((UInt16) binarySignature.Length));
+                            binaryStream.Write(binarySignature);
+                        }
+                    }
+
+                }
+                break;
+
+                case BinaryFormats.TextIds: {
+
+                    var vendorIdBytes  = VendorId.  ToString().ToUTF8Bytes();
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) vendorIdBytes.Length),  0, 4);
+                    binaryStream.Write(vendorIdBytes,                                         0, vendorIdBytes. Length);
+
+                    var messageIdBytes = MessageId?.ToString().ToUTF8Bytes() ?? [];
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) messageIdBytes.Length), 0, 4);
+                    if (messageIdBytes.Length > 0)
+                        binaryStream.Write(messageIdBytes,                                    0, messageIdBytes.Length);
+
+                    var data = Data                                          ?? [];
+                    binaryStream.Write(BitConverter.GetBytes((UInt32) data.Length),           0, 4);
+                    binaryStream.Write(data,                                                  0, data.          Length);
+
+                    var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+                    binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
+
+                    if (signaturesCount > 0)
+                    {
+                        
+                    }
+
+                }
+                break;
+
+
+                case BinaryFormats.TagLengthValue: {
+
+                    var vendorIdBytes  = VendorId.  ToString().ToUTF8Bytes();
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.VendorId),   0, 2);
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) vendorIdBytes.Length),  0, 2);
+                    binaryStream.Write(vendorIdBytes,                                         0, vendorIdBytes. Length);
+
+                    if (MessageId.HasValue) {
+                        var messageIdBytes = MessageId?.ToString().ToUTF8Bytes() ?? [];
+                        binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.MessageId),  0, 2);
+                        binaryStream.Write(BitConverter.GetBytes((UInt16) messageIdBytes.Length), 0, 2);
+                        binaryStream.Write(messageIdBytes,                                        0, messageIdBytes.Length);
+                    }
+
+                    var data = Data                                          ?? [];
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.Data),       0, 2);
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) 0),                     0, 2);
+                    binaryStream.Write(BitConverter.GetBytes((UInt32) data.Length),           0, 4);
+                    binaryStream.Write(data,                                                  0, data.          Length);
+
+                    var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+                    binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
+
+                    if (signaturesCount > 0)
+                    {
+                        
+                    }
+
+                }
+                break;
+            }
 
             var binary = binaryStream.ToArray();
 

@@ -132,7 +132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.VendorId   = VendorId;
             this.MessageId  = MessageId;
             this.Data       = Data;
-            this.Format     = Format ?? BinaryFormats.Extensible;
+            this.Format     = Format ?? BinaryFormats.Compact;
 
 
             unchecked
@@ -257,6 +257,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     var signaturesCount  = BitConverter.ToUInt16(span.Slice(14 + dataLength, 2));
 
+                    for (var sigi = 0; sigi < signaturesCount; sigi++)
+                    {
+
+                        var signatureLength = BitConverter.ToUInt16(span.Slice(16 + dataLength + (sigi * 2), 2));
+
+                        if (Signature.TryParse(span.Slice(18 + dataLength + (sigi * 2), signatureLength).ToArray(),
+                                               out var signature,
+                                               out var err) &&
+                            signature is not null)
+                        {
+                            signatures.Add(signature);
+                        }
+
+                    }
+
 
                     BinaryDataTransferRequest = new BinaryDataTransferRequest(
 
@@ -285,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     {
 
                         var tagSpan     = span.Slice(2, 2);
-                        var tag         = BinaryTagsExtensions.   Parse(tagSpan);
+                        var tag         = BinaryTagsExtensions.Parse   (tagSpan);
 
                         var lengthSpan  = span.Slice(4, 4);
                         var length      = BitConverter.        ToUInt32(lengthSpan);
@@ -338,38 +353,68 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region ToBinary(CustomBinaryDataTransferRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
-        /// Return a JSON representation of this object.
+        /// Return a binary representation of this object.
         /// </summary>
         /// <param name="CustomBinaryDataTransferRequestSerializer">A delegate to serialize custom binary data transfer requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer   = null,
                                CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                   = null,
-                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                  = null)
+                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                  = null,
+                               Boolean                                                     IncludeSignatures                           = true)
         {
 
             var binaryStream = new MemoryStream();
 
-            binaryStream.Write(Format.      AsBytes(),                                0, 2);
+            binaryStream.Write(Format.AsBytes(), 0, 2);
 
             switch (Format)
             {
 
                 case BinaryFormats.Compact: {
 
-                    binaryStream.Write(BitConverter.GetBytes(VendorId.  NumericId),       0, 4);
-                    binaryStream.Write(BitConverter.GetBytes(MessageId?.NumericId ?? 0),  0, 4);
-
-                    var messageLengthBytes = BitConverter.GetBytes((UInt32) (Data?.LongLength ?? 0));
-                    binaryStream.Write(messageLengthBytes,                                0, 4);
+                    binaryStream.Write(BitConverter.GetBytes(VendorId.  NumericId));
+                    binaryStream.Write(BitConverter.GetBytes(MessageId?.NumericId ?? 0));
+                    binaryStream.Write(BitConverter.GetBytes((UInt32) (Data?.LongLength ?? 0)));
 
                     if (Data is not null)
                         binaryStream.Write(Data,                                          0, (Int32) (Data?.LongLength ?? 0));
 
-                    var signaturesCountBytes = BitConverter.GetBytes((UInt16) Signatures.Count());
-                    binaryStream.Write(signaturesCountBytes,                              0, 2);
+                    var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+                    binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
 
-                    if (Signatures.Any())
+                    if (IncludeSignatures) {
+                        foreach (var signature in Signatures)
+                        {
+                            var binarySignature = signature.ToBinary();
+                            binaryStream.Write(BitConverter.GetBytes((UInt16) binarySignature.Length));
+                            binaryStream.Write(binarySignature);
+                        }
+                    }
+
+                }
+                break;
+
+                case BinaryFormats.TextIds: {
+
+                    var vendorIdBytes  = VendorId.  ToString().ToUTF8Bytes();
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) vendorIdBytes.Length),  0, 4);
+                    binaryStream.Write(vendorIdBytes,                                         0, vendorIdBytes. Length);
+
+                    var messageIdBytes = MessageId?.ToString().ToUTF8Bytes() ?? [];
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) messageIdBytes.Length), 0, 4);
+                    if (messageIdBytes.Length > 0)
+                        binaryStream.Write(messageIdBytes,                                    0, messageIdBytes.Length);
+
+                    var data = Data                                          ?? [];
+                    binaryStream.Write(BitConverter.GetBytes((UInt32) data.Length),           0, 4);
+                    binaryStream.Write(data,                                                  0, data.          Length);
+
+                    var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+                    binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
+
+                    if (signaturesCount > 0)
                     {
                         
                     }
@@ -377,17 +422,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 }
                 break;
 
-                case BinaryFormats.Extensible: {
 
-                    var vendorIdBytes = VendorId.   ToString().ToUTF8Bytes();
+                case BinaryFormats.TagLengthValue: {
+
+                    var vendorIdBytes  = VendorId.  ToString().ToUTF8Bytes();
                     binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.VendorId),   0, 2);
-                    binaryStream.Write(BitConverter.GetBytes((UInt16) vendorIdBytes.Length),  0, 4);
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) vendorIdBytes.Length),  0, 2);
                     binaryStream.Write(vendorIdBytes,                                         0, vendorIdBytes. Length);
 
-                    var messageIdBytes = MessageId?.ToString().ToUTF8Bytes() ?? [];
-                    binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.MessageId),  0, 2);
-                    binaryStream.Write(BitConverter.GetBytes((UInt16) messageIdBytes.Length), 0, 4);
-                    binaryStream.Write(messageIdBytes,                                        0, messageIdBytes.Length);
+                    if (MessageId.HasValue) {
+                        var messageIdBytes = MessageId?.ToString().ToUTF8Bytes() ?? [];
+                        binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.MessageId),  0, 2);
+                        binaryStream.Write(BitConverter.GetBytes((UInt16) messageIdBytes.Length), 0, 2);
+                        binaryStream.Write(messageIdBytes,                                        0, messageIdBytes.Length);
+                    }
 
                     var data = Data                                          ?? [];
                     binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.Data),       0, 2);
@@ -395,9 +443,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     binaryStream.Write(BitConverter.GetBytes((UInt32) data.Length),           0, 4);
                     binaryStream.Write(data,                                                  0, data.          Length);
 
+                    var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+                    binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
+
+                    if (signaturesCount > 0)
+                    {
+                        
+                    }
+
                 }
                 break;
-
             }
 
             var binary = binaryStream.ToArray();

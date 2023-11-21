@@ -15141,7 +15141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             SignaturePolicy.VerifyResponseMessage(
                 response,
-                response.ToJSON(
+                response.ToBinary(
                     CustomBinaryDataTransferResponseSerializer
                     //CustomStatusInfoSerializer,
                     //CustomSignatureSerializer,

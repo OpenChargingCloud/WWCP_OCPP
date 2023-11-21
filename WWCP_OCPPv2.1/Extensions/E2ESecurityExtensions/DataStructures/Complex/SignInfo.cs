@@ -164,11 +164,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Description">An optional multi-language description or explanation for signing the message.</param>
         /// <param name="Timestamp">An optional timestamp of the message signature.</param>
         /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
-        public SignInfo(String                               Private,
-                        String                               Public,
-                        String?                              Algorithm       = null,
-                        String?                              Serialization   = null,
-                        String?                              Encoding        = null,
+        public SignInfo(Byte[]                               Private,
+                        Byte[]                               Public,
+                        CryptoAlgorithm?                     Algorithm       = null,
+                        CryptoSerialization?                 Serialization   = null,
+                        CryptoEncoding?                      Encoding        = null,
                         Func<ISignableMessage, String>?      SignerName      = null,
                         Func<ISignableMessage, I18NString>?  Description     = null,
                         Func<ISignableMessage, DateTime>?    Timestamp       = null,
@@ -287,11 +287,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 SignInfo = default;
 
-                #region Private           [mandatory]
+                #region Private          [mandatory]
 
                 if (!JSON.ParseMandatoryText("private",
                                              "private key",
-                                             out String Private,
+                                             out String PrivateText,
                                              out ErrorResponse))
                 {
                     return false;
@@ -299,11 +299,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Public            [mandatory]
+                #region Public           [mandatory]
 
                 if (!JSON.ParseMandatoryText("public",
                                              "public key",
-                                             out String Public,
+                                             out String PublicText,
                                              out ErrorResponse))
                 {
                     return false;
@@ -311,31 +311,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Algorithm         [optional]
+                #region Algorithm        [optional]
 
-                var Algorithm      = JSON.GetString("algorithm");
+                if (JSON.ParseOptional("algorithm",
+                                       "crypto algorithm",
+                                       CryptoAlgorithm.TryParse,
+                                       out CryptoAlgorithm? Algorithm,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
                 #endregion
 
                 #region Serialization     [optional]
 
-                var Serialization  = JSON.GetString("serialization");
+                if (JSON.ParseOptional("serialization",
+                                       "crypto serialization",
+                                       CryptoSerialization.TryParse,
+                                       out CryptoSerialization? Serialization,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
 
                 #endregion
 
-                #region Encoding          [optional]
+                #region Encoding         [optional]
 
-                var Encoding       = JSON.GetString("encoding");
+                if (JSON.ParseOptional("encoding",
+                                       "encoding method",
+                                       CryptoEncoding.TryParse,
+                                       out CryptoEncoding? Encoding,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                var Private = PrivateText.FromBase64();
+                var Public  = PublicText. FromBase64();
 
                 #endregion
 
-                #region SignerName        [optional]
+                #region SignerName       [optional]
 
                 var SignerName     = JSON.GetString("signerName");
 
                 #endregion
 
-                #region Description       [optional]
+                #region Description      [optional]
 
                 if (JSON.ParseOptional("description",
                                        "description",
@@ -349,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region Timestamp         [optional]
+                #region Timestamp        [optional]
 
                 if (JSON.ParseOptional("timestamp",
                                        "timestamp",
@@ -362,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                #region CustomData        [optional]
+                #region CustomData       [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -425,17 +452,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                  new JProperty("private",         Private),
                                  new JProperty("public",          Public),
 
-                           Algorithm.    Equals("secp256r1", StringComparison.OrdinalIgnoreCase)
-                               ? null
-                               : new JProperty("algorithm",       Algorithm),
+                           Algorithm.    HasValue && Algorithm.    Value != CryptoAlgorithm.    secp256r1
+                               ? new JProperty("algorithm",       Algorithm)
+                               : null,
 
-                           Serialization.Equals("raw",       StringComparison.OrdinalIgnoreCase)
-                               ? null
-                               : new JProperty("serialization",   Serialization),
+                           Serialization.HasValue && Serialization.Value != CryptoSerialization.raw
+                               ? new JProperty("serialization",   Serialization)
+                               : null,
 
-                           Encoding.     Equals("base64",    StringComparison.OrdinalIgnoreCase)
-                               ? null
-                               : new JProperty("encoding",        Encoding),
+                           Encoding.     HasValue && Encoding.     Value != CryptoEncoding.     base64
+                               ? new JProperty("encoding",        Encoding)
+                               : null,
 
                            SignerName  is not null && SignableMessage is not null
                                ? new JProperty("signerName",      SignerName (SignableMessage))
