@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new OCPP WebSocket response message.
+        /// Create a new OCPP WebSocket error message.
         /// </summary>
         /// <param name="RequestId">An unique request identification.</param>
         /// <param name="ErrorCode">An OCPP error code.</param>
@@ -129,6 +129,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
         #endregion
 
+        #region (static) CouldNotParse     (RequestId, Action, BinaryRequest,     ErrorResponse = null)
+
+        public static OCPP_WebSocket_ErrorMessage CouldNotParse(Request_Id  RequestId,
+                                                                String      Action,
+                                                                Byte[]      BinaryRequest,
+                                                                String?     ErrorResponse   = null)
+
+            => new (RequestId,
+                    ResultCodes.FormationViolation,
+                    $"Processing the given '{Action}' request could not be parsed!",
+                    JSONObject.Create(
+
+                              new JProperty("request",   BinaryRequest.ToBase64()),
+
+                        ErrorResponse is not null
+                            ? new JProperty("error",     ErrorResponse)
+                            : null
+
+                    ));
+
+        #endregion
+
 
         #region (static) FormationViolation(RequestId, Action, JSONObjectRequest, Exception)
 
@@ -162,6 +184,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                         new JProperty("request",     JSONArrayRequest),
                         new JProperty("exception",   Exception.Message),
                         new JProperty("stacktrace",  Exception.StackTrace)
+                    ));
+
+        #endregion
+
+        #region (static) FormationViolation(RequestId, Action, BinaryRequest,     Exception)
+
+        public static OCPP_WebSocket_ErrorMessage FormationViolation(Request_Id  RequestId,
+                                                                     String      Action,
+                                                                     Byte[]      BinaryRequest,
+                                                                     Exception   Exception)
+
+            => new (RequestId,
+                    ResultCodes.FormationViolation,
+                    $"Processing the given '{Action}' request led to an exception!",
+                    new JObject(
+                        new JProperty("request",      BinaryRequest.ToBase64()),
+                        new JProperty("exception",    Exception.Message),
+                        new JProperty("stacktrace",   Exception.StackTrace)
                     ));
 
         #endregion

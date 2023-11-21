@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendSecurityEventNotification
+        #region SendSecurityEventNotification            (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SecurityEventNotification request will be sent to the CSMS.
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyReport
+        #region NotifyReport                             (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a NotifyReport request will be sent to the CSMS.
@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyMonitoringReport
+        #region NotifyMonitoringReport                   (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a NotifyMonitoringReport request will be sent to the CSMS.
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendLogStatusNotification
+        #region SendLogStatusNotification                (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a LogStatusNotification request will be sent to the CSMS.
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region TransferData
+        #region TransferData                             (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a DataTransfer request will be sent to the CSMS.
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SignCertificate
+        #region SignCertificate                          (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a SignCertificate request will be sent to the CSMS.
@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region Get15118EVCertificate
+        #region Get15118EVCertificate                    (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a Get15118EVCertificate request will be sent to the CSMS.
@@ -193,7 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region GetCertificateStatus
+        #region GetCertificateStatus                     (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a GetCertificateStatus request will be sent to the CSMS.
@@ -207,7 +207,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region GetCRL
+        #region GetCRL                                   (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a get certificate revocation list request will be sent to the CSMS.
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendReservationStatusUpdate
+        #region SendReservationStatusUpdate              (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ReservationStatusUpdate request will be sent to the CSMS.
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region Authorize
+        #region Authorize                                (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever an Authorize request will be sent to the CSMS.
@@ -250,7 +250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyEVChargingNeeds
+        #region NotifyEVChargingNeeds                    (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a NotifyEVChargingNeeds request will be sent to the CSMS.
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendTransactionEvent
+        #region SendTransactionEvent                     (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a TransactionEvent will be sent to the CSMS.
@@ -278,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendStatusNotification
+        #region SendStatusNotification                   (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a StatusNotification request will be sent to the CSMS.
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendMeterValues
+        #region SendMeterValues                          (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a MeterValues request will be sent to the CSMS.
@@ -306,7 +306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyChargingLimit
+        #region NotifyChargingLimit                      (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a NotifyChargingLimit request will be sent to the CSMS.
@@ -320,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendClearedChargingLimit
+        #region SendClearedChargingLimit                 (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ClearedChargingLimit request will be sent to the CSMS.
@@ -334,7 +334,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ReportChargingProfiles
+        #region ReportChargingProfiles                   (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a ReportChargingProfiles request will be sent to the CSMS.
@@ -348,7 +348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyEVChargingSchedule
+        #region NotifyEVChargingSchedule                 (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a NotifyEVChargingSchedule request will be sent to the CSMS.
@@ -362,7 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyPriorityCharging
+        #region NotifyPriorityCharging                   (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a NotifyPriorityCharging request will be sent to the CSMS.
@@ -376,7 +376,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region PullDynamicScheduleUpdate
+        #region PullDynamicScheduleUpdate                (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
@@ -391,7 +391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region NotifyDisplayMessages
+        #region NotifyDisplayMessages                    (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a NotifyDisplayMessages request will be sent to the CSMS.
@@ -405,7 +405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region NotifyCustomerInformation
+        #region NotifyCustomerInformation                (-Request/-Response)
 
         /// <summary>
         /// An event fired whenever a NotifyCustomerInformation request will be sent to the CSMS.
@@ -416,6 +416,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// An event fired whenever a response to a NotifyCustomerInformation request was received.
         /// </summary>
         event OnNotifyCustomerInformationResponseDelegate?  OnNotifyCustomerInformationResponse;
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region TransferBinaryData                       (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
+        /// </summary>
+        event OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a BinaryDataTransfer request was received.
+        /// </summary>
+        event OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
 
         #endregion
 
