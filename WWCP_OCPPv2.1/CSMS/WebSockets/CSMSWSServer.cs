@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Reflection;
 using System.Collections.Concurrent;
 using System.Security.Authentication;
 
@@ -119,32 +120,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public const            String                                                                                 DefaultHTTPServiceName           = $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API";
+        public const            String                                                                                 DefaultHTTPServiceName            = $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API";
 
         /// <summary>
         /// The default HTTP server TCP port.
         /// </summary>
-        public static readonly  IPPort                                                                                 DefaultHTTPServerPort            = IPPort.Parse(2010);
+        public static readonly  IPPort                                                                                 DefaultHTTPServerPort             = IPPort.Parse(2010);
 
         /// <summary>
         /// The default HTTP server URI prefix.
         /// </summary>
-        public static readonly  HTTPPath                                                                               DefaultURLPrefix                 = HTTPPath.Parse("/" + Version.String);
+        public static readonly  HTTPPath                                                                               DefaultURLPrefix                  = HTTPPath.Parse("/" + Version.String);
 
         /// <summary>
         /// The default request timeout.
         /// </summary>
-        public static readonly  TimeSpan                                                                               DefaultRequestTimeout            = TimeSpan.FromSeconds(30);
+        public static readonly  TimeSpan                                                                               DefaultRequestTimeout             = TimeSpan.FromSeconds(30);
 
 
-        public  const           String                                                                                 chargingStationId_WebSocketKey   = "chargingStationId";
+        public  const           String                                                                                 chargingStationId_WebSocketKey    = "chargingStationId";
 
-        private readonly        ConcurrentDictionary<ChargingStation_Id, Tuple<WebSocketServerConnection, DateTime>>   connectedChargingStations        = new();
+        private readonly        ConcurrentDictionary<ChargingStation_Id, Tuple<WebSocketServerConnection, DateTime>>   connectedChargingStations         = new();
 
-        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                                     requests                         = new();
+        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                                     requests                          = new();
 
 
-        private const           String                                                                                 LogfileName                      = "CSMSWSServer.log";
+        private const           String                                                                                 LogfileName                       = "CSMSWSServer.log";
+
+        private readonly        Dictionary<String, MethodInfo>                                                         incomingMessageProcessorsLookup   = [];
 
         #endregion
 
@@ -264,64 +267,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region CSMS <- Charging Station Messages
 
-        #region OnBootNotification                     (-Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a BootNotification WebSocket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?            OnBootNotificationWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a BootNotification request was received.
-        /// </summary>
-        public event OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a BootNotification was received.
-        /// </summary>
-        public event OnBootNotificationDelegate?            OnBootNotification;
-
-        /// <summary>
-        /// An event sent whenever a response to a BootNotification was sent.
-        /// </summary>
-        public event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a BootNotification was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?           OnBootNotificationWSResponse;
-
-        #endregion
-
-        #region OnFirmwareStatusNotification           (-Request/-Response)
-
-        /// <summary>
-        /// An event sent whenever a FirmwareStatusNotification WebSocket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?                      OnFirmwareStatusNotificationWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a FirmwareStatusNotification request was received.
-        /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?     OnFirmwareStatusNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a FirmwareStatusNotification request was received.
-        /// </summary>
-        public event OnFirmwareStatusNotificationDelegate?            OnFirmwareStatusNotification;
-
-        /// <summary>
-        /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
-        /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?    OnFirmwareStatusNotificationResponse;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a FirmwareStatusNotification request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?                     OnFirmwareStatusNotificationWSResponse;
-
-        #endregion
-
         #region OnPublishFirmwareStatusNotification    (-Request/-Response)
 
         /// <summary>
@@ -348,35 +293,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// An event sent whenever a WebSocket response to a PublishFirmwareStatusNotification request was sent.
         /// </summary>
         public event WebSocketResponseLogHandler?                            OnPublishFirmwareStatusNotificationWSResponse;
-
-        #endregion
-
-        #region OnHeartbeat
-
-        /// <summary>
-        /// An event sent whenever a Heartbeat WebSocket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?     OnHeartbeatWSRequest;
-
-        /// <summary>
-        /// An event sent whenever a Heartbeat request was received.
-        /// </summary>
-        public event OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
-
-        /// <summary>
-        /// An event sent whenever a Heartbeat was received.
-        /// </summary>
-        public event OnHeartbeatDelegate?            OnHeartbeat;
-
-        /// <summary>
-        /// An event sent whenever a response to a Heartbeat was sent.
-        /// </summary>
-        public event OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
-
-        /// <summary>
-        /// An event sent whenever a WebSocket response to a Heartbeat was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?    OnHeartbeatWSResponse;
 
         #endregion
 
@@ -1120,24 +1036,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Charging Station Messages
 
         /// <summary>
-        /// A delegate to parse custom BootNotification requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<BootNotificationRequest>?                   CustomBootNotificationRequestParser                     { get; set; }
-
-        /// <summary>
-        /// A delegate to parse custom FirmwareStatusNotification requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>?         CustomFirmwareStatusNotificationRequestParser           { get; set; }
-
-        /// <summary>
         /// A delegate to parse custom PublishFirmwareStatusNotification requests.
         /// </summary>
         public CustomJObjectParserDelegate<PublishFirmwareStatusNotificationRequest>?  CustomPublishFirmwareStatusNotificationRequestParser    { get; set; }
-
-        /// <summary>
-        /// A delegate to parse custom Heartbeat requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<HeartbeatRequest>?                          CustomHeartbeatRequestParser                            { get; set; }
 
         /// <summary>
         /// A delegate to parse custom NotifyEvent requests.
@@ -1477,6 +1378,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
             base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
             base.OnCloseMessageReceived         += ProcessCloseMessage;
+
+
+            foreach (var method in typeof(CSMSWSServer).GetMethods(BindingFlags.Public | BindingFlags.Instance).
+                                                        Where(method => method.Name.StartsWith("Receive_") &&
+                                                              method.ReturnType == typeof(Task<Tuple<OCPP_WebSocket_ResponseMessage?, OCPP_WebSocket_ErrorMessage?>>)))
+            {
+
+                // Create a delegate for the method and add it to the dictionary
+                //  var del = (Func<JArray,
+                //                  JObject,
+                //                  Request_Id,
+                //                  ChargingStation_Id,
+                //                  WebSocketServerConnection,
+                //                  String,
+                //                  CancellationToken,
+                //
+                //                  Task <Tuple<OCPP_WebSocket_ResponseMessage?,
+                //                              OCPP_WebSocket_ErrorMessage?>>>)
+                //
+                //                      Delegate.CreateDelegate(typeof(Func<JArray,
+                //                                                          JObject,
+                //                                                          Request_Id,
+                //                                                          ChargingStation_Id,
+                //                                                          WebSocketServerConnection,
+                //                                                          String,
+                //                                                          CancellationToken,
+                //
+                //                                                          Task<Tuple<OCPP_WebSocket_ResponseMessage?,
+                //                                                                     OCPP_WebSocket_ErrorMessage?>>>), method);
+
+                incomingMessageProcessorsLookup.Add(method.Name[8..],
+                                                    method);
+
+            }
 
             if (AutoStart)
                 Start();
@@ -1848,308 +1783,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     #endregion
 
+                    #region Try to call the matching 'incoming message processor'
+
+                    else if (incomingMessageProcessorsLookup.TryGetValue(action, out var methodInfo) &&
+                             methodInfo is not null)
+                    {
+
+                        var result = methodInfo.Invoke(this,
+                                                       [ json,
+                                                         requestData,
+                                                         requestId.Value,
+                                                         chargingStationId.Value,
+                                                         Connection,
+                                                         OCPPTextMessage,
+                                                         CancellationToken ]);
+
+                        if (result is not null)
+                        {
+                            (OCPPResponse,
+                             OCPPErrorResponse) = await (Task<Tuple<OCPP_WebSocket_ResponseMessage?, OCPP_WebSocket_ErrorMessage?>>) result;
+                        }
+
+                    }
+
+                    #endregion
+
                     else
                         switch (action)
                         {
-
-                            #region BootNotification
-
-                            case "BootNotification":
-                                {
-
-                                    #region Send OnBootNotificationWSRequest event
-
-                                    try
-                                    {
-
-                                        OnBootNotificationWSRequest?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            json);
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBootNotificationWSRequest));
-                                    }
-
-                                    #endregion
-
-                                    try
-                                    {
-
-                                        if (BootNotificationRequest.TryParse(requestData,
-                                                                             requestId.Value,
-                                                                             chargingStationId.Value,
-                                                                             out var request,
-                                                                             out var errorResponse,
-                                                                             CustomBootNotificationRequestParser) && request is not null) {
-
-                                            #region Send OnBootNotificationRequest event
-
-                                            try
-                                            {
-
-                                                OnBootNotificationRequest?.Invoke(Timestamp.Now,
-                                                                                  this,
-                                                                                  Connection,
-                                                                                  request);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBootNotificationRequest));
-                                            }
-
-                                            #endregion
-
-                                            #region Call async subscribers
-
-                                            BootNotificationResponse? response = null;
-
-                                            var responseTasks = OnBootNotification?.
-                                                                    GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                                this,
-                                                                                                                                                Connection,
-                                                                                                                                                request,
-                                                                                                                                                CancellationToken)).
-                                                                    ToArray();
-
-                                            if (responseTasks?.Length > 0)
-                                            {
-                                                await Task.WhenAll(responseTasks!);
-                                                response = responseTasks.FirstOrDefault()?.Result;
-                                            }
-
-                                            response ??= BootNotificationResponse.Failed(request);
-
-                                            #endregion
-
-                                            #region Send OnBootNotificationResponse event
-
-                                            try
-                                            {
-
-                                                OnBootNotificationResponse?.Invoke(Timestamp.Now,
-                                                                                   this,
-                                                                                   Connection,
-                                                                                   request,
-                                                                                   response,
-                                                                                   response.Runtime);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBootNotificationResponse));
-                                            }
-
-                                            #endregion
-
-                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
-                                                               requestId.Value,
-                                                               response.ToJSON()
-                                                           );
-
-                                        }
-
-                                        else
-                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                    requestId.Value,
-                                                                    ResultCodes.FormationViolation,
-                                                                    "The given 'BootNotification' request could not be parsed!",
-                                                                    new JObject(
-                                                                        new JProperty("request",       OCPPTextMessage),
-                                                                        new JProperty("errorResponse", errorResponse)
-                                                                    )
-                                                                );
-
-                                    }
-                                    catch (Exception e)
-                                    {
-
-                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                requestId.Value,
-                                                                ResultCodes.FormationViolation,
-                                                                "Processing the given 'BootNotification' request led to an exception!",
-                                                                JSONObject.Create(
-                                                                    new JProperty("request",    OCPPTextMessage),
-                                                                    new JProperty("exception",  e.Message),
-                                                                    new JProperty("stacktrace", e.StackTrace)
-                                                                )
-                                                            );
-
-                                    }
-
-                                    #region Send OnBootNotificationWSResponse event
-
-                                    try
-                                    {
-
-                                        OnBootNotificationWSResponse?.Invoke(Timestamp.Now,
-                                                                             this,
-                                                                             json,
-                                                                             OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBootNotificationWSResponse));
-                                    }
-
-                                    #endregion
-
-                                }
-                                break;
-
-                            #endregion
-
-                            #region FirmwareStatusNotification
-
-                            case "FirmwareStatusNotification":
-                                {
-
-                                    #region Send OnFirmwareStatusNotificationWSRequest event
-
-                                    try
-                                    {
-
-                                        OnFirmwareStatusNotificationWSRequest?.Invoke(Timestamp.Now,
-                                                                                      this,
-                                                                                      json);
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationWSRequest));
-                                    }
-
-                                    #endregion
-
-                                    try
-                                    {
-
-                                        if (FirmwareStatusNotificationRequest.TryParse(requestData,
-                                                                                       requestId.Value,
-                                                                                       chargingStationId.Value,
-                                                                                       out var request,
-                                                                                       out var errorResponse,
-                                                                                       CustomFirmwareStatusNotificationRequestParser) && request is not null) {
-
-                                            #region Send OnFirmwareStatusNotificationRequest event
-
-                                            try
-                                            {
-
-                                                OnFirmwareStatusNotificationRequest?.Invoke(Timestamp.Now,
-                                                                                            this,
-                                                                                            request);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationRequest));
-                                            }
-
-                                            #endregion
-
-                                            #region Call async subscribers
-
-                                            FirmwareStatusNotificationResponse? response = null;
-
-                                            var responseTasks = OnFirmwareStatusNotification?.
-                                                                    GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                                          this,
-                                                                                                                                                          request,
-                                                                                                                                                          CancellationToken)).
-                                                                    ToArray();
-
-                                            if (responseTasks?.Length > 0)
-                                            {
-                                                await Task.WhenAll(responseTasks!);
-                                                response = responseTasks.FirstOrDefault()?.Result;
-                                            }
-
-                                            response ??= FirmwareStatusNotificationResponse.Failed(request);
-
-                                            #endregion
-
-                                            #region Send OnFirmwareStatusNotificationResponse event
-
-                                            try
-                                            {
-
-                                                OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
-                                                                                             this,
-                                                                                             request,
-                                                                                             response,
-                                                                                             response.Runtime);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationResponse));
-                                            }
-
-                                            #endregion
-
-                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
-                                                               requestId.Value,
-                                                               response.ToJSON()
-                                                           );
-
-                                        }
-
-                                        else
-                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                    requestId.Value,
-                                                                    ResultCodes.FormationViolation,
-                                                                    "The given 'FirmwareStatusNotification' request could not be parsed!",
-                                                                    new JObject(
-                                                                        new JProperty("request",       OCPPTextMessage),
-                                                                        new JProperty("errorResponse", errorResponse)
-                                                                    )
-                                                                );
-
-                                    }
-                                    catch (Exception e)
-                                    {
-
-                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                requestId.Value,
-                                                                ResultCodes.FormationViolation,
-                                                                "Processing the given 'FirmwareStatusNotification' request led to an exception!",
-                                                                JSONObject.Create(
-                                                                    new JProperty("request",    OCPPTextMessage),
-                                                                    new JProperty("exception",  e.Message),
-                                                                    new JProperty("stacktrace", e.StackTrace)
-                                                                )
-                                                            );
-
-                                    }
-
-                                    #region Send OnFirmwareStatusNotificationWSResponse event
-
-                                    try
-                                    {
-
-                                        OnFirmwareStatusNotificationWSResponse?.Invoke(Timestamp.Now,
-                                                                                       this,
-                                                                                       json,
-                                                                                       OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnFirmwareStatusNotificationWSResponse));
-                                    }
-
-                                    #endregion
-
-                                }
-                                break;
-
-                            #endregion
 
                             #region PublishFirmwareStatusNotification
 
@@ -2290,154 +1951,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     catch (Exception e)
                                     {
                                         DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnPublishFirmwareStatusNotificationWSResponse));
-                                    }
-
-                                    #endregion
-
-                                }
-                                break;
-
-                            #endregion
-
-                            #region Heartbeat
-
-                            case "Heartbeat":
-                                {
-
-                                    #region Send OnHeartbeatWSRequest event
-
-                                    try
-                                    {
-
-                                        OnHeartbeatWSRequest?.Invoke(Timestamp.Now,
-                                                                     this,
-                                                                     json);
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnHeartbeatWSRequest));
-                                    }
-
-                                    #endregion
-
-                                    try
-                                    {
-
-                                        if (HeartbeatRequest.TryParse(requestData,
-                                                                      requestId.Value,
-                                                                      chargingStationId.Value,
-                                                                      out var request,
-                                                                      out var errorResponse,
-                                                                      CustomHeartbeatRequestParser) && request is not null) {
-
-                                            #region Send OnHeartbeatRequest event
-
-                                            try
-                                            {
-
-                                                OnHeartbeatRequest?.Invoke(Timestamp.Now,
-                                                                           this,
-                                                                           request);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnHeartbeatRequest));
-                                            }
-
-                                            #endregion
-
-                                            #region Call async subscribers
-
-                                            HeartbeatResponse? response = null;
-
-                                            var responseTasks = OnHeartbeat?.
-                                                                    GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                         this,
-                                                                                                                                         request,
-                                                                                                                                         CancellationToken)).
-                                                                    ToArray();
-
-                                            if (responseTasks?.Length > 0)
-                                            {
-                                                await Task.WhenAll(responseTasks!);
-                                                response = responseTasks.FirstOrDefault()?.Result;
-                                            }
-
-                                            response ??= HeartbeatResponse.Failed(request);
-
-                                            #endregion
-
-                                            #region Send OnHeartbeatResponse event
-
-                                            try
-                                            {
-
-                                                OnHeartbeatResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            request,
-                                                                            response,
-                                                                            response.Runtime);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnHeartbeatResponse));
-                                            }
-
-                                            #endregion
-
-                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
-                                                               requestId.Value,
-                                                               response.ToJSON()
-                                                           );
-
-                                        }
-
-                                        else
-                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                    requestId.Value,
-                                                                    ResultCodes.FormationViolation,
-                                                                    "The given 'Heartbeat' request could not be parsed!",
-                                                                    new JObject(
-                                                                        new JProperty("request",       OCPPTextMessage),
-                                                                        new JProperty("errorResponse", errorResponse)
-                                                                    )
-                                                                );
-
-                                    }
-                                    catch (Exception e)
-                                    {
-
-                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                requestId.Value,
-                                                                ResultCodes.FormationViolation,
-                                                                "Processing the given 'Heartbeat' request led to an exception!",
-                                                                JSONObject.Create(
-                                                                    new JProperty("request",    OCPPTextMessage),
-                                                                    new JProperty("exception",  e.Message),
-                                                                    new JProperty("stacktrace", e.StackTrace)
-                                                                )
-                                                            );
-
-                                    }
-
-                                    #region Send OnHeartbeatWSResponse event
-
-                                    try
-                                    {
-
-                                        OnHeartbeatWSResponse?.Invoke(Timestamp.Now,
-                                                                      this,
-                                                                      json,
-                                                                      OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnHeartbeatWSResponse));
                                     }
 
                                     #endregion
