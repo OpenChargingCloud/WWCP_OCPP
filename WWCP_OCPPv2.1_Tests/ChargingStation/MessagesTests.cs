@@ -662,7 +662,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     return Task.CompletedTask;
                 };
 
-                var vendorId   = Vendor_Id.       Parse       ("GraphDefined OEM");
+                var vendorId   = Vendor_Id.       GraphDefined;
                 var messageId  = Message_Id.      Parse       (RandomExtensions.RandomString(10));
                 var data       = RandomExtensions.RandomString(40);
 
@@ -718,7 +718,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     return Task.CompletedTask;
                 };
 
-                var vendorId   = Vendor_Id. Parse("GraphDefined OEM");
+                var vendorId   = Vendor_Id. GraphDefined;
                 var messageId  = Message_Id.Parse(RandomExtensions.RandomString(10));
                 var data       = new JObject(
                                      new JProperty(
@@ -781,7 +781,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     return Task.CompletedTask;
                 };
 
-                var vendorId   = Vendor_Id. Parse("GraphDefined OEM");
+                var vendorId   = Vendor_Id. GraphDefined;
                 var messageId  = Message_Id.Parse(RandomExtensions.RandomString(10));
                 var data       = new JArray(
                                      RandomExtensions.RandomString(40)

@@ -3840,7 +3840,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                        )
                                      )
 
-                                   : request.VendorId.ToString() == "GraphDefined OEM"
+                                   : request.VendorId == Vendor_Id.GraphDefined
 
                                          ? new (
                                                Request:      request,
