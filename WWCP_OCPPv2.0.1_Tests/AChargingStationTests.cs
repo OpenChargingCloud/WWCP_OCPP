@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                         chargingStation1WebSocketTextMessagesReceived.        Add(new LogData1(timestamp, message));
                     };
 
-                    chargingStation1WebSocketClient.OnTextMessageResponseSent     += async (timestamp, client, webSocketFrame, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
+                    chargingStation1WebSocketClient.OnTextMessageResponseSent     += async (timestamp, client, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
                         chargingStation1WebSocketTextMessageResponsesSent.    Add(new LogData2(requestTimestamp, requestMessage, responseTimestamp, responseMessage));
                     };
 
@@ -169,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                         chargingStation1WebSocketTextMessagesSent.            Add(new LogData1(timestamp, message));
                     };
 
-                    chargingStation1WebSocketClient.OnTextMessageResponseReceived += async (timestamp, client, webSocketFrame, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
+                    chargingStation1WebSocketClient.OnTextMessageResponseReceived += async (timestamp, client, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
                         chargingStation1WebSocketTextMessageResponsesReceived.Add(new LogData2(requestTimestamp, requestMessage, responseTimestamp, responseMessage));
                     };
 

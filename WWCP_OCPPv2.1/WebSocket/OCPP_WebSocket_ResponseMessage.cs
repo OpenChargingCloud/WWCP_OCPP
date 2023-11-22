@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System.Text;
-
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -28,51 +25,85 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 {
 
     /// <summary>
-    /// An OCPP WebSocket response message.
+    /// A OCPP WebSocket response message.
     /// </summary>
-    public class OCPP_WebSocket_ResponseMessage
+    /// <param name="RequestId">An unique request identification.</param>
+    /// <param name="Message">A JSON response message payload.</param>
+    public class OCPP_WebSocket_ResponseMessage(Request_Id  RequestId,
+                                                JObject     Message)
     {
 
-        #region Properies
+        #region Properties
 
         /// <summary>
         /// The unique request identification.
         /// </summary>
-        public Request_Id                   RequestId      { get; }
+        public Request_Id  RequestId    { get; } = RequestId;
 
         /// <summary>
         /// The JSON response message payload.
         /// </summary>
-        public JObject                      Message        { get; }
-
-        /// <summary>
-        /// The message type.
-        /// </summary>
-        public OCPP_WebSocket_MessageTypes  MessageType    { get; }
+        public JObject     Message      { get; } = Message;
 
         #endregion
 
-        #region Constructor(s)
+
+        #region TryParse(JSONArray, out ResponseMessage)
 
         /// <summary>
-        /// Create a new OCPP WebSocket response message.
+        /// Try to parse the given JSON representation of a response message.
         /// </summary>
-        /// <param name="RequestId">An unique request identification.</param>
-        /// <param name="Message">A JSON response message payload.</param>
-        /// <param name="MessageType">A message type (default: CALLRESULT (3) )</param>
-        public OCPP_WebSocket_ResponseMessage(Request_Id                   RequestId,
-                                              JObject                      Message,
-                                              OCPP_WebSocket_MessageTypes  MessageType = OCPP_WebSocket_MessageTypes.CALLRESULT)
+        /// <param name="JSONArray">The JSON array to be parsed.</param>
+        /// <param name="ResponseMessage">The parsed OCPP WebSocket response message.</param>
+        public static Boolean TryParse(JArray JSONArray, out OCPP_WebSocket_ResponseMessage? ResponseMessage)
         {
 
-            this.RequestId    = RequestId;
-            this.Message      = Message;
-            this.MessageType  = MessageType;
+            ResponseMessage = null;
+
+            // [
+            //     3,                         // MessageType: CALLRESULT (Server-to-Client)
+            //    "19223201",                 // RequestId copied from request
+            //    {
+            //        "status":            "Accepted",
+            //        "currentTime":       "2013-02-01T20:53:32.486Z",
+            //        "heartbeatInterval":  300
+            //    }
+            // ]
+
+            try
+            {
+
+                if (JSONArray.Count            != 3                   ||
+                    JSONArray[0].Type          != JTokenType.Integer  ||
+                    JSONArray[0].Value<Byte>() != 3                   ||
+                    JSONArray[1].Type          != JTokenType.String   ||
+                    JSONArray[2].Type          != JTokenType.Object)
+                {
+                    return false;
+                }
+
+                if (!Request_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var responseId))
+                    return false;
+
+                if (JSONArray[2] is not JObject jsonMessage)
+                    return false;
+
+                ResponseMessage = new OCPP_WebSocket_ResponseMessage(
+                                      responseId,
+                                      jsonMessage
+                                  );
+
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
 
         }
 
         #endregion
-
 
         #region ToJSON()
 
@@ -91,73 +122,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             //    }
             // ]
 
-            => new ((Byte) MessageType,
+            => new (3,
                     RequestId.ToString(),
                     Message);
-
-        #endregion
-
-        #region TryParse(Text, out ResponseMessage)
-
-        /// <summary>
-        /// Try to parse the given text representation of a response message.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="ResponseMessage">The parsed OCPP WebSocket response message.</param>
-        public static Boolean TryParse(String Text, out OCPP_WebSocket_ResponseMessage? ResponseMessage)
-        {
-
-            ResponseMessage = null;
-
-            if (Text is null)
-                return false;
-
-            // [
-            //     3,                         // MessageType: CALLRESULT (Server-to-Client)
-            //    "19223201",                 // RequestId copied from request
-            //    {
-            //        "status":            "Accepted",
-            //        "currentTime":       "2013-02-01T20:53:32.486Z",
-            //        "heartbeatInterval":  300
-            //    }
-            // ]
-
-            try
-            {
-
-                var json = JArray.Parse(Text);
-
-                if (json.Count != 3)
-                    return false;
-
-                if (!Byte.TryParse(json[0].Value<String>(), out var messageTypeByte))
-                    return false;
-
-                var messageType = OCPP_WebSocket_MessageTypesExtensions.ParseMessageType(messageTypeByte);
-                if (messageType == OCPP_WebSocket_MessageTypes.Undefined)
-                    return false;
-
-                if (!Request_Id.TryParse(json[1]?.Value<String>() ?? "", out var responseId))
-                    return false;
-
-                if (json[2] is not JObject jsonMessage)
-                    return false;
-
-                ResponseMessage = new OCPP_WebSocket_ResponseMessage(
-                                      responseId,
-                                      jsonMessage,
-                                      messageType
-                                  );
-
-                return true;
-
-            }
-            catch
-            {
-                return false;
-            }
-
-        }
 
         #endregion
 

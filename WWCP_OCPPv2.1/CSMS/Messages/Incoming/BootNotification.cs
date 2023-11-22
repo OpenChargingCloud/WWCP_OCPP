@@ -172,8 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      chargingStationId,
                                                      out var request,
                                                      out var errorResponse,
-                                                     CustomBootNotificationRequestParser) &&
-                    request is not null) {
+                                                     CustomBootNotificationRequestParser) && request is not null) {
 
                     #region Send OnBootNotificationRequest event
 
@@ -244,30 +243,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 }
 
                 else
-                    OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
                                             requestId,
-                                            ResultCodes.FormationViolation,
-                                            "The given 'BootNotification' request could not be parsed!",
-                                            new JObject(
-                                                new JProperty("request",       OCPPTextMessage),
-                                                new JProperty("errorResponse", errorResponse)
-                                            )
+                                           "BootNotification",
+                                            requestData,
+                                            errorResponse
                                         );
+
+                                        //new OCPP_WebSocket_ErrorMessage(
+                                        //    requestId,
+                                        //    ResultCodes.FormationViolation,
+                                        //    "The given 'BootNotification' request could not be parsed!",
+                                        //    new JObject(
+                                        //        new JProperty("request",       OCPPTextMessage),
+                                        //        new JProperty("errorResponse", errorResponse)
+                                        //    )
+                                        //);
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
                                         requestId,
-                                        ResultCodes.FormationViolation,
-                                        "Processing the given 'BootNotification' request led to an exception!",
-                                        JSONObject.Create(
-                                            new JProperty("request",    OCPPTextMessage),
-                                            new JProperty("exception",  e.Message),
-                                            new JProperty("stacktrace", e.StackTrace)
-                                        )
+                                        "BootNotification",
+                                        requestData,
+                                        e
                                     );
+
+                                    //new OCPP_WebSocket_ErrorMessage(
+                                    //    requestId,
+                                    //    ResultCodes.FormationViolation,
+                                    //    "Processing the given 'BootNotification' request led to an exception!",
+                                    //    JSONObject.Create(
+                                    //        new JProperty("request",    OCPPTextMessage),
+                                    //        new JProperty("exception",  e.Message),
+                                    //        new JProperty("stacktrace", e.StackTrace)
+                                    //    )
+                                    //);
 
             }
 

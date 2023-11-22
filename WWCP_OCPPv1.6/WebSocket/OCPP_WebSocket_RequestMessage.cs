@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
     public class OCPP_WebSocket_RequestMessage
     {
 
-        #region Properies
+        #region Properties
 
         /// <summary>
         /// The unique request identification.

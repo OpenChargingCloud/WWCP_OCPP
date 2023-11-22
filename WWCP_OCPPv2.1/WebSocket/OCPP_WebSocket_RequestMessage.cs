@@ -17,10 +17,9 @@
 
 #region Usings
 
-using System.Text;
-
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -28,37 +27,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 {
 
     /// <summary>
-    /// An OCPP WebSocket request message.
+    /// A OCPP WebSocket request message.
     /// </summary>
-    public class OCPP_WebSocket_RequestMessage
+    /// <param name="RequestId">An unique request identification.</param>
+    /// <param name="Action">An OCPP action/method name.</param>
+    /// <param name="Message">A JSON request message payload.</param>
+    /// <param name="ErrorMessage">An optional error message.</param>
+    public class OCPP_WebSocket_RequestMessage(Request_Id  RequestId,
+                                               String      Action,
+                                               JObject     Message,
+                                               String?     ErrorMessage   = null)
     {
 
-        #region Properies
+        #region Properties
 
         /// <summary>
         /// The unique request identification.
         /// </summary>
-        public Request_Id                   RequestId       { get; }
+        public Request_Id  RequestId       { get; } = RequestId;
 
         /// <summary>
         /// An OCPP action/method name.
         /// </summary>
-        public String                       Action          { get; }
+        public String      Action          { get; } = Action;
 
         /// <summary>
         /// The JSON request message payload.
         /// </summary>
-        public JObject                      Message         { get; }
-
-        /// <summary>
-        /// The message type.
-        /// </summary>
-        public OCPP_WebSocket_MessageTypes  MessageType     { get; }
+        public JObject     Message         { get; } = Message;
 
         /// <summary>
         /// The optional error message.
         /// </summary>
-        public String?                      ErrorMessage    { get; }
+        public String?     ErrorMessage    { get; } = ErrorMessage;
+
 
         public Boolean NoErrors
             => ErrorMessage is null;
@@ -68,33 +70,69 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
         #endregion
 
-        #region Constructor(s)
+
+        #region TryParse(JSONArray, out RequestMessage)
 
         /// <summary>
-        /// Create a new OCPP WebSocket response message.
+        /// Try to parse the given JSON representation of a request message.
         /// </summary>
-        /// <param name="RequestId">An unique request identification.</param>
-        /// <param name="Action">An OCPP action/method name.</param>
-        /// <param name="Message">A JSON request message payload.</param>
-        /// <param name="MessageType">A message type (default: CALL (2) )</param>
-        /// <param name="ErrorMessage">An optional error message.</param>
-        public OCPP_WebSocket_RequestMessage(Request_Id                   RequestId,
-                                             String                       Action,
-                                             JObject                      Message,
-                                             OCPP_WebSocket_MessageTypes  MessageType    = OCPP_WebSocket_MessageTypes.CALL,
-                                             String?                      ErrorMessage   = null)
+        /// <param name="JSONArray">The JSON array to be parsed.</param>
+        /// <param name="RequestMessage">The parsed OCPP WebSocket request message.</param>
+        public static Boolean TryParse(JArray JSONArray, out OCPP_WebSocket_RequestMessage? RequestMessage)
         {
 
-            this.RequestId     = RequestId;
-            this.Action        = Action;
-            this.Message       = Message;
-            this.MessageType   = MessageType;
-            this.ErrorMessage  = ErrorMessage;
+            RequestMessage = null;
+
+            // [
+            //     2,                  // MessageType: CALL (Client-to-Server)
+            //    "19223201",          // RequestId
+            //    "BootNotification",  // Action
+            //    {
+            //        "chargePointVendor": "VendorX",
+            //        "chargePointModel":  "SingleSocketCharger"
+            //    }
+            // ]
+
+            try
+            {
+
+                if (JSONArray.Count            != 4                   ||
+                    JSONArray[0].Type          != JTokenType.Integer  ||
+                    JSONArray[0].Value<Byte>() != 2                   ||
+                    JSONArray[1].Type          != JTokenType.String   ||
+                    JSONArray[2].Type          != JTokenType.String   ||
+                    JSONArray[3].Type          != JTokenType.Object)
+                {
+                    return false;
+                }
+
+                if (!Request_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var requestId))
+                    return false;
+
+                var action = JSONArray[2]?.Value<String>()?.Trim();
+                if (action is null || action.IsNullOrEmpty())
+                    return false;
+
+                if (JSONArray[3] is not JObject jsonMessage)
+                    return false;
+
+                RequestMessage = new OCPP_WebSocket_RequestMessage(
+                                     requestId,
+                                     action,
+                                     jsonMessage
+                                 );
+
+                return true;
+
+            }
+            catch
+            {
+                return false;
+            }
 
         }
 
         #endregion
-
 
         #region ToJSON()
 
@@ -113,79 +151,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             //    }
             // ]
 
-            => new ((Byte) MessageType,
+            => new (2,
                     RequestId.ToString(),
                     Action,
                     Message);
-
-        #endregion
-
-        #region TryParse(Text, out RequestMessage)
-
-        /// <summary>
-        /// Try to parse the given text representation of a request message.
-        /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
-        /// <param name="RequestMessage">The parsed OCPP WebSocket request message.</param>
-        public static Boolean TryParse(String Text, out OCPP_WebSocket_RequestMessage? RequestMessage)
-        {
-
-            RequestMessage = null;
-
-            if (Text is null)
-                return false;
-
-            // [
-            //     2,                  // MessageType: CALL (Client-to-Server)
-            //    "19223201",          // RequestId
-            //    "BootNotification",  // Action
-            //    {
-            //        "chargePointVendor": "VendorX",
-            //        "chargePointModel":  "SingleSocketCharger"
-            //    }
-            // ]
-
-            try
-            {
-
-                var json = JArray.Parse(Text);
-
-                if (json.Count != 4)
-                    return false;
-
-                if (!Byte.TryParse(json[0].Value<String>(), out var messageTypeByte))
-                    return false;
-
-                var messageType = OCPP_WebSocket_MessageTypesExtensions.ParseMessageType(messageTypeByte);
-                if (messageType == OCPP_WebSocket_MessageTypes.Undefined)
-                    return false;
-
-                if (!Request_Id.TryParse(json[1]?.Value<String>() ?? "", out var requestId))
-                    return false;
-
-                var action = json[2]?.Value<String>();
-                if (action is null)
-                    return false;
-
-                if (json[3] is not JObject jsonMessage)
-                    return false;
-
-                RequestMessage = new OCPP_WebSocket_RequestMessage(
-                                     requestId,
-                                     action,
-                                     jsonMessage,
-                                     messageType
-                                 );
-
-                return true;
-
-            }
-            catch
-            {
-                return false;
-            }
-
-        }
 
         #endregion
 

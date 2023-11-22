@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
     public delegate Task  OnWebSocketClientTextMessageResponseDelegate  (DateTime              Timestamp,
                                                                          ChargePointWSClient   Client,
-                                                                         WebSocketFrame        Frame,
+                                                                         //WebSocketFrame        Frame,
                                                                          EventTracking_Id      EventTrackingId,
                                                                          DateTime              RequestTimestamp,
                                                                          String                RequestMessage,
@@ -50,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
     public delegate Task  OnWebSocketClientBinaryMessageResponseDelegate(DateTime              Timestamp,
                                                                          ChargePointWSClient   Client,
-                                                                         WebSocketFrame        Frame,
+                                                                         //WebSocketFrame        Frame,
                                                                          EventTracking_Id      EventTrackingId,
                                                                          DateTime              RequestTimestamp,
                                                                          Byte[]                RequestMessage,
@@ -1279,16 +1279,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region ProcessWebSocketTextFrame(frame)
 
-        public override async Task ProcessWebSocketTextFrame(WebSocketFrame             frame,
-                                                             WebSocketClientConnection  WebSocketConnection)
+        public override async Task ProcessWebSocketTextFrame(DateTime                   RequestTimestamp,
+                                                             WebSocketClientConnection  Connection,
+                                                             String                     OCPPTextMessage,
+                                                             EventTracking_Id           EventTrackingId,
+                                                             CancellationToken          CancellationToken)
         {
 
-            var textPayload = frame.Payload.ToUTF8String();
+            //var textPayload = frame.Payload.ToUTF8String();
 
-            if (textPayload == "[]")
+            if (OCPPTextMessage == "[]")
                 DebugX.Log(nameof(ChargePointWSClient), " [] received!");
 
-            else if (OCPP_WebSocket_RequestMessage. TryParse(textPayload, out var requestMessage)  && requestMessage  is not null)
+            else if (OCPP_WebSocket_RequestMessage. TryParse(OCPPTextMessage, out var requestMessage)  && requestMessage  is not null)
             {
 
                 //File.AppendAllText(LogfileName,
@@ -1298,7 +1301,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                 //                                 "--------------------------------------------------------------------------------------------", Environment.NewLine));
 
                 var requestTimestamp         = Timestamp.Now;
-                var requestJSON              = JArray.Parse(textPayload);
+                var requestJSON              = JArray.Parse(OCPPTextMessage);
                 var cancellationTokenSource  = new CancellationTokenSource();
 
                 JObject?                     OCPPResponseJSON   = null;
@@ -3848,7 +3851,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                         OnTextMessageResponseSent?.Invoke(Timestamp.Now,
                                                           this,
-                                                          frame,
+                                                          //frame,
                                                           EventTracking_Id.New,
                                                           requestTimestamp,
                                                           requestJSON.ToString(JSONFormatting),
@@ -3867,7 +3870,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             }
 
-            else if (OCPP_WebSocket_ResponseMessage.TryParse(textPayload, out var responseMessage) && responseMessage is not null)
+            else if (OCPP_WebSocket_ResponseMessage.TryParse(OCPPTextMessage, out var responseMessage) && responseMessage is not null)
             {
                 lock (requests)
                 {
@@ -3885,7 +3888,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                             OnTextMessageResponseReceived?.Invoke(Timestamp.Now,
                                                                   this,
-                                                                  frame,
+                                                                  //frame,
                                                                   EventTracking_Id.New,
                                                                   sendRequestState.Timestamp,
                                                                   sendRequestState.WSRequestMessage.ToJSON().ToString(JSONFormatting),
@@ -3903,18 +3906,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     }
 
                     else
-                        DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP response message: " + textPayload);
+                        DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP response message: " + OCPPTextMessage);
 
                 }
             }
 
-            else if (OCPP_WebSocket_ErrorMessage.   TryParse(textPayload, out var wsErrorMessage))
+            else if (OCPP_WebSocket_ErrorMessage.   TryParse(OCPPTextMessage, out var wsErrorMessage))
             {
-                DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP error message: " + textPayload);
+                DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP error message: " + OCPPTextMessage);
             }
 
             else
-                DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP request/response message: " + textPayload);
+                DebugX.Log(nameof(ChargePointWSClient), " Received unknown OCPP request/response message: " + OCPPTextMessage);
 
         }
 

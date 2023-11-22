@@ -30,60 +30,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     /// <summary>
     /// An OCPP WebSocket binary response message.
     /// </summary>
-    public class OCPP_WebSocket_BinaryResponseMessage
+    /// <param name="RequestId">An unique request identification.</param>
+    /// <param name="BinaryMessage">A binary response message payload.</param>
+    public class OCPP_WebSocket_BinaryResponseMessage(Request_Id  RequestId,
+                                                      Byte[]      BinaryMessage)
     {
 
-        #region Properies
+        #region Properties
 
         /// <summary>
         /// The unique request identification.
         /// </summary>
-        public Request_Id                   RequestId        { get; }
+        public Request_Id  RequestId        { get; } = RequestId;
 
         /// <summary>
         /// The binary response message payload.
         /// </summary>
-        public Byte[]                       BinaryMessage    { get; }
-
-        /// <summary>
-        /// The message type.
-        /// </summary>
-        public OCPP_WebSocket_MessageTypes  MessageType      { get; }
+        public Byte[]      BinaryMessage    { get; } = BinaryMessage;
 
         #endregion
 
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new OCPP WebSocket response message.
-        /// </summary>
-        /// <param name="RequestId">An unique request identification.</param>
-        /// <param name="BinaryMessage">A binary response message payload.</param>
-        /// <param name="MessageType">A message type (default: CALLRESULT (3) )</param>
-        public OCPP_WebSocket_BinaryResponseMessage(Request_Id                   RequestId,
-                                                    Byte[]                       BinaryMessage,
-                                                    OCPP_WebSocket_MessageTypes  MessageType = OCPP_WebSocket_MessageTypes.CALLRESULT)
-        {
-
-            this.RequestId      = RequestId;
-            this.BinaryMessage  = BinaryMessage;
-            this.MessageType    = MessageType;
-
-        }
-
-        #endregion
-
-
-        #region ToByteArray()
-
-        /// <summary>
-        /// Return a binary representation of this object.
-        /// </summary>
-        public Byte[] ToByteArray()
-
-            => BinaryMessage;
-
-        #endregion
 
         #region TryParse(Binary, out BinaryResponseMessage)
 
@@ -131,13 +97,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                 //if (json[2] is not JObject jsonMessage)
                 //    return false;
 
-                var requestId    = Request_Id.Parse("1");
-                var messageType  = OCPP_WebSocket_MessageTypes.CALLRESULT;
+                var requestId = Request_Id.Parse("1");
 
                 BinaryResponseMessage = new OCPP_WebSocket_BinaryResponseMessage(
                                             requestId,
-                                            Binary,
-                                            messageType
+                                            Binary
                                         );
 
                 return true;
@@ -149,6 +113,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             }
 
         }
+
+        #endregion
+
+        #region ToByteArray()
+
+        /// <summary>
+        /// Return a binary representation of this object.
+        /// </summary>
+        public Byte[] ToByteArray()
+
+            => BinaryMessage;
 
         #endregion
 

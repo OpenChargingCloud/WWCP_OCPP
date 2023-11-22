@@ -30,57 +30,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 {
 
     /// <summary>
-    /// An OCPP WebSocket error message.
+    /// A OCPP WebSocket error message.
     /// </summary>
-    public class OCPP_WebSocket_ErrorMessage
+    /// <param name="RequestId">An unique request identification.</param>
+    /// <param name="ErrorCode">An OCPP error code.</param>
+    /// <param name="ErrorDescription">An optional error description.</param>
+    /// <param name="ErrorDetails">Optional error details.</param>
+    public class OCPP_WebSocket_ErrorMessage(Request_Id   RequestId,
+                                             ResultCodes  ErrorCode,
+                                             String?      ErrorDescription   = null,
+                                             JObject?     ErrorDetails       = null)
     {
 
-        #region Properies
+        #region Properties
 
         /// <summary>
         /// The unique request identification.
         /// </summary>
-        public Request_Id   RequestId           { get; }
+        public Request_Id   RequestId           { get; } = RequestId;
 
         /// <summary>
         /// The OCPP error code.
         /// </summary>
-        public ResultCodes  ErrorCode           { get; }
+        public ResultCodes  ErrorCode           { get; } = ErrorCode;
 
         /// <summary>
         /// The optional error description.
         /// </summary>
-        public String       ErrorDescription    { get; }
+        public String       ErrorDescription    { get; } = ErrorDescription ?? "";
 
         /// <summary>
         /// Optional error details.
         /// </summary>
-        public JObject      ErrorDetails        { get; }
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new OCPP WebSocket error message.
-        /// </summary>
-        /// <param name="RequestId">An unique request identification.</param>
-        /// <param name="ErrorCode">An OCPP error code.</param>
-        /// <param name="ErrorDescription">An optional error description.</param>
-        /// <param name="ErrorDetails">Optional error details.</param>
-        public OCPP_WebSocket_ErrorMessage(Request_Id   RequestId,
-                                           ResultCodes  ErrorCode,
-                                           String?      ErrorDescription   = null,
-                                           JObject?     ErrorDetails       = null)
-
-        {
-
-            this.RequestId         = RequestId;
-            this.ErrorCode         = ErrorCode;
-            this.ErrorDescription  = ErrorDescription ?? "";
-            this.ErrorDetails      = ErrorDetails     ?? new JObject();
-
-        }
+        public JObject      ErrorDetails        { get; } = ErrorDetails     ?? [];
 
         #endregion
 
@@ -207,61 +189,147 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #endregion
 
 
-        #region TryParse(Text, out ErrorMessage)
+        #region (static) InternalError     (Sender, EventTrackingId, JSONTextRequest,   Exception, RequestId = null)
+
+        public static OCPP_WebSocket_ErrorMessage InternalError(String            Sender,
+                                                                EventTracking_Id  EventTrackingId,
+                                                                String            JSONTextRequest,
+                                                                Exception         Exception,
+                                                                Request_Id?       RequestId   = null)
+
+            => new (RequestId ?? Request_Id.Zero,
+                    ResultCodes.InternalError,
+                    $"The OCPP message received in '{Sender}' led to an exception!",
+                    new JObject(
+                        new JProperty("eventTrackingId",  EventTrackingId.ToString()),
+                        new JProperty("request",          JSONTextRequest),
+                        new JProperty("exception",        Exception.Message),
+                        new JProperty("stacktrace",       Exception.StackTrace)
+                    ));
+
+        #endregion
+
+        #region (static) InternalError     (Sender, EventTrackingId, JSONObjectRequest, Exception, RequestId = null)
+
+        public static OCPP_WebSocket_ErrorMessage InternalError(String            Sender,
+                                                                EventTracking_Id  EventTrackingId,
+                                                                JObject           JSONObjectRequest,
+                                                                Exception         Exception,
+                                                                Request_Id?       RequestId   = null)
+
+            => new (RequestId ?? Request_Id.Zero,
+                    ResultCodes.InternalError,
+                    $"The OCPP message received in '{Sender}' led to an exception!",
+                    new JObject(
+                        new JProperty("eventTrackingId",  EventTrackingId.ToString()),
+                        new JProperty("request",          JSONObjectRequest),
+                        new JProperty("exception",        Exception.Message),
+                        new JProperty("stacktrace",       Exception.StackTrace)
+                    ));
+
+        #endregion
+
+        #region (static) InternalError     (Sender, EventTrackingId, OCPPArrayRequest,  Exception, RequestId = null)
+
+        public static OCPP_WebSocket_ErrorMessage InternalError(String            Sender,
+                                                                EventTracking_Id  EventTrackingId,
+                                                                JArray            OCPPArrayRequest,
+                                                                Exception         Exception,
+                                                                Request_Id?       RequestId   = null)
+
+            => new (RequestId ?? Request_Id.Zero,
+                    ResultCodes.InternalError,
+                    $"The OCPP message received in '{Sender}' led to an exception!",
+                    new JObject(
+                        new JProperty("eventTrackingId",  EventTrackingId.ToString()),
+                        new JProperty("request",          OCPPArrayRequest),
+                        new JProperty("exception",        Exception.Message),
+                        new JProperty("stacktrace",       Exception.StackTrace)
+                    ));
+
+        #endregion
+
+        #region (static) InternalError     (Sender, EventTrackingId, OCPPBinaryRequest, Exception, RequestId = null)
+
+        public static OCPP_WebSocket_ErrorMessage InternalError(String            Sender,
+                                                                EventTracking_Id  EventTrackingId,
+                                                                Byte[]            OCPPBinaryRequest,
+                                                                Exception         Exception,
+                                                                Request_Id?       RequestId   = null)
+
+            => new (RequestId ?? Request_Id.Zero,
+                    ResultCodes.InternalError,
+                    $"The OCPP message received in '{Sender}' led to an exception!",
+                    new JObject(
+                        new JProperty("eventTrackingId",  EventTrackingId.ToString()),
+                        new JProperty("request",          OCPPBinaryRequest.ToBase64()),
+                        new JProperty("exception",        Exception.Message),
+                        new JProperty("stacktrace",       Exception.StackTrace)
+                    ));
+
+        #endregion
+
+
+        #region TryParse(JSONArray, out ErrorMessage)
 
         /// <summary>
         /// Try to parse the given text representation of an error message.
         /// </summary>
-        /// <param name="Text">The text to be parsed.</param>
+        /// <param name="JSONArray">The JSON array to be parsed.</param>
         /// <param name="ErrorMessage">The parsed OCPP WebSocket error message.</param>
-        public static Boolean TryParse(String Text, out OCPP_WebSocket_ErrorMessage? ErrorMessage)
+        public static Boolean TryParse(JArray JSONArray, out OCPP_WebSocket_ErrorMessage? ErrorMessage)
         {
 
             ErrorMessage = null;
 
-            if (Text is null)
-                return false;
-
             // [
-            //     4,
-            //    "100007",
-            //    "InternalError",
-            //    "An internal error occurred and the receiver was not able to process the requested action successfully",
-            //    {}
-            // ]
-
-            // [
-            //     2,                  // MessageType: CALL (Client-to-Server)
-            //    "19223201",          // RequestId
-            //    "BootNotification",  // Action
+            //     4,                         // MessageType: CALLERROR
+            //    "19223201",                 // RequestId from request
+            //    "<errorCode>",
+            //    "<errorDescription>",
             //    {
-            //        "chargePointVendor": "VendorX",
-            //        "chargePointModel":  "SingleSocketCharger"
+            //        <errorDetails>
             //    }
             // ]
+
+            // Error Code                    Description
+            // -----------------------------------------------------------------------------------------------
+            // NotImplemented                Requested Action is not known by receiver
+            // NotSupported                  Requested Action is recognized but not supported by the receiver
+            // InternalError                 An internal error occurred and the receiver was not able to process the requested Action successfully
+            // ProtocolError                 Payload for Action is incomplete
+            // SecurityError                 During the processing of Action a security issue occurred preventing receiver from completing the Action successfully
+            // FormationViolation            Payload for Action is syntactically incorrect or not conform the PDU structure for Action
+            // PropertyConstraintViolation   Payload is syntactically correct but at least one field contains an invalid value
+            // OccurenceConstraintViolation  Payload for Action is syntactically correct but at least one of the fields violates occurence constraints
+            // TypeConstraintViolation       Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12)
+            // GenericError                  Any other error not covered by the previous ones
 
             try
             {
 
-                var json = JArray.Parse(Text);
+                if (JSONArray.Count            != 5                   ||
+                    JSONArray[0].Type          != JTokenType.Integer  ||
+                    JSONArray[0].Value<Byte>() != 4                   ||
+                    JSONArray[1].Type          != JTokenType.String   ||
+                    JSONArray[2].Type          != JTokenType.String   ||
+                    JSONArray[3].Type          != JTokenType.String   ||
+                    JSONArray[4].Type          != JTokenType.Object)
+                {
+                    return false;
+                }
 
-                if (json.Count != 5)
+                if (!Request_Id. TryParse(JSONArray[1]?.Value<String>() ?? "", out var requestId))
                     return false;
 
-                if (!Byte.       TryParse(json[0]. Value<String>(),       out var messageType))
+                if (!ResultCodes.TryParse(JSONArray[2]?.Value<String>() ?? "", out var wsErrorCode))
                     return false;
 
-                if (!Request_Id. TryParse(json[1]?.Value<String>() ?? "", out var requestId))
-                    return false;
-
-                if (!ResultCodes.TryParse(json[2]?.Value<String>() ?? "", out var wsErrorCode))
-                    return false;
-
-                var description = json[3]?.Value<String>();
+                var description = JSONArray[3]?.Value<String>();
                 if (description is null)
                     return false;
 
-                if (json[4] is not JObject details)
+                if (JSONArray[4] is not JObject details)
                     return false;
 
                 ErrorMessage = new OCPP_WebSocket_ErrorMessage(
@@ -313,7 +381,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             // TypeConstraintViolation       Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12)
             // GenericError                  Any other error not covered by the previous ones
 
-            => new ((Byte) 4,
+            => new (4,
                     RequestId.ToString(),
                     ErrorCode.ToString(),
                     ErrorDescription,
