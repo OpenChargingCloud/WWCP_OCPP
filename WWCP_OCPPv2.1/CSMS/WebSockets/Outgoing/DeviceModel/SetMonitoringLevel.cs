@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<SetMonitoringLevelRequest>?  CustomSetMonitoringLevelRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<SetMonitoringLevelResponse>?     CustomSetMonitoringLevelResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetMonitoringLevel         (Request)
+        #region SetMonitoringLevel(Request)
 
         public async Task<SetMonitoringLevelResponse> SetMonitoringLevel(SetMonitoringLevelRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             SetMonitoringLevelResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomSetMonitoringLevelRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomSetMonitoringLevelRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (SetMonitoringLevelResponse.TryParse(Request,
                                                         sendRequestState.Response,
                                                         out var setMonitoringLevelResponse,
-                                                        out var errorResponse) &&
+                                                        out var errorResponse,
+                                                        CustomSetMonitoringLevelResponseParser) &&
                     setMonitoringLevelResponse is not null)
                 {
                     response = setMonitoringLevelResponse;
                 }
 
-                response ??= new SetMonitoringLevelResponse(Request,
-                                                            Result.Format(errorResponse));
+                response ??= new SetMonitoringLevelResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new SetMonitoringLevelResponse(Request,
-                                                        Result.FromSendRequestState(sendRequestState));
+            response ??= new SetMonitoringLevelResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnSetMonitoringLevelResponse event

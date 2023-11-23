@@ -89,7 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<NotifyChargingLimitRequest>?  CustomNotifyChargingLimitRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<NotifyChargingLimitRequest>?       CustomNotifyChargingLimitRequestParser         { get; set; }
+
+        public CustomJObjectSerializerDelegate<NotifyChargingLimitResponse>?  CustomNotifyChargingLimitResponseSerializer    { get; set; }
 
         #endregion
 
@@ -228,7 +230,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     OCPPResponse = new OCPP_WebSocket_ResponseMessage(
                                        requestId,
-                                       response.ToJSON()
+                                       response.ToJSON(
+                                           CustomNotifyChargingLimitResponseSerializer,
+                                           CustomSignatureSerializer,
+                                           CustomCustomDataSerializer
+                                       )
                                    );
 
                 }

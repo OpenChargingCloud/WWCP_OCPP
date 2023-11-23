@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<SetVariablesRequest>?  CustomSetVariablesRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<SetVariablesResponse>?     CustomSetVariablesResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetVariables               (Request)
+        #region SetVariables(Request)
 
         public async Task<SetVariablesResponse> SetVariables(SetVariablesRequest Request)
         {
@@ -111,20 +113,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             SetVariablesResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomSetVariablesRequestSerializer,
-                                                         CustomSetVariableDataSerializer,
-                                                         CustomComponentSerializer,
-                                                         CustomEVSESerializer,
-                                                         CustomVariableSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomSetVariablesRequestSerializer,
+                                                 CustomSetVariableDataSerializer,
+                                                 CustomComponentSerializer,
+                                                 CustomEVSESerializer,
+                                                 CustomVariableSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -133,19 +137,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (SetVariablesResponse.TryParse(Request,
                                                   sendRequestState.Response,
                                                   out var setVariablesResponse,
-                                                  out var errorResponse) &&
+                                                  out var errorResponse,
+                                                  CustomSetVariablesResponseParser) &&
                     setVariablesResponse is not null)
                 {
                     response = setVariablesResponse;
                 }
 
-                response ??= new SetVariablesResponse(Request,
-                                                      Result.Format(errorResponse));
+                response ??= new SetVariablesResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new SetVariablesResponse(Request,
-                                                  Result.FromSendRequestState(sendRequestState));
+            response ??= new SetVariablesResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnSetVariablesResponse event

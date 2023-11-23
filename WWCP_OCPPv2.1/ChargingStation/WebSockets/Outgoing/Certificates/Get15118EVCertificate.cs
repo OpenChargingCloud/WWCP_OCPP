@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A CP client.
+    /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
@@ -69,7 +69,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateSerializer        { get; set; }
+
+        public CustomJObjectParserDelegate<Get15118EVCertificateResponse>?     CustomGet15118EVCertificateResponseParser    { get; set; }
 
         #endregion
 
@@ -98,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region Get15118EVCertificate                (Request)
+        #region Get15118EVCertificate(Request)
 
         /// <summary>
         /// Request a 15118 EV certificate.
@@ -152,7 +154,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (Get15118EVCertificateResponse.TryParse(Request,
                                                                sendRequestState.Response,
                                                                out var get15118EVCertificateResponse,
-                                                               out var errorResponse) &&
+                                                               out var errorResponse,
+                                                               CustomGet15118EVCertificateResponseParser) &&
                         get15118EVCertificateResponse is not null)
                     {
                         response = get15118EVCertificateResponse;

@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?  CustomGetInstalledCertificateIdsRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<GetInstalledCertificateIdsResponse>?     CustomGetInstalledCertificateIdsResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetInstalledCertificateIds (Request)
+        #region GetInstalledCertificateIds(Request)
 
         /// <summary>
         /// Retrieve a list of all installed certificates within the charging station.
@@ -115,16 +117,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetInstalledCertificateIdsResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomGetInstalledCertificateIdsRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomGetInstalledCertificateIdsRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -133,19 +137,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (GetInstalledCertificateIdsResponse.TryParse(Request,
                                                                 sendRequestState.Response,
                                                                 out var getInstalledCertificateIdsResponse,
-                                                                out var errorResponse) &&
+                                                                out var errorResponse,
+                                                                CustomGetInstalledCertificateIdsResponseParser) &&
                     getInstalledCertificateIdsResponse is not null)
                 {
                     response = getInstalledCertificateIdsResponse;
                 }
 
-                response ??= new GetInstalledCertificateIdsResponse(Request,
-                                                                    Result.Format(errorResponse));
+                response ??= new GetInstalledCertificateIdsResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new GetInstalledCertificateIdsResponse(Request,
-                                                                Result.FromSendRequestState(sendRequestState));
+            response ??= new GetInstalledCertificateIdsResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnGetInstalledCertificateIdsResponse event

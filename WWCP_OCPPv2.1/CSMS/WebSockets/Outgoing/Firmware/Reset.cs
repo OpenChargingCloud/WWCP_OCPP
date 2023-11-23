@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<ResetRequest>?  CustomResetRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<ResetResponse>?     CustomResetResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region Reset                      (Request)
+        #region Reset(Request)
 
         public async Task<ResetResponse> Reset(ResetRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             ResetResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomResetRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomResetRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (ResetResponse.TryParse(Request,
                                            sendRequestState.Response,
                                            out var resetResponse,
-                                           out var errorResponse) &&
+                                           out var errorResponse,
+                                           CustomResetResponseParser) &&
                     resetResponse is not null)
                 {
                     response = resetResponse;
                 }
 
-                response ??= new ResetResponse(Request,
-                                               Result.Format(errorResponse));
+                response ??= new ResetResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new ResetResponse(Request,
-                                           Result.FromSendRequestState(sendRequestState));
+            response ??= new ResetResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnResetResponse event

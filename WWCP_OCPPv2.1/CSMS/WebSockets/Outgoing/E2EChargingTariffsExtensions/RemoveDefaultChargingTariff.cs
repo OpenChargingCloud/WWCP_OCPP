@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<RemoveDefaultChargingTariffRequest>?  CustomRemoveDefaultChargingTariffRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<RemoveDefaultChargingTariffResponse>?     CustomRemoveDefaultChargingTariffResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region RemoveDefaultChargingTariff (Request)
+        #region RemoveDefaultChargingTariff(Request)
 
         public async Task<RemoveDefaultChargingTariffResponse> RemoveDefaultChargingTariff(RemoveDefaultChargingTariffRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             RemoveDefaultChargingTariffResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomRemoveDefaultChargingTariffRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomRemoveDefaultChargingTariffRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (RemoveDefaultChargingTariffResponse.TryParse(Request,
                                                                  sendRequestState.Response,
                                                                  out var setDisplayMessageResponse,
-                                                                 out var errorResponse) &&
+                                                                 out var errorResponse,
+                                                                 CustomRemoveDefaultChargingTariffResponseParser) &&
                     setDisplayMessageResponse is not null)
                 {
                     response = setDisplayMessageResponse;
                 }
 
-                response ??= new RemoveDefaultChargingTariffResponse(Request,
-                                                                     Result.Format(errorResponse));
+                response ??= new RemoveDefaultChargingTariffResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new RemoveDefaultChargingTariffResponse(Request,
-                                                                 Result.FromSendRequestState(sendRequestState));
+            response ??= new RemoveDefaultChargingTariffResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnRemoveDefaultChargingTariffResponse event

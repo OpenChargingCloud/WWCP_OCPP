@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A CP client.
+    /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
@@ -70,6 +70,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Custom JSON serializer delegates
 
         public CustomJObjectSerializerDelegate<PullDynamicScheduleUpdateRequest>?  CustomPullDynamicScheduleUpdateRequestSerializer    { get; set; }
+
+        public CustomJObjectParserDelegate<PullDynamicScheduleUpdateResponse>?     CustomPullDynamicScheduleUpdateResponseParser       { get; set; }
 
         #endregion
 
@@ -98,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region PullDynamicScheduleUpdate            (Request)
+        #region PullDynamicScheduleUpdate(Request)
 
         /// <summary>
         /// Pull a dynamic schedule update.
@@ -152,7 +154,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (PullDynamicScheduleUpdateResponse.TryParse(Request,
                                                                    sendRequestState.Response,
                                                                    out var reportChargingProfilesResponse,
-                                                                   out var errorResponse) &&
+                                                                   out var errorResponse,
+                                                                   CustomPullDynamicScheduleUpdateResponseParser) &&
                         reportChargingProfilesResponse is not null)
                     {
                         response = reportChargingProfilesResponse;

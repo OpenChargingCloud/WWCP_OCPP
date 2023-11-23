@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<UpdateFirmwareResponse>?     CustomUpdateFirmwareResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region UpdateFirmware             (Request)
+        #region UpdateFirmware(Request)
 
         public async Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
         {
@@ -111,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             UpdateFirmwareResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
+            var sendRequestState = await SendJSONAndWait(Request.EventTrackingId,
                                                      Request.RequestId,
                                                      Request.ChargingStationId,
                                                      Request.Action,
@@ -130,19 +132,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (UpdateFirmwareResponse.TryParse(Request,
                                                     sendRequestState.Response,
                                                     out var updateFirmwareResponse,
-                                                    out var errorResponse) &&
+                                                    out var errorResponse,
+                                                    CustomUpdateFirmwareResponseParser) &&
                     updateFirmwareResponse is not null)
                 {
                     response = updateFirmwareResponse;
                 }
 
-                response ??= new UpdateFirmwareResponse(Request,
-                                                        Result.Format(errorResponse));
+                response ??= new UpdateFirmwareResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new UpdateFirmwareResponse(Request,
-                                                    Result.FromSendRequestState(sendRequestState));
+            response ??= new UpdateFirmwareResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnUpdateFirmwareResponse event

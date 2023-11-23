@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A CP client.
+    /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
@@ -69,7 +69,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<GetCertificateStatusRequest>?  CustomGetCertificateStatusSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<GetCertificateStatusRequest>?  CustomGetCertificateStatusSerializer        { get; set; }
+
+        public CustomJObjectParserDelegate<GetCertificateStatusResponse>?     CustomGetCertificateStatusResponseParser    { get; set; }
 
         #endregion
 
@@ -98,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region GetCertificateStatus                 (Request)
+        #region GetCertificateStatus(Request)
 
         /// <summary>
         /// Send a get certificate status request.
@@ -106,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">A GetCertificateStatus request.</param>
         public async Task<GetCertificateStatusResponse>
 
-            GetCertificateStatus(GetCertificateStatusRequest  Request)
+            GetCertificateStatus(GetCertificateStatusRequest Request)
 
         {
 
@@ -153,7 +155,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (GetCertificateStatusResponse.TryParse(Request,
                                                               sendRequestState.Response,
                                                               out var getCertificateStatusResponse,
-                                                              out var errorResponse) &&
+                                                              out var errorResponse,
+                                                              CustomGetCertificateStatusResponseParser) &&
                         getCertificateStatusResponse is not null)
                     {
                         response = getCertificateStatusResponse;

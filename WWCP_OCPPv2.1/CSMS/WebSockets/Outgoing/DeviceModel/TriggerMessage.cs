@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<TriggerMessageResponse>?     CustomTriggerMessageResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region TriggerMessage             (Request)
+        #region TriggerMessage(Request)
 
         public async Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request)
         {
@@ -111,17 +113,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             TriggerMessageResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomTriggerMessageRequestSerializer,
-                                                         CustomEVSESerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomTriggerMessageRequestSerializer,
+                                                 CustomEVSESerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -130,19 +134,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (TriggerMessageResponse.TryParse(Request,
                                                     sendRequestState.Response,
                                                     out var triggerMessageResponse,
-                                                    out var errorResponse) &&
+                                                    out var errorResponse,
+                                                    CustomTriggerMessageResponseParser) &&
                     triggerMessageResponse is not null)
                 {
                     response = triggerMessageResponse;
                 }
 
-                response ??= new TriggerMessageResponse(Request,
-                                                        Result.Format(errorResponse));
+                response ??= new TriggerMessageResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new TriggerMessageResponse(Request,
-                                                    Result.FromSendRequestState(sendRequestState));
+            response ??= new TriggerMessageResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnTriggerMessageResponse event

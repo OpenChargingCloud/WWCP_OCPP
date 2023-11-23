@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A CP client.
+    /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
@@ -70,6 +70,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Custom JSON serializer delegates
 
         public CustomJObjectSerializerDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestSerializer    { get; set; }
+
+        public CustomJObjectParserDelegate<StatusNotificationResponse>?     CustomStatusNotificationResponseParser       { get; set; }
 
         #endregion
 
@@ -98,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendStatusNotification               (Request)
+        #region SendStatusNotification(Request)
 
         /// <summary>
         /// Send a status notification for the given connector.
@@ -152,7 +154,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (StatusNotificationResponse.TryParse(Request,
                                                             sendRequestState.Response,
                                                             out var statusNotificationResponse,
-                                                            out var errorResponse) &&
+                                                            out var errorResponse,
+                                                            CustomStatusNotificationResponseParser) &&
                         statusNotificationResponse is not null)
                     {
                         response = statusNotificationResponse;

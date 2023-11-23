@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<UnpublishFirmwareRequest>?  CustomUnpublishFirmwareRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<UnpublishFirmwareResponse>?     CustomUnpublishFirmwareResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region UnpublishFirmware          (Request)
+        #region UnpublishFirmware(Request)
 
         public async Task<UnpublishFirmwareResponse> UnpublishFirmware(UnpublishFirmwareRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             UnpublishFirmwareResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomUnpublishFirmwareRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomUnpublishFirmwareRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (UnpublishFirmwareResponse.TryParse(Request,
                                                        sendRequestState.Response,
                                                        out var unpublishFirmwareResponse,
-                                                       out var errorResponse) &&
+                                                       out var errorResponse,
+                                                       CustomUnpublishFirmwareResponseParser) &&
                     unpublishFirmwareResponse is not null)
                 {
                     response = unpublishFirmwareResponse;
                 }
 
-                response ??= new UnpublishFirmwareResponse(Request,
-                                                           Result.Format(errorResponse));
+                response ??= new UnpublishFirmwareResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new UnpublishFirmwareResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
+            response ??= new UnpublishFirmwareResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnUnpublishFirmwareResponse event

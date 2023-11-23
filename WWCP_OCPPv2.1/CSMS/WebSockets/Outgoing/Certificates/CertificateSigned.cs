@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<CertificateSignedRequest>?  CustomCertificateSignedRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<CertificateSignedResponse>?     CustomCertificateSignedResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region CertificateSigned          (Request)
+        #region CertificateSigned(Request)
 
         /// <summary>
         /// Send the signed certificate to the charging station.
@@ -115,16 +117,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             CertificateSignedResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomCertificateSignedRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomCertificateSignedRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -133,19 +137,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (CertificateSignedResponse.TryParse(Request,
                                                        sendRequestState.Response,
                                                        out var certificateSignedResponse,
-                                                       out var errorResponse) &&
+                                                       out var errorResponse,
+                                                       CustomCertificateSignedResponseParser) &&
                     certificateSignedResponse is not null)
                 {
                     response = certificateSignedResponse;
                 }
 
-                response ??= new CertificateSignedResponse(Request,
-                                                           Result.Format(errorResponse));
+                response ??= new CertificateSignedResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new CertificateSignedResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
+            response ??= new CertificateSignedResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnCertificateSignedResponse event

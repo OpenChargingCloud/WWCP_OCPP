@@ -66,6 +66,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer    { get; set; }
 
+        public CustomBinaryParserDelegate<CS.BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -109,37 +111,44 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             CS.BinaryDataTransferResponse? response = null;
 
-            //var sendRequestState = await SendRequest(Request.EventTrackingId,
-            //                                         Request.RequestId,
-            //                                         Request.ChargingStationId,
-            //                                         Request.Action,
-            //                                         Request.ToJSON(
-            //                                             CustomBinaryDataTransferRequestSerializer,
-            //                                             CustomSignatureSerializer,
-            //                                             CustomCustomBinaryDataSerializer
-            //                                         ),
-            //                                         Request.RequestTimeout);
+            var sendRequestState = await SendBinaryAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToBinary(
+                                                 CustomBinaryDataTransferRequestSerializer
+                                                 //CustomSignatureSerializer,
+                                                 //CustomCustomBinaryDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
-            //if (sendRequestState.NoErrors &&
-            //    sendRequestState.Response is not null)
-            //{
+            if (sendRequestState.NoErrors &&
+                sendRequestState.Response is not null)
+            {
 
-            //    if (CS.BinaryDataTransferResponse.TryParse(Request,
-            //                                         sendRequestState.Response,
-            //                                         out var dataTransferResponse,
-            //                                         out var errorResponse) &&
-            //        dataTransferResponse is not null)
-            //    {
-            //        response = dataTransferResponse;
-            //    }
+                if (CS.BinaryDataTransferResponse.TryParse(Request,
+                                                           sendRequestState.Response,
+                                                           out var dataTransferResponse,
+                                                           out var errorResponse,
+                                                           CustomBinaryDataTransferResponseParser) &&
+                    dataTransferResponse is not null)
+                {
+                    response = dataTransferResponse;
+                }
 
-            //    response ??= new CS.BinaryDataTransferResponse(Request,
-            //                                             Result.Format(errorResponse));
+                response ??= new CS.BinaryDataTransferResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
 
-            //}
+            }
 
-            response ??= new CS.BinaryDataTransferResponse(Request,
-                                                           BinaryDataTransferStatus.Rejected);// Result.FromSendRequestState(sendRequestState));
+            response ??= new CS.BinaryDataTransferResponse(
+                             Request,
+                             BinaryDataTransferStatus.Rejected
+                         );// Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnBinaryDataTransferResponse event

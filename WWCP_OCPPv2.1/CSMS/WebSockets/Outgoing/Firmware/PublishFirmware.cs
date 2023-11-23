@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<PublishFirmwareRequest>?  CustomPublishFirmwareRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<PublishFirmwareResponse>?     CustomPublishFirmwareResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region PublishFirmware            (Request)
+        #region PublishFirmware(Request)
 
         public async Task<PublishFirmwareResponse> PublishFirmware(PublishFirmwareRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             PublishFirmwareResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomPublishFirmwareRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomPublishFirmwareRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (PublishFirmwareResponse.TryParse(Request,
                                                      sendRequestState.Response,
                                                      out var publishFirmwareResponse,
-                                                     out var errorResponse) &&
+                                                     out var errorResponse,
+                                                     CustomPublishFirmwareResponseParser) &&
                     publishFirmwareResponse is not null)
                 {
                     response = publishFirmwareResponse;
                 }
 
-                response ??= new PublishFirmwareResponse(Request,
-                                                         Result.Format(errorResponse));
+                response ??= new PublishFirmwareResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new PublishFirmwareResponse(Request,
-                                                     Result.FromSendRequestState(sendRequestState));
+            response ??= new PublishFirmwareResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnPublishFirmwareResponse event

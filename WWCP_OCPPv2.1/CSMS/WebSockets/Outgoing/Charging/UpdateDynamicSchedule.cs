@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<UpdateDynamicScheduleRequest>?  CustomUpdateDynamicScheduleRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<UpdateDynamicScheduleResponse>?     CustomUpdateDynamicScheduleResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region UpdateDynamicSchedule      (Request)
+        #region UpdateDynamicSchedule(Request)
 
 
         public async Task<UpdateDynamicScheduleResponse> UpdateDynamicSchedule(UpdateDynamicScheduleRequest Request)
@@ -112,16 +114,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             UpdateDynamicScheduleResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomUpdateDynamicScheduleRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomUpdateDynamicScheduleRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -130,19 +134,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (UpdateDynamicScheduleResponse.TryParse(Request,
                                                            sendRequestState.Response,
                                                            out var getCompositeScheduleResponse,
-                                                           out var errorResponse) &&
+                                                           out var errorResponse,
+                                                           CustomUpdateDynamicScheduleResponseParser) &&
                     getCompositeScheduleResponse is not null)
                 {
                     response = getCompositeScheduleResponse;
                 }
 
-                response ??= new UpdateDynamicScheduleResponse(Request,
-                                                               Result.Format(errorResponse));
+                response ??= new UpdateDynamicScheduleResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new UpdateDynamicScheduleResponse(Request,
-                                                           Result.FromSendRequestState(sendRequestState));
+            response ??= new UpdateDynamicScheduleResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnUpdateDynamicScheduleResponse event

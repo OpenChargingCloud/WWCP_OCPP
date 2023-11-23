@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<InstallCertificateResponse>?     CustomInstallCertificateResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region InstallCertificate         (Request)
+        #region InstallCertificate(Request)
 
         /// <summary>
         /// Install the given certificate within the charging station.
@@ -115,16 +117,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             InstallCertificateResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomInstallCertificateRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomInstallCertificateRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -133,19 +137,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (InstallCertificateResponse.TryParse(Request,
                                                         sendRequestState.Response,
                                                         out var installCertificateResponse,
-                                                        out var errorResponse) &&
+                                                        out var errorResponse,
+                                                        CustomInstallCertificateResponseParser) &&
                     installCertificateResponse is not null)
                 {
                     response = installCertificateResponse;
                 }
 
-                response ??= new InstallCertificateResponse(Request,
-                                                            Result.Format(errorResponse));
+                response ??= new InstallCertificateResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new InstallCertificateResponse(Request,
-                                                        Result.FromSendRequestState(sendRequestState));
+            response ??= new InstallCertificateResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnInstallCertificateResponse event

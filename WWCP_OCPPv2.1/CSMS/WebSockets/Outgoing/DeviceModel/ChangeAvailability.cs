@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?  CustomChangeAvailabilityRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<ChangeAvailabilityResponse>?     CustomChangeAvailabilityResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region ChangeAvailability         (Request)
+        #region ChangeAvailability(Request)
 
         public async Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request)
         {
@@ -111,17 +113,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             ChangeAvailabilityResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomChangeAvailabilityRequestSerializer,
-                                                         CustomEVSESerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomChangeAvailabilityRequestSerializer,
+                                                 CustomEVSESerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -130,19 +134,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (ChangeAvailabilityResponse.TryParse(Request,
                                                         sendRequestState.Response,
                                                         out var changeAvailabilityResponse,
-                                                        out var errorResponse) &&
+                                                        out var errorResponse,
+                                                        CustomChangeAvailabilityResponseParser) &&
                     changeAvailabilityResponse is not null)
                 {
                     response = changeAvailabilityResponse;
                 }
 
-                response ??= new ChangeAvailabilityResponse(Request,
-                                                            Result.Format(errorResponse));
+                response ??= new ChangeAvailabilityResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new ChangeAvailabilityResponse(Request,
-                                                        Result.FromSendRequestState(sendRequestState));
+            response ??= new ChangeAvailabilityResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnChangeAvailabilityResponse event

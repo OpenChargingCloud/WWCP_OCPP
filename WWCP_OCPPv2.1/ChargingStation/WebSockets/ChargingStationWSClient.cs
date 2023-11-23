@@ -231,11 +231,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON serializer delegates
 
+        public CustomJObjectSerializerDelegate<StatusInfo>?                                CustomStatusInfoSerializer                                  { get; set; }
+        public CustomJObjectSerializerDelegate<ClearMonitoringResult>?                     CustomClearMonitoringResultSerializer                       { get; set; }
         public CustomJObjectSerializerDelegate<ChargingStation>?                           CustomChargingStationSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<Signature>?                                 CustomSignatureSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<CustomData>?                                CustomCustomDataSerializer                                  { get; set; }
         public CustomJObjectSerializerDelegate<EventData>?                                 CustomEventDataSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<Component>?                                 CustomComponentSerializer                                   { get; set; }
+        public CustomJObjectSerializerDelegate<SetVariableResult>?                         CustomSetVariableResultSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<GetVariableResult>?                         CustomGetVariableResultSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<SetMonitoringResult>?                       CustomSetMonitoringResultSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<EVSE>?                                      CustomEVSESerializer                                        { get; set; }
         public CustomJObjectSerializerDelegate<Variable>?                                  CustomVariableSerializer                                    { get; set; }
         public CustomJObjectSerializerDelegate<VariableMonitoring>?                        CustomVariableMonitoringSerializer                          { get; set; }
@@ -263,6 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public CustomJObjectSerializerDelegate<UnitsOfMeasure>?                            CustomUnitsOfMeasureSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<ChargingSchedule>?                          CustomChargingScheduleSerializer                            { get; set; }
         public CustomJObjectSerializerDelegate<LimitBeyondSoC>?                            CustomLimitBeyondSoCSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<CompositeSchedule>?                         CustomCompositeScheduleSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                    CustomChargingSchedulePeriodSerializer                      { get; set; }
         public CustomJObjectSerializerDelegate<V2XFreqWattEntry>?                          CustomV2XFreqWattEntrySerializer                            { get; set; }
         public CustomJObjectSerializerDelegate<V2XSignalWattEntry>?                        CustomV2XSignalWattEntrySerializer                          { get; set; }
@@ -1030,6 +1036,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                        ErrorCode:          ResultCodes.Timeout,
                        ErrorDescription:   null,
                        ErrorDetails:       null
+                   );
+
+        }
+
+        #endregion
+
+        #region (private) WaitForResponse(BinaryRequestMessage)
+
+        private async Task<SendRequestState2> WaitForResponse(OCPP_WebSocket_BinaryRequestMessage BinaryRequestMessage)
+        {
+
+            var endTime = Timestamp.Now + RequestTimeout;
+
+            #region Wait for a response... till timeout
+
+            do
+            {
+
+                try
+                {
+
+                    await Task.Delay(25);
+
+                    if (requests.TryGetValue(BinaryRequestMessage.RequestId, out var sendRequestState2) &&
+                       (sendRequestState2?.Response is not null ||
+                        sendRequestState2?.ErrorCode.HasValue == true))
+                    {
+
+                        requests.TryRemove(BinaryRequestMessage.RequestId, out _);
+
+                        return sendRequestState2;
+
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(String.Concat(nameof(ChargingStationWSClient), ".", nameof(WaitForResponse), " exception occured: ", e.Message));
+                }
+
+            }
+            while (Timestamp.Now < endTime);
+
+            #endregion
+
+            return new SendRequestState2(
+                       Timestamp:                Timestamp.Now,
+                       WSBinaryRequestMessage:   BinaryRequestMessage,
+                       Timeout:                  endTime,
+
+                       Response:                 null,
+                       ErrorCode:                ResultCodes.Timeout,
+                       ErrorDescription:         null,
+                       ErrorDetails:             null
                    );
 
         }

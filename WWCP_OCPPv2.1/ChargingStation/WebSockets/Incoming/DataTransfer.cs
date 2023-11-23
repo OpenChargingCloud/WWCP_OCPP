@@ -93,7 +93,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<CSMS.DataTransferRequest>?  CustomIncomingDataTransferRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<CSMS.DataTransferRequest>?     CustomIncomingDataTransferRequestParser    { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.DataTransferResponse>?  CustomDataTransferResponseSerializer       { get; set; }
 
         #endregion
 
@@ -239,7 +241,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     OCPPResponse = new OCPP_WebSocket_ResponseMessage(
                                        requestId,
-                                       response.ToJSON()
+                                       response.ToJSON(
+                                           CustomDataTransferResponseSerializer,
+                                           CustomStatusInfoSerializer,
+                                           CustomSignatureSerializer,
+                                           CustomCustomDataSerializer
+                                       )
                                    );
 
                 }

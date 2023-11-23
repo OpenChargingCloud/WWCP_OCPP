@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<UsePriorityChargingRequest>?  CustomUsePriorityChargingRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<UsePriorityChargingResponse>?     CustomUsePriorityChargingResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region UsePriorityCharging        (Request)
+        #region UsePriorityCharging(Request)
 
 
         public async Task<UsePriorityChargingResponse> UsePriorityCharging(UsePriorityChargingRequest Request)
@@ -112,16 +114,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             UsePriorityChargingResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomUsePriorityChargingRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomUsePriorityChargingRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -130,19 +134,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (UsePriorityChargingResponse.TryParse(Request,
                                                          sendRequestState.Response,
                                                          out var getCompositeScheduleResponse,
-                                                         out var errorResponse) &&
+                                                         out var errorResponse,
+                                                         CustomUsePriorityChargingResponseParser) &&
                     getCompositeScheduleResponse is not null)
                 {
                     response = getCompositeScheduleResponse;
                 }
 
-                response ??= new UsePriorityChargingResponse(Request,
-                                                             Result.Format(errorResponse));
+                response ??= new UsePriorityChargingResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new UsePriorityChargingResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+            response ??= new UsePriorityChargingResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnUsePriorityChargingResponse event

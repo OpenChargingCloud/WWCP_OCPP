@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A CP client.
+    /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
@@ -69,7 +69,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<FirmwareStatusNotificationRequest>?  CustomFirmwareStatusNotificationRequestSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<FirmwareStatusNotificationRequest>?  CustomFirmwareStatusNotificationRequestSerializer         { get; set; }
+
+        public CustomJObjectParserDelegate<FirmwareStatusNotificationResponse>?     CustomFirmwareStatusNotificationResponseResponseParser    { get; set; }
 
         #endregion
 
@@ -98,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendFirmwareStatusNotification       (Request)
+        #region SendFirmwareStatusNotification(Request)
 
         /// <summary>
         /// Send a firmware status notification.
@@ -152,7 +154,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (FirmwareStatusNotificationResponse.TryParse(Request,
                                                                     sendRequestState.Response,
                                                                     out var firmwareStatusNotificationResponse,
-                                                                    out var errorResponse) &&
+                                                                    out var errorResponse,
+                                                                    CustomFirmwareStatusNotificationResponseResponseParser) &&
                         firmwareStatusNotificationResponse is not null)
                     {
                         response = firmwareStatusNotificationResponse;

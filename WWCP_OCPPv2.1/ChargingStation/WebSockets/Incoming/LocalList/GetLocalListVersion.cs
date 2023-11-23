@@ -93,7 +93,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<GetLocalListVersionRequest>?  CustomGetLocalListVersionRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<GetLocalListVersionRequest>?       CustomGetLocalListVersionRequestParser         { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetLocalListVersionResponse>?  CustomGetLocalListVersionResponseSerializer    { get; set; }
 
         #endregion
 
@@ -239,7 +241,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     OCPPResponse = new OCPP_WebSocket_ResponseMessage(
                                        requestId,
-                                       response.ToJSON()
+                                       response.ToJSON(
+                                           CustomGetLocalListVersionResponseSerializer,
+                                           CustomSignatureSerializer,
+                                           CustomCustomDataSerializer
+                                       )
                                    );
 
                 }

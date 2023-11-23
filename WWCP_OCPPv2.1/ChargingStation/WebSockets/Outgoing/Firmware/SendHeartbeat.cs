@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A CP client.
+    /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
@@ -70,6 +70,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Custom JSON serializer delegates
 
         public CustomJObjectSerializerDelegate<HeartbeatRequest>?  CustomHeartbeatRequestSerializer    { get; set; }
+
+        public CustomJObjectParserDelegate<HeartbeatResponse>?     CustomHeartbeatResponseParser       { get; set; }
 
         #endregion
 
@@ -98,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendHeartbeat                        (Request)
+        #region SendHeartbeat(Request)
 
         /// <summary>
         /// Send a heartbeat.
@@ -150,9 +152,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 {
 
                     if (HeartbeatResponse.TryParse(Request,
-                                                          sendRequestState.Response,
-                                                          out var heartbeatResponse,
-                                                          out var errorResponse) &&
+                                                   sendRequestState.Response,
+                                                   out var heartbeatResponse,
+                                                   out var errorResponse,
+                                                   CustomHeartbeatResponseParser) &&
                         heartbeatResponse is not null)
                     {
                         response = heartbeatResponse;

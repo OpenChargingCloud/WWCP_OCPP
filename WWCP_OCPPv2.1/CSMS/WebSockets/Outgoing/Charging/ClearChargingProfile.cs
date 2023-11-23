@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?  CustomClearChargingProfileRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<ClearChargingProfileResponse>?     CustomClearChargingProfileResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region ClearChargingProfile       (Request)
+        #region ClearChargingProfile(Request)
 
         public async Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request)
         {
@@ -111,17 +113,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             ClearChargingProfileResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomClearChargingProfileRequestSerializer,
-                                                         CustomClearChargingProfileSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomClearChargingProfileRequestSerializer,
+                                                 CustomClearChargingProfileSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -130,19 +134,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (ClearChargingProfileResponse.TryParse(Request,
                                                           sendRequestState.Response,
                                                           out var clearChargingProfileResponse,
-                                                          out var errorResponse) &&
+                                                          out var errorResponse,
+                                                          CustomClearChargingProfileResponseParser) &&
                     clearChargingProfileResponse is not null)
                 {
                     response = clearChargingProfileResponse;
                 }
 
-                response ??= new ClearChargingProfileResponse(Request,
-                                                              Result.Format(errorResponse));
+                response ??= new ClearChargingProfileResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new ClearChargingProfileResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+            response ??= new ClearChargingProfileResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnClearChargingProfileResponse event

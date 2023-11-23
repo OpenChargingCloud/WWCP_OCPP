@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<SetNetworkProfileRequest>?  CustomSetNetworkProfileRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<SetNetworkProfileResponse>?     CustomSetNetworkProfileResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetNetworkProfile          (Request)
+        #region SetNetworkProfile(Request)
 
         public async Task<SetNetworkProfileResponse> SetNetworkProfile(SetNetworkProfileRequest Request)
         {
@@ -111,19 +113,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             SetNetworkProfileResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomSetNetworkProfileRequestSerializer,
-                                                         CustomNetworkConnectionProfileSerializer,
-                                                         CustomVPNConfigurationSerializer,
-                                                         CustomAPNConfigurationSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomSetNetworkProfileRequestSerializer,
+                                                 CustomNetworkConnectionProfileSerializer,
+                                                 CustomVPNConfigurationSerializer,
+                                                 CustomAPNConfigurationSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -132,19 +136,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (SetNetworkProfileResponse.TryParse(Request,
                                                        sendRequestState.Response,
                                                        out var setNetworkProfileResponse,
-                                                       out var errorResponse) &&
+                                                       out var errorResponse,
+                                                       CustomSetNetworkProfileResponseParser) &&
                     setNetworkProfileResponse is not null)
                 {
                     response = setNetworkProfileResponse;
                 }
 
-                response ??= new SetNetworkProfileResponse(Request,
-                                                           Result.Format(errorResponse));
+                response ??= new SetNetworkProfileResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new SetNetworkProfileResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
+            response ??= new SetNetworkProfileResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnSetNetworkProfileResponse event

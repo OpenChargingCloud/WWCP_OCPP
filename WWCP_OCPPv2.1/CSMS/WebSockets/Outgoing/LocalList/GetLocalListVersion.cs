@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?  CustomGetLocalListVersionRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<GetLocalListVersionResponse>?     CustomGetLocalListVersionResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetLocalListVersion        (Request)
+        #region GetLocalListVersion(Request)
 
         public async Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetLocalListVersionResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomGetLocalListVersionRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomGetLocalListVersionRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (GetLocalListVersionResponse.TryParse(Request,
                                                          sendRequestState.Response,
                                                          out var getLocalListVersionResponse,
-                                                         out var errorResponse) &&
+                                                         out var errorResponse,
+                                                         CustomGetLocalListVersionResponseParser) &&
                     getLocalListVersionResponse is not null)
                 {
                     response = getLocalListVersionResponse;
                 }
 
-                response ??= new GetLocalListVersionResponse(Request,
-                                                             Result.Format(errorResponse));
+                response ??= new GetLocalListVersionResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new GetLocalListVersionResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+            response ??= new GetLocalListVersionResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnGetLocalListVersionResponse event

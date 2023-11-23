@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<GetChargingProfilesRequest>?  CustomGetChargingProfilesRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<GetChargingProfilesResponse>?     CustomGetChargingProfilesResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetChargingProfiles        (Request)
+        #region GetChargingProfiles(Request)
 
         public async Task<GetChargingProfilesResponse> GetChargingProfiles(GetChargingProfilesRequest Request)
         {
@@ -111,17 +113,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetChargingProfilesResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomGetChargingProfilesRequestSerializer,
-                                                         CustomChargingProfileCriterionSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomGetChargingProfilesRequestSerializer,
+                                                 CustomChargingProfileCriterionSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -130,19 +134,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (GetChargingProfilesResponse.TryParse(Request,
                                                          sendRequestState.Response,
                                                          out var getChargingProfilesResponse,
-                                                         out var errorResponse) &&
+                                                         out var errorResponse,
+                                                         CustomGetChargingProfilesResponseParser) &&
                     getChargingProfilesResponse is not null)
                 {
                     response = getChargingProfilesResponse;
                 }
 
-                response ??= new GetChargingProfilesResponse(Request,
-                                                             Result.Format(errorResponse));
+                response ??= new GetChargingProfilesResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new GetChargingProfilesResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+            response ??= new GetChargingProfilesResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnGetChargingProfilesResponse event

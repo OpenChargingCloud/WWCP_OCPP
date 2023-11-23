@@ -66,6 +66,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<CS.DataTransferResponse>?  CustomDataTransferResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -83,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region TransferData               (Request)
+        #region TransferData(Request)
 
         public async Task<CS.DataTransferResponse> TransferData(DataTransferRequest Request)
         {
@@ -109,16 +111,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             CS.DataTransferResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomDataTransferRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomDataTransferRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -127,19 +131,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (CS.DataTransferResponse.TryParse(Request,
                                                      sendRequestState.Response,
                                                      out var dataTransferResponse,
-                                                     out var errorResponse) &&
+                                                     out var errorResponse,
+                                                     CustomDataTransferResponseParser) &&
                     dataTransferResponse is not null)
                 {
                     response = dataTransferResponse;
                 }
 
-                response ??= new CS.DataTransferResponse(Request,
-                                                         Result.Format(errorResponse));
+                response ??= new CS.DataTransferResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
 
             }
 
-            response ??= new CS.DataTransferResponse(Request,
-                                                     Result.FromSendRequestState(sendRequestState));
+            response ??= new CS.DataTransferResponse(
+                                 Request,
+                                 Result.FromSendRequestState(sendRequestState)
+                             );
 
 
             #region Send OnDataTransferResponse event

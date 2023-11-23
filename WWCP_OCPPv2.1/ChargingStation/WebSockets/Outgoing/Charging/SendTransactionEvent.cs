@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A CP client.
+    /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
@@ -70,6 +70,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Custom JSON serializer delegates
 
         public CustomJObjectSerializerDelegate<TransactionEventRequest>?  CustomTransactionEventRequestSerializer    { get; set; }
+
+        public CustomJObjectParserDelegate<TransactionEventResponse>?     CustomTransactionEventResponseParser       { get; set; }
 
         #endregion
 
@@ -98,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendTransactionEvent                 (Request)
+        #region SendTransactionEvent(Request)
 
         /// <summary>
         /// Send a transaction event.
@@ -160,7 +162,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (TransactionEventResponse.TryParse(Request,
                                                           sendRequestState.Response,
                                                           out var transactionEventResponse,
-                                                          out var errorResponse) &&
+                                                          out var errorResponse,
+                                                          CustomTransactionEventResponseParser) &&
                         transactionEventResponse is not null)
                     {
                         response = transactionEventResponse;

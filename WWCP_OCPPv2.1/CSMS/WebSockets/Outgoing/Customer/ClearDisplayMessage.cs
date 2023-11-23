@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<ClearDisplayMessageRequest>?  CustomClearDisplayMessageRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<ClearDisplayMessageResponse>?     CustomClearDisplayMessageResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region ClearDisplayMessage        (Request)
+        #region ClearDisplayMessage(Request)
 
         public async Task<ClearDisplayMessageResponse> ClearDisplayMessage(ClearDisplayMessageRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             ClearDisplayMessageResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomClearDisplayMessageRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomClearDisplayMessageRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (ClearDisplayMessageResponse.TryParse(Request,
                                                          sendRequestState.Response,
                                                          out var clearDisplayMessageResponse,
-                                                         out var errorResponse) &&
+                                                         out var errorResponse,
+                                                         CustomClearDisplayMessageResponseParser) &&
                     clearDisplayMessageResponse is not null)
                 {
                     response = clearDisplayMessageResponse;
                 }
 
-                response ??= new ClearDisplayMessageResponse(Request,
-                                                             Result.Format(errorResponse));
+                response ??= new ClearDisplayMessageResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new ClearDisplayMessageResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+            response ??= new ClearDisplayMessageResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnClearDisplayMessageResponse event

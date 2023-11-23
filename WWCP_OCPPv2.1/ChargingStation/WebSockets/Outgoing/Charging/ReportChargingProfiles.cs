@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A CP client.
+    /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
@@ -70,6 +70,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Custom JSON serializer delegates
 
         public CustomJObjectSerializerDelegate<ReportChargingProfilesRequest>?  CustomReportChargingProfilesRequestSerializer    { get; set; }
+
+        public CustomJObjectParserDelegate<ReportChargingProfilesResponse>?     CustomReportChargingProfilesResponseParser       { get; set; }
 
         #endregion
 
@@ -98,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region ReportChargingProfiles               (Request)
+        #region ReportChargingProfiles(Request)
 
         /// <summary>
         /// Report about charging profiles.
@@ -175,7 +177,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (ReportChargingProfilesResponse.TryParse(Request,
                                                                 sendRequestState.Response,
                                                                 out var reportChargingProfilesResponse,
-                                                                out var errorResponse) &&
+                                                                out var errorResponse,
+                                                                CustomReportChargingProfilesResponseParser) &&
                         reportChargingProfilesResponse is not null)
                     {
                         response = reportChargingProfilesResponse;

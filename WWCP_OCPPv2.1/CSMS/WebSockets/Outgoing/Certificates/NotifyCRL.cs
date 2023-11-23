@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<NotifyCRLRequest>?  CustomNotifyCRLRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<NotifyCRLResponse>?     CustomNotifyCRLResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region NotifyCRL                  (Request)
+        #region NotifyCRL(Request)
 
         /// <summary>
         /// Notify the charging station about the status of a certificate revocation list.
@@ -115,16 +117,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NotifyCRLResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomNotifyCRLRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomNotifyCRLRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -133,7 +137,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (NotifyCRLResponse.TryParse(Request,
                                                sendRequestState.Response,
                                                out var deleteCertificateResponse,
-                                               out var errorResponse) &&
+                                               out var errorResponse,
+                                               CustomNotifyCRLResponseParser) &&
                     deleteCertificateResponse is not null)
                 {
                     response = deleteCertificateResponse;

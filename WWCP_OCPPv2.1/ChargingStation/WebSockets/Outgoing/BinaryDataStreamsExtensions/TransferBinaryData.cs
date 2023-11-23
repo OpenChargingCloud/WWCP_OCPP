@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A CP client.
+    /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
@@ -67,7 +67,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom binary serializer delegates
 
-        public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer    { get; set; }
+        public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?    CustomBinaryDataTransferRequestSerializer    { get; set; }
+
+        public CustomBinaryParserDelegate<CSMS.BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser       { get; set; }
 
         #endregion
 
@@ -96,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region TransferBinaryData                   (Request)
+        #region TransferBinaryData(Request)
 
         /// <summary>
         /// Send vendor-specific binary data.
@@ -135,39 +137,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    Request.ToBinary(
                                                        CustomBinaryDataTransferRequestSerializer
                                                        //CustomSignatureSerializer,
-                                                       //CustomCustomBinaryDataSerializer
+                                                       //CustomCustomDataSerializer
                                                    ));
 
-            //if (requestMessage.NoErrors)
-            //{
+            if (requestMessage.NoErrors)
+            {
 
-            //    var sendRequestState = await WaitForResponse(requestMessage);
+                var sendRequestState = await WaitForResponse(requestMessage);
 
-            //    if (sendRequestState.NoErrors &&
-            //        sendRequestState.Response is not null)
-            //    {
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.BinaryResponse is not null)
+                {
 
-            //        if (CSMS.BinaryDataTransferResponse.TryParse(Request,
-            //                                               sendRequestState.Response,
-            //                                               out var dataTransferResponse,
-            //                                               out var errorResponse) &&
-            //            dataTransferResponse is not null)
-            //        {
-            //            response = dataTransferResponse;
-            //        }
+                    if (CSMS.BinaryDataTransferResponse.TryParse(Request,
+                                                                 sendRequestState.BinaryResponse,
+                                                                 out var binaryDataTransferResponse,
+                                                                 out var errorResponse,
+                                                                 CustomBinaryDataTransferResponseParser) &&
+                        binaryDataTransferResponse is not null)
+                    {
+                        response = binaryDataTransferResponse;
+                    }
 
-            //        response ??= new CSMS.BinaryDataTransferResponse(Request,
-            //                                                   Result.Format(errorResponse));
+                    response ??= new CSMS.BinaryDataTransferResponse(Request,
+                                                                     Result.Format(errorResponse));
 
-            //    }
+                }
 
-            //    response ??= new CSMS.BinaryDataTransferResponse(Request,
-            //                                               Result.FromSendRequestState(sendRequestState));
+                response ??= new CSMS.BinaryDataTransferResponse(Request,
+                                                                 Result.FromSendRequestState(sendRequestState));
 
-            //}
+            }
 
             response ??= new CSMS.BinaryDataTransferResponse(Request,
-                                                             Result.GenericError());// requestMessage.ErrorMessage));
+                                                             Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnBinaryDataTransferResponse event

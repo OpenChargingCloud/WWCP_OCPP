@@ -89,7 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<GetCertificateStatusRequest>?  CustomGetCertificateStatusRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<GetCertificateStatusRequest>?       CustomGetCertificateStatusRequestParser         { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetCertificateStatusResponse>?  CustomGetCertificateStatusResponseSerializer    { get; set; }
 
         #endregion
 
@@ -228,7 +230,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     OCPPResponse = new OCPP_WebSocket_ResponseMessage(
                                        requestId,
-                                       response.ToJSON()
+                                       response.ToJSON(
+                                           CustomGetCertificateStatusResponseSerializer,
+                                           CustomStatusInfoSerializer,
+                                           CustomSignatureSerializer,
+                                           CustomCustomDataSerializer
+                                       )
                                    );
 
                 }

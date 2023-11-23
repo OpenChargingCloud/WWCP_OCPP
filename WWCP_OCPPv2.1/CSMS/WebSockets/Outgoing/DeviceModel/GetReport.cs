@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<GetReportRequest>?  CustomGetReportRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<GetReportResponse>?     CustomGetReportResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetReport                  (Request)
+        #region GetReport(Request)
 
         public async Task<GetReportResponse> GetReport(GetReportRequest Request)
         {
@@ -111,20 +113,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetReportResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomGetReportRequestSerializer,
-                                                         CustomComponentVariableSerializer,
-                                                         CustomComponentSerializer,
-                                                         CustomEVSESerializer,
-                                                         CustomVariableSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomGetReportRequestSerializer,
+                                                 CustomComponentVariableSerializer,
+                                                 CustomComponentSerializer,
+                                                 CustomEVSESerializer,
+                                                 CustomVariableSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -133,19 +137,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (GetReportResponse.TryParse(Request,
                                                sendRequestState.Response,
                                                out var getReport,
-                                               out var errorResponse) &&
+                                               out var errorResponse,
+                                               CustomGetReportResponseParser) &&
                     getReport is not null)
                 {
                     response = getReport;
                 }
 
-                response ??= new GetReportResponse(Request,
-                                                   Result.Format(errorResponse));
+                response ??= new GetReportResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new GetReportResponse(Request,
-                                               Result.FromSendRequestState(sendRequestState));
+            response ??= new GetReportResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnGetReportResponse event

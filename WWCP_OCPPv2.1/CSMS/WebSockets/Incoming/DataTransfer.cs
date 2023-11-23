@@ -89,7 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<CS.DataTransferRequest>?  CustomDataTransferRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<CS.DataTransferRequest>?    CustomDataTransferRequestParser         { get; set; }
+
+        public CustomJObjectSerializerDelegate<DataTransferResponse>?  CustomDataTransferResponseSerializer    { get; set; }
 
         #endregion
 
@@ -138,9 +140,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            OCPP_WebSocket_ResponseMessage?  OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
-
             #region Send OnIncomingDataTransferWSRequest event
 
             try
@@ -157,6 +156,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
 
             #endregion
+
+
+            OCPP_WebSocket_ResponseMessage?  OCPPResponse        = null;
+            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
@@ -228,38 +231,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     OCPPResponse = new OCPP_WebSocket_ResponseMessage(
                                        requestId,
-                                       response.ToJSON()
+                                       response.ToJSON(
+                                           CustomDataTransferResponseSerializer,
+                                           CustomStatusInfoSerializer,
+                                           CustomSignatureSerializer,
+                                           CustomCustomDataSerializer
+                                       )
                                    );
 
                 }
 
                 else
-                    OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
                                             requestId,
-                                            ResultCodes.FormationViolation,
-                                            "The given 'IncomingDataTransfer' request could not be parsed!",
-                                            new JObject(
-                                                new JProperty("request",       OCPPTextMessage),
-                                                new JProperty("errorResponse", errorResponse)
-                                            )
+                                           "IncomingDataTransfer",
+                                            requestData,
+                                            errorResponse
                                         );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
                                         requestId,
-                                        ResultCodes.FormationViolation,
-                                        "Processing the given 'IncomingDataTransfer' request led to an exception!",
-                                        JSONObject.Create(
-                                            new JProperty("request",    OCPPTextMessage),
-                                            new JProperty("exception",  e.Message),
-                                            new JProperty("stacktrace", e.StackTrace)
-                                        )
+                                        "IncomingDataTransfer",
+                                        requestData,
+                                        e
                                     );
 
             }
+
 
             #region Send OnIncomingDataTransferWSResponse event
 

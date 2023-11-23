@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<GetTransactionStatusRequest>?  CustomGetTransactionStatusRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<GetTransactionStatusResponse>?     CustomGetTransactionStatusResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetTransactionStatus       (Request)
+        #region GetTransactionStatus(Request)
 
         public async Task<GetTransactionStatusResponse> GetTransactionStatus(GetTransactionStatusRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetTransactionStatusResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomGetTransactionStatusRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomGetTransactionStatusRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (GetTransactionStatusResponse.TryParse(Request,
                                                           sendRequestState.Response,
                                                           out var getTransactionStatusResponse,
-                                                          out var errorResponse) &&
+                                                          out var errorResponse,
+                                                          CustomGetTransactionStatusResponseParser) &&
                     getTransactionStatusResponse is not null)
                 {
                     response = getTransactionStatusResponse;
                 }
 
-                response ??= new GetTransactionStatusResponse(Request,
-                                                              Result.Format(errorResponse));
+                response ??= new GetTransactionStatusResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new GetTransactionStatusResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+            response ??= new GetTransactionStatusResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnGetTransactionStatusResponse event

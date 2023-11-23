@@ -95,7 +95,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<BootNotificationRequest>?       CustomBootNotificationRequestParser         { get; set; }
+
+        public CustomJObjectSerializerDelegate<BootNotificationResponse>?  CustomBootNotificationResponseSerializer    { get; set; }
 
         #endregion
 
@@ -144,9 +146,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            OCPP_WebSocket_ResponseMessage?  OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
-
             #region Send OnBootNotificationWSRequest event
 
             try
@@ -163,6 +162,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
 
             #endregion
+
+
+            OCPP_WebSocket_ResponseMessage?  OCPPResponse        = null;
+            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
@@ -237,7 +240,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     OCPPResponse = new OCPP_WebSocket_ResponseMessage(
                                        requestId,
-                                       response.ToJSON()
+                                       response.ToJSON(
+                                           CustomBootNotificationResponseSerializer,
+                                           CustomStatusInfoSerializer,
+                                           CustomSignatureSerializer,
+                                           CustomCustomDataSerializer
+                                       )
                                    );
 
                 }
@@ -249,16 +257,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             requestData,
                                             errorResponse
                                         );
-
-                                        //new OCPP_WebSocket_ErrorMessage(
-                                        //    requestId,
-                                        //    ResultCodes.FormationViolation,
-                                        //    "The given 'BootNotification' request could not be parsed!",
-                                        //    new JObject(
-                                        //        new JProperty("request",       OCPPTextMessage),
-                                        //        new JProperty("errorResponse", errorResponse)
-                                        //    )
-                                        //);
 
             }
             catch (Exception e)
@@ -283,6 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     //);
 
             }
+
 
             #region Send OnBootNotificationWSResponse event
 

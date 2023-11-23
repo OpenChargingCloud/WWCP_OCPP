@@ -66,7 +66,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<AFRRSignalRequest>?  CustomAFRRSignalRequestSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<AFRRSignalRequest>?   CustomAFRRSignalRequestSerializer     { get; set; }
+
+        public CustomJObjectParserDelegate<AFRRSignalResponse>?      CustomAFRRSignalResponseParser        { get; set; }
 
         #endregion
 
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SendAFRRSignal             (Request)
+        #region SendAFRRSignal(Request)
 
         public async Task<AFRRSignalResponse> SendAFRRSignal(AFRRSignalRequest Request)
         {
@@ -111,37 +113,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             AFRRSignalResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomAFRRSignalRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (AFRRSignalResponse.TryParse(Request,
-                                                sendRequestState.Response,
-                                                out var unlockConnectorResponse,
-                                                out var errorResponse) &&
-                    unlockConnectorResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomAFRRSignalRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = unlockConnectorResponse;
+
+                    if (AFRRSignalResponse.TryParse(Request,
+                                                    sendRequestState.Response,
+                                                    out var unlockConnectorResponse,
+                                                    out var errorResponse,
+                                                    CustomAFRRSignalResponseParser) &&
+                        unlockConnectorResponse is not null)
+                    {
+                        response = unlockConnectorResponse;
+                    }
+
+                    response ??= new AFRRSignalResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
-                response ??= new AFRRSignalResponse(Request,
-                                                    Result.Format(errorResponse));
+                response ??= new AFRRSignalResponse(
+                                 Request,
+                                 Result.FromSendRequestState(sendRequestState)
+                             );
 
             }
-
-            response ??= new AFRRSignalResponse(Request,
-                                                Result.FromSendRequestState(sendRequestState));
+            catch (Exception e)
+            {
+                response = new AFRRSignalResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+            }
 
 
             #region Send OnAFRRSignalResponse event

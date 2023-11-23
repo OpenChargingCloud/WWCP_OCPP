@@ -302,9 +302,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomUnpublishFirmwareResponseSerializer">A delegate to serialize custom unpublish firmware responses.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<UnpublishFirmwareResponse>? CustomUnpublishFirmwareResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                   = null,
-                              CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                  = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<UnpublishFirmwareResponse>?  CustomUnpublishFirmwareResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                   = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                  = null)
         {
 
             var json = JSONObject.Create(

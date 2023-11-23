@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<SetVariableMonitoringRequest>?  CustomSetVariableMonitoringRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<SetVariableMonitoringResponse>?     CustomSetVariableMonitoringResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetVariableMonitoring      (Request)
+        #region SetVariableMonitoring(Request)
 
         public async Task<SetVariableMonitoringResponse> SetVariableMonitoring(SetVariableMonitoringRequest Request)
         {
@@ -111,21 +113,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             SetVariableMonitoringResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomSetVariableMonitoringRequestSerializer,
-                                                         CustomSetMonitoringDataSerializer,
-                                                         CustomComponentSerializer,
-                                                         CustomEVSESerializer,
-                                                         CustomVariableSerializer,
-                                                         CustomPeriodicEventStreamParametersSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomSetVariableMonitoringRequestSerializer,
+                                                 CustomSetMonitoringDataSerializer,
+                                                 CustomComponentSerializer,
+                                                 CustomEVSESerializer,
+                                                 CustomVariableSerializer,
+                                                 CustomPeriodicEventStreamParametersSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -134,19 +138,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (SetVariableMonitoringResponse.TryParse(Request,
                                                            sendRequestState.Response,
                                                            out var setVariableMonitoringResponse,
-                                                           out var errorResponse) &&
+                                                           out var errorResponse,
+                                                           CustomSetVariableMonitoringResponseParser) &&
                     setVariableMonitoringResponse is not null)
                 {
                     response = setVariableMonitoringResponse;
                 }
 
-                response ??= new SetVariableMonitoringResponse(Request,
-                                                               Result.Format(errorResponse));
+                response ??= new SetVariableMonitoringResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new SetVariableMonitoringResponse(Request,
-                                                           Result.FromSendRequestState(sendRequestState));
+            response ??= new SetVariableMonitoringResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnSetVariableMonitoringResponse event

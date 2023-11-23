@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<SendLocalListRequest>?  CustomSendLocalListRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<SendLocalListResponse>?     CustomSendLocalListResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SendLocalList              (Request)
+        #region SendLocalList(Request)
 
         public async Task<SendLocalListResponse> SendLocalList(SendLocalListRequest Request)
         {
@@ -111,21 +113,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             SendLocalListResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomSendLocalListRequestSerializer,
-                                                         CustomAuthorizationDataSerializer,
-                                                         CustomIdTokenSerializer,
-                                                         CustomAdditionalInfoSerializer,
-                                                         CustomIdTokenInfoSerializer,
-                                                         CustomMessageContentSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomSendLocalListRequestSerializer,
+                                                 CustomAuthorizationDataSerializer,
+                                                 CustomIdTokenSerializer,
+                                                 CustomAdditionalInfoSerializer,
+                                                 CustomIdTokenInfoSerializer,
+                                                 CustomMessageContentSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -134,19 +138,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (SendLocalListResponse.TryParse(Request,
                                                    sendRequestState.Response,
                                                    out var sendLocalListResponse,
-                                                   out var errorResponse) &&
+                                                   out var errorResponse,
+                                                   CustomSendLocalListResponseParser) &&
                     sendLocalListResponse is not null)
                 {
                     response = sendLocalListResponse;
                 }
 
-                response ??= new SendLocalListResponse(Request,
-                                                       Result.Format(errorResponse));
+                response ??= new SendLocalListResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new SendLocalListResponse(Request,
-                                                   Result.FromSendRequestState(sendRequestState));
+            response ??= new SendLocalListResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnSendLocalListResponse event

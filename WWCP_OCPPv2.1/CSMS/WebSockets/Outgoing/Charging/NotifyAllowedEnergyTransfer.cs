@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<NotifyAllowedEnergyTransferRequest>?  CustomNotifyAllowedEnergyTransferRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<NotifyAllowedEnergyTransferResponse>?     CustomNotifyAllowedEnergyTransferResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -112,16 +114,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NotifyAllowedEnergyTransferResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomNotifyAllowedEnergyTransferRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomNotifyAllowedEnergyTransferRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -130,19 +134,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (NotifyAllowedEnergyTransferResponse.TryParse(Request,
                                                                  sendRequestState.Response,
                                                                  out var getCompositeScheduleResponse,
-                                                                 out var errorResponse) &&
+                                                                 out var errorResponse,
+                                                                 CustomNotifyAllowedEnergyTransferResponseParser) &&
                     getCompositeScheduleResponse is not null)
                 {
                     response = getCompositeScheduleResponse;
                 }
 
-                response ??= new NotifyAllowedEnergyTransferResponse(Request,
-                                                                     Result.Format(errorResponse));
+                response ??= new NotifyAllowedEnergyTransferResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new NotifyAllowedEnergyTransferResponse(Request,
-                                                                 Result.FromSendRequestState(sendRequestState));
+            response ??= new NotifyAllowedEnergyTransferResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnNotifyAllowedEnergyTransferResponse event

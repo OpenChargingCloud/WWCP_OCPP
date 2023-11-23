@@ -27,7 +27,7 @@
 //{
 
 //    /// <summary>
-//    /// A CP client.
+//    /// A charging station HTTP Web Socket client.
 //    /// </summary>
 //    public partial class ChargePointWSClient
 //    {

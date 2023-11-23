@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<GetBaseReportRequest>?  CustomGetBaseReportRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<GetBaseReportResponse>?     CustomGetBaseReportResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetBaseReport              (Request)
+        #region GetBaseReport(Request)
 
         public async Task<GetBaseReportResponse> GetBaseReport(GetBaseReportRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetBaseReportResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomGetBaseReportRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomGetBaseReportRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (GetBaseReportResponse.TryParse(Request,
                                                    sendRequestState.Response,
                                                    out var getBaseReportResponse,
-                                                   out var errorResponse) &&
+                                                   out var errorResponse,
+                                                   CustomGetBaseReportResponseParser) &&
                     getBaseReportResponse is not null)
                 {
                     response = getBaseReportResponse;
                 }
 
-                response ??= new GetBaseReportResponse(Request,
-                                                       Result.Format(errorResponse));
+                response ??= new GetBaseReportResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new GetBaseReportResponse(Request,
-                                                   Result.FromSendRequestState(sendRequestState));
+            response ??= new GetBaseReportResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnGetBaseReportResponse event

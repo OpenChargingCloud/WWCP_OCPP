@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A CP client.
+    /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
@@ -70,6 +70,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Custom JSON serializer delegates
 
         public CustomJObjectSerializerDelegate<NotifyEVChargingNeedsRequest>?  CustomNotifyEVChargingNeedsRequestSerializer    { get; set; }
+
+        public CustomJObjectParserDelegate<NotifyEVChargingNeedsResponse>?     CustomNotifyEVChargingNeedsResponseParser       { get; set; }
 
         #endregion
 
@@ -98,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region NotifyEVChargingNeeds                (Request)
+        #region NotifyEVChargingNeeds(Request)
 
         /// <summary>
         /// Notify about EV charging needs.
@@ -162,7 +164,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (NotifyEVChargingNeedsResponse.TryParse(Request,
                                                                sendRequestState.Response,
                                                                out var notifyEVChargingNeedsResponse,
-                                                               out var errorResponse) &&
+                                                               out var errorResponse,
+                                                               CustomNotifyEVChargingNeedsResponseParser) &&
                         notifyEVChargingNeedsResponse is not null)
                     {
                         response = notifyEVChargingNeedsResponse;

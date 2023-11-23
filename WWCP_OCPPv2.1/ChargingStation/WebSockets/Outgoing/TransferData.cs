@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A CP client.
+    /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
@@ -67,7 +67,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferRequestSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<DataTransferRequest>?    CustomDataTransferRequestSerializer    { get; set; }
+
+        public CustomJObjectParserDelegate<CSMS.DataTransferResponse>?  CustomDataTransferResponseParser       { get; set; }
 
         #endregion
 
@@ -96,7 +98,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region TransferData                         (Request)
+        #region TransferData(Request)
 
         /// <summary>
         /// Send vendor-specific data.
@@ -150,7 +152,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (CSMS.DataTransferResponse.TryParse(Request,
                                                            sendRequestState.Response,
                                                            out var dataTransferResponse,
-                                                           out var errorResponse) &&
+                                                           out var errorResponse,
+                                                           CustomDataTransferResponseParser) &&
                         dataTransferResponse is not null)
                     {
                         response = dataTransferResponse;

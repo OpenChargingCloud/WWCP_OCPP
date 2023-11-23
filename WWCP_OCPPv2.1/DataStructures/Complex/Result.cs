@@ -37,22 +37,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The machine-readable result code.
         /// </summary>
-        public ResultCodes  ResultCode     { get; }
+        public ResultCodes  ResultCode        { get; }
 
         /// <summary>
         /// The optional human-readable error description.
         /// </summary>
-        public String?      Description    { get; }
+        public String?      Description       { get; }
 
         /// <summary>
         /// Optional error details.
         /// </summary>
-        public JObject?     Details        { get; }
+        public JObject?     Details           { get; }
 
         /// <summary>
         /// The optional response message.
         /// </summary>
-        public JObject?     Response       { get; }
+        public JObject?     Response          { get; }
+
+        /// <summary>
+        /// The optional binary response message.
+        /// </summary>
+        public Byte[]?      BinaryResponse    { get; }
 
         #endregion
 
@@ -65,16 +70,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Description">An optional human-readable error description.</param>
         /// <param name="Details">Optional error details.</param>
         /// <param name="Response">An optional response message.</param>
-        public Result(ResultCodes  ResultCode,
-                      String?      Description   = null,
-                      JObject?     Details       = null,
-                      JObject?     Response      = null)
+        /// <param name="BinaryResponse">An optional binary response message.</param>
+        private Result(ResultCodes  ResultCode,
+                       String?      Description      = null,
+                       JObject?     Details          = null,
+                       JObject?     Response         = null,
+                       Byte[]?      BinaryResponse   = null)
         {
 
-            this.ResultCode   = ResultCode;
-            this.Description  = Description?.Trim();
-            this.Details      = Details;
-            this.Response     = Response;
+            this.ResultCode      = ResultCode;
+            this.Description     = Description?.Trim();
+            this.Details         = Details;
+            this.Response        = Response;
+            this.BinaryResponse  = BinaryResponse;
 
         }
 
@@ -82,12 +90,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
 
-        public static Result FromSendRequestState(CSMS.CSMSWSServer.SendRequestState SendRequestState)
+        public static Result FromSendRequestState(CSMS.SendJSONRequestState SendRequestState)
 
             => new (
                    SendRequestState.ErrorCode ?? ResultCodes.GenericError,
                    SendRequestState.ErrorDescription,
                    SendRequestState.ErrorDetails,
+                   SendRequestState.Response
+               );
+
+        public static Result FromSendRequestState(CSMS.SendBinaryRequestState SendRequestState)
+
+            => new (
+                   SendRequestState.ErrorCode ?? ResultCodes.GenericError,
+                   SendRequestState.ErrorDescription,
+                   SendRequestState.ErrorDetails,
+                   null,
                    SendRequestState.Response
                );
 
@@ -114,6 +132,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (ResultCodes.GenericError,
                     Description,
                     Details);
+
+
+        /// <summary>
+        /// An exception occured.
+        /// </summary>
+        /// <param name="Exception">An exception.</param>
+        public static Result FromException(Exception Exception)
+
+            => new (
+                   ResultCodes.GenericError,
+                   Exception.Message,
+                   JSONObject.Create(
+                       new JProperty("message",     Exception.Message),
+                       new JProperty("stackTrace",  Exception.StackTrace)
+                   )
+               );
 
 
         /// <summary>

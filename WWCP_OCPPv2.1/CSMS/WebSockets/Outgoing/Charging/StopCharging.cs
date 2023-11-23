@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<RequestStopTransactionRequest>?  CustomRequestStopTransactionRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<RequestStopTransactionResponse>?     CustomRequestStopTransactionResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region StopCharging               (Request)
+        #region StopCharging(Request)
 
         public async Task<RequestStopTransactionResponse> StopCharging(RequestStopTransactionRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             RequestStopTransactionResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomRequestStopTransactionRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomRequestStopTransactionRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (RequestStopTransactionResponse.TryParse(Request,
                                                             sendRequestState.Response,
                                                             out var requestStopTransactionResponse,
-                                                            out var errorResponse) &&
+                                                            out var errorResponse,
+                                                            CustomRequestStopTransactionResponseParser) &&
                     requestStopTransactionResponse is not null)
                 {
                     response = requestStopTransactionResponse;
                 }
 
-                response ??= new RequestStopTransactionResponse(Request,
-                                                                Result.Format(errorResponse));
+                response ??= new RequestStopTransactionResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new RequestStopTransactionResponse(Request,
-                                                            Result.FromSendRequestState(sendRequestState));
+            response ??= new RequestStopTransactionResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnRequestStopTransactionResponse event

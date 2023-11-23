@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?  CustomDeleteCertificateRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<DeleteCertificateResponse>?     CustomDeleteCertificateResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region DeleteCertificate          (Request)
+        #region DeleteCertificate(Request)
 
         /// <summary>
         /// Delete the given certificate on the charging station.
@@ -115,17 +117,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             DeleteCertificateResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomDeleteCertificateRequestSerializer,
-                                                         CustomCertificateHashDataSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomDeleteCertificateRequestSerializer,
+                                                 CustomCertificateHashDataSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -134,19 +138,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (DeleteCertificateResponse.TryParse(Request,
                                                        sendRequestState.Response,
                                                        out var deleteCertificateResponse,
-                                                       out var errorResponse) &&
+                                                       out var errorResponse,
+                                                       CustomDeleteCertificateResponseParser) &&
                     deleteCertificateResponse is not null)
                 {
                     response = deleteCertificateResponse;
                 }
 
-                response ??= new DeleteCertificateResponse(Request,
-                                                           Result.Format(errorResponse));
+                response ??= new DeleteCertificateResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new DeleteCertificateResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
+            response ??= new DeleteCertificateResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnDeleteCertificateResponse event

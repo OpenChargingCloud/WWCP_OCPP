@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<GetLogRequest>?  CustomGetLogRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<GetLogResponse>?     CustomGetLogResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetLog                     (Request)
+        #region GetLog(Request)
 
         /// <summary>
         /// Retrieve log files from the charging station.
@@ -115,17 +117,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetLogResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomGetLogRequestSerializer,
-                                                         CustomLogParametersSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomGetLogRequestSerializer,
+                                                 CustomLogParametersSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -134,19 +138,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (GetLogResponse.TryParse(Request,
                                             sendRequestState.Response,
                                             out var getLogResponse,
-                                            out var errorResponse) &&
+                                            out var errorResponse,
+                                            CustomGetLogResponseParser) &&
                     getLogResponse is not null)
                 {
                     response = getLogResponse;
                 }
 
-                response ??= new GetLogResponse(Request,
-                                                Result.Format(errorResponse));
+                response ??= new GetLogResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new GetLogResponse(Request,
-                                            Result.FromSendRequestState(sendRequestState));
+            response ??= new GetLogResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnGetLogResponse event

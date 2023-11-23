@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?  CustomUnlockConnectorRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<UnlockConnectorResponse>?     CustomUnlockConnectorResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region UnlockConnector            (Request)
+        #region UnlockConnector(Request)
 
         public async Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             UnlockConnectorResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomUnlockConnectorRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomUnlockConnectorRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (UnlockConnectorResponse.TryParse(Request,
                                                      sendRequestState.Response,
                                                      out var unlockConnectorResponse,
-                                                     out var errorResponse) &&
+                                                     out var errorResponse,
+                                                     CustomUnlockConnectorResponseParser) &&
                     unlockConnectorResponse is not null)
                 {
                     response = unlockConnectorResponse;
                 }
 
-                response ??= new UnlockConnectorResponse(Request,
-                                                         Result.Format(errorResponse));
+                response ??= new UnlockConnectorResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new UnlockConnectorResponse(Request,
-                                                     Result.FromSendRequestState(sendRequestState));
+            response ??= new UnlockConnectorResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnUnlockConnectorResponse event

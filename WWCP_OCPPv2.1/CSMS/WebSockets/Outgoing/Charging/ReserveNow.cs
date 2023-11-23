@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<ReserveNowRequest>?  CustomReserveNowRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<ReserveNowResponse>?     CustomReserveNowResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region ReserveNow                 (Request)
+        #region ReserveNow(Request)
 
         public async Task<ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
         {
@@ -111,18 +113,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             ReserveNowResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomReserveNowRequestSerializer,
-                                                         CustomIdTokenSerializer,
-                                                         CustomAdditionalInfoSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomReserveNowRequestSerializer,
+                                                 CustomIdTokenSerializer,
+                                                 CustomAdditionalInfoSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -131,19 +135,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (ReserveNowResponse.TryParse(Request,
                                                 sendRequestState.Response,
                                                 out var reserveNowResponse,
-                                                out var errorResponse) &&
+                                                out var errorResponse,
+                                                CustomReserveNowResponseParser) &&
                     reserveNowResponse is not null)
                 {
                     response = reserveNowResponse;
                 }
 
-                response ??= new ReserveNowResponse(Request,
-                                                    Result.Format(errorResponse));
+                response ??= new ReserveNowResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new ReserveNowResponse(Request,
-                                                Result.FromSendRequestState(sendRequestState));
+            response ??= new ReserveNowResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnReserveNowResponse event

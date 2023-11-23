@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A CP client.
+    /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
@@ -70,6 +70,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Custom JSON serializer delegates
 
         public CustomJObjectSerializerDelegate<SignCertificateRequest>?  CustomSignCertificateRequestSerializer    { get; set; }
+
+        public CustomJObjectParserDelegate<SignCertificateResponse>?     CustomSignCertificateResponseParser       { get; set; }
 
         #endregion
 
@@ -98,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendCertificateSigningRequest        (Request)
+        #region SendCertificateSigningRequest(Request)
 
         /// <summary>
         /// Send a sign certificate request.
@@ -106,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">A SignCertificate request.</param>
         public async Task<SignCertificateResponse>
 
-            SendCertificateSigningRequest(SignCertificateRequest  Request)
+            SendCertificateSigningRequest(SignCertificateRequest Request)
 
         {
 
@@ -152,7 +154,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (SignCertificateResponse.TryParse(Request,
                                                          sendRequestState.Response,
                                                          out var signCertificateResponse,
-                                                         out var errorResponse) &&
+                                                         out var errorResponse,
+                                                         CustomSignCertificateResponseParser) &&
                         signCertificateResponse is not null)
                     {
                         response = signCertificateResponse;

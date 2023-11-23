@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<CostUpdatedRequest>?  CustomCostUpdatedRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<CostUpdatedResponse>?     CustomCostUpdatedResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SendCostUpdated            (Request)
+        #region SendCostUpdated(Request)
 
         public async Task<CostUpdatedResponse> SendCostUpdated(CostUpdatedRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             CostUpdatedResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomCostUpdatedRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomCostUpdatedRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (CostUpdatedResponse.TryParse(Request,
                                                  sendRequestState.Response,
                                                  out var costUpdatedResponse,
-                                                 out var errorResponse) &&
+                                                 out var errorResponse,
+                                                 CustomCostUpdatedResponseParser) &&
                     costUpdatedResponse is not null)
                 {
                     response = costUpdatedResponse;
                 }
 
-                response ??= new CostUpdatedResponse(Request,
-                                                     Result.Format(errorResponse));
+                response ??= new CostUpdatedResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new CostUpdatedResponse(Request,
-                                                 Result.FromSendRequestState(sendRequestState));
+            response ??= new CostUpdatedResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnCostUpdatedResponse event

@@ -89,7 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Custom JSON parser delegates
 
-        public CustomBinaryParserDelegate<CS.BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestParser    { get; set; }
+        public CustomBinaryParserDelegate<CS.BinaryDataTransferRequest>?        CustomBinaryDataTransferRequestParser         { get; set; }
+
+        public CustomJObjectSerializerDelegate<CS.BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer    { get; set; }
 
         #endregion
 

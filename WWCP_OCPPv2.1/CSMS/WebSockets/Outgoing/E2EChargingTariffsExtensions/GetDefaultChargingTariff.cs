@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<GetDefaultChargingTariffRequest>?  CustomGetDefaultChargingTariffRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<GetDefaultChargingTariffResponse>?     CustomGetDefaultChargingTariffResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetDefaultChargingTariff    (Request)
+        #region GetDefaultChargingTariff(Request)
 
         public async Task<GetDefaultChargingTariffResponse> GetDefaultChargingTariff(GetDefaultChargingTariffRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetDefaultChargingTariffResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomGetDefaultChargingTariffRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomGetDefaultChargingTariffRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (GetDefaultChargingTariffResponse.TryParse(Request,
                                                               sendRequestState.Response,
                                                               out var setDisplayMessageResponse,
-                                                              out var errorResponse) &&
+                                                              out var errorResponse,
+                                                              CustomGetDefaultChargingTariffResponseParser) &&
                     setDisplayMessageResponse is not null)
                 {
                     response = setDisplayMessageResponse;
                 }
 
-                response ??= new GetDefaultChargingTariffResponse(Request,
-                                                                  Result.Format(errorResponse));
+                response ??= new GetDefaultChargingTariffResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new GetDefaultChargingTariffResponse(Request,
-                                                              Result.FromSendRequestState(sendRequestState));
+            response ??= new GetDefaultChargingTariffResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnGetDefaultChargingTariffResponse event

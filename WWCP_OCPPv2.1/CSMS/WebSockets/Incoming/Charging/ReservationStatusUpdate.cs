@@ -89,7 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<ReservationStatusUpdateRequest>?  CustomReservationStatusUpdateRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<ReservationStatusUpdateRequest>?       CustomReservationStatusUpdateRequestParser         { get; set; }
+
+        public CustomJObjectSerializerDelegate<ReservationStatusUpdateResponse>?  CustomReservationStatusUpdateResponseSerializer    { get; set; }
 
         #endregion
 
@@ -228,7 +230,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     OCPPResponse = new OCPP_WebSocket_ResponseMessage(
                                        requestId,
-                                       response.ToJSON()
+                                       response.ToJSON(
+                                           CustomReservationStatusUpdateResponseSerializer,
+                                           CustomSignatureSerializer,
+                                           CustomCustomDataSerializer
+                                       )
                                    );
 
                 }

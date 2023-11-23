@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<SetDefaultChargingTariffRequest>?  CustomSetDefaultChargingTariffRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<SetDefaultChargingTariffResponse>?     CustomSetDefaultChargingTariffResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetDefaultChargingTariff    (Request)
+        #region SetDefaultChargingTariff(Request)
 
         public async Task<SetDefaultChargingTariffResponse> SetDefaultChargingTariff(SetDefaultChargingTariffRequest Request)
         {
@@ -111,27 +113,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             SetDefaultChargingTariffResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomSetDefaultChargingTariffRequestSerializer,
-                                                         CustomChargingTariffSerializer,
-                                                         CustomPriceSerializer,
-                                                         CustomTariffElementSerializer,
-                                                         CustomPriceComponentSerializer,
-                                                         CustomTaxRateSerializer,
-                                                         CustomTariffRestrictionsSerializer,
-                                                         CustomEnergyMixSerializer,
-                                                         CustomEnergySourceSerializer,
-                                                         CustomEnvironmentalImpactSerializer,
-                                                         CustomIdTokenSerializer,
-                                                         CustomAdditionalInfoSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomSetDefaultChargingTariffRequestSerializer,
+                                                 CustomChargingTariffSerializer,
+                                                 CustomPriceSerializer,
+                                                 CustomTariffElementSerializer,
+                                                 CustomPriceComponentSerializer,
+                                                 CustomTaxRateSerializer,
+                                                 CustomTariffRestrictionsSerializer,
+                                                 CustomEnergyMixSerializer,
+                                                 CustomEnergySourceSerializer,
+                                                 CustomEnvironmentalImpactSerializer,
+                                                 CustomIdTokenSerializer,
+                                                 CustomAdditionalInfoSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -140,19 +144,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (SetDefaultChargingTariffResponse.TryParse(Request,
                                                               sendRequestState.Response,
                                                               out var setDisplayMessageResponse,
-                                                              out var errorResponse) &&
+                                                              out var errorResponse,
+                                                              CustomSetDefaultChargingTariffResponseParser) &&
                     setDisplayMessageResponse is not null)
                 {
                     response = setDisplayMessageResponse;
                 }
 
-                response ??= new SetDefaultChargingTariffResponse(Request,
-                                                                  Result.Format(errorResponse));
+                response ??= new SetDefaultChargingTariffResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new SetDefaultChargingTariffResponse(Request,
-                                                              Result.FromSendRequestState(sendRequestState));
+            response ??= new SetDefaultChargingTariffResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnSetDefaultChargingTariffResponse event

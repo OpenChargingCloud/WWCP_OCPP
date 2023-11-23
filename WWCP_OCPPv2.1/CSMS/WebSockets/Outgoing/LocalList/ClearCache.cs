@@ -66,7 +66,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<ClearCacheRequest>?  CustomClearCacheRequestSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<ClearCacheRequest>?   CustomClearCacheRequestSerializer    { get; set; }
+
+        public CustomJObjectParserDelegate<ClearCacheResponse>?      CustomClearCacheResponseParser       { get; set; }
 
         #endregion
 
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region ClearCache                 (Request)
+        #region ClearCache(Request)
 
         public async Task<ClearCacheResponse> ClearCache(ClearCacheRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             ClearCacheResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomClearCacheRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomClearCacheRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (ClearCacheResponse.TryParse(Request,
                                                 sendRequestState.Response,
                                                 out var clearCacheResponse,
-                                                out var errorResponse) &&
+                                                out var errorResponse,
+                                                CustomClearCacheResponseParser) &&
                     clearCacheResponse is not null)
                 {
                     response = clearCacheResponse;
                 }
 
-                response ??= new ClearCacheResponse(Request,
-                                                    Result.Format(errorResponse));
+                response ??= new ClearCacheResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new ClearCacheResponse(Request,
-                                                Result.FromSendRequestState(sendRequestState));
+            response ??= new ClearCacheResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnClearCacheResponse event

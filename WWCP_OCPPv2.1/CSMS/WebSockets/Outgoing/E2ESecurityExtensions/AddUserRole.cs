@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<AddUserRoleRequest>?  CustomAddUserRoleRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<AddUserRoleResponse>?     CustomAddUserRoleResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region AddUserRole                 (Request)
+        #region AddUserRole(Request)
 
         public async Task<AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request)
         {
@@ -111,41 +113,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             AddUserRoleResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         //CustomAddUserRoleRequestSerializer,
-                                                         //CustomMessageInfoSerializer,
-                                                         //CustomMessageContentSerializer,
-                                                         //CustomComponentSerializer,
-                                                         //CustomEVSESerializer,
-                                                         //CustomSignatureSerializer,
-                                                         //CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomAddUserRoleRequestSerializer
+                                                 //CustomMessageInfoSerializer,
+                                                 //CustomMessageContentSerializer,
+                                                 //CustomComponentSerializer,
+                                                 //CustomEVSESerializer,
+                                                 //CustomSignatureSerializer,
+                                                 //CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
             {
 
                 if (AddUserRoleResponse.TryParse(Request,
-                                                       sendRequestState.Response,
-                                                       out var setDisplayMessageResponse,
-                                                       out var errorResponse) &&
+                                                 sendRequestState.Response,
+                                                 out var setDisplayMessageResponse,
+                                                 out var errorResponse,
+                                                 CustomAddUserRoleResponseParser) &&
                     setDisplayMessageResponse is not null)
                 {
                     response = setDisplayMessageResponse;
                 }
 
-                response ??= new AddUserRoleResponse(Request,
-                                                           Result.Format(errorResponse));
+                response ??= new AddUserRoleResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new AddUserRoleResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
+            response ??= new AddUserRoleResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnAddUserRoleResponse event

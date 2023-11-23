@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<SetMonitoringBaseRequest>?  CustomSetMonitoringBaseRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<SetMonitoringBaseResponse>?     CustomSetMonitoringBaseResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetMonitoringBase          (Request)
+        #region SetMonitoringBase(Request)
 
         public async Task<SetMonitoringBaseResponse> SetMonitoringBase(SetMonitoringBaseRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             SetMonitoringBaseResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomSetMonitoringBaseRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomSetMonitoringBaseRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (SetMonitoringBaseResponse.TryParse(Request,
                                                        sendRequestState.Response,
                                                        out var setMonitoringBaseResponse,
-                                                       out var errorResponse) &&
+                                                       out var errorResponse,
+                                                       CustomSetMonitoringBaseResponseParser) &&
                     setMonitoringBaseResponse is not null)
                 {
                     response = setMonitoringBaseResponse;
                 }
 
-                response ??= new SetMonitoringBaseResponse(Request,
-                                                           Result.Format(errorResponse));
+                response ??= new SetMonitoringBaseResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new SetMonitoringBaseResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
+            response ??= new SetMonitoringBaseResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnSetMonitoringBaseResponse event

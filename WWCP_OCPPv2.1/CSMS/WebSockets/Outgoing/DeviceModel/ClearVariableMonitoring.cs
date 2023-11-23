@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<ClearVariableMonitoringRequest>?  CustomClearVariableMonitoringRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<ClearVariableMonitoringResponse>?     CustomClearVariableMonitoringResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region ClearVariableMonitoring    (Request)
+        #region ClearVariableMonitoring(Request)
 
         public async Task<ClearVariableMonitoringResponse> ClearVariableMonitoring(ClearVariableMonitoringRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             ClearVariableMonitoringResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomClearVariableMonitoringRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomClearVariableMonitoringRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (ClearVariableMonitoringResponse.TryParse(Request,
                                                              sendRequestState.Response,
                                                              out var clearVariableMonitoringResponse,
-                                                             out var errorResponse) &&
+                                                             out var errorResponse,
+                                                             CustomClearVariableMonitoringResponseParser) &&
                     clearVariableMonitoringResponse is not null)
                 {
                     response = clearVariableMonitoringResponse;
                 }
 
-                response ??= new ClearVariableMonitoringResponse(Request,
-                                                                 Result.Format(errorResponse));
+                response ??= new ClearVariableMonitoringResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new ClearVariableMonitoringResponse(Request,
-                                                             Result.FromSendRequestState(sendRequestState));
+            response ??= new ClearVariableMonitoringResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnClearVariableMonitoringResponse event

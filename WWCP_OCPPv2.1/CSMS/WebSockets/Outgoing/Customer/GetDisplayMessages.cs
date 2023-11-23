@@ -68,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<GetDisplayMessagesRequest>?  CustomGetDisplayMessagesRequestSerializer    { get; set; }
 
+        public CustomJObjectParserDelegate<GetDisplayMessagesResponse>?     CustomGetDisplayMessagesResponseParser       { get; set; }
+
         #endregion
 
         #region Events
@@ -85,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetDisplayMessages         (Request)
+        #region GetDisplayMessages(Request)
 
         public async Task<GetDisplayMessagesResponse> GetDisplayMessages(GetDisplayMessagesRequest Request)
         {
@@ -111,16 +113,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetDisplayMessagesResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomGetDisplayMessagesRequestSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendJSONAndWait(
+                                             Request.EventTrackingId,
+                                             Request.RequestId,
+                                             Request.ChargingStationId,
+                                             Request.Action,
+                                             Request.ToJSON(
+                                                 CustomGetDisplayMessagesRequestSerializer,
+                                                 CustomSignatureSerializer,
+                                                 CustomCustomDataSerializer
+                                             ),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -129,19 +133,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (GetDisplayMessagesResponse.TryParse(Request,
                                                         sendRequestState.Response,
                                                         out var getDisplayMessagesResponse,
-                                                        out var errorResponse) &&
+                                                        out var errorResponse,
+                                                        CustomGetDisplayMessagesResponseParser) &&
                     getDisplayMessagesResponse is not null)
                 {
                     response = getDisplayMessagesResponse;
                 }
 
-                response ??= new GetDisplayMessagesResponse(Request,
-                                                            Result.Format(errorResponse));
+                response ??= new GetDisplayMessagesResponse(
+                                 Request,
+                                 Result.Format(errorResponse)
+                             );
 
             }
 
-            response ??= new GetDisplayMessagesResponse(Request,
-                                                        Result.FromSendRequestState(sendRequestState));
+            response ??= new GetDisplayMessagesResponse(
+                             Request,
+                             Result.FromSendRequestState(sendRequestState)
+                         );
 
 
             #region Send OnGetDisplayMessagesResponse event

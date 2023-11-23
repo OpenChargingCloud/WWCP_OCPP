@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A CP client.
+    /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class ChargingStationWSClient : WebSocketClient,
                                                    IChargingStationWebSocketClient,
@@ -70,6 +70,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Custom JSON serializer delegates
 
         public CustomJObjectSerializerDelegate<NotifyChargingLimitRequest>?  CustomNotifyChargingLimitRequestSerializer    { get; set; }
+
+        public CustomJObjectParserDelegate<NotifyChargingLimitResponse>?     CustomNotifyChargingLimitResponseParser       { get; set; }
 
         #endregion
 
@@ -98,7 +100,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region NotifyChargingLimit                  (Request)
+        #region NotifyChargingLimit(Request)
 
         /// <summary>
         /// Notify about charging limits.
@@ -174,7 +176,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (NotifyChargingLimitResponse.TryParse(Request,
                                                              sendRequestState.Response,
                                                              out var notifyChargingLimitResponse,
-                                                             out var errorResponse) &&
+                                                             out var errorResponse,
+                                                             CustomNotifyChargingLimitResponseParser) &&
                         notifyChargingLimitResponse is not null)
                     {
                         response = notifyChargingLimitResponse;
