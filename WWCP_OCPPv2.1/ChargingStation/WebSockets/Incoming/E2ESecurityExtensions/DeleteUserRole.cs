@@ -31,52 +31,52 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    #region OnUpdateFirmware
+    #region OnDeleteUserRole
 
     /// <summary>
-    /// An update firmware request.
+    /// An DeleteUserRole request.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnUpdateFirmwareRequestDelegate(DateTime                Timestamp,
-                                        IEventSender            Sender,
-                                        UpdateFirmwareRequest   Request);
+        OnDeleteUserRoleRequestDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           DeleteUserRoleRequest   Request);
 
 
     /// <summary>
-    /// An update firmware request.
+    /// An DeleteUserRole request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<UpdateFirmwareResponse>
+    public delegate Task<DeleteUserRoleResponse>
 
-        OnUpdateFirmwareDelegate(DateTime                    Timestamp,
-                                 IEventSender                Sender,
-                                 WebSocketClientConnection   Connection,
-                                 UpdateFirmwareRequest       Request,
-                                 CancellationToken           CancellationToken);
+        OnDeleteUserRoleDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    DeleteUserRoleRequest    Request,
+                                    CancellationToken           CancellationToken);
 
 
     /// <summary>
-    /// An update firmware response.
+    /// An DeleteUserRole response.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
-    /// <param name="Request">The reserve now request.</param>
-    /// <param name="Response">The reserve now response.</param>
+    /// <param name="Request">The request.</param>
+    /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnUpdateFirmwareResponseDelegate(DateTime                 Timestamp,
-                                         IEventSender             Sender,
-                                         UpdateFirmwareRequest    Request,
-                                         UpdateFirmwareResponse   Response,
-                                         TimeSpan                 Runtime);
+        OnDeleteUserRoleResponseDelegate(DateTime                    Timestamp,
+                                            IEventSender                Sender,
+                                            DeleteUserRoleRequest    Request,
+                                            DeleteUserRoleResponse   Response,
+                                            TimeSpan                    Runtime);
 
     #endregion
 
@@ -93,36 +93,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<UpdateFirmwareRequest>?  CustomUpdateFirmwareRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<DeleteUserRoleRequest>?  CustomDeleteUserRoleRequestParser    { get; set; }
 
         #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever an update firmware websocket request was received.
+        /// An event sent whenever a DeleteUserRole websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?           OnUpdateFirmwareWSRequest;
+        public event WSClientRequestLogHandler?           OnDeleteUserRoleWSRequest;
 
         /// <summary>
-        /// An event sent whenever an update firmware request was received.
+        /// An event sent whenever a DeleteUserRole request was received.
         /// </summary>
-        public event OnUpdateFirmwareRequestDelegate?     OnUpdateFirmwareRequest;
+        public event OnDeleteUserRoleRequestDelegate?     OnDeleteUserRoleRequest;
 
         /// <summary>
-        /// An event sent whenever an update firmware request was received.
+        /// An event sent whenever a DeleteUserRole request was received.
         /// </summary>
-        public event OnUpdateFirmwareDelegate?            OnUpdateFirmware;
+        public event OnDeleteUserRoleDelegate?            OnDeleteUserRole;
 
         /// <summary>
-        /// An event sent whenever a response to an update firmware request was sent.
+        /// An event sent whenever a response to a DeleteUserRole request was sent.
         /// </summary>
-        public event OnUpdateFirmwareResponseDelegate?    OnUpdateFirmwareResponse;
+        public event OnDeleteUserRoleResponseDelegate?    OnDeleteUserRoleResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to an update firmware request was sent.
+        /// An event sent whenever a websocket response to a DeleteUserRole request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?          OnUpdateFirmwareWSResponse;
+        public event WSClientResponseLogHandler?          OnDeleteUserRoleWSResponse;
 
         #endregion
 
@@ -132,11 +132,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public async Task<Tuple<OCPP_WebSocket_ResponseMessage?,
                                 OCPP_WebSocket_ErrorMessage?>>
 
-            Receive_UpdateFirmware(JArray                     requestJSON,
-                                   JObject                    requestData,
-                                   Request_Id                 requestId,
-                                   ChargingStation_Id         chargingStationId,
+            Receive_DeleteUserRole(DateTime                   RequestTimestamp,
                                    WebSocketClientConnection  WebSocketConnection,
+                                   ChargingStation_Id         chargingStationId,
+                                   EventTracking_Id           EventTrackingId,
+                                   String                     requestText,
+                                   Request_Id                 requestId,
+                                   JObject                    requestJSON,
                                    CancellationToken          CancellationToken)
 
         {
@@ -144,19 +146,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             OCPP_WebSocket_ResponseMessage? OCPPResponse        = null;
             OCPP_WebSocket_ErrorMessage?    OCPPErrorResponse   = null;
 
-            #region Send OnUpdateFirmwareWSRequest event
+            #region Send OnDeleteUserRoleWSRequest event
 
             try
             {
 
-                OnUpdateFirmwareWSRequest?.Invoke(Timestamp.Now,
-                                                  this,
+                OnDeleteUserRoleWSRequest?.Invoke(Timestamp.Now,
+                                                  WebSocketConnection,
+                                                  chargingStationId,
+                                                  EventTrackingId,
                                                   requestJSON);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateFirmwareWSRequest));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteUserRoleWSRequest));
             }
 
             #endregion
@@ -164,37 +168,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                if (UpdateFirmwareRequest.TryParse(requestData,
+                if (DeleteUserRoleRequest.TryParse(requestJSON,
                                                    requestId,
                                                    ChargingStationIdentity,
                                                    out var request,
                                                    out var errorResponse,
-                                                   CustomUpdateFirmwareRequestParser) && request is not null) {
+                                                   CustomDeleteUserRoleRequestParser) && request is not null) {
 
-                    #region Send OnUpdateFirmwareRequest event
+                    #region Send OnDeleteUserRoleRequest event
 
                     try
                     {
 
-                        OnUpdateFirmwareRequest?.Invoke(Timestamp.Now,
+                        OnDeleteUserRoleRequest?.Invoke(Timestamp.Now,
                                                         this,
                                                         request);
 
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateFirmwareRequest));
+                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteUserRoleRequest));
                     }
 
                     #endregion
 
                     #region Call async subscribers
 
-                    UpdateFirmwareResponse? response = null;
+                    DeleteUserRoleResponse? response = null;
 
-                    var results = OnUpdateFirmware?.
+                    var results = OnDeleteUserRole?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnUpdateFirmwareDelegate)?.Invoke(Timestamp.Now,
+                                      SafeSelect(subscriber => (subscriber as OnDeleteUserRoleDelegate)?.Invoke(Timestamp.Now,
                                                                                                                 this,
                                                                                                                 WebSocketConnection,
                                                                                                                 request,
@@ -210,16 +214,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     }
 
-                    response ??= UpdateFirmwareResponse.Failed(request);
+                    response ??= DeleteUserRoleResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnUpdateFirmwareResponse event
+                    #region Send OnDeleteUserRoleResponse event
 
                     try
                     {
 
-                        OnUpdateFirmwareResponse?.Invoke(Timestamp.Now,
+                        OnDeleteUserRoleResponse?.Invoke(Timestamp.Now,
                                                          this,
                                                          request,
                                                          response,
@@ -228,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateFirmwareResponse));
+                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteUserRoleResponse));
                     }
 
                     #endregion
@@ -243,8 +247,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 else
                     OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
                                             requestId,
-                                            "UpdateFirmware",
-                                            requestData,
+                                            "DeleteUserRole",
+                                            requestJSON,
                                             errorResponse
                                         );
 
@@ -253,26 +257,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
                 OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
                                         requestId,
-                                        "UpdateFirmware",
+                                        "DeleteUserRole",
                                         requestJSON,
                                         e
                                     );
             }
 
-            #region Send OnUpdateFirmwareWSResponse event
+            #region Send OnDeleteUserRoleWSResponse event
 
             try
             {
 
-                OnUpdateFirmwareWSResponse?.Invoke(Timestamp.Now,
-                                                   this,
+                OnDeleteUserRoleWSResponse?.Invoke(Timestamp.Now,
+                                                   WebSocketConnection,
                                                    requestJSON,
-                                                   OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? []);
+                                                   OCPPResponse?.Message,
+                                                   OCPPErrorResponse?.ToJSON());
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnUpdateFirmwareWSResponse));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteUserRoleWSResponse));
             }
 
             #endregion

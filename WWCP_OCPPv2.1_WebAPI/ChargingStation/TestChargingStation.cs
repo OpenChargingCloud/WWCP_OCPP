@@ -5306,7 +5306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         }
 
-                        if (request.VendorId.ToString() == "GraphDefined OEM")
+                        if (request.VendorId == Vendor_Id.GraphDefined)
                         {
                             response = new DataTransferResponse(
                                            request,

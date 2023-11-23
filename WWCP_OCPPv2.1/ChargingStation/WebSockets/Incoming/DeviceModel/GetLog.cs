@@ -31,39 +31,39 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    #region OnReset
+    #region OnGetLog
 
     /// <summary>
-    /// A reset request.
+    /// A get log request.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnResetRequestDelegate(DateTime       Timestamp,
-                               IEventSender   Sender,
-                               ResetRequest   Request);
+        OnGetLogRequestDelegate(DateTime        Timestamp,
+                                IEventSender    Sender,
+                                GetLogRequest   Request);
 
 
     /// <summary>
-    /// A reset request.
+    /// A get log request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ResetResponse>
+    public delegate Task<GetLogResponse>
 
-        OnResetDelegate(DateTime                    Timestamp,
-                        IEventSender                Sender,
-                        WebSocketClientConnection   Connection,
-                        ResetRequest                Request,
-                        CancellationToken           CancellationToken);
+        OnGetLogDelegate(DateTime                    Timestamp,
+                         IEventSender                Sender,
+                         WebSocketClientConnection   Connection,
+                         GetLogRequest               Request,
+                         CancellationToken           CancellationToken);
 
 
     /// <summary>
-    /// A reset response.
+    /// A get log response.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
@@ -72,11 +72,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnResetResponseDelegate(DateTime        Timestamp,
-                                IEventSender    Sender,
-                                ResetRequest    Request,
-                                ResetResponse   Response,
-                                TimeSpan        Runtime);
+        OnGetLogResponseDelegate(DateTime         Timestamp,
+                                 IEventSender     Sender,
+                                 GetLogRequest    Request,
+                                 GetLogResponse   Response,
+                                 TimeSpan         Runtime);
 
     #endregion
 
@@ -93,36 +93,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<ResetRequest>?  CustomResetRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<GetLogRequest>?  CustomGetLogRequestParser    { get; set; }
 
         #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a reset websocket request was received.
+        /// An event sent whenever a get log websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?     OnResetWSRequest;
+        public event WSClientRequestLogHandler?     OnGetLogWSRequest;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a get log request was received.
         /// </summary>
-        public event OnResetRequestDelegate?        OnResetRequest;
+        public event OnGetLogRequestDelegate?       OnGetLogRequest;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a get log request was received.
         /// </summary>
-        public event OnResetDelegate?               OnReset;
+        public event OnGetLogDelegate?              OnGetLog;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event sent whenever a response to a get log request was sent.
         /// </summary>
-        public event OnResetResponseDelegate?       OnResetResponse;
+        public event OnGetLogResponseDelegate?      OnGetLogResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a reset request was sent.
+        /// An event sent whenever a websocket response to a get log request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?    OnResetWSResponse;
+        public event WSClientResponseLogHandler?    OnGetLogWSResponse;
 
         #endregion
 
@@ -132,31 +132,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public async Task<Tuple<OCPP_WebSocket_ResponseMessage?,
                                 OCPP_WebSocket_ErrorMessage?>>
 
-            Receive_Reset(JArray                     requestJSON,
-                          JObject                    requestData,
-                          Request_Id                 requestId,
-                          ChargingStation_Id         chargingStationId,
-                          WebSocketClientConnection  WebSocketConnection,
-                          CancellationToken          CancellationToken)
+            Receive_GetLog(DateTime                   RequestTimestamp,
+                           WebSocketClientConnection  WebSocketConnection,
+                           ChargingStation_Id         chargingStationId,
+                           EventTracking_Id           EventTrackingId,
+                           String                     requestText,
+                           Request_Id                 requestId,
+                           JObject                    requestJSON,
+                           CancellationToken          CancellationToken)
 
         {
 
             OCPP_WebSocket_ResponseMessage? OCPPResponse        = null;
             OCPP_WebSocket_ErrorMessage?    OCPPErrorResponse   = null;
 
-            #region Send OnResetWSRequest event
+            #region Send OnGetLogWSRequest event
 
             try
             {
 
-                OnResetWSRequest?.Invoke(Timestamp.Now,
-                                         this,
-                                         requestJSON);
+                OnGetLogWSRequest?.Invoke(Timestamp.Now,
+                                          WebSocketConnection,
+                                          chargingStationId,
+                                          EventTrackingId,
+                                          requestJSON);
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnResetWSRequest));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGetLogWSRequest));
             }
 
             #endregion
@@ -164,41 +168,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                if (ResetRequest.TryParse(requestData,
-                                          requestId,
-                                          ChargingStationIdentity,
-                                          out var request,
-                                          out var errorResponse,
-                                          CustomResetRequestParser) && request is not null) {
+                if (GetLogRequest.TryParse(requestJSON,
+                                           requestId,
+                                           ChargingStationIdentity,
+                                           out var request,
+                                           out var errorResponse,
+                                           CustomGetLogRequestParser) && request is not null) {
 
-                    #region Send OnResetRequest event
+                    #region Send OnGetLogRequest event
 
                     try
                     {
 
-                        OnResetRequest?.Invoke(Timestamp.Now,
-                                               this,
-                                               request);
+                        OnGetLogRequest?.Invoke(Timestamp.Now,
+                                                this,
+                                                request);
 
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnResetRequest));
+                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGetLogRequest));
                     }
 
                     #endregion
 
                     #region Call async subscribers
 
-                    ResetResponse? response = null;
+                    GetLogResponse? response = null;
 
-                    var results = OnReset?.
+                    var results = OnGetLog?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnResetDelegate)?.Invoke(Timestamp.Now,
-                                                                                                       this,
-                                                                                                       WebSocketConnection,
-                                                                                                       request,
-                                                                                                       CancellationToken)).
+                                      SafeSelect(subscriber => (subscriber as OnGetLogDelegate)?.Invoke(Timestamp.Now,
+                                                                                                        this,
+                                                                                                        WebSocketConnection,
+                                                                                                        request,
+                                                                                                        CancellationToken)).
                                       ToArray();
 
                     if (results?.Length > 0)
@@ -210,25 +214,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     }
 
-                    response ??= ResetResponse.Failed(request);
+                    response ??= GetLogResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnResetResponse event
+                    #region Send OnGetLogResponse event
 
                     try
                     {
 
-                        OnResetResponse?.Invoke(Timestamp.Now,
-                                                this,
-                                                request,
-                                                response,
-                                                response.Runtime);
+                        OnGetLogResponse?.Invoke(Timestamp.Now,
+                                                 this,
+                                                 request,
+                                                 response,
+                                                 response.Runtime);
 
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnResetResponse));
+                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGetLogResponse));
                     }
 
                     #endregion
@@ -243,8 +247,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 else
                     OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
                                             requestId,
-                                            "Reset",
-                                            requestData,
+                                            "GetLog",
+                                            requestJSON,
                                             errorResponse
                                         );
 
@@ -253,26 +257,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
                 OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
                                         requestId,
-                                        "Reset",
+                                        "GetLog",
                                         requestJSON,
                                         e
                                     );
             }
 
-            #region Send OnResetWSResponse event
+            #region Send OnGetLogWSResponse event
 
             try
             {
 
-                OnResetWSResponse?.Invoke(Timestamp.Now,
-                                          this,
-                                          requestJSON,
-                                          OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? []);
+                OnGetLogWSResponse?.Invoke(Timestamp.Now,
+                                           WebSocketConnection,
+                                           requestJSON,
+                                           OCPPResponse?.Message,
+                                           OCPPErrorResponse?.ToJSON());
 
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnResetWSResponse));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnGetLogWSResponse));
             }
 
             #endregion
