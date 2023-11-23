@@ -113,44 +113,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetDefaultChargingTariffResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomGetDefaultChargingTariffRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (GetDefaultChargingTariffResponse.TryParse(Request,
-                                                              sendRequestState.Response,
-                                                              out var setDisplayMessageResponse,
-                                                              out var errorResponse,
-                                                              CustomGetDefaultChargingTariffResponseParser) &&
-                    setDisplayMessageResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomGetDefaultChargingTariffRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = setDisplayMessageResponse;
+
+                    if (GetDefaultChargingTariffResponse.TryParse(Request,
+                                                                  sendRequestState.Response,
+                                                                  out var setDisplayMessageResponse,
+                                                                  out var errorResponse,
+                                                                  CustomGetDefaultChargingTariffResponseParser) &&
+                        setDisplayMessageResponse is not null)
+                    {
+                        response = setDisplayMessageResponse;
+                    }
+
+                    response ??= new GetDefaultChargingTariffResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new GetDefaultChargingTariffResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new GetDefaultChargingTariffResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new GetDefaultChargingTariffResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnGetDefaultChargingTariffResponse event

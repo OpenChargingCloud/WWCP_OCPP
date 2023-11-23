@@ -134,67 +134,87 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             NotifyEVChargingScheduleResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomNotifyEVChargingScheduleRequestSerializer,
-                                                       CustomChargingScheduleSerializer,
-                                                       CustomLimitBeyondSoCSerializer,
-                                                       CustomChargingSchedulePeriodSerializer,
-                                                       CustomV2XFreqWattEntrySerializer,
-                                                       CustomV2XSignalWattEntrySerializer,
-                                                       CustomSalesTariffSerializer,
-                                                       CustomSalesTariffEntrySerializer,
-                                                       CustomRelativeTimeIntervalSerializer,
-                                                       CustomConsumptionCostSerializer,
-                                                       CustomCostSerializer,
-
-                                                       CustomAbsolutePriceScheduleSerializer,
-                                                       CustomPriceRuleStackSerializer,
-                                                       CustomPriceRuleSerializer,
-                                                       CustomTaxRuleSerializer,
-                                                       CustomOverstayRuleListSerializer,
-                                                       CustomOverstayRuleSerializer,
-                                                       CustomAdditionalServiceSerializer,
-
-                                                       CustomPriceLevelScheduleSerializer,
-                                                       CustomPriceLevelScheduleEntrySerializer,
-
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomNotifyEVChargingScheduleRequestSerializer,
+                                                           CustomChargingScheduleSerializer,
+                                                           CustomLimitBeyondSoCSerializer,
+                                                           CustomChargingSchedulePeriodSerializer,
+                                                           CustomV2XFreqWattEntrySerializer,
+                                                           CustomV2XSignalWattEntrySerializer,
+                                                           CustomSalesTariffSerializer,
+                                                           CustomSalesTariffEntrySerializer,
+                                                           CustomRelativeTimeIntervalSerializer,
+                                                           CustomConsumptionCostSerializer,
+                                                           CustomCostSerializer,
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                                                           CustomAbsolutePriceScheduleSerializer,
+                                                           CustomPriceRuleStackSerializer,
+                                                           CustomPriceRuleSerializer,
+                                                           CustomTaxRuleSerializer,
+                                                           CustomOverstayRuleListSerializer,
+                                                           CustomOverstayRuleSerializer,
+                                                           CustomAdditionalServiceSerializer,
+
+                                                           CustomPriceLevelScheduleSerializer,
+                                                           CustomPriceLevelScheduleEntrySerializer,
+
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
+
+                if (requestMessage.NoErrors)
                 {
 
-                    if (NotifyEVChargingScheduleResponse.TryParse(Request,
-                                                                  sendRequestState.Response,
-                                                                  out var reportChargingProfilesResponse,
-                                                                  out var errorResponse,
-                                                                  CustomNotifyEVChargingScheduleResponseParser) &&
-                        reportChargingProfilesResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = reportChargingProfilesResponse;
+
+                        if (NotifyEVChargingScheduleResponse.TryParse(Request,
+                                                                      sendRequestState.Response,
+                                                                      out var reportChargingProfilesResponse,
+                                                                      out var errorResponse,
+                                                                      CustomNotifyEVChargingScheduleResponseParser) &&
+                            reportChargingProfilesResponse is not null)
+                        {
+                            response = reportChargingProfilesResponse;
+                        }
+
+                        response ??= new NotifyEVChargingScheduleResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new NotifyEVChargingScheduleResponse(Request,
-                                                                      Result.Format(errorResponse));
+                    response ??= new NotifyEVChargingScheduleResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new NotifyEVChargingScheduleResponse(Request,
-                                                                  Result.FromSendRequestState(sendRequestState));
+                response ??= new NotifyEVChargingScheduleResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new NotifyEVChargingScheduleResponse(Request,
-                                                              Result.GenericError(requestMessage.ErrorMessage));
+                response = new NotifyEVChargingScheduleResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnNotifyEVChargingScheduleResponse event

@@ -113,44 +113,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             ClearVariableMonitoringResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomClearVariableMonitoringRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (ClearVariableMonitoringResponse.TryParse(Request,
-                                                             sendRequestState.Response,
-                                                             out var clearVariableMonitoringResponse,
-                                                             out var errorResponse,
-                                                             CustomClearVariableMonitoringResponseParser) &&
-                    clearVariableMonitoringResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomClearVariableMonitoringRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = clearVariableMonitoringResponse;
+
+                    if (ClearVariableMonitoringResponse.TryParse(Request,
+                                                                 sendRequestState.Response,
+                                                                 out var clearVariableMonitoringResponse,
+                                                                 out var errorResponse,
+                                                                 CustomClearVariableMonitoringResponseParser) &&
+                        clearVariableMonitoringResponse is not null)
+                    {
+                        response = clearVariableMonitoringResponse;
+                    }
+
+                    response ??= new ClearVariableMonitoringResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new ClearVariableMonitoringResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new ClearVariableMonitoringResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new ClearVariableMonitoringResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnClearVariableMonitoringResponse event

@@ -134,46 +134,66 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             GetCertificateStatusResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomGetCertificateStatusSerializer,
-                                                       CustomOCSPRequestDataSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomGetCertificateStatusSerializer,
+                                                           CustomOCSPRequestDataSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (GetCertificateStatusResponse.TryParse(Request,
-                                                              sendRequestState.Response,
-                                                              out var getCertificateStatusResponse,
-                                                              out var errorResponse,
-                                                              CustomGetCertificateStatusResponseParser) &&
-                        getCertificateStatusResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = getCertificateStatusResponse;
+
+                        if (GetCertificateStatusResponse.TryParse(Request,
+                                                                  sendRequestState.Response,
+                                                                  out var getCertificateStatusResponse,
+                                                                  out var errorResponse,
+                                                                  CustomGetCertificateStatusResponseParser) &&
+                            getCertificateStatusResponse is not null)
+                        {
+                            response = getCertificateStatusResponse;
+                        }
+
+                        response ??= new GetCertificateStatusResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new GetCertificateStatusResponse(Request,
-                                                                  Result.Format(errorResponse));
+                    response ??= new GetCertificateStatusResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new GetCertificateStatusResponse(Request,
-                                                              Result.FromSendRequestState(sendRequestState));
+                response ??= new GetCertificateStatusResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new GetCertificateStatusResponse(Request,
-                                                          Result.GenericError(requestMessage.ErrorMessage));
+                response = new GetCertificateStatusResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnGetCertificateStatusResponse event

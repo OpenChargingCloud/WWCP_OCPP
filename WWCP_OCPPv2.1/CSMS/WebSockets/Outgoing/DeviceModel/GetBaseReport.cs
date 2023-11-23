@@ -113,44 +113,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetBaseReportResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomGetBaseReportRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (GetBaseReportResponse.TryParse(Request,
-                                                   sendRequestState.Response,
-                                                   out var getBaseReportResponse,
-                                                   out var errorResponse,
-                                                   CustomGetBaseReportResponseParser) &&
-                    getBaseReportResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomGetBaseReportRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = getBaseReportResponse;
+
+                    if (GetBaseReportResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var getBaseReportResponse,
+                                                       out var errorResponse,
+                                                       CustomGetBaseReportResponseParser) &&
+                        getBaseReportResponse is not null)
+                    {
+                        response = getBaseReportResponse;
+                    }
+
+                    response ??= new GetBaseReportResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new GetBaseReportResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new GetBaseReportResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new GetBaseReportResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnGetBaseReportResponse event

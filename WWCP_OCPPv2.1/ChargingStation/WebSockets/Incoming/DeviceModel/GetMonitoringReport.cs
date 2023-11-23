@@ -145,9 +145,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            OCPP_WebSocket_ResponseMessage? OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?    OCPPErrorResponse   = null;
-
             #region Send OnGetMonitoringReportWSRequest event
 
             try
@@ -166,6 +163,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
 
             #endregion
+
+            OCPP_WebSocket_ResponseMessage? OCPPResponse        = null;
+            OCPP_WebSocket_ErrorMessage?    OCPPErrorResponse   = null;
 
             try
             {
@@ -254,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 else
                     OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
                                             requestId,
-                                            "GetMonitoringReport",
+                                            nameof(Receive_GetMonitoringReport)[8..],
                                             requestJSON,
                                             errorResponse
                                         );
@@ -264,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
                 OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
                                         requestId,
-                                        "GetMonitoringReport",
+                                        nameof(Receive_GetMonitoringReport)[8..],
                                         requestJSON,
                                         e
                                     );
@@ -288,7 +288,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
 
             #endregion
-
 
             return new Tuple<OCPP_WebSocket_ResponseMessage?,
                              OCPP_WebSocket_ErrorMessage?>(OCPPResponse,

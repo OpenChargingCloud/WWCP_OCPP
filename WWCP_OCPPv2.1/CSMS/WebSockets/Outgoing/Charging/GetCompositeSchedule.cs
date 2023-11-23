@@ -114,44 +114,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetCompositeScheduleResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomGetCompositeScheduleRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (GetCompositeScheduleResponse.TryParse(Request,
-                                                          sendRequestState.Response,
-                                                          out var getCompositeScheduleResponse,
-                                                          out var errorResponse,
-                                                          CustomGetCompositeScheduleResponseParser) &&
-                    getCompositeScheduleResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomGetCompositeScheduleRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = getCompositeScheduleResponse;
+
+                    if (GetCompositeScheduleResponse.TryParse(Request,
+                                                              sendRequestState.Response,
+                                                              out var getCompositeScheduleResponse,
+                                                              out var errorResponse,
+                                                              CustomGetCompositeScheduleResponseParser) &&
+                        getCompositeScheduleResponse is not null)
+                    {
+                        response = getCompositeScheduleResponse;
+                    }
+
+                    response ??= new GetCompositeScheduleResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new GetCompositeScheduleResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new GetCompositeScheduleResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new GetCompositeScheduleResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnGetCompositeScheduleResponse event

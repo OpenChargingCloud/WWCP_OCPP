@@ -113,44 +113,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             CostUpdatedResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomCostUpdatedRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (CostUpdatedResponse.TryParse(Request,
-                                                 sendRequestState.Response,
-                                                 out var costUpdatedResponse,
-                                                 out var errorResponse,
-                                                 CustomCostUpdatedResponseParser) &&
-                    costUpdatedResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomCostUpdatedRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = costUpdatedResponse;
+
+                    if (CostUpdatedResponse.TryParse(Request,
+                                                     sendRequestState.Response,
+                                                     out var costUpdatedResponse,
+                                                     out var errorResponse,
+                                                     CustomCostUpdatedResponseParser) &&
+                        costUpdatedResponse is not null)
+                    {
+                        response = costUpdatedResponse;
+                    }
+
+                    response ??= new CostUpdatedResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new CostUpdatedResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new CostUpdatedResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new CostUpdatedResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnCostUpdatedResponse event

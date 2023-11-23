@@ -134,68 +134,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             ReportChargingProfilesResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomReportChargingProfilesRequestSerializer,
-                                                       CustomChargingProfileSerializer,
-                                                       CustomLimitBeyondSoCSerializer,
-                                                       CustomChargingScheduleSerializer,
-                                                       CustomChargingSchedulePeriodSerializer,
-                                                       CustomV2XFreqWattEntrySerializer,
-                                                       CustomV2XSignalWattEntrySerializer,
-                                                       CustomSalesTariffSerializer,
-                                                       CustomSalesTariffEntrySerializer,
-                                                       CustomRelativeTimeIntervalSerializer,
-                                                       CustomConsumptionCostSerializer,
-                                                       CustomCostSerializer,
-
-                                                       CustomAbsolutePriceScheduleSerializer,
-                                                       CustomPriceRuleStackSerializer,
-                                                       CustomPriceRuleSerializer,
-                                                       CustomTaxRuleSerializer,
-                                                       CustomOverstayRuleListSerializer,
-                                                       CustomOverstayRuleSerializer,
-                                                       CustomAdditionalServiceSerializer,
-
-                                                       CustomPriceLevelScheduleSerializer,
-                                                       CustomPriceLevelScheduleEntrySerializer,
-
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomReportChargingProfilesRequestSerializer,
+                                                           CustomChargingProfileSerializer,
+                                                           CustomLimitBeyondSoCSerializer,
+                                                           CustomChargingScheduleSerializer,
+                                                           CustomChargingSchedulePeriodSerializer,
+                                                           CustomV2XFreqWattEntrySerializer,
+                                                           CustomV2XSignalWattEntrySerializer,
+                                                           CustomSalesTariffSerializer,
+                                                           CustomSalesTariffEntrySerializer,
+                                                           CustomRelativeTimeIntervalSerializer,
+                                                           CustomConsumptionCostSerializer,
+                                                           CustomCostSerializer,
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                                                           CustomAbsolutePriceScheduleSerializer,
+                                                           CustomPriceRuleStackSerializer,
+                                                           CustomPriceRuleSerializer,
+                                                           CustomTaxRuleSerializer,
+                                                           CustomOverstayRuleListSerializer,
+                                                           CustomOverstayRuleSerializer,
+                                                           CustomAdditionalServiceSerializer,
+
+                                                           CustomPriceLevelScheduleSerializer,
+                                                           CustomPriceLevelScheduleEntrySerializer,
+
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
+
+                if (requestMessage.NoErrors)
                 {
 
-                    if (ReportChargingProfilesResponse.TryParse(Request,
-                                                                sendRequestState.Response,
-                                                                out var reportChargingProfilesResponse,
-                                                                out var errorResponse,
-                                                                CustomReportChargingProfilesResponseParser) &&
-                        reportChargingProfilesResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = reportChargingProfilesResponse;
+
+                        if (ReportChargingProfilesResponse.TryParse(Request,
+                                                                    sendRequestState.Response,
+                                                                    out var reportChargingProfilesResponse,
+                                                                    out var errorResponse,
+                                                                    CustomReportChargingProfilesResponseParser) &&
+                            reportChargingProfilesResponse is not null)
+                        {
+                            response = reportChargingProfilesResponse;
+                        }
+
+                        response ??= new ReportChargingProfilesResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new ReportChargingProfilesResponse(Request,
-                                                                    Result.Format(errorResponse));
+                    response ??= new ReportChargingProfilesResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new ReportChargingProfilesResponse(Request,
-                                                                Result.FromSendRequestState(sendRequestState));
+                response ??= new ReportChargingProfilesResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new ReportChargingProfilesResponse(Request,
-                                                            Result.GenericError(requestMessage.ErrorMessage));
+                response = new ReportChargingProfilesResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnReportChargingProfilesResponse event

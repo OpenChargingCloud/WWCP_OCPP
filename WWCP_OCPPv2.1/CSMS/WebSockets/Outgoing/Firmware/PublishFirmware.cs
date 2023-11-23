@@ -113,44 +113,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             PublishFirmwareResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomPublishFirmwareRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (PublishFirmwareResponse.TryParse(Request,
-                                                     sendRequestState.Response,
-                                                     out var publishFirmwareResponse,
-                                                     out var errorResponse,
-                                                     CustomPublishFirmwareResponseParser) &&
-                    publishFirmwareResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomPublishFirmwareRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = publishFirmwareResponse;
+
+                    if (PublishFirmwareResponse.TryParse(Request,
+                                                         sendRequestState.Response,
+                                                         out var publishFirmwareResponse,
+                                                         out var errorResponse,
+                                                         CustomPublishFirmwareResponseParser) &&
+                        publishFirmwareResponse is not null)
+                    {
+                        response = publishFirmwareResponse;
+                    }
+
+                    response ??= new PublishFirmwareResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new PublishFirmwareResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new PublishFirmwareResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new PublishFirmwareResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnPublishFirmwareResponse event

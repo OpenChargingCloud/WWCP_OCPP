@@ -113,44 +113,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             SetMonitoringLevelResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomSetMonitoringLevelRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (SetMonitoringLevelResponse.TryParse(Request,
-                                                        sendRequestState.Response,
-                                                        out var setMonitoringLevelResponse,
-                                                        out var errorResponse,
-                                                        CustomSetMonitoringLevelResponseParser) &&
-                    setMonitoringLevelResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomSetMonitoringLevelRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = setMonitoringLevelResponse;
+
+                    if (SetMonitoringLevelResponse.TryParse(Request,
+                                                            sendRequestState.Response,
+                                                            out var setMonitoringLevelResponse,
+                                                            out var errorResponse,
+                                                            CustomSetMonitoringLevelResponseParser) &&
+                        setMonitoringLevelResponse is not null)
+                    {
+                        response = setMonitoringLevelResponse;
+                    }
+
+                    response ??= new SetMonitoringLevelResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new SetMonitoringLevelResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new SetMonitoringLevelResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new SetMonitoringLevelResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnSetMonitoringLevelResponse event

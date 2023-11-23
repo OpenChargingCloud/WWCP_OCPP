@@ -253,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 else
                     OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
                                             requestId,
-                                           "BootNotification",
+                                            nameof(Receive_BootNotification)[8..],
                                             requestData,
                                             errorResponse
                                         );
@@ -264,21 +264,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
                                         requestId,
-                                        "BootNotification",
+                                        nameof(Receive_BootNotification)[8..],
                                         requestData,
                                         e
                                     );
-
-                                    //new OCPP_WebSocket_ErrorMessage(
-                                    //    requestId,
-                                    //    ResultCodes.FormationViolation,
-                                    //    "Processing the given 'BootNotification' request led to an exception!",
-                                    //    JSONObject.Create(
-                                    //        new JProperty("request",    OCPPTextMessage),
-                                    //        new JProperty("exception",  e.Message),
-                                    //        new JProperty("stacktrace", e.StackTrace)
-                                    //    )
-                                    //);
 
             }
 
@@ -300,7 +289,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
 
             #endregion
-
 
             return new Tuple<OCPP_WebSocket_ResponseMessage?,
                              OCPP_WebSocket_ErrorMessage?>(OCPPResponse,

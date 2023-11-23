@@ -113,69 +113,83 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             SetChargingProfileResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-
-                                                 CustomSetChargingProfileRequestSerializer,
-                                                 CustomChargingProfileSerializer,
-                                                 CustomLimitBeyondSoCSerializer,
-                                                 CustomChargingScheduleSerializer,
-                                                 CustomChargingSchedulePeriodSerializer,
-                                                 CustomV2XFreqWattEntrySerializer,
-                                                 CustomV2XSignalWattEntrySerializer,
-                                                 CustomSalesTariffSerializer,
-                                                 CustomSalesTariffEntrySerializer,
-                                                 CustomRelativeTimeIntervalSerializer,
-                                                 CustomConsumptionCostSerializer,
-                                                 CustomCostSerializer,
-
-                                                 CustomAbsolutePriceScheduleSerializer,
-                                                 CustomPriceRuleStackSerializer,
-                                                 CustomPriceRuleSerializer,
-                                                 CustomTaxRuleSerializer,
-                                                 CustomOverstayRuleListSerializer,
-                                                 CustomOverstayRuleSerializer,
-                                                 CustomAdditionalServiceSerializer,
-
-                                                 CustomPriceLevelScheduleSerializer,
-                                                 CustomPriceLevelScheduleEntrySerializer,
-
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (SetChargingProfileResponse.TryParse(Request,
-                                                        sendRequestState.Response,
-                                                        out var setChargingProfileResponse,
-                                                        out var errorResponse,
-                                                        CustomSetChargingProfileResponseParser) &&
-                    setChargingProfileResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+
+                                                     CustomSetChargingProfileRequestSerializer,
+                                                     CustomChargingProfileSerializer,
+                                                     CustomLimitBeyondSoCSerializer,
+                                                     CustomChargingScheduleSerializer,
+                                                     CustomChargingSchedulePeriodSerializer,
+                                                     CustomV2XFreqWattEntrySerializer,
+                                                     CustomV2XSignalWattEntrySerializer,
+                                                     CustomSalesTariffSerializer,
+                                                     CustomSalesTariffEntrySerializer,
+                                                     CustomRelativeTimeIntervalSerializer,
+                                                     CustomConsumptionCostSerializer,
+                                                     CustomCostSerializer,
+
+                                                     CustomAbsolutePriceScheduleSerializer,
+                                                     CustomPriceRuleStackSerializer,
+                                                     CustomPriceRuleSerializer,
+                                                     CustomTaxRuleSerializer,
+                                                     CustomOverstayRuleListSerializer,
+                                                     CustomOverstayRuleSerializer,
+                                                     CustomAdditionalServiceSerializer,
+
+                                                     CustomPriceLevelScheduleSerializer,
+                                                     CustomPriceLevelScheduleEntrySerializer,
+
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = setChargingProfileResponse;
+
+                    if (SetChargingProfileResponse.TryParse(Request,
+                                                            sendRequestState.Response,
+                                                            out var setChargingProfileResponse,
+                                                            out var errorResponse,
+                                                            CustomSetChargingProfileResponseParser) &&
+                        setChargingProfileResponse is not null)
+                    {
+                        response = setChargingProfileResponse;
+                    }
+
+                    response ??= new SetChargingProfileResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new SetChargingProfileResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new SetChargingProfileResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new SetChargingProfileResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnSetChargingProfileResponse event

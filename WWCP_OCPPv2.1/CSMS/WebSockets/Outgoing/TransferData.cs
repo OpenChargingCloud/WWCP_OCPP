@@ -111,44 +111,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             CS.DataTransferResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomDataTransferRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (CS.DataTransferResponse.TryParse(Request,
-                                                     sendRequestState.Response,
-                                                     out var dataTransferResponse,
-                                                     out var errorResponse,
-                                                     CustomDataTransferResponseParser) &&
-                    dataTransferResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomDataTransferRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = dataTransferResponse;
+
+                    if (CS.DataTransferResponse.TryParse(Request,
+                                                         sendRequestState.Response,
+                                                         out var dataTransferResponse,
+                                                         out var errorResponse,
+                                                         CustomDataTransferResponseParser) &&
+                        dataTransferResponse is not null)
+                    {
+                        response = dataTransferResponse;
+                    }
+
+                    response ??= new CS.DataTransferResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                 }
 
                 response ??= new CS.DataTransferResponse(
                                      Request,
-                                     Result.Format(errorResponse)
+                                     Result.FromSendRequestState(sendRequestState)
                                  );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new CS.DataTransferResponse(
-                                 Request,
-                                 Result.FromSendRequestState(sendRequestState)
-                             );
+                response = new CS.DataTransferResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnDataTransferResponse event

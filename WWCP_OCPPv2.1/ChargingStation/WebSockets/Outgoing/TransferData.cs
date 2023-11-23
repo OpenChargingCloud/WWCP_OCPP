@@ -132,45 +132,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             CSMS.DataTransferResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomDataTransferRequestSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomDataTransferRequestSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (CSMS.DataTransferResponse.TryParse(Request,
-                                                           sendRequestState.Response,
-                                                           out var dataTransferResponse,
-                                                           out var errorResponse,
-                                                           CustomDataTransferResponseParser) &&
-                        dataTransferResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = dataTransferResponse;
+
+                        if (CSMS.DataTransferResponse.TryParse(Request,
+                                                               sendRequestState.Response,
+                                                               out var dataTransferResponse,
+                                                               out var errorResponse,
+                                                               CustomDataTransferResponseParser) &&
+                            dataTransferResponse is not null)
+                        {
+                            response = dataTransferResponse;
+                        }
+
+                        response ??= new CSMS.DataTransferResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new CSMS.DataTransferResponse(Request,
-                                                               Result.Format(errorResponse));
+                    response ??= new CSMS.DataTransferResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new CSMS.DataTransferResponse(Request,
-                                                           Result.FromSendRequestState(sendRequestState));
+                response ??= new CSMS.DataTransferResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new CSMS.DataTransferResponse(Request,
-                                                       Result.GenericError(requestMessage.ErrorMessage));
+                response = new CSMS.DataTransferResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnDataTransferResponse event

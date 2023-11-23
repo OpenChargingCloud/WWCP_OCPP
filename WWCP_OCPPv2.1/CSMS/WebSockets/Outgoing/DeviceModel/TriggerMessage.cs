@@ -113,45 +113,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             TriggerMessageResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomTriggerMessageRequestSerializer,
-                                                 CustomEVSESerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (TriggerMessageResponse.TryParse(Request,
-                                                    sendRequestState.Response,
-                                                    out var triggerMessageResponse,
-                                                    out var errorResponse,
-                                                    CustomTriggerMessageResponseParser) &&
-                    triggerMessageResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomTriggerMessageRequestSerializer,
+                                                     CustomEVSESerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = triggerMessageResponse;
+
+                    if (TriggerMessageResponse.TryParse(Request,
+                                                        sendRequestState.Response,
+                                                        out var triggerMessageResponse,
+                                                        out var errorResponse,
+                                                        CustomTriggerMessageResponseParser) &&
+                        triggerMessageResponse is not null)
+                    {
+                        response = triggerMessageResponse;
+                    }
+
+                    response ??= new TriggerMessageResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new TriggerMessageResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new TriggerMessageResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new TriggerMessageResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnTriggerMessageResponse event

@@ -113,48 +113,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             UpdateUserRoleResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomUpdateUserRoleRequestSerializer
-                                                 //CustomMessageInfoSerializer,
-                                                 //CustomMessageContentSerializer,
-                                                 //CustomComponentSerializer,
-                                                 //CustomEVSESerializer,
-                                                 //CustomSignatureSerializer,
-                                                 //CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (UpdateUserRoleResponse.TryParse(Request,
-                                                    sendRequestState.Response,
-                                                    out var setDisplayMessageResponse,
-                                                    out var errorResponse,
-                                                    CustomUpdateUserRoleResponseParser) &&
-                    setDisplayMessageResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomUpdateUserRoleRequestSerializer
+                                                     //CustomMessageInfoSerializer,
+                                                     //CustomMessageContentSerializer,
+                                                     //CustomComponentSerializer,
+                                                     //CustomEVSESerializer,
+                                                     //CustomSignatureSerializer,
+                                                     //CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = setDisplayMessageResponse;
+
+                    if (UpdateUserRoleResponse.TryParse(Request,
+                                                        sendRequestState.Response,
+                                                        out var setDisplayMessageResponse,
+                                                        out var errorResponse,
+                                                        CustomUpdateUserRoleResponseParser) &&
+                        setDisplayMessageResponse is not null)
+                    {
+                        response = setDisplayMessageResponse;
+                    }
+
+                    response ??= new UpdateUserRoleResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new UpdateUserRoleResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new UpdateUserRoleResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new UpdateUserRoleResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnUpdateUserRoleResponse event

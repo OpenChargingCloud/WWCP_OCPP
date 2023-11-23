@@ -113,48 +113,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             DeleteSignaturePolicyResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomDeleteSignaturePolicyRequestSerializer
-                                                 //CustomMessageInfoSerializer,
-                                                 //CustomMessageContentSerializer,
-                                                 //CustomComponentSerializer,
-                                                 //CustomEVSESerializer,
-                                                 //CustomSignatureSerializer,
-                                                 //CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (DeleteSignaturePolicyResponse.TryParse(Request,
-                                                           sendRequestState.Response,
-                                                           out var setDisplayMessageResponse,
-                                                           out var errorResponse,
-                                                           CustomDeleteSignaturePolicyResponseParser) &&
-                    setDisplayMessageResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomDeleteSignaturePolicyRequestSerializer
+                                                     //CustomMessageInfoSerializer,
+                                                     //CustomMessageContentSerializer,
+                                                     //CustomComponentSerializer,
+                                                     //CustomEVSESerializer,
+                                                     //CustomSignatureSerializer,
+                                                     //CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = setDisplayMessageResponse;
+
+                    if (DeleteSignaturePolicyResponse.TryParse(Request,
+                                                               sendRequestState.Response,
+                                                               out var setDisplayMessageResponse,
+                                                               out var errorResponse,
+                                                               CustomDeleteSignaturePolicyResponseParser) &&
+                        setDisplayMessageResponse is not null)
+                    {
+                        response = setDisplayMessageResponse;
+                    }
+
+                    response ??= new DeleteSignaturePolicyResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new DeleteSignaturePolicyResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new DeleteSignaturePolicyResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new DeleteSignaturePolicyResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnDeleteSignaturePolicyResponse event

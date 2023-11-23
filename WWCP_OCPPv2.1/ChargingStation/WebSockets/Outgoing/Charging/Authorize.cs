@@ -134,48 +134,68 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             AuthorizeResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomAuthorizeRequestSerializer,
-                                                       CustomIdTokenSerializer,
-                                                       CustomAdditionalInfoSerializer,
-                                                       CustomOCSPRequestDataSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomAuthorizeRequestSerializer,
+                                                           CustomIdTokenSerializer,
+                                                           CustomAdditionalInfoSerializer,
+                                                           CustomOCSPRequestDataSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (AuthorizeResponse.TryParse(Request,
-                                                   sendRequestState.Response,
-                                                   out var authorizeResponse,
-                                                   out var errorResponse,
-                                                   CustomAuthorizeResponseParser) &&
-                        authorizeResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = authorizeResponse;
+
+                        if (AuthorizeResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var authorizeResponse,
+                                                       out var errorResponse,
+                                                       CustomAuthorizeResponseParser) &&
+                            authorizeResponse is not null)
+                        {
+                            response = authorizeResponse;
+                        }
+
+                        response ??= new AuthorizeResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new AuthorizeResponse(Request,
-                                                       Result.Format(errorResponse));
+                    response ??= new AuthorizeResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new AuthorizeResponse(Request,
-                                                   Result.FromSendRequestState(sendRequestState));
+                response ??= new AuthorizeResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new AuthorizeResponse(Request,
-                                               Result.GenericError(requestMessage.ErrorMessage));
+                response = new AuthorizeResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnAuthorizeResponse event

@@ -113,48 +113,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             AddSignaturePolicyResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomAddSignaturePolicyRequestSerializer
-                                                 //CustomMessageInfoSerializer,
-                                                 //CustomMessageContentSerializer,
-                                                 //CustomComponentSerializer,
-                                                 //CustomEVSESerializer,
-                                                 //CustomSignatureSerializer,
-                                                 //CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (AddSignaturePolicyResponse.TryParse(Request,
-                                                        sendRequestState.Response,
-                                                        out var setDisplayMessageResponse,
-                                                        out var errorResponse,
-                                                        CustomAddSignaturePolicyResponseParser) &&
-                    setDisplayMessageResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomAddSignaturePolicyRequestSerializer
+                                                     //CustomMessageInfoSerializer,
+                                                     //CustomMessageContentSerializer,
+                                                     //CustomComponentSerializer,
+                                                     //CustomEVSESerializer,
+                                                     //CustomSignatureSerializer,
+                                                     //CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = setDisplayMessageResponse;
+
+                    if (AddSignaturePolicyResponse.TryParse(Request,
+                                                            sendRequestState.Response,
+                                                            out var setDisplayMessageResponse,
+                                                            out var errorResponse,
+                                                            CustomAddSignaturePolicyResponseParser) &&
+                        setDisplayMessageResponse is not null)
+                    {
+                        response = setDisplayMessageResponse;
+                    }
+
+                    response ??= new AddSignaturePolicyResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new AddSignaturePolicyResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new AddSignaturePolicyResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new AddSignaturePolicyResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnAddSignaturePolicyResponse event

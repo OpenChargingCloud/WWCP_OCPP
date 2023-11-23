@@ -113,73 +113,87 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             RequestStartTransactionResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-
-                                                 CustomRequestStartTransactionRequestSerializer,
-                                                 CustomIdTokenSerializer,
-                                                 CustomAdditionalInfoSerializer,
-                                                 CustomChargingProfileSerializer,
-                                                 CustomLimitBeyondSoCSerializer,
-                                                 CustomChargingScheduleSerializer,
-                                                 CustomChargingSchedulePeriodSerializer,
-                                                 CustomV2XFreqWattEntrySerializer,
-                                                 CustomV2XSignalWattEntrySerializer,
-                                                 CustomSalesTariffSerializer,
-                                                 CustomSalesTariffEntrySerializer,
-                                                 CustomRelativeTimeIntervalSerializer,
-                                                 CustomConsumptionCostSerializer,
-                                                 CustomCostSerializer,
-
-                                                 CustomAbsolutePriceScheduleSerializer,
-                                                 CustomPriceRuleStackSerializer,
-                                                 CustomPriceRuleSerializer,
-                                                 CustomTaxRuleSerializer,
-                                                 CustomOverstayRuleListSerializer,
-                                                 CustomOverstayRuleSerializer,
-                                                 CustomAdditionalServiceSerializer,
-
-                                                 CustomPriceLevelScheduleSerializer,
-                                                 CustomPriceLevelScheduleEntrySerializer,
-
-                                                 CustomTransactionLimitsSerializer,
-
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (RequestStartTransactionResponse.TryParse(Request,
-                                                             sendRequestState.Response,
-                                                             out var requestStartTransactionResponse,
-                                                             out var errorResponse,
-                                                             CustomRequestStartTransactionResponseParser) &&
-                    requestStartTransactionResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+
+                                                     CustomRequestStartTransactionRequestSerializer,
+                                                     CustomIdTokenSerializer,
+                                                     CustomAdditionalInfoSerializer,
+                                                     CustomChargingProfileSerializer,
+                                                     CustomLimitBeyondSoCSerializer,
+                                                     CustomChargingScheduleSerializer,
+                                                     CustomChargingSchedulePeriodSerializer,
+                                                     CustomV2XFreqWattEntrySerializer,
+                                                     CustomV2XSignalWattEntrySerializer,
+                                                     CustomSalesTariffSerializer,
+                                                     CustomSalesTariffEntrySerializer,
+                                                     CustomRelativeTimeIntervalSerializer,
+                                                     CustomConsumptionCostSerializer,
+                                                     CustomCostSerializer,
+
+                                                     CustomAbsolutePriceScheduleSerializer,
+                                                     CustomPriceRuleStackSerializer,
+                                                     CustomPriceRuleSerializer,
+                                                     CustomTaxRuleSerializer,
+                                                     CustomOverstayRuleListSerializer,
+                                                     CustomOverstayRuleSerializer,
+                                                     CustomAdditionalServiceSerializer,
+
+                                                     CustomPriceLevelScheduleSerializer,
+                                                     CustomPriceLevelScheduleEntrySerializer,
+
+                                                     CustomTransactionLimitsSerializer,
+
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = requestStartTransactionResponse;
+
+                    if (RequestStartTransactionResponse.TryParse(Request,
+                                                                 sendRequestState.Response,
+                                                                 out var requestStartTransactionResponse,
+                                                                 out var errorResponse,
+                                                                 CustomRequestStartTransactionResponseParser) &&
+                        requestStartTransactionResponse is not null)
+                    {
+                        response = requestStartTransactionResponse;
+                    }
+
+                    response ??= new RequestStartTransactionResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new RequestStartTransactionResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new RequestStartTransactionResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new RequestStartTransactionResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnRequestStartTransactionResponse event

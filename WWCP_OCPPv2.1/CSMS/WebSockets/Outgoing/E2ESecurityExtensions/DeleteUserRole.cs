@@ -113,48 +113,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             DeleteUserRoleResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomDeleteUserRoleRequestSerializer
-                                                 //CustomMessageInfoSerializer,
-                                                 //CustomMessageContentSerializer,
-                                                 //CustomComponentSerializer,
-                                                 //CustomEVSESerializer,
-                                                 //CustomSignatureSerializer,
-                                                 //CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (DeleteUserRoleResponse.TryParse(Request,
-                                                    sendRequestState.Response,
-                                                    out var setDisplayMessageResponse,
-                                                    out var errorResponse,
-                                                    CustomDeleteUserRoleResponseParser) &&
-                    setDisplayMessageResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomDeleteUserRoleRequestSerializer
+                                                     //CustomMessageInfoSerializer,
+                                                     //CustomMessageContentSerializer,
+                                                     //CustomComponentSerializer,
+                                                     //CustomEVSESerializer,
+                                                     //CustomSignatureSerializer,
+                                                     //CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = setDisplayMessageResponse;
+
+                    if (DeleteUserRoleResponse.TryParse(Request,
+                                                        sendRequestState.Response,
+                                                        out var setDisplayMessageResponse,
+                                                        out var errorResponse,
+                                                        CustomDeleteUserRoleResponseParser) &&
+                        setDisplayMessageResponse is not null)
+                    {
+                        response = setDisplayMessageResponse;
+                    }
+
+                    response ??= new DeleteUserRoleResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new DeleteUserRoleResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new DeleteUserRoleResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new DeleteUserRoleResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnDeleteUserRoleResponse event

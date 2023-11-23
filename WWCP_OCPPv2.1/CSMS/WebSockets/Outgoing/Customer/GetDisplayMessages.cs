@@ -113,44 +113,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetDisplayMessagesResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomGetDisplayMessagesRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (GetDisplayMessagesResponse.TryParse(Request,
-                                                        sendRequestState.Response,
-                                                        out var getDisplayMessagesResponse,
-                                                        out var errorResponse,
-                                                        CustomGetDisplayMessagesResponseParser) &&
-                    getDisplayMessagesResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomGetDisplayMessagesRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = getDisplayMessagesResponse;
+
+                    if (GetDisplayMessagesResponse.TryParse(Request,
+                                                            sendRequestState.Response,
+                                                            out var getDisplayMessagesResponse,
+                                                            out var errorResponse,
+                                                            CustomGetDisplayMessagesResponseParser) &&
+                        getDisplayMessagesResponse is not null)
+                    {
+                        response = getDisplayMessagesResponse;
+                    }
+
+                    response ??= new GetDisplayMessagesResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new GetDisplayMessagesResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new GetDisplayMessagesResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new GetDisplayMessagesResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnGetDisplayMessagesResponse event

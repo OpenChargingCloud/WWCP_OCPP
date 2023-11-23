@@ -134,55 +134,75 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             NotifyEVChargingNeedsResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomNotifyEVChargingNeedsRequestSerializer,
-                                                       CustomChargingNeedsSerializer,
-                                                       CustomACChargingParametersSerializer,
-                                                       CustomDCChargingParametersSerializer,
-                                                       CustomV2XChargingParametersSerializer,
-                                                       CustomEVEnergyOfferSerializer,
-                                                       CustomEVPowerScheduleSerializer,
-                                                       CustomEVPowerScheduleEntrySerializer,
-                                                       CustomEVAbsolutePriceScheduleSerializer,
-                                                       CustomEVAbsolutePriceScheduleEntrySerializer,
-                                                       CustomEVPriceRuleSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomNotifyEVChargingNeedsRequestSerializer,
+                                                           CustomChargingNeedsSerializer,
+                                                           CustomACChargingParametersSerializer,
+                                                           CustomDCChargingParametersSerializer,
+                                                           CustomV2XChargingParametersSerializer,
+                                                           CustomEVEnergyOfferSerializer,
+                                                           CustomEVPowerScheduleSerializer,
+                                                           CustomEVPowerScheduleEntrySerializer,
+                                                           CustomEVAbsolutePriceScheduleSerializer,
+                                                           CustomEVAbsolutePriceScheduleEntrySerializer,
+                                                           CustomEVPriceRuleSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (NotifyEVChargingNeedsResponse.TryParse(Request,
-                                                               sendRequestState.Response,
-                                                               out var notifyEVChargingNeedsResponse,
-                                                               out var errorResponse,
-                                                               CustomNotifyEVChargingNeedsResponseParser) &&
-                        notifyEVChargingNeedsResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = notifyEVChargingNeedsResponse;
+
+                        if (NotifyEVChargingNeedsResponse.TryParse(Request,
+                                                                   sendRequestState.Response,
+                                                                   out var notifyEVChargingNeedsResponse,
+                                                                   out var errorResponse,
+                                                                   CustomNotifyEVChargingNeedsResponseParser) &&
+                            notifyEVChargingNeedsResponse is not null)
+                        {
+                            response = notifyEVChargingNeedsResponse;
+                        }
+
+                        response ??= new NotifyEVChargingNeedsResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new NotifyEVChargingNeedsResponse(Request,
-                                                                   Result.Format(errorResponse));
+                    response ??= new NotifyEVChargingNeedsResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new NotifyEVChargingNeedsResponse(Request,
-                                                               Result.FromSendRequestState(sendRequestState));
+                response ??= new NotifyEVChargingNeedsResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new NotifyEVChargingNeedsResponse(Request,
-                                                           Result.GenericError(requestMessage.ErrorMessage));
+                response = new NotifyEVChargingNeedsResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnNotifyEVChargingNeedsResponse event

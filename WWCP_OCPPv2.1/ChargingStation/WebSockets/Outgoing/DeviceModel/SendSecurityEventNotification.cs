@@ -134,45 +134,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             SecurityEventNotificationResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomSecurityEventNotificationSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomSecurityEventNotificationSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (SecurityEventNotificationResponse.TryParse(Request,
-                                                                   sendRequestState.Response,
-                                                                   out var securityEventNotificationResponse,
-                                                                   out var errorResponse,
-                                                                   CustomSecurityEventNotificationResponseParser) &&
-                        securityEventNotificationResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = securityEventNotificationResponse;
+
+                        if (SecurityEventNotificationResponse.TryParse(Request,
+                                                                       sendRequestState.Response,
+                                                                       out var securityEventNotificationResponse,
+                                                                       out var errorResponse,
+                                                                       CustomSecurityEventNotificationResponseParser) &&
+                            securityEventNotificationResponse is not null)
+                        {
+                            response = securityEventNotificationResponse;
+                        }
+
+                        response ??= new SecurityEventNotificationResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new SecurityEventNotificationResponse(Request,
-                                                                       Result.Format(errorResponse));
+                    response ??= new SecurityEventNotificationResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new SecurityEventNotificationResponse(Request,
-                                                                   Result.FromSendRequestState(sendRequestState));
+                response ??= new SecurityEventNotificationResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new SecurityEventNotificationResponse(Request,
-                                                               Result.GenericError(requestMessage.ErrorMessage));
+                response = new SecurityEventNotificationResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnSecurityEventNotificationResponse event

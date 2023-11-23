@@ -117,44 +117,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             CertificateSignedResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomCertificateSignedRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (CertificateSignedResponse.TryParse(Request,
-                                                       sendRequestState.Response,
-                                                       out var certificateSignedResponse,
-                                                       out var errorResponse,
-                                                       CustomCertificateSignedResponseParser) &&
-                    certificateSignedResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomCertificateSignedRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = certificateSignedResponse;
+
+                    if (CertificateSignedResponse.TryParse(Request,
+                                                           sendRequestState.Response,
+                                                           out var certificateSignedResponse,
+                                                           out var errorResponse,
+                                                           CustomCertificateSignedResponseParser) &&
+                        certificateSignedResponse is not null)
+                    {
+                        response = certificateSignedResponse;
+                    }
+
+                    response ??= new CertificateSignedResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new CertificateSignedResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new CertificateSignedResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new CertificateSignedResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnCertificateSignedResponse event

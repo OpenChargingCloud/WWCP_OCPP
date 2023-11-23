@@ -134,45 +134,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             PullDynamicScheduleUpdateResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomPullDynamicScheduleUpdateRequestSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomPullDynamicScheduleUpdateRequestSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (PullDynamicScheduleUpdateResponse.TryParse(Request,
-                                                                   sendRequestState.Response,
-                                                                   out var reportChargingProfilesResponse,
-                                                                   out var errorResponse,
-                                                                   CustomPullDynamicScheduleUpdateResponseParser) &&
-                        reportChargingProfilesResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = reportChargingProfilesResponse;
+
+                        if (PullDynamicScheduleUpdateResponse.TryParse(Request,
+                                                                       sendRequestState.Response,
+                                                                       out var reportChargingProfilesResponse,
+                                                                       out var errorResponse,
+                                                                       CustomPullDynamicScheduleUpdateResponseParser) &&
+                            reportChargingProfilesResponse is not null)
+                        {
+                            response = reportChargingProfilesResponse;
+                        }
+
+                        response ??= new PullDynamicScheduleUpdateResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new PullDynamicScheduleUpdateResponse(Request,
-                                                                       Result.Format(errorResponse));
+                    response ??= new PullDynamicScheduleUpdateResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new PullDynamicScheduleUpdateResponse(Request,
-                                                                   Result.FromSendRequestState(sendRequestState));
+                response ??= new PullDynamicScheduleUpdateResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new PullDynamicScheduleUpdateResponse(Request,
-                                                               Result.GenericError(requestMessage.ErrorMessage));
+                response = new PullDynamicScheduleUpdateResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnPullDynamicScheduleUpdateResponse event

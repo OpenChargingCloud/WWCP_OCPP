@@ -117,45 +117,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetLogResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomGetLogRequestSerializer,
-                                                 CustomLogParametersSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (GetLogResponse.TryParse(Request,
-                                            sendRequestState.Response,
-                                            out var getLogResponse,
-                                            out var errorResponse,
-                                            CustomGetLogResponseParser) &&
-                    getLogResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomGetLogRequestSerializer,
+                                                     CustomLogParametersSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = getLogResponse;
+
+                    if (GetLogResponse.TryParse(Request,
+                                                sendRequestState.Response,
+                                                out var getLogResponse,
+                                                out var errorResponse,
+                                                CustomGetLogResponseParser) &&
+                        getLogResponse is not null)
+                    {
+                        response = getLogResponse;
+                    }
+
+                    response ??= new GetLogResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new GetLogResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new GetLogResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new GetLogResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnGetLogResponse event

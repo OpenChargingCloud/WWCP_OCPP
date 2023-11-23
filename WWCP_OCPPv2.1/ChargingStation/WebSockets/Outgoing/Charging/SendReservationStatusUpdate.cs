@@ -134,45 +134,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             ReservationStatusUpdateResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomReservationStatusUpdateRequestSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomReservationStatusUpdateRequestSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (ReservationStatusUpdateResponse.TryParse(Request,
-                                                                 sendRequestState.Response,
-                                                                 out var reservationStatusUpdateResponse,
-                                                                 out var errorResponse,
-                                                                 CustomReservationStatusUpdateResponseParser) &&
-                        reservationStatusUpdateResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = reservationStatusUpdateResponse;
+
+                        if (ReservationStatusUpdateResponse.TryParse(Request,
+                                                                     sendRequestState.Response,
+                                                                     out var reservationStatusUpdateResponse,
+                                                                     out var errorResponse,
+                                                                     CustomReservationStatusUpdateResponseParser) &&
+                            reservationStatusUpdateResponse is not null)
+                        {
+                            response = reservationStatusUpdateResponse;
+                        }
+
+                        response ??= new ReservationStatusUpdateResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new ReservationStatusUpdateResponse(Request,
-                                                                     Result.Format(errorResponse));
+                    response ??= new ReservationStatusUpdateResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new ReservationStatusUpdateResponse(Request,
-                                                                 Result.FromSendRequestState(sendRequestState));
+                response ??= new ReservationStatusUpdateResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new ReservationStatusUpdateResponse(Request,
-                                                             Result.GenericError(requestMessage.ErrorMessage));
+                response = new ReservationStatusUpdateResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnReservationStatusUpdateResponse event

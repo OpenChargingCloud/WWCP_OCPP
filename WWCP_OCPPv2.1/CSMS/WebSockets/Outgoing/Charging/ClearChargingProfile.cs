@@ -113,45 +113,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             ClearChargingProfileResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomClearChargingProfileRequestSerializer,
-                                                 CustomClearChargingProfileSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (ClearChargingProfileResponse.TryParse(Request,
-                                                          sendRequestState.Response,
-                                                          out var clearChargingProfileResponse,
-                                                          out var errorResponse,
-                                                          CustomClearChargingProfileResponseParser) &&
-                    clearChargingProfileResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomClearChargingProfileRequestSerializer,
+                                                     CustomClearChargingProfileSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = clearChargingProfileResponse;
+
+                    if (ClearChargingProfileResponse.TryParse(Request,
+                                                              sendRequestState.Response,
+                                                              out var clearChargingProfileResponse,
+                                                              out var errorResponse,
+                                                              CustomClearChargingProfileResponseParser) &&
+                        clearChargingProfileResponse is not null)
+                    {
+                        response = clearChargingProfileResponse;
+                    }
+
+                    response ??= new ClearChargingProfileResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new ClearChargingProfileResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new ClearChargingProfileResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new ClearChargingProfileResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnClearChargingProfileResponse event

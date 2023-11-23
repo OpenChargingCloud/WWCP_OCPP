@@ -134,47 +134,67 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             MeterValuesResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomMeterValuesRequestSerializer,
-                                                       CustomMeterValueSerializer,
-                                                       CustomSampledValueSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomMeterValuesRequestSerializer,
+                                                           CustomMeterValueSerializer,
+                                                           CustomSampledValueSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (MeterValuesResponse.TryParse(Request,
-                                                     sendRequestState.Response,
-                                                     out var meterValuesResponse,
-                                                     out var errorResponse,
-                                                     CustomMeterValuesResponseParser) &&
-                        meterValuesResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = meterValuesResponse;
+
+                        if (MeterValuesResponse.TryParse(Request,
+                                                         sendRequestState.Response,
+                                                         out var meterValuesResponse,
+                                                         out var errorResponse,
+                                                         CustomMeterValuesResponseParser) &&
+                            meterValuesResponse is not null)
+                        {
+                            response = meterValuesResponse;
+                        }
+
+                        response ??= new MeterValuesResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new MeterValuesResponse(Request,
-                                                         Result.Format(errorResponse));
+                    response ??= new MeterValuesResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new MeterValuesResponse(Request,
-                                                     Result.FromSendRequestState(sendRequestState));
+                response ??= new MeterValuesResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new MeterValuesResponse(Request,
-                                                 Result.GenericError(requestMessage.ErrorMessage));
+                response = new MeterValuesResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnMeterValuesResponse event

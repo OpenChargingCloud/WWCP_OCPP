@@ -134,49 +134,69 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             NotifyEventResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomNotifyEventRequestSerializer,
-                                                       CustomEventDataSerializer,
-                                                       CustomComponentSerializer,
-                                                       CustomEVSESerializer,
-                                                       CustomVariableSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomNotifyEventRequestSerializer,
+                                                           CustomEventDataSerializer,
+                                                           CustomComponentSerializer,
+                                                           CustomEVSESerializer,
+                                                           CustomVariableSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (NotifyEventResponse.TryParse(Request,
-                                                     sendRequestState.Response,
-                                                     out var notifyEventResponse,
-                                                     out var errorResponse,
-                                                     CustomNotifyEventResponseParser) &&
-                        notifyEventResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = notifyEventResponse;
+
+                        if (NotifyEventResponse.TryParse(Request,
+                                                         sendRequestState.Response,
+                                                         out var notifyEventResponse,
+                                                         out var errorResponse,
+                                                         CustomNotifyEventResponseParser) &&
+                            notifyEventResponse is not null)
+                        {
+                            response = notifyEventResponse;
+                        }
+
+                        response ??= new NotifyEventResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new NotifyEventResponse(Request,
-                                                         Result.Format(errorResponse));
+                    response ??= new NotifyEventResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new NotifyEventResponse(Request,
-                                                     Result.FromSendRequestState(sendRequestState));
+                response ??= new NotifyEventResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new NotifyEventResponse(Request,
-                                                 Result.GenericError(requestMessage.ErrorMessage));
+                response = new NotifyEventResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnNotifyEventResponse event

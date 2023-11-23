@@ -113,44 +113,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             SetMonitoringBaseResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomSetMonitoringBaseRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (SetMonitoringBaseResponse.TryParse(Request,
-                                                       sendRequestState.Response,
-                                                       out var setMonitoringBaseResponse,
-                                                       out var errorResponse,
-                                                       CustomSetMonitoringBaseResponseParser) &&
-                    setMonitoringBaseResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomSetMonitoringBaseRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = setMonitoringBaseResponse;
+
+                    if (SetMonitoringBaseResponse.TryParse(Request,
+                                                           sendRequestState.Response,
+                                                           out var setMonitoringBaseResponse,
+                                                           out var errorResponse,
+                                                           CustomSetMonitoringBaseResponseParser) &&
+                        setMonitoringBaseResponse is not null)
+                    {
+                        response = setMonitoringBaseResponse;
+                    }
+
+                    response ??= new SetMonitoringBaseResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new SetMonitoringBaseResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new SetMonitoringBaseResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new SetMonitoringBaseResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnSetMonitoringBaseResponse event

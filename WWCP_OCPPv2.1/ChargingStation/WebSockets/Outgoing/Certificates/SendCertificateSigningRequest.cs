@@ -134,45 +134,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             SignCertificateResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomSignCertificateRequestSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomSignCertificateRequestSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (SignCertificateResponse.TryParse(Request,
-                                                         sendRequestState.Response,
-                                                         out var signCertificateResponse,
-                                                         out var errorResponse,
-                                                         CustomSignCertificateResponseParser) &&
-                        signCertificateResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = signCertificateResponse;
+
+                        if (SignCertificateResponse.TryParse(Request,
+                                                             sendRequestState.Response,
+                                                             out var signCertificateResponse,
+                                                             out var errorResponse,
+                                                             CustomSignCertificateResponseParser) &&
+                            signCertificateResponse is not null)
+                        {
+                            response = signCertificateResponse;
+                        }
+
+                        response ??= new SignCertificateResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new SignCertificateResponse(Request,
-                                                             Result.Format(errorResponse));
+                    response ??= new SignCertificateResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new SignCertificateResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+                response ??= new SignCertificateResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new SignCertificateResponse(Request,
-                                                     Result.GenericError(requestMessage.ErrorMessage));
+                response = new SignCertificateResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnSignCertificateResponse event

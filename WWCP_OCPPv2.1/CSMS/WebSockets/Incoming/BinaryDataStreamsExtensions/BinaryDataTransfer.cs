@@ -140,9 +140,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            OCPP_WebSocket_BinaryResponseMessage?  OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?           OCPPErrorResponse   = null;
-
             #region Send OnIncomingBinaryDataTransferWSRequest event
 
             //try
@@ -159,6 +156,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             //}
 
             #endregion
+
+
+            OCPP_WebSocket_BinaryResponseMessage?  OCPPResponse        = null;
+            OCPP_WebSocket_ErrorMessage?           OCPPErrorResponse   = null;
 
             try
             {
@@ -236,32 +237,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 }
 
                 else
-                    OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
                                             requestId,
-                                            ResultCodes.FormationViolation,
-                                            "The given 'IncomingBinaryDataTransfer' request could not be parsed!",
-                                            new JObject(
-                                                new JProperty("request",       OCPPBinaryMessage.ToBase64()),
-                                                new JProperty("errorResponse", errorResponse)
-                                            )
+                                            nameof(Receive_BinaryDataTransfer)[8..],
+                                            requestData,
+                                            errorResponse
                                         );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
                                         requestId,
-                                        ResultCodes.FormationViolation,
-                                        "Processing the given 'IncomingBinaryDataTransfer' request led to an exception!",
-                                        JSONObject.Create(
-                                            new JProperty("request",    OCPPBinaryMessage.ToBase64()),
-                                            new JProperty("exception",  e.Message),
-                                            new JProperty("stacktrace", e.StackTrace)
-                                        )
+                                        nameof(Receive_BinaryDataTransfer)[8..],
+                                        requestData,
+                                        e
                                     );
 
             }
+
 
             #region Send OnIncomingBinaryDataTransferWSResponse event
 
@@ -280,7 +275,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             //}
 
             #endregion
-
 
             return new Tuple<OCPP_WebSocket_BinaryResponseMessage?,
                              OCPP_WebSocket_ErrorMessage?>(OCPPResponse,

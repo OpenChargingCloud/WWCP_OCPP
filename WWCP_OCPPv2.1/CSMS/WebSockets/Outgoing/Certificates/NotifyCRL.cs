@@ -117,44 +117,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             NotifyCRLResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomNotifyCRLRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (NotifyCRLResponse.TryParse(Request,
-                                               sendRequestState.Response,
-                                               out var deleteCertificateResponse,
-                                               out var errorResponse,
-                                               CustomNotifyCRLResponseParser) &&
-                    deleteCertificateResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomNotifyCRLRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = deleteCertificateResponse;
+
+                    if (NotifyCRLResponse.TryParse(Request,
+                                                   sendRequestState.Response,
+                                                   out var deleteCertificateResponse,
+                                                   out var errorResponse,
+                                                   CustomNotifyCRLResponseParser) &&
+                        deleteCertificateResponse is not null)
+                    {
+                        response = deleteCertificateResponse;
+                    }
+
+                    response ??= new NotifyCRLResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new NotifyCRLResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new NotifyCRLResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new NotifyCRLResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnNotifyCRLResponse event

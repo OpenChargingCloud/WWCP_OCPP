@@ -113,49 +113,63 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             SetVariableMonitoringResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomSetVariableMonitoringRequestSerializer,
-                                                 CustomSetMonitoringDataSerializer,
-                                                 CustomComponentSerializer,
-                                                 CustomEVSESerializer,
-                                                 CustomVariableSerializer,
-                                                 CustomPeriodicEventStreamParametersSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (SetVariableMonitoringResponse.TryParse(Request,
-                                                           sendRequestState.Response,
-                                                           out var setVariableMonitoringResponse,
-                                                           out var errorResponse,
-                                                           CustomSetVariableMonitoringResponseParser) &&
-                    setVariableMonitoringResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomSetVariableMonitoringRequestSerializer,
+                                                     CustomSetMonitoringDataSerializer,
+                                                     CustomComponentSerializer,
+                                                     CustomEVSESerializer,
+                                                     CustomVariableSerializer,
+                                                     CustomPeriodicEventStreamParametersSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = setVariableMonitoringResponse;
+
+                    if (SetVariableMonitoringResponse.TryParse(Request,
+                                                               sendRequestState.Response,
+                                                               out var setVariableMonitoringResponse,
+                                                               out var errorResponse,
+                                                               CustomSetVariableMonitoringResponseParser) &&
+                        setVariableMonitoringResponse is not null)
+                    {
+                        response = setVariableMonitoringResponse;
+                    }
+
+                    response ??= new SetVariableMonitoringResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new SetVariableMonitoringResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new SetVariableMonitoringResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new SetVariableMonitoringResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnSetVariableMonitoringResponse event

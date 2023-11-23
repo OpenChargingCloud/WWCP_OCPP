@@ -125,7 +125,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region Receive message (wired via reflection!)
+        
+#region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_WebSocket_ResponseMessage?,
                                 OCPP_WebSocket_ErrorMessage?>>
@@ -139,9 +140,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             CancellationToken          CancellationToken)
 
         {
-
-            OCPP_WebSocket_ResponseMessage?  OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
 
             #region Send OnReservationStatusUpdateWSRequest event
 
@@ -159,6 +157,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
 
             #endregion
+
+
+            OCPP_WebSocket_ResponseMessage?  OCPPResponse        = null;
+            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
@@ -240,32 +242,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 }
 
                 else
-                    OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
                                             requestId,
-                                            ResultCodes.FormationViolation,
-                                            "The given 'ReservationStatusUpdate' request could not be parsed!",
-                                            new JObject(
-                                                new JProperty("request",       OCPPTextMessage),
-                                                new JProperty("errorResponse", errorResponse)
-                                            )
+                                            nameof(Receive_ReservationStatusUpdate)[8..],
+                                            requestData,
+                                            errorResponse
                                         );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
                                         requestId,
-                                        ResultCodes.FormationViolation,
-                                        "Processing the given 'ReservationStatusUpdate' request led to an exception!",
-                                        JSONObject.Create(
-                                            new JProperty("request",    OCPPTextMessage),
-                                            new JProperty("exception",  e.Message),
-                                            new JProperty("stacktrace", e.StackTrace)
-                                        )
+                                        nameof(Receive_ReservationStatusUpdate)[8..],
+                                        requestData,
+                                        e
                                     );
 
             }
+
 
             #region Send OnReservationStatusUpdateWSResponse event
 
@@ -285,7 +281,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #endregion
 
-
             return new Tuple<OCPP_WebSocket_ResponseMessage?,
                              OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
@@ -293,7 +288,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         }
 
         #endregion
-
 
     }
 

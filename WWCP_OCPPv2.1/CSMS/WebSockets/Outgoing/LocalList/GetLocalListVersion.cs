@@ -113,44 +113,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetLocalListVersionResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomGetLocalListVersionRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (GetLocalListVersionResponse.TryParse(Request,
-                                                         sendRequestState.Response,
-                                                         out var getLocalListVersionResponse,
-                                                         out var errorResponse,
-                                                         CustomGetLocalListVersionResponseParser) &&
-                    getLocalListVersionResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomGetLocalListVersionRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = getLocalListVersionResponse;
+
+                    if (GetLocalListVersionResponse.TryParse(Request,
+                                                             sendRequestState.Response,
+                                                             out var getLocalListVersionResponse,
+                                                             out var errorResponse,
+                                                             CustomGetLocalListVersionResponseParser) &&
+                        getLocalListVersionResponse is not null)
+                    {
+                        response = getLocalListVersionResponse;
+                    }
+
+                    response ??= new GetLocalListVersionResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new GetLocalListVersionResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new GetLocalListVersionResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new GetLocalListVersionResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnGetLocalListVersionResponse event

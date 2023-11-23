@@ -134,45 +134,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             FirmwareStatusNotificationResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomFirmwareStatusNotificationRequestSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomFirmwareStatusNotificationRequestSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (FirmwareStatusNotificationResponse.TryParse(Request,
-                                                                    sendRequestState.Response,
-                                                                    out var firmwareStatusNotificationResponse,
-                                                                    out var errorResponse,
-                                                                    CustomFirmwareStatusNotificationResponseResponseParser) &&
-                        firmwareStatusNotificationResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = firmwareStatusNotificationResponse;
+
+                        if (FirmwareStatusNotificationResponse.TryParse(Request,
+                                                                        sendRequestState.Response,
+                                                                        out var firmwareStatusNotificationResponse,
+                                                                        out var errorResponse,
+                                                                        CustomFirmwareStatusNotificationResponseResponseParser) &&
+                            firmwareStatusNotificationResponse is not null)
+                        {
+                            response = firmwareStatusNotificationResponse;
+                        }
+
+                        response ??= new FirmwareStatusNotificationResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new FirmwareStatusNotificationResponse(Request,
-                                                                        Result.Format(errorResponse));
+                    response ??= new FirmwareStatusNotificationResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new FirmwareStatusNotificationResponse(Request,
-                                                                    Result.FromSendRequestState(sendRequestState));
+                response ??= new FirmwareStatusNotificationResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new FirmwareStatusNotificationResponse(Request,
-                                                                Result.GenericError(requestMessage.ErrorMessage));
+                response = new FirmwareStatusNotificationResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnFirmwareStatusNotificationResponse event

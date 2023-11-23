@@ -113,44 +113,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             UnpublishFirmwareResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomUnpublishFirmwareRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (UnpublishFirmwareResponse.TryParse(Request,
-                                                       sendRequestState.Response,
-                                                       out var unpublishFirmwareResponse,
-                                                       out var errorResponse,
-                                                       CustomUnpublishFirmwareResponseParser) &&
-                    unpublishFirmwareResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomUnpublishFirmwareRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = unpublishFirmwareResponse;
+
+                    if (UnpublishFirmwareResponse.TryParse(Request,
+                                                           sendRequestState.Response,
+                                                           out var unpublishFirmwareResponse,
+                                                           out var errorResponse,
+                                                           CustomUnpublishFirmwareResponseParser) &&
+                        unpublishFirmwareResponse is not null)
+                    {
+                        response = unpublishFirmwareResponse;
+                    }
+
+                    response ??= new UnpublishFirmwareResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new UnpublishFirmwareResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new UnpublishFirmwareResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new UnpublishFirmwareResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnUnpublishFirmwareResponse event

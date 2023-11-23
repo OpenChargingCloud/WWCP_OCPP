@@ -113,47 +113,61 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             CustomerInformationResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomCustomerInformationRequestSerializer,
-                                                 CustomIdTokenSerializer,
-                                                 CustomAdditionalInfoSerializer,
-                                                 CustomCertificateHashDataSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (CustomerInformationResponse.TryParse(Request,
-                                                         sendRequestState.Response,
-                                                         out var customerInformationResponse,
-                                                         out var errorResponse,
-                                                         CustomCustomerInformationResponseParser) &&
-                    customerInformationResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomCustomerInformationRequestSerializer,
+                                                     CustomIdTokenSerializer,
+                                                     CustomAdditionalInfoSerializer,
+                                                     CustomCertificateHashDataSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = customerInformationResponse;
+
+                    if (CustomerInformationResponse.TryParse(Request,
+                                                             sendRequestState.Response,
+                                                             out var customerInformationResponse,
+                                                             out var errorResponse,
+                                                             CustomCustomerInformationResponseParser) &&
+                        customerInformationResponse is not null)
+                    {
+                        response = customerInformationResponse;
+                    }
+
+                    response ??= new CustomerInformationResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new CustomerInformationResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new CustomerInformationResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new CustomerInformationResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnCustomerInformationResponse event

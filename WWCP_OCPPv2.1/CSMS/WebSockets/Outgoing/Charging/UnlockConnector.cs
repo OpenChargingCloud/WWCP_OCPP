@@ -113,44 +113,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             UnlockConnectorResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomUnlockConnectorRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (UnlockConnectorResponse.TryParse(Request,
-                                                     sendRequestState.Response,
-                                                     out var unlockConnectorResponse,
-                                                     out var errorResponse,
-                                                     CustomUnlockConnectorResponseParser) &&
-                    unlockConnectorResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomUnlockConnectorRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = unlockConnectorResponse;
+
+                    if (UnlockConnectorResponse.TryParse(Request,
+                                                         sendRequestState.Response,
+                                                         out var unlockConnectorResponse,
+                                                         out var errorResponse,
+                                                         CustomUnlockConnectorResponseParser) &&
+                        unlockConnectorResponse is not null)
+                    {
+                        response = unlockConnectorResponse;
+                    }
+
+                    response ??= new UnlockConnectorResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new UnlockConnectorResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new UnlockConnectorResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new UnlockConnectorResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnUnlockConnectorResponse event

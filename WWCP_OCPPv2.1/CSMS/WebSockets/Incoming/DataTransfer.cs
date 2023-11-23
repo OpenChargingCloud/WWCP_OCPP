@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 else
                     OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
                                             requestId,
-                                           "IncomingDataTransfer",
+                                            nameof(Receive_DataTransfer)[8..],
                                             requestData,
                                             errorResponse
                                         );
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
                                         requestId,
-                                        "IncomingDataTransfer",
+                                        nameof(Receive_DataTransfer)[8..],
                                         requestData,
                                         e
                                     );
@@ -280,7 +280,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
 
             #endregion
-
 
             return new Tuple<OCPP_WebSocket_ResponseMessage?,
                              OCPP_WebSocket_ErrorMessage?>(OCPPResponse,

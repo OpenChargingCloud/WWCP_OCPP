@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region TransferBinaryData               (Request)
+        #region TransferBinaryData(Request)
 
         public async Task<CS.BinaryDataTransferResponse> TransferBinaryData(BinaryDataTransferRequest Request)
         {
@@ -111,44 +111,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             CS.BinaryDataTransferResponse? response = null;
 
-            var sendRequestState = await SendBinaryAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToBinary(
-                                                 CustomBinaryDataTransferRequestSerializer
-                                                 //CustomSignatureSerializer,
-                                                 //CustomCustomBinaryDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (CS.BinaryDataTransferResponse.TryParse(Request,
-                                                           sendRequestState.Response,
-                                                           out var dataTransferResponse,
-                                                           out var errorResponse,
-                                                           CustomBinaryDataTransferResponseParser) &&
-                    dataTransferResponse is not null)
+                var sendRequestState = await SendBinaryAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToBinary(
+                                                     CustomBinaryDataTransferRequestSerializer
+                                                     //CustomSignatureSerializer,
+                                                     //CustomCustomBinaryDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = dataTransferResponse;
+
+                    if (CS.BinaryDataTransferResponse.TryParse(Request,
+                                                               sendRequestState.Response,
+                                                               out var dataTransferResponse,
+                                                               out var errorResponse,
+                                                               CustomBinaryDataTransferResponseParser) &&
+                        dataTransferResponse is not null)
+                    {
+                        response = dataTransferResponse;
+                    }
+
+                    response ??= new CS.BinaryDataTransferResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                 }
 
                 response ??= new CS.BinaryDataTransferResponse(
-                                     Request,
-                                     Result.Format(errorResponse)
-                                 );
+                                 Request,
+                                 BinaryDataTransferStatus.Rejected
+                             );// Result.FromSendRequestState(sendRequestState));
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new CS.BinaryDataTransferResponse(
-                             Request,
-                             BinaryDataTransferStatus.Rejected
-                         );// Result.FromSendRequestState(sendRequestState));
+                response = new CS.BinaryDataTransferResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnBinaryDataTransferResponse event

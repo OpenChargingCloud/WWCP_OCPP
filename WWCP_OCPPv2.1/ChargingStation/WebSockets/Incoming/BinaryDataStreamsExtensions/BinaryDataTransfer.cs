@@ -143,9 +143,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            OCPP_WebSocket_BinaryResponseMessage? OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?          OCPPErrorResponse   = null;
-
             #region Send OnIncomingBinaryDataTransferWSRequest event
 
             try
@@ -162,6 +159,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
 
             #endregion
+
+            OCPP_WebSocket_BinaryResponseMessage? OCPPResponse        = null;
+            OCPP_WebSocket_ErrorMessage?          OCPPErrorResponse   = null;
 
             try
             {
@@ -246,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 else
                     OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
                                             requestId,
-                                            "BinaryDataTransfer",
+                                            nameof(Receive_BinaryDataTransfer)[8..],
                                             requestBinary,
                                             errorResponse
                                         );
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
                 OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
                                         requestId,
-                                        "BinaryDataTransfer",
+                                        nameof(Receive_BinaryDataTransfer)[8..],
                                         requestBinary,
                                         e
                                     );
@@ -280,7 +280,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
 
             #endregion
-
 
             return new Tuple<OCPP_WebSocket_BinaryResponseMessage?,
                              OCPP_WebSocket_ErrorMessage?>(OCPPResponse,

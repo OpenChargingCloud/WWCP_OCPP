@@ -134,46 +134,66 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             BootNotificationResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomBootNotificationRequestSerializer,
-                                                       CustomChargingStationSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomBootNotificationRequestSerializer,
+                                                           CustomChargingStationSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (BootNotificationResponse.TryParse(Request,
-                                                          sendRequestState.Response,
-                                                          out var bootNotificationResponse,
-                                                          out var errorResponse,
-                                                          CustomBootNotificationResponseParser) &&
-                        bootNotificationResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = bootNotificationResponse;
+
+                        if (BootNotificationResponse.TryParse(Request,
+                                                              sendRequestState.Response,
+                                                              out var bootNotificationResponse,
+                                                              out var errorResponse,
+                                                              CustomBootNotificationResponseParser) &&
+                            bootNotificationResponse is not null)
+                        {
+                            response = bootNotificationResponse;
+                        }
+
+                        response ??= new BootNotificationResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new BootNotificationResponse(Request,
-                                                              Result.Format(errorResponse));
+                    response ??= new BootNotificationResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new BootNotificationResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+                response ??= new BootNotificationResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new BootNotificationResponse(Request,
-                                                      Result.GenericError(requestMessage.ErrorMessage));
+                response = new BootNotificationResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnBootNotificationResponse event

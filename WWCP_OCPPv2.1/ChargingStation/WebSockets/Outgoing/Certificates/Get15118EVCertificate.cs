@@ -134,45 +134,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             Get15118EVCertificateResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomGet15118EVCertificateSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomGet15118EVCertificateSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (Get15118EVCertificateResponse.TryParse(Request,
-                                                               sendRequestState.Response,
-                                                               out var get15118EVCertificateResponse,
-                                                               out var errorResponse,
-                                                               CustomGet15118EVCertificateResponseParser) &&
-                        get15118EVCertificateResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = get15118EVCertificateResponse;
+
+                        if (Get15118EVCertificateResponse.TryParse(Request,
+                                                                   sendRequestState.Response,
+                                                                   out var get15118EVCertificateResponse,
+                                                                   out var errorResponse,
+                                                                   CustomGet15118EVCertificateResponseParser) &&
+                            get15118EVCertificateResponse is not null)
+                        {
+                            response = get15118EVCertificateResponse;
+                        }
+
+                        response ??= new Get15118EVCertificateResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new Get15118EVCertificateResponse(Request,
-                                                                   Result.Format(errorResponse));
+                    response ??= new Get15118EVCertificateResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new Get15118EVCertificateResponse(Request,
-                                                               Result.FromSendRequestState(sendRequestState));
+                response ??= new Get15118EVCertificateResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new Get15118EVCertificateResponse(Request,
-                                                           Result.GenericError(requestMessage.ErrorMessage));
+                response = new Get15118EVCertificateResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnGet15118EVCertificateResponse event

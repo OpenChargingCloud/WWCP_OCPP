@@ -113,43 +113,57 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             UpdateFirmwareResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(Request.EventTrackingId,
-                                                     Request.RequestId,
-                                                     Request.ChargingStationId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomUpdateFirmwareRequestSerializer,
-                                                         CustomFirmwareSerializer,
-                                                         CustomSignatureSerializer,
-                                                         CustomCustomDataSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (UpdateFirmwareResponse.TryParse(Request,
-                                                    sendRequestState.Response,
-                                                    out var updateFirmwareResponse,
-                                                    out var errorResponse,
-                                                    CustomUpdateFirmwareResponseParser) &&
-                    updateFirmwareResponse is not null)
+                var sendRequestState = await SendJSONAndWait(Request.EventTrackingId,
+                                                         Request.RequestId,
+                                                         Request.ChargingStationId,
+                                                         Request.Action,
+                                                         Request.ToJSON(
+                                                             CustomUpdateFirmwareRequestSerializer,
+                                                             CustomFirmwareSerializer,
+                                                             CustomSignatureSerializer,
+                                                             CustomCustomDataSerializer
+                                                         ),
+                                                         Request.RequestTimeout);
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = updateFirmwareResponse;
+
+                    if (UpdateFirmwareResponse.TryParse(Request,
+                                                        sendRequestState.Response,
+                                                        out var updateFirmwareResponse,
+                                                        out var errorResponse,
+                                                        CustomUpdateFirmwareResponseParser) &&
+                        updateFirmwareResponse is not null)
+                    {
+                        response = updateFirmwareResponse;
+                    }
+
+                    response ??= new UpdateFirmwareResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new UpdateFirmwareResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new UpdateFirmwareResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new UpdateFirmwareResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnUpdateFirmwareResponse event

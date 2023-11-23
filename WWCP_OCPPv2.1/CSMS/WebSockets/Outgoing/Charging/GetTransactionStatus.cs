@@ -113,44 +113,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetTransactionStatusResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomGetTransactionStatusRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (GetTransactionStatusResponse.TryParse(Request,
-                                                          sendRequestState.Response,
-                                                          out var getTransactionStatusResponse,
-                                                          out var errorResponse,
-                                                          CustomGetTransactionStatusResponseParser) &&
-                    getTransactionStatusResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomGetTransactionStatusRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = getTransactionStatusResponse;
+
+                    if (GetTransactionStatusResponse.TryParse(Request,
+                                                              sendRequestState.Response,
+                                                              out var getTransactionStatusResponse,
+                                                              out var errorResponse,
+                                                              CustomGetTransactionStatusResponseParser) &&
+                        getTransactionStatusResponse is not null)
+                    {
+                        response = getTransactionStatusResponse;
+                    }
+
+                    response ??= new GetTransactionStatusResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new GetTransactionStatusResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new GetTransactionStatusResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new GetTransactionStatusResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnGetTransactionStatusResponse event

@@ -113,48 +113,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetReportResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomGetReportRequestSerializer,
-                                                 CustomComponentVariableSerializer,
-                                                 CustomComponentSerializer,
-                                                 CustomEVSESerializer,
-                                                 CustomVariableSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (GetReportResponse.TryParse(Request,
-                                               sendRequestState.Response,
-                                               out var getReport,
-                                               out var errorResponse,
-                                               CustomGetReportResponseParser) &&
-                    getReport is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomGetReportRequestSerializer,
+                                                     CustomComponentVariableSerializer,
+                                                     CustomComponentSerializer,
+                                                     CustomEVSESerializer,
+                                                     CustomVariableSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = getReport;
+
+                    if (GetReportResponse.TryParse(Request,
+                                                   sendRequestState.Response,
+                                                   out var getReport,
+                                                   out var errorResponse,
+                                                   CustomGetReportResponseParser) &&
+                        getReport is not null)
+                    {
+                        response = getReport;
+                    }
+
+                    response ??= new GetReportResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new GetReportResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new GetReportResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new GetReportResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnGetReportResponse event

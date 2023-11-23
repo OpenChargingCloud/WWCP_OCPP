@@ -113,48 +113,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             GetMonitoringReportResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomGetMonitoringReportRequestSerializer,
-                                                 CustomComponentVariableSerializer,
-                                                 CustomComponentSerializer,
-                                                 CustomEVSESerializer,
-                                                 CustomVariableSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (GetMonitoringReportResponse.TryParse(Request,
-                                                         sendRequestState.Response,
-                                                         out var getMonitoringReportResponse,
-                                                         out var errorResponse,
-                                                         CustomGetMonitoringReportResponseParser) &&
-                    getMonitoringReportResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomGetMonitoringReportRequestSerializer,
+                                                     CustomComponentVariableSerializer,
+                                                     CustomComponentSerializer,
+                                                     CustomEVSESerializer,
+                                                     CustomVariableSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = getMonitoringReportResponse;
+
+                    if (GetMonitoringReportResponse.TryParse(Request,
+                                                             sendRequestState.Response,
+                                                             out var getMonitoringReportResponse,
+                                                             out var errorResponse,
+                                                             CustomGetMonitoringReportResponseParser) &&
+                        getMonitoringReportResponse is not null)
+                    {
+                        response = getMonitoringReportResponse;
+                    }
+
+                    response ??= new GetMonitoringReportResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new GetMonitoringReportResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new GetMonitoringReportResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new GetMonitoringReportResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnGetMonitoringReportResponse event

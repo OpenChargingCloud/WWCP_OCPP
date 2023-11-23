@@ -140,9 +140,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            OCPP_WebSocket_ResponseMessage?  OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
-
             #region Send OnNotifyReportWSRequest event
 
             try
@@ -159,6 +156,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
 
             #endregion
+
+
+            OCPP_WebSocket_ResponseMessage?  OCPPResponse        = null;
+            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
@@ -240,32 +241,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 }
 
                 else
-                    OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
                                             requestId,
-                                            ResultCodes.FormationViolation,
-                                            "The given 'NotifyReport' request could not be parsed!",
-                                            new JObject(
-                                                new JProperty("request",       OCPPTextMessage),
-                                                new JProperty("errorResponse", errorResponse)
-                                            )
+                                            nameof(Receive_NotifyReport)[8..],
+                                            requestData,
+                                            errorResponse
                                         );
 
             }
             catch (Exception e)
             {
 
-                OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
+                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
                                         requestId,
-                                        ResultCodes.FormationViolation,
-                                        "Processing the given 'NotifyReport' request led to an exception!",
-                                        JSONObject.Create(
-                                            new JProperty("request",    OCPPTextMessage),
-                                            new JProperty("exception",  e.Message),
-                                            new JProperty("stacktrace", e.StackTrace)
-                                        )
+                                        nameof(Receive_NotifyReport)[8..],
+                                        requestData,
+                                        e
                                     );
 
             }
+
 
             #region Send OnNotifyReportWSResponse event
 
@@ -284,7 +279,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
 
             #endregion
-
 
             return new Tuple<OCPP_WebSocket_ResponseMessage?,
                              OCPP_WebSocket_ErrorMessage?>(OCPPResponse,

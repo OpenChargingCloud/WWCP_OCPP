@@ -113,44 +113,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             ClearDisplayMessageResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomClearDisplayMessageRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (ClearDisplayMessageResponse.TryParse(Request,
-                                                         sendRequestState.Response,
-                                                         out var clearDisplayMessageResponse,
-                                                         out var errorResponse,
-                                                         CustomClearDisplayMessageResponseParser) &&
-                    clearDisplayMessageResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomClearDisplayMessageRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = clearDisplayMessageResponse;
+
+                    if (ClearDisplayMessageResponse.TryParse(Request,
+                                                             sendRequestState.Response,
+                                                             out var clearDisplayMessageResponse,
+                                                             out var errorResponse,
+                                                             CustomClearDisplayMessageResponseParser) &&
+                        clearDisplayMessageResponse is not null)
+                    {
+                        response = clearDisplayMessageResponse;
+                    }
+
+                    response ??= new ClearDisplayMessageResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new ClearDisplayMessageResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new ClearDisplayMessageResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new ClearDisplayMessageResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnClearDisplayMessageResponse event

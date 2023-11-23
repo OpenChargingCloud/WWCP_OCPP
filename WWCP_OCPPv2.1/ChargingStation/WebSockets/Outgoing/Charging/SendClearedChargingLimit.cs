@@ -134,45 +134,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             ClearedChargingLimitResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomClearedChargingLimitRequestSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomClearedChargingLimitRequestSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (ClearedChargingLimitResponse.TryParse(Request,
-                                                              sendRequestState.Response,
-                                                              out var clearedChargingLimitResponse,
-                                                              out var errorResponse,
-                                                              CustomClearedChargingLimitResponseParser) &&
-                        clearedChargingLimitResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = clearedChargingLimitResponse;
+
+                        if (ClearedChargingLimitResponse.TryParse(Request,
+                                                                  sendRequestState.Response,
+                                                                  out var clearedChargingLimitResponse,
+                                                                  out var errorResponse,
+                                                                  CustomClearedChargingLimitResponseParser) &&
+                            clearedChargingLimitResponse is not null)
+                        {
+                            response = clearedChargingLimitResponse;
+                        }
+
+                        response ??= new ClearedChargingLimitResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new ClearedChargingLimitResponse(Request,
-                                                                  Result.Format(errorResponse));
+                    response ??= new ClearedChargingLimitResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new ClearedChargingLimitResponse(Request,
-                                                              Result.FromSendRequestState(sendRequestState));
+                response ??= new ClearedChargingLimitResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new ClearedChargingLimitResponse(Request,
-                                                          Result.GenericError(requestMessage.ErrorMessage));
+                response = new ClearedChargingLimitResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnClearedChargingLimitResponse event

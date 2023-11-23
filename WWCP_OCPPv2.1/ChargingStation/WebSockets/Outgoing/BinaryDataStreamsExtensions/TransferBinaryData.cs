@@ -132,45 +132,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             CSMS.BinaryDataTransferResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToBinary(
-                                                       CustomBinaryDataTransferRequestSerializer
-                                                       //CustomSignatureSerializer,
-                                                       //CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToBinary(
+                                                           CustomBinaryDataTransferRequestSerializer
+                                                           //CustomSignatureSerializer,
+                                                           //CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.BinaryResponse is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (CSMS.BinaryDataTransferResponse.TryParse(Request,
-                                                                 sendRequestState.BinaryResponse,
-                                                                 out var binaryDataTransferResponse,
-                                                                 out var errorResponse,
-                                                                 CustomBinaryDataTransferResponseParser) &&
-                        binaryDataTransferResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.BinaryResponse is not null)
                     {
-                        response = binaryDataTransferResponse;
+
+                        if (CSMS.BinaryDataTransferResponse.TryParse(Request,
+                                                                     sendRequestState.BinaryResponse,
+                                                                     out var binaryDataTransferResponse,
+                                                                     out var errorResponse,
+                                                                     CustomBinaryDataTransferResponseParser) &&
+                            binaryDataTransferResponse is not null)
+                        {
+                            response = binaryDataTransferResponse;
+                        }
+
+                        response ??= new CSMS.BinaryDataTransferResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new CSMS.BinaryDataTransferResponse(Request,
-                                                                     Result.Format(errorResponse));
+                    response ??= new CSMS.BinaryDataTransferResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new CSMS.BinaryDataTransferResponse(Request,
-                                                                 Result.FromSendRequestState(sendRequestState));
+                response ??= new CSMS.BinaryDataTransferResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new CSMS.BinaryDataTransferResponse(Request,
-                                                             Result.GenericError(requestMessage.ErrorMessage));
+                response = new CSMS.BinaryDataTransferResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnBinaryDataTransferResponse event

@@ -134,45 +134,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             NotifyPriorityChargingResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomNotifyPriorityChargingRequestSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomNotifyPriorityChargingRequestSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (NotifyPriorityChargingResponse.TryParse(Request,
-                                                                sendRequestState.Response,
-                                                                out var reportChargingProfilesResponse,
-                                                                out var errorResponse,
-                                                                CustomNotifyPriorityChargingResponseParser) &&
-                        reportChargingProfilesResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = reportChargingProfilesResponse;
+
+                        if (NotifyPriorityChargingResponse.TryParse(Request,
+                                                                    sendRequestState.Response,
+                                                                    out var reportChargingProfilesResponse,
+                                                                    out var errorResponse,
+                                                                    CustomNotifyPriorityChargingResponseParser) &&
+                            reportChargingProfilesResponse is not null)
+                        {
+                            response = reportChargingProfilesResponse;
+                        }
+
+                        response ??= new NotifyPriorityChargingResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new NotifyPriorityChargingResponse(Request,
-                                                                    Result.Format(errorResponse));
+                    response ??= new NotifyPriorityChargingResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new NotifyPriorityChargingResponse(Request,
-                                                                Result.FromSendRequestState(sendRequestState));
+                response ??= new NotifyPriorityChargingResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new NotifyPriorityChargingResponse(Request,
-                                                            Result.GenericError(requestMessage.ErrorMessage));
+                response = new NotifyPriorityChargingResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnNotifyPriorityChargingResponse event

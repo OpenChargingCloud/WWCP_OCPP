@@ -134,45 +134,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             StatusNotificationResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomStatusNotificationRequestSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomStatusNotificationRequestSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (StatusNotificationResponse.TryParse(Request,
-                                                            sendRequestState.Response,
-                                                            out var statusNotificationResponse,
-                                                            out var errorResponse,
-                                                            CustomStatusNotificationResponseParser) &&
-                        statusNotificationResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = statusNotificationResponse;
+
+                        if (StatusNotificationResponse.TryParse(Request,
+                                                                sendRequestState.Response,
+                                                                out var statusNotificationResponse,
+                                                                out var errorResponse,
+                                                                CustomStatusNotificationResponseParser) &&
+                            statusNotificationResponse is not null)
+                        {
+                            response = statusNotificationResponse;
+                        }
+
+                        response ??= new StatusNotificationResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new StatusNotificationResponse(Request,
-                                                                Result.Format(errorResponse));
+                    response ??= new StatusNotificationResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new StatusNotificationResponse(Request,
-                                                            Result.FromSendRequestState(sendRequestState));
+                response ??= new StatusNotificationResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new StatusNotificationResponse(Request,
-                                                        Result.GenericError(requestMessage.ErrorMessage));
+                response = new StatusNotificationResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnStatusNotificationResponse event

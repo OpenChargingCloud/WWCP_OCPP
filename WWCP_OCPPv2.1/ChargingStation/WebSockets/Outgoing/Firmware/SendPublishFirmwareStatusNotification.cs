@@ -134,45 +134,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             PublishFirmwareStatusNotificationResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomPublishFirmwareStatusNotificationRequestSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomPublishFirmwareStatusNotificationRequestSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (PublishFirmwareStatusNotificationResponse.TryParse(Request,
-                                                                           sendRequestState.Response,
-                                                                           out var publishFirmwareStatusNotificationResponse,
-                                                                           out var errorResponse,
-                                                                           CustomPublishFirmwareStatusNotificationResponseParser) &&
-                        publishFirmwareStatusNotificationResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = publishFirmwareStatusNotificationResponse;
+
+                        if (PublishFirmwareStatusNotificationResponse.TryParse(Request,
+                                                                               sendRequestState.Response,
+                                                                               out var publishFirmwareStatusNotificationResponse,
+                                                                               out var errorResponse,
+                                                                               CustomPublishFirmwareStatusNotificationResponseParser) &&
+                            publishFirmwareStatusNotificationResponse is not null)
+                        {
+                            response = publishFirmwareStatusNotificationResponse;
+                        }
+
+                        response ??= new PublishFirmwareStatusNotificationResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new PublishFirmwareStatusNotificationResponse(Request,
-                                                                               Result.Format(errorResponse));
+                    response ??= new PublishFirmwareStatusNotificationResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new PublishFirmwareStatusNotificationResponse(Request,
-                                                                           Result.FromSendRequestState(sendRequestState));
+                response ??= new PublishFirmwareStatusNotificationResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new PublishFirmwareStatusNotificationResponse(Request,
-                                                                       Result.GenericError(requestMessage.ErrorMessage));
+                response = new PublishFirmwareStatusNotificationResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnPublishFirmwareStatusNotificationResponse event

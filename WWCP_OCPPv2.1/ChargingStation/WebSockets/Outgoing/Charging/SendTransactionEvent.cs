@@ -134,53 +134,73 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             TransactionEventResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomTransactionEventRequestSerializer,
-                                                       CustomTransactionSerializer,
-                                                       CustomIdTokenSerializer,
-                                                       CustomAdditionalInfoSerializer,
-                                                       CustomEVSESerializer,
-                                                       CustomMeterValueSerializer,
-                                                       CustomSampledValueSerializer,
-                                                       CustomSignedMeterValueSerializer,
-                                                       CustomUnitsOfMeasureSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomTransactionEventRequestSerializer,
+                                                           CustomTransactionSerializer,
+                                                           CustomIdTokenSerializer,
+                                                           CustomAdditionalInfoSerializer,
+                                                           CustomEVSESerializer,
+                                                           CustomMeterValueSerializer,
+                                                           CustomSampledValueSerializer,
+                                                           CustomSignedMeterValueSerializer,
+                                                           CustomUnitsOfMeasureSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (TransactionEventResponse.TryParse(Request,
-                                                          sendRequestState.Response,
-                                                          out var transactionEventResponse,
-                                                          out var errorResponse,
-                                                          CustomTransactionEventResponseParser) &&
-                        transactionEventResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = transactionEventResponse;
+
+                        if (TransactionEventResponse.TryParse(Request,
+                                                              sendRequestState.Response,
+                                                              out var transactionEventResponse,
+                                                              out var errorResponse,
+                                                              CustomTransactionEventResponseParser) &&
+                            transactionEventResponse is not null)
+                        {
+                            response = transactionEventResponse;
+                        }
+
+                        response ??= new TransactionEventResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new TransactionEventResponse(Request,
-                                                              Result.Format(errorResponse));
+                    response ??= new TransactionEventResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new TransactionEventResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+                response ??= new TransactionEventResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new TransactionEventResponse(Request,
-                                                      Result.GenericError(requestMessage.ErrorMessage));
+                response = new TransactionEventResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnTransactionEventResponse event

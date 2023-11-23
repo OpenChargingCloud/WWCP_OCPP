@@ -134,45 +134,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             NotifyCustomerInformationResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomNotifyCustomerInformationRequestSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomNotifyCustomerInformationRequestSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (NotifyCustomerInformationResponse.TryParse(Request,
-                                                                   sendRequestState.Response,
-                                                                   out var notifyCustomerInformationResponse,
-                                                                   out var errorResponse,
-                                                                   CustomNotifyCustomerInformationResponseParser) &&
-                        notifyCustomerInformationResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = notifyCustomerInformationResponse;
+
+                        if (NotifyCustomerInformationResponse.TryParse(Request,
+                                                                       sendRequestState.Response,
+                                                                       out var notifyCustomerInformationResponse,
+                                                                       out var errorResponse,
+                                                                       CustomNotifyCustomerInformationResponseParser) &&
+                            notifyCustomerInformationResponse is not null)
+                        {
+                            response = notifyCustomerInformationResponse;
+                        }
+
+                        response ??= new NotifyCustomerInformationResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new NotifyCustomerInformationResponse(Request,
-                                                                       Result.Format(errorResponse));
+                    response ??= new NotifyCustomerInformationResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new NotifyCustomerInformationResponse(Request,
-                                                                   Result.FromSendRequestState(sendRequestState));
+                response ??= new NotifyCustomerInformationResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new NotifyCustomerInformationResponse(Request,
-                                                               Result.GenericError(requestMessage.ErrorMessage));
+                response = new NotifyCustomerInformationResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnNotifyCustomerInformationResponse event

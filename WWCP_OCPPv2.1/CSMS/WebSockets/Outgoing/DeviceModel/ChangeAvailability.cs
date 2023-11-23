@@ -113,45 +113,59 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             ChangeAvailabilityResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomChangeAvailabilityRequestSerializer,
-                                                 CustomEVSESerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (ChangeAvailabilityResponse.TryParse(Request,
-                                                        sendRequestState.Response,
-                                                        out var changeAvailabilityResponse,
-                                                        out var errorResponse,
-                                                        CustomChangeAvailabilityResponseParser) &&
-                    changeAvailabilityResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomChangeAvailabilityRequestSerializer,
+                                                     CustomEVSESerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = changeAvailabilityResponse;
+
+                    if (ChangeAvailabilityResponse.TryParse(Request,
+                                                            sendRequestState.Response,
+                                                            out var changeAvailabilityResponse,
+                                                            out var errorResponse,
+                                                            CustomChangeAvailabilityResponseParser) &&
+                        changeAvailabilityResponse is not null)
+                    {
+                        response = changeAvailabilityResponse;
+                    }
+
+                    response ??= new ChangeAvailabilityResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new ChangeAvailabilityResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new ChangeAvailabilityResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new ChangeAvailabilityResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnChangeAvailabilityResponse event

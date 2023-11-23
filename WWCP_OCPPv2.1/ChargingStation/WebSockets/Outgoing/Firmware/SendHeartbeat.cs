@@ -134,45 +134,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             HeartbeatResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomHeartbeatRequestSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomHeartbeatRequestSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (HeartbeatResponse.TryParse(Request,
-                                                   sendRequestState.Response,
-                                                   out var heartbeatResponse,
-                                                   out var errorResponse,
-                                                   CustomHeartbeatResponseParser) &&
-                        heartbeatResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = heartbeatResponse;
+
+                        if (HeartbeatResponse.TryParse(Request,
+                                                       sendRequestState.Response,
+                                                       out var heartbeatResponse,
+                                                       out var errorResponse,
+                                                       CustomHeartbeatResponseParser) &&
+                            heartbeatResponse is not null)
+                        {
+                            response = heartbeatResponse;
+                        }
+
+                        response ??= new HeartbeatResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new HeartbeatResponse(Request,
-                                                       Result.Format(errorResponse));
+                    response ??= new HeartbeatResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new HeartbeatResponse(Request,
-                                                   Result.FromSendRequestState(sendRequestState));
+                response ??= new HeartbeatResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new HeartbeatResponse(Request,
-                                               Result.GenericError(requestMessage.ErrorMessage));
+                response = new HeartbeatResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnHeartbeatResponse event

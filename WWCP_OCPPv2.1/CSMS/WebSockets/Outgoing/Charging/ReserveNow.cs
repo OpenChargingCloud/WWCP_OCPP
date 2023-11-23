@@ -113,46 +113,60 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             ReserveNowResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomReserveNowRequestSerializer,
-                                                 CustomIdTokenSerializer,
-                                                 CustomAdditionalInfoSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (ReserveNowResponse.TryParse(Request,
-                                                sendRequestState.Response,
-                                                out var reserveNowResponse,
-                                                out var errorResponse,
-                                                CustomReserveNowResponseParser) &&
-                    reserveNowResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomReserveNowRequestSerializer,
+                                                     CustomIdTokenSerializer,
+                                                     CustomAdditionalInfoSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = reserveNowResponse;
+
+                    if (ReserveNowResponse.TryParse(Request,
+                                                    sendRequestState.Response,
+                                                    out var reserveNowResponse,
+                                                    out var errorResponse,
+                                                    CustomReserveNowResponseParser) &&
+                        reserveNowResponse is not null)
+                    {
+                        response = reserveNowResponse;
+                    }
+
+                    response ??= new ReserveNowResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new ReserveNowResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new ReserveNowResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new ReserveNowResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnReserveNowResponse event

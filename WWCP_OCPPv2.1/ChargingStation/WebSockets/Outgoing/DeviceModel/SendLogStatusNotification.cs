@@ -134,45 +134,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             LogStatusNotificationResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomLogStatusNotificationSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomLogStatusNotificationSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (LogStatusNotificationResponse.TryParse(Request,
-                                                               sendRequestState.Response,
-                                                               out var logStatusNotificationResponse,
-                                                               out var errorResponse,
-                                                               CustomLogStatusNotificationResponseParser) &&
-                        logStatusNotificationResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = logStatusNotificationResponse;
+
+                        if (LogStatusNotificationResponse.TryParse(Request,
+                                                                   sendRequestState.Response,
+                                                                   out var logStatusNotificationResponse,
+                                                                   out var errorResponse,
+                                                                   CustomLogStatusNotificationResponseParser) &&
+                            logStatusNotificationResponse is not null)
+                        {
+                            response = logStatusNotificationResponse;
+                        }
+
+                        response ??= new LogStatusNotificationResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new LogStatusNotificationResponse(Request,
-                                                                   Result.Format(errorResponse));
+                    response ??= new LogStatusNotificationResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new LogStatusNotificationResponse(Request,
-                                                               Result.FromSendRequestState(sendRequestState));
+                response ??= new LogStatusNotificationResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new LogStatusNotificationResponse(Request,
-                                                           Result.GenericError(requestMessage.ErrorMessage));
+                response = new LogStatusNotificationResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnLogStatusNotificationResponse event

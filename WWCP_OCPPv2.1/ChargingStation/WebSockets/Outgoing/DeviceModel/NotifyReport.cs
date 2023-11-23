@@ -134,51 +134,71 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             NotifyReportResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomNotifyReportRequestSerializer,
-                                                       CustomReportDataSerializer,
-                                                       CustomComponentSerializer,
-                                                       CustomEVSESerializer,
-                                                       CustomVariableSerializer,
-                                                       CustomVariableAttributeSerializer,
-                                                       CustomVariableCharacteristicsSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomNotifyReportRequestSerializer,
+                                                           CustomReportDataSerializer,
+                                                           CustomComponentSerializer,
+                                                           CustomEVSESerializer,
+                                                           CustomVariableSerializer,
+                                                           CustomVariableAttributeSerializer,
+                                                           CustomVariableCharacteristicsSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (NotifyReportResponse.TryParse(Request,
-                                                      sendRequestState.Response,
-                                                      out var notifyReportResponse,
-                                                      out var errorResponse,
-                                                      CustomNotifyReportResponseParser) &&
-                        notifyReportResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = notifyReportResponse;
+
+                        if (NotifyReportResponse.TryParse(Request,
+                                                          sendRequestState.Response,
+                                                          out var notifyReportResponse,
+                                                          out var errorResponse,
+                                                          CustomNotifyReportResponseParser) &&
+                            notifyReportResponse is not null)
+                        {
+                            response = notifyReportResponse;
+                        }
+
+                        response ??= new NotifyReportResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new NotifyReportResponse(Request,
-                                                          Result.Format(errorResponse));
+                    response ??= new NotifyReportResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new NotifyReportResponse(Request,
-                                                      Result.FromSendRequestState(sendRequestState));
+                response ??= new NotifyReportResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new NotifyReportResponse(Request,
-                                                  Result.GenericError(requestMessage.ErrorMessage));
+                response = new NotifyReportResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnNotifyReportResponse event

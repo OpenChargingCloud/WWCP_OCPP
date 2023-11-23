@@ -114,44 +114,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             UsePriorityChargingResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomUsePriorityChargingRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (UsePriorityChargingResponse.TryParse(Request,
-                                                         sendRequestState.Response,
-                                                         out var getCompositeScheduleResponse,
-                                                         out var errorResponse,
-                                                         CustomUsePriorityChargingResponseParser) &&
-                    getCompositeScheduleResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomUsePriorityChargingRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = getCompositeScheduleResponse;
+
+                    if (UsePriorityChargingResponse.TryParse(Request,
+                                                             sendRequestState.Response,
+                                                             out var getCompositeScheduleResponse,
+                                                             out var errorResponse,
+                                                             CustomUsePriorityChargingResponseParser) &&
+                        getCompositeScheduleResponse is not null)
+                    {
+                        response = getCompositeScheduleResponse;
+                    }
+
+                    response ??= new UsePriorityChargingResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new UsePriorityChargingResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new UsePriorityChargingResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new UsePriorityChargingResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnUsePriorityChargingResponse event

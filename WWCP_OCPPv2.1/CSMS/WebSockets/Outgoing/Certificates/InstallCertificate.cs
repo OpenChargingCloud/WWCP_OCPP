@@ -117,44 +117,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             InstallCertificateResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomInstallCertificateRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (InstallCertificateResponse.TryParse(Request,
-                                                        sendRequestState.Response,
-                                                        out var installCertificateResponse,
-                                                        out var errorResponse,
-                                                        CustomInstallCertificateResponseParser) &&
-                    installCertificateResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomInstallCertificateRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = installCertificateResponse;
+
+                    if (InstallCertificateResponse.TryParse(Request,
+                                                            sendRequestState.Response,
+                                                            out var installCertificateResponse,
+                                                            out var errorResponse,
+                                                            CustomInstallCertificateResponseParser) &&
+                        installCertificateResponse is not null)
+                    {
+                        response = installCertificateResponse;
+                    }
+
+                    response ??= new InstallCertificateResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new InstallCertificateResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new InstallCertificateResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new InstallCertificateResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnInstallCertificateResponse event

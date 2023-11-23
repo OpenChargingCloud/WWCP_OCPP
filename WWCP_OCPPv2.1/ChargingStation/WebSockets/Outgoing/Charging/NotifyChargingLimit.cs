@@ -134,67 +134,87 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             NotifyChargingLimitResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomNotifyChargingLimitRequestSerializer,
-                                                       CustomChargingScheduleSerializer,
-                                                       CustomLimitBeyondSoCSerializer,
-                                                       CustomChargingSchedulePeriodSerializer,
-                                                       CustomV2XFreqWattEntrySerializer,
-                                                       CustomV2XSignalWattEntrySerializer,
-                                                       CustomSalesTariffSerializer,
-                                                       CustomSalesTariffEntrySerializer,
-                                                       CustomRelativeTimeIntervalSerializer,
-                                                       CustomConsumptionCostSerializer,
-                                                       CustomCostSerializer,
-
-                                                       CustomAbsolutePriceScheduleSerializer,
-                                                       CustomPriceRuleStackSerializer,
-                                                       CustomPriceRuleSerializer,
-                                                       CustomTaxRuleSerializer,
-                                                       CustomOverstayRuleListSerializer,
-                                                       CustomOverstayRuleSerializer,
-                                                       CustomAdditionalServiceSerializer,
-
-                                                       CustomPriceLevelScheduleSerializer,
-                                                       CustomPriceLevelScheduleEntrySerializer,
-
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomNotifyChargingLimitRequestSerializer,
+                                                           CustomChargingScheduleSerializer,
+                                                           CustomLimitBeyondSoCSerializer,
+                                                           CustomChargingSchedulePeriodSerializer,
+                                                           CustomV2XFreqWattEntrySerializer,
+                                                           CustomV2XSignalWattEntrySerializer,
+                                                           CustomSalesTariffSerializer,
+                                                           CustomSalesTariffEntrySerializer,
+                                                           CustomRelativeTimeIntervalSerializer,
+                                                           CustomConsumptionCostSerializer,
+                                                           CustomCostSerializer,
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                                                           CustomAbsolutePriceScheduleSerializer,
+                                                           CustomPriceRuleStackSerializer,
+                                                           CustomPriceRuleSerializer,
+                                                           CustomTaxRuleSerializer,
+                                                           CustomOverstayRuleListSerializer,
+                                                           CustomOverstayRuleSerializer,
+                                                           CustomAdditionalServiceSerializer,
+
+                                                           CustomPriceLevelScheduleSerializer,
+                                                           CustomPriceLevelScheduleEntrySerializer,
+
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
+
+                if (requestMessage.NoErrors)
                 {
 
-                    if (NotifyChargingLimitResponse.TryParse(Request,
-                                                             sendRequestState.Response,
-                                                             out var notifyChargingLimitResponse,
-                                                             out var errorResponse,
-                                                             CustomNotifyChargingLimitResponseParser) &&
-                        notifyChargingLimitResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = notifyChargingLimitResponse;
+
+                        if (NotifyChargingLimitResponse.TryParse(Request,
+                                                                 sendRequestState.Response,
+                                                                 out var notifyChargingLimitResponse,
+                                                                 out var errorResponse,
+                                                                 CustomNotifyChargingLimitResponseParser) &&
+                            notifyChargingLimitResponse is not null)
+                        {
+                            response = notifyChargingLimitResponse;
+                        }
+
+                        response ??= new NotifyChargingLimitResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new NotifyChargingLimitResponse(Request,
-                                                                 Result.Format(errorResponse));
+                    response ??= new NotifyChargingLimitResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new NotifyChargingLimitResponse(Request,
-                                                             Result.FromSendRequestState(sendRequestState));
+                response ??= new NotifyChargingLimitResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new NotifyChargingLimitResponse(Request,
-                                                         Result.GenericError(requestMessage.ErrorMessage));
+                response = new NotifyChargingLimitResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnNotifyChargingLimitResponse event

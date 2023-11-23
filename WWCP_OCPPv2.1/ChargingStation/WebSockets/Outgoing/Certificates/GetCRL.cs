@@ -134,46 +134,66 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             GetCRLResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomGetCRLSerializer,
-                                                       CustomCertificateHashDataSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomGetCRLSerializer,
+                                                           CustomCertificateHashDataSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (GetCRLResponse.TryParse(Request,
-                                                sendRequestState.Response,
-                                                out var getCertificateStatusResponse,
-                                                out var errorResponse,
-                                                CustomGetCRLResponseParser) &&
-                        getCertificateStatusResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = getCertificateStatusResponse;
+
+                        if (GetCRLResponse.TryParse(Request,
+                                                    sendRequestState.Response,
+                                                    out var getCertificateStatusResponse,
+                                                    out var errorResponse,
+                                                    CustomGetCRLResponseParser) &&
+                            getCertificateStatusResponse is not null)
+                        {
+                            response = getCertificateStatusResponse;
+                        }
+
+                        response ??= new GetCRLResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new GetCRLResponse(Request,
-                                                    Result.Format(errorResponse));
+                    response ??= new GetCRLResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new GetCRLResponse(Request,
-                                                Result.FromSendRequestState(sendRequestState));
+                response ??= new GetCRLResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new GetCRLResponse(Request,
-                                            Result.GenericError(requestMessage.ErrorMessage));
+                response = new GetCRLResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnGetCRLResponse event

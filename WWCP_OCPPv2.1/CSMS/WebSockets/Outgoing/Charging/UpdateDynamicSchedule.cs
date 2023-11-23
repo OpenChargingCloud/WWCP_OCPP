@@ -114,44 +114,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             UpdateDynamicScheduleResponse? response = null;
 
-            var sendRequestState = await SendJSONAndWait(
-                                             Request.EventTrackingId,
-                                             Request.RequestId,
-                                             Request.ChargingStationId,
-                                             Request.Action,
-                                             Request.ToJSON(
-                                                 CustomUpdateDynamicScheduleRequestSerializer,
-                                                 CustomSignatureSerializer,
-                                                 CustomCustomDataSerializer
-                                             ),
-                                             Request.RequestTimeout
-                                         );
-
-            if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+            try
             {
 
-                if (UpdateDynamicScheduleResponse.TryParse(Request,
-                                                           sendRequestState.Response,
-                                                           out var getCompositeScheduleResponse,
-                                                           out var errorResponse,
-                                                           CustomUpdateDynamicScheduleResponseParser) &&
-                    getCompositeScheduleResponse is not null)
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.RequestId,
+                                                 Request.ChargingStationId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomUpdateDynamicScheduleRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
+
+                if (sendRequestState.NoErrors &&
+                    sendRequestState.Response is not null)
                 {
-                    response = getCompositeScheduleResponse;
+
+                    if (UpdateDynamicScheduleResponse.TryParse(Request,
+                                                               sendRequestState.Response,
+                                                               out var getCompositeScheduleResponse,
+                                                               out var errorResponse,
+                                                               CustomUpdateDynamicScheduleResponseParser) &&
+                        getCompositeScheduleResponse is not null)
+                    {
+                        response = getCompositeScheduleResponse;
+                    }
+
+                    response ??= new UpdateDynamicScheduleResponse(
+                                     Request,
+                                     Result.Format(errorResponse)
+                                 );
+
                 }
 
                 response ??= new UpdateDynamicScheduleResponse(
                                  Request,
-                                 Result.Format(errorResponse)
+                                 Result.FromSendRequestState(sendRequestState)
                              );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new UpdateDynamicScheduleResponse(
-                             Request,
-                             Result.FromSendRequestState(sendRequestState)
-                         );
+                response = new UpdateDynamicScheduleResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnUpdateDynamicScheduleResponse event

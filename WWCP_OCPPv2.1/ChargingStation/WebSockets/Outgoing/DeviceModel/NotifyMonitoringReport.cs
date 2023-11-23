@@ -134,50 +134,70 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             NotifyMonitoringReportResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomNotifyMonitoringReportRequestSerializer,
-                                                       CustomMonitoringDataSerializer,
-                                                       CustomComponentSerializer,
-                                                       CustomEVSESerializer,
-                                                       CustomVariableSerializer,
-                                                       CustomVariableMonitoringSerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomNotifyMonitoringReportRequestSerializer,
+                                                           CustomMonitoringDataSerializer,
+                                                           CustomComponentSerializer,
+                                                           CustomEVSESerializer,
+                                                           CustomVariableSerializer,
+                                                           CustomVariableMonitoringSerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (NotifyMonitoringReportResponse.TryParse(Request,
-                                                                sendRequestState.Response,
-                                                                out var notifyMonitoringReportResponse,
-                                                                out var errorResponse,
-                                                                CustomNotifyMonitoringReportResponseParser) &&
-                        notifyMonitoringReportResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = notifyMonitoringReportResponse;
+
+                        if (NotifyMonitoringReportResponse.TryParse(Request,
+                                                                    sendRequestState.Response,
+                                                                    out var notifyMonitoringReportResponse,
+                                                                    out var errorResponse,
+                                                                    CustomNotifyMonitoringReportResponseParser) &&
+                            notifyMonitoringReportResponse is not null)
+                        {
+                            response = notifyMonitoringReportResponse;
+                        }
+
+                        response ??= new NotifyMonitoringReportResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new NotifyMonitoringReportResponse(Request,
-                                                                    Result.Format(errorResponse));
+                    response ??= new NotifyMonitoringReportResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new NotifyMonitoringReportResponse(Request,
-                                                                Result.FromSendRequestState(sendRequestState));
+                response ??= new NotifyMonitoringReportResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new NotifyMonitoringReportResponse(Request,
-                                                            Result.GenericError(requestMessage.ErrorMessage));
+                response = new NotifyMonitoringReportResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnNotifyMonitoringReportResponse event

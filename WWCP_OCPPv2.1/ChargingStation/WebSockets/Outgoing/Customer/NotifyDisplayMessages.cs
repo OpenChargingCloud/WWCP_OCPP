@@ -134,49 +134,69 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             NotifyDisplayMessagesResponse? response = null;
 
-            var requestMessage = await SendRequest(Request.Action,
-                                                   Request.RequestId,
-                                                   Request.ToJSON(
-                                                       CustomNotifyDisplayMessagesRequestSerializer,
-                                                       CustomMessageInfoSerializer,
-                                                       CustomMessageContentSerializer,
-                                                       CustomComponentSerializer,
-                                                       CustomEVSESerializer,
-                                                       CustomSignatureSerializer,
-                                                       CustomCustomDataSerializer
-                                                   ));
-
-            if (requestMessage.NoErrors)
+            try
             {
 
-                var sendRequestState = await WaitForResponse(requestMessage);
+                var requestMessage = await SendRequest(Request.Action,
+                                                       Request.RequestId,
+                                                       Request.ToJSON(
+                                                           CustomNotifyDisplayMessagesRequestSerializer,
+                                                           CustomMessageInfoSerializer,
+                                                           CustomMessageContentSerializer,
+                                                           CustomComponentSerializer,
+                                                           CustomEVSESerializer,
+                                                           CustomSignatureSerializer,
+                                                           CustomCustomDataSerializer
+                                                       ));
 
-                if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                if (requestMessage.NoErrors)
                 {
 
-                    if (NotifyDisplayMessagesResponse.TryParse(Request,
-                                                               sendRequestState.Response,
-                                                               out var notifyDisplayMessagesResponse,
-                                                               out var errorResponse,
-                                                               CustomNotifyDisplayMessagesResponseParser) &&
-                        notifyDisplayMessagesResponse is not null)
+                    var sendRequestState = await WaitForResponse(requestMessage);
+
+                    if (sendRequestState.NoErrors &&
+                        sendRequestState.Response is not null)
                     {
-                        response = notifyDisplayMessagesResponse;
+
+                        if (NotifyDisplayMessagesResponse.TryParse(Request,
+                                                                   sendRequestState.Response,
+                                                                   out var notifyDisplayMessagesResponse,
+                                                                   out var errorResponse,
+                                                                   CustomNotifyDisplayMessagesResponseParser) &&
+                            notifyDisplayMessagesResponse is not null)
+                        {
+                            response = notifyDisplayMessagesResponse;
+                        }
+
+                        response ??= new NotifyDisplayMessagesResponse(
+                                         Request,
+                                         Result.Format(errorResponse)
+                                     );
+
                     }
 
-                    response ??= new NotifyDisplayMessagesResponse(Request,
-                                                                   Result.Format(errorResponse));
+                    response ??= new NotifyDisplayMessagesResponse(
+                                     Request,
+                                     Result.FromSendRequestState(sendRequestState)
+                                 );
 
                 }
 
-                response ??= new NotifyDisplayMessagesResponse(Request,
-                                                               Result.FromSendRequestState(sendRequestState));
+                response ??= new NotifyDisplayMessagesResponse(
+                                 Request,
+                                 Result.GenericError(requestMessage.ErrorMessage)
+                             );
 
             }
+            catch (Exception e)
+            {
 
-            response ??= new NotifyDisplayMessagesResponse(Request,
-                                                           Result.GenericError(requestMessage.ErrorMessage));
+                response = new NotifyDisplayMessagesResponse(
+                               Request,
+                               Result.FromException(e)
+                           );
+
+            }
 
 
             #region Send OnNotifyDisplayMessagesResponse event
