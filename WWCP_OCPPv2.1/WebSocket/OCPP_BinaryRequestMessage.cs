@@ -92,6 +92,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
                 var stream            = new MemoryStream(Binary);
 
+                // MessageType: CALL (Client-to-Server)
+                var messageType       = stream.ReadByte();
+                if (messageType != 2)
+                {
+                    ErrorResponse = $"The received message type '{messageType}' is invalid!";
+                    return false;
+                }
+
                 var requestIdLength   = stream.ReadUInt16();
                 var requestIdText     = stream.ReadUTF8String(requestIdLength);
 
@@ -142,6 +150,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         {
 
             var binaryStream = new MemoryStream();
+
+            // MessageType: CALL (Client-to-Server)
+            binaryStream.WriteByte(2);
 
             var requestIdBytes = RequestId.ToString().ToUTF8Bytes();
             binaryStream.WriteUInt16((UInt16) requestIdBytes.Length);
