@@ -21,6 +21,8 @@ using System.Text;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using org.GraphDefined.Vanaheimr.Illias;
+using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
 
 #endregion
 
@@ -72,85 +74,247 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #endregion
 
 
-        #region TryParse(Binary, out BinaryRequestMessage)
+        #region TryParse(Binary, out BinaryRequestMessage, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given binary representation of a request message.
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="BinaryRequestMessage">The parsed OCPP WebSocket request message.</param>
-        public static Boolean TryParse(Byte[] Binary, out OCPP_WebSocket_BinaryRequestMessage? BinaryRequestMessage)
+        public static Boolean TryParse(Byte[]                                    Binary,
+                                       out OCPP_WebSocket_BinaryRequestMessage?  BinaryRequestMessage,
+                                       out String?                               ErrorResponse)
         {
 
-            BinaryRequestMessage = null;
+            BinaryRequestMessage  = null;
+            ErrorResponse         = null;
 
             if (Binary is null)
                 return false;
 
-            // [
-            //     2,                  // MessageType: CALL (Client-to-Server)
-            //    "19223201",          // RequestId
-            //    "BootNotification",  // Action
-            //    {
-            //        "chargePointVendor": "VendorX",
-            //        "chargePointModel":  "SingleSocketCharger"
-            //    }
-            // ]
-
             try
             {
 
-                //var json = JArray.Parse(Binary);
+                var stream  = new MemoryStream(Binary);
+                var format  = BinaryFormatsExtensions.Parse(stream.ReadUInt16());
 
-                //if (json.Count != 4)
-                //    return false;
+                Request_Id? requestId  = null;
+                String?     action     = null;
+                Byte[]?     data       = null;
 
-                //if (!Byte.TryParse(json[0].Value<String>(), out var messageTypeByte))
-                //    return false;
+                switch (format)
+                {
 
-                //var messageType = OCPP_WebSocket_MessageTypesExtensions.ParseMessageType(messageTypeByte);
-                //if (messageType == OCPP_WebSocket_MessageTypes.Undefined)
-                //    return false;
+                    case BinaryFormats.Compact:
+                        {
 
-                //if (!Request_Id.TryParse(json[1]?.Value<String>() ?? "", out var requestId))
-                //    return false;
+                            //binaryStream.Write(BitConverter.GetBytes(VendorId.  NumericId));
+                            //binaryStream.Write(BitConverter.GetBytes(MessageId?.NumericId ?? 0));
+                            //binaryStream.Write(BitConverter.GetBytes((UInt32) (Data?.LongLength ?? 0)));
 
-                //var action = json[2]?.Value<String>();
-                //if (action is null)
-                //    return false;
+                            //if (Data is not null)
+                            //    binaryStream.Write(Data,                                          0, (Int32) (Data?.LongLength ?? 0));
 
-                //if (json[3] is not JObject jsonMessage)
-                //    return false;
+                            //var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+                            //binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
 
-                var requestId  = Request_Id.Parse("1");
-                var action     = "test";
+                            //if (IncludeSignatures) {
+                            //    foreach (var signature in Signatures)
+                            //    {
+                            //        var binarySignature = signature.ToBinary();
+                            //        binaryStream.Write(BitConverter.GetBytes((UInt16) binarySignature.Length));
+                            //        binaryStream.Write(binarySignature);
+                            //    }
+                            //}
 
-                BinaryRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
-                                           requestId,
-                                           action,
-                                           Binary
-                                       );
+                        }
+                        break;
 
-                return true;
+                    case BinaryFormats.TextIds:
+                        {
+
+                            var requestIdLength  = stream.ReadUInt16();
+                            var requestIdText    = stream.ReadUTF8String(requestIdLength);
+
+                            if (Request_Id.TryParse(requestIdText, out var _requestId))
+                                requestId = _requestId;
+                            else
+                            {
+                                ErrorResponse = $"The received request identification '{requestIdText}' is invalid!";
+                                return false;
+                            }
+
+                            var actionLength     = stream.ReadUInt16();
+                                action           = stream.ReadUTF8String(actionLength).Trim();
+
+                            if (action.IsNullOrEmpty())
+                            {
+                                ErrorResponse = $"The received OCPP action must not be null or empty!";
+                                return false;
+                            }
+
+                            var dataLength       = stream.ReadUInt64();
+                                data             = stream.ReadBytes(dataLength);
+
+                        }
+                        break;
+
+
+                    case BinaryFormats.TagLengthValue:
+                        {
+
+                            //var vendorIdBytes  = VendorId.  ToString().ToUTF8Bytes();
+                            //binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.VendorId),   0, 2);
+                            //binaryStream.Write(BitConverter.GetBytes((UInt16) vendorIdBytes.Length),  0, 2);
+                            //binaryStream.Write(vendorIdBytes,                                         0, vendorIdBytes. Length);
+
+                            //if (MessageId.HasValue) {
+                            //    var messageIdBytes = MessageId?.ToString().ToUTF8Bytes() ?? [];
+                            //    binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.MessageId),  0, 2);
+                            //    binaryStream.Write(BitConverter.GetBytes((UInt16) messageIdBytes.Length), 0, 2);
+                            //    binaryStream.Write(messageIdBytes,                                        0, messageIdBytes.Length);
+                            //}
+
+                            //var data = Data                                          ?? [];
+                            //binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.Data),       0, 2);
+                            //binaryStream.Write(BitConverter.GetBytes((UInt16) 0),                     0, 2);
+                            //binaryStream.Write(BitConverter.GetBytes((UInt32) data.Length),           0, 4);
+                            //binaryStream.Write(data,                                                  0, data.          Length);
+
+                            //var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+                            //binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
+
+                            //if (signaturesCount > 0)
+                            //{
+
+                            //}
+
+                        }
+                        break;
+
+                }
+
+                if (requestId.HasValue &&
+                    requestId.IsNotNullOrEmpty() &&
+                    action is not null &&
+                    action.   IsNotNullOrEmpty() &&
+                    data   is not null)
+                {
+
+                    BinaryRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
+                                               requestId.Value,
+                                               action,
+                                               data
+                                           );
+
+                    return true;
+
+                }
 
             }
-            catch
+            catch (Exception e)
             {
-                return false;
+                ErrorResponse = "The given binary representation of an OCPP WebSocket binary request message is invalid: " + e.Message;
             }
+
+            return false;
 
         }
 
         #endregion
 
-        #region ToByteArray()
+        #region ToByteArray(Format = TextIds)
 
         /// <summary>
         /// Return a binary representation of this object.
         /// </summary>
-        public Byte[] ToByteArray()
+        /// <param name="Format">The binary data format.</param>
+        public Byte[] ToByteArray(BinaryFormats Format = BinaryFormats.TextIds)
+        {
 
-            => BinaryMessage;
+            var binaryStream = new MemoryStream();
+
+            binaryStream.Write(Format.AsBytes(), 0, 2);
+
+            switch (Format)
+            {
+
+                case BinaryFormats.Compact: {
+
+                    //binaryStream.Write(BitConverter.GetBytes(VendorId.  NumericId));
+                    //binaryStream.Write(BitConverter.GetBytes(MessageId?.NumericId ?? 0));
+                    //binaryStream.Write(BitConverter.GetBytes((UInt32) (Data?.LongLength ?? 0)));
+
+                    //if (Data is not null)
+                    //    binaryStream.Write(Data,                                          0, (Int32) (Data?.LongLength ?? 0));
+
+                    //var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+                    //binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
+
+                    //if (IncludeSignatures) {
+                    //    foreach (var signature in Signatures)
+                    //    {
+                    //        var binarySignature = signature.ToBinary();
+                    //        binaryStream.Write(BitConverter.GetBytes((UInt16) binarySignature.Length));
+                    //        binaryStream.Write(binarySignature);
+                    //    }
+                    //}
+
+                }
+                break;
+
+                case BinaryFormats.TextIds: {
+
+                    var vendorIdBytes  = RequestId.ToString().ToUTF8Bytes();
+                    binaryStream.WriteUInt16((UInt16) vendorIdBytes.Length);
+                    binaryStream.Write(vendorIdBytes,   0, vendorIdBytes. Length);
+
+                    var messageIdBytes = Action.   ToString().ToUTF8Bytes();
+                    binaryStream.WriteUInt16((UInt16) messageIdBytes.Length);
+                    binaryStream.Write(messageIdBytes,  0, messageIdBytes.Length);
+
+                    binaryStream.WriteUInt64((UInt64) BinaryMessage.LongLength);
+                    binaryStream.Write(BinaryMessage,   0, BinaryMessage. Length); //ToDo: Fix me for >2 GB!
+
+                }
+                break;
+
+
+                case BinaryFormats.TagLengthValue: {
+
+                    //var vendorIdBytes  = VendorId.  ToString().ToUTF8Bytes();
+                    //binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.VendorId),   0, 2);
+                    //binaryStream.Write(BitConverter.GetBytes((UInt16) vendorIdBytes.Length),  0, 2);
+                    //binaryStream.Write(vendorIdBytes,                                         0, vendorIdBytes. Length);
+
+                    //if (MessageId.HasValue) {
+                    //    var messageIdBytes = MessageId?.ToString().ToUTF8Bytes() ?? [];
+                    //    binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.MessageId),  0, 2);
+                    //    binaryStream.Write(BitConverter.GetBytes((UInt16) messageIdBytes.Length), 0, 2);
+                    //    binaryStream.Write(messageIdBytes,                                        0, messageIdBytes.Length);
+                    //}
+
+                    //var data = Data                                          ?? [];
+                    //binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.Data),       0, 2);
+                    //binaryStream.Write(BitConverter.GetBytes((UInt16) 0),                     0, 2);
+                    //binaryStream.Write(BitConverter.GetBytes((UInt32) data.Length),           0, 4);
+                    //binaryStream.Write(data,                                                  0, data.          Length);
+
+                    //var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+                    //binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
+
+                    //if (signaturesCount > 0)
+                    //{
+                        
+                    //}
+
+                }
+                break;
+            }
+
+            return binaryStream.ToArray();
+
+        }
 
         #endregion
 
@@ -162,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// </summary>
         public override String ToString()
 
-            => $"{Action} ({RequestId}) => {BinaryMessage}";
+            => $"{Action} ({RequestId}) => {BinaryMessage.ToBase64().SubstringMax(100)}";
 
         #endregion
 

@@ -49,28 +49,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The binary format of the given message.
-        /// </summary>
-        [Mandatory]
-        public BinaryFormats  Format       { get; }
-
-        /// <summary>
         /// The vendor identification or namespace of the given message.
         /// </summary>
         [Mandatory]
-        public Vendor_Id      VendorId      { get; }
+        public Vendor_Id      VendorId     { get; }
 
         /// <summary>
         /// An optional message identification field.
         /// </summary>
         [Optional]
-        public Message_Id?    MessageId     { get; }
+        public Message_Id?    MessageId    { get; }
 
         /// <summary>
         /// Optional message binary data without specified length or format.
         /// </summary>
         [Optional]
-        public Byte[]?        Data          { get; }
+        public Byte[]?        Data         { get; }
+
+        /// <summary>
+        /// The binary format of the given message.
+        /// </summary>
+        [Mandatory]
+        public BinaryFormats  Format       { get; }
 
         #endregion
 
@@ -130,15 +130,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.VendorId   = VendorId;
             this.MessageId  = MessageId;
             this.Data       = Data;
-            this.Format     = Format ?? BinaryFormats.Compact;
+            this.Format     = Format ?? BinaryFormats.TextIds;
 
 
             unchecked
             {
 
-                hashCode = this.VendorId.  GetHashCode()       * 7 ^
-                          (this.MessageId?.GetHashCode() ?? 0) * 5 ^
-                          (this.Data?.     GetHashCode() ?? 0) * 3 ^
+                hashCode = this.VendorId.  GetHashCode()       * 11 ^
+                          (this.MessageId?.GetHashCode() ?? 0) *  7 ^
+                          (this.Data?.     GetHashCode() ?? 0) *  5 ^
+                           this.Format.    GetHashCode()       *  3 ^
                            base.           GetHashCode();
 
             }
@@ -386,21 +387,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 case BinaryFormats.TextIds: {
 
-                    var vendorIdBytes  = VendorId.  ToString().ToUTF8Bytes();
-                    binaryStream.Write(BitConverter.GetBytes((UInt16) vendorIdBytes.Length),  0, 4);
-                    binaryStream.Write(vendorIdBytes,                                         0, vendorIdBytes. Length);
+                    var vendorIdBytes  = VendorId.  InternalId.ToUTF8Bytes();
+                    binaryStream.WriteUInt16((UInt16) vendorIdBytes.Length);
+                    binaryStream.Write(vendorIdBytes,       0, vendorIdBytes. Length);
 
-                    var messageIdBytes = MessageId?.ToString().ToUTF8Bytes() ?? [];
-                    binaryStream.Write(BitConverter.GetBytes((UInt16) messageIdBytes.Length), 0, 4);
+                    var messageIdBytes = MessageId?.InternalId.ToUTF8Bytes() ?? [];
+                    binaryStream.WriteUInt16((UInt16) messageIdBytes.Length);
                     if (messageIdBytes.Length > 0)
-                        binaryStream.Write(messageIdBytes,                                    0, messageIdBytes.Length);
+                        binaryStream.Write(messageIdBytes,  0, messageIdBytes.Length);
 
                     var data = Data                                          ?? [];
-                    binaryStream.Write(BitConverter.GetBytes((UInt32) data.Length),           0, 4);
-                    binaryStream.Write(data,                                                  0, data.          Length);
+                    binaryStream.WriteUInt64((UInt64) data.          LongLength);
+                    binaryStream.Write(data,                0, data.          Length); //ToDo: Fix me for >2 GB!
 
-                    var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
-                    binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
+                    var signaturesCount = IncludeSignatures ? Signatures.Count() : 0;
+                    binaryStream.WriteUInt16((UInt16) signaturesCount);
 
                     if (signaturesCount > 0)
                     {
@@ -557,7 +558,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => $"{VendorId}: {MessageId?.ToString() ?? "-"} => {Data?.ToHexString().SubstringMax(20) ?? "-"}";
+            => $"{VendorId}: {MessageId?.ToString() ?? "-"} => {Data?.ToBase64().SubstringMax(100) ?? "-"}";
 
         #endregion
 

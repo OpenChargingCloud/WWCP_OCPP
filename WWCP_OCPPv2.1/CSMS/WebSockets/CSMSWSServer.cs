@@ -33,6 +33,8 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using System;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 #endregion
 
@@ -624,8 +626,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             OCPP_WebSocket_ResponseMessage? OCPPResponse        = null;
             OCPP_WebSocket_ErrorMessage?    OCPPErrorResponse   = null;
 
-            var eventTrackingId = EventTracking_Id.New;
-
             try
             {
 
@@ -645,7 +645,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                         Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                                           this,
                                                                                                           Connection,
-                                                                                                          eventTrackingId,
+                                                                                                          EventTrackingId,
                                                                                                           Timestamp.Now,
                                                                                                           OCPPTextMessage)).
                                                         ToArray();
@@ -740,7 +740,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                      Select (loggingDelegate => loggingDelegate.Invoke(now,
                                                                                                        this,
                                                                                                        Connection,
-                                                                                                       eventTrackingId,
+                                                                                                       EventTrackingId,
                                                                                                        RequestTimestamp,
                                                                                                        jsonArray.ToString(JSONFormatting),
                                                                                                        now,
@@ -786,7 +786,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             OnTextMessageResponseReceived?.Invoke(Timestamp.Now,
                                                                   this,
                                                                   Connection,
-                                                                  EventTracking_Id.New,
+                                                                  EventTrackingId,
                                                                   sendJSONRequestState.Timestamp,
                                                                   sendJSONRequestState.Request?. ToJSON().ToString(JSONFormatting) ?? "",
                                                                   Timestamp.Now,
@@ -831,7 +831,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             OnTextErrorResponseReceived?.Invoke(Timestamp.Now,
                                                                 this,
                                                                 Connection,
-                                                                EventTracking_Id.New,
+                                                                EventTrackingId,
                                                                 sendJSONRequestState.Timestamp,
                                                                 sendJSONRequestState.Request?. ToJSON().ToString(JSONFormatting) ?? "",
                                                                 Timestamp.Now,
@@ -894,7 +894,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              Select (loggingDelegate => loggingDelegate.Invoke(now,
                                                                                                this,
                                                                                                Connection,
-                                                                                               eventTrackingId,
+                                                                                               EventTrackingId,
                                                                                                RequestTimestamp,
                                                                                                OCPPTextMessage,
                                                                                                now,
@@ -947,46 +947,87 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                         CancellationToken          CancellationToken)
         {
 
-            var requestBinaryData  = OCPPBinaryMessage;
-            var requestId          = new Request_Id?        (Request_Id.        Parse("1"));
-            var chargingStationId  = new ChargingStation_Id?(ChargingStation_Id.Parse("2"));
-
             OCPP_WebSocket_BinaryResponseMessage? OCPPResponse        = null;
             OCPP_WebSocket_ErrorMessage?          OCPPErrorResponse   = null;
 
-            var eventTrackingId = EventTracking_Id.New;
 
             try
             {
 
-                var action       = "BinaryDataTransfer";
-                var json         = new JArray();
-                var requestData  = OCPPBinaryMessage;
-
-                #region Try to call the matching 'incoming message processor'
-
-                if (incomingMessageProcessorsLookup.TryGetValue(action, out var methodInfo) &&
-                                 methodInfo is not null)
+                if (OCPP_WebSocket_BinaryRequestMessage.TryParse(OCPPBinaryMessage, out var ocppBinaryRequest, out var err) && ocppBinaryRequest is not null)
                 {
 
-                    var result = methodInfo.Invoke(this,
-                                                   [ json,
-                                                     requestData,
-                                                     requestId.Value,
-                                                     chargingStationId.Value,
-                                                     Connection,
-                                                     OCPPBinaryMessage,
-                                                     CancellationToken ]);
+                    #region OnBinaryMessageRequestReceived
 
-                    if (result is Task<Tuple<OCPP_WebSocket_BinaryResponseMessage?, OCPP_WebSocket_ErrorMessage?>> binaryProcessor)
+                    var requestLogger = OnBinaryMessageRequestReceived;
+                    if (requestLogger is not null)
                     {
-                        (OCPPResponse, OCPPErrorResponse) = await binaryProcessor;
+
+                        var loggerTasks = requestLogger.GetInvocationList().
+                                                        OfType <OnWebSocketBinaryMessageRequestDelegate>().
+                                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
+                                                                                                          this,
+                                                                                                          Connection,
+                                                                                                          EventTrackingId,
+                                                                                                          Timestamp.Now,
+                                                                                                          OCPPBinaryMessage)).
+                                                        ToArray();
+
+                        try
+                        {
+                            await Task.WhenAll(loggerTasks);
+                        }
+                        catch (Exception e)
+                        {
+                            DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBinaryMessageRequestReceived));
+                        }
+
                     }
 
+                    #endregion
+
+                    #region Initial checks
+
+                    var chargingStationId  = Connection.TryGetCustomDataAs<ChargingStation_Id>(chargingStationId_WebSocketKey);
+
+                    if (!chargingStationId.HasValue)
+                        OCPPErrorResponse  = new OCPP_WebSocket_ErrorMessage(
+                                                 ocppBinaryRequest.RequestId,
+                                                 ResultCodes.ProtocolError,
+                                                 "The given 'charging station identity' must not be null or empty!",
+                                                 new JObject(
+                                                     new JProperty("request", OCPPBinaryMessage.ToBase64())
+                                                 )
+                                             );
+
+                    #endregion
+
+                    #region Try to call the matching 'incoming message processor'
+
+                    else if (incomingMessageProcessorsLookup.TryGetValue(ocppBinaryRequest.Action, out var methodInfo) &&
+                        methodInfo is not null)
+                    {
+
+                        var result = methodInfo.Invoke(this,
+                                                       [ RequestTimestamp,
+                                                         Connection,
+                                                         chargingStationId.Value,
+                                                         EventTrackingId,
+                                                         OCPPBinaryMessage,
+                                                         ocppBinaryRequest.RequestId,
+                                                         ocppBinaryRequest.BinaryMessage,
+                                                         CancellationToken ]);
+
+                        if (result is Task<Tuple<OCPP_WebSocket_BinaryResponseMessage?, OCPP_WebSocket_ErrorMessage?>> binaryProcessor)
+                        {
+                            (OCPPResponse, OCPPErrorResponse) = await binaryProcessor;
+                        }
+
+                    }
+
+                    #endregion
+
                 }
-
-                #endregion
-
 
             }
             catch (Exception e)
@@ -1000,6 +1041,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     );
 
             }
+
 
             return new WebSocketBinaryMessageResponse(
                         RequestTimestamp,

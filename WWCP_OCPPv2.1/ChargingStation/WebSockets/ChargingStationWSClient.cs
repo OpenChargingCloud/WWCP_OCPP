@@ -625,7 +625,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                     if (OCPP_WebSocket_BinaryRequestMessage. TryParse(BinaryMessage, out var ocppRequest)  && ocppRequest  is not null)
+                     if (OCPP_WebSocket_BinaryRequestMessage. TryParse(BinaryMessage, out var ocppRequest, out var err1)  && ocppRequest  is not null)
                 {
 
                     OCPP_WebSocket_BinaryResponseMessage? OCPPResponse        = null;
@@ -696,9 +696,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                 #endregion
 
                             }
-                
-                
-                
+
                     }
 
 
@@ -911,7 +909,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                            Byte[]      BinaryMessage)
         {
 
-            OCPP_WebSocket_BinaryRequestMessage? wsRequestMessage = null;
+            OCPP_WebSocket_BinaryRequestMessage? binaryRequestMessage = null;
 
             if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
                                            ConfigureAwait(false))
@@ -922,18 +920,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (HTTPStream is not null)
                     {
 
-                        wsRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
-                                               RequestId,
-                                               Action,
-                                               BinaryMessage
-                                           );
+                        binaryRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
+                                                   RequestId,
+                                                   Action,
+                                                   BinaryMessage
+                                               );
 
-                        await SendBinary(wsRequestMessage.BinaryMessage); //ToDo: Fix me!
+                        await SendBinary(binaryRequestMessage.ToByteArray());
 
                         requests.TryAdd(RequestId,
                                         new SendRequestState2(
                                             Timestamp.Now,
-                                            wsRequestMessage,
+                                            binaryRequestMessage,
                                             Timestamp.Now + RequestTimeout
                                         ));
 
@@ -941,12 +939,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     else
                     {
 
-                        wsRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
-                                               RequestId,
-                                               Action,
-                                               BinaryMessage,
-                                               ErrorMessage: "Invalid WebSocket connection!"
-                                           );
+                        binaryRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
+                                                   RequestId,
+                                                   Action,
+                                                   BinaryMessage,
+                                                   ErrorMessage: "Invalid WebSocket connection!"
+                                               );
 
                     }
 
@@ -957,12 +955,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     while (e.InnerException is not null)
                         e = e.InnerException;
 
-                    wsRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
-                                           RequestId,
-                                           Action,
-                                           BinaryMessage,
-                                           ErrorMessage: e.Message
-                                       );
+                    binaryRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
+                                               RequestId,
+                                               Action,
+                                               BinaryMessage,
+                                               ErrorMessage: e.Message
+                                           );
 
                     DebugX.LogException(e);
 
@@ -974,14 +972,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
 
             else
-                wsRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
-                                       RequestId,
-                                       Action,
-                                       BinaryMessage,
-                                       ErrorMessage: "Could not aquire the maintenance tasks lock!"
-                                   );
+                binaryRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
+                                           RequestId,
+                                           Action,
+                                           BinaryMessage,
+                                           ErrorMessage: "Could not aquire the maintenance tasks lock!"
+                                       );
 
-            return wsRequestMessage;
+            return binaryRequestMessage;
 
         }
 

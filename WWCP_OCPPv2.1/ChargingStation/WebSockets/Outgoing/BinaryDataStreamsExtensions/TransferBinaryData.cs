@@ -135,13 +135,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                var requestMessage = await SendRequest(Request.Action,
-                                                       Request.RequestId,
-                                                       Request.ToBinary(
-                                                           CustomBinaryDataTransferRequestSerializer
-                                                           //CustomSignatureSerializer,
-                                                           //CustomCustomDataSerializer
-                                                       ));
+                var requestMessage = await SendRequest(
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToBinary(
+                                                   CustomBinaryDataTransferRequestSerializer
+                                                   //CustomSignatureSerializer,
+                                                   //CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

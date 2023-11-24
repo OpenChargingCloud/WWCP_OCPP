@@ -130,13 +130,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public async Task<Tuple<OCPP_WebSocket_BinaryResponseMessage?,
                                 OCPP_WebSocket_ErrorMessage?>>
 
-            Receive_BinaryDataTransfer(JArray                     json,
-                                       Byte[]                     requestData,
-                                       Request_Id                 requestId,
+            Receive_BinaryDataTransfer(//Byte[]                     requestData,
+                                       //Request_Id                 requestId,
+                                       //ChargingStation_Id         chargingStationId,
+                                       //WebSocketServerConnection  Connection,
+                                       //Byte[]                     OCPPBinaryMessage,
+                                       //CancellationToken          CancellationToken)
+
+                                       DateTime                   RequestTimestamp,
+                                       WebSocketServerConnection  WebSocketConnection,
                                        ChargingStation_Id         chargingStationId,
-                                       WebSocketServerConnection  Connection,
-                                       Byte[]                     OCPPBinaryMessage,
+                                       EventTracking_Id           EventTrackingId,
+                                       String                     requestText,
+                                       Request_Id                 requestId,
+                                       Byte[]                     requestData,
                                        CancellationToken          CancellationToken)
+
+
 
         {
 
@@ -231,7 +241,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     OCPPResponse  = new OCPP_WebSocket_BinaryResponseMessage(
                                         requestId,
-                                        response.Data
+                                        response.ToBinary(
+                                            null, //CustomBinaryDataTransferResponseSerializer,
+                                            null, //CustomSignatureSerializer,
+                                            null, //CustomCustomDataSerializer,
+                                            IncludeSignatures: true
+                                        )
                                     );
 
                 }

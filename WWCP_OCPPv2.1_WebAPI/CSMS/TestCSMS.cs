@@ -6530,7 +6530,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 DebugX.Log("OnIncomingBinaryDataTransfer: " + request.VendorId  + ", " +
                                                               request.MessageId + ", " +
-                                                              request.Data?.ToHexString().SubstringMax(20) ?? "-");
+                                                              request.Data?.ToUTF8String() ?? "-");
 
                 if (!reachableChargingStations.ContainsKey(request.ChargingStationId))
                 {

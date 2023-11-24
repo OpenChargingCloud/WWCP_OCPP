@@ -238,7 +238,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     OCPPResponse = new OCPP_WebSocket_BinaryResponseMessage(
                                        requestId,
-                                       response.ToBinary()
+                                       response.ToBinary(
+                                           null, //CustomBinaryDataTransferResponseSerializer,
+                                           null, //CustomSignatureSerializer,
+                                           null, //CustomCustomDataSerializer,
+                                           IncludeSignatures: true
+                                       )
                                    );
 
                 }

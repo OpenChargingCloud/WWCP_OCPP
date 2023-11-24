@@ -52,6 +52,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
+        /// The binary format of the given message.
+        /// </summary>
+        [Mandatory]
+        public BinaryFormats             Format        { get; }
+
+        /// <summary>
         /// The success or failure status of the binary data transfer.
         /// </summary>
         [Mandatory]
@@ -61,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Optional response binary data.
         /// </summary>
         [Optional]
-        public Byte[]?                   Data    { get; }
+        public Byte[]?                   Data          { get; }
 
         /// <summary>
         /// Optional detailed status information.
@@ -80,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">The binary data transfer request leading to this response.</param>
         /// <param name="Status">The success or failure status of the binary data transfer.</param>
-        /// <param name="BinaryData">A vendor-specific JSON token.</param>
+        /// <param name="Data">A vendor-specific JSON token.</param>
         /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
@@ -91,7 +97,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomData">An optional custom binary data object to allow to store any kind of customer specific binary data.</param>
         public BinaryDataTransferResponse(CSMS.BinaryDataTransferRequest  Request,
                                           BinaryDataTransferStatus        Status,
-                                          Byte[]?                         BinaryData          = null,
+                                          Byte[]?                         Data                = null,
+                                          BinaryFormats?                  Format              = null,
                                           StatusInfo?                     StatusInfo          = null,
                                           DateTime?                       ResponseTimestamp   = null,
 
@@ -114,7 +121,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         {
 
             this.Status      = Status;
-            this.Data  = BinaryData;
+            this.Data        = Data;
+            this.Format      = Format ?? BinaryFormats.TextIds;
             this.StatusInfo  = StatusInfo;
 
         }
@@ -305,38 +313,81 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomBinaryDataTransferResponseSerializer">A delegate to serialize custom binary data transfer responses.</param>
         /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
-        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer   = null,
                                CustomJObjectSerializerDelegate<StatusInfo>?                 CustomStatusInfoSerializer                   = null,
                                CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                    = null,
-                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                   = null)
+                               Boolean                                                      IncludeSignatures                            = true)
         {
 
-            //var json = JSONObject.Create(
+            var binaryStream = new MemoryStream();
 
-            //                     new JProperty("status",       Status.    AsText()),
+            binaryStream.Write(Format.AsBytes(), 0, 2);
 
-            //               BinaryData is not null
-            //                   ? new JProperty("binary data",         BinaryData)
-            //                   : null,
+            switch (Format)
+            {
 
-            //               StatusInfo is not null
-            //                   ? new JProperty("statusInfo",   StatusInfo.ToJSON(CustomStatusInfoSerializer,
-            //                                                                     CustomCustomDataSerializer))
-            //                   : null,
+                case BinaryFormats.Compact: {
 
-            //               Signatures.Any()
-            //                   ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-            //                                                                                                              CustomCustomDataSerializer))))
-            //                   : null,
+                    binaryStream.Write(BitConverter.GetBytes((UInt32) (Data?.LongLength ?? 0)));
 
-            //               CustomData is not null
-            //                   ? new JProperty("customBinaryData",   CustomData.ToJSON(CustomCustomDataSerializer))
-            //                   : null
+                    if (Data is not null)
+                        binaryStream.Write(Data,                                          0, (Int32) (Data?.LongLength ?? 0));
 
-            //           );
+                    var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+                    binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
 
-            var binary = new Byte[0];
+                    if (IncludeSignatures) {
+                        foreach (var signature in Signatures)
+                        {
+                            var binarySignature = signature.ToBinary();
+                            binaryStream.Write(BitConverter.GetBytes((UInt16) binarySignature.Length));
+                            binaryStream.Write(binarySignature);
+                        }
+                    }
+
+                }
+                break;
+
+                case BinaryFormats.TextIds: {
+
+                    var data = Data                                          ?? [];
+                    binaryStream.Write(BitConverter.GetBytes((UInt32) data.Length),           0, 4);
+                    binaryStream.Write(data,                                                  0, data.          Length);
+
+                    var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+                    binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
+
+                    if (signaturesCount > 0)
+                    {
+                        
+                    }
+
+                }
+                break;
+
+
+                case BinaryFormats.TagLengthValue: {
+
+                    var data = Data                                          ?? [];
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) BinaryTags.Data),       0, 2);
+                    binaryStream.Write(BitConverter.GetBytes((UInt16) 0),                     0, 2);
+                    binaryStream.Write(BitConverter.GetBytes((UInt32) data.Length),           0, 4);
+                    binaryStream.Write(data,                                                  0, data.          Length);
+
+                    var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
+                    binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
+
+                    if (signaturesCount > 0)
+                    {
+                        
+                    }
+
+                }
+                break;
+            }
+
+            var binary = binaryStream.ToArray();
 
             return CustomBinaryDataTransferResponseSerializer is not null
                        ? CustomBinaryDataTransferResponseSerializer(this, binary)

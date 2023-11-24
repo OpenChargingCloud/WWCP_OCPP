@@ -20,6 +20,7 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Buffers.Binary;
 
 #endregion
 
@@ -51,28 +52,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The binary format of the given message.
-        /// </summary>
-        [Mandatory]
-        public BinaryFormats  Format       { get; }
-
-        /// <summary>
         /// The vendor identification or namespace of the given message.
         /// </summary>
         [Mandatory]
         public Vendor_Id      VendorId     { get; }
 
         /// <summary>
-        /// The optional message identification.
+        /// An optional message identification field.
         /// </summary>
         [Optional]
         public Message_Id?    MessageId    { get; }
 
         /// <summary>
-        /// Optional vendor-specific message binary data.
+        /// Optional message binary data without specified length or format.
         /// </summary>
         [Optional]
         public Byte[]?        Data         { get; }
+
+        /// <summary>
+        /// The binary format of the given message.
+        /// </summary>
+        [Mandatory]
+        public BinaryFormats  Format       { get; }
 
         #endregion
 
@@ -132,15 +133,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.VendorId   = VendorId;
             this.MessageId  = MessageId;
             this.Data       = Data;
-            this.Format     = Format ?? BinaryFormats.Compact;
+            this.Format     = Format ?? BinaryFormats.TextIds;
 
 
             unchecked
             {
 
-                hashCode = this.VendorId.  GetHashCode()       * 7 ^
-                          (this.MessageId?.GetHashCode() ?? 0) * 5 ^
-                          (this.Data?.     GetHashCode() ?? 0) * 3 ^
+                hashCode = this.VendorId.  GetHashCode()       * 11 ^
+                          (this.MessageId?.GetHashCode() ?? 0) *  7 ^
+                          (this.Data?.     GetHashCode() ?? 0) *  5 ^
+                           this.Format.    GetHashCode()       *  3 ^
                            base.           GetHashCode();
 
             }
@@ -237,40 +239,93 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 BinaryDataTransferRequest = null;
 
-                var span        = Binary.AsSpan<Byte>();
-                var signatures  = new List<Signature>();
+                //var span        = Binary.AsSpan<Byte>();
+                //var signatures  = new List<Signature>();
 
-                var formatSpan  = span.Slice(0, 2);
-                var format      = BinaryFormatsExtensions.Parse(formatSpan);
+                //var formatSpan  = span.Slice(0, 2);
+                //var format      = BinaryFormatsExtensions.Parse(formatSpan);
+
+                var stream  = new MemoryStream(Binary);
+                var format  = BinaryFormatsExtensions.Parse(stream.ReadUInt16());
 
                 #region Compact Format
 
                 if (format == BinaryFormats.Compact)
                 {
 
-                    var vendorId         = Vendor_Id. Parse(BitConverter.ToUInt32(span.Slice( 2, 4)));
-                    var messageId        = Message_Id.Parse(BitConverter.ToUInt32(span.Slice( 6, 4)));
-                    var dataLength       =                  BitConverter.ToInt32 (span.Slice(10, 4));
-                    var data             = span.Slice(14, dataLength).ToArray();
+                    //var vendorId         = Vendor_Id. Parse(BitConverter.ToUInt32(span.Slice( 2, 4)));
+                    //var messageId        = Message_Id.Parse(BitConverter.ToUInt32(span.Slice( 6, 4)));
+                    //var dataLength       =                  BitConverter.ToInt32 (span.Slice(10, 4));
+                    //var data             = span.Slice(14, dataLength).ToArray();
 
-                    var text             = data.ToUTF8String();
+                    //var text             = data.ToUTF8String();
 
-                    var signaturesCount  = BitConverter.ToUInt16(span.Slice(14 + dataLength, 2));
+                    //var signaturesCount  = BitConverter.ToUInt16(span.Slice(14 + dataLength, 2));
 
-                    for (var sigi = 0; sigi < signaturesCount; sigi++)
+                    //for (var sigi = 0; sigi < signaturesCount; sigi++)
+                    //{
+
+                    //    var signatureLength = BitConverter.ToUInt16(span.Slice(16 + dataLength + (sigi * 2), 2));
+
+                    //    if (Signature.TryParse(span.Slice(18 + dataLength + (sigi * 2), signatureLength).ToArray(),
+                    //                           out var signature,
+                    //                           out var err) &&
+                    //        signature is not null)
+                    //    {
+                    //        signatures.Add(signature);
+                    //    }
+
+                    //}
+
+
+                    //BinaryDataTransferRequest = new BinaryDataTransferRequest(
+
+                    //                                ChargingStationId,
+                    //                                vendorId,
+                    //                                messageId,
+                    //                                data,
+                    //                                format,
+
+                    //                                null,
+                    //                                null,
+                    //                                signatures,
+
+                    //                                null,
+                    //                                RequestId
+
+                    //                            );
+
+                }
+
+                #endregion
+
+                else
+                {
+
+                    Vendor_Id  vendorId   = Vendor_Id. Parse("-");
+                    Message_Id messageId  = Message_Id.Parse("-");
+                    Byte[]?    data       = null;
+
+                    var vendorIdLength    = stream.ReadUInt16();
+                    var vendorIdText      = stream.ReadUTF8String(vendorIdLength);
+
+                    if (!Vendor_Id.TryParse(vendorIdText, out vendorId))
                     {
-
-                        var signatureLength = BitConverter.ToUInt16(span.Slice(16 + dataLength + (sigi * 2), 2));
-
-                        if (Signature.TryParse(span.Slice(18 + dataLength + (sigi * 2), signatureLength).ToArray(),
-                                               out var signature,
-                                               out var err) &&
-                            signature is not null)
-                        {
-                            signatures.Add(signature);
-                        }
-
+                        ErrorResponse = $"The received vendor identification '{vendorIdText}' is invalid!";
+                        return false;
                     }
+
+                    var messageIdLength   = stream.ReadUInt16();
+                    var messageIdText     = stream.ReadUTF8String(messageIdLength);
+
+                    if (!Message_Id.TryParse(messageIdText, out messageId))
+                    {
+                        ErrorResponse = $"The received message identification '{messageIdText}' is invalid!";
+                        return false;
+                    }
+
+                    var dataLength       = stream.ReadUInt64();
+                        data             = stream.ReadBytes(dataLength);
 
 
                     BinaryDataTransferRequest = new BinaryDataTransferRequest(
@@ -283,50 +338,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                                     null,
                                                     null,
-                                                    signatures,
+                                                    null, //signatures,
 
                                                     null,
                                                     RequestId
 
                                                 );
-
-                }
-
-                #endregion
-
-                else
-                {
-                    do
-                    {
-
-                        var tagSpan     = span.Slice(2, 2);
-                        var tag         = BinaryTagsExtensions.Parse   (tagSpan);
-
-                        var lengthSpan  = span.Slice(4, 4);
-                        var length      = BitConverter.        ToUInt32(lengthSpan);
-
-
-                        //switch (tag)
-                        //{
-
-                        //    case BinaryTags.VendorId: // 1
-
-                        //        if (BitConverter.IsLittleEndian)
-                        //            Array.Reverse(span.Slice(4, 4).ToArray());
-
-                        //        var vendorIdLength = BitConverter.ToUInt32(span.Slice(4, 4));
-                        //        position += 8;
-
-                        //        var vendorId = Vendor_Id.Parse(span.Slice(position, (Int32) vendorIdLength).ToUTF8String());
-                        //        position += (Int32) vendorIdLength;
-
-                        //        break;
-
-
-                        //}
-
-                    }
-                    while (false);
 
                 }
 
@@ -398,21 +415,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 case BinaryFormats.TextIds: {
 
-                    var vendorIdBytes  = VendorId.  ToString().ToUTF8Bytes();
-                    binaryStream.Write(BitConverter.GetBytes((UInt16) vendorIdBytes.Length),  0, 4);
-                    binaryStream.Write(vendorIdBytes,                                         0, vendorIdBytes. Length);
+                    var vendorIdBytes  = VendorId.  InternalId.ToUTF8Bytes();
+                    binaryStream.WriteUInt16((UInt16) vendorIdBytes.Length);
+                    binaryStream.Write(vendorIdBytes,       0, vendorIdBytes. Length);
 
-                    var messageIdBytes = MessageId?.ToString().ToUTF8Bytes() ?? [];
-                    binaryStream.Write(BitConverter.GetBytes((UInt16) messageIdBytes.Length), 0, 4);
+                    var messageIdBytes = MessageId?.InternalId.ToUTF8Bytes() ?? [];
+                    binaryStream.WriteUInt16((UInt16) messageIdBytes.Length);
                     if (messageIdBytes.Length > 0)
-                        binaryStream.Write(messageIdBytes,                                    0, messageIdBytes.Length);
+                        binaryStream.Write(messageIdBytes,  0, messageIdBytes.Length);
 
                     var data = Data                                          ?? [];
-                    binaryStream.Write(BitConverter.GetBytes((UInt32) data.Length),           0, 4);
-                    binaryStream.Write(data,                                                  0, data.          Length);
+                    binaryStream.WriteUInt64((UInt64) data.          LongLength);
+                    binaryStream.Write(data,                0, data.          Length); //ToDo: Fix me for >2 GB!
 
-                    var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
-                    binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
+                    var signaturesCount = IncludeSignatures ? Signatures.Count() : 0;
+                    binaryStream.WriteUInt16((UInt16) signaturesCount);
 
                     if (signaturesCount > 0)
                     {
@@ -569,7 +586,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => $"{VendorId}: {MessageId?.ToString() ?? "-"} => {Data?.ToHexString().SubstringMax(20) ?? "-"}";
+            => $"{VendorId}: {MessageId?.ToString() ?? "-"} => {Data?.ToBase64().SubstringMax(100) ?? "-"}";
 
         #endregion
 

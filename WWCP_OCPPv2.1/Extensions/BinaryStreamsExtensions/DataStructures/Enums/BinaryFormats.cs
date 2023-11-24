@@ -76,7 +76,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     BinaryFormat = BinaryFormats.Compact;
                     return true;
 
-                case "extensible":
+                case "textids":
+                    BinaryFormat = BinaryFormats.TagLengthValue;
+                    return true;
+
+                case "taglengthvalue":
                     BinaryFormat = BinaryFormats.TagLengthValue;
                     return true;
 
@@ -143,6 +147,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return true;
 
                 case 2:
+                    BinaryFormat = BinaryFormats.TextIds;
+                    return true;
+
+                case 3:
                     BinaryFormat = BinaryFormats.TagLengthValue;
                     return true;
 
@@ -215,6 +223,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     return true;
 
                 case 2:
+                    BinaryFormat = BinaryFormats.TextIds;
+                    return true;
+
+                case 3:
                     BinaryFormat = BinaryFormats.TagLengthValue;
                     return true;
 
@@ -237,9 +249,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static String AsText(this BinaryFormats BinaryFormats)
 
             => BinaryFormats switch {
-                   BinaryFormats.Compact     => "compact",
-                   BinaryFormats.TagLengthValue  => "extensible",
-                   _                         => "unknown"
+                   BinaryFormats.Compact         => "Compact",
+                   BinaryFormats.TextIds         => "TextIds",
+                   BinaryFormats.TagLengthValue  => "TagLengthValue",
+                   _                             => "unknown"
                };
 
         #endregion
@@ -253,9 +266,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static UInt16 AsNumber(this BinaryFormats BinaryFormats)
 
             => BinaryFormats switch {
-                   BinaryFormats.Compact     => 1,
-                   BinaryFormats.TagLengthValue  => 2,
-                   _                         => 0
+                   BinaryFormats.Compact         => 1,
+                   BinaryFormats.TextIds         => 2,
+                   BinaryFormats.TagLengthValue  => 3,
+                   _                             => 0
                };
 
         #endregion

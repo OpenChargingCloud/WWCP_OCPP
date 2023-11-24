@@ -103,6 +103,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         // Maximum of 36 characters, to allow for GUIDs
         // Sometimes called: messageId?!?!
 
+        #region (static) Empty
+
+        /// <summary>
+        /// Empty
+        /// </summary>
+        public static Request_Id Empty
+            => Parse("");
+
+        #endregion
+
         #region (static) Zero
 
         /// <summary>

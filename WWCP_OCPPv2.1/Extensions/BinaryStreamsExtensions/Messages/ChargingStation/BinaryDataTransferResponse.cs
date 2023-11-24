@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             this.Status      = Status;
             this.Data        = Data;
-            this.Format      = Format ?? BinaryFormats.Compact;
+            this.Format      = Format ?? BinaryFormats.TextIds;
             this.StatusInfo  = StatusInfo;
 
         }
@@ -378,18 +378,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToBinary(CustomBinaryDataTransferResponseSerializer = null, CustomSignatureSerializer = null, ...)
+        #region ToBinary(CustomBinaryDataTransferResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a binary representation of this object.
         /// </summary>
         /// <param name="CustomBinaryDataTransferResponseSerializer">A delegate to serialize custom binary data transfer requests.</param>
+        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
-        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer   = null,
+                               CustomJObjectSerializerDelegate<StatusInfo>?                 CustomStatusInfoSerializer                   = null,
                                CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                    = null,
-                               CustomJObjectSerializerDelegate<CustomData>?                 CustomCustomDataSerializer                   = null,
                                Boolean                                                      IncludeSignatures                            = true)
         {
 
