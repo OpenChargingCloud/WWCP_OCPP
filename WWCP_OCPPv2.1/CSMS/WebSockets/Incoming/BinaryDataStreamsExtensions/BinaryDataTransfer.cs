@@ -89,9 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Custom JSON parser delegates
 
-        public CustomBinaryParserDelegate<CS.BinaryDataTransferRequest>?        CustomBinaryDataTransferRequestParser         { get; set; }
+        public CustomBinaryParserDelegate<CS.BinaryDataTransferRequest>?    CustomBinaryDataTransferRequestParser         { get; set; }
 
-        public CustomJObjectSerializerDelegate<CS.BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer    { get; set; }
+        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer    { get; set; }
 
         #endregion
 
@@ -127,26 +127,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_WebSocket_BinaryResponseMessage?,
+        public async Task<Tuple<OCPP_BinaryResponseMessage?,
                                 OCPP_WebSocket_ErrorMessage?>>
 
-            Receive_BinaryDataTransfer(//Byte[]                     requestData,
-                                       //Request_Id                 requestId,
-                                       //ChargingStation_Id         chargingStationId,
-                                       //WebSocketServerConnection  Connection,
-                                       //Byte[]                     OCPPBinaryMessage,
-                                       //CancellationToken          CancellationToken)
-
-                                       DateTime                   RequestTimestamp,
+            Receive_BinaryDataTransfer(DateTime                   RequestTimestamp,
                                        WebSocketServerConnection  WebSocketConnection,
                                        ChargingStation_Id         chargingStationId,
                                        EventTracking_Id           EventTrackingId,
-                                       String                     requestText,
+                                       Byte[]                     requestText,
                                        Request_Id                 requestId,
                                        Byte[]                     requestData,
                                        CancellationToken          CancellationToken)
-
-
 
         {
 
@@ -168,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            OCPP_WebSocket_BinaryResponseMessage?  OCPPResponse        = null;
+            OCPP_BinaryResponseMessage?  OCPPResponse        = null;
             OCPP_WebSocket_ErrorMessage?           OCPPErrorResponse   = null;
 
             try
@@ -239,12 +230,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     #endregion
 
-                    OCPPResponse  = new OCPP_WebSocket_BinaryResponseMessage(
+                    OCPPResponse  = new OCPP_BinaryResponseMessage(
                                         requestId,
                                         response.ToBinary(
-                                            null, //CustomBinaryDataTransferResponseSerializer,
-                                            null, //CustomSignatureSerializer,
+                                            CustomBinaryDataTransferResponseSerializer,
                                             null, //CustomCustomDataSerializer,
+                                            CustomBinarySignatureSerializer,
                                             IncludeSignatures: true
                                         )
                                     );
@@ -291,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #endregion
 
-            return new Tuple<OCPP_WebSocket_BinaryResponseMessage?,
+            return new Tuple<OCPP_BinaryResponseMessage?,
                              OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
 

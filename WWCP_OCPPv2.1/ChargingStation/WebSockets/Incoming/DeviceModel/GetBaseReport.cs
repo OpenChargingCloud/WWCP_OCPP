@@ -131,7 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_WebSocket_ResponseMessage?,
+        public async Task<Tuple<OCPP_JSONResponseMessage?,
                                 OCPP_WebSocket_ErrorMessage?>>
 
             Receive_GetBaseReport(DateTime                   RequestTimestamp,
@@ -164,7 +164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            OCPP_WebSocket_ResponseMessage? OCPPResponse        = null;
+            OCPP_JSONResponseMessage? OCPPResponse        = null;
             OCPP_WebSocket_ErrorMessage?    OCPPErrorResponse   = null;
 
             try
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     #endregion
 
-                    OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                    OCPPResponse = new OCPP_JSONResponseMessage(
                                        requestId,
                                        response.ToJSON()
                                    );
@@ -273,7 +273,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 OnGetBaseReportWSResponse?.Invoke(Timestamp.Now,
                                                   WebSocketConnection,
                                                   requestJSON,
-                                                  OCPPResponse?.Message,
+                                                  OCPPResponse?.Payload,
                                                   OCPPErrorResponse?.ToJSON());
 
             }
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            return new Tuple<OCPP_WebSocket_ResponseMessage?,
+            return new Tuple<OCPP_JSONResponseMessage?,
                              OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
 

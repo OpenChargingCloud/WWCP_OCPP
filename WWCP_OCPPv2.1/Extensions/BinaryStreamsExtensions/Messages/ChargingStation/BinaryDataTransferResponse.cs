@@ -50,61 +50,57 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The binary format of the given message.
-        /// </summary>
-        [Mandatory]
-        public BinaryFormats             Format        { get; }
-
-        /// <summary>
         /// The success or failure status of the binary data transfer.
         /// </summary>
         [Mandatory]
-        public BinaryDataTransferStatus  Status        { get; }
-
-        /// <summary>
-        /// Optional response binary data.
-        /// </summary>
-        [Optional]
-        public Byte[]?                   Data          { get; }
+        public BinaryDataTransferStatus  Status                  { get; }
 
         /// <summary>
         /// Optional detailed status information.
         /// </summary>
         [Optional]
-        public StatusInfo?               StatusInfo    { get; }
+        public String?                   AdditionalStatusInfo    { get; }
+
+        /// <summary>
+        /// Optional response binary data.
+        /// </summary>
+        [Optional]
+        public Byte[]?                   Data                    { get; }
+
+        /// <summary>
+        /// The binary format of the given message.
+        /// </summary>
+        [Mandatory]
+        public BinaryFormats             Format                  { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region BinaryDataTransferResponse(Request, Status, BinaryData = null, StatusInfo = null, ...)
+        #region BinaryDataTransferResponse(Request, Status, AdditionalStatusInfo = null, Data = null, ...)
 
         /// <summary>
         /// Create a new binary data transfer response.
         /// </summary>
         /// <param name="Request">The binary data transfer request leading to this response.</param>
         /// <param name="Status">The success or failure status of the binary data transfer.</param>
+        /// <param name="AdditionalStatusInfo">Optional detailed status information.</param>
         /// <param name="Data">A vendor-specific JSON token.</param>
-        /// <param name="StatusInfo">Optional detailed status information.</param>
         /// <param name="ResponseTimestamp">An optional response timestamp.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
         /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
         /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
-        /// 
-        /// <param name="CustomData">An optional custom binary data object to allow to store any kind of customer specific binary data.</param>
         public BinaryDataTransferResponse(CS.BinaryDataTransferRequest  Request,
                                           BinaryDataTransferStatus      Status,
-                                          Byte[]?                       Data                = null,
-                                          BinaryFormats?                Format              = null,
-                                          StatusInfo?                   StatusInfo          = null,
-                                          DateTime?                     ResponseTimestamp   = null,
+                                          String?                       AdditionalStatusInfo   = null,
+                                          Byte[]?                       Data                   = null,
+                                          BinaryFormats?                Format                 = null,
+                                          DateTime?                     ResponseTimestamp      = null,
 
-                                          IEnumerable<KeyPair>?         SignKeys            = null,
-                                          IEnumerable<SignInfo>?        SignInfos           = null,
-                                          IEnumerable<Signature>?       Signatures          = null,
-
-                                          CustomData?                   CustomData          = null)
+                                          IEnumerable<KeyPair>?         SignKeys               = null,
+                                          IEnumerable<SignInfo>?        SignInfos              = null,
+                                          IEnumerable<Signature>?       Signatures             = null)
 
             : base(Request,
                    Result.OK(),
@@ -112,16 +108,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                    SignKeys,
                    SignInfos,
-                   Signatures,
-
-                   CustomData)
+                   Signatures)
 
         {
 
-            this.Status      = Status;
-            this.Data        = Data;
-            this.Format      = Format ?? BinaryFormats.TextIds;
-            this.StatusInfo  = StatusInfo;
+            this.Status                = Status;
+            this.AdditionalStatusInfo  = AdditionalStatusInfo;
+            this.Data                  = Data;
+            this.Format                = Format ?? BinaryFormats.TextIds;
 
         }
 
@@ -142,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.Status = BinaryDataTransferStatus.Unknown;
+            this.Status = BinaryDataTransferStatus.Rejected;
 
         }
 
@@ -262,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(Request, Binary, out BinaryDataTransferResponse, out ErrorResponse, CustomDataTransferResponseParser = null)
+        #region (static) TryParse(Request, Binary, out BinaryDataTransferResponse, out ErrorResponse, CustomBinaryDataTransferResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of a binary data transfer response.
@@ -271,7 +265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="BinaryDataTransferResponse">The parsed binary data transfer response.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomDataTransferResponseParser">A delegate to parse custom binary data transfer responses.</param>
+        /// <param name="CustomBinaryDataTransferResponseParser">A delegate to parse custom binary data transfer responses.</param>
         public static Boolean TryParse(CS.BinaryDataTransferRequest                             Request,
                                        Byte[]                                                   Binary,
                                        out BinaryDataTransferResponse?                          BinaryDataTransferResponse,
@@ -284,79 +278,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 BinaryDataTransferResponse = null;
 
-                //#region BinaryDataTransferStatus    [mandatory]
+                var stream  = new MemoryStream(Binary);
+                var format  = BinaryFormatsExtensions.Parse(stream.ReadUInt16());
 
-                //if (!JSON.ParseMandatory("status",
-                //                         "binary data transfer status",
-                //                         BinaryDataTransferStatusExtensions.TryParse,
-                //                         out BinaryDataTransferStatus BinaryDataTransferStatus,
-                //                         out ErrorResponse))
-                //{
-                //    return false;
-                //}
+                switch (format)
+                {
 
-                //#endregion
+                    case BinaryFormats.Compact:
+                        {
 
-                //#region BinaryData                  [optional]
+                            var binaryDataTransferStatusByte    = stream.ReadByte();
 
-                //var BinaryData = JSON["binary data"];
+                            if (!BinaryDataTransferStatus.TryParse(binaryDataTransferStatusByte.ToString(), out var binaryDataTransferStatus))
+                            {
+                                ErrorResponse = $"The received binary data transfer status '{binaryDataTransferStatusByte}' is invalid!";
+                                return false;
+                            }
 
-                //#endregion
+                            String? additionalStatusInfo = null;
+                            var additionalStatusInfoLength      = stream.ReadUInt16();
+                            if (additionalStatusInfoLength > 0)
+                                additionalStatusInfo = stream.ReadUTF8String(additionalStatusInfoLength);
 
-                //#region StatusInfo            [optional]
-
-                //if (JSON.ParseOptionalJSON("statusInfo",
-                //                           "detailed status info",
-                //                           OCPPv2_1.StatusInfo.TryParse,
-                //                           out StatusInfo? StatusInfo,
-                //                           out ErrorResponse))
-                //{
-                //    if (ErrorResponse is not null)
-                //        return false;
-                //}
-
-                //#endregion
-
-                //#region Signatures            [optional, OCPP_CSE]
-
-                //if (JSON.ParseOptionalHashSet("signatures",
-                //                              "cryptographic signatures",
-                //                              Signature.TryParse,
-                //                              out HashSet<Signature> Signatures,
-                //                              out ErrorResponse))
-                //{
-                //    if (ErrorResponse is not null)
-                //        return false;
-                //}
-
-                //#endregion
-
-                //#region CustomData            [optional]
-
-                //if (JSON.ParseOptionalJSON("customBinaryData",
-                //                           "custom binary data",
-                //                           OCPPv2_1.CustomData.TryParse,
-                //                           out CustomData CustomData,
-                //                           out ErrorResponse))
-                //{
-                //    if (ErrorResponse is not null)
-                //        return false;
-                //}
-
-                //#endregion
+                            var dataLength                      = stream.ReadUInt64();
+                            var data                            = stream.ReadBytes(dataLength);
 
 
-                //BinaryDataTransferResponse = new BinaryDataTransferResponse(
-                //                                 Request,
-                //                                 BinaryDataTransferStatus,
-                //                                 null,
-                //                                 StatusInfo,
-                //                                 null,
-                //                                 null,
-                //                                 null,
-                //                                 Signatures,
-                //                                 CustomData
-                //                             );
+                            BinaryDataTransferResponse = new BinaryDataTransferResponse(
+
+                                                             Request,
+                                                             binaryDataTransferStatus,
+                                                             additionalStatusInfo,
+                                                             data,
+                                                             format,
+
+                                                             null,
+                                                             null,
+                                                             null //Signatures
+
+                                                         );
+
+                        }
+                        break;
+
+                    case BinaryFormats.TextIds:
+                        {
+
+                            var binaryDataTransferStatusLength  = stream.ReadUInt16();
+                            var binaryDataTransferStatusText    = stream.ReadUTF8String(binaryDataTransferStatusLength);
+
+                            if (!BinaryDataTransferStatus.TryParse(binaryDataTransferStatusText, out var binaryDataTransferStatus))
+                            {
+                                ErrorResponse = $"The received binary data transfer status '{binaryDataTransferStatusText}' is invalid!";
+                                return false;
+                            }
+
+                            String? additionalStatusInfo = null;
+                            var additionalStatusInfoLength      = stream.ReadUInt16();
+                            if (additionalStatusInfoLength > 0)
+                                additionalStatusInfo = stream.ReadUTF8String(additionalStatusInfoLength);
+
+                            var dataLength                      = stream.ReadUInt64();
+                            var data                            = stream.ReadBytes(dataLength);
+
+
+                            BinaryDataTransferResponse = new BinaryDataTransferResponse(
+
+                                                             Request,
+                                                             binaryDataTransferStatus,
+                                                             additionalStatusInfo,
+                                                             data,
+                                                             format,
+
+                                                             null,
+                                                             null,
+                                                             null //Signatures
+
+                                                         );
+
+                        }
+                        break;
+
+                }
 
                 ErrorResponse = null;
 
@@ -370,7 +373,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 BinaryDataTransferResponse  = null;
-                ErrorResponse               = "The given JSON representation of a binary data transfer response is invalid: " + e.Message;
+                ErrorResponse               = "The given binary representation of a binary data transfer response is invalid: " + e.Message;
                 return false;
             }
 
@@ -389,7 +392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer   = null,
                                CustomJObjectSerializerDelegate<StatusInfo>?                 CustomStatusInfoSerializer                   = null,
-                               CustomJObjectSerializerDelegate<Signature>?                  CustomSignatureSerializer                    = null,
+                               CustomBinarySerializerDelegate<Signature>?                   CustomSignatureSerializer                    = null,
                                Boolean                                                      IncludeSignatures                            = true)
         {
 
@@ -402,10 +405,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 case BinaryFormats.Compact: {
 
-                    binaryStream.Write(BitConverter.GetBytes((UInt32) (Data?.LongLength ?? 0)));
+                    binaryStream.WriteByte(Status.ToString().ToUTF8Bytes()[0]);
 
-                    if (Data is not null)
-                        binaryStream.Write(Data,                                          0, (Int32) (Data?.LongLength ?? 0));
+                    var AdditionalStatusInfoBytes  = AdditionalStatusInfo?.ToUTF8Bytes() ?? [];
+                    binaryStream.WriteUInt16((UInt16) AdditionalStatusInfoBytes.Length);
+                    if (AdditionalStatusInfoBytes.Length > 0)
+                        binaryStream.Write(AdditionalStatusInfoBytes,  0, AdditionalStatusInfoBytes.Length);
+
+                    var data = Data                                                      ?? [];
+                    binaryStream.WriteUInt64((UInt64) data.LongLength);
+                    binaryStream.Write(data,                           0, data.                     Length);
 
                     var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
                     binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
@@ -424,21 +433,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 case BinaryFormats.TextIds: {
 
-                    var data = Data                                          ?? [];
-                    binaryStream.Write(BitConverter.GetBytes((UInt32) data.Length),           0, 4);
-                    binaryStream.Write(data,                                                  0, data.          Length);
+                    var statusBytes                = Status.    ToString().ToUTF8Bytes();
+                    binaryStream.WriteUInt16((UInt16) statusBytes.              Length);
+                    binaryStream.Write(statusBytes,                    0, statusBytes.              Length);
+
+                    var AdditionalStatusInfoBytes  = AdditionalStatusInfo?.ToUTF8Bytes() ?? [];
+                    binaryStream.WriteUInt16((UInt16) AdditionalStatusInfoBytes.Length);
+                    if (AdditionalStatusInfoBytes.Length > 0)
+                        binaryStream.Write(AdditionalStatusInfoBytes,  0, AdditionalStatusInfoBytes.Length);
+
+                    var data = Data                                                      ?? [];
+                    binaryStream.WriteUInt64((UInt64) data.LongLength);
+                    binaryStream.Write(data,                           0, data.                     Length);
 
                     var signaturesCount = (UInt16) (IncludeSignatures ? Signatures.Count() : 0);
                     binaryStream.Write(BitConverter.GetBytes(signaturesCount),            0, 2);
 
-                    if (signaturesCount > 0)
-                    {
-                        
+                    if (IncludeSignatures) {
+                        foreach (var signature in Signatures)
+                        {
+                            var binarySignature = signature.ToBinary();
+                            binaryStream.Write(BitConverter.GetBytes((UInt16) binarySignature.Length));
+                            binaryStream.Write(binarySignature);
+                        }
                     }
 
                 }
                 break;
-
 
                 case BinaryFormats.TagLengthValue: {
 
@@ -458,6 +479,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 }
                 break;
+
             }
 
             var binary = binaryStream.ToArray();
@@ -557,11 +579,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                Status.     Equals(BinaryDataTransferResponse.Status) &&
 
-             ((Data       is     null && BinaryDataTransferResponse.Data       is     null) ||
-              (Data       is not null && BinaryDataTransferResponse.Data       is not null && Data.      Equals(BinaryDataTransferResponse.Data)))      &&
+             ((AdditionalStatusInfo is     null && BinaryDataTransferResponse.AdditionalStatusInfo is     null) ||
+               AdditionalStatusInfo is not null && BinaryDataTransferResponse.AdditionalStatusInfo is not null && AdditionalStatusInfo.Equals(BinaryDataTransferResponse.AdditionalStatusInfo)) &&
 
-             ((StatusInfo is     null && BinaryDataTransferResponse.StatusInfo is     null) ||
-               StatusInfo is not null && BinaryDataTransferResponse.StatusInfo is not null && StatusInfo.Equals(BinaryDataTransferResponse.StatusInfo)) &&
+             ((Data                 is     null && BinaryDataTransferResponse.Data                 is     null) ||
+              (Data                 is not null && BinaryDataTransferResponse.Data                 is not null && Data.                Equals(BinaryDataTransferResponse.Data)))                &&
 
                base.GenericEquals(BinaryDataTransferResponse);
 
@@ -580,11 +602,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             unchecked
             {
 
-                return Status.     GetHashCode()       * 7 ^
-                      (Data?.      GetHashCode() ?? 0) * 5 ^
-                      (StatusInfo?.GetHashCode() ?? 0) * 3 ^
-
-                       base.       GetHashCode();
+                return Status.               GetHashCode()       * 7 ^
+                      (AdditionalStatusInfo?.GetHashCode() ?? 0) * 5 ^
+                      (Data?.                GetHashCode() ?? 0) * 3 ^
+                       base.                 GetHashCode();
 
             }
         }
@@ -599,7 +620,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public override String ToString()
 
             => String.Concat(
-                   Status
+
+                   Status,
+
+                   AdditionalStatusInfo.IsNullOrEmpty()
+                       ? ""
+                       : $" ({AdditionalStatusInfo})",
+
+                   Data?.Length > 0
+                       ? $": '{Data.ToBase64().SubstringMax(100)}' [{Data.Length} bytes]"
+                       : ""
+
                );
 
         #endregion

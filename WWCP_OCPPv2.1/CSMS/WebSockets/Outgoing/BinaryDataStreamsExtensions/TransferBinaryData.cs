@@ -120,9 +120,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  Request.ChargingStationId,
                                                  Request.Action,
                                                  Request.ToBinary(
-                                                     CustomBinaryDataTransferRequestSerializer
-                                                     //CustomSignatureSerializer,
-                                                     //CustomCustomBinaryDataSerializer
+                                                     CustomBinaryDataTransferRequestSerializer,
+                                                     CustomBinarySignatureSerializer
                                                  ),
                                                  Request.RequestTimeout
                                              );

@@ -88,7 +88,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Data">Optional vendor-specific message binary data.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
-        /// <param name="CustomData">The custom binary data object to allow to store any kind of customer specific binary data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
@@ -105,8 +104,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          IEnumerable<SignInfo>?   SignInfos           = null,
                                          IEnumerable<Signature>?  Signatures          = null,
 
-                                         CustomData?              CustomData          = null,
-
                                          Request_Id?              RequestId           = null,
                                          DateTime?                RequestTimestamp    = null,
                                          TimeSpan?                RequestTimeout      = null,
@@ -120,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    SignInfos,
                    Signatures,
 
-                   CustomData,
+                   null, //CustomData,
 
                    RequestId,
                    RequestTimestamp,
@@ -239,12 +236,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 BinaryDataTransferRequest = null;
 
-                //var span        = Binary.AsSpan<Byte>();
-                //var signatures  = new List<Signature>();
-
-                //var formatSpan  = span.Slice(0, 2);
-                //var format      = BinaryFormatsExtensions.Parse(formatSpan);
-
                 var stream  = new MemoryStream(Binary);
                 var format  = BinaryFormatsExtensions.Parse(stream.ReadUInt16());
 
@@ -302,30 +293,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 else
                 {
 
-                    Vendor_Id  vendorId   = Vendor_Id. Parse("-");
-                    Message_Id messageId  = Message_Id.Parse("-");
-                    Byte[]?    data       = null;
-
                     var vendorIdLength    = stream.ReadUInt16();
                     var vendorIdText      = stream.ReadUTF8String(vendorIdLength);
 
-                    if (!Vendor_Id.TryParse(vendorIdText, out vendorId))
+                    if (!Vendor_Id.TryParse(vendorIdText, out var vendorId))
                     {
                         ErrorResponse = $"The received vendor identification '{vendorIdText}' is invalid!";
                         return false;
                     }
 
+                    Message_Id? messageId = null;
                     var messageIdLength   = stream.ReadUInt16();
-                    var messageIdText     = stream.ReadUTF8String(messageIdLength);
-
-                    if (!Message_Id.TryParse(messageIdText, out messageId))
+                    if (messageIdLength > 0)
                     {
-                        ErrorResponse = $"The received message identification '{messageIdText}' is invalid!";
-                        return false;
+
+                        var messageIdText = stream.ReadUTF8String(messageIdLength);
+
+                        if (Message_Id.TryParse(messageIdText, out var _messageId))
+                            messageId     = _messageId;
+                        else
+                        {
+                            ErrorResponse = $"The received message identification '{messageIdText}' is invalid!";
+                            return false;
+                        }
+
                     }
 
                     var dataLength       = stream.ReadUInt64();
-                        data             = stream.ReadBytes(dataLength);
+                    var data             = stream.ReadBytes(dataLength);
 
 
                     BinaryDataTransferRequest = new BinaryDataTransferRequest(
@@ -340,7 +335,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                     null,
                                                     null, //signatures,
 
-                                                    null,
                                                     RequestId
 
                                                 );
@@ -367,18 +361,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToBinary(CustomBinaryDataTransferRequestSerializer = null, CustomSignatureSerializer = null, ...)
+        #region ToBinary(CustomBinaryDataTransferRequestSerializer = null, CustomBinarySignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a binary representation of this object.
         /// </summary>
         /// <param name="CustomBinaryDataTransferRequestSerializer">A delegate to serialize custom binary data transfer requests.</param>
-        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
-        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
+        /// <param name="CustomBinarySignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
         public Byte[] ToBinary(CustomBinarySerializerDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer   = null,
-                               CustomJObjectSerializerDelegate<Signature>?                 CustomSignatureSerializer                   = null,
-                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                  = null,
+                               CustomBinarySerializerDelegate<Signature>?                  CustomBinarySignatureSerializer             = null,
                                Boolean                                                     IncludeSignatures                           = true)
         {
 
@@ -439,7 +431,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 }
                 break;
 
-
                 case BinaryFormats.TagLengthValue: {
 
                     var vendorIdBytes  = VendorId.  ToString().ToUTF8Bytes();
@@ -470,6 +461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 }
                 break;
+
             }
 
             var binary = binaryStream.ToArray();
@@ -556,10 +548,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                VendorId.Equals(BinaryDataTransferRequest.VendorId) &&
 
              ((MessageId is     null && BinaryDataTransferRequest.MessageId is     null) ||
-              (MessageId is not null && BinaryDataTransferRequest.MessageId is not null && MessageId.Equals(BinaryDataTransferRequest.MessageId))) &&
+              (MessageId is not null && BinaryDataTransferRequest.MessageId is not null && MessageId.  Equals(BinaryDataTransferRequest.MessageId))) &&
 
              ((Data      is     null && BinaryDataTransferRequest.Data      is     null) ||
-              (Data      is not null && BinaryDataTransferRequest.Data      is not null && Data.     Equals(BinaryDataTransferRequest.Data)))      &&
+              (Data      is not null && BinaryDataTransferRequest.Data      is not null && Data.SequenceEqual(BinaryDataTransferRequest.Data)))      &&
 
                base.GenericEquals(BinaryDataTransferRequest);
 
@@ -586,7 +578,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         public override String ToString()
 
-            => $"{VendorId}: {MessageId?.ToString() ?? "-"} => {Data?.ToBase64().SubstringMax(100) ?? "-"}";
+            => String.Concat(
+
+                   VendorId,
+
+                   MessageId.IsNotNullOrEmpty()
+                        ? $" ({MessageId})"
+                        : "",
+
+                   Data?.Length > 0
+                       ? $": '{Data.ToBase64().SubstringMax(100)}' [{Data.Length} bytes]"
+                       : ""
+
+                );
 
         #endregion
 

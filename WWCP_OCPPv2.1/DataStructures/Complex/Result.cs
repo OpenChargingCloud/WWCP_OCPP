@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The machine-readable result code.
         /// </summary>
-        public ResultCodes  ResultCode        { get; }
+        public ResultCode  ResultCode        { get; }
 
         /// <summary>
         /// The optional human-readable error description.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Details">Optional error details.</param>
         /// <param name="Response">An optional response message.</param>
         /// <param name="BinaryResponse">An optional binary response message.</param>
-        private Result(ResultCodes  ResultCode,
+        private Result(ResultCode  ResultCode,
                        String?      Description      = null,
                        JObject?     Details          = null,
                        JObject?     Response         = null,
@@ -89,33 +89,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-
-        public static Result FromSendRequestState(CSMS.SendJSONRequestState SendRequestState)
+        public static Result FromSendRequestState(SendJSONRequestState SendRequestState)
 
             => new (
-                   SendRequestState.ErrorCode ?? ResultCodes.GenericError,
+                   SendRequestState.ErrorCode ?? ResultCode.GenericError,
                    SendRequestState.ErrorDescription,
                    SendRequestState.ErrorDetails,
                    SendRequestState.Response
                );
 
-        public static Result FromSendRequestState(CSMS.SendBinaryRequestState SendRequestState)
+        public static Result FromSendRequestState(SendBinaryRequestState SendRequestState)
 
             => new (
-                   SendRequestState.ErrorCode ?? ResultCodes.GenericError,
+                   SendRequestState.ErrorCode ?? ResultCode.GenericError,
                    SendRequestState.ErrorDescription,
                    SendRequestState.ErrorDetails,
                    null,
-                   SendRequestState.Response
-               );
-
-
-        public static Result FromSendRequestState(CS.ChargingStationWSClient.SendRequestState2 SendRequestState)
-
-            => new (
-                   SendRequestState.ErrorCode ?? ResultCodes.GenericError,
-                   SendRequestState.ErrorDescription,
-                   SendRequestState.ErrorDetails,
                    SendRequestState.Response
                );
 
@@ -129,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static Result GenericError(String?  Description   = null,
                                           JObject? Details       = null)
 
-            => new (ResultCodes.GenericError,
+            => new (ResultCode.GenericError,
                     Description,
                     Details);
 
@@ -141,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static Result FromException(Exception Exception)
 
             => new (
-                   ResultCodes.GenericError,
+                   ResultCode.GenericError,
                    Exception.Message,
                    JSONObject.Create(
                        new JProperty("message",     Exception.Message),
@@ -156,7 +145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Description">A human-readable error description.</param>
         public static Result OK(String? Description = null)
 
-            => new (ResultCodes.OK,
+            => new (ResultCode.OK,
                     Description);
 
 
@@ -196,7 +185,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Description">A human-readable error description.</param>
         public static Result Server(String? Description = null)
 
-            => new (ResultCodes.NetworkError,
+            => new (ResultCode.NetworkError,
                     Description);
 
 
@@ -206,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Description">A human-readable error description.</param>
         public static Result Format(String? Description = null)
 
-            => new (ResultCodes.FormationViolation,
+            => new (ResultCode.FormationViolation,
                     Description);
 
 
@@ -216,7 +205,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="Description">A human-readable error description.</param>
         public static Result SignatureError(String? Description = null)
 
-            => new (ResultCodes.SecurityError,
+            => new (ResultCode.SecurityError,
                     Description);
 
         #endregion

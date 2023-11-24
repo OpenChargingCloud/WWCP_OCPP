@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                    CustomData:   null
                                                );
 
-                Assert.AreEqual(ResultCodes.OK,                          response1.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                          response1.Result.ResultCode);
                 Assert.AreEqual(RegistrationStatus.Accepted,             response1.Status);
 
 

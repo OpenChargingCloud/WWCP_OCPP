@@ -25,12 +25,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 {
 
     /// <summary>
-    /// A OCPP WebSocket response message.
+    /// An OCPP HTTP Web Socket JSON response message.
     /// </summary>
     /// <param name="RequestId">An unique request identification.</param>
-    /// <param name="Message">A JSON response message payload.</param>
-    public class OCPP_WebSocket_ResponseMessage(Request_Id  RequestId,
-                                                JObject     Message)
+    /// <param name="Payload">A JSON response message payload.</param>
+    public class OCPP_JSONResponseMessage(Request_Id  RequestId,
+                                          JObject     Payload)
     {
 
         #region Properties
@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// The JSON response message payload.
         /// </summary>
-        public JObject     Message      { get; } = Message;
+        public JObject     Payload      { get; } = Payload;
 
         #endregion
 
@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// </summary>
         /// <param name="JSONArray">The JSON array to be parsed.</param>
         /// <param name="ResponseMessage">The parsed OCPP WebSocket response message.</param>
-        public static Boolean TryParse(JArray JSONArray, out OCPP_WebSocket_ResponseMessage? ResponseMessage)
+        public static Boolean TryParse(JArray JSONArray, out OCPP_JSONResponseMessage? ResponseMessage)
         {
 
             ResponseMessage = null;
@@ -85,12 +85,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                 if (!Request_Id.TryParse(JSONArray[1]?.Value<String>() ?? "", out var responseId))
                     return false;
 
-                if (JSONArray[2] is not JObject jsonMessage)
+                if (JSONArray[2] is not JObject payload)
                     return false;
 
-                ResponseMessage = new OCPP_WebSocket_ResponseMessage(
+                ResponseMessage = new OCPP_JSONResponseMessage(
                                       responseId,
-                                      jsonMessage
+                                      payload
                                   );
 
                 return true;
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 
             => new (3,
                     RequestId.ToString(),
-                    Message);
+                    Payload);
 
         #endregion
 
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// </summary>
         public override String ToString()
 
-            => $"{RequestId} => {Message}";
+            => $"{RequestId} => {Payload.ToString(Newtonsoft.Json.Formatting.None)}";
 
         #endregion
 

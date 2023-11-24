@@ -32,7 +32,6 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages;
 
@@ -96,87 +95,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                    IChargingStationClientEvents
     {
 
-        #region (class) SendRequestState2
-
-        public class SendRequestState2
-        {
-
-            public DateTime                              Timestamp                  { get; }
-            public OCPP_WebSocket_RequestMessage?        WSRequestMessage           { get; }
-            public OCPP_WebSocket_BinaryRequestMessage?  WSBinaryRequestMessage     { get; }
-            public DateTime                              Timeout                    { get; }
-
-            public DateTime?                             ResponseTimestamp          { get; set; }
-            public JObject?                              Response                   { get; set; }
-            public Byte[]?                               BinaryResponse             { get; set; }
-
-            public ResultCodes?                          ErrorCode                  { get; set; }
-            public String?                               ErrorDescription           { get; set; }
-            public JObject?                              ErrorDetails               { get; set; }
-
-
-            public Boolean                              NoErrors
-                 => !ErrorCode.HasValue;
-
-            public Boolean                              HasErrors
-                 =>  ErrorCode.HasValue;
-
-
-            public SendRequestState2(DateTime                             Timestamp,
-                                     OCPP_WebSocket_RequestMessage        WSRequestMessage,
-                                     DateTime                             Timeout,
-
-                                     DateTime?                            ResponseTimestamp   = null,
-                                     JObject?                             Response            = null,
-
-                                     ResultCodes?                         ErrorCode           = null,
-                                     String?                              ErrorDescription    = null,
-                                     JObject?                             ErrorDetails        = null)
-            {
-
-                this.Timestamp          = Timestamp;
-                this.WSRequestMessage   = WSRequestMessage;
-                this.Timeout            = Timeout;
-
-                this.ResponseTimestamp  = ResponseTimestamp;
-                this.Response           = Response;
-
-                this.ErrorCode          = ErrorCode;
-                this.ErrorDescription   = ErrorDescription;
-                this.ErrorDetails       = ErrorDetails;
-
-            }
-
-            public SendRequestState2(DateTime                             Timestamp,
-                                     OCPP_WebSocket_BinaryRequestMessage  WSBinaryRequestMessage,
-                                     DateTime                             Timeout,
-
-                                     DateTime?                            ResponseTimestamp   = null,
-                                     JObject?                             Response            = null,
-
-                                     ResultCodes?                         ErrorCode           = null,
-                                     String?                              ErrorDescription    = null,
-                                     JObject?                             ErrorDetails        = null)
-            {
-
-                this.Timestamp               = Timestamp;
-                this.WSBinaryRequestMessage  = WSBinaryRequestMessage;
-                this.Timeout                 = Timeout;
-
-                this.ResponseTimestamp       = ResponseTimestamp;
-                this.Response                = Response;
-
-                this.ErrorCode               = ErrorCode;
-                this.ErrorDescription        = ErrorDescription;
-                this.ErrorDetails            = ErrorDetails;
-
-            }
-
-        }
-
-        #endregion
-
-
         #region Data
 
         /// <summary>
@@ -188,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         public static readonly  TimeSpan                                             DefaultRequestTimeout             = TimeSpan.FromSeconds(30);
 
-        public readonly         ConcurrentDictionary<Request_Id, SendRequestState2>  requests                          = [];
+        public readonly         ConcurrentDictionary<Request_Id, ASendRequestState>  requests                          = [];
 
         private readonly        Dictionary<String, MethodInfo>                       incomingMessageProcessorsLookup   = [];
 
@@ -293,6 +211,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public CustomJObjectSerializerDelegate<MessageInfo>?                               CustomMessageInfoSerializer                                 { get; set; }
         public CustomJObjectSerializerDelegate<MessageContent>?                            CustomMessageContentSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<CertificateHashData>?                       CustomCertificateHashDataSerializer                         { get; set; }
+
+
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate<Signature>?                                  CustomBinarySignatureSerializer                             { get; set; }
 
         #endregion
 
@@ -423,8 +345,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             foreach (var method in typeof(ChargingStationWSClient).GetMethods(BindingFlags.Public | BindingFlags.Instance).
                                                                    Where(method            => method.Name.StartsWith("Receive_") &&
-                                                                        (method.ReturnType == typeof(Task<Tuple<OCPP_WebSocket_ResponseMessage?,       OCPP_WebSocket_ErrorMessage?>>) ||
-                                                                         method.ReturnType == typeof(Task<Tuple<OCPP_WebSocket_BinaryResponseMessage?, OCPP_WebSocket_ErrorMessage?>>))))
+                                                                        (method.ReturnType == typeof(Task<Tuple<OCPP_JSONResponseMessage?,       OCPP_WebSocket_ErrorMessage?>>) ||
+                                                                         method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_WebSocket_ErrorMessage?>>))))
             {
 
                 var processorName = method.Name[8..];
@@ -462,10 +384,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 var jsonArray = JArray.Parse(TextMessage);
 
-                if      (OCPP_WebSocket_RequestMessage. TryParse(jsonArray, out var ocppRequest)       && ocppRequest       is not null)
+                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var ocppRequest)       && ocppRequest       is not null)
                 {
 
-                    OCPP_WebSocket_ResponseMessage? OCPPResponse        = null;
+                    OCPP_JSONResponseMessage? OCPPResponse        = null;
                     OCPP_WebSocket_ErrorMessage?    OCPPErrorResponse   = null;
 
                     // Try to call the matching 'incoming message processor'
@@ -482,12 +404,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                          EventTrackingId,
                                                          TextMessage,
                                                          ocppRequest.RequestId,
-                                                         ocppRequest.Message,
+                                                         ocppRequest.Payload,
                                                          CancellationToken ]);
 
                         #endregion
 
-                        if (result is Task<Tuple<OCPP_WebSocket_ResponseMessage?, OCPP_WebSocket_ErrorMessage?>> textProcessor)
+                        if (result is Task<Tuple<OCPP_JSONResponseMessage?, OCPP_WebSocket_ErrorMessage?>> textProcessor)
                         {
 
                             (OCPPResponse, OCPPErrorResponse) = await textProcessor;
@@ -539,14 +461,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 }
 
-                else if (OCPP_WebSocket_ResponseMessage.TryParse(jsonArray, out var ocppResponse)      && ocppResponse      is not null)
+                else if (OCPP_JSONResponseMessage.TryParse(jsonArray, out var ocppResponse)      && ocppResponse      is not null)
                 {
 
-                    if (requests.TryGetValue(ocppResponse.RequestId, out var sendRequestState))
+                    if (requests.TryGetValue(ocppResponse.RequestId, out var sendRequestState) &&
+                        sendRequestState is SendJSONRequestState sendJSONRequestState)
                     {
 
-                        sendRequestState.ResponseTimestamp  = Timestamp.Now;
-                        sendRequestState.Response           = ocppResponse.Message;
+                        sendJSONRequestState.ResponseTimestamp  = Timestamp.Now;
+                        sendJSONRequestState.Response           = ocppResponse.Payload;
 
                         #region OnTextMessageResponseReceived
 
@@ -556,10 +479,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                             OnTextMessageResponseReceived?.Invoke(Timestamp.Now,
                                                                   this,
                                                                   EventTracking_Id.New,
-                                                                  sendRequestState.Timestamp,
-                                                                  sendRequestState.WSRequestMessage.ToJSON().ToString(JSONFormatting),
-                                                                  sendRequestState.ResponseTimestamp.Value,
-                                                                  sendRequestState.Response.ToString(JSONFormatting));
+                                                                  sendJSONRequestState.Timestamp,
+                                                                  sendJSONRequestState.Request?.ToJSON().ToString(JSONFormatting) ?? "",
+                                                                  sendJSONRequestState.ResponseTimestamp.Value,
+                                                                  sendJSONRequestState.Response.ToString(JSONFormatting));
 
                         }
                         catch (Exception e)
@@ -625,10 +548,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                     if (OCPP_WebSocket_BinaryRequestMessage. TryParse(BinaryMessage, out var ocppRequest, out var err1)  && ocppRequest  is not null)
+                     if (OCPP_BinaryRequestMessage. TryParse(BinaryMessage, out var ocppRequest,  out var err1) && ocppRequest  is not null)
                 {
 
-                    OCPP_WebSocket_BinaryResponseMessage? OCPPResponse        = null;
+                    OCPP_BinaryResponseMessage? OCPPResponse        = null;
                     OCPP_WebSocket_ErrorMessage?          OCPPErrorResponse   = null;
 
                     // Try to call the matching 'incoming message processor'
@@ -645,12 +568,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                              EventTrackingId,
                                                              BinaryMessage,
                                                              ocppRequest.RequestId,
-                                                             ocppRequest.BinaryMessage,
+                                                             ocppRequest.Payload,
                                                              CancellationToken ]);
 
                             #endregion
 
-                            if (result is Task<Tuple<OCPP_WebSocket_BinaryResponseMessage?, OCPP_WebSocket_ErrorMessage?>> binaryProcessor)
+                            if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_WebSocket_ErrorMessage?>> binaryProcessor)
                             {
 
                                 (OCPPResponse, OCPPErrorResponse) = await binaryProcessor;
@@ -699,67 +622,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     }
 
-
-
-                    Byte[]?                      OCPPResponseJSON   = null;
-                    OCPP_WebSocket_ErrorMessage? ErrorMessage       = null;
-
-                    switch (ocppRequest.Action)
-                    {
-
-                        case "BinaryDataTransfer":
-                            {
-
-
-
-                            }
-                            break;
-
-                    }
-
-                    if (OCPPResponseJSON is not null)
-                    {
-
-                        await SendBinary(
-                                  new OCPP_WebSocket_BinaryResponseMessage(
-                                      ocppRequest.RequestId,
-                                      OCPPResponseJSON
-                                  ).ToByteArray()
-                              );
-
-                        #region OnBinaryMessageResponseSent
-
-                        try
-                        {
-
-                            OnBinaryMessageResponseSent?.Invoke(Timestamp.Now,
-                                                                this,
-                                                                EventTracking_Id.New,
-                                                                RequestTimestamp,
-                                                                ocppRequest.BinaryMessage,
-                                                                Timestamp.Now,
-                                                                OCPPResponseJSON);
-
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnTextMessageResponseSent));
-                        }
-
-                        #endregion
-
-                    }
-
                 }
 
-                else if (OCPP_WebSocket_BinaryResponseMessage.TryParse(BinaryMessage, out var ocppResponse) && ocppResponse is not null)
+                else if (OCPP_BinaryResponseMessage.TryParse(BinaryMessage, out var ocppResponse, out var err2) && ocppResponse is not null)
                 {
 
-                    if (requests.TryGetValue(ocppResponse.RequestId, out var sendRequestState))
+                    if (requests.TryGetValue(ocppResponse.RequestId, out var sendRequestState) &&
+                        sendRequestState is SendBinaryRequestState sendBinaryRequestState)
                     {
 
-                        sendRequestState.ResponseTimestamp  = Timestamp.Now;
-                        sendRequestState.BinaryResponse     = ocppResponse.BinaryMessage;
+                        sendBinaryRequestState.ResponseTimestamp  = Timestamp.Now;
+                        sendBinaryRequestState.Response           = ocppResponse.Payload;
 
                         #region OnBinaryMessageResponseReceived
 
@@ -768,12 +641,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                             OnBinaryMessageResponseReceived?.Invoke(Timestamp.Now,
                                                                     this,
-                                                      //              OCPPBinaryMessage,
-                                                                    EventTracking_Id.New,
-                                                                    sendRequestState.Timestamp,
-                                                                    sendRequestState.WSBinaryRequestMessage?.ToByteArray() ?? [],
-                                                                    sendRequestState.ResponseTimestamp.Value,
-                                                                    sendRequestState.BinaryResponse);
+                                                                    EventTrackingId,
+                                                                    sendBinaryRequestState.Timestamp,
+                                                                    sendBinaryRequestState.Request?.ToByteArray() ?? [],
+                                                                    sendBinaryRequestState.ResponseTimestamp.Value,
+                                                                    sendBinaryRequestState.Response);
 
                         }
                         catch (Exception e)
@@ -817,14 +689,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendRequest(Action, RequestId, Message)
+        #region SendRequest(Action, RequestId, JSONMessage)
 
-        public async Task<OCPP_WebSocket_RequestMessage> SendRequest(String      Action,
-                                                                     Request_Id  RequestId,
-                                                                     JObject     Message)
+        public async Task<OCPP_JSONRequestMessage> SendRequest(String      Action,
+                                                               Request_Id  RequestId,
+                                                               JObject     JSONMessage)
         {
 
-            OCPP_WebSocket_RequestMessage? wsRequestMessage = null;
+            OCPP_JSONRequestMessage? wsRequestMessage = null;
 
             if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
                                            ConfigureAwait(false))
@@ -835,10 +707,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (HTTPStream is not null)
                     {
 
-                        wsRequestMessage = new OCPP_WebSocket_RequestMessage(
+                        wsRequestMessage = new OCPP_JSONRequestMessage(
                                                RequestId,
                                                Action,
-                                               Message
+                                               JSONMessage
                                            );
 
                         await SendText(wsRequestMessage.
@@ -846,8 +718,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        ToString(JSONFormatting));
 
                         requests.TryAdd(RequestId,
-                                        new SendRequestState2(
+                                        new SendJSONRequestState(
                                             Timestamp.Now,
+                                            ChargingStationIdentity,
                                             wsRequestMessage,
                                             Timestamp.Now + RequestTimeout
                                         ));
@@ -856,11 +729,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     else
                     {
 
-                        wsRequestMessage = new OCPP_WebSocket_RequestMessage(
+                        wsRequestMessage = new OCPP_JSONRequestMessage(
                                                RequestId,
                                                Action,
-                                               Message,
-                                               ErrorMessage: "Invalid WebSocket connection!"
+                                               JSONMessage,
+                                               ErrorMessage: "Invalid HTTP Web Socket connection!"
                                            );
 
                     }
@@ -872,10 +745,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     while (e.InnerException is not null)
                         e = e.InnerException;
 
-                    wsRequestMessage = new OCPP_WebSocket_RequestMessage(
+                    wsRequestMessage = new OCPP_JSONRequestMessage(
                                            RequestId,
                                            Action,
-                                           Message,
+                                           JSONMessage,
                                            ErrorMessage: e.Message
                                        );
 
@@ -889,10 +762,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
 
             else
-                wsRequestMessage = new OCPP_WebSocket_RequestMessage(
+                wsRequestMessage = new OCPP_JSONRequestMessage(
                                        RequestId,
                                        Action,
-                                       Message,
+                                       JSONMessage,
                                        ErrorMessage: "Could not aquire the maintenance tasks lock!"
                                    );
 
@@ -904,12 +777,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region SendRequest(Action, RequestId, BinaryMessage)
 
-        public async Task<OCPP_WebSocket_BinaryRequestMessage> SendRequest(String      Action,
-                                                                           Request_Id  RequestId,
-                                                                           Byte[]      BinaryMessage)
+        public async Task<OCPP_BinaryRequestMessage> SendRequest(String      Action,
+                                                                 Request_Id  RequestId,
+                                                                 Byte[]      BinaryMessage)
         {
 
-            OCPP_WebSocket_BinaryRequestMessage? binaryRequestMessage = null;
+            OCPP_BinaryRequestMessage? binaryRequestMessage = null;
 
             if (await MaintenanceSemaphore.WaitAsync(SemaphoreSlimTimeout).
                                            ConfigureAwait(false))
@@ -920,7 +793,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     if (HTTPStream is not null)
                     {
 
-                        binaryRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
+                        binaryRequestMessage = new OCPP_BinaryRequestMessage(
                                                    RequestId,
                                                    Action,
                                                    BinaryMessage
@@ -929,8 +802,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         await SendBinary(binaryRequestMessage.ToByteArray());
 
                         requests.TryAdd(RequestId,
-                                        new SendRequestState2(
+                                        new SendBinaryRequestState(
                                             Timestamp.Now,
+                                            ChargingStationIdentity,
                                             binaryRequestMessage,
                                             Timestamp.Now + RequestTimeout
                                         ));
@@ -939,11 +813,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     else
                     {
 
-                        binaryRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
+                        binaryRequestMessage = new OCPP_BinaryRequestMessage(
                                                    RequestId,
                                                    Action,
                                                    BinaryMessage,
-                                                   ErrorMessage: "Invalid WebSocket connection!"
+                                                   ErrorMessage: "Invalid HTTP Web Socket connection!"
                                                );
 
                     }
@@ -955,7 +829,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     while (e.InnerException is not null)
                         e = e.InnerException;
 
-                    binaryRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
+                    binaryRequestMessage = new OCPP_BinaryRequestMessage(
                                                RequestId,
                                                Action,
                                                BinaryMessage,
@@ -972,7 +846,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
 
             else
-                binaryRequestMessage = new OCPP_WebSocket_BinaryRequestMessage(
+                binaryRequestMessage = new OCPP_BinaryRequestMessage(
                                            RequestId,
                                            Action,
                                            BinaryMessage,
@@ -988,7 +862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (private) WaitForResponse(RequestMessage)
 
-        private async Task<SendRequestState2> WaitForResponse(OCPP_WebSocket_RequestMessage RequestMessage)
+        private async Task<SendJSONRequestState> WaitForResponse(OCPP_JSONRequestMessage RequestMessage)
         {
 
             var endTime = Timestamp.Now + RequestTimeout;
@@ -1003,14 +877,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     await Task.Delay(25);
 
-                    if (requests.TryGetValue(RequestMessage.RequestId, out var sendRequestState2) &&
-                       (sendRequestState2?.Response is not null ||
-                        sendRequestState2?.ErrorCode.HasValue == true))
+                    if (requests.TryGetValue(RequestMessage.RequestId, out var aSendRequestState) &&
+                        aSendRequestState is SendJSONRequestState sendJSONRequestState &&
+                       (sendJSONRequestState?.Response is not null ||
+                        sendJSONRequestState?.ErrorCode.HasValue == true))
                     {
 
                         requests.TryRemove(RequestMessage.RequestId, out _);
 
-                        return sendRequestState2;
+                        return sendJSONRequestState;
 
                     }
 
@@ -1025,15 +900,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            return new SendRequestState2(
-                       Timestamp:          Timestamp.Now,
-                       WSRequestMessage:   RequestMessage,
-                       Timeout:            endTime,
+            return new SendJSONRequestState(
+                       Timestamp:           Timestamp.Now,
+                       ChargingStationId:   ChargingStationIdentity,
+                       Request:             RequestMessage,
+                       Timeout:             endTime,
 
-                       Response:           null,
-                       ErrorCode:          ResultCodes.Timeout,
-                       ErrorDescription:   null,
-                       ErrorDetails:       null
+                       Response:            null,
+                       ErrorCode:           ResultCode.Timeout,
+                       ErrorDescription:    null,
+                       ErrorDetails:        null
                    );
 
         }
@@ -1042,7 +918,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region (private) WaitForResponse(BinaryRequestMessage)
 
-        private async Task<SendRequestState2> WaitForResponse(OCPP_WebSocket_BinaryRequestMessage BinaryRequestMessage)
+        private async Task<SendBinaryRequestState> WaitForResponse(OCPP_BinaryRequestMessage BinaryRequestMessage)
         {
 
             var endTime = Timestamp.Now + RequestTimeout;
@@ -1057,14 +933,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     await Task.Delay(25);
 
-                    if (requests.TryGetValue(BinaryRequestMessage.RequestId, out var sendRequestState2) &&
-                       (sendRequestState2?.Response is not null ||
-                        sendRequestState2?.ErrorCode.HasValue == true))
+                    if (requests.TryGetValue(BinaryRequestMessage.RequestId, out var aSendRequestState) &&
+                        aSendRequestState is SendBinaryRequestState sendBinaryRequestState &&
+                       (sendBinaryRequestState?.Response is not null ||
+                        sendBinaryRequestState?.ErrorCode.HasValue == true))
                     {
 
                         requests.TryRemove(BinaryRequestMessage.RequestId, out _);
 
-                        return sendRequestState2;
+                        return sendBinaryRequestState;
 
                     }
 
@@ -1079,13 +956,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            return new SendRequestState2(
+            return new SendBinaryRequestState(
                        Timestamp:                Timestamp.Now,
-                       WSBinaryRequestMessage:   BinaryRequestMessage,
+                       ChargingStationId:   ChargingStationIdentity,
+                       Request:   BinaryRequestMessage,
                        Timeout:                  endTime,
 
                        Response:                 null,
-                       ErrorCode:                ResultCodes.Timeout,
+                       ErrorCode:                ResultCode.Timeout,
                        ErrorDescription:         null,
                        ErrorDetails:             null
                    );

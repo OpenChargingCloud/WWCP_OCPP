@@ -27,16 +27,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 {
 
     /// <summary>
-    /// A OCPP WebSocket request message.
+    /// An OCPP HTTP Web Socket JSON request message.
     /// </summary>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Action">An OCPP action/method name.</param>
-    /// <param name="Message">A JSON request message payload.</param>
-    /// <param name="ErrorMessage">An optional error message.</param>
-    public class OCPP_WebSocket_RequestMessage(Request_Id  RequestId,
-                                               String      Action,
-                                               JObject     Message,
-                                               String?     ErrorMessage   = null)
+    /// <param name="Payload">A JSON request message payload.</param>
+    /// <param name="ErrorMessage">An optional error message, e.g. during sending of the message.</param>
+    public class OCPP_JSONRequestMessage(Request_Id  RequestId,
+                                         String      Action,
+                                         JObject     Payload,
+                                         String?     ErrorMessage   = null)
     {
 
         #region Properties
@@ -54,10 +54,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// The JSON request message payload.
         /// </summary>
-        public JObject     Message         { get; } = Message;
+        public JObject     Payload         { get; } = Payload;
 
         /// <summary>
-        /// The optional error message.
+        /// The optional error message, e.g. during sending of the message.
         /// </summary>
         public String?     ErrorMessage    { get; } = ErrorMessage;
 
@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// </summary>
         /// <param name="JSONArray">The JSON array to be parsed.</param>
         /// <param name="RequestMessage">The parsed OCPP WebSocket request message.</param>
-        public static Boolean TryParse(JArray JSONArray, out OCPP_WebSocket_RequestMessage? RequestMessage)
+        public static Boolean TryParse(JArray JSONArray, out OCPP_JSONRequestMessage? RequestMessage)
         {
 
             RequestMessage = null;
@@ -113,13 +113,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                 if (action is null || action.IsNullOrEmpty())
                     return false;
 
-                if (JSONArray[3] is not JObject jsonMessage)
+                if (JSONArray[3] is not JObject payload)
                     return false;
 
-                RequestMessage = new OCPP_WebSocket_RequestMessage(
+                RequestMessage = new OCPP_JSONRequestMessage(
                                      requestId,
                                      action,
-                                     jsonMessage
+                                     payload
                                  );
 
                 return true;
@@ -154,7 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
             => new (2,
                     RequestId.ToString(),
                     Action,
-                    Message);
+                    Payload);
 
         #endregion
 
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// </summary>
         public override String ToString()
 
-            => $"{Action} ({RequestId}) => {Message}";
+            => $"{Action} ({RequestId}) => {Payload.ToString(Newtonsoft.Json.Formatting.None)}";
 
         #endregion
 

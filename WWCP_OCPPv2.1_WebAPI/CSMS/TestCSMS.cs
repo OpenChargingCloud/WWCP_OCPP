@@ -1660,6 +1660,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CS.NotifyDisplayMessagesRequest>?                     CustomNotifyDisplayMessagesRequestSerializer                 { get; set; }
         public CustomJObjectSerializerDelegate<CS.NotifyCustomerInformationRequest>?                 CustomNotifyCustomerInformationRequestSerializer             { get; set; }
 
+
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate<CS.BinaryDataTransferRequest>?                         CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+        public CustomBinarySerializerDelegate<Signature>?                                            CustomBinarySignatureSerializer                              { get; set; }
+
         #endregion
 
         #region Charging Station Response Messages
@@ -6555,9 +6560,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 var response = !SignaturePolicy.VerifyRequestMessage(
                                    request,
                                    request.ToBinary(
-                                       //CustomIncomingBinaryDataTransferRequestSerializer,
-                                       //CustomSignatureSerializer,
-                                       //CustomCustomBinaryDataSerializer
+                                       CustomIncomingBinaryDataTransferRequestSerializer,
+                                       CustomBinarySignatureSerializer,
+                                       IncludeSignatures: false
                                    ),
                                    out var errorResponse
                                )
@@ -6572,28 +6577,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    : request.VendorId == Vendor_Id.GraphDefined
 
                                          ? new (
-                                               Request:      request,
-                                               Status:       BinaryDataTransferStatus.Accepted,
-                                               Data:         responseBinaryData,
-                                               StatusInfo:   null,
-                                               CustomData:   null
+                                               Request:                request,
+                                               Status:                 BinaryDataTransferStatus.Accepted,
+                                               AdditionalStatusInfo:   null,
+                                               Data:                   responseBinaryData
                                            )
 
                                          : new BinaryDataTransferResponse(
-                                               Request:      request,
-                                               Status:       BinaryDataTransferStatus.Rejected,
-                                               Data:         null,
-                                               StatusInfo:   null,
-                                               CustomData:   null
-                                         );
+                                               Request:                request,
+                                               Status:                 BinaryDataTransferStatus.Rejected,
+                                               AdditionalStatusInfo:   null,
+                                               Data:                   responseBinaryData
+                                           );
 
                 SignaturePolicy.SignResponseMessage(
                     response,
                     response.ToBinary(
-                        CustomIncomingBinaryDataTransferResponseSerializer
-                        //CustomStatusInfoSerializer,
-                        //CustomSignatureSerializer,
-                        //CustomCustomBinaryDataSerializer
+                        CustomIncomingBinaryDataTransferResponseSerializer,
+                        null, //CustomStatusInfoSerializer,
+                        CustomBinarySignatureSerializer,
+                        IncludeSignatures: false
                     ),
                     out var errorResponse2);
 
@@ -11099,9 +11102,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                 ? SignaturePolicy.SignRequestMessage(
                                       Request,
                                       Request.ToBinary(
-                                          CustomBinaryDataTransferRequestSerializer
-                                          //CustomSignatureSerializer,
-                                          //CustomCustomBinaryDataSerializer
+                                          CustomBinaryDataTransferRequestSerializer,
+                                          CustomBinarySignatureSerializer,
+                                          IncludeSignatures: false
                                       ),
                                       out var errorResponse
                                   )
@@ -11122,10 +11125,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             SignaturePolicy.VerifyResponseMessage(
                 response,
                 response.ToBinary(
-                    CustomBinaryDataTransferResponseSerializer
-                    //CustomStatusInfoSerializer,
-                    //CustomSignatureSerializer,
-                    //CustomCustomBinaryDataSerializer
+                    CustomBinaryDataTransferResponseSerializer,
+                    null, // CustomStatusInfoSerializer
+                    CustomBinarySignatureSerializer,
+                    IncludeSignatures: false
                 ),
                 out errorResponse
             );
@@ -11157,7 +11160,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
         #endregion
-
 
 
         // E2E Security Extensions

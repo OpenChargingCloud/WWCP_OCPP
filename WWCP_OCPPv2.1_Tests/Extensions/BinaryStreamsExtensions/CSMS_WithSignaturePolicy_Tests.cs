@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                            response.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                            response.Result.ResultCode);
                 Assert.AreEqual(SetDefaultChargingTariffStatus.Accepted,   response.Status);
 
                 #endregion

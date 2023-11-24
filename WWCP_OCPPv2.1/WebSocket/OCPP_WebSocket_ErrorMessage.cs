@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     /// <param name="ErrorDescription">An optional error description.</param>
     /// <param name="ErrorDetails">Optional error details.</param>
     public class OCPP_WebSocket_ErrorMessage(Request_Id   RequestId,
-                                             ResultCodes  ErrorCode,
+                                             ResultCode  ErrorCode,
                                              String?      ErrorDescription   = null,
                                              JObject?     ErrorDetails       = null)
     {
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// <summary>
         /// The OCPP error code.
         /// </summary>
-        public ResultCodes  ErrorCode           { get; } = ErrorCode;
+        public ResultCode  ErrorCode           { get; } = ErrorCode;
 
         /// <summary>
         /// The optional error description.
@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                                 String?     ErrorResponse   = null)
 
             => new (RequestId,
-                    ResultCodes.FormationViolation,
+                    ResultCode.FormationViolation,
                     $"Processing the given '{Action}' request could not be parsed!",
                     JSONObject.Create(
 
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                                 String?     ErrorResponse   = null)
 
             => new (RequestId,
-                    ResultCodes.FormationViolation,
+                    ResultCode.FormationViolation,
                     $"Processing the given '{Action}' request could not be parsed!",
                     JSONObject.Create(
 
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                                 String?     ErrorResponse   = null)
 
             => new (RequestId,
-                    ResultCodes.FormationViolation,
+                    ResultCode.FormationViolation,
                     $"Processing the given '{Action}' request could not be parsed!",
                     JSONObject.Create(
 
@@ -142,7 +142,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                                      Exception   Exception)
 
             => new (RequestId,
-                    ResultCodes.FormationViolation,
+                    ResultCode.FormationViolation,
                     $"Processing the given '{Action}' request led to an exception!",
                     new JObject(
                         new JProperty("request",      JSONObjectRequest),
@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                                      Exception   Exception)
 
             => new (RequestId,
-                    ResultCodes.FormationViolation,
+                    ResultCode.FormationViolation,
                     $"Processing the given '{Action}' request led to an exception!",
                     new JObject(
                         new JProperty("request",     JSONArrayRequest),
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                                      Exception   Exception)
 
             => new (RequestId,
-                    ResultCodes.FormationViolation,
+                    ResultCode.FormationViolation,
                     $"Processing the given '{Action}' request led to an exception!",
                     new JObject(
                         new JProperty("request",      BinaryRequest.ToBase64()),
@@ -198,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                                 Request_Id?       RequestId   = null)
 
             => new (RequestId ?? Request_Id.Zero,
-                    ResultCodes.InternalError,
+                    ResultCode.InternalError,
                     $"The OCPP message received in '{Sender}' led to an exception!",
                     new JObject(
                         new JProperty("eventTrackingId",  EventTrackingId.ToString()),
@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                                 Request_Id?       RequestId   = null)
 
             => new (RequestId ?? Request_Id.Zero,
-                    ResultCodes.InternalError,
+                    ResultCode.InternalError,
                     $"The OCPP message received in '{Sender}' led to an exception!",
                     new JObject(
                         new JProperty("eventTrackingId",  EventTrackingId.ToString()),
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                                 Request_Id?       RequestId   = null)
 
             => new (RequestId ?? Request_Id.Zero,
-                    ResultCodes.InternalError,
+                    ResultCode.InternalError,
                     $"The OCPP message received in '{Sender}' led to an exception!",
                     new JObject(
                         new JProperty("eventTrackingId",  EventTrackingId.ToString()),
@@ -258,7 +258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                                                                 Request_Id?       RequestId   = null)
 
             => new (RequestId ?? Request_Id.Zero,
-                    ResultCodes.InternalError,
+                    ResultCode.InternalError,
                     $"The OCPP message received in '{Sender}' led to an exception!",
                     new JObject(
                         new JProperty("eventTrackingId",  EventTrackingId.ToString()),
@@ -322,7 +322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                 if (!Request_Id. TryParse(JSONArray[1]?.Value<String>() ?? "", out var requestId))
                     return false;
 
-                if (!ResultCodes.TryParse(JSONArray[2]?.Value<String>() ?? "", out var wsErrorCode))
+                if (!ResultCode.TryParse(JSONArray[2]?.Value<String>() ?? "", out var wsErrorCode))
                     return false;
 
                 var description = JSONArray[3]?.Value<String>();

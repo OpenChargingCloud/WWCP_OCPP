@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                            response.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                            response.Result.ResultCode);
                 Assert.AreEqual(SetDefaultChargingTariffStatus.Accepted,   response.Status);
 
                 #endregion
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                      response.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                      response.Result.ResultCode);
                 Assert.AreEqual(GenericStatus.Accepted,              response.Status);
                 Assert.AreEqual(0,                                   response.ChargingTariffs.  Count());
                 Assert.AreEqual(0,                                   response.ChargingTariffMap.Count());
@@ -509,7 +509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response1.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response1.Result.ResultCode);
                 Assert.AreEqual(SetDefaultChargingTariffStatus.Accepted,                           response1.Status);
                 Assert.AreEqual(VerificationStatus.ValidSignature,                                 response1.Signatures.First().Status);
                 Assert.AreEqual("cs001",                                                           response1.Signatures.First().Name);
@@ -550,7 +550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response2.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response2.Result.ResultCode);
                 Assert.AreEqual(GenericStatus.Accepted,                                            response2.Status);
                 Assert.AreEqual(1,                                                                 response2.ChargingTariffs.  Count());
                 Assert.AreEqual(1,                                                                 response2.ChargingTariffMap.Count());                // 1 Charging tariff...
@@ -585,7 +585,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response3.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response3.Result.ResultCode);
                 Assert.AreEqual(RemoveDefaultChargingTariffStatus.Accepted,                        response3.Status);
                 Assert.AreEqual(VerificationStatus.ValidSignature,                                 response3.Signatures.First().Status);
                 Assert.AreEqual("cs001",                                                           response3.Signatures.First().Name);
@@ -617,7 +617,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response4.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response4.Result.ResultCode);
                 Assert.AreEqual(GenericStatus.Accepted,                                            response4.Status);
                 Assert.AreEqual(0,                                                                 response4.ChargingTariffs.  Count());
                 Assert.AreEqual(0,                                                                 response4.ChargingTariffMap.Count());
@@ -841,7 +841,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response1.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response1.Result.ResultCode);
                 Assert.AreEqual(SetDefaultChargingTariffStatus.Accepted,                           response1.Status);
                 Assert.AreEqual(VerificationStatus.ValidSignature,                                 response1.Signatures.First().Status);
                 Assert.AreEqual("cs002",                                                           response1.Signatures.First().Name);
@@ -882,7 +882,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response2.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response2.Result.ResultCode);
                 Assert.AreEqual(GenericStatus.Accepted,                                            response2.Status);
                 Assert.AreEqual(1,                                                                 response2.ChargingTariffs.  Count());
                 Assert.AreEqual(1,                                                                 response2.ChargingTariffMap.Count());                // 1 Charging tariff...
@@ -917,7 +917,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response3.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response3.Result.ResultCode);
                 Assert.AreEqual(RemoveDefaultChargingTariffStatus.Accepted,                        response3.Status);
                 Assert.AreEqual(VerificationStatus.ValidSignature,                                 response3.Signatures.First().Status);
                 Assert.AreEqual("cs002",                                                           response3.Signatures.First().Name);
@@ -949,7 +949,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response4.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response4.Result.ResultCode);
                 Assert.AreEqual(GenericStatus.Accepted,                                            response4.Status);
                 Assert.AreEqual(0,                                                                 response4.ChargingTariffs.  Count());
                 Assert.AreEqual(0,                                                                 response4.ChargingTariffMap.Count());
@@ -1176,7 +1176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response1.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response1.Result.ResultCode);
                 Assert.AreEqual(SetDefaultChargingTariffStatus.Accepted,                           response1.Status);
                 Assert.AreEqual(VerificationStatus.ValidSignature,                                 response1.Signatures.First().Status);
                 Assert.AreEqual("cs002",                                                           response1.Signatures.First().Name);
@@ -1217,7 +1217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response2.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response2.Result.ResultCode);
                 Assert.AreEqual(GenericStatus.Accepted,                                            response2.Status);
                 Assert.AreEqual(1,                                                                 response2.ChargingTariffs.  Count());
                 Assert.AreEqual(1,                                                                 response2.ChargingTariffMap.Count());                // 1 Charging tariff...
@@ -1252,7 +1252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response3.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response3.Result.ResultCode);
                 Assert.AreEqual(RemoveDefaultChargingTariffStatus.Accepted,                        response3.Status);
                 Assert.AreEqual(VerificationStatus.ValidSignature,                                 response3.Signatures.First().Status);
                 Assert.AreEqual("cs002",                                                           response3.Signatures.First().Name);
@@ -1284,7 +1284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response4.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response4.Result.ResultCode);
                 Assert.AreEqual(GenericStatus.Accepted,                                            response4.Status);
                 Assert.AreEqual(0,                                                                 response4.ChargingTariffs.  Count());
                 Assert.AreEqual(0,                                                                 response4.ChargingTariffMap.Count());
@@ -1587,7 +1587,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response1a.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response1a.Result.ResultCode);
                 Assert.AreEqual(SetDefaultChargingTariffStatus.Accepted,                           response1a.Status);
                 Assert.AreEqual(VerificationStatus.ValidSignature,                                 response1a.Signatures.First().Status);
                 Assert.AreEqual("cs002",                                                           response1a.Signatures.First().Name);
@@ -1632,7 +1632,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response1b.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response1b.Result.ResultCode);
                 Assert.AreEqual(SetDefaultChargingTariffStatus.Accepted,                           response1b.Status);
                 Assert.AreEqual(VerificationStatus.ValidSignature,                                 response1b.Signatures.First().Status);
                 Assert.AreEqual("cs002",                                                           response1b.Signatures.First().Name);
@@ -1673,7 +1673,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response2.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response2.Result.ResultCode);
                 Assert.AreEqual(GenericStatus.Accepted,                                            response2.Status);
                 Assert.AreEqual(2,                                                                 response2.ChargingTariffs.  Count());
                 Assert.AreEqual(2,                                                                 response2.ChargingTariffMap.Count());                     // 2 Charging tariffs...
@@ -1709,7 +1709,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response3.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response3.Result.ResultCode);
                 Assert.AreEqual(RemoveDefaultChargingTariffStatus.Accepted,                        response3.Status);
                 Assert.AreEqual(VerificationStatus.ValidSignature,                                 response3.Signatures.First().Status);
                 Assert.AreEqual("cs002",                                                           response3.Signatures.First().Name);
@@ -1741,7 +1741,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                 #region Verify the response
 
-                Assert.AreEqual(ResultCodes.OK,                                                    response4.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                                                    response4.Result.ResultCode);
                 Assert.AreEqual(GenericStatus.Accepted,                                            response4.Status);
                 Assert.AreEqual(0,                                                                 response4.ChargingTariffs.  Count());
                 Assert.AreEqual(0,                                                                 response4.ChargingTariffMap.Count());

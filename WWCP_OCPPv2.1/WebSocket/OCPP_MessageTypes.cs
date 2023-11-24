@@ -19,36 +19,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
 {
 
     /// <summary>
-    /// Extension methods for the OCPP WebSocket message types.
+    /// Extension methods for the OCPP message types.
     /// </summary>
-    public static class OCPP_WebSocket_MessageTypesExtensions
+    public static class OCPP_MessageTypesExtensions
     {
 
-        public static Byte AsByte(this OCPP_WebSocket_MessageTypes MessageType)
+        public static Byte AsByte(this OCPP_MessageTypes MessageType)
 
             => MessageType switch {
-                   OCPP_WebSocket_MessageTypes.CALL        => 2,
-                   OCPP_WebSocket_MessageTypes.CALLRESULT  => 3,
-                   OCPP_WebSocket_MessageTypes.CALLERROR   => 4,
+                   OCPP_MessageTypes.CALL        => 2,
+                   OCPP_MessageTypes.CALLRESULT  => 3,
+                   OCPP_MessageTypes.CALLERROR   => 4,
                    _                                       => 0
                };
 
-        public static OCPP_WebSocket_MessageTypes ParseMessageType(Byte MessageType)
+        public static OCPP_MessageTypes ParseMessageType(Byte MessageType)
 
             => MessageType switch {
-                   2  => OCPP_WebSocket_MessageTypes.CALL,
-                   3  => OCPP_WebSocket_MessageTypes.CALLRESULT,
-                   4  => OCPP_WebSocket_MessageTypes.CALLERROR,
-                   _  => OCPP_WebSocket_MessageTypes.Undefined
+                   2  => OCPP_MessageTypes.CALL,
+                   3  => OCPP_MessageTypes.CALLRESULT,
+                   4  => OCPP_MessageTypes.CALLERROR,
+                   _  => OCPP_MessageTypes.Undefined
                };
 
     }
 
 
     /// <summary>
-    /// The OCPP WebSocket message types.
+    /// The OCPP message types.
     /// </summary>
-    public enum OCPP_WebSocket_MessageTypes : Byte
+    public enum OCPP_MessageTypes : Byte
     {
 
         Undefined    = 0,

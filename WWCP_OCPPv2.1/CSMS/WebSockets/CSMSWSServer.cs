@@ -248,6 +248,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public CustomJObjectSerializerDelegate<TransactionLimits>?                                   CustomTransactionLimitsSerializer                            { get; set; }
 
 
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate<Signature>?                                            CustomBinarySignatureSerializer                              { get; set; }
+
+
         // E2E Security Extensions
         public CustomJObjectSerializerDelegate<ChargingProfileCriterion>?                            CustomChargingProfileCriterionSerializer                     { get; set; }
         public CustomJObjectSerializerDelegate<ClearChargingProfile>?                                CustomClearChargingProfileSerializer                         { get; set; }
@@ -345,8 +349,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             foreach (var method in typeof(CSMSWSServer).GetMethods(BindingFlags.Public | BindingFlags.Instance).
                                                         Where(method            => method.Name.StartsWith("Receive_") &&
-                                                             (method.ReturnType == typeof(Task<Tuple<OCPP_WebSocket_ResponseMessage?,       OCPP_WebSocket_ErrorMessage?>>) ||
-                                                              method.ReturnType == typeof(Task<Tuple<OCPP_WebSocket_BinaryResponseMessage?, OCPP_WebSocket_ErrorMessage?>>))))
+                                                             (method.ReturnType == typeof(Task<Tuple<OCPP_JSONResponseMessage?,       OCPP_WebSocket_ErrorMessage?>>) ||
+                                                              method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_WebSocket_ErrorMessage?>>))))
             {
 
                 var processorName = method.Name[8..];
@@ -606,32 +610,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region (protected) ProcessTextMessage           (RequestTimestamp, Connection, OCPPTextMessage,   EventTrackingId, CancellationToken)
+        #region (protected) ProcessTextMessage           (RequestTimestamp, Connection, TextMessage,   EventTrackingId, CancellationToken)
 
         /// <summary>
         /// Process all text messages of this WebSocket API.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
         /// <param name="Connection">The WebSocket connection.</param>
-        /// <param name="OCPPTextMessage">The received OCPP message.</param>
+        /// <param name="TextMessage">The received text message.</param>
         /// <param name="EventTrackingId">The event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
         public override async Task<WebSocketTextMessageResponse> ProcessTextMessage(DateTime                   RequestTimestamp,
                                                                                     WebSocketServerConnection  Connection,
-                                                                                    String                     OCPPTextMessage,
+                                                                                    String                     TextMessage,
                                                                                     EventTracking_Id           EventTrackingId,
                                                                                     CancellationToken          CancellationToken)
         {
 
-            OCPP_WebSocket_ResponseMessage? OCPPResponse        = null;
+            OCPP_JSONResponseMessage? OCPPResponse        = null;
             OCPP_WebSocket_ErrorMessage?    OCPPErrorResponse   = null;
 
             try
             {
 
-                var jsonArray = JArray.Parse(OCPPTextMessage);
+                var jsonArray = JArray.Parse(TextMessage);
 
-                     if (OCPP_WebSocket_RequestMessage. TryParse(jsonArray, out var ocppRequest)       && ocppRequest       is not null)
+                     if (OCPP_JSONRequestMessage. TryParse(jsonArray, out var ocppRequest)       && ocppRequest       is not null)
                 {
 
                     #region OnTextMessageRequestReceived
@@ -647,7 +651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                                           Connection,
                                                                                                           EventTrackingId,
                                                                                                           Timestamp.Now,
-                                                                                                          OCPPTextMessage)).
+                                                                                                          TextMessage)).
                                                         ToArray();
 
                         try
@@ -671,20 +675,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     if (!chargingStationId.HasValue)
                         OCPPErrorResponse  = new OCPP_WebSocket_ErrorMessage(
                                                  ocppRequest.RequestId,
-                                                 ResultCodes.ProtocolError,
+                                                 ResultCode.ProtocolError,
                                                  "The given 'charging station identity' must not be null or empty!",
                                                  new JObject(
-                                                     new JProperty("request", OCPPTextMessage)
+                                                     new JProperty("request", TextMessage)
                                                  )
                                              );
 
                     else if (requestData is null)
                         OCPPErrorResponse  = new OCPP_WebSocket_ErrorMessage(
                                                  ocppRequest.RequestId,
-                                                 ResultCodes.ProtocolError,
+                                                 ResultCode.ProtocolError,
                                                  "The given request JSON payload must not be null!",
                                                  new JObject(
-                                                     new JProperty("request", OCPPTextMessage)
+                                                     new JProperty("request", TextMessage)
                                                  )
                                              );
 
@@ -702,10 +706,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                          ocppRequest.RequestId,
                                                          chargingStationId.Value,
                                                          Connection,
-                                                         OCPPTextMessage,
+                                                         TextMessage,
                                                          CancellationToken ]);
 
-                        if (result is Task<Tuple<OCPP_WebSocket_ResponseMessage?, OCPP_WebSocket_ErrorMessage?>> textProcessor) {
+                        if (result is Task<Tuple<OCPP_JSONResponseMessage?, OCPP_WebSocket_ErrorMessage?>> textProcessor) {
                             (OCPPResponse, OCPPErrorResponse) = await textProcessor;
                         }
 
@@ -716,10 +720,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     else
                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                  ocppRequest.RequestId,
-                                                 ResultCodes.ProtocolError,
+                                                 ResultCode.ProtocolError,
                                                  $"The OCPP message '{ocppRequest.Action}' is unkown!",
                                                  new JObject(
-                                                     new JProperty("request", OCPPTextMessage)
+                                                     new JProperty("request", TextMessage)
                                                  )
                                              );
 
@@ -768,7 +772,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 }
 
-                else if (OCPP_WebSocket_ResponseMessage.TryParse(jsonArray, out var ocppResponse)      && ocppResponse      is not null)
+                else if (OCPP_JSONResponseMessage.TryParse(jsonArray, out var ocppResponse)      && ocppResponse      is not null)
                 {
 
                     if (requests.TryGetValue(ocppResponse.RequestId, out var sendRequestState) &&
@@ -814,10 +818,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     {
 
                         // ToDo: Refactor 
-                        if (ResultCodes.TryParse(jsonArray[2]?.Value<String>() ?? "", out var errorCode))
+                        if (ResultCode.TryParse(jsonArray[2]?.Value<String>() ?? "", out var errorCode))
                             sendJSONRequestState.ErrorCode = errorCode;
                         else
-                            sendJSONRequestState.ErrorCode = ResultCodes.GenericError;
+                            sendJSONRequestState.ErrorCode = ResultCode.GenericError;
 
                         sendJSONRequestState.Response          = null;
                         sendJSONRequestState.ErrorDescription  = jsonArray[3]?.Value<String>();
@@ -856,10 +860,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                             Request_Id.Zero,
-                                            ResultCodes.InternalError,
-                                            $"{nameof(CSMSWSServer)} The OCPP message '{OCPPTextMessage}' is invalid!",
+                                            ResultCode.InternalError,
+                                            $"{nameof(CSMSWSServer)} The OCPP message '{TextMessage}' is invalid!",
                                             new JObject(
-                                                new JProperty("request", OCPPTextMessage)
+                                                new JProperty("request", TextMessage)
                                             )
                                         );
 
@@ -872,7 +876,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.InternalError(
                                         nameof(CSMSWSServer),
                                         EventTrackingId,
-                                        OCPPTextMessage,
+                                        TextMessage,
                                         e
                                     );
 
@@ -896,7 +900,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                                Connection,
                                                                                                EventTrackingId,
                                                                                                RequestTimestamp,
-                                                                                               OCPPTextMessage,
+                                                                                               TextMessage,
                                                                                                now,
                                                                                                (OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON())?.ToString(JSONFormatting))).
                                              ToArray();
@@ -920,7 +924,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             // The response to the charging station... might be empty!
             return new WebSocketTextMessageResponse(
                        RequestTimestamp,
-                       OCPPTextMessage,
+                       TextMessage,
                        Timestamp.Now,
                        (OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON())?.ToString(JSONFormatting) ?? String.Empty,
                        EventTrackingId
@@ -930,31 +934,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (protected) ProcessBinaryMessage         (RequestTimestamp, Connection, OCPPBinaryMessage, EventTrackingId, CancellationToken)
+        #region (protected) ProcessBinaryMessage         (RequestTimestamp, Connection, BinaryMessage, EventTrackingId, CancellationToken)
 
         /// <summary>
         /// Process all text messages of this WebSocket API.
         /// </summary>
         /// <param name="RequestTimestamp">The timestamp of the request.</param>
         /// <param name="Connection">The WebSocket connection.</param>
-        /// <param name="OCPPBinaryMessage">The received OCPP binary message.</param>
+        /// <param name="BinaryMessage">The received binary message.</param>
         /// <param name="EventTrackingId">The event tracking identification.</param>
         /// <param name="CancellationToken">The cancellation token.</param>
         public override async Task<WebSocketBinaryMessageResponse> ProcessBinaryMessage(DateTime                   RequestTimestamp,
                                                                                         WebSocketServerConnection  Connection,
-                                                                                        Byte[]                     OCPPBinaryMessage,
+                                                                                        Byte[]                     BinaryMessage,
                                                                                         EventTracking_Id           EventTrackingId,
                                                                                         CancellationToken          CancellationToken)
         {
 
-            OCPP_WebSocket_BinaryResponseMessage? OCPPResponse        = null;
+            OCPP_BinaryResponseMessage? OCPPResponse        = null;
             OCPP_WebSocket_ErrorMessage?          OCPPErrorResponse   = null;
 
 
             try
             {
 
-                if (OCPP_WebSocket_BinaryRequestMessage.TryParse(OCPPBinaryMessage, out var ocppBinaryRequest, out var err) && ocppBinaryRequest is not null)
+                     if (OCPP_BinaryRequestMessage. TryParse(BinaryMessage, out var ocppBinaryRequest,  out var err)  && ocppBinaryRequest is not null)
                 {
 
                     #region OnBinaryMessageRequestReceived
@@ -970,7 +974,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                                           Connection,
                                                                                                           EventTrackingId,
                                                                                                           Timestamp.Now,
-                                                                                                          OCPPBinaryMessage)).
+                                                                                                          BinaryMessage)).
                                                         ToArray();
 
                         try
@@ -993,10 +997,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     if (!chargingStationId.HasValue)
                         OCPPErrorResponse  = new OCPP_WebSocket_ErrorMessage(
                                                  ocppBinaryRequest.RequestId,
-                                                 ResultCodes.ProtocolError,
+                                                 ResultCode.ProtocolError,
                                                  "The given 'charging station identity' must not be null or empty!",
                                                  new JObject(
-                                                     new JProperty("request", OCPPBinaryMessage.ToBase64())
+                                                     new JProperty("request", BinaryMessage.ToBase64())
                                                  )
                                              );
 
@@ -1013,12 +1017,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                          Connection,
                                                          chargingStationId.Value,
                                                          EventTrackingId,
-                                                         OCPPBinaryMessage,
+                                                         BinaryMessage,
                                                          ocppBinaryRequest.RequestId,
-                                                         ocppBinaryRequest.BinaryMessage,
+                                                         ocppBinaryRequest.Payload,
                                                          CancellationToken ]);
 
-                        if (result is Task<Tuple<OCPP_WebSocket_BinaryResponseMessage?, OCPP_WebSocket_ErrorMessage?>> binaryProcessor)
+                        if (result is Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_WebSocket_ErrorMessage?>> binaryProcessor)
                         {
                             (OCPPResponse, OCPPErrorResponse) = await binaryProcessor;
                         }
@@ -1029,6 +1033,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 }
 
+                else if (OCPP_BinaryResponseMessage.TryParse(BinaryMessage, out var ocppBinaryResponse, out var err2) && ocppBinaryResponse is not null)
+                {
+
+                    if (requests.TryGetValue(ocppBinaryResponse.RequestId, out var sendRequestState) &&
+                        sendRequestState is SendBinaryRequestState sendBinaryRequestState)
+                    {
+
+                        sendBinaryRequestState.ResponseTimestamp  = Timestamp.Now;
+                        sendBinaryRequestState.Response           = ocppBinaryResponse.Payload;
+
+                        #region OnBinaryMessageResponseReceived
+
+                        try
+                        {
+
+                            OnBinaryMessageResponseReceived?.Invoke(Timestamp.Now,
+                                                                    this,
+                                                                    Connection,
+                                                                    EventTrackingId,
+                                                                    sendBinaryRequestState.Timestamp,
+                                                                    sendBinaryRequestState.Request?.ToByteArray() ?? [],
+                                                                    sendBinaryRequestState.ResponseTimestamp.Value,
+                                                                    sendBinaryRequestState.Response);
+
+                        }
+                        catch (Exception e)
+                        {
+                            DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBinaryMessageResponseReceived));
+                        }
+
+                        #endregion
+
+                    }
+
+                    else
+                        DebugX.Log(nameof(CSMSWSServer), " Received unknown binary OCPP response message!");
+
+                }
+
+                else
+                    DebugX.Log(nameof(CSMSWSServer), " Received unknown binary OCPP request/response message!");
+
             }
             catch (Exception e)
             {
@@ -1036,7 +1082,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.InternalError(
                                         nameof(CSMSWSServer),
                                         EventTrackingId,
-                                        OCPPBinaryMessage,
+                                        BinaryMessage,
                                         e
                                     );
 
@@ -1045,7 +1091,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             return new WebSocketBinaryMessageResponse(
                         RequestTimestamp,
-                        OCPPBinaryMessage,
+                        BinaryMessage,
                         Timestamp.Now,
                         OCPPResponse?.ToByteArray() ?? [],
                         EventTrackingId
@@ -1077,7 +1123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                DateTime            RequestTimeout)
         {
 
-            var wsRequestMessage  = new OCPP_WebSocket_RequestMessage(
+            var wsRequestMessage  = new OCPP_JSONRequestMessage(
                                         RequestId,
                                         Action,
                                         JSONData
@@ -1180,7 +1226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                  DateTime            RequestTimeout)
         {
 
-            var wsRequestMessage   = new OCPP_WebSocket_BinaryRequestMessage(
+            var wsRequestMessage   = new OCPP_BinaryRequestMessage(
                                          RequestId,
                                          Action,
                                          BinaryData
@@ -1298,8 +1344,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         await Task.Delay(25);
 
-                        if (requests.TryGetValue(RequestId, out var sendRequestState1)     &&
-                            sendRequestState1 is SendJSONRequestState sendJSONRequestState &&
+                        if (requests.TryGetValue(RequestId, out var aSendRequestState)     &&
+                            aSendRequestState is SendJSONRequestState sendJSONRequestState &&
                            (sendJSONRequestState?.Response is not null ||
                             sendJSONRequestState?.ErrorCode.HasValue == true))
                         {
@@ -1326,7 +1372,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (requests.TryGetValue(RequestId, out var sendRequestState2) &&
                     sendRequestState2 is SendJSONRequestState sendJSONRequestState2)
                 {
-                    sendJSONRequestState2.ErrorCode = ResultCodes.Timeout;
+                    sendJSONRequestState2.ErrorCode = ResultCode.Timeout;
                     requests.TryRemove(RequestId, out _);
                     return sendJSONRequestState2;
                 }
@@ -1342,7 +1388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (requests.TryGetValue(RequestId, out var sendRequestState3) &&
                     sendRequestState3 is SendJSONRequestState sendJSONRequestState3)
                 {
-                    sendJSONRequestState3.ErrorCode = ResultCodes.Timeout;
+                    sendJSONRequestState3.ErrorCode = ResultCode.Timeout;
                     requests.TryRemove(RequestId, out _);
                     return sendJSONRequestState3;
                 }
@@ -1357,7 +1403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             return new SendJSONRequestState(
                        Timestamp:           now,
                        ChargingStationId:   ChargingStationId,
-                       Request:             new OCPP_WebSocket_RequestMessage(
+                       Request:             new OCPP_JSONRequestMessage(
                                                 RequestId,
                                                 OCPPAction,
                                                 JSONPayload
@@ -1365,7 +1411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                        Timeout:             now,
                        ResponseTimestamp:   now,
                        Response:            [],
-                       ErrorCode:           ResultCodes.InternalError,
+                       ErrorCode:           ResultCode.InternalError,
                        ErrorDescription:    null,
                        ErrorDetails:        null
                    );
@@ -1435,7 +1481,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (requests.TryGetValue(RequestId, out var sendRequestState2) &&
                     sendRequestState2 is SendBinaryRequestState sendBinaryRequestState2)
                 {
-                    sendBinaryRequestState2.ErrorCode = ResultCodes.Timeout;
+                    sendBinaryRequestState2.ErrorCode = ResultCode.Timeout;
                     requests.TryRemove(RequestId, out _);
                     return sendBinaryRequestState2;
                 }
@@ -1451,7 +1497,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (requests.TryGetValue(RequestId, out var sendRequestState3) &&
                     sendRequestState3 is SendBinaryRequestState sendBinaryRequestState3)
                 {
-                    sendBinaryRequestState3.ErrorCode = ResultCodes.Timeout;
+                    sendBinaryRequestState3.ErrorCode = ResultCode.Timeout;
                     requests.TryRemove(RequestId, out _);
                     return sendBinaryRequestState3;
                 }
@@ -1466,7 +1512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             return new SendBinaryRequestState(
                        Timestamp:           now,
                        ChargingStationId:   ChargingStationId,
-                       Request:             new OCPP_WebSocket_BinaryRequestMessage(
+                       Request:             new OCPP_BinaryRequestMessage(
                                                 RequestId,
                                                 OCPPAction,
                                                 BinaryPayload
@@ -1474,7 +1520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                        Timeout:             now,
                        ResponseTimestamp:   now,
                        Response:            [],
-                       ErrorCode:           ResultCodes.InternalError,
+                       ErrorCode:           ResultCode.InternalError,
                        ErrorDescription:    null,
                        ErrorDetails:        null
                    );

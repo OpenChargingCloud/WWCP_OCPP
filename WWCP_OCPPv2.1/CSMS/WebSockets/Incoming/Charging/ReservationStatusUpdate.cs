@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         
 #region Receive message (wired via reflection!)
 
-        public async Task<Tuple<OCPP_WebSocket_ResponseMessage?,
+        public async Task<Tuple<OCPP_JSONResponseMessage?,
                                 OCPP_WebSocket_ErrorMessage?>>
 
             Receive_ReservationStatusUpdate(JArray                     json,
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            OCPP_WebSocket_ResponseMessage?  OCPPResponse        = null;
+            OCPP_JSONResponseMessage?  OCPPResponse        = null;
             OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
 
             try
@@ -230,7 +230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     #endregion
 
-                    OCPPResponse = new OCPP_WebSocket_ResponseMessage(
+                    OCPPResponse = new OCPP_JSONResponseMessage(
                                        requestId,
                                        response.ToJSON(
                                            CustomReservationStatusUpdateResponseSerializer,
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #endregion
 
-            return new Tuple<OCPP_WebSocket_ResponseMessage?,
+            return new Tuple<OCPP_JSONResponseMessage?,
                              OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
 

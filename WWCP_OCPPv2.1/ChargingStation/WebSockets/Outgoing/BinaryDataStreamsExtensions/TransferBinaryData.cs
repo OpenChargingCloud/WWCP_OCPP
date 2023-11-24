@@ -106,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">A BinaryDataTransfer request.</param>
         public async Task<CSMS.BinaryDataTransferResponse>
 
-            TransferBinaryData(BinaryDataTransferRequest  Request)
+            TransferBinaryData(BinaryDataTransferRequest Request)
 
         {
 
@@ -139,9 +139,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                Request.Action,
                                                Request.RequestId,
                                                Request.ToBinary(
-                                                   CustomBinaryDataTransferRequestSerializer
-                                                   //CustomSignatureSerializer,
-                                                   //CustomCustomDataSerializer
+                                                   CustomBinaryDataTransferRequestSerializer,
+                                                   CustomBinarySignatureSerializer
                                                )
                                            );
 
@@ -151,11 +150,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     var sendRequestState = await WaitForResponse(requestMessage);
 
                     if (sendRequestState.NoErrors &&
-                        sendRequestState.BinaryResponse is not null)
+                        sendRequestState.Response is not null)
                     {
 
                         if (CSMS.BinaryDataTransferResponse.TryParse(Request,
-                                                                     sendRequestState.BinaryResponse,
+                                                                     sendRequestState.Response,
                                                                      out var binaryDataTransferResponse,
                                                                      out var errorResponse,
                                                                      CustomBinaryDataTransferResponseParser) &&

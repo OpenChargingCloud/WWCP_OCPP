@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                      CustomData:          null
                                  );
 
-                Assert.AreEqual(ResultCodes.OK,                response.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                response.Result.ResultCode);
                 Assert.AreEqual(ResetStatus.Accepted,          response.Status);
 
                 Assert.IsTrue  (testCSMS01.SignaturePolicy.VerifyResponseMessage(
