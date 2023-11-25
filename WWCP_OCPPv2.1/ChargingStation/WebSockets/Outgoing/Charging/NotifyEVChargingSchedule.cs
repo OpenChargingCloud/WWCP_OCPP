@@ -173,11 +173,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     var sendRequestState = await WaitForResponse(requestMessage);
 
                     if (sendRequestState.NoErrors &&
-                        sendRequestState.Response is not null)
+                        sendRequestState.JSONResponse is not null)
                     {
 
                         if (NotifyEVChargingScheduleResponse.TryParse(Request,
-                                                                      sendRequestState.Response,
+                                                                      sendRequestState.JSONResponse.Payload,
                                                                       out var reportChargingProfilesResponse,
                                                                       out var errorResponse,
                                                                       CustomNotifyEVChargingScheduleResponseParser) &&

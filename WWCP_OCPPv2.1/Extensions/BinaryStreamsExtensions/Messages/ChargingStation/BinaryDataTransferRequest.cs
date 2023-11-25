@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
-    /// The binary data transfer request.
+    /// A binary data transfer request.
     /// </summary>
     public class BinaryDataTransferRequest : ARequest<BinaryDataTransferRequest>,
                                              IRequest

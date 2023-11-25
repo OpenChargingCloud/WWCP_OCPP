@@ -129,11 +129,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                          Request.RequestTimeout);
 
                 if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                    sendRequestState.JSONResponse is not null)
                 {
 
                     if (UpdateFirmwareResponse.TryParse(Request,
-                                                        sendRequestState.Response,
+                                                        sendRequestState.JSONResponse.Payload,
                                                         out var updateFirmwareResponse,
                                                         out var errorResponse,
                                                         CustomUpdateFirmwareResponseParser) &&

@@ -81,20 +81,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region OnTextMessage   (-Received/-ResponseSent/-ErrorResponseSent)
+        #region OnJSONMessage   (-Received/-ResponseSent/-ErrorResponseSent)
 
-        event OnWebSocketTextMessageRequestDelegate?      OnTextMessageRequestReceived;
+        event OnWebSocketJSONMessageRequestDelegate?      OnJSONMessageRequestReceived;
 
-        event OnWebSocketTextMessageResponseDelegate?     OnTextMessageResponseSent;
+        event OnWebSocketJSONMessageResponseDelegate?     OnJSONMessageResponseSent;
 
-        event OnWebSocketTextErrorResponseDelegate?       OnTextErrorResponseSent;
+        event OnWebSocketTextErrorResponseDelegate?       OnJSONErrorResponseSent;
 
 
-        event OnWebSocketTextMessageRequestDelegate?      OnTextMessageRequestSent;
+        event OnWebSocketJSONMessageRequestDelegate?      OnJSONMessageRequestSent;
 
-        event OnWebSocketTextMessageResponseDelegate?     OnTextMessageResponseReceived;
+        event OnWebSocketJSONMessageResponseDelegate?     OnJSONMessageResponseReceived;
 
-        event OnWebSocketTextErrorResponseDelegate?       OnTextErrorResponseReceived;
+        event OnWebSocketTextErrorResponseDelegate?       OnJSONErrorResponseReceived;
 
         #endregion
 
@@ -104,14 +104,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         event OnWebSocketBinaryMessageResponseDelegate?   OnBinaryMessageResponseSent;
 
-        event OnWebSocketBinaryErrorResponseDelegate?     OnBinaryErrorResponseSent;
+        //event OnWebSocketBinaryErrorResponseDelegate?     OnBinaryErrorResponseSent;
 
 
         event OnWebSocketBinaryMessageRequestDelegate?    OnBinaryMessageRequestSent;
 
         event OnWebSocketBinaryMessageResponseDelegate?   OnBinaryMessageResponseReceived;
 
-        event OnWebSocketBinaryErrorResponseDelegate?     OnBinaryErrorResponseReceived;
+        //event OnWebSocketBinaryErrorResponseDelegate?     OnBinaryErrorResponseReceived;
 
         #endregion
 

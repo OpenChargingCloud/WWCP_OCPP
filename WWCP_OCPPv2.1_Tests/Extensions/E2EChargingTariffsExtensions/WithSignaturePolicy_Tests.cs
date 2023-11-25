@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 {
 
     /// <summary>
-    /// Unit tests for a central system sending signed messages to charging stations.
+    /// Unit tests for a CSMS sending signed messages to charging stations.
     /// </summary>
     [TestFixture]
     public class WithSignaturePolicy_Tests : AChargingStationTests

@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 {
 
     /// <summary>
-    /// Unit tests for a central system sending signed messages
+    /// Unit tests for a CSMS sending signed messages
     /// based on a message signature policy to charging stations.
     /// </summary>
     [TestFixture]

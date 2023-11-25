@@ -34,11 +34,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     #region OnIncomingBinaryDataTransfer
 
     /// <summary>
-    /// An incoming binary data transfer request.
+    /// An incoming BinaryDataTransfer request.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The binary data transfer request.</param>
+    /// <param name="Request">The BinaryDataTransfer request.</param>
     public delegate Task
 
         OnIncomingBinaryDataTransferRequestDelegate(DateTime                         Timestamp,
@@ -47,11 +47,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// An incoming binary data transfer request.
+    /// An incoming BinaryDataTransfer request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The binary data transfer request.</param>
+    /// <param name="Request">The BinaryDataTransfer request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<BinaryDataTransferResponse>
 
@@ -63,19 +63,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// An incoming binary data transfer response.
+    /// An incoming BinaryDataTransfer response.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
-    /// <param name="Request">The binary data transfer request.</param>
-    /// <param name="Response">The binary data transfer response.</param>
+    /// <param name="Request">The BinaryDataTransfer request.</param>
+    /// <param name="Response">The BinaryDataTransfer response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
         OnIncomingBinaryDataTransferResponseDelegate(DateTime                         Timestamp,
                                                      IEventSender                     Sender,
                                                      CSMS.BinaryDataTransferRequest   Request,
-                                                     CS.BinaryDataTransferResponse    Response,
+                                                     BinaryDataTransferResponse       Response,
                                                      TimeSpan                         Runtime);
 
     #endregion
@@ -102,27 +102,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a binary data transfer websocket request was received.
+        /// An event sent whenever a BinaryDataTransfer websocket request was received.
         /// </summary>
         public event WSClientRequestLogHandler?                       OnIncomingBinaryDataTransferWSRequest;
 
         /// <summary>
-        /// An event sent whenever a binary data transfer request was received.
+        /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
         public event OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
-        /// An event sent whenever a binary data transfer request was received.
+        /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
         public event OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
 
         /// <summary>
-        /// An event sent whenever a response to a binary data transfer request was sent.
+        /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
         public event OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a binary data transfer request was sent.
+        /// An event sent whenever a websocket response to a BinaryDataTransfer request was sent.
         /// </summary>
         public event WSClientResponseLogHandler?                      OnIncomingBinaryDataTransferWSResponse;
 

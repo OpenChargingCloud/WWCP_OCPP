@@ -127,11 +127,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              );
 
                 if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                    sendRequestState.BinaryResponse is not null)
                 {
 
                     if (CS.BinaryDataTransferResponse.TryParse(Request,
-                                                               sendRequestState.Response,
+                                                               sendRequestState.BinaryResponse.Payload,
                                                                out var dataTransferResponse,
                                                                out var errorResponse,
                                                                CustomBinaryDataTransferResponseParser) &&

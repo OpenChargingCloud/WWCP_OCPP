@@ -658,6 +658,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region GetFile                     (Request)
+
+        /// <summary>
+        /// Request to download the specified file.
+        /// </summary>
+        /// <param name="Request">A GetFile request.</param>
+        Task<CS.GetFileResponse> GetFile(GetFileRequest Request);
+
+        #endregion
+
 
         // E2E Security Extensions
 

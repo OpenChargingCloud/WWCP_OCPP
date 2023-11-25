@@ -664,7 +664,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTextMessageRequestReceived
 
-            CSMS.OnTextMessageRequestReceived += async (timestamp,
+            CSMS.OnJSONMessageRequestReceived += async (timestamp,
                                                         webSocketServer,
                                                         webSocketConnection,
                                                         eventTrackingId,
@@ -682,12 +682,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTextMessageResponseSent
 
-            CSMS.OnTextMessageResponseSent += async (timestamp,
+            CSMS.OnJSONMessageResponseSent += async (timestamp,
                                                      webSocketServer,
                                                      webSocketConnection,
                                                      eventTrackingId,
                                                      requestTimestamp,
-                                                     requestMessage,
+                                                     jsonRequestMessage,
+                                                     binaryRequestMessage,
                                                      responseTimestamp,
                                                      responseMessage) =>
 
@@ -702,12 +703,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTextErrorResponseSent
 
-            CSMS.OnTextErrorResponseSent += async (timestamp,
+            CSMS.OnJSONErrorResponseSent += async (timestamp,
                                                    webSocketServer,
                                                    webSocketConnection,
                                                    eventTrackingId,
                                                    requestTimestamp,
-                                                   requestMessage,
+                                                   jsonRequestMessage,
+                                                   binaryRequestMessage,
                                                    responseTimestamp,
                                                    responseMessage) =>
 
@@ -723,7 +725,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTextMessageRequestSent
 
-            CSMS.OnTextMessageRequestSent += async (timestamp,
+            CSMS.OnJSONMessageRequestSent += async (timestamp,
                                                     webSocketServer,
                                                     webSocketConnection,
                                                     eventTrackingId,
@@ -741,12 +743,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTextMessageResponseReceived
 
-            CSMS.OnTextMessageResponseReceived += async (timestamp,
+            CSMS.OnJSONMessageResponseReceived += async (timestamp,
                                                          webSocketServer,
                                                          webSocketConnection,
                                                          eventTrackingId,
                                                          requestTimestamp,
-                                                         requestMessage,
+                                                         jsonRequestMessage,
+                                                         binaryRequestMessage,
                                                          responseTimestamp,
                                                          responseMessage) =>
 
@@ -761,12 +764,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTextErrorResponseReceived
 
-            CSMS.OnTextErrorResponseReceived += async (timestamp,
+            CSMS.OnJSONErrorResponseReceived += async (timestamp,
                                                        webSocketServer,
                                                        webSocketConnection,
                                                        eventTrackingId,
                                                        requestTimestamp,
-                                                       requestMessage,
+                                                       jsonRequestMessage,
+                                                       binaryRequestMessage,
                                                        responseTimestamp,
                                                        responseMessage) =>
 
@@ -808,7 +812,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                        webSocketConnection,
                                                        eventTrackingId,
                                                        requestTimestamp,
-                                                       requestMessage,
+                                                       jsonRequestMessage,
+                                                       binaryRequestMessage,
                                                        responseTimestamp,
                                                        responseMessage) =>
 
@@ -823,21 +828,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnBinaryErrorResponseSent
 
-            CSMS.OnBinaryErrorResponseSent += async (timestamp,
-                                                     webSocketServer,
-                                                     webSocketConnection,
-                                                     eventTrackingId,
-                                                     requestTimestamp,
-                                                     requestMessage,
-                                                     responseTimestamp,
-                                                     responseMessage) =>
+            //CSMS.OnBinaryErrorResponseSent += async (timestamp,
+            //                                         webSocketServer,
+            //                                         webSocketConnection,
+            //                                         eventTrackingId,
+            //                                         requestTimestamp,
+            //                                         jsonRequestMessage,
+            //                                         binaryRequestMessage,
+            //                                         responseTimestamp,
+            //                                         responseMessage) =>
 
-                await this.EventLog.SubmitEvent("OnBinaryErrorResponseSent",
-                                                JSONObject.Create(
-                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
-                                                    new JProperty("message",      responseMessage)  // BASE64 encoded string!
-                                                ));
+            //    await this.EventLog.SubmitEvent("OnBinaryErrorResponseSent",
+            //                                    JSONObject.Create(
+            //                                        new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                                        new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                                        new JProperty("message",      responseMessage)  // BASE64 encoded string!
+            //                                    ));
 
             #endregion
 
@@ -867,7 +873,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            webSocketConnection,
                                                            eventTrackingId,
                                                            requestTimestamp,
-                                                           requestMessage,
+                                                           jsonRequestMessage,
+                                                           binaryRequestMessage,
                                                            responseTimestamp,
                                                            responseMessage) =>
 
@@ -882,21 +889,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnBinaryErrorResponseReceived
 
-            CSMS.OnBinaryErrorResponseReceived += async (timestamp,
-                                                         webSocketServer,
-                                                         webSocketConnection,
-                                                         eventTrackingId,
-                                                         requestTimestamp,
-                                                         requestMessage,
-                                                         responseTimestamp,
-                                                         responseMessage) =>
+            //CSMS.OnBinaryErrorResponseReceived += async (timestamp,
+            //                                             webSocketServer,
+            //                                             webSocketConnection,
+            //                                             eventTrackingId,
+            //                                             requestTimestamp,
+            //                                             jsonRequestMessage,
+            //                                             binaryRequestMessage,
+            //                                             responseTimestamp,
+            //                                             responseMessage) =>
 
-                await this.EventLog.SubmitEvent("OnBinaryErrorResponseReceived",
-                                                JSONObject.Create(
-                                                    new JProperty("timestamp",    timestamp.          ToIso8601()),
-                                                    new JProperty("connection",   webSocketConnection.ToJSON()),
-                                                    new JProperty("message",      responseMessage)  // BASE64 encoded string!
-                                                ));
+            //    await this.EventLog.SubmitEvent("OnBinaryErrorResponseReceived",
+            //                                    JSONObject.Create(
+            //                                        new JProperty("timestamp",    timestamp.          ToIso8601()),
+            //                                        new JProperty("connection",   webSocketConnection.ToJSON()),
+            //                                        new JProperty("message",      responseMessage)  // BASE64 encoded string!
+            //                                    ));
 
             #endregion
 

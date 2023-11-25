@@ -89,23 +89,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        public static Result FromSendRequestState(SendJSONRequestState SendRequestState)
+        public static Result FromSendRequestState(SendRequestState SendRequestState)
 
             => new (
                    SendRequestState.ErrorCode ?? ResultCode.GenericError,
                    SendRequestState.ErrorDescription,
                    SendRequestState.ErrorDetails,
-                   SendRequestState.Response
-               );
-
-        public static Result FromSendRequestState(SendBinaryRequestState SendRequestState)
-
-            => new (
-                   SendRequestState.ErrorCode ?? ResultCode.GenericError,
-                   SendRequestState.ErrorDescription,
-                   SendRequestState.ErrorDetails,
-                   null,
-                   SendRequestState.Response
+                   SendRequestState.JSONResponse?.  Payload,
+                   SendRequestState.BinaryResponse?.Payload
                );
 
 

@@ -2831,6 +2831,64 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region GetFile                    (this CSMS, ChargingStationId, Filename, Priority = null, ...)
+
+        /// <summary>
+        /// Request to download the given file from the charging station.
+        /// </summary>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="Filename">The name of the file including its absolute path.</param>
+        /// <param name="Priority">The optional priority of the file request.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.GetFileResponse>
+
+            GetFile(this ICSMS               CSMS,
+                    ChargingStation_Id       ChargingStationId,
+                    FilePath                 Filename,
+                    Byte?                    Priority            = null,
+
+                    IEnumerable<KeyPair>?    SignKeys            = null,
+                    IEnumerable<SignInfo>?   SignInfos           = null,
+                    IEnumerable<Signature>?  Signatures          = null,
+
+                    CustomData?              CustomData          = null,
+
+                    Request_Id?              RequestId           = null,
+                    DateTime?                RequestTimestamp    = null,
+                    TimeSpan?                RequestTimeout      = null,
+                    EventTracking_Id?        EventTrackingId     = null,
+                    CancellationToken        CancellationToken   = default)
+
+
+                => CSMS.GetFile(
+                       new GetFileRequest(
+                           ChargingStationId,
+                           Filename,
+                           Priority,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
 
         // E2E Security Extensions
 

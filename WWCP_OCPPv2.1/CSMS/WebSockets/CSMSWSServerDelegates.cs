@@ -57,30 +57,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
 
-    public delegate Task OnWebSocketTextMessageRequestDelegate   (DateTime                    Timestamp,
+    public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,
                                                                   CSMSWSServer                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
-                                                                  String                      RequestMessage);
+                                                                  JArray                      RequestMessage);
 
-    public delegate Task OnWebSocketTextMessageResponseDelegate  (DateTime                    Timestamp,
+    public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTime                    Timestamp,
                                                                   CSMSWSServer                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
-                                                                  String                      RequestMessage,
+                                                                  JArray                      JSONRequestMessage,
+                                                                  Byte[]                      BinaryRequestMessage,
                                                                   DateTime                    ResponseTimestamp,
-                                                                  String?                     ResponseMessage);
+                                                                  JArray?                     ResponseMessage);
 
     public delegate Task OnWebSocketTextErrorResponseDelegate    (DateTime                    Timestamp,
                                                                   CSMSWSServer                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
-                                                                  String                      RequestMessage,
+                                                                  String                      TextRequestMessage,
+                                                                  Byte[]                      BinaryRequestMessage,
                                                                   DateTime                    ResponseTimestamp,
-                                                                  String?                     ResponseMessage);
+                                                                  String?                     TextResponseMessage);
 
 
     public delegate Task OnWebSocketBinaryMessageRequestDelegate (DateTime                    Timestamp,
@@ -95,17 +97,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
-                                                                  Byte[]                      RequestMessage,
+                                                                  JArray                      JSONRequestMessage,
+                                                                  Byte[]                      BinaryRequestMessage,
                                                                   DateTime                    ResponseTimestamp,
                                                                   Byte[]?                     ResponseMessage);
 
-    public delegate Task OnWebSocketBinaryErrorResponseDelegate  (DateTime                    Timestamp,
-                                                                  CSMSWSServer                Server,
-                                                                  WebSocketServerConnection   Connection,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
-                                                                  Byte[]                      RequestMessage,
-                                                                  DateTime                    ResponseTimestamp,
-                                                                  Byte[]?                     ResponseMessage);
+    //public delegate Task OnWebSocketBinaryErrorResponseDelegate  (DateTime                    Timestamp,
+    //                                                              CSMSWSServer                Server,
+    //                                                              WebSocketServerConnection   Connection,
+    //                                                              EventTracking_Id            EventTrackingId,
+    //                                                              DateTime                    RequestTimestamp,
+    //                                                              Byte[]                      RequestMessage,
+    //                                                              DateTime                    ResponseTimestamp,
+    //                                                              Byte[]?                     ResponseMessage);
 
 }

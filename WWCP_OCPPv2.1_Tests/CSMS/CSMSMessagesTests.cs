@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 {
 
     /// <summary>
-    /// Unit tests for a central system sending messages to charging stations.
+    /// Unit tests for a CSMS sending messages to charging stations.
     /// </summary>
     [TestFixture]
     public class CSMSMessagesTests : AChargingStationTests

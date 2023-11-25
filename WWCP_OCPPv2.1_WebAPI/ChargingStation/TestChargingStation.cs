@@ -32,6 +32,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using System.Security.Cryptography;
 
 #endregion
 
@@ -485,6 +486,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // Binary Data Streams Extensions
         public CustomBinarySerializerDelegate<CSMS.BinaryDataTransferRequest>?                       CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.GetFileRequest>?                                 CustomGetFileRequestSerializer                               { get; set; }
 
 
         // E2E Security Extensions
@@ -638,6 +640,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // Binary Data Streams Extensions
         public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?                           CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
+        public CustomBinarySerializerDelegate<GetFileResponse>?                                      CustomGetFileResponseSerializer                              { get; set; }
 
 
         // E2E Security Extensions
@@ -1241,6 +1244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // Binary Data Streams Extensions
         public event OnIncomingBinaryDataTransferDelegate?      OnIncomingBinaryDataTransfer;
+        public event OnGetFileDelegate?                         OnGetFile;
 
         // E2E Security Extensions
         public event OnAddSignaturePolicyDelegate?              OnAddSignaturePolicy;
@@ -1900,6 +1904,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event sent whenever a response to a binary data transfer request was sent.
         /// </summary>
         public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
+
+        #endregion
+
+        #region OnGetFileRequest/-Response
+
+        /// <summary>
+        /// An event sent whenever a GetFile request was sent.
+        /// </summary>
+        public event OnGetFileRequestDelegate?   OnGetFileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetFile request was sent.
+        /// </summary>
+        public event OnGetFileResponseDelegate?  OnGetFileResponse;
 
         #endregion
 
@@ -10289,6 +10307,173 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             };
 
             #endregion
+
+            #region OnGetFile
+
+            ChargingStationServer.OnGetFile += async (timestamp,
+                                                      sender,
+                                                      connection,
+                                                      request,
+                                                      cancellationToken) => {
+
+                #region Send OnGetFileRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnGetFileRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnGetFileRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetFileRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check charging station identification
+
+                GetFileResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new GetFileResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid GetFile request for charging station '{request.ChargingStationId}'!"
+                                             )
+                               );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomGetFileRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
+                    {
+
+                        response = new GetFileResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging Station '{Id}': Incoming GetFile request: {request.FileName}!");
+
+                        response = request.FileName.ToString() == "/hello/world.txt"
+
+                                       ? new GetFileResponse(
+                                             Request:           request,
+                                             FileName:          request.FileName,
+                                             Status:            GetFileStatus.Success,
+                                             FileContent:       "Hello world!".ToUTF8Bytes(),
+                                             FileContentType:   ContentType.Text.Plain,
+                                             FileSHA256:        SHA256.HashData("Hello world!".ToUTF8Bytes()),
+                                             FileSHA512:        SHA512.HashData("Hello world!".ToUTF8Bytes())
+                                         )
+
+                                       : new GetFileResponse(
+                                             Request:           request,
+                                             FileName:          request.FileName,
+                                             Status:            GetFileStatus.NotFound
+                                         );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToBinary(
+                        CustomGetFileResponseSerializer,
+                        null, //CustomStatusInfoSerializer,
+                        CustomBinarySignatureSerializer,
+                        IncludeSignatures: false
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnGetFileResponse event
+
+                var responseLogger = OnGetFileResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnGetFileResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnGetFileResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
 
 
             // E2E Security Extensions

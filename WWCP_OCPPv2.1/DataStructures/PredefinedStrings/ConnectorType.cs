@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        private readonly static Dictionary<String, ConnectorType>  lookup = new (StringComparer.OrdinalIgnoreCase);
+        private readonly static Dictionary<String, ConnectorType>  lookup = new(StringComparer.OrdinalIgnoreCase);
         private readonly        String                             InternalId;
 
         #endregion
@@ -198,164 +198,164 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Combined Charging System 1 (captive cabled) a.k.a. Combo 1
         /// </summary>
         public static ConnectorType cCCS1              { get; }
-            = new ("cCCS1");
+            = Register("cCCS1");
 
         /// <summary>
         /// Combined Charging System 2 (captive cabled) a.k.a. Combo 2
         /// </summary>
         public static ConnectorType cCCS2              { get; }
-            = new ("cCCS2");
+            = Register("cCCS2");
 
         /// <summary>
         /// ChaoJi (captive cabled) a.k.a. CHAdeMO 3.0
         /// </summary>
         public static ConnectorType cChaoJi            { get; }
-            = new ("cChaoJi");
+            = Register("cChaoJi");
 
         /// <summary>
         /// JARI G105-1993 (captive cabled) a.k.a. CHAdeMO
         /// </summary>
         public static ConnectorType cG105              { get; }
-            = new ("cG105");
+            = Register("cG105");
 
         /// <summary>
         /// GB/T 20234.3 DC connector (captive cabled)
         /// </summary>
         public static ConnectorType cGBT_DC            { get; }
-            = new ("cGBT-DC");
+            = Register("cGBT-DC");
 
         /// <summary>
         /// Megawatt Charging System (captive cabled)
         /// </summary>
         public static ConnectorType cMCS               { get; }
-            = new ("cMCS");
+            = Register("cMCS");
 
         /// <summary>
         /// North American Charging Standard (captive cabled)
         /// </summary>
         public static ConnectorType cNACS              { get; }
-            = new ("cNACS");
+            = Register("cNACS");
 
         /// <summary>
         /// Tesla Connector (captive cabled)
         /// </summary>
         public static ConnectorType cTesla             { get; }
-            = new ("cTesla");
+            = Register("cTesla");
 
         /// <summary>
         /// IEC62196-2 Type 1 connector (captive cabled) a.k.a. J1772
         /// </summary>
         public static ConnectorType cType1             { get; }
-            = new ("cType1");
+            = Register("cType1");
 
         /// <summary>
         /// IEC62196-2 Type 2 connector (captive cabled) a.k.a. Mennekes connector
         /// </summary>
         public static ConnectorType cType2             { get; }
-            = new ("cType2");
+            = Register("cType2");
 
         /// <summary>
         /// Ultra-ChaoJi for megawatt charging
         /// </summary>
         public static ConnectorType cUltraChaoJi       { get; }
-            = new ("cUltraChaoJi");
+            = Register("cUltraChaoJi");
 
         /// <summary>
         /// 16A 1 phase IEC60309 socket
         /// </summary>
         public static ConnectorType s309_1P_16A        { get; }
-            = new ("s309-1P-16A");
+            = Register("s309-1P-16A");
 
         /// <summary>
         /// 32A 1 phase IEC60309 socket
         /// </summary>
         public static ConnectorType s309_1P_32A        { get; }
-            = new ("s309-1P-32A");
+            = Register("s309-1P-32A");
 
         /// <summary>
         /// 16A 3 phase IEC60309 socket
         /// </summary>
         public static ConnectorType s309_3P_16A        { get; }
-            = new ("s309-3P-16A");
+            = Register("s309-3P-16A");
 
         /// <summary>
         /// 32A 3 phase IEC60309 socket
         /// </summary>
         public static ConnectorType s309_3P_32A        { get; }
-            = new ("s309-3P-32A");
+            = Register("s309-3P-32A");
 
         /// <summary>
         /// UK domestic socket a.k.a. 13Amp
         /// </summary>
         public static ConnectorType sBS1361            { get; }
-            = new ("sBS1361");
+            = Register("sBS1361");
 
         /// <summary>
         /// CEE 7/7 16A socket. May represent 7/4 & 7/5 a.k.a Schuko
         /// </summary>
         public static ConnectorType sCEE_7_7           { get; }
-            = new ("sCEE-7-7");
+            = Register("sCEE-7-7");
 
         /// <summary>
         /// IEC62196-2 Type 2 socket a.k.a. Mennekes connector
         /// </summary>
         public static ConnectorType sType2             { get; }
-            = new ("sType2");
+            = Register("sType2");
 
         /// <summary>
         /// IEC62196-2 Type 2 socket a.k.a. Scame
         /// </summary>
         public static ConnectorType sType3             { get; }
-            = new ("sType3");
+            = Register("sType3");
 
         /// <summary>
         /// Wireless inductively coupled connection (generic)
         /// </summary>
         public static ConnectorType wInductive         { get; }
-            = new ("wInductive");
+            = Register("wInductive");
 
         /// <summary>
         /// Wireless resonant coupled connection (generic)
         /// </summary>
         public static ConnectorType wResonant          { get; }
-            = new ("wResonant");
+            = Register("wResonant");
 
         /// <summary>
         /// Other single phase (domestic) sockets not mentioned above, rated at no more than 16A.
         /// CEE7/17, AS3112, NEMA 5-15, NEMA 5-20, JISC8303, TIS166, SI 32, CPCS-CCC, SEV1011, etc.
         /// </summary>
         public static ConnectorType Other1PhMax16A     { get; }
-            = new ("Other1PhMax16A");
+            = Register("Other1PhMax16A");
 
         /// <summary>
         /// Other single phase sockets not mentioned above (over 16A)
         /// </summary>
         public static ConnectorType Other1PhOver16A    { get; }
-            = new ("Other1PhOver16A");
+            = Register("Other1PhOver16A");
 
         /// <summary>
         /// Other 3 phase sockets not mentioned above. NEMA14-30, NEMA14-50
         /// </summary>
         public static ConnectorType Other3Ph           { get; }
-            = new ("Other3Ph");
+            = Register("Other3Ph");
 
         /// <summary>
         /// Pantograph connector
         /// </summary>
         public static ConnectorType Pan                { get; }
-            = new ("Pan");
+            = Register("Pan");
 
         /// <summary>
         /// Yet to be determined (e.g. before plugged in)
         /// </summary>
         public static ConnectorType Undetermined       { get; }
-            = new ("Undetermined");
+            = Register("Undetermined");
 
         /// <summary>
         /// Unknown/not determinable
         /// </summary>
         public static ConnectorType Unknown            { get; }
-            = new ("Unknown");
+            = Register("Unknown");
 
 #pragma warning restore IDE1006 // Naming Styles
 

@@ -155,11 +155,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                              );
 
                 if (sendRequestState.NoErrors &&
-                    sendRequestState.Response is not null)
+                    sendRequestState.JSONResponse is not null)
                 {
 
                     if (SetChargingProfileResponse.TryParse(Request,
-                                                            sendRequestState.Response,
+                                                            sendRequestState.JSONResponse.Payload,
                                                             out var setChargingProfileResponse,
                                                             out var errorResponse,
                                                             CustomSetChargingProfileResponseParser) &&

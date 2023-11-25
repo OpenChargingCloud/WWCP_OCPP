@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 {
 
     /// <summary>
-    /// Unit tests for a central system sending binary data messages to charging stations.
+    /// Unit tests for a CSMS sending binary data messages to charging stations.
     /// </summary>
     [TestFixture]
     public class CSMS_SendBinaryData_Tests : AChargingStationTests

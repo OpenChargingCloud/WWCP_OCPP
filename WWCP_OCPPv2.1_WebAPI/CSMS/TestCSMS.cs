@@ -190,33 +190,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever a text message request was received.
         /// </summary>
-        public event OnWebSocketTextMessageRequestDelegate?     OnTextMessageRequestReceived;
+        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
 
         /// <summary>
         /// An event sent whenever the response to a text message was sent.
         /// </summary>
-        public event OnWebSocketTextMessageResponseDelegate?    OnTextMessageResponseSent;
+        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
 
         /// <summary>
         /// An event sent whenever the error response to a text message was sent.
         /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?      OnTextErrorResponseSent;
+        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
 
 
         /// <summary>
         /// An event sent whenever a text message request was sent.
         /// </summary>
-        public event OnWebSocketTextMessageRequestDelegate?     OnTextMessageRequestSent;
+        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever the response to a text message request was received.
         /// </summary>
-        public event OnWebSocketTextMessageResponseDelegate?    OnTextMessageResponseReceived;
+        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
 
         /// <summary>
         /// An event sent whenever an error response to a text message request was received.
         /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?      OnTextErrorResponseReceived;
+        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
 
         #endregion
 
@@ -235,7 +235,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever the error response to a binary message was sent.
         /// </summary>
-        public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
+        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
 
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever the error response to a binary message request was sent.
         /// </summary>
-        public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
+        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
 
         #endregion
 
@@ -1327,6 +1327,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region OnGetFile                     (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a GetFile request will be sent to the charging station.
+        /// </summary>
+        public event CSMS.OnGetFileRequestDelegate?   OnGetFileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetFile request was received.
+        /// </summary>
+        public event CSMS.OnGetFileResponseDelegate?  OnGetFileResponse;
+
+        #endregion
+
 
         // E2E Security Extensions
 
@@ -1565,7 +1579,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // Binary Data Streams Extensions
 
-        public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?                            CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetFileRequest>?                                      CustomGetFileRequestSerializer                               { get; set; }
 
 
         // E2E Security Extensions
@@ -1724,6 +1739,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // Binary Data Streams Extensions
         public CustomBinarySerializerDelegate <CS.BinaryDataTransferResponse>?                       CustomBinaryDataTransferResponseSerializer                   { get; set; }
+        public CustomBinarySerializerDelegate<CS.GetFileResponse>?                                   CustomGetFileResponseSerializer                              { get; set; }
 
 
         // E2E Charging Tariff Extensions
@@ -2227,19 +2243,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTextMessageRequestReceived
 
-            CSMSChannel.OnTextMessageRequestReceived += async (timestamp,
+            CSMSChannel.OnJSONMessageRequestReceived += async (timestamp,
                                                                webSocketServer,
                                                                webSocketConnection,
                                                                eventTrackingId,
                                                                requestTimestamp,
                                                                requestMessage) => {
 
-                var logger = OnTextMessageRequestReceived;
+                var logger = OnJSONMessageRequestReceived;
                 if (logger is not null)
                 {
 
                     var loggerTasks = logger.GetInvocationList().
-                                             OfType <OnWebSocketTextMessageRequestDelegate>().
+                                             OfType <OnWebSocketJSONMessageRequestDelegate>().
                                              Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
                                                                                                webSocketServer,
                                                                                                webSocketConnection,
@@ -2256,7 +2272,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     {
                         await HandleErrors(
                                   nameof(TestCSMS),
-                                  nameof(OnTextMessageRequestReceived),
+                                  nameof(OnJSONMessageRequestReceived),
                                   e
                               );
                     }
@@ -2269,28 +2285,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTextMessageResponseSent
 
-            CSMSChannel.OnTextMessageResponseSent += async (timestamp,
+            CSMSChannel.OnJSONMessageResponseSent += async (timestamp,
                                                             webSocketServer,
                                                             webSocketConnection,
                                                             eventTrackingId,
                                                             requestTimestamp,
-                                                            requestMessage,
+                                                            jsonRequestMessage,
+                                                            binaryRequestMessage,
                                                             responseTimestamp,
                                                             responseMessage) => {
 
 
-                var logger = OnTextMessageResponseSent;
+                var logger = OnJSONMessageResponseSent;
                 if (logger is not null)
                 {
 
                     var loggerTasks = logger.GetInvocationList().
-                                             OfType <OnWebSocketTextMessageResponseDelegate>().
+                                             OfType <OnWebSocketJSONMessageResponseDelegate>().
                                              Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
                                                                                                webSocketServer,
                                                                                                webSocketConnection,
                                                                                                eventTrackingId,
                                                                                                requestTimestamp,
-                                                                                               requestMessage,
+                                                                                               jsonRequestMessage,
+                                                                                               binaryRequestMessage,
                                                                                                responseTimestamp,
                                                                                                responseMessage)).
                                              ToArray();
@@ -2303,7 +2321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     {
                         await HandleErrors(
                                   nameof(TestCSMS),
-                                  nameof(OnTextMessageResponseSent),
+                                  nameof(OnJSONMessageResponseSent),
                                   e
                               );
                     }
@@ -2316,16 +2334,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTextErrorResponseSent
 
-            CSMSChannel.OnTextErrorResponseSent += async (timestamp,
+            CSMSChannel.OnJSONErrorResponseSent += async (timestamp,
                                                           webSocketServer,
                                                           webSocketConnection,
                                                           eventTrackingId,
                                                           requestTimestamp,
-                                                          requestMessage,
+                                                          jsonRequestMessage,
+                                                          binaryRequestMessage,
                                                           responseTimestamp,
                                                           responseMessage) => {
 
-                var logger = OnTextErrorResponseSent;
+                var logger = OnJSONErrorResponseSent;
                 if (logger is not null)
                 {
 
@@ -2336,7 +2355,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                                webSocketConnection,
                                                                                                eventTrackingId,
                                                                                                requestTimestamp,
-                                                                                               requestMessage,
+                                                                                               jsonRequestMessage,
+                                                                                               binaryRequestMessage,
                                                                                                responseTimestamp,
                                                                                                responseMessage)).
                                              ToArray();
@@ -2349,7 +2369,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     {
                         await HandleErrors(
                                   nameof(TestCSMS),
-                                  nameof(OnTextErrorResponseSent),
+                                  nameof(OnJSONErrorResponseSent),
                                   e
                               );
                     }
@@ -2363,7 +2383,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTextMessageRequestSent
 
-            CSMSChannel.OnTextMessageRequestSent += async (timestamp,
+            CSMSChannel.OnJSONMessageRequestSent += async (timestamp,
                                                            webSocketServer,
                                                            webSocketConnection,
                                                            eventTrackingId,
@@ -2371,7 +2391,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            requestMessage) => {
 
 
-                var logger = OnTextMessageRequestSent;
+                var logger = OnJSONMessageRequestSent;
                 if (logger is not null)
                 {
 
@@ -2381,7 +2401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                                webSocketServer,
                                                                                                webSocketConnection,
                                                                                                eventTrackingId,
-                                                                                               requestMessage)).
+                                                                                               requestMessage.ToString())).
                                              ToArray();
 
                     try
@@ -2392,7 +2412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     {
                         await HandleErrors(
                                   nameof(TestCSMS),
-                                  nameof(OnTextMessageRequestSent),
+                                  nameof(OnJSONMessageRequestSent),
                                   e
                               );
                     }
@@ -2405,28 +2425,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTextMessageResponseReceived
 
-            CSMSChannel.OnTextMessageResponseReceived += async (timestamp,
+            CSMSChannel.OnJSONMessageResponseReceived += async (timestamp,
                                                                 webSocketServer,
                                                                 webSocketConnection,
                                                                 eventTrackingId,
                                                                 requestTimestamp,
-                                                                requestMessage,
+                                                                jsonRequestMessage,
+                                                                binaryRequestMessage,
                                                                 responseTimestamp,
                                                                 responseMessage) => {
 
 
-                var logger = OnTextMessageResponseReceived;
+                var logger = OnJSONMessageResponseReceived;
                 if (logger is not null)
                 {
 
                     var loggerTasks = logger.GetInvocationList().
-                                             OfType <OnWebSocketTextMessageResponseDelegate>().
+                                             OfType <OnWebSocketJSONMessageResponseDelegate>().
                                              Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
                                                                                                webSocketServer,
                                                                                                webSocketConnection,
                                                                                                eventTrackingId,
                                                                                                requestTimestamp,
-                                                                                               requestMessage,
+                                                                                               jsonRequestMessage,
+                                                                                               binaryRequestMessage,
                                                                                                responseTimestamp,
                                                                                                responseMessage)).
                                              ToArray();
@@ -2439,7 +2461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     {
                         await HandleErrors(
                                   nameof(TestCSMS),
-                                  nameof(OnTextMessageResponseReceived),
+                                  nameof(OnJSONMessageResponseReceived),
                                   e
                               );
                     }
@@ -2452,16 +2474,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTextErrorResponseReceived
 
-            CSMSChannel.OnTextErrorResponseReceived += async (timestamp,
+            CSMSChannel.OnJSONErrorResponseReceived += async (timestamp,
                                                               webSocketServer,
                                                               webSocketConnection,
                                                               eventTrackingId,
                                                               requestTimestamp,
-                                                              requestMessage,
+                                                              jsonRequestMessage,
+                                                              binaryRequestMessage,
                                                               responseTimestamp,
                                                               responseMessage) => {
 
-                var logger = OnTextErrorResponseReceived;
+                var logger = OnJSONErrorResponseReceived;
                 if (logger is not null)
                 {
 
@@ -2472,7 +2495,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                                webSocketConnection,
                                                                                                eventTrackingId,
                                                                                                requestTimestamp,
-                                                                                               requestMessage,
+                                                                                               jsonRequestMessage,
+                                                                                               binaryRequestMessage,
                                                                                                responseTimestamp,
                                                                                                responseMessage)).
                                              ToArray();
@@ -2485,7 +2509,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     {
                         await HandleErrors(
                                   nameof(TestCSMS),
-                                  nameof(OnTextErrorResponseReceived),
+                                  nameof(OnJSONErrorResponseReceived),
                                   e
                               );
                     }
@@ -11066,7 +11090,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // Binary Data Streams Extensions
 
-        #region TransferBinaryData                (Request)
+        #region TransferBinaryData          (Request)
 
         /// <summary>
         /// Transfer the given data to the given charging station.
@@ -11151,6 +11175,101 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnBinaryDataTransferResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetFile                     (Request)
+
+        /// <summary>
+        /// Request the given file from the charging station.
+        /// </summary>
+        /// <param name="Request">A GetFile request.</param>
+        public async Task<CS.GetFileResponse>
+            GetFile(GetFileRequest Request)
+
+        {
+
+            #region Send OnGetFileRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetFileRequest?.Invoke(startTime,
+                                         this,
+                                         Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetFileRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetFileRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.GetFile(Request)
+
+                                      : new CS.GetFileResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.GetFileResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToBinary(
+                    CustomGetFileResponseSerializer,
+                    null, // CustomStatusInfoSerializer
+                    CustomBinarySignatureSerializer,
+                    IncludeSignatures: false
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnGetFileResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetFileResponse?.Invoke(endTime,
+                                               this,
+                                               Request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetFileResponse));
             }
 
             #endregion

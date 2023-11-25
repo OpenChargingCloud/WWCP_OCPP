@@ -15,16 +15,35 @@
  * limitations under the License.
  */
 
+using Newtonsoft.Json.Linq;
+
 namespace cloud.charging.open.protocols.OCPPv2_1.tests
 {
-    public class LogData1
+    public class LogJSONRequest
+    {
+
+        public DateTime  Timestamp      { get; set; }
+        public JArray    JSONMessage    { get; set; }
+
+        public LogJSONRequest(DateTime  Timestamp,
+                              JArray    JSONMessage)
+        {
+
+            this.Timestamp    = Timestamp;
+            this.JSONMessage  = JSONMessage;
+
+        }
+
+    }
+
+    public class LogBinaryRequest
     {
 
         public DateTime  Timestamp     { get; set; }
-        public String    Message       { get; set; }
+        public Byte[]    Message       { get; set; }
 
-        public LogData1(DateTime  Timestamp,
-                        String    Message)
+        public LogBinaryRequest(DateTime  Timestamp,
+                                Byte[]    Message)
         {
 
             this.Timestamp  = Timestamp;
@@ -34,24 +53,54 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests
 
     }
 
-    public class LogData2
+
+    public class LogDataJSONResponse
     {
 
-        public DateTime  RequestTimestamp     { get; set; }
-        public String    RequestMessage       { get; set; }
-        public DateTime  ResponseTimestamp    { get; set; }
-        public String    ResponseMessage      { get; set; }
+        public DateTime  RequestTimestamp        { get; set; }
+        public JArray?   JSONRequestMessage      { get; set; }
+        public Byte[]?   BinaryRequestMessage    { get; set; }
+        public DateTime  ResponseTimestamp       { get; set; }
+        public JArray    JSONResponseMessage     { get; set; }
 
-        public LogData2(DateTime  RequestTimestamp,
-                        String    RequestMessage,
-                        DateTime  ResponseTimestamp,
-                        String    ResponseMessage)
+        public LogDataJSONResponse(DateTime  RequestTimestamp,
+                                   JArray?   JSONRequestMessage,
+                                   Byte[]?   BinaryRequestMessage,
+                                   DateTime  ResponseTimestamp,
+                                   JArray    ResponseMessage)
         {
 
-            this.RequestTimestamp   = RequestTimestamp;
-            this.RequestMessage     = RequestMessage;
-            this.ResponseTimestamp  = ResponseTimestamp;
-            this.ResponseMessage    = ResponseMessage;
+            this.RequestTimestamp      = RequestTimestamp;
+            this.JSONRequestMessage    = JSONRequestMessage;
+            this.BinaryRequestMessage  = BinaryRequestMessage;
+            this.ResponseTimestamp     = ResponseTimestamp;
+            this.JSONResponseMessage   = ResponseMessage;
+
+        }
+
+    }
+
+    public class LogDataBinaryResponse
+    {
+
+        public DateTime  RequestTimestamp         { get; set; }
+        public JArray?   JSONRequestMessage       { get; set; }
+        public Byte[]?   BinaryRequestMessage     { get; set; }
+        public DateTime  ResponseTimestamp        { get; set; }
+        public Byte[]    BinaryResponseMessage    { get; set; }
+
+        public LogDataBinaryResponse(DateTime  RequestTimestamp,
+                                     JArray?   JSONRequestMessage,
+                                     Byte[]?   BinaryRequestMessage,
+                                     DateTime  ResponseTimestamp,
+                                     Byte[]    BinaryResponseMessage)
+        {
+
+            this.RequestTimestamp       = RequestTimestamp;
+            this.JSONRequestMessage     = JSONRequestMessage;
+            this.BinaryRequestMessage   = BinaryRequestMessage;
+            this.ResponseTimestamp      = ResponseTimestamp;
+            this.BinaryResponseMessage  = BinaryResponseMessage;
 
         }
 

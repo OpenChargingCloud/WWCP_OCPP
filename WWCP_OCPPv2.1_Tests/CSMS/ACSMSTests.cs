@@ -24,6 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -41,10 +42,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
         protected TestCSMS?        testCSMS01;
         protected CSMSWSServer?    testBackendWebSockets01;
 
-        protected List<LogData1>?  csmsWebSocketTextMessagesReceived;
-        protected List<LogData2>?  csmsWebSocketTextMessageResponsesSent;
-        protected List<LogData1>?  csmsWebSocketTextMessagesSent;
-        protected List<LogData2>?  csmsWebSocketTextMessageResponsesReceived;
+        protected List<LogJSONRequest>?  csmsWebSocketTextMessagesReceived;
+        protected List<LogDataJSONResponse>?  csmsWebSocketTextMessageResponsesSent;
+        protected List<LogJSONRequest>?  csmsWebSocketTextMessagesSent;
+        protected List<LogDataJSONResponse>?  csmsWebSocketTextMessageResponsesReceived;
 
         #endregion
 
@@ -88,28 +89,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             Assert.IsNotNull(testBackendWebSockets01);
 
 
-            csmsWebSocketTextMessagesReceived          = new List<LogData1>();
-            csmsWebSocketTextMessageResponsesSent      = new List<LogData2>();
-            csmsWebSocketTextMessagesSent              = new List<LogData1>();
-            csmsWebSocketTextMessageResponsesReceived  = new List<LogData2>();
+            csmsWebSocketTextMessagesReceived          = new List<LogJSONRequest>();
+            csmsWebSocketTextMessageResponsesSent      = new List<LogDataJSONResponse>();
+            csmsWebSocketTextMessagesSent              = new List<LogJSONRequest>();
+            csmsWebSocketTextMessageResponsesReceived  = new List<LogDataJSONResponse>();
 
             testBackendWebSockets01.OnTextMessageReceived         += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage) => {
-                csmsWebSocketTextMessagesReceived.        Add(new LogData1(timestamp, requestMessage));
+                csmsWebSocketTextMessagesReceived.        Add(new LogJSONRequest(timestamp, JArray.Parse(requestMessage)));
                 return Task.CompletedTask;
             };
 
-            testBackendWebSockets01.OnTextMessageResponseSent     += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
-                csmsWebSocketTextMessageResponsesSent.    Add(new LogData2(requestTimestamp, requestMessage, responseTimestamp, responseMessage ?? "-"));
+            testBackendWebSockets01.OnJSONMessageResponseSent     += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
+                csmsWebSocketTextMessageResponsesSent.    Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage ?? []));
                 return Task.CompletedTask;
             };
 
             testBackendWebSockets01.OnTextMessageSent             += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage) => {
-                csmsWebSocketTextMessagesSent.            Add(new LogData1(timestamp, requestMessage));
+                csmsWebSocketTextMessagesSent.            Add(new LogJSONRequest(timestamp, JArray.Parse(requestMessage)));
                 return Task.CompletedTask;
             };
 
-            testBackendWebSockets01.OnTextMessageResponseReceived += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, requestMessage, responseTimestamp, responseMessage) => {
-                csmsWebSocketTextMessageResponsesReceived.Add(new LogData2(requestTimestamp, requestMessage, responseTimestamp, responseMessage ?? "-"));
+            testBackendWebSockets01.OnJSONMessageResponseReceived += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
+                csmsWebSocketTextMessageResponsesReceived.Add(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage ?? []));
                 return Task.CompletedTask;
             };
 
