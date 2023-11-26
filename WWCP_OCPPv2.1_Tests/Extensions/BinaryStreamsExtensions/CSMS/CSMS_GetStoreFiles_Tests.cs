@@ -116,10 +116,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 chargingStation3        is not null)
             {
 
-                var getFileRequests = new ConcurrentList<SendFileRequest>();
+                var sendFileRequests = new ConcurrentList<SendFileRequest>();
 
-                chargingStation1.OnSendFileRequest += (timestamp, sender, getFileRequest) => {
-                    getFileRequests.TryAdd(getFileRequest);
+                chargingStation1.OnSendFileRequest += (timestamp, sender, sendFileRequest) => {
+                    sendFileRequests.TryAdd(sendFileRequest);
                     return Task.CompletedTask;
                 };
 
@@ -142,12 +142,65 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 Assert.AreEqual(filename,                                                      response.FileName);
 
-                Assert.AreEqual(1,                                                             getFileRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                                           getFileRequests.First().ChargingStationId);
-                Assert.AreEqual("Hello world!",                                                getFileRequests.First().FileContent.ToUTF8String());
-                Assert.AreEqual(ContentType.Text.Plain,                                        getFileRequests.First().FileContentType);
-                Assert.AreEqual(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   getFileRequests.First().FileSHA256.ToHexString());
-                Assert.AreEqual(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   getFileRequests.First().FileSHA512.ToHexString());
+                Assert.AreEqual(1,                                                             sendFileRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,                                           sendFileRequests.First().ChargingStationId);
+                Assert.AreEqual("Hello world!",                                                sendFileRequests.First().FileContent.ToUTF8String());
+                Assert.AreEqual(ContentType.Text.Plain,                                        sendFileRequests.First().FileContentType);
+                Assert.AreEqual(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   sendFileRequests.First().FileSHA256.ToHexString());
+                Assert.AreEqual(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   sendFileRequests.First().FileSHA512.ToHexString());
+
+            }
+
+        }
+
+        #endregion
+
+        #region DeleteFile_Test()
+
+        /// <summary>
+        /// A test for deleteing a file from a charging station.
+        /// </summary>
+        [Test]
+        public async Task DeleteFile_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var deleteFileRequests = new ConcurrentList<DeleteFileRequest>();
+
+                chargingStation1.OnDeleteFileRequest += (timestamp, sender, deleteFileRequest) => {
+                    deleteFileRequests.TryAdd(deleteFileRequest);
+                    return Task.CompletedTask;
+                };
+
+                var filename   = FilePath.Parse("/hello/world.txt");
+
+                var response   = await testCSMS01.DeleteFile(
+                                     ChargingStationId:  chargingStation1.Id,
+                                     FileName:           filename,
+                                     FileSHA256:         SHA256.HashData("Hello world!".ToUTF8Bytes()),
+                                     FileSHA512:         SHA512.HashData("Hello world!".ToUTF8Bytes())
+                                 );
+
+
+                Assert.AreEqual(ResultCode.OK,              response.Result.ResultCode);
+                Assert.AreEqual(DeleteFileStatus.Success,   response.Status);
+
+                Assert.AreEqual(filename,                   response.FileName);
+
+                Assert.AreEqual(1,                          deleteFileRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,        deleteFileRequests.First().ChargingStationId);
 
             }
 

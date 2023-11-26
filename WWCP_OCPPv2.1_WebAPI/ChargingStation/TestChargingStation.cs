@@ -488,6 +488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomBinarySerializerDelegate <CSMS.BinaryDataTransferRequest>?                      CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.GetFileRequest>?                                 CustomGetFileRequestSerializer                               { get; set; }
         public CustomBinarySerializerDelegate <CSMS.SendFileRequest>?                                CustomSendFileRequestSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<CSMS.DeleteFileRequest>?                              CustomDeleteFileRequestSerializer                            { get; set; }
 
 
         // E2E Security Extensions
@@ -643,6 +644,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomBinarySerializerDelegate <BinaryDataTransferResponse>?                          CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
         public CustomBinarySerializerDelegate <GetFileResponse>?                                     CustomGetFileResponseSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<SendFileResponse>?                                    CustomSendFileResponseSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteFileResponse>?                                  CustomDeleteFileResponseSerializer                           { get; set; }
 
 
         // E2E Security Extensions
@@ -1248,6 +1250,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public event OnIncomingBinaryDataTransferDelegate?      OnIncomingBinaryDataTransfer;
         public event OnGetFileDelegate?                         OnGetFile;
         public event OnSendFileDelegate?                        OnSendFile;
+        public event OnDeleteFileDelegate?                      OnDeleteFile;
 
         // E2E Security Extensions
         public event OnAddSignaturePolicyDelegate?              OnAddSignaturePolicy;
@@ -1935,6 +1938,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event sent whenever a response to a SendFile request was sent.
         /// </summary>
         public event OnSendFileResponseDelegate?  OnSendFileResponse;
+
+        #endregion
+
+        #region OnDeleteFileRequest/-Response
+
+        /// <summary>
+        /// An event sent whenever a DeleteFile request was sent.
+        /// </summary>
+        public event OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a DeleteFile request was sent.
+        /// </summary>
+        public event OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
 
         #endregion
 
@@ -10639,6 +10656,168 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         await HandleErrors(
                                   nameof(TestChargingStation),
                                   nameof(OnSendFileResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnDeleteFile
+
+            ChargingStationServer.OnDeleteFile += async (timestamp,
+                                                         sender,
+                                                         connection,
+                                                         request,
+                                                         cancellationToken) => {
+
+                #region Send OnDeleteFileRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnDeleteFileRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnDeleteFileRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteFileRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check charging station identification
+
+                DeleteFileResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new DeleteFileResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid DeleteFile request for charging station '{request.ChargingStationId}'!"
+                                             )
+                               );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomDeleteFileRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
+                    {
+
+                        response = new DeleteFileResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging Station '{Id}': Incoming DeleteFile request: {request.FileName}!");
+
+                        response = request.FileName.ToString() == "/hello/world.txt"
+
+                                       ? new DeleteFileResponse(
+                                             Request:   request,
+                                             FileName:  request.FileName,
+                                             Status:    DeleteFileStatus.Success
+                                         )
+
+                                       : new DeleteFileResponse(
+                                             Request:   request,
+                                             FileName:  request.FileName,
+                                             Status:    DeleteFileStatus.NotFound
+                                         );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomDeleteFileResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnDeleteFileResponse event
+
+                var responseLogger = OnDeleteFileResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnDeleteFileResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnDeleteFileResponse),
                                   e
                               );
                     }

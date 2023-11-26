@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an UsePriorityCharging websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?                OnUsePriorityChargingWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnUsePriorityChargingWSRequest;
 
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was received.
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a websocket response to an UsePriorityCharging request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?               OnUsePriorityChargingWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?               OnUsePriorityChargingWSResponse;
 
         #endregion
 
@@ -132,29 +132,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_WebSocket_ErrorMessage?>>
+                                OCPP_JSONErrorMessage?>>
 
             Receive_UsePriorityCharging(DateTime                   RequestTimestamp,
                                         WebSocketClientConnection  WebSocketConnection,
-                                        ChargingStation_Id         chargingStationId,
+                                        ChargingStation_Id         ChargingStationId,
                                         EventTracking_Id           EventTrackingId,
-                                        String                     requestText,
-                                        Request_Id                 requestId,
-                                        JObject                    requestJSON,
+                                        Request_Id                 RequestId,
+                                        JObject                    RequestJSON,
                                         CancellationToken          CancellationToken)
 
         {
 
             #region Send OnUsePriorityChargingWSRequest event
 
+            var startTime = Timestamp.Now;
+
             try
             {
 
-                OnUsePriorityChargingWSRequest?.Invoke(Timestamp.Now,
+                OnUsePriorityChargingWSRequest?.Invoke(startTime,
                                                        WebSocketConnection,
-                                                       chargingStationId,
+                                                       ChargingStationId,
                                                        EventTrackingId,
-                                                       requestJSON);
+                                                       RequestJSON);
 
             }
             catch (Exception e)
@@ -164,14 +165,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            OCPP_JSONResponseMessage? OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?    OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?     OCPPResponse        = null;
+            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
 
-                if (UsePriorityChargingRequest.TryParse(requestJSON,
-                                                        requestId,
+                if (UsePriorityChargingRequest.TryParse(RequestJSON,
+                                                        RequestId,
                                                         ChargingStationIdentity,
                                                         out var request,
                                                         out var errorResponse,
@@ -240,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
-                                       requestId,
+                                       RequestId,
                                        response.ToJSON(
                                            CustomUsePriorityChargingResponseSerializer,
                                            CustomStatusInfoSerializer,
@@ -252,20 +253,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
-                                            requestId,
+                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
+                                            RequestId,
                                             nameof(Receive_UsePriorityCharging)[8..],
-                                            requestJSON,
+                                            RequestJSON,
                                             errorResponse
                                         );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
-                                        requestId,
+                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
+                                        RequestId,
                                         nameof(Receive_UsePriorityCharging)[8..],
-                                        requestJSON,
+                                        RequestJSON,
                                         e
                                     );
             }
@@ -275,11 +276,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                OnUsePriorityChargingWSResponse?.Invoke(Timestamp.Now,
+                var endTime = Timestamp.Now;
+
+                OnUsePriorityChargingWSResponse?.Invoke(endTime,
                                                         WebSocketConnection,
-                                                        requestJSON,
+                                                        EventTrackingId,
+                                                        RequestTimestamp,
+                                                        RequestJSON,
                                                         OCPPResponse?.Payload,
-                                                        OCPPErrorResponse?.ToJSON());
+                                                        OCPPErrorResponse?.ToJSON(),
+                                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -290,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             #endregion
 
             return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
+                             OCPP_JSONErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
 
         }

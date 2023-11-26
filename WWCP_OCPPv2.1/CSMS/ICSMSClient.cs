@@ -678,6 +678,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region DeleteFile                  (Request)
+
+        /// <summary>
+        /// Delete the given file from the charging station.
+        /// </summary>
+        /// <param name="Request">A DeleteFile request.</param>
+        Task<CS.DeleteFileResponse> DeleteFile(DeleteFileRequest Request);
+
+        #endregion
+
 
         // E2E Security Extensions
 

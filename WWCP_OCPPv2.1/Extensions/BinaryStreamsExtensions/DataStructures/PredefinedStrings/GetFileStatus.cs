@@ -51,14 +51,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A get file status.
     /// </summary>
     public readonly struct GetFileStatus : IId,
-                                                      IEquatable<GetFileStatus>,
-                                                      IComparable<GetFileStatus>
+                                           IEquatable<GetFileStatus>,
+                                           IComparable<GetFileStatus>
     {
 
         #region Data
 
         private readonly static Dictionary<String, GetFileStatus>  lookup = new(StringComparer.OrdinalIgnoreCase);
-        private readonly        String                                    InternalId;
+        private readonly        String                             InternalId;
 
         #endregion
 

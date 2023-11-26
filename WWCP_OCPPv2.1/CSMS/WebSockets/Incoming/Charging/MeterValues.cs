@@ -100,27 +100,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a MeterValues WebSocket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?       OnMeterValuesWSRequest;
+        public event WebSocketJSONRequestLogHandler?               OnMeterValuesWSRequest;
 
         /// <summary>
         /// An event sent whenever a MeterValues request was received.
         /// </summary>
-        public event OnMeterValuesRequestDelegate?     OnMeterValuesRequest;
+        public event OnMeterValuesRequestDelegate?                 OnMeterValuesRequest;
 
         /// <summary>
         /// An event sent whenever a MeterValues request was received.
         /// </summary>
-        public event OnMeterValuesDelegate?            OnMeterValues;
+        public event OnMeterValuesDelegate?                        OnMeterValues;
 
         /// <summary>
         /// An event sent whenever a response to a MeterValues request was sent.
         /// </summary>
-        public event OnMeterValuesResponseDelegate?    OnMeterValuesResponse;
+        public event OnMeterValuesResponseDelegate?                OnMeterValuesResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a MeterValues request was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?      OnMeterValuesWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?   OnMeterValuesWSResponse;
 
         #endregion
 
@@ -128,26 +128,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_WebSocket_ErrorMessage?>>
+                                OCPP_JSONErrorMessage?>>
 
-            Receive_MeterValues(JArray                     json,
-                                JObject                    requestData,
-                                Request_Id                 requestId,
-                                ChargingStation_Id         chargingStationId,
+            Receive_MeterValues(DateTime                   RequestTimestamp,
                                 WebSocketServerConnection  Connection,
-                                String                     OCPPTextMessage,
+                                ChargingStation_Id         ChargingStationId,
+                                EventTracking_Id           EventTrackingId,
+                                Request_Id                 RequestId,
+                                JObject                    JSONRequest,
                                 CancellationToken          CancellationToken)
 
         {
 
             #region Send OnMeterValuesWSRequest event
 
+            var startTime = Timestamp.Now;
+
             try
             {
 
-                OnMeterValuesWSRequest?.Invoke(Timestamp.Now,
+                OnMeterValuesWSRequest?.Invoke(startTime,
                                                this,
-                                               json);
+                                               Connection,
+                                               ChargingStationId,
+                                               EventTrackingId,
+                                               RequestTimestamp,
+                                               JSONRequest);
 
             }
             catch (Exception e)
@@ -158,15 +164,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?     OCPPResponse        = null;
+            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
 
-                if (MeterValuesRequest.TryParse(requestData,
-                                                requestId,
-                                                chargingStationId,
+                if (MeterValuesRequest.TryParse(JSONRequest,
+                                                RequestId,
+                                                ChargingStationId,
                                                 out var request,
                                                 out var errorResponse,
                                                 CustomMeterValuesRequestParser) && request is not null) {
@@ -230,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
-                                       requestId,
+                                       RequestId,
                                        response.ToJSON(
                                            CustomMeterValuesResponseSerializer,
                                            CustomSignatureSerializer,
@@ -241,10 +247,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
-                                            requestId,
+                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
+                                            RequestId,
                                             nameof(Receive_MeterValues)[8..],
-                                            requestData,
+                                            JSONRequest,
                                             errorResponse
                                         );
 
@@ -252,10 +258,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
-                                        requestId,
+                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
+                                        RequestId,
                                         nameof(Receive_MeterValues)[8..],
-                                        requestData,
+                                        JSONRequest,
                                         e
                                     );
 
@@ -267,10 +273,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnMeterValuesWSResponse?.Invoke(Timestamp.Now,
+                var endTime = Timestamp.Now;
+
+                OnMeterValuesWSResponse?.Invoke(endTime,
                                                 this,
-                                                json,
-                                                OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+                                                Connection,
+                                                ChargingStationId,
+                                                EventTrackingId,
+                                                RequestTimestamp,
+                                                JSONRequest,
+                                                endTime, //ToDo: Refactor me!
+                                                OCPPResponse?.Payload,
+                                                OCPPErrorResponse?.ToJSON(),
+                                                endTime - startTime);
 
             }
             catch (Exception e)
@@ -281,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
             return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
+                             OCPP_JSONErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
 
         }

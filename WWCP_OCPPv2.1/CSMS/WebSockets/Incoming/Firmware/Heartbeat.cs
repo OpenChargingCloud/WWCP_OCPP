@@ -100,27 +100,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a Heartbeat WebSocket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?     OnHeartbeatWSRequest;
+        public event WebSocketJSONRequestLogHandler?               OnHeartbeatWSRequest;
 
         /// <summary>
         /// An event sent whenever a Heartbeat request was received.
         /// </summary>
-        public event OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
+        public event OnHeartbeatRequestDelegate?                   OnHeartbeatRequest;
 
         /// <summary>
         /// An event sent whenever a Heartbeat was received.
         /// </summary>
-        public event OnHeartbeatDelegate?            OnHeartbeat;
+        public event OnHeartbeatDelegate?                          OnHeartbeat;
 
         /// <summary>
         /// An event sent whenever a response to a Heartbeat was sent.
         /// </summary>
-        public event OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
+        public event OnHeartbeatResponseDelegate?                  OnHeartbeatResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a Heartbeat was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?    OnHeartbeatWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?   OnHeartbeatWSResponse;
 
         #endregion
 
@@ -128,26 +128,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_WebSocket_ErrorMessage?>>
+                                OCPP_JSONErrorMessage?>>
 
-            Receive_Heartbeat(JArray                     json,
-                              JObject                    requestData,
-                              Request_Id                 requestId,
-                              ChargingStation_Id         chargingStationId,
+            Receive_Heartbeat(DateTime                   RequestTimestamp,
                               WebSocketServerConnection  Connection,
-                              String                     OCPPTextMessage,
+                              ChargingStation_Id         ChargingStationId,
+                              EventTracking_Id           EventTrackingId,
+                              Request_Id                 RequestId,
+                              JObject                    JSONRequest,
                               CancellationToken          CancellationToken)
 
         {
 
             #region Send OnHeartbeatWSRequest event
 
+            var startTime = Timestamp.Now;
+
             try
             {
 
-                OnHeartbeatWSRequest?.Invoke(Timestamp.Now,
+                OnHeartbeatWSRequest?.Invoke(startTime,
                                              this,
-                                             json);
+                                             Connection,
+                                             ChargingStationId,
+                                             EventTrackingId,
+                                             RequestTimestamp,
+                                             JSONRequest);
 
             }
             catch (Exception e)
@@ -158,15 +164,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?     OCPPResponse        = null;
+            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
 
-                if (HeartbeatRequest.TryParse(requestData,
-                                              requestId,
-                                              chargingStationId,
+                if (HeartbeatRequest.TryParse(JSONRequest,
+                                              RequestId,
+                                              ChargingStationId,
                                               out var request,
                                               out var errorResponse,
                                               CustomHeartbeatRequestParser) && request is not null) {
@@ -230,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
-                                       requestId,
+                                       RequestId,
                                        response.ToJSON(
                                            CustomHeartbeatResponseSerializer,
                                            CustomSignatureSerializer,
@@ -241,10 +247,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
-                                            requestId,
+                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
+                                            RequestId,
                                             nameof(Receive_Heartbeat)[8..],
-                                            requestData,
+                                            JSONRequest,
                                             errorResponse
                                         );
 
@@ -252,10 +258,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
-                                        requestId,
+                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
+                                        RequestId,
                                         nameof(Receive_Heartbeat)[8..],
-                                        requestData,
+                                        JSONRequest,
                                         e
                                     );
 
@@ -267,10 +273,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnHeartbeatWSResponse?.Invoke(Timestamp.Now,
+                var endTime = Timestamp.Now;
+
+                OnHeartbeatWSResponse?.Invoke(endTime,
                                               this,
-                                              json,
-                                              OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+                                              Connection,
+                                              ChargingStationId,
+                                              EventTrackingId,
+                                              RequestTimestamp,
+                                              JSONRequest,
+                                              endTime, //ToDo: Refactor me!
+                                              OCPPResponse?.Payload,
+                                              OCPPErrorResponse?.ToJSON(),
+                                              endTime - startTime);
 
             }
             catch (Exception e)
@@ -281,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
             return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
+                             OCPP_JSONErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
 
         }

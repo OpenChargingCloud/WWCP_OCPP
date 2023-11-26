@@ -100,27 +100,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ClearedChargingLimit WebSocket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?                OnClearedChargingLimitWSRequest;
+        public event WebSocketJSONRequestLogHandler?               OnClearedChargingLimitWSRequest;
 
         /// <summary>
         /// An event sent whenever a ClearedChargingLimit request was received.
         /// </summary>
-        public event OnClearedChargingLimitRequestDelegate?     OnClearedChargingLimitRequest;
+        public event OnClearedChargingLimitRequestDelegate?        OnClearedChargingLimitRequest;
 
         /// <summary>
         /// An event sent whenever a ClearedChargingLimit was received.
         /// </summary>
-        public event OnClearedChargingLimitDelegate?            OnClearedChargingLimit;
+        public event OnClearedChargingLimitDelegate?               OnClearedChargingLimit;
 
         /// <summary>
         /// An event sent whenever a response to a ClearedChargingLimit was sent.
         /// </summary>
-        public event OnClearedChargingLimitResponseDelegate?    OnClearedChargingLimitResponse;
+        public event OnClearedChargingLimitResponseDelegate?       OnClearedChargingLimitResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a ClearedChargingLimit was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?               OnClearedChargingLimitWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?   OnClearedChargingLimitWSResponse;
 
         #endregion
 
@@ -128,26 +128,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_WebSocket_ErrorMessage?>>
+                                OCPP_JSONErrorMessage?>>
 
-            Receive_ClearedChargingLimit(JArray                     json,
-                                         JObject                    requestData,
-                                         Request_Id                 requestId,
-                                         ChargingStation_Id         chargingStationId,
+            Receive_ClearedChargingLimit(DateTime                   RequestTimestamp,
                                          WebSocketServerConnection  Connection,
-                                         String                     OCPPTextMessage,
+                                         ChargingStation_Id         ChargingStationId,
+                                         EventTracking_Id           EventTrackingId,
+                                         Request_Id                 RequestId,
+                                         JObject                    JSONRequest,
                                          CancellationToken          CancellationToken)
 
         {
 
             #region Send OnClearedChargingLimitWSRequest event
 
+            var startTime = Timestamp.Now;
+
             try
             {
 
-                OnClearedChargingLimitWSRequest?.Invoke(Timestamp.Now,
+                OnClearedChargingLimitWSRequest?.Invoke(startTime,
                                                         this,
-                                                        json);
+                                                        Connection,
+                                                        ChargingStationId,
+                                                        EventTrackingId,
+                                                        RequestTimestamp,
+                                                        JSONRequest);
 
             }
             catch (Exception e)
@@ -158,15 +164,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?     OCPPResponse        = null;
+            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
 
-                if (ClearedChargingLimitRequest.TryParse(requestData,
-                                                         requestId,
-                                                         chargingStationId,
+                if (ClearedChargingLimitRequest.TryParse(JSONRequest,
+                                                         RequestId,
+                                                         ChargingStationId,
                                                          out var request,
                                                          out var errorResponse,
                                                          CustomClearedChargingLimitRequestParser) && request is not null) {
@@ -230,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
-                                       requestId,
+                                       RequestId,
                                        response.ToJSON(
                                            CustomClearedChargingLimitResponseSerializer,
                                            CustomSignatureSerializer,
@@ -241,10 +247,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
-                                            requestId,
+                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
+                                            RequestId,
                                             nameof(Receive_ClearedChargingLimit)[8..],
-                                            requestData,
+                                            JSONRequest,
                                             errorResponse
                                         );
 
@@ -252,10 +258,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
-                                        requestId,
+                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
+                                        RequestId,
                                         nameof(Receive_ClearedChargingLimit)[8..],
-                                        requestData,
+                                        JSONRequest,
                                         e
                                     );
 
@@ -267,10 +273,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnClearedChargingLimitWSResponse?.Invoke(Timestamp.Now,
+                var endTime = Timestamp.Now;
+
+                OnClearedChargingLimitWSResponse?.Invoke(endTime,
                                                          this,
-                                                         json,
-                                                         OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+                                                         Connection,
+                                                         ChargingStationId,
+                                                         EventTrackingId,
+                                                         RequestTimestamp,
+                                                         JSONRequest,
+                                                         endTime, //ToDo: Refactor me!
+                                                         OCPPResponse?.Payload,
+                                                         OCPPErrorResponse?.ToJSON(),
+                                                         endTime - startTime);
 
             }
             catch (Exception e)
@@ -281,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
             return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
+                             OCPP_JSONErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
 
         }

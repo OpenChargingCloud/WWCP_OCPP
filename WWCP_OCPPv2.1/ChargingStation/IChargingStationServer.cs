@@ -464,6 +464,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region OnDeleteFile
+
+        /// <summary>
+        /// An event sent whenever a DeleteFile request was received.
+        /// </summary>
+        event OnDeleteFileDelegate                     OnDeleteFile;
+
+        #endregion
+
 
         // E2E Security Extensions
 

@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?                 OnGetCompositeScheduleWSRequest;
+        public event WSClientJSONRequestLogHandler?                 OnGetCompositeScheduleWSRequest;
 
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was received.
@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a websocket response to a GetCompositeSchedule request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?                OnGetCompositeScheduleWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?                OnGetCompositeScheduleWSResponse;
 
         #endregion
 
@@ -132,29 +132,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_WebSocket_ErrorMessage?>>
+                                OCPP_JSONErrorMessage?>>
 
             Receive_GetCompositeSchedule(DateTime                   RequestTimestamp,
                                          WebSocketClientConnection  WebSocketConnection,
-                                         ChargingStation_Id         chargingStationId,
+                                         ChargingStation_Id         ChargingStationId,
                                          EventTracking_Id           EventTrackingId,
-                                         String                     requestText,
-                                         Request_Id                 requestId,
-                                         JObject                    requestJSON,
+                                         Request_Id                 RequestId,
+                                         JObject                    RequestJSON,
                                          CancellationToken          CancellationToken)
 
         {
 
             #region Send OnGetCompositeScheduleWSRequest event
 
+            var startTime = Timestamp.Now;
+
             try
             {
 
-                OnGetCompositeScheduleWSRequest?.Invoke(Timestamp.Now,
+                OnGetCompositeScheduleWSRequest?.Invoke(startTime,
                                                         WebSocketConnection,
-                                                        chargingStationId,
+                                                        ChargingStationId,
                                                         EventTrackingId,
-                                                        requestJSON);
+                                                        RequestJSON);
 
             }
             catch (Exception e)
@@ -164,14 +165,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            OCPP_JSONResponseMessage? OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?    OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?     OCPPResponse        = null;
+            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
 
-                if (GetCompositeScheduleRequest.TryParse(requestJSON,
-                                                         requestId,
+                if (GetCompositeScheduleRequest.TryParse(RequestJSON,
+                                                         RequestId,
                                                          ChargingStationIdentity,
                                                          out var request,
                                                          out var errorResponse,
@@ -240,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
-                                       requestId,
+                                       RequestId,
                                        response.ToJSON(
                                            CustomGetCompositeScheduleResponseSerializer,
                                            CustomCompositeScheduleSerializer,
@@ -254,20 +255,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
-                                            requestId,
+                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
+                                            RequestId,
                                             nameof(Receive_GetCompositeSchedule)[8..],
-                                            requestJSON,
+                                            RequestJSON,
                                             errorResponse
                                         );
 
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
-                                        requestId,
+                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
+                                        RequestId,
                                         nameof(Receive_GetCompositeSchedule)[8..],
-                                        requestJSON,
+                                        RequestJSON,
                                         e
                                     );
             }
@@ -277,11 +278,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                OnGetCompositeScheduleWSResponse?.Invoke(Timestamp.Now,
+                var endTime = Timestamp.Now;
+
+                OnGetCompositeScheduleWSResponse?.Invoke(endTime,
                                                          WebSocketConnection,
-                                                         requestJSON,
+                                                         EventTrackingId,
+                                                         RequestTimestamp,
+                                                         RequestJSON,
                                                          OCPPResponse?.Payload,
-                                                         OCPPErrorResponse?.ToJSON());
+                                                         OCPPErrorResponse?.ToJSON(),
+                                                         endTime - startTime);
 
             }
             catch (Exception e)
@@ -292,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             #endregion
 
             return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
+                             OCPP_JSONErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
 
         }

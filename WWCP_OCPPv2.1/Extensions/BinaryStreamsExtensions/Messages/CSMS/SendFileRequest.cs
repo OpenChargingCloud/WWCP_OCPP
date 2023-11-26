@@ -225,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="sendFileRequest">The parsed SendFileRequest request.</param>
+        /// <param name="SendFileRequest">The parsed SendFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(Byte[]                Binary,
                                        Request_Id            RequestId,

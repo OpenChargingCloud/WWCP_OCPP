@@ -1355,6 +1355,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region OnDeleteFile                    (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a DeleteFile request will be sent to the charging station.
+        /// </summary>
+        public event CSMS.OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a DeleteFile request was received.
+        /// </summary>
+        public event CSMS.OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
+
+        #endregion
+
 
         // E2E Security Extensions
 
@@ -1596,6 +1610,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<GetFileRequest>?                                      CustomGetFileRequestSerializer                               { get; set; }
         public CustomBinarySerializerDelegate <SendFileRequest>?                                     CustomSendFileRequestSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteFileRequest>?                                   CustomDeleteFileRequestSerializer                            { get; set; }
 
 
         // E2E Security Extensions
@@ -1755,6 +1770,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomBinarySerializerDelegate <CS.BinaryDataTransferResponse>?                       CustomBinaryDataTransferResponseSerializer                   { get; set; }
         public CustomBinarySerializerDelegate <CS.GetFileResponse>?                                  CustomGetFileResponseSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<CS.SendFileResponse>?                                 CustomSendFileResponseSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<CS.DeleteFileResponse>?                               CustomDeleteFileResponseSerializer                           { get; set; }
 
 
         // E2E Charging Tariff Extensions
@@ -11382,6 +11398,100 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSendFileResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region DeleteFile                  (Request)
+
+        /// <summary>
+        /// Delete the given file from the charging station.
+        /// </summary>
+        /// <param name="Request">A DeleteFile request.</param>
+        public async Task<CS.DeleteFileResponse>
+            DeleteFile(DeleteFileRequest Request)
+
+        {
+
+            #region Send OnDeleteFileRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteFileRequest?.Invoke(startTime,
+                                            this,
+                                            Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteFileRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomDeleteFileRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.DeleteFile(Request)
+
+                                      : new CS.DeleteFileResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.DeleteFileResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomDeleteFileResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnDeleteFileResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteFileResponse?.Invoke(endTime,
+                                             this,
+                                             Request,
+                                             response,
+                                             endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnDeleteFileResponse));
             }
 
             #endregion

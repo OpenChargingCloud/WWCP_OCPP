@@ -100,27 +100,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever an Authorize WebSocket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?     OnAuthorizeWSRequest;
+        public event WebSocketJSONRequestLogHandler?               OnAuthorizeWSRequest;
 
         /// <summary>
         /// An event sent whenever an Authorize request was received.
         /// </summary>
-        public event OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
+        public event OnAuthorizeRequestDelegate?                   OnAuthorizeRequest;
 
         /// <summary>
         /// An event sent whenever an Authorize request was received.
         /// </summary>
-        public event OnAuthorizeDelegate?            OnAuthorize;
+        public event OnAuthorizeDelegate?                          OnAuthorize;
 
         /// <summary>
         /// An event sent whenever an Authorize response was sent.
         /// </summary>
-        public event OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
+        public event OnAuthorizeResponseDelegate?                  OnAuthorizeResponse;
 
         /// <summary>
         /// An event sent whenever an Authorize WebSocket response was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?    OnAuthorizeWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?   OnAuthorizeWSResponse;
 
         #endregion
 
@@ -128,26 +128,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_WebSocket_ErrorMessage?>>
+                                OCPP_JSONErrorMessage?>>
 
-            Receive_Authorize(JArray                     json,
-                              JObject                    requestData,
-                              Request_Id                 requestId,
-                              ChargingStation_Id         chargingStationId,
+            Receive_Authorize(DateTime                   RequestTimestamp,
                               WebSocketServerConnection  Connection,
-                              String                     OCPPTextMessage,
+                              ChargingStation_Id         ChargingStationId,
+                              EventTracking_Id           EventTrackingId,
+                              Request_Id                 RequestId,
+                              JObject                    JSONRequest,
                               CancellationToken          CancellationToken)
 
         {
 
             #region Send OnAuthorizeWSRequest event
 
+            var startTime = Timestamp.Now;
+
             try
             {
 
-                OnAuthorizeWSRequest?.Invoke(Timestamp.Now,
+                OnAuthorizeWSRequest?.Invoke(startTime,
                                              this,
-                                             json);
+                                             Connection,
+                                             ChargingStationId,
+                                             EventTrackingId,
+                                             RequestTimestamp,
+                                             JSONRequest);
 
             }
             catch (Exception e)
@@ -158,15 +164,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?     OCPPResponse        = null;
+            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
 
-                if (AuthorizeRequest.TryParse(requestData,
-                                              requestId,
-                                              chargingStationId,
+                if (AuthorizeRequest.TryParse(JSONRequest,
+                                              RequestId,
+                                              ChargingStationId,
                                               out var request,
                                               out var errorResponse,
                                               CustomAuthorizeRequestParser) && request is not null) {
@@ -230,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
-                                       requestId,
+                                       RequestId,
                                        response.ToJSON(
                                            CustomAuthorizeResponseSerializer,
                                            CustomIdTokenInfoSerializer,
@@ -246,10 +252,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
-                                            requestId,
+                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
+                                            RequestId,
                                             nameof(Receive_Authorize)[8..],
-                                            requestData,
+                                            JSONRequest,
                                             errorResponse
                                         );
 
@@ -257,10 +263,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
-                                        requestId,
+                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
+                                        RequestId,
                                         nameof(Receive_Authorize)[8..],
-                                        requestData,
+                                        JSONRequest,
                                         e
                                     );
 
@@ -272,10 +278,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnAuthorizeWSResponse?.Invoke(Timestamp.Now,
+                var endTime = Timestamp.Now;
+
+                OnAuthorizeWSResponse?.Invoke(endTime,
                                               this,
-                                              json,
-                                              OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+                                              Connection,
+                                              ChargingStationId,
+                                              EventTrackingId,
+                                              RequestTimestamp,
+                                              JSONRequest,
+                                              endTime, //ToDo: Refactor me!
+                                              OCPPResponse?.Payload,
+                                              OCPPErrorResponse?.ToJSON(),
+                                              endTime - startTime);
 
             }
             catch (Exception e)
@@ -286,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
             return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
+                             OCPP_JSONErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
 
         }

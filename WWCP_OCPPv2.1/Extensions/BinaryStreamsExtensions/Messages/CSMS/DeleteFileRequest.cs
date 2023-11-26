@@ -27,10 +27,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A get file request.
+    /// A delete file request.
     /// </summary>
-    public class GetFileRequest : ARequest<GetFileRequest>,
-                                  IRequest
+    public class DeleteFileRequest : ARequest<DeleteFileRequest>,
+                                     IRequest
     {
 
         #region Data
@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/getFileRequest");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/deleteFileRequest");
 
         #endregion
 
@@ -54,24 +54,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The name of the file including its absolute path.
         /// </summary>
         [Mandatory]
-        public FilePath  FileName    { get; }
+        public FilePath  FileName      { get; }
 
         /// <summary>
-        /// The optional priority of the file request.
+        /// The optional SHA256 hash value of the file content.
         /// </summary>
         [Optional]
-        public Byte?     Priority    { get; }
+        public Byte[]    FileSHA256    { get; }
+
+        /// <summary>
+        /// The optional SHA512 hash value of the file content.
+        /// </summary>
+        [Optional]
+        public Byte[]    FileSHA512    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new GetFile request.
+        /// Create a new DeleteFile request.
         /// </summary>
         /// <param name="ChargingStationId">The charging station identification.</param>
         /// <param name="FileName">The name of the file including its absolute path.</param>
-        /// <param name="Priority">The optional priority of the file request.</param>
+        /// <param name="FileSHA256">An optional SHA256 hash value of the file content.</param>
+        /// <param name="FileSHA512">An optional SHA512 hash value of the file content.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -81,24 +88,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetFileRequest(ChargingStation_Id       ChargingStationId,
-                              FilePath                 FileName,
-                              Byte?                    Priority            = null,
+        public DeleteFileRequest(ChargingStation_Id       ChargingStationId,
+                                 FilePath                 FileName,
+                                 Byte[]?                  FileSHA256          = null,
+                                 Byte[]?                  FileSHA512          = null,
 
-                              IEnumerable<KeyPair>?    SignKeys            = null,
-                              IEnumerable<SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?  Signatures          = null,
+                                 IEnumerable<KeyPair>?    SignKeys            = null,
+                                 IEnumerable<SignInfo>?   SignInfos           = null,
+                                 IEnumerable<Signature>?  Signatures          = null,
 
-                              CustomData?              CustomData          = null,
+                                 CustomData?              CustomData          = null,
 
-                              Request_Id?              RequestId           = null,
-                              DateTime?                RequestTimestamp    = null,
-                              TimeSpan?                RequestTimeout      = null,
-                              EventTracking_Id?        EventTrackingId     = null,
-                              CancellationToken        CancellationToken   = default)
+                                 Request_Id?              RequestId           = null,
+                                 DateTime?                RequestTimestamp    = null,
+                                 TimeSpan?                RequestTimeout      = null,
+                                 EventTracking_Id?        EventTrackingId     = null,
+                                 CancellationToken        CancellationToken   = default)
 
             : base(ChargingStationId,
-                   "GetFile",
+                   "DeleteFile",
 
                    SignKeys,
                    SignInfos,
@@ -114,16 +122,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         {
 
-            this.FileName  = FileName;
-            this.Priority  = Priority;
-
+            this.FileName    = FileName;
+            this.FileSHA256  = FileSHA256 ?? [];
+            this.FileSHA512  = FileSHA512 ?? [];
 
             unchecked
             {
 
-                hashCode = this.FileName. GetHashCode()       * 5 ^
-                          (this.Priority?.GetHashCode() ?? 0) * 3 ^
-                           base.          GetHashCode();
+                hashCode = this.FileName.  GetHashCode() * 7 ^
+                           this.FileSHA256.GetHashCode() * 5 ^
+                           this.FileSHA512.GetHashCode() * 3 ^
+                           base.           GetHashCode();
 
             }
 
@@ -138,87 +147,87 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomGetFileRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomDeleteFileRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a GetFileRequest request.
+        /// Parse the given JSON representation of a DeleteFileRequest request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="CustomGetFileRequestParser">A delegate to parse custom GetFileRequest requests.</param>
-        public static GetFileRequest Parse(JObject                                       JSON,
-                                           Request_Id                                    RequestId,
-                                           ChargingStation_Id                            ChargingStationId,
-                                           CustomJObjectParserDelegate<GetFileRequest>?  CustomGetFileRequestParser   = null)
+        /// <param name="CustomDeleteFileRequestParser">A delegate to parse custom DeleteFileRequest requests.</param>
+        public static DeleteFileRequest Parse(JObject                                          JSON,
+                                              Request_Id                                       RequestId,
+                                              ChargingStation_Id                               ChargingStationId,
+                                              CustomJObjectParserDelegate<DeleteFileRequest>?  CustomDeleteFileRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
                          ChargingStationId,
-                         out var getFileRequest,
+                         out var deleteFileRequest,
                          out var errorResponse,
-                         CustomGetFileRequestParser) &&
-                getFileRequest is not null)
+                         CustomDeleteFileRequestParser) &&
+                deleteFileRequest is not null)
             {
-                return getFileRequest;
+                return deleteFileRequest;
             }
 
-            throw new ArgumentException("The given JSON representation of a GetFile request is invalid: " + errorResponse,
+            throw new ArgumentException("The given JSON representation of a DeleteFile request is invalid: " + errorResponse,
                                         nameof(JSON));
 
         }
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out getFileRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, ChargingStationId, out deleteFileRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a GetFile request.
+        /// Try to parse the given JSON representation of a DeleteFile request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="GetFileRequest">The parsed GetFileRequest request.</param>
+        /// <param name="deleteFileRequest">The parsed DeleteFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject              JSON,
-                                       Request_Id           RequestId,
-                                       ChargingStation_Id   ChargingStationId,
-                                       out GetFileRequest?  GetFileRequest,
-                                       out String?          ErrorResponse)
+        public static Boolean TryParse(JObject                 JSON,
+                                       Request_Id              RequestId,
+                                       ChargingStation_Id      ChargingStationId,
+                                       out DeleteFileRequest?  DeleteFileRequest,
+                                       out String?             ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
                         ChargingStationId,
-                        out GetFileRequest,
+                        out DeleteFileRequest,
                         out ErrorResponse,
                         null);
 
 
         /// <summary>
-        /// Try to parse the given JSON representation of a GetFile request.
+        /// Try to parse the given JSON representation of a DeleteFile request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="GetFileRequest">The parsed GetFileRequest request.</param>
+        /// <param name="DeleteFileRequest">The parsed DeleteFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetFileRequestParser">A delegate to parse custom GetFileRequest requests.</param>
-        public static Boolean TryParse(JObject                                       JSON,
-                                       Request_Id                                    RequestId,
-                                       ChargingStation_Id                            ChargingStationId,
-                                       out GetFileRequest?                           GetFileRequest,
-                                       out String?                                   ErrorResponse,
-                                       CustomJObjectParserDelegate<GetFileRequest>?  CustomGetFileRequestParser)
+        /// <param name="CustomDeleteFileRequestParser">A delegate to parse custom DeleteFileRequest requests.</param>
+        public static Boolean TryParse(JObject                                          JSON,
+                                       Request_Id                                       RequestId,
+                                       ChargingStation_Id                               ChargingStationId,
+                                       out DeleteFileRequest?                           DeleteFileRequest,
+                                       out String?                                      ErrorResponse,
+                                       CustomJObjectParserDelegate<DeleteFileRequest>?  CustomDeleteFileRequestParser)
         {
 
             try
             {
 
-                GetFileRequest = null;
+                DeleteFileRequest = null;
 
                 #region FileName             [mandatory]
 
@@ -233,16 +242,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region Priority             [optional]
+                #region FileSHA256           [optional]
 
-                if (JSON.ParseOptional("priority",
-                                       "download priority",
-                                       out Byte? Priority,
+                if (JSON.ParseOptional("fileSHA256",
+                                       "file content SHA256 value",
+                                       out String? fileSHA256Text,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
                         return false;
                 }
+
+                var FileSHA256 = fileSHA256Text?.FromBase64();
+
+                #endregion
+
+                #region FileSHA512           [optional]
+
+                if (JSON.ParseOptional("fileSHA512",
+                                       "file content SHA512 value",
+                                       out String? fileSHA512Text,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                var FileSHA512 = fileSHA512Text?.FromBase64();
 
                 #endregion
 
@@ -294,32 +320,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 #endregion
 
 
-                GetFileRequest = new GetFileRequest(
+                DeleteFileRequest = new DeleteFileRequest(
 
-                                     ChargingStationId,
-                                     FileName,
-                                     Priority,
+                                        ChargingStationId,
+                                        FileName,
+                                        FileSHA256,
+                                        FileSHA512,
 
-                                     null,
-                                     null,
-                                     Signatures,
+                                        null,
+                                        null,
+                                        Signatures,
 
-                                     CustomData,
-                                     RequestId
+                                        CustomData,
+                                        RequestId
 
-                                 );
+                                    );
 
-                if (CustomGetFileRequestParser is not null)
-                    GetFileRequest = CustomGetFileRequestParser(JSON,
-                                                                GetFileRequest);
+                if (CustomDeleteFileRequestParser is not null)
+                    DeleteFileRequest = CustomDeleteFileRequestParser(JSON,
+                                                                      DeleteFileRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                GetFileRequest  = null;
-                ErrorResponse   = "The given JSON representation of a GetFile request is invalid: " + e.Message;
+                DeleteFileRequest  = null;
+                ErrorResponse      = "The given JSON representation of a DeleteFile request is invalid: " + e.Message;
                 return false;
             }
 
@@ -327,15 +354,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region ToJSON(CustomGetFileRequestSerializer = null, CustomSignatureSerializer = null, ...)
+        #region ToJSON(CustomDeleteFileRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="CustomGetFileRequestSerializer">A delegate to serialize custom GetFileRequest requests.</param>
+        /// <param name="CustomDeleteFileRequestSerializer">A delegate to serialize custom DeleteFileRequest requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<GetFileRequest>?  CustomGetFileRequestSerializer   = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<DeleteFileRequest>?  CustomDeleteFileRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<Signature>?       CustomSignatureSerializer        = null,
                               CustomJObjectSerializerDelegate<CustomData>?      CustomCustomDataSerializer       = null)
         {
@@ -344,8 +371,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                  new JProperty("fileName",     FileName.ToString()),
 
-                           Priority.HasValue
-                               ? new JProperty("priority",     Priority.Value)
+                           FileSHA256.Length > 0
+                               ? new JProperty("fileSHA256",   FileSHA256.ToBase64())
+                               : null,
+
+                           FileSHA512.Length > 0
+                               ? new JProperty("fileSHA512",   FileSHA512.ToBase64())
                                : null,
 
                            Signatures.Any()
@@ -359,8 +390,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                        );
 
-            return CustomGetFileRequestSerializer is not null
-                       ? CustomGetFileRequestSerializer(this, json)
+            return CustomDeleteFileRequestSerializer is not null
+                       ? CustomDeleteFileRequestSerializer(this, json)
                        : json;
 
         }
@@ -370,80 +401,77 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Operator overloading
 
-        #region Operator == (GetFileRequest1, GetFileRequest2)
+        #region Operator == (DeleteFileRequest1, DeleteFileRequest2)
 
         /// <summary>
-        /// Compares two GetFile requests for equality.
+        /// Compares two DeleteFile requests for equality.
         /// </summary>
-        /// <param name="GetFileRequest1">A GetFile request.</param>
-        /// <param name="GetFileRequest2">Another GetFile request.</param>
+        /// <param name="DeleteFileRequest1">A DeleteFile request.</param>
+        /// <param name="DeleteFileRequest2">Another DeleteFile request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetFileRequest? GetFileRequest1,
-                                           GetFileRequest? GetFileRequest2)
+        public static Boolean operator == (DeleteFileRequest? DeleteFileRequest1,
+                                           DeleteFileRequest? DeleteFileRequest2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(GetFileRequest1, GetFileRequest2))
+            if (ReferenceEquals(DeleteFileRequest1, DeleteFileRequest2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (GetFileRequest1 is null || GetFileRequest2 is null)
+            if (DeleteFileRequest1 is null || DeleteFileRequest2 is null)
                 return false;
 
-            return GetFileRequest1.Equals(GetFileRequest2);
+            return DeleteFileRequest1.Equals(DeleteFileRequest2);
 
         }
 
         #endregion
 
-        #region Operator != (GetFileRequest1, GetFileRequest2)
+        #region Operator != (DeleteFileRequest1, DeleteFileRequest2)
 
         /// <summary>
-        /// Compares two GetFile requests for inequality.
+        /// Compares two DeleteFile requests for inequality.
         /// </summary>
-        /// <param name="GetFileRequest1">A GetFile request.</param>
-        /// <param name="GetFileRequest2">Another GetFile request.</param>
+        /// <param name="DeleteFileRequest1">A DeleteFile request.</param>
+        /// <param name="DeleteFileRequest2">Another DeleteFile request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetFileRequest? GetFileRequest1,
-                                           GetFileRequest? GetFileRequest2)
+        public static Boolean operator != (DeleteFileRequest? DeleteFileRequest1,
+                                           DeleteFileRequest? DeleteFileRequest2)
 
-            => !(GetFileRequest1 == GetFileRequest2);
-
-        #endregion
+            => !(DeleteFileRequest1 == DeleteFileRequest2);
 
         #endregion
 
-        #region IEquatable<GetFileRequest> Members
+        #endregion
+
+        #region IEquatable<DeleteFileRequest> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get file requests for equality.
+        /// Compares two delete file requests for equality.
         /// </summary>
-        /// <param name="Object">A get file request to compare with.</param>
+        /// <param name="Object">A delete file request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is GetFileRequest getFileRequest &&
-                   Equals(getFileRequest);
+            => Object is DeleteFileRequest deleteFileRequest &&
+                   Equals(deleteFileRequest);
 
         #endregion
 
-        #region Equals(GetFileRequest)
+        #region Equals(DeleteFileRequest)
 
         /// <summary>
-        /// Compares two get file requests for equality.
+        /// Compares two delete file requests for equality.
         /// </summary>
-        /// <param name="GetFileRequest">A get file request to compare with.</param>
-        public override Boolean Equals(GetFileRequest? GetFileRequest)
+        /// <param name="DeleteFileRequest">A delete file request to compare with.</param>
+        public override Boolean Equals(DeleteFileRequest? DeleteFileRequest)
 
-            => GetFileRequest is not null               &&
+            => DeleteFileRequest is not null               &&
 
-               FileName.Equals(GetFileRequest.FileName) &&
+               FileName.Equals(DeleteFileRequest.FileName) &&
 
-            ((!Priority.HasValue && !GetFileRequest.Priority.HasValue) ||
-              (Priority.HasValue &&  GetFileRequest.Priority.HasValue && Priority.Equals(GetFileRequest.Priority))) &&
-
-               base.GenericEquals(GetFileRequest);
+               base.GenericEquals(DeleteFileRequest);
 
         #endregion
 
@@ -468,15 +496,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-
-                   FileName,
-
-                   Priority.HasValue
-                        ? $" ({Priority})"
-                        : ""
-
-                );
+            => FileName.ToString();
 
         #endregion
 

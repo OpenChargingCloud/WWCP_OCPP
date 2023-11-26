@@ -76,6 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="BinaryRequestMessage">The parsed OCPP WebSocket request message.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(Byte[]                          Binary,
                                        out OCPP_BinaryRequestMessage?  BinaryRequestMessage,
                                        out String?                     ErrorResponse)

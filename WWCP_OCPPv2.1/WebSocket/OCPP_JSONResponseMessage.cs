@@ -48,17 +48,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
         #endregion
 
 
-        #region TryParse(JSONArray, out ResponseMessage)
+        #region TryParse(JSONArray, out ResponseMessage, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON representation of a response message.
         /// </summary>
         /// <param name="JSONArray">The JSON array to be parsed.</param>
         /// <param name="ResponseMessage">The parsed OCPP WebSocket response message.</param>
-        public static Boolean TryParse(JArray JSONArray, out OCPP_JSONResponseMessage? ResponseMessage)
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JArray                         JSONArray,
+                                       out OCPP_JSONResponseMessage?  ResponseMessage,
+                                       out String?                    ErrorResponse)
         {
 
-            ResponseMessage = null;
+            ResponseMessage  = null;
+            ErrorResponse    = null;
 
             // [
             //     3,                         // MessageType: CALLRESULT (Server-to-Client)

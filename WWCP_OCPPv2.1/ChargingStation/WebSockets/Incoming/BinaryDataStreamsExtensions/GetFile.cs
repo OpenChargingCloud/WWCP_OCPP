@@ -103,27 +103,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a GetFile websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?    OnGetFileWSRequest;
+        public event WSClientJSONRequestLogHandler?                 OnGetFileWSRequest;
 
         /// <summary>
         /// An event sent whenever a GetFile request was received.
         /// </summary>
-        public event OnGetFileRequestDelegate?     OnGetFileRequest;
+        public event OnGetFileRequestDelegate?                      OnGetFileRequest;
 
         /// <summary>
         /// An event sent whenever a GetFile request was received.
         /// </summary>
-        public event OnGetFileDelegate?            OnGetFile;
+        public event OnGetFileDelegate?                             OnGetFile;
 
         /// <summary>
         /// An event sent whenever a response to a GetFile request was sent.
         /// </summary>
-        public event OnGetFileResponseDelegate?    OnGetFileResponse;
+        public event OnGetFileResponseDelegate?                     OnGetFileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetFile request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?   OnGetFileWSResponse;
+        public event WSClientJSONRequestBinaryResponseLogHandler?   OnGetFileWSResponse;
 
         #endregion
 
@@ -131,13 +131,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_BinaryResponseMessage?,
-                                OCPP_WebSocket_ErrorMessage?>>
+                                OCPP_JSONErrorMessage?>>
 
             Receive_GetFile(DateTime                   RequestTimestamp,
                             WebSocketClientConnection  WebSocketConnection,
-                            ChargingStation_Id         chargingStationId,
+                            ChargingStation_Id         ChargingStationId,
                             EventTracking_Id           EventTrackingId,
-                            String                     RequestText,
                             Request_Id                 RequestId,
                             JObject                    RequestJSON,
                             CancellationToken          CancellationToken)
@@ -146,12 +145,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #region Send OnGetFileWSRequest event
 
+            var startTime = Timestamp.Now;
+
             try
             {
 
-                //OnGetFileWSRequest?.Invoke(Timestamp.Now,
-                //                                              this,
-                //                                              requestJSON);
+                OnGetFileWSRequest?.Invoke(startTime,
+                                           WebSocketConnection,
+                                           ChargingStationId,
+                                           EventTrackingId,
+                                           RequestJSON);
 
             }
             catch (Exception e)
@@ -162,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             #endregion
 
             OCPP_BinaryResponseMessage?   OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?  OCPPErrorResponse   = null;
+            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
@@ -250,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
+                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
                                             RequestId,
                                             nameof(Receive_GetFile)[8..],
                                             RequestJSON,
@@ -260,7 +263,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
+                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
                                         RequestId,
                                         nameof(Receive_GetFile)[8..],
                                         RequestJSON,
@@ -273,11 +276,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                //OnGetFileWSResponse?.Invoke(Timestamp.Now,
-                //                                               this,
-                //                                               requestJSON,
-                //                                               new OCPP_WebSocket_BinaryResponseMessage(requestMessage.RequestId,
-                //                                                                                        OCPPResponseJSON ?? new JObject()).ToJSON());
+                var endTime = Timestamp.Now;
+
+                OnGetFileWSResponse?.Invoke(endTime,
+                                            WebSocketConnection,
+                                            EventTrackingId,
+                                            RequestTimestamp,
+                                            RequestJSON,
+                                            OCPPResponse?.Payload,
+                                            OCPPErrorResponse?.ToJSON(),
+                                            endTime - startTime);
 
             }
             catch (Exception e)
@@ -288,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             #endregion
 
             return new Tuple<OCPP_BinaryResponseMessage?,
-                             OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
+                             OCPP_JSONErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
 
         }

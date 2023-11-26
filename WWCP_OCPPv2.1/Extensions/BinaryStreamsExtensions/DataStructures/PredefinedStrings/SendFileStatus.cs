@@ -51,14 +51,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// A send file status.
     /// </summary>
     public readonly struct SendFileStatus : IId,
-                                                      IEquatable<SendFileStatus>,
-                                                      IComparable<SendFileStatus>
+                                            IEquatable<SendFileStatus>,
+                                            IComparable<SendFileStatus>
     {
 
         #region Data
 
         private readonly static Dictionary<String, SendFileStatus>  lookup = new(StringComparer.OrdinalIgnoreCase);
-        private readonly        String                                    InternalId;
+        private readonly        String                              InternalId;
 
         #endregion
 
@@ -199,10 +199,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             = Register("Success");
 
         /// <summary>
-        /// The SendFileRequest has been accepted, but the file was not found.
+        /// The SendFileRequest has been accepted, but the file location was not found.
         /// </summary>
         public static SendFileStatus NotFound            { get; }
             = Register("NotFound");
+
+        /// <summary>
+        /// The SendFileStatus was understood, but the file is locked.
+        /// </summary>
+        public static SendFileStatus Locked              { get; }
+            = Register("Locked");
 
         /// <summary>
         /// The SendFileRequest has been rejected.

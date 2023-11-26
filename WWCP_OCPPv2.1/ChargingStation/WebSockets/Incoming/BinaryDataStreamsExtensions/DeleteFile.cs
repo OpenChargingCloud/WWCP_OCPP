@@ -23,7 +23,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
@@ -31,52 +30,52 @@ using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    #region OnReserveNow
+    #region OnDeleteFile
 
     /// <summary>
-    /// A reserve now request.
+    /// A DeleteFile request.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The request.</param>
+    /// <param name="Request">The DeleteFile request.</param>
     public delegate Task
 
-        OnReserveNowRequestDelegate(DateTime            Timestamp,
-                                    IEventSender        Sender,
-                                    ReserveNowRequest   Request);
+        OnDeleteFileRequestDelegate(DateTime                 Timestamp,
+                                    IEventSender             Sender,
+                                    CSMS.DeleteFileRequest   Request);
 
 
     /// <summary>
-    /// A reserve now request.
+    /// A DeleteFile request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The request.</param>
+    /// <param name="Request">The DeleteFile request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<ReserveNowResponse>
+    public delegate Task<DeleteFileResponse>
 
-        OnReserveNowDelegate(DateTime                    Timestamp,
+        OnDeleteFileDelegate(DateTime                    Timestamp,
                              IEventSender                Sender,
                              WebSocketClientConnection   Connection,
-                             ReserveNowRequest           Request,
+                             CSMS.DeleteFileRequest      Request,
                              CancellationToken           CancellationToken);
 
 
     /// <summary>
-    /// A reserve now response.
+    /// A DeleteFile response.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
-    /// <param name="Request">The request.</param>
-    /// <param name="Response">The response.</param>
+    /// <param name="Request">The DeleteFile request.</param>
+    /// <param name="Response">The DeleteFile response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnReserveNowResponseDelegate(DateTime             Timestamp,
-                                     IEventSender         Sender,
-                                     ReserveNowRequest    Request,
-                                     ReserveNowResponse   Response,
-                                     TimeSpan             Runtime);
+        OnDeleteFileResponseDelegate(DateTime                 Timestamp,
+                                     IEventSender             Sender,
+                                     CSMS.DeleteFileRequest   Request,
+                                     DeleteFileResponse       Response,
+                                     TimeSpan                 Runtime);
 
     #endregion
 
@@ -93,38 +92,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<ReserveNowRequest>?       CustomReserveNowRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<CSMS.DeleteFileRequest>?  CustomDeleteFileRequestParser         { get; set; }
 
-        public CustomJObjectSerializerDelegate<ReserveNowResponse>?  CustomReserveNowResponseSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteFileResponse>?  CustomDeleteFileResponseSerializer    { get; set; }
 
         #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a reserve now websocket request was received.
+        /// An event sent whenever a DeleteFile websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?       OnReserveNowWSRequest;
+        public event WSClientJSONRequestLogHandler?               OnDeleteFileWSRequest;
 
         /// <summary>
-        /// An event sent whenever a reserve now request was received.
+        /// An event sent whenever a DeleteFile request was received.
         /// </summary>
-        public event OnReserveNowRequestDelegate?     OnReserveNowRequest;
+        public event OnDeleteFileRequestDelegate?                 OnDeleteFileRequest;
 
         /// <summary>
-        /// An event sent whenever a reserve now request was received.
+        /// An event sent whenever a DeleteFile request was received.
         /// </summary>
-        public event OnReserveNowDelegate?            OnReserveNow;
+        public event OnDeleteFileDelegate?                        OnDeleteFile;
 
         /// <summary>
-        /// An event sent whenever a response to a reserve now request was sent.
+        /// An event sent whenever a response to a DeleteFile request was sent.
         /// </summary>
-        public event OnReserveNowResponseDelegate?    OnReserveNowResponse;
+        public event OnDeleteFileResponseDelegate?                OnDeleteFileResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a reserve now request was sent.
+        /// An event sent whenever a websocket response to a DeleteFile request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?      OnReserveNowWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?   OnDeleteFileWSResponse;
 
         #endregion
 
@@ -134,7 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public async Task<Tuple<OCPP_JSONResponseMessage?,
                                 OCPP_JSONErrorMessage?>>
 
-            Receive_ReserveNow(DateTime                   RequestTimestamp,
+            Receive_DeleteFile(DateTime                   RequestTimestamp,
                                WebSocketClientConnection  WebSocketConnection,
                                ChargingStation_Id         ChargingStationId,
                                EventTracking_Id           EventTrackingId,
@@ -144,14 +143,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         {
 
-            #region Send OnReserveNowWSRequest event
+            #region Send OnDeleteFileWSRequest event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnReserveNowWSRequest?.Invoke(startTime,
+                OnDeleteFileWSRequest?.Invoke(startTime,
                                               WebSocketConnection,
                                               ChargingStationId,
                                               EventTrackingId,
@@ -160,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnReserveNowWSRequest));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteFileWSRequest));
             }
 
             #endregion
@@ -171,37 +170,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                if (ReserveNowRequest.TryParse(RequestJSON,
-                                               RequestId,
-                                               ChargingStationIdentity,
-                                               out var request,
-                                               out var errorResponse,
-                                               CustomReserveNowRequestParser) && request is not null) {
+                if (CSMS.DeleteFileRequest.TryParse(RequestJSON,
+                                                    RequestId,
+                                                    ChargingStationIdentity,
+                                                    out var request,
+                                                    out var errorResponse,
+                                                    CustomDeleteFileRequestParser) &&
+                    request is not null) {
 
-                    #region Send OnReserveNowRequest event
+                    #region Send OnDeleteFileRequest event
 
                     try
                     {
 
-                        OnReserveNowRequest?.Invoke(Timestamp.Now,
+                        OnDeleteFileRequest?.Invoke(Timestamp.Now,
                                                     this,
                                                     request);
 
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnReserveNowRequest));
+                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteFileRequest));
                     }
 
                     #endregion
 
                     #region Call async subscribers
 
-                    ReserveNowResponse? response = null;
+                    DeleteFileResponse? response = null;
 
-                    var results = OnReserveNow?.
+                    var results = OnDeleteFile?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnReserveNowDelegate)?.Invoke(Timestamp.Now,
+                                      SafeSelect(subscriber => (subscriber as OnDeleteFileDelegate)?.Invoke(Timestamp.Now,
                                                                                                             this,
                                                                                                             WebSocketConnection,
                                                                                                             request,
@@ -217,25 +217,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     }
 
-                    response ??= ReserveNowResponse.Failed(request);
+                    response ??= DeleteFileResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnReserveNowResponse event
+                    #region Send OnDeleteFileResponse event
 
                     try
                     {
 
-                        OnReserveNowResponse?.Invoke(Timestamp.Now,
-                                                     this,
-                                                     request,
-                                                     response,
-                                                     response.Runtime);
+                        OnDeleteFileResponse?.Invoke(Timestamp.Now,
+                                                  this,
+                                                  request,
+                                                  response,
+                                                  response.Runtime);
 
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnReserveNowResponse));
+                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteFileResponse));
                     }
 
                     #endregion
@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     OCPPResponse = new OCPP_JSONResponseMessage(
                                        RequestId,
                                        response.ToJSON(
-                                           CustomReserveNowResponseSerializer,
+                                           CustomDeleteFileResponseSerializer,
                                            CustomStatusInfoSerializer,
                                            CustomSignatureSerializer,
                                            CustomCustomDataSerializer
@@ -255,7 +255,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 else
                     OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
                                             RequestId,
-                                            nameof(Receive_ReserveNow)[8..],
+                                            nameof(Receive_DeleteFile)[8..],
                                             RequestJSON,
                                             errorResponse
                                         );
@@ -265,20 +265,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
                 OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
                                         RequestId,
-                                        nameof(Receive_ReserveNow)[8..],
+                                        nameof(Receive_DeleteFile)[8..],
                                         RequestJSON,
                                         e
                                     );
             }
 
-            #region Send OnReserveNowWSResponse event
+            #region Send OnDeleteFileWSResponse event
 
             try
             {
 
                 var endTime = Timestamp.Now;
 
-                OnReserveNowWSResponse?.Invoke(endTime,
+                OnDeleteFileWSResponse?.Invoke(endTime,
                                                WebSocketConnection,
                                                EventTrackingId,
                                                RequestTimestamp,
@@ -290,7 +290,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnReserveNowWSResponse));
+                DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnDeleteFileWSResponse));
             }
 
             #endregion

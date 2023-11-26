@@ -100,27 +100,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate WebSocket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?                     OnPullDynamicScheduleUpdateWSRequest;
+        public event WebSocketJSONRequestLogHandler?                OnPullDynamicScheduleUpdateWSRequest;
 
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate request was received.
         /// </summary>
-        public event OnPullDynamicScheduleUpdateRequestDelegate?     OnPullDynamicScheduleUpdateRequest;
+        public event OnPullDynamicScheduleUpdateRequestDelegate?    OnPullDynamicScheduleUpdateRequest;
 
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate was received.
         /// </summary>
-        public event OnPullDynamicScheduleUpdateDelegate?            OnPullDynamicScheduleUpdate;
+        public event OnPullDynamicScheduleUpdateDelegate?           OnPullDynamicScheduleUpdate;
 
         /// <summary>
         /// An event sent whenever a response to a PullDynamicScheduleUpdate was sent.
         /// </summary>
-        public event OnPullDynamicScheduleUpdateResponseDelegate?    OnPullDynamicScheduleUpdateResponse;
+        public event OnPullDynamicScheduleUpdateResponseDelegate?   OnPullDynamicScheduleUpdateResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a PullDynamicScheduleUpdate was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?                    OnPullDynamicScheduleUpdateWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?    OnPullDynamicScheduleUpdateWSResponse;
 
         #endregion
 
@@ -128,26 +128,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_WebSocket_ErrorMessage?>>
+                                OCPP_JSONErrorMessage?>>
 
-            Receive_PullDynamicScheduleUpdate(JArray                     json,
-                                              JObject                    requestData,
-                                              Request_Id                 requestId,
-                                              ChargingStation_Id         chargingStationId,
+            Receive_PullDynamicScheduleUpdate(DateTime                   RequestTimestamp,
                                               WebSocketServerConnection  Connection,
-                                              String                     OCPPTextMessage,
+                                              ChargingStation_Id         ChargingStationId,
+                                              EventTracking_Id           EventTrackingId,
+                                              Request_Id                 RequestId,
+                                              JObject                    JSONRequest,
                                               CancellationToken          CancellationToken)
 
         {
 
             #region Send OnPullDynamicScheduleUpdateWSRequest event
 
+            var startTime = Timestamp.Now;
+
             try
             {
 
-                OnPullDynamicScheduleUpdateWSRequest?.Invoke(Timestamp.Now,
+                OnPullDynamicScheduleUpdateWSRequest?.Invoke(startTime,
                                                              this,
-                                                             json);
+                                                             Connection,
+                                                             ChargingStationId,
+                                                             EventTrackingId,
+                                                             RequestTimestamp,
+                                                             JSONRequest);
 
             }
             catch (Exception e)
@@ -158,15 +164,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?     OCPPResponse        = null;
+            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
 
-                if (PullDynamicScheduleUpdateRequest.TryParse(requestData,
-                                                              requestId,
-                                                              chargingStationId,
+                if (PullDynamicScheduleUpdateRequest.TryParse(JSONRequest,
+                                                              RequestId,
+                                                              ChargingStationId,
                                                               out var request,
                                                               out var errorResponse,
                                                               CustomPullDynamicScheduleUpdateRequestParser) && request is not null) {
@@ -230,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
-                                       requestId,
+                                       RequestId,
                                        response.ToJSON(
                                            CustomPullDynamicScheduleUpdateResponseSerializer,
                                            CustomSignatureSerializer,
@@ -241,10 +247,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
-                                            requestId,
+                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
+                                            RequestId,
                                             nameof(Receive_PullDynamicScheduleUpdate)[8..],
-                                            requestData,
+                                            JSONRequest,
                                             errorResponse
                                         );
 
@@ -252,10 +258,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
-                                        requestId,
+                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
+                                        RequestId,
                                         nameof(Receive_PullDynamicScheduleUpdate)[8..],
-                                        requestData,
+                                        JSONRequest,
                                         e
                                     );
 
@@ -267,10 +273,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnPullDynamicScheduleUpdateWSResponse?.Invoke(Timestamp.Now,
+                var endTime = Timestamp.Now;
+
+                OnPullDynamicScheduleUpdateWSResponse?.Invoke(endTime,
                                                               this,
-                                                              json,
-                                                              OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+                                                              Connection,
+                                                              ChargingStationId,
+                                                              EventTrackingId,
+                                                              RequestTimestamp,
+                                                              JSONRequest,
+                                                              endTime, //ToDo: Refactor me!
+                                                              OCPPResponse?.Payload,
+                                                              OCPPErrorResponse?.ToJSON(),
+                                                              endTime - startTime);
 
             }
             catch (Exception e)
@@ -281,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
             return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
+                             OCPP_JSONErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
 
         }

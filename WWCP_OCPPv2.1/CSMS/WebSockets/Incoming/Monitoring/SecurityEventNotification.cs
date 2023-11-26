@@ -100,27 +100,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SecurityEventNotification WebSocket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?                     OnSecurityEventNotificationWSRequest;
+        public event WebSocketJSONRequestLogHandler?                OnSecurityEventNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a SecurityEventNotification request was received.
         /// </summary>
-        public event OnSecurityEventNotificationRequestDelegate?     OnSecurityEventNotificationRequest;
+        public event OnSecurityEventNotificationRequestDelegate?    OnSecurityEventNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a SecurityEventNotification request was received.
         /// </summary>
-        public event OnSecurityEventNotificationDelegate?            OnSecurityEventNotification;
+        public event OnSecurityEventNotificationDelegate?           OnSecurityEventNotification;
 
         /// <summary>
         /// An event sent whenever a response to a SecurityEventNotification request was sent.
         /// </summary>
-        public event OnSecurityEventNotificationResponseDelegate?    OnSecurityEventNotificationResponse;
+        public event OnSecurityEventNotificationResponseDelegate?   OnSecurityEventNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a SecurityEventNotification request was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?                    OnSecurityEventNotificationWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?    OnSecurityEventNotificationWSResponse;
 
         #endregion
 
@@ -128,26 +128,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_WebSocket_ErrorMessage?>>
+                                OCPP_JSONErrorMessage?>>
 
-            Receive_SecurityEventNotification(JArray                     json,
-                                              JObject                    requestData,
-                                              Request_Id                 requestId,
-                                              ChargingStation_Id         chargingStationId,
+            Receive_SecurityEventNotification(DateTime                   RequestTimestamp,
                                               WebSocketServerConnection  Connection,
-                                              String                     OCPPTextMessage,
+                                              ChargingStation_Id         ChargingStationId,
+                                              EventTracking_Id           EventTrackingId,
+                                              Request_Id                 RequestId,
+                                              JObject                    JSONRequest,
                                               CancellationToken          CancellationToken)
 
         {
 
             #region Send OnSecurityEventNotificationWSRequest event
 
+            var startTime = Timestamp.Now;
+
             try
             {
 
-                OnSecurityEventNotificationWSRequest?.Invoke(Timestamp.Now,
+                OnSecurityEventNotificationWSRequest?.Invoke(startTime,
                                                              this,
-                                                             json);
+                                                             Connection,
+                                                             ChargingStationId,
+                                                             EventTrackingId,
+                                                             RequestTimestamp,
+                                                             JSONRequest);
 
             }
             catch (Exception e)
@@ -158,15 +164,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?     OCPPResponse        = null;
+            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
 
-                if (SecurityEventNotificationRequest.TryParse(requestData,
-                                                              requestId,
-                                                              chargingStationId,
+                if (SecurityEventNotificationRequest.TryParse(JSONRequest,
+                                                              RequestId,
+                                                              ChargingStationId,
                                                               out var request,
                                                               out var errorResponse,
                                                               CustomSecurityEventNotificationRequestParser) && request is not null) {
@@ -230,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
-                                       requestId,
+                                       RequestId,
                                        response.ToJSON(
                                            CustomSecurityEventNotificationResponseSerializer,
                                            CustomSignatureSerializer,
@@ -241,10 +247,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
-                                            requestId,
+                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
+                                            RequestId,
                                             nameof(Receive_SecurityEventNotification)[8..],
-                                            requestData,
+                                            JSONRequest,
                                             errorResponse
                                         );
 
@@ -252,10 +258,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
-                                        requestId,
+                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
+                                        RequestId,
                                         nameof(Receive_SecurityEventNotification)[8..],
-                                        requestData,
+                                        JSONRequest,
                                         e
                                     );
 
@@ -267,10 +273,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnSecurityEventNotificationWSResponse?.Invoke(Timestamp.Now,
+                var endTime = Timestamp.Now;
+
+                OnSecurityEventNotificationWSResponse?.Invoke(endTime,
                                                               this,
-                                                              json,
-                                                              OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+                                                              Connection,
+                                                              ChargingStationId,
+                                                              EventTrackingId,
+                                                              RequestTimestamp,
+                                                              JSONRequest,
+                                                              endTime, //ToDo: Refactor me!
+                                                              OCPPResponse?.Payload,
+                                                              OCPPErrorResponse?.ToJSON(),
+                                                              endTime - startTime);
 
             }
             catch (Exception e)
@@ -281,7 +296,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
             return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
+                             OCPP_JSONErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
 
         }

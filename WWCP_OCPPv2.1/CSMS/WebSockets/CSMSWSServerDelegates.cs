@@ -31,23 +31,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// The delegate for the HTTP WebSocket request log.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
-    /// <param name="WebSocketServer">The sending WebSocket server.</param>
-    /// <param name="Request">The incoming request.</param>
-    public delegate Task WebSocketRequestLogHandler              (DateTime                    Timestamp,
-                                                                  WebSocketServer             WebSocketServer,
-                                                                  JArray                      Request);
+    /// <param name="Server">The sending WebSocket server.</param>
+    /// <param name="JSONRequest">The incoming JSON request.</param>
+    public delegate Task WebSocketJSONRequestLogHandler          (DateTime                    Timestamp,
+                                                                  CSMSWSServer                Server,
+                                                                  WebSocketServerConnection   Connection,
+                                                                  ChargingStation_Id          ChargingStationId,
+                                                                  EventTracking_Id            EventTrackingId,
+                                                                  DateTime                    RequestTimestamp,
+                                                                  JObject                     JSONRequest);
 
     /// <summary>
-    /// The delegate for the HTTP WebSocket response log.
+    /// The delegate for the HTTP WebSocket request log.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
-    /// <param name="WebSocketServer">The sending WebSocket server.</param>
-    /// <param name="Request">The incoming WebSocket request.</param>
-    /// <param name="Response">The outgoing WebSocket response.</param>
-    public delegate Task WebSocketResponseLogHandler             (DateTime                    Timestamp,
-                                                                  WebSocketServer             WebSocketServer,
-                                                                  JArray                      Request,
-                                                                  JArray                      Response);
+    /// <param name="Server">The sending WebSocket server.</param>
+    /// <param name="BinaryRequest">The incoming binary request.</param>
+    public delegate Task WebSocketBinaryRequestLogHandler        (DateTime                    Timestamp,
+                                                                  CSMSWSServer                Server,
+                                                                  WebSocketServerConnection   Connection,
+                                                                  ChargingStation_Id          ChargingStationId,
+                                                                  EventTracking_Id            EventTrackingId,
+                                                                  DateTime                    RequestTimestamp,
+                                                                  Byte[]                      BinaryRequest);
+
+
+
+    // Responses
+
+    public delegate Task WebSocketJSONRequestJSONResponseLogHandler    (DateTime                    Timestamp,
+                                                                        CSMSWSServer                Server,
+                                                                        WebSocketServerConnection   Connection,
+                                                                        ChargingStation_Id          ChargingStationId,
+                                                                        EventTracking_Id            EventTrackingId,
+                                                                        DateTime                    RequestTimestamp,
+                                                                        JObject                     JSONRequest,
+                                                                        DateTime                    ResponseTimestamp,
+                                                                        JObject?                    JSONResponse,
+                                                                        JArray?                     ErrorResponse,
+                                                                        TimeSpan                    Runtime);
+
+    public delegate Task WebSocketJSONRequestBinaryResponseLogHandler  (DateTime                    Timestamp,
+                                                                        CSMSWSServer                Server,
+                                                                        WebSocketServerConnection   Connection,
+                                                                        ChargingStation_Id          ChargingStationId,
+                                                                        EventTracking_Id            EventTrackingId,
+                                                                        DateTime                    RequestTimestamp,
+                                                                        JObject                     JSONRequest,
+                                                                        DateTime                    ResponseTimestamp,
+                                                                        Byte[]?                     BinaryResponse,
+                                                                        JArray?                     ErrorResponse,
+                                                                        TimeSpan                    Runtime);
+
+    public delegate Task WebSocketBinaryRequestJSONResponseLogHandler  (DateTime                    Timestamp,
+                                                                        CSMSWSServer                Server,
+                                                                        WebSocketServerConnection   Connection,
+                                                                        ChargingStation_Id          ChargingStationId,
+                                                                        EventTracking_Id            EventTrackingId,
+                                                                        DateTime                    RequestTimestamp,
+                                                                        Byte[]                      BinaryRequest,
+                                                                        DateTime                    ResponseTimestamp,
+                                                                        JObject?                    JSONResponse,
+                                                                        JArray?                     ErrorResponse,
+                                                                        TimeSpan                    Runtime);
+
+    public delegate Task WebSocketBinaryRequestBinaryResponseLogHandler(DateTime                    Timestamp,
+                                                                        CSMSWSServer                Server,
+                                                                        WebSocketServerConnection   Connection,
+                                                                        ChargingStation_Id          ChargingStationId,
+                                                                        EventTracking_Id            EventTrackingId,
+                                                                        DateTime                    RequestTimestamp,
+                                                                        Byte[]                      BinaryRequest,
+                                                                        DateTime                    ResponseTimestamp,
+                                                                        Byte[]?                     BinaryResponse,
+                                                                        JArray?                     ErrorResponse,
+                                                                        TimeSpan                    Runtime);
+
+
+
+
+
+
+
 
     public delegate Task OnNewCSMSWSConnectionDelegate           (DateTime                    Timestamp,
                                                                   ICSMSChannel                CSMS,
@@ -83,6 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   Byte[]                      BinaryRequestMessage,
                                                                   DateTime                    ResponseTimestamp,
                                                                   String?                     TextResponseMessage);
+
 
 
     public delegate Task OnWebSocketBinaryMessageRequestDelegate (DateTime                    Timestamp,

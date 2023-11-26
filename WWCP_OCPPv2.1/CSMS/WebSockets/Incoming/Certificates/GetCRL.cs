@@ -100,27 +100,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetCRL WebSocket request was received.
         /// </summary>
-        public event WebSocketRequestLogHandler?     OnGetCRLWSRequest;
+        public event WebSocketJSONRequestLogHandler?               OnGetCRLWSRequest;
 
         /// <summary>
         /// An event sent whenever a GetCRL request was received.
         /// </summary>
-        public event OnGetCRLRequestDelegate?        OnGetCRLRequest;
+        public event OnGetCRLRequestDelegate?                      OnGetCRLRequest;
 
         /// <summary>
         /// An event sent whenever a GetCRL was received.
         /// </summary>
-        public event OnGetCRLDelegate?               OnGetCRL;
+        public event OnGetCRLDelegate?                             OnGetCRL;
 
         /// <summary>
         /// An event sent whenever a response to a GetCRL was sent.
         /// </summary>
-        public event OnGetCRLResponseDelegate?       OnGetCRLResponse;
+        public event OnGetCRLResponseDelegate?                     OnGetCRLResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a GetCRL was sent.
         /// </summary>
-        public event WebSocketResponseLogHandler?    OnGetCRLWSResponse;
+        public event WebSocketJSONRequestJSONResponseLogHandler?   OnGetCRLWSResponse;
 
         #endregion
 
@@ -128,26 +128,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_JSONResponseMessage?,
-                                OCPP_WebSocket_ErrorMessage?>>
+                                OCPP_JSONErrorMessage?>>
 
-            Receive_GetCRL(JArray                     json,
-                           JObject                    requestData,
-                           Request_Id                 requestId,
-                           ChargingStation_Id         chargingStationId,
+            Receive_GetCRL(DateTime                   RequestTimestamp,
                            WebSocketServerConnection  Connection,
-                           String                     OCPPTextMessage,
+                           ChargingStation_Id         ChargingStationId,
+                           EventTracking_Id           EventTrackingId,
+                           Request_Id                 RequestId,
+                           JObject                    JSONRequest,
                            CancellationToken          CancellationToken)
 
         {
 
             #region Send OnGetCRLWSRequest event
 
+            var startTime = Timestamp.Now;
+
             try
             {
 
-                OnGetCRLWSRequest?.Invoke(Timestamp.Now,
+                OnGetCRLWSRequest?.Invoke(startTime,
                                           this,
-                                          json);
+                                          Connection,
+                                          ChargingStationId,
+                                          EventTrackingId,
+                                          RequestTimestamp,
+                                          JSONRequest);
 
             }
             catch (Exception e)
@@ -158,15 +164,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            OCPP_JSONResponseMessage?  OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?     OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?     OCPPResponse        = null;
+            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
 
-                if (GetCRLRequest.TryParse(requestData,
-                                           requestId,
-                                           chargingStationId,
+                if (GetCRLRequest.TryParse(JSONRequest,
+                                           RequestId,
+                                           ChargingStationId,
                                            out var request,
                                            out var errorResponse,
                                            CustomGetCRLRequestParser) && request is not null) {
@@ -230,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     #endregion
 
                     OCPPResponse = new OCPP_JSONResponseMessage(
-                                       requestId,
+                                       RequestId,
                                        response.ToJSON(
                                            CustomGetCRLResponseSerializer,
                                            CustomStatusInfoSerializer,
@@ -242,10 +248,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
-                                            requestId,
+                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
+                                            RequestId,
                                             nameof(Receive_GetCRL)[8..],
-                                            requestData,
+                                            JSONRequest,
                                             errorResponse
                                         );
 
@@ -253,10 +259,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
 
-                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
-                                        requestId,
+                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
+                                        RequestId,
                                         nameof(Receive_GetCRL)[8..],
-                                        requestData,
+                                        JSONRequest,
                                         e
                                     );
 
@@ -268,10 +274,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                OnGetCRLWSResponse?.Invoke(Timestamp.Now,
+                var endTime = Timestamp.Now;
+
+                OnGetCRLWSResponse?.Invoke(endTime,
                                            this,
-                                           json,
-                                           OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
+                                           Connection,
+                                           ChargingStationId,
+                                           EventTrackingId,
+                                           RequestTimestamp,
+                                           JSONRequest,
+                                           endTime, //ToDo: Refactor me!
+                                           OCPPResponse?.Payload,
+                                           OCPPErrorResponse?.ToJSON(),
+                                           endTime - startTime);
 
             }
             catch (Exception e)
@@ -282,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
             return new Tuple<OCPP_JSONResponseMessage?,
-                             OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
+                             OCPP_JSONErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
 
         }

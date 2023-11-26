@@ -17,13 +17,10 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
 
 #endregion
@@ -104,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?                       OnIncomingBinaryDataTransferWSRequest;
+        public event WSClientBinaryRequestLogHandler?                 OnIncomingBinaryDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
@@ -124,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a websocket response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?                      OnIncomingBinaryDataTransferWSResponse;
+        public event WSClientBinaryRequestBinaryResponseLogHandler?   OnIncomingBinaryDataTransferWSResponse;
 
         #endregion
 
@@ -132,13 +129,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Receive message (wired via reflection!)
 
         public async Task<Tuple<OCPP_BinaryResponseMessage?,
-                                OCPP_WebSocket_ErrorMessage?>>
+                                OCPP_JSONErrorMessage?>>
 
             Receive_BinaryDataTransfer(DateTime                   RequestTimestamp,
                                        WebSocketClientConnection  WebSocketConnection,
-                                       ChargingStation_Id         chargingStationId,
+                                       ChargingStation_Id         ChargingStationId,
                                        EventTracking_Id           EventTrackingId,
-                                       Byte[]                     RequestText,
                                        Request_Id                 RequestId,
                                        Byte[]                     RequestBinary,
                                        CancellationToken          CancellationToken)
@@ -147,12 +143,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #region Send OnIncomingBinaryDataTransferWSRequest event
 
+            var startTime = Timestamp.Now;
+
             try
             {
 
-                //OnIncomingBinaryDataTransferWSRequest?.Invoke(Timestamp.Now,
-                //                                              this,
-                //                                              requestJSON);
+                OnIncomingBinaryDataTransferWSRequest?.Invoke(startTime,
+                                                              WebSocketConnection,
+                                                              ChargingStationId,
+                                                              EventTrackingId,
+                                                              RequestBinary);
 
             }
             catch (Exception e)
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             #endregion
 
             OCPP_BinaryResponseMessage?   OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?  OCPPErrorResponse   = null;
+            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
@@ -251,7 +251,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 }
 
                 else
-                    OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
+                    OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
                                             RequestId,
                                             nameof(Receive_BinaryDataTransfer)[8..],
                                             RequestBinary,
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             }
             catch (Exception e)
             {
-                OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
+                OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
                                         RequestId,
                                         nameof(Receive_BinaryDataTransfer)[8..],
                                         RequestBinary,
@@ -274,11 +274,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                //OnIncomingBinaryDataTransferWSResponse?.Invoke(Timestamp.Now,
-                //                                               this,
-                //                                               requestJSON,
-                //                                               new OCPP_WebSocket_BinaryResponseMessage(requestMessage.RequestId,
-                //                                                                                        OCPPResponseJSON ?? new JObject()).ToJSON());
+                var endTime = Timestamp.Now;
+
+                OnIncomingBinaryDataTransferWSResponse?.Invoke(endTime,
+                                                               WebSocketConnection,
+                                                               EventTrackingId,
+                                                               RequestTimestamp,
+                                                               RequestBinary,
+                                                               OCPPResponse?.Payload,
+                                                               OCPPErrorResponse?.ToJSON(),
+                                                               endTime - startTime);
 
             }
             catch (Exception e)
@@ -289,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             #endregion
 
             return new Tuple<OCPP_BinaryResponseMessage?,
-                             OCPP_WebSocket_ErrorMessage?>(OCPPResponse,
+                             OCPP_JSONErrorMessage?>(OCPPResponse,
                                                            OCPPErrorResponse);
 
         }
