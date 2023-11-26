@@ -17,15 +17,14 @@
 
 #region Usings
 
+using System.Security.Cryptography;
+
 using NUnit.Framework;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
-using System.Security.Cryptography;
 
 #endregion
 
@@ -87,9 +86,68 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
                 Assert.AreEqual(1,                                                             getFileRequests.Count);
                 Assert.AreEqual(chargingStation1.Id,                                           getFileRequests.First().ChargingStationId);
-                //Assert.AreEqual(vendorId,                                                      getFileRequests.First().VendorId);
-                //Assert.AreEqual(messageId,                                                     getFileRequests.First().MessageId);
-                //Assert.AreEqual(data,                                                          getFileRequests.First().Data);
+                Assert.AreEqual(filename,                                                      getFileRequests.First().FileName);
+
+            }
+
+        }
+
+        #endregion
+
+        #region SendFile_Test()
+
+        /// <summary>
+        /// A test for sending a file to a charging station.
+        /// </summary>
+        [Test]
+        public async Task SendFile_Test()
+        {
+
+            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testBackendWebSockets01);
+            Assert.IsNotNull(chargingStation1);
+            Assert.IsNotNull(chargingStation2);
+            Assert.IsNotNull(chargingStation3);
+
+            if (testCSMS01              is not null &&
+                testBackendWebSockets01 is not null &&
+                chargingStation1        is not null &&
+                chargingStation2        is not null &&
+                chargingStation3        is not null)
+            {
+
+                var getFileRequests = new ConcurrentList<SendFileRequest>();
+
+                chargingStation1.OnSendFileRequest += (timestamp, sender, getFileRequest) => {
+                    getFileRequests.TryAdd(getFileRequest);
+                    return Task.CompletedTask;
+                };
+
+                var filename   = FilePath.Parse("/hello/world.txt");
+
+                var response   = await testCSMS01.SendFile(
+                                     ChargingStationId:  chargingStation1.Id,
+                                     FileName:           filename,
+                                     FileContent:        "Hello world!".ToUTF8Bytes(),
+                                     FileContentType:    ContentType.Text.Plain,
+                                     FileSHA256:         SHA256.HashData("Hello world!".ToUTF8Bytes()),
+                                     FileSHA512:         SHA512.HashData("Hello world!".ToUTF8Bytes()),
+                                     FileSignatures:     null,
+                                     Priority:           null
+                                 );
+
+
+                Assert.AreEqual(ResultCode.OK,                                                 response.Result.ResultCode);
+                Assert.AreEqual(SendFileStatus.Success,                                        response.Status);
+
+                Assert.AreEqual(filename,                                                      response.FileName);
+
+                Assert.AreEqual(1,                                                             getFileRequests.Count);
+                Assert.AreEqual(chargingStation1.Id,                                           getFileRequests.First().ChargingStationId);
+                Assert.AreEqual("Hello world!",                                                getFileRequests.First().FileContent.ToUTF8String());
+                Assert.AreEqual(ContentType.Text.Plain,                                        getFileRequests.First().FileContentType);
+                Assert.AreEqual(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   getFileRequests.First().FileSHA256.ToHexString());
+                Assert.AreEqual(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   getFileRequests.First().FileSHA512.ToHexString());
 
             }
 

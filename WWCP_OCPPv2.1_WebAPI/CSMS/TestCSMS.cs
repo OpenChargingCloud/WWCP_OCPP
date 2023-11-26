@@ -1341,6 +1341,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #region OnSendFile                    (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a SendFile request will be sent to the charging station.
+        /// </summary>
+        public event CSMS.OnSendFileRequestDelegate?   OnSendFileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SendFile request was received.
+        /// </summary>
+        public event CSMS.OnSendFileResponseDelegate?  OnSendFileResponse;
+
+        #endregion
+
 
         // E2E Security Extensions
 
@@ -1579,8 +1593,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // Binary Data Streams Extensions
 
-        public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?                            CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<GetFileRequest>?                                      CustomGetFileRequestSerializer                               { get; set; }
+        public CustomBinarySerializerDelegate <SendFileRequest>?                                     CustomSendFileRequestSerializer                              { get; set; }
 
 
         // E2E Security Extensions
@@ -1677,8 +1692,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<CS.BinaryDataTransferRequest>?                         CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
-        public CustomBinarySerializerDelegate<Signature>?                                            CustomBinarySignatureSerializer                              { get; set; }
+        public CustomBinarySerializerDelegate <CS.BinaryDataTransferRequest>?                        CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
 
         #endregion
 
@@ -1739,7 +1753,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // Binary Data Streams Extensions
         public CustomBinarySerializerDelegate <CS.BinaryDataTransferResponse>?                       CustomBinaryDataTransferResponseSerializer                   { get; set; }
-        public CustomBinarySerializerDelegate<CS.GetFileResponse>?                                   CustomGetFileResponseSerializer                              { get; set; }
+        public CustomBinarySerializerDelegate <CS.GetFileResponse>?                                  CustomGetFileResponseSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<CS.SendFileResponse>?                                 CustomSendFileResponseSerializer                             { get; set; }
 
 
         // E2E Charging Tariff Extensions
@@ -1784,7 +1799,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<RelativeTimeInterval>?                                CustomRelativeTimeIntervalSerializer                   { get; set; }
         public CustomJObjectSerializerDelegate<ConsumptionCost>?                                     CustomConsumptionCostSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<Cost>?                                                CustomCostSerializer                                   { get; set; }
-        
+
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AbsolutePriceSchedule>?    CustomAbsolutePriceScheduleSerializer                  { get; set; }
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRuleStack>?           CustomPriceRuleStackSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceRule>?                CustomPriceRuleSerializer                              { get; set; }
@@ -1837,6 +1852,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<SignedMeterValue>?                                    CustomSignedMeterValueSerializer                       { get; set; }
         public CustomJObjectSerializerDelegate<UnitsOfMeasure>?                                      CustomUnitsOfMeasureSerializer                         { get; set; }
 
+
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate<Signature>?                                            CustomBinarySignatureSerializer                        { get; set; }
 
 
         // E2E Charging Tariffs Extensions
@@ -11261,15 +11279,109 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             {
 
                 OnGetFileResponse?.Invoke(endTime,
-                                               this,
-                                               Request,
-                                               response,
-                                               endTime - startTime);
+                                          this,
+                                          Request,
+                                          response,
+                                          endTime - startTime);
 
             }
             catch (Exception e)
             {
                 DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnGetFileResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendFile                    (Request)
+
+        /// <summary>
+        /// Request the given file from the charging station.
+        /// </summary>
+        /// <param name="Request">A SendFile request.</param>
+        public async Task<CS.SendFileResponse>
+            SendFile(SendFileRequest Request)
+
+        {
+
+            #region Send OnSendFileRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSendFileRequest?.Invoke(startTime,
+                                          this,
+                                          Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSendFileRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargingStations.TryGetValue(Request.ChargingStationId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToBinary(
+                                          CustomSendFileRequestSerializer,
+                                          CustomBinarySignatureSerializer,
+                                          IncludeSignatures: false
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.SendFile(Request)
+
+                                      : new CS.SendFileResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CS.SendFileResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSendFileResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnSendFileResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSendFileResponse?.Invoke(endTime,
+                                           this,
+                                           Request,
+                                           response,
+                                           endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestChargingStation) + "." + nameof(OnSendFileResponse));
             }
 
             #endregion

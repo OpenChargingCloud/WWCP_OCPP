@@ -164,8 +164,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            OCPP_JSONResponseMessage? OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?    OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?     OCPPResponse        = null;
+            OCPP_WebSocket_ErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {

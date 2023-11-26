@@ -137,9 +137,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                             WebSocketClientConnection  WebSocketConnection,
                             ChargingStation_Id         chargingStationId,
                             EventTracking_Id           EventTrackingId,
-                            String                     requestText,
-                            Request_Id                 requestId,
-                            JObject                    requestJSON,
+                            String                     RequestText,
+                            Request_Id                 RequestId,
+                            JObject                    RequestJSON,
                             CancellationToken          CancellationToken)
 
         {
@@ -167,8 +167,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                if (CSMS.GetFileRequest.TryParse(requestJSON,
-                                                 requestId,
+                if (CSMS.GetFileRequest.TryParse(RequestJSON,
+                                                 RequestId,
                                                  ChargingStationIdentity,
                                                  out var request,
                                                  out var errorResponse,
@@ -238,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     #endregion
 
                     OCPPResponse = new OCPP_BinaryResponseMessage(
-                                       requestId,
+                                       RequestId,
                                        response.ToBinary(
                                            CustomGetFileResponseSerializer,
                                            null, //CustomCustomDataSerializer,
@@ -251,9 +251,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 else
                     OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
-                                            requestId,
+                                            RequestId,
                                             nameof(Receive_GetFile)[8..],
-                                            requestJSON,
+                                            RequestJSON,
                                             errorResponse
                                         );
 
@@ -261,9 +261,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
-                                        requestId,
+                                        RequestId,
                                         nameof(Receive_GetFile)[8..],
-                                        requestJSON,
+                                        RequestJSON,
                                         e
                                     );
             }

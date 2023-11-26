@@ -138,9 +138,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        WebSocketClientConnection  WebSocketConnection,
                                        ChargingStation_Id         chargingStationId,
                                        EventTracking_Id           EventTrackingId,
-                                       Byte[]                     requestText,
-                                       Request_Id                 requestId,
-                                       Byte[]                     requestBinary,
+                                       Byte[]                     RequestText,
+                                       Request_Id                 RequestId,
+                                       Byte[]                     RequestBinary,
                                        CancellationToken          CancellationToken)
 
         {
@@ -162,14 +162,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            OCPP_BinaryResponseMessage? OCPPResponse        = null;
-            OCPP_WebSocket_ErrorMessage?          OCPPErrorResponse   = null;
+            OCPP_BinaryResponseMessage?   OCPPResponse        = null;
+            OCPP_WebSocket_ErrorMessage?  OCPPErrorResponse   = null;
 
             try
             {
 
-                if (CSMS.BinaryDataTransferRequest.TryParse(requestBinary,
-                                                            requestId,
+                if (CSMS.BinaryDataTransferRequest.TryParse(RequestBinary,
+                                                            RequestId,
                                                             ChargingStationIdentity,
                                                             out var request,
                                                             out var errorResponse,
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     #endregion
 
                     OCPPResponse = new OCPP_BinaryResponseMessage(
-                                       requestId,
+                                       RequestId,
                                        response.ToBinary(
                                            CustomBinaryDataTransferResponseSerializer,
                                            null, //CustomCustomDataSerializer,
@@ -252,9 +252,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 else
                     OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.CouldNotParse(
-                                            requestId,
+                                            RequestId,
                                             nameof(Receive_BinaryDataTransfer)[8..],
-                                            requestBinary,
+                                            RequestBinary,
                                             errorResponse
                                         );
 
@@ -262,9 +262,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
                 OCPPErrorResponse = OCPP_WebSocket_ErrorMessage.FormationViolation(
-                                        requestId,
+                                        RequestId,
                                         nameof(Receive_BinaryDataTransfer)[8..],
-                                        requestBinary,
+                                        RequestBinary,
                                         e
                                     );
             }

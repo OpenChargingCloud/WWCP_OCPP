@@ -668,6 +668,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region SendFile                    (Request)
+
+        /// <summary>
+        /// Send the given file to the charging station.
+        /// </summary>
+        /// <param name="Request">A SendFile request.</param>
+        Task<CS.SendFileResponse> SendFile(SendFileRequest Request);
+
+        #endregion
+
 
         // E2E Security Extensions
 

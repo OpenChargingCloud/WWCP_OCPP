@@ -485,8 +485,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<CSMS.BinaryDataTransferRequest>?                       CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+        public CustomBinarySerializerDelegate <CSMS.BinaryDataTransferRequest>?                      CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
         public CustomJObjectSerializerDelegate<CSMS.GetFileRequest>?                                 CustomGetFileRequestSerializer                               { get; set; }
+        public CustomBinarySerializerDelegate <CSMS.SendFileRequest>?                                CustomSendFileRequestSerializer                              { get; set; }
 
 
         // E2E Security Extensions
@@ -639,8 +640,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?                           CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
-        public CustomBinarySerializerDelegate<GetFileResponse>?                                      CustomGetFileResponseSerializer                              { get; set; }
+        public CustomBinarySerializerDelegate <BinaryDataTransferResponse>?                          CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
+        public CustomBinarySerializerDelegate <GetFileResponse>?                                     CustomGetFileResponseSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<SendFileResponse>?                                    CustomSendFileResponseSerializer                             { get; set; }
 
 
         // E2E Security Extensions
@@ -1245,6 +1247,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         // Binary Data Streams Extensions
         public event OnIncomingBinaryDataTransferDelegate?      OnIncomingBinaryDataTransfer;
         public event OnGetFileDelegate?                         OnGetFile;
+        public event OnSendFileDelegate?                        OnSendFile;
 
         // E2E Security Extensions
         public event OnAddSignaturePolicyDelegate?              OnAddSignaturePolicy;
@@ -1918,6 +1921,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event sent whenever a response to a GetFile request was sent.
         /// </summary>
         public event OnGetFileResponseDelegate?  OnGetFileResponse;
+
+        #endregion
+
+        #region OnSendFileRequest/-Response
+
+        /// <summary>
+        /// An event sent whenever a SendFile request was sent.
+        /// </summary>
+        public event OnSendFileRequestDelegate?   OnSendFileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SendFile request was sent.
+        /// </summary>
+        public event OnSendFileResponseDelegate?  OnSendFileResponse;
 
         #endregion
 
@@ -10474,6 +10491,167 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
+            #region OnSendFile
+
+            ChargingStationServer.OnSendFile += async (timestamp,
+                                                       sender,
+                                                       connection,
+                                                       request,
+                                                       cancellationToken) => {
+
+                #region Send OnSendFileRequest event
+
+                var startTime      = Timestamp.Now;
+
+                var requestLogger  = OnSendFileRequest;
+                if (requestLogger is not null)
+                {
+
+                    var requestLoggerTasks = requestLogger.GetInvocationList().
+                                                           OfType <OnSendFileRequestDelegate>().
+                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                             this,
+                                                                                                             request)).
+                                                           ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(requestLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSendFileRequest),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+
+                #region Check charging station identification
+
+                SendFileResponse? response = null;
+
+                if (request.ChargingStationId != Id)
+                {
+                    response = new SendFileResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid SendFile request for charging station '{request.ChargingStationId}'!"
+                                             )
+                               );
+                }
+
+                #endregion
+
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToBinary(
+                                 CustomSendFileRequestSerializer,
+                                 CustomBinarySignatureSerializer,
+                                 IncludeSignatures: false
+                             ),
+                             out var errorResponse
+                         ))
+                    {
+
+                        response = new SendFileResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
+                    }
+
+                #endregion
+
+                    else
+                    {
+
+                        DebugX.Log($"Charging Station '{Id}': Incoming SendFile request: {request.FileName}!");
+
+                        response = request.FileName.ToString() == "/hello/world.txt"
+
+                                       ? new SendFileResponse(
+                                             Request:   request,
+                                             FileName:  request.FileName,
+                                             Status:    SendFileStatus.Success
+                                         )
+
+                                       : new SendFileResponse(
+                                             Request:   request,
+                                             FileName:  request.FileName,
+                                             Status:    SendFileStatus.NotFound
+                                         );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomSendFileResponseSerializer,
+                        CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
+
+
+                #region Send OnSendFileResponse event
+
+                var responseLogger = OnSendFileResponse;
+                if (responseLogger is not null)
+                {
+
+                    var responseTime         = Timestamp.Now;
+
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OnSendFileResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargingStation),
+                                  nameof(OnSendFileResponse),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
 
 
             // E2E Security Extensions

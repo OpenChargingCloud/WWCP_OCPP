@@ -2889,6 +2889,79 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
+        #region SendFile                   (this CSMS, ChargingStationId, Filename, FileContent, FileContentType = null, ...)
+
+        /// <summary>
+        /// Send the given file to the charging station.
+        /// </summary>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="FileName">The name of the file including its absolute path.</param>
+        /// <param name="FileContent">The file content.</param>
+        /// <param name="FileContentType">An optional content/MIME type of the file.</param>
+        /// <param name="FileSHA256">An optional SHA256 hash value of the file content.</param>
+        /// <param name="FileSHA512">An optional SHA512 hash value of the file content.</param>
+        /// <param name="FileSignatures">An optional enumeration of cryptographic signatures for the file content.</param>
+        /// <param name="Priority">The optional priority of the file request.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public static Task<CS.SendFileResponse>
+
+            SendFile(this ICSMS               CSMS,
+                     ChargingStation_Id       ChargingStationId,
+                     FilePath                 FileName,
+                     Byte[]                   FileContent,
+                     ContentType?             FileContentType     = null,
+                     Byte[]?                  FileSHA256          = null,
+                     Byte[]?                  FileSHA512          = null,
+                     IEnumerable<Signature>?  FileSignatures      = null,
+                     Byte?                    Priority            = null,
+
+                     IEnumerable<KeyPair>?    SignKeys            = null,
+                     IEnumerable<SignInfo>?   SignInfos           = null,
+                     IEnumerable<Signature>?  Signatures          = null,
+
+                     CustomData?              CustomData          = null,
+
+                     Request_Id?              RequestId           = null,
+                     DateTime?                RequestTimestamp    = null,
+                     TimeSpan?                RequestTimeout      = null,
+                     EventTracking_Id?        EventTrackingId     = null,
+                     CancellationToken        CancellationToken   = default)
+
+
+                => CSMS.SendFile(
+                       new SendFileRequest(
+                           ChargingStationId,
+                           FileName,
+                           FileContent,
+                           FileContentType,
+                           FileSHA256,
+                           FileSHA512,
+                           FileSignatures,
+                           Priority,
+
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+
+                           CustomData,
+
+                           RequestId        ?? CSMS.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? CSMS.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           CancellationToken
+                       )
+                   );
+
+        #endregion
+
 
         // E2E Security Extensions
 

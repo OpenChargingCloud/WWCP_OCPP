@@ -21,15 +21,14 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CS
+namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// A get file response.
+    /// A send file request.
     /// </summary>
-    public class GetFileResponse : AResponse<CSMS.GetFileRequest,
-                                             GetFileResponse>,
-                                   IResponse
+    public class SendFileRequest : ARequest<SendFileRequest>,
+                                   IRequest
     {
 
         #region Data
@@ -37,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The JSON-LD context of this object.
         /// </summary>
-        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/cs/getFileResponse");
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/csms/sendFileRequest");
 
         #endregion
 
@@ -50,27 +49,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The name of the requested file including its absolute path.
+        /// The name of the file including its absolute path.
         /// </summary>
         [Mandatory]
         public FilePath                FileName           { get; }
 
         /// <summary>
-        /// The success or failure status of the get file.
+        /// The file content.
         /// </summary>
         [Mandatory]
-        public GetFileStatus           Status             { get; }
-
-        /// <summary>
-        /// Optional file content.
-        /// </summary>
-        [Optional]
         public Byte[]                  FileContent        { get; }
 
         /// <summary>
         /// The content/MIME type of the file.
         /// </summary>
-        [Optional]
+        [Mandatory]
         public ContentType             FileContentType    { get; }
 
         /// <summary>
@@ -91,94 +84,93 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         [Optional]
         public IEnumerable<Signature>  FileSignatures     { get; }
 
+        /// <summary>
+        /// The optional priority of the file request.
+        /// </summary>
+        [Optional]
+        public Byte?                   Priority           { get; }
+
         #endregion
 
         #region Constructor(s)
 
-        #region GetFileResponse(Request, FileName, Status, FileContent = null, FileContentType = null, ...)
-
         /// <summary>
-        /// Create a new get file response.
+        /// Create a new SendFile request.
         /// </summary>
-        /// <param name="Request">The get file request leading to this response.</param>
-        /// <param name="FileName">The name of the requested file including its absolute path.</param>
-        /// <param name="Status">The success or failure status of the get file request.</param>
-        /// <param name="FileContent">An optional file content.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="FileName">The name of the file including its absolute path.</param>
+        /// <param name="FileContent">The file content.</param>
         /// <param name="FileContentType">An optional content/MIME type of the file.</param>
         /// <param name="FileSHA256">An optional SHA256 hash value of the file content.</param>
         /// <param name="FileSHA512">An optional SHA512 hash value of the file content.</param>
         /// <param name="FileSignatures">An optional enumeration of cryptographic signatures for the file content.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        /// <param name="Priority">The optional priority of the file request.</param>
         /// 
-        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
-        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
-        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
-        public GetFileResponse(CSMS.GetFileRequest      Request,
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public SendFileRequest(ChargingStation_Id       ChargingStationId,
                                FilePath                 FileName,
-                               GetFileStatus            Status,
-                               Byte[]?                  FileContent         = null,
+                               Byte[]                   FileContent,
                                ContentType?             FileContentType     = null,
                                Byte[]?                  FileSHA256          = null,
                                Byte[]?                  FileSHA512          = null,
                                IEnumerable<Signature>?  FileSignatures      = null,
-                               DateTime?                ResponseTimestamp   = null,
+                               Byte?                    Priority            = null,
 
                                IEnumerable<KeyPair>?    SignKeys            = null,
                                IEnumerable<SignInfo>?   SignInfos           = null,
-                               IEnumerable<Signature>?  Signatures          = null)
+                               IEnumerable<Signature>?  Signatures          = null,
 
-            : base(Request,
-                   Result.OK(),
-                   ResponseTimestamp,
+                               CustomData?              CustomData          = null,
+
+                               Request_Id?              RequestId           = null,
+                               DateTime?                RequestTimestamp    = null,
+                               TimeSpan?                RequestTimeout      = null,
+                               EventTracking_Id?        EventTrackingId     = null,
+                               CancellationToken        CancellationToken   = default)
+
+            : base(ChargingStationId,
+                   "SendFile",
 
                    SignKeys,
                    SignInfos,
-                   Signatures)
+                   Signatures,
+
+                   CustomData,
+
+                   RequestId,
+                   RequestTimestamp,
+                   RequestTimeout,
+                   EventTrackingId,
+                   CancellationToken)
 
         {
 
             this.FileName         = FileName;
-            this.Status           = Status;
-            this.FileContent      = FileContent                ?? [];
+            this.FileContent      = FileContent;
             this.FileContentType  = FileContentType            ?? ContentType.Application.OctetStream;
             this.FileSHA256       = FileSHA256                 ?? [];
             this.FileSHA512       = FileSHA512                 ?? [];
             this.FileSignatures   = FileSignatures?.Distinct() ?? Array.Empty<Signature>();
+            this.Priority         = Priority;
 
 
             unchecked
             {
 
-                hashCode = this.FileName.GetHashCode() * 5 ^
-                          //(this.Priority?.GetHashCode() ?? 0) * 3 ^
-                           base.GetHashCode();
+                hashCode = this.FileName. GetHashCode()       * 5 ^
+                          (this.Priority?.GetHashCode() ?? 0) * 3 ^
+                           base.          GetHashCode();
 
             }
 
         }
-
-        #endregion
-
-        #region GetFileResponse(Request, Result)
-
-        /// <summary>
-        /// Create a new get file response.
-        /// </summary>
-        /// <param name="Request">The get file request leading to this response.</param>
-        /// <param name="Result">The result.</param>
-        public GetFileResponse(CSMS.GetFileRequest  Request,
-                                          Result                          Result)
-
-            : base(Request,
-                   Result)
-
-        {
-
-            this.Status = GetFileStatus.Rejected;
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -189,57 +181,87 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (Request, Binary, CustomGetFileResponseSerializer = null)
+        #region (static) Parse   (Binary, RequestId, ChargingStationId, CustomSendFileRequestParser = null)
 
         /// <summary>
-        /// Parse the given JSON representation of a get file response.
+        /// Parse the given binary representation of a SendFileRequest request.
         /// </summary>
-        /// <param name="Request">The get file request leading to this response.</param>
         /// <param name="Binary">The binary to be parsed.</param>
-        /// <param name="CustomGetFileResponseParser">A delegate to parse custom get file responses.</param>
-        public static GetFileResponse Parse(CSMS.GetFileRequest                           Request,
-                                            Byte[]                                        Binary,
-                                            CustomBinaryParserDelegate<GetFileResponse>?  CustomGetFileResponseParser  = null)
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="CustomSendFileRequestParser">A delegate to parse custom SendFileRequest requests.</param>
+        public static SendFileRequest Parse(Byte[]                                        Binary,
+                                            Request_Id                                    RequestId,
+                                            ChargingStation_Id                            ChargingStationId,
+                                            CustomBinaryParserDelegate<SendFileRequest>?  CustomSendFileRequestParser   = null)
         {
 
-            if (TryParse(Request,
-                         Binary,
-                         out var getFileResponse,
+
+            if (TryParse(Binary,
+                         RequestId,
+                         ChargingStationId,
+                         out var sendFileRequest,
                          out var errorResponse,
-                         CustomGetFileResponseParser) &&
-                getFileResponse is not null)
+                         CustomSendFileRequestParser) &&
+                sendFileRequest is not null)
             {
-                return getFileResponse;
+                return sendFileRequest;
             }
 
-            throw new ArgumentException("The given binary representation of a get file response is invalid: " + errorResponse,
+            throw new ArgumentException("The given binary representation of a SendFile request is invalid: " + errorResponse,
                                         nameof(Binary));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Request, Binary, out GetFileResponse, out ErrorResponse, CustomGetFileResponseParser = null)
+        #region (static) TryParse(Binary, RequestId, ChargingStationId, out SendFileRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
-        /// Try to parse the given JSON representation of a get file response.
+        /// Try to parse the given JSON representation of a SendFile request.
         /// </summary>
-        /// <param name="Request">The get file request leading to this response.</param>
         /// <param name="Binary">The binary to be parsed.</param>
-        /// <param name="GetFileResponse">The parsed get file response.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="sendFileRequest">The parsed SendFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomGetFileResponseParser">A delegate to parse custom get file responses.</param>
-        public static Boolean TryParse(CSMS.GetFileRequest                           Request,
-                                       Byte[]                                        Binary,
-                                       out GetFileResponse?                          GetFileResponse,
+        public static Boolean TryParse(Byte[]                Binary,
+                                       Request_Id            RequestId,
+                                       ChargingStation_Id    ChargingStationId,
+                                       out SendFileRequest?  SendFileRequest,
+                                       out String?           ErrorResponse)
+
+            => TryParse(Binary,
+                        RequestId,
+                        ChargingStationId,
+                        out SendFileRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given binary representation of a SendFile request.
+        /// </summary>
+        /// <param name="Binary">The binary to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="SendFileRequest">The parsed SendFileRequest request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomSendFileRequestParser">A delegate to parse custom SendFileRequest requests.</param>
+        public static Boolean TryParse(Byte[]                                        Binary,
+                                       Request_Id                                    RequestId,
+                                       ChargingStation_Id                            ChargingStationId,
+                                       out SendFileRequest?                          SendFileRequest,
                                        out String?                                   ErrorResponse,
-                                       CustomBinaryParserDelegate<GetFileResponse>?  CustomGetFileResponseParser   = null)
+                                       CustomBinaryParserDelegate<SendFileRequest>?  CustomSendFileRequestParser)
         {
 
             try
             {
 
-                GetFileResponse = null;
+                SendFileRequest = null;
                 ErrorResponse   = null;
 
                 var stream  = new MemoryStream(Binary);
@@ -257,18 +279,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 if (!fileName.HasValue)
                 {
                     ErrorResponse = $"The received get file name '{fileNameText}' is invalid!";
-                    return false;
-                }
-
-                #endregion
-
-                #region Get file status
-
-                var getFileStatusLength   = stream.ReadUInt16();
-                var getFileStatusText     = stream.ReadUTF8String(getFileStatusLength);
-                if (!GetFileStatus.TryParse(getFileStatusText, out var getFileStatus))
-                {
-                    ErrorResponse = $"The received get file status '{getFileStatusText}' is invalid!";
                     return false;
                 }
 
@@ -364,36 +374,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 //ToDo: Check if there are some bytes left!
 
 
-                GetFileResponse = new GetFileResponse(
+                SendFileRequest = new SendFileRequest(
 
-                                      Request,
+                                      ChargingStationId,
                                       fileName.Value,
-                                      getFileStatus,
                                       fileContent,
                                       fileContentType,
                                       fileSHA256,
                                       fileSHA512,
                                       fileSignatures,
-                                      null,
+                                      null, // priority (Not serialized as this is only for the sender!)
 
                                       null,
                                       null,
-                                      signatures
+                                      signatures,
+
+                                      null, // CustomData
+                                      RequestId
 
                                   );
 
 
-                if (CustomGetFileResponseParser is not null)
-                    GetFileResponse = CustomGetFileResponseParser(Binary,
-                                                                  GetFileResponse);
+                if (CustomSendFileRequestParser is not null)
+                    SendFileRequest = CustomSendFileRequestParser(Binary,
+                                                                  SendFileRequest);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                GetFileResponse  = null;
-                ErrorResponse    = "The given binary representation of a get file response is invalid: " + e.Message;
+                SendFileRequest  = null;
+                ErrorResponse    = "The given JSON representation of a SendFile request is invalid: " + e.Message;
                 return false;
             }
 
@@ -401,17 +413,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region ToBinary(CustomGetFileResponseSerializer = null, CustomStatusInfoSerializer = null, ...)
+        #region ToBinary(CustomSendFileRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a binary representation of this object.
         /// </summary>
-        /// <param name="CustomGetFileResponseSerializer">A delegate to serialize custom get file responses.</param>
-        /// <param name="CustomStatusInfoSerializer">A delegate to serialize a custom status infos.</param>
+        /// <param name="CustomSendFileRequestSerializer">A delegate to serialize custom SendFileRequest requests.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="IncludeSignatures">Whether to include the digital signatures (default), or not.</param>
-        public Byte[] ToBinary(CustomBinarySerializerDelegate<GetFileResponse>?  CustomGetFileResponseSerializer   = null,
-                               CustomJObjectSerializerDelegate<StatusInfo>?      CustomStatusInfoSerializer        = null,
+        public Byte[] ToBinary(CustomBinarySerializerDelegate<SendFileRequest>?  CustomSendFileRequestSerializer   = null,
                                CustomBinarySerializerDelegate<Signature>?        CustomSignatureSerializer         = null,
                                Boolean                                           IncludeSignatures                 = true)
         {
@@ -424,10 +434,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 var fileNameBytes         = FileName.       ToString().ToUTF8Bytes();
                 binaryStream.WriteUInt64((UInt64) fileNameBytes.       Length);
                 binaryStream.Write(fileNameBytes);
-
-                var statusBytes           = Status.         ToString().ToUTF8Bytes();
-                binaryStream.WriteUInt16((UInt16) statusBytes.         Length);
-                binaryStream.Write(statusBytes);
 
                 binaryStream.WriteUInt64((UInt64) FileContent.         Length);
                 binaryStream.Write(FileContent);
@@ -461,7 +467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 if (IncludeSignatures) {
                     foreach (var signature in Signatures)
                     {
-                        var binarySignature = signature.ToBinary(CustomSignatureSerializer);
+                        var binarySignature = signature.ToBinary();
                         binaryStream.WriteUInt16((UInt16) binarySignature.Length);
                         binaryStream.Write(binarySignature);
                     }
@@ -470,114 +476,97 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 var binary = binaryStream.ToArray();
 
-                return CustomGetFileResponseSerializer is not null
-                           ? CustomGetFileResponseSerializer(this, binary)
+                return CustomSendFileRequestSerializer is not null
+                           ? CustomSendFileRequestSerializer(this, binary)
                            : binary;
 
             }
             catch (Exception e)
             {
-                throw new Exception("The given data structure of a get file response is invalid: " + e.Message, e);
+                throw new Exception("The given data structure of a get file request is invalid: " + e.Message, e);
             }
 
         }
-
-        #endregion
-
-
-        #region Static methods
-
-        /// <summary>
-        /// The get file failed.
-        /// </summary>
-        /// <param name="Request">The get file request leading to this response.</param>
-        public static GetFileResponse Failed(CSMS.GetFileRequest  Request)
-
-            => new (Request,
-                    Result.Server());
 
         #endregion
 
 
         #region Operator overloading
 
-        #region Operator == (GetFileResponse1, GetFileResponse2)
+        #region Operator == (SendFileRequest1, SendFileRequest2)
 
         /// <summary>
-        /// Compares two get file responses for equality.
+        /// Compares two SendFile requests for equality.
         /// </summary>
-        /// <param name="GetFileResponse1">A get file response.</param>
-        /// <param name="GetFileResponse2">Another get file response.</param>
+        /// <param name="SendFileRequest1">A SendFile request.</param>
+        /// <param name="SendFileRequest2">Another SendFile request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GetFileResponse? GetFileResponse1,
-                                           GetFileResponse? GetFileResponse2)
+        public static Boolean operator == (SendFileRequest? SendFileRequest1,
+                                           SendFileRequest? SendFileRequest2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(GetFileResponse1, GetFileResponse2))
+            if (ReferenceEquals(SendFileRequest1, SendFileRequest2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (GetFileResponse1 is null || GetFileResponse2 is null)
+            if (SendFileRequest1 is null || SendFileRequest2 is null)
                 return false;
 
-            return GetFileResponse1.Equals(GetFileResponse2);
+            return SendFileRequest1.Equals(SendFileRequest2);
 
         }
 
         #endregion
 
-        #region Operator != (GetFileResponse1, GetFileResponse2)
+        #region Operator != (SendFileRequest1, SendFileRequest2)
 
         /// <summary>
-        /// Compares two get file responses for inequality.
+        /// Compares two SendFile requests for inequality.
         /// </summary>
-        /// <param name="GetFileResponse1">A get file response.</param>
-        /// <param name="GetFileResponse2">Another get file response.</param>
+        /// <param name="SendFileRequest1">A SendFile request.</param>
+        /// <param name="SendFileRequest2">Another SendFile request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GetFileResponse? GetFileResponse1,
-                                           GetFileResponse? GetFileResponse2)
+        public static Boolean operator != (SendFileRequest? SendFileRequest1,
+                                           SendFileRequest? SendFileRequest2)
 
-            => !(GetFileResponse1 == GetFileResponse2);
-
-        #endregion
+            => !(SendFileRequest1 == SendFileRequest2);
 
         #endregion
 
-        #region IEquatable<GetFileResponse> Members
+        #endregion
+
+        #region IEquatable<SendFileRequest> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two get file responses for equality.
+        /// Compares two send file requests for equality.
         /// </summary>
-        /// <param name="Object">A get file response to compare with.</param>
+        /// <param name="Object">A send file request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is GetFileResponse getFileResponse &&
-                   Equals(getFileResponse);
+            => Object is SendFileRequest sendFileRequest &&
+                   Equals(sendFileRequest);
 
         #endregion
 
-        #region Equals(GetFileResponse)
+        #region Equals(SendFileRequest)
 
         /// <summary>
-        /// Compares two get file responses for equality.
+        /// Compares two send file requests for equality.
         /// </summary>
-        /// <param name="GetFileResponse">A get file response to compare with.</param>
-        public override Boolean Equals(GetFileResponse? GetFileResponse)
+        /// <param name="SendFileRequest">A send file request to compare with.</param>
+        public override Boolean Equals(SendFileRequest? SendFileRequest)
 
-            => GetFileResponse is not null &&
+            => SendFileRequest is not null               &&
 
-               Status.     Equals(GetFileResponse.Status) &&
+               FileName.Equals(SendFileRequest.FileName) &&
 
-             //((AdditionalStatusInfo is     null && GetFileResponse.AdditionalStatusInfo is     null) ||
-             //  AdditionalStatusInfo is not null && GetFileResponse.AdditionalStatusInfo is not null && AdditionalStatusInfo.Equals(GetFileResponse.AdditionalStatusInfo)) &&
+            ((!Priority.HasValue && !SendFileRequest.Priority.HasValue) ||
+              (Priority.HasValue &&  SendFileRequest.Priority.HasValue && Priority.Equals(SendFileRequest.Priority))) &&
 
-             //((FileConent                 is     null && GetFileResponse.FileConent                 is     null) ||
-             // (FileConent                 is not null && GetFileResponse.FileConent                 is not null && FileConent.                Equals(GetFileResponse.FileConent)))                &&
-
-               base.GenericEquals(GetFileResponse);
+               base.GenericEquals(SendFileRequest);
 
         #endregion
 
@@ -604,23 +593,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             => String.Concat(
 
-                   $"{FileName} => {Status}",
+                   FileName,
 
-                   FileContent?.Length > 0
-                       ? $": '{FileContent.ToBase64().SubstringMax(100)}' [{FileContentType} {FileContent.Length} bytes]"
-                       : "",
+                   Priority.HasValue
+                        ? $" ({Priority})"
+                        : ""
 
-                   FileSHA256.Length > 0
-                       ? ""
-                       : $", SHA256: {FileSHA256.ToHexString()}",
-
-                   FileSHA512.Length > 0
-                       ? ""
-                       : $", SHA512: {FileSHA512.ToHexString()}"
-
-               );
+                );
 
         #endregion
+
 
     }
 

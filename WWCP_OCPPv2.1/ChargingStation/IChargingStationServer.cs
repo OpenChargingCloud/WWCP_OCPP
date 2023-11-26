@@ -455,6 +455,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
+        #region OnSendFile
+
+        /// <summary>
+        /// An event sent whenever a SendFile request was received.
+        /// </summary>
+        event OnSendFileDelegate                     OnSendFile;
+
+        #endregion
+
 
         // E2E Security Extensions
 
