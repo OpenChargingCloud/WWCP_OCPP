@@ -54,19 +54,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The name of the file including its absolute path.
         /// </summary>
         [Mandatory]
-        public FilePath  FileName      { get; }
+        public FilePath       FileName      { get; }
 
         /// <summary>
         /// The optional SHA256 hash value of the file content.
         /// </summary>
         [Optional]
-        public Byte[]    FileSHA256    { get; }
+        public Byte[]         FileSHA256    { get; }
 
         /// <summary>
         /// The optional SHA512 hash value of the file content.
         /// </summary>
         [Optional]
-        public Byte[]    FileSHA512    { get; }
+        public Byte[]         FileSHA512    { get; }
 
         #endregion
 
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
         /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="deleteFileRequest">The parsed DeleteFileRequest request.</param>
+        /// <param name="DeleteFileRequest">The parsed DeleteFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                 JSON,
                                        Request_Id              RequestId,

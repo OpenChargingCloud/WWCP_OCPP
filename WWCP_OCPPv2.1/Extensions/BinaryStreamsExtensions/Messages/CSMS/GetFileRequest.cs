@@ -54,13 +54,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// The name of the file including its absolute path.
         /// </summary>
         [Mandatory]
-        public FilePath  FileName    { get; }
+        public FilePath       FileName    { get; }
 
         /// <summary>
         /// The optional priority of the file request.
         /// </summary>
         [Optional]
-        public Byte?     Priority    { get; }
+        public Byte?          Priority    { get; }
 
         #endregion
 

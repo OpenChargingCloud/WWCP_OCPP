@@ -218,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                 #region FileName      [mandatory]
 
                 if (!JSON.ParseMandatory("fileName",
-                                         "filename with absolute path",
+                                         "file name with absolute path",
                                          FilePath.TryParse,
                                          out FilePath FileName,
                                          out ErrorResponse))
