@@ -25,7 +25,7 @@ using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
+namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 {
 
     /// <summary>

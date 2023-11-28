@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Security.Authentication;
@@ -32,7 +33,6 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
-using System.Security.Cryptography;
 
 #endregion
 
@@ -183,6 +183,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                        IEventSender
     {
 
+        #region (class) EnqueuedRequest
+
         public class EnqueuedRequest
         {
 
@@ -224,6 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         }
 
+        #endregion
 
 
         #region Data
@@ -583,7 +586,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // Binary Data Streams Extensions
         public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?                            CustomBinaryDataTransferRequestSerializer                    { get; set; }
-        public CustomBinarySerializerDelegate<Signature>?                                            CustomBinarySignatureSerializer                              { get; set; }
 
         #endregion
 
@@ -709,7 +711,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRuleList>?         CustomOverstayRuleListSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.OverstayRule>?             CustomOverstayRuleSerializer                                 { get; set; }
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.AdditionalService>?        CustomAdditionalServiceSerializer                            { get; set; }
-        
+
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelSchedule>?       CustomPriceLevelScheduleSerializer                           { get; set; }
         public CustomJObjectSerializerDelegate<ISO15118_20.CommonMessages.PriceLevelScheduleEntry>?  CustomPriceLevelScheduleEntrySerializer                      { get; set; }
 
@@ -752,6 +754,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<SetMonitoringResult>?                                 CustomSetMonitoringResultSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<ClearMonitoringResult>?                               CustomClearMonitoringResultSerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<CompositeSchedule>?                                   CustomCompositeScheduleSerializer                            { get; set; }
+
+
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate<Signature>?                                            CustomBinarySignatureSerializer                              { get; set; }
 
 
         // E2E Security Extensions
@@ -12598,6 +12604,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         }
 
 
+        #region Charging Station -> CSMS Messages
+
         #region SendBootNotification                  (Request)
 
         /// <summary>
@@ -15723,6 +15731,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+        #endregion
 
 
         #region Dispose()

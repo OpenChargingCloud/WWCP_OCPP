@@ -38,7 +38,7 @@ using Org.BouncyCastle.Asn1.Ocsp;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
+namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 {
 
     /// <summary>

@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         {
 
-            this.NetworkingNode                = TestNetworkingNode;
+            this.NetworkingNode      = TestNetworkingNode;
             this.HTTPRealm           = HTTPRealm;
             this.HTTPLogins          = HTTPLogins;
 
@@ -166,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnBootNotificationRequest/-Response
 
-            this.NetworkingNode.OnBootNotificationRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnBootNotificationRequest += async (logTimestamp,
                                                           sender,
                                                           connection,
                                                           request) =>
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnBootNotificationResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnBootNotificationResponse += async (logTimestamp,
                                                            sender,
                                                            connection,
                                                            request,
@@ -203,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnHeartbeatRequest/-Response
 
-            this.NetworkingNode.OnHeartbeatRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnHeartbeatRequest += async (logTimestamp,
                                                             sender,
                                                             request) =>
 
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                     new JProperty("eventTrackingId",  request.EventTrackingId.ToString())
                                                 ));
 
-            this.NetworkingNode.OnHeartbeatResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnHeartbeatResponse += async (logTimestamp,
                                                              sender,
                                                              request,
                                                              response,
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnAuthorizeRequest/-Response
 
-            this.NetworkingNode.OnAuthorizeRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnAuthorizeRequest += async (logTimestamp,
                                                             sender,
                                                             request) =>
 
@@ -249,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnAuthorizeResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnAuthorizeResponse += async (logTimestamp,
                                                              sender,
                                                              request,
                                                              response,
@@ -269,7 +269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnStatusNotificationRequest/-Response
 
-            this.NetworkingNode.OnStatusNotificationRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnStatusNotificationRequest += async (logTimestamp,
                                                                      sender,
                                                                      request) =>
 
@@ -282,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnStatusNotificationResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnStatusNotificationResponse += async (logTimestamp,
                                                                       sender,
                                                                       request,
                                                                       response,
@@ -302,7 +302,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnMeterValuesRequest/-Response
 
-            this.NetworkingNode.OnMeterValuesRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnMeterValuesRequest += async (logTimestamp,
                                                               sender,
                                                               request) =>
 
@@ -315,7 +315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnMeterValuesResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnMeterValuesResponse += async (logTimestamp,
                                                                sender,
                                                                request,
                                                                response,
@@ -336,7 +336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnIncomingDataTransferRequest/-Response
 
-            this.NetworkingNode.OnIncomingDataTransferRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnIncomingDataTransferRequest += async (logTimestamp,
                                                                        sender,
                                                                        request) =>
 
@@ -349,7 +349,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnIncomingDataTransferResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnIncomingDataTransferResponse += async (logTimestamp,
                                                                         sender,
                                                                         request,
                                                                         response,
@@ -369,7 +369,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnFirmwareStatusNotificationRequest/-Response
 
-            this.NetworkingNode.OnFirmwareStatusNotificationRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnFirmwareStatusNotificationRequest += async (logTimestamp,
                                                                              sender,
                                                                              request) =>
 
@@ -382,7 +382,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnFirmwareStatusNotificationResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnFirmwareStatusNotificationResponse += async (logTimestamp,
                                                                               sender,
                                                                               request,
                                                                               response,
@@ -406,7 +406,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnResetRequest/-Response
 
-            this.NetworkingNode.OnResetRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnResetRequest += async (logTimestamp,
                                                         sender,
                                                         request) =>
 
@@ -419,7 +419,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnResetResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnResetResponse += async (logTimestamp,
                                                          sender,
                                                          request,
                                                          response,
@@ -439,7 +439,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnChangeAvailabilityRequest/-Response
 
-            this.NetworkingNode.OnChangeAvailabilityRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnChangeAvailabilityRequest += async (logTimestamp,
                                                                      sender,
                                                                      request) =>
 
@@ -452,7 +452,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnChangeAvailabilityResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnChangeAvailabilityResponse += async (logTimestamp,
                                                                       sender,
                                                                       request,
                                                                       response,
@@ -472,7 +472,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnDataTransferRequest/-Response
 
-            this.NetworkingNode.OnDataTransferRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnDataTransferRequest += async (logTimestamp,
                                                                sender,
                                                                request) =>
 
@@ -485,7 +485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnDataTransferResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnDataTransferResponse += async (logTimestamp,
                                                                 sender,
                                                                 request,
                                                                 response,
@@ -505,7 +505,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnTriggerMessageRequest/-Response
 
-            this.NetworkingNode.OnTriggerMessageRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnTriggerMessageRequest += async (logTimestamp,
                                                                  sender,
                                                                  request) =>
 
@@ -518,7 +518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnTriggerMessageResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnTriggerMessageResponse += async (logTimestamp,
                                                                   sender,
                                                                   request,
                                                                   response,
@@ -538,7 +538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnUpdateFirmwareRequest/-Response
 
-            this.NetworkingNode.OnUpdateFirmwareRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnUpdateFirmwareRequest += async (logTimestamp,
                                                                  sender,
                                                                  request) =>
 
@@ -551,7 +551,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnUpdateFirmwareResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnUpdateFirmwareResponse += async (logTimestamp,
                                                                   sender,
                                                                   request,
                                                                   response,
@@ -572,7 +572,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnReserveNowRequest/-Response
 
-            this.NetworkingNode.OnReserveNowRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnReserveNowRequest += async (logTimestamp,
                                                              sender,
                                                              request) =>
 
@@ -585,7 +585,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnReserveNowResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnReserveNowResponse += async (logTimestamp,
                                                               sender,
                                                               request,
                                                               response,
@@ -605,7 +605,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnCancelReservationRequest/-Response
 
-            this.NetworkingNode.OnCancelReservationRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnCancelReservationRequest += async (logTimestamp,
                                                                     sender,
                                                                     request) =>
 
@@ -618,7 +618,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnCancelReservationResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnCancelReservationResponse += async (logTimestamp,
                                                                      sender,
                                                                      request,
                                                                      response,
@@ -638,7 +638,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnSetChargingProfileRequest/-Response
 
-            this.NetworkingNode.OnSetChargingProfileRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnSetChargingProfileRequest += async (logTimestamp,
                                                                      sender,
                                                                      request) =>
 
@@ -651,7 +651,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnSetChargingProfileResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnSetChargingProfileResponse += async (logTimestamp,
                                                                       sender,
                                                                       request,
                                                                       response,
@@ -671,7 +671,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnClearChargingProfileRequest/-Response
 
-            this.NetworkingNode.OnClearChargingProfileRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnClearChargingProfileRequest += async (logTimestamp,
                                                                        sender,
                                                                        request) =>
 
@@ -684,7 +684,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnClearChargingProfileResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnClearChargingProfileResponse += async (logTimestamp,
                                                                         sender,
                                                                         request,
                                                                         response,
@@ -704,7 +704,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetCompositeScheduleRequest/-Response
 
-            this.NetworkingNode.OnGetCompositeScheduleRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnGetCompositeScheduleRequest += async (logTimestamp,
                                                                        sender,
                                                                        request) =>
 
@@ -717,7 +717,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnGetCompositeScheduleResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnGetCompositeScheduleResponse += async (logTimestamp,
                                                                         sender,
                                                                         request,
                                                                         response,
@@ -737,7 +737,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnUnlockConnectorRequest/-Response
 
-            this.NetworkingNode.OnUnlockConnectorRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnUnlockConnectorRequest += async (logTimestamp,
                                                                   sender,
                                                                   request) =>
 
@@ -750,7 +750,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnUnlockConnectorResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnUnlockConnectorResponse += async (logTimestamp,
                                                                    sender,
                                                                    request,
                                                                    response,
@@ -771,7 +771,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnGetLocalListVersionRequest/-Response
 
-            this.NetworkingNode.OnGetLocalListVersionRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnGetLocalListVersionRequest += async (logTimestamp,
                                                                       sender,
                                                                       request) =>
 
@@ -784,7 +784,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnGetLocalListVersionResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnGetLocalListVersionResponse += async (logTimestamp,
                                                                        sender,
                                                                        request,
                                                                        response,
@@ -804,7 +804,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnSendLocalListRequest/-Response
 
-            this.NetworkingNode.OnSendLocalListRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnSendLocalListRequest += async (logTimestamp,
                                                                 sender,
                                                                 request) =>
 
@@ -817,7 +817,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnSendLocalListResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnSendLocalListResponse += async (logTimestamp,
                                                                  sender,
                                                                  request,
                                                                  response,
@@ -837,7 +837,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region OnClearCacheRequest/-Response
 
-            this.NetworkingNode.OnClearCacheRequest += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnClearCacheRequest += async (logTimestamp,
                                                              sender,
                                                              request) =>
 
@@ -850,7 +850,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                 ));
 
 
-            this.NetworkingNode.OnClearCacheResponse += async (logTimestamp,
+            this.NetworkingNode.AsCSMS.OnClearCacheResponse += async (logTimestamp,
                                                               sender,
                                                               request,
                                                               response,

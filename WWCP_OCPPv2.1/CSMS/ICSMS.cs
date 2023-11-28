@@ -25,18 +25,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The common interface of all central systems channels.
-    /// CSMS might have multiple channels, e.g. a SOAP and a WebSockets channel.
-    /// </summary>
-    public interface ICSMSChannel : IWebSocketServer,
-                                    ICSMSClient,
-                                    ICSMSServer
-    {
-
-
-    }
-
-    /// <summary>
     /// The common interface of all central systems.
     /// </summary>
     public interface ICSMS : ICSMSClient,

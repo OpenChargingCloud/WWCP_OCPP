@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
+namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 {
 
     /// <summary>
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         public HTTPEventSource<JObject>?                    EventLog            { get; }
 
 
-        public TestNetworkingNode                           NetworkingNode      { get; }
+        public TestNetworkingNode.ActingAsCSMS              NetworkingNode      { get; }
 
         #endregion
 
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="URLPathPrefix">An optional prefix for the HTTP URLs.</param>
         /// <param name="HTTPRealm">The HTTP realm, if HTTP Basic Authentication is used.</param>
         /// <param name="HTTPLogins">An enumeration of logins for an optional HTTP Basic Authentication.</param>
-        public NetworkingNodeUploadAPI(TestNetworkingNode                          TestNetworkingNode,
+        public NetworkingNodeUploadAPI(TestNetworkingNode.ActingAsCSMS             TestNetworkingNode,
                                        HTTPServer                                  HTTPServer,
                                        HTTPPath?                                   URLPathPrefix    = null,
                                        HTTPPath?                                   BasePath         = null,
