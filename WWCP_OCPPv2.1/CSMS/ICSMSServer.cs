@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using org.GraphDefined.Vanaheimr.Hermod;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 

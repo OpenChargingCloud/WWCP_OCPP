@@ -164,8 +164,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            OCPP_BinaryResponseMessage?   OCPPResponse        = null;
-            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
+            OCPP_BinaryResponseMessage?  OCPPResponse        = null;
+            OCPP_JSONErrorMessage?       OCPPErrorResponse   = null;
 
             try
             {
@@ -298,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             return new Tuple<OCPP_BinaryResponseMessage?,
                              OCPP_JSONErrorMessage?>(OCPPResponse,
-                                                           OCPPErrorResponse);
+                                                     OCPPErrorResponse);
 
         }
 
