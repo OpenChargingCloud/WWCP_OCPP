@@ -35,12 +35,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a Reset request will be sent to the NetworkingNode.
         /// </summary>
-        event OnResetRequestDelegate?   OnResetRequest;
+        event CSMS.OnResetRequestDelegate?   OnResetRequest;
 
         /// <summary>
         /// An event fired whenever a response to a Reset request was received.
         /// </summary>
-        event OnResetResponseDelegate?  OnResetResponse;
+        event CSMS.OnResetResponseDelegate?  OnResetResponse;
 
         #endregion
 
@@ -49,12 +49,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever an UpdateFirmware request will be sent to the NetworkingNode.
         /// </summary>
-        event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+        event CSMS.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event fired whenever a response to an UpdateFirmware request was received.
         /// </summary>
-        event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+        event CSMS.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
 
         #endregion
 
@@ -63,12 +63,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a PublishFirmware request will be sent to the NetworkingNode.
         /// </summary>
-        event OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
+        event CSMS.OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
 
         /// <summary>
         /// An event fired whenever a response to a PublishFirmware request was received.
         /// </summary>
-        event OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
+        event CSMS.OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
 
         #endregion
 
@@ -77,12 +77,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever an UnpublishFirmware request will be sent to the NetworkingNode.
         /// </summary>
-        event OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
+        event CSMS.OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
 
         /// <summary>
         /// An event fired whenever a response to an UnpublishFirmware request was received.
         /// </summary>
-        event OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
+        event CSMS.OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
 
         #endregion
 
@@ -91,12 +91,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetBaseReport request will be sent to the NetworkingNode.
         /// </summary>
-        event OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
+        event CSMS.OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetBaseReport request was received.
         /// </summary>
-        event OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
+        event CSMS.OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
 
         #endregion
 
@@ -105,12 +105,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetReport request will be sent to the NetworkingNode.
         /// </summary>
-        event OnGetReportRequestDelegate?   OnGetReportRequest;
+        event CSMS.OnGetReportRequestDelegate?   OnGetReportRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetReport request was received.
         /// </summary>
-        event OnGetReportResponseDelegate?  OnGetReportResponse;
+        event CSMS.OnGetReportResponseDelegate?  OnGetReportResponse;
 
         #endregion
 
@@ -119,12 +119,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetLog request will be sent to the NetworkingNode.
         /// </summary>
-        event OnGetLogRequestDelegate?   OnGetLogRequest;
+        event CSMS.OnGetLogRequestDelegate?   OnGetLogRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetLog request was received.
         /// </summary>
-        event OnGetLogResponseDelegate?  OnGetLogResponse;
+        event CSMS.OnGetLogResponseDelegate?  OnGetLogResponse;
 
         #endregion
 
@@ -133,12 +133,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetVariables request will be sent to the NetworkingNode.
         /// </summary>
-        event OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
+        event CSMS.OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetVariables request was received.
         /// </summary>
-        event OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
+        event CSMS.OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
 
         #endregion
 
@@ -147,12 +147,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetVariables request will be sent to the NetworkingNode.
         /// </summary>
-        event OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
+        event CSMS.OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetVariables request was received.
         /// </summary>
-        event OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
+        event CSMS.OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
 
         #endregion
 
@@ -161,12 +161,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetMonitoringBase request will be sent to the NetworkingNode.
         /// </summary>
-        event OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
+        event CSMS.OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetMonitoringBase request was received.
         /// </summary>
-        event OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
+        event CSMS.OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
 
         #endregion
 
@@ -175,12 +175,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetMonitoringReport request will be sent to the NetworkingNode.
         /// </summary>
-        event OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
+        event CSMS.OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetMonitoringReport request was received.
         /// </summary>
-        event OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
+        event CSMS.OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
 
         #endregion
 
@@ -189,12 +189,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetMonitoringLevel request will be sent to the NetworkingNode.
         /// </summary>
-        event OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
+        event CSMS.OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetMonitoringLevel request was received.
         /// </summary>
-        event OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
+        event CSMS.OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
 
         #endregion
 
@@ -203,12 +203,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetVariableMonitoring request will be sent to the NetworkingNode.
         /// </summary>
-        event OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
+        event CSMS.OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetVariableMonitoring request was received.
         /// </summary>
-        event OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
+        event CSMS.OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
 
         #endregion
 
@@ -217,12 +217,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ClearVariableMonitoring request will be sent to the NetworkingNode.
         /// </summary>
-        event OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
+        event CSMS.OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ClearVariableMonitoring request was received.
         /// </summary>
-        event OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
+        event CSMS.OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
 
         #endregion
 
@@ -231,12 +231,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetNetworkProfile request will be sent to the NetworkingNode.
         /// </summary>
-        event OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
+        event CSMS.OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetNetworkProfile request was received.
         /// </summary>
-        event OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
+        event CSMS.OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
 
         #endregion
 
@@ -245,12 +245,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ChangeAvailability request will be sent to the NetworkingNode.
         /// </summary>
-        event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+        event CSMS.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ChangeAvailability request was received.
         /// </summary>
-        event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+        event CSMS.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
 
         #endregion
 
@@ -259,12 +259,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a TriggerMessage request will be sent to the NetworkingNode.
         /// </summary>
-        event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+        event CSMS.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
         /// <summary>
         /// An event fired whenever a response to a TriggerMessage request was received.
         /// </summary>
-        event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+        event CSMS.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
         #endregion
 
@@ -273,12 +273,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a DataTransfer request will be sent to the NetworkingNode.
         /// </summary>
-        event OnDataTransferRequestDelegate?   OnDataTransferRequest;
+        event CSMS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a DataTransfer request was received.
         /// </summary>
-        event OnDataTransferResponseDelegate?  OnDataTransferResponse;
+        event CSMS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 
@@ -288,12 +288,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SignedCertificate request will be sent to the NetworkingNode.
         /// </summary>
-        event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+        event CSMS.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SignedCertificate request was received.
         /// </summary>
-        event OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+        event CSMS.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
 
         #endregion
 
@@ -302,12 +302,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever an InstallCertificate request will be sent to the NetworkingNode.
         /// </summary>
-        event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+        event CSMS.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
 
         /// <summary>
         /// An event fired whenever a response to an InstallCertificate request was received.
         /// </summary>
-        event OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+        event CSMS.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
 
         #endregion
 
@@ -316,12 +316,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetInstalledCertificateIds request will be sent to the NetworkingNode.
         /// </summary>
-        event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+        event CSMS.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetInstalledCertificateIds request was received.
         /// </summary>
-        event OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+        event CSMS.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
 
         #endregion
 
@@ -330,12 +330,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a DeleteCertificate request will be sent to the NetworkingNode.
         /// </summary>
-        event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+        event CSMS.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
 
         /// <summary>
         /// An event fired whenever a response to a DeleteCertificate request was received.
         /// </summary>
-        event OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+        event CSMS.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
 
         #endregion
 
@@ -344,12 +344,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyCRL request will be sent to the NetworkingNode.
         /// </summary>
-        event OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
+        event CSMS.OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyCRL request was received.
         /// </summary>
-        event OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
+        event CSMS.OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
 
         #endregion
 
@@ -359,12 +359,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetLocalListVersion request will be sent to the NetworkingNode.
         /// </summary>
-        event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+        event CSMS.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetLocalListVersion request was received.
         /// </summary>
-        event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+        event CSMS.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
         #endregion
 
@@ -373,12 +373,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SendLocalList request will be sent to the NetworkingNode.
         /// </summary>
-        event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+        event CSMS.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SendLocalList request was received.
         /// </summary>
-        event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+        event CSMS.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
 
         #endregion
 
@@ -387,12 +387,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ClearCache request will be sent to the NetworkingNode.
         /// </summary>
-        event OnClearCacheRequestDelegate?   OnClearCacheRequest;
+        event CSMS.OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ClearCache request was received.
         /// </summary>
-        event OnClearCacheResponseDelegate?  OnClearCacheResponse;
+        event CSMS.OnClearCacheResponseDelegate?  OnClearCacheResponse;
 
         #endregion
 
@@ -402,12 +402,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ReserveNow request will be sent to the NetworkingNode.
         /// </summary>
-        event OnReserveNowRequestDelegate?   OnReserveNowRequest;
+        event CSMS.OnReserveNowRequestDelegate?   OnReserveNowRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ReserveNow request was received.
         /// </summary>
-        event OnReserveNowResponseDelegate?  OnReserveNowResponse;
+        event CSMS.OnReserveNowResponseDelegate?  OnReserveNowResponse;
 
         #endregion
 
@@ -416,12 +416,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a CancelReservation request will be sent to the NetworkingNode.
         /// </summary>
-        event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+        event CSMS.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a CancelReservation request was received.
         /// </summary>
-        event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+        event CSMS.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
         #endregion
 
@@ -430,12 +430,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a RequestStartTransaction request will be sent to the NetworkingNode.
         /// </summary>
-        event OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
+        event CSMS.OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a response to a RequestStartTransaction request was received.
         /// </summary>
-        event OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
+        event CSMS.OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
 
         #endregion
 
@@ -444,12 +444,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a RequestStopTransaction request will be sent to the NetworkingNode.
         /// </summary>
-        event OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
+        event CSMS.OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a response to a RequestStopTransaction request was received.
         /// </summary>
-        event OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
+        event CSMS.OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
 
         #endregion
 
@@ -458,12 +458,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetTransactionStatus request will be sent to the NetworkingNode.
         /// </summary>
-        event OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
+        event CSMS.OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetTransactionStatus request was received.
         /// </summary>
-        event OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
+        event CSMS.OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
 
         #endregion
 
@@ -472,12 +472,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetChargingProfile request will be sent to the NetworkingNode.
         /// </summary>
-        event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+        event CSMS.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetChargingProfile request was received.
         /// </summary>
-        event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+        event CSMS.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
 
         #endregion
 
@@ -486,12 +486,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetChargingProfiles request will be sent to the NetworkingNode.
         /// </summary>
-        event OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
+        event CSMS.OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetChargingProfiles request was received.
         /// </summary>
-        event OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
+        event CSMS.OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
 
         #endregion
 
@@ -500,12 +500,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ClearChargingProfile request will be sent to the NetworkingNode.
         /// </summary>
-        event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+        event CSMS.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ClearChargingProfile request was received.
         /// </summary>
-        event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+        event CSMS.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
 
         #endregion
 
@@ -514,12 +514,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetCompositeSchedule request will be sent to the NetworkingNode.
         /// </summary>
-        event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+        event CSMS.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetCompositeSchedule request was received.
         /// </summary>
-        event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+        event CSMS.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
 
         #endregion
 
@@ -528,12 +528,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a UpdateDynamicSchedule request will be sent to the NetworkingNode.
         /// </summary>
-        event OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
+        event CSMS.OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
 
         /// <summary>
         /// An event fired whenever a response to a UpdateDynamicSchedule request was received.
         /// </summary>
-        event OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
+        event CSMS.OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
 
         #endregion
 
@@ -542,12 +542,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the NetworkingNode.
         /// </summary>
-        event OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
+        event CSMS.OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was received.
         /// </summary>
-        event OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
+        event CSMS.OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
 
         #endregion
 
@@ -556,12 +556,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a UsePriorityCharging request will be sent to the NetworkingNode.
         /// </summary>
-        event OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
+        event CSMS.OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
 
         /// <summary>
         /// An event fired whenever a response to a UsePriorityCharging request was received.
         /// </summary>
-        event OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
+        event CSMS.OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
 
         #endregion
 
@@ -570,12 +570,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever an UnlockConnector request will be sent to the NetworkingNode.
         /// </summary>
-        event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+        event CSMS.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event fired whenever a response to an UnlockConnector request was received.
         /// </summary>
-        event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+        event CSMS.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
 
         #endregion
 
@@ -585,12 +585,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever an AFRR signal request will be sent to the NetworkingNode.
         /// </summary>
-        event OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
+        event CSMS.OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
 
         /// <summary>
         /// An event fired whenever a response to an AFRR signal request was received.
         /// </summary>
-        event OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
+        event CSMS.OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
 
         #endregion
 
@@ -600,12 +600,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetDisplayMessage request will be sent to the NetworkingNode.
         /// </summary>
-        event OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
+        event CSMS.OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetDisplayMessage request was received.
         /// </summary>
-        event OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
+        event CSMS.OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
 
         #endregion
 
@@ -614,12 +614,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetDisplayMessages request will be sent to the NetworkingNode.
         /// </summary>
-        event OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
+        event CSMS.OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetDisplayMessages request was received.
         /// </summary>
-        event OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
+        event CSMS.OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
 
         #endregion
 
@@ -628,12 +628,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ClearDisplayMessage request will be sent to the NetworkingNode.
         /// </summary>
-        event OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
+        event CSMS.OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ClearDisplayMessage request was received.
         /// </summary>
-        event OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
+        event CSMS.OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
 
         #endregion
 
@@ -642,12 +642,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a CostUpdated request will be sent to the NetworkingNode.
         /// </summary>
-        event OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
+        event CSMS.OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
 
         /// <summary>
         /// An event fired whenever a response to a CostUpdated request was received.
         /// </summary>
-        event OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
+        event CSMS.OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
 
         #endregion
 
@@ -656,12 +656,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a CustomerInformation request will be sent to the NetworkingNode.
         /// </summary>
-        event OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
+        event CSMS.OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a CustomerInformation request was received.
         /// </summary>
-        event OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
+        event CSMS.OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
 
         #endregion
 

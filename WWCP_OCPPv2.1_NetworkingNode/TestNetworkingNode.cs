@@ -191,33 +191,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a text message request was received.
         /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
+        public event CSMS.OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
 
         /// <summary>
         /// An event sent whenever the response to a text message was sent.
         /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
+        public event CSMS.OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
 
         /// <summary>
         /// An event sent whenever the error response to a text message was sent.
         /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
+        public event CSMS.OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
 
 
         /// <summary>
         /// An event sent whenever a text message request was sent.
         /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
+        public event CSMS.OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever the response to a text message request was received.
         /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
+        public event CSMS.OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
 
         /// <summary>
         /// An event sent whenever an error response to a text message request was received.
         /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
+        public event CSMS.OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
 
         #endregion
 
@@ -226,33 +226,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a binary message request was received.
         /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
+        public event CSMS.OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
 
         /// <summary>
         /// An event sent whenever the response to a binary message was sent.
         /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
+        public event CSMS.OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
 
         /// <summary>
         /// An event sent whenever the error response to a binary message was sent.
         /// </summary>
-        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
+        //public event CSMS.OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
 
 
         /// <summary>
         /// An event sent whenever a binary message request was sent.
         /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
+        public event CSMS.OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever the response to a binary message request was received.
         /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
+        public event CSMS.OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
 
         /// <summary>
         /// An event sent whenever the error response to a binary message request was sent.
         /// </summary>
-        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
+        //public event CSMS.OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
 
         #endregion
 
@@ -264,12 +264,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a BootNotification request was sent from a charging station.
         /// </summary>
-        public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+        public event CSMS.OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a BootNotification request was received.
         /// </summary>
-        public event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+        public event CSMS.OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
 
         #endregion
 
@@ -278,12 +278,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a FirmwareStatusNotification request was sent from a charging station.
         /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
+        public event CSMS.OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a FirmwareStatusNotification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
+        public event CSMS.OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
 
         #endregion
 
@@ -292,12 +292,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a PublishFirmwareStatusNotification request was sent from a charging station.
         /// </summary>
-        public event OnPublishFirmwareStatusNotificationRequestDelegate?   OnPublishFirmwareStatusNotificationRequest;
+        public event CSMS.OnPublishFirmwareStatusNotificationRequestDelegate?   OnPublishFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a PublishFirmwareStatusNotification request was received.
         /// </summary>
-        public event OnPublishFirmwareStatusNotificationResponseDelegate?  OnPublishFirmwareStatusNotificationResponse;
+        public event CSMS.OnPublishFirmwareStatusNotificationResponseDelegate?  OnPublishFirmwareStatusNotificationResponse;
 
         #endregion
 
@@ -306,12 +306,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a Heartbeat request was sent from a charging station.
         /// </summary>
-        public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
+        public event CSMS.OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
 
         /// <summary>
         /// An event fired whenever a response to a Heartbeat request was received.
         /// </summary>
-        public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
+        public event CSMS.OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
 
         #endregion
 
@@ -320,12 +320,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyEvent request was sent from a charging station.
         /// </summary>
-        public event OnNotifyEventRequestDelegate?   OnNotifyEventRequest;
+        public event CSMS.OnNotifyEventRequestDelegate?   OnNotifyEventRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyEvent request was received.
         /// </summary>
-        public event OnNotifyEventResponseDelegate?  OnNotifyEventResponse;
+        public event CSMS.OnNotifyEventResponseDelegate?  OnNotifyEventResponse;
 
         #endregion
 
@@ -334,12 +334,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SecurityEventNotification request was sent from a charging station.
         /// </summary>
-        public event OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
+        public event CSMS.OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SecurityEventNotification request was received.
         /// </summary>
-        public event OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
+        public event CSMS.OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
 
         #endregion
 
@@ -348,12 +348,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyReport request was sent from a charging station.
         /// </summary>
-        public event OnNotifyReportRequestDelegate?   OnNotifyReportRequest;
+        public event CSMS.OnNotifyReportRequestDelegate?   OnNotifyReportRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyReport request was received.
         /// </summary>
-        public event OnNotifyReportResponseDelegate?  OnNotifyReportResponse;
+        public event CSMS.OnNotifyReportResponseDelegate?  OnNotifyReportResponse;
 
         #endregion
 
@@ -362,12 +362,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyMonitoringReport request was sent from a charging station.
         /// </summary>
-        public event OnNotifyMonitoringReportRequestDelegate?   OnNotifyMonitoringReportRequest;
+        public event CSMS.OnNotifyMonitoringReportRequestDelegate?   OnNotifyMonitoringReportRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyMonitoringReport request was received.
         /// </summary>
-        public event OnNotifyMonitoringReportResponseDelegate?  OnNotifyMonitoringReportResponse;
+        public event CSMS.OnNotifyMonitoringReportResponseDelegate?  OnNotifyMonitoringReportResponse;
 
         #endregion
 
@@ -376,12 +376,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a LogStatusNotification request was sent from a charging station.
         /// </summary>
-        public event OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
+        public event CSMS.OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a LogStatusNotification request was received.
         /// </summary>
-        public event OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
+        public event CSMS.OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
 
         #endregion
 
@@ -390,12 +390,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever an IncomingDataTransfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+        public event CSMS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to an IncomingDataTransfer request was sent.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+        public event CSMS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
         #endregion
 
@@ -405,12 +405,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SignCertificate request was sent from a charging station.
         /// </summary>
-        public event OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
+        public event CSMS.OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SignCertificate request was received.
         /// </summary>
-        public event OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
+        public event CSMS.OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
 
         #endregion
 
@@ -419,12 +419,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a Get15118EVCertificate request was sent from a charging station.
         /// </summary>
-        public event OnGet15118EVCertificateRequestDelegate?   OnGet15118EVCertificateRequest;
+        public event CSMS.OnGet15118EVCertificateRequestDelegate?   OnGet15118EVCertificateRequest;
 
         /// <summary>
         /// An event fired whenever a response to a Get15118EVCertificate request was received.
         /// </summary>
-        public event OnGet15118EVCertificateResponseDelegate?  OnGet15118EVCertificateResponse;
+        public event CSMS.OnGet15118EVCertificateResponseDelegate?  OnGet15118EVCertificateResponse;
 
         #endregion
 
@@ -433,12 +433,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetCertificateStatus request was sent from a charging station.
         /// </summary>
-        public event OnGetCertificateStatusRequestDelegate?   OnGetCertificateStatusRequest;
+        public event CSMS.OnGetCertificateStatusRequestDelegate?   OnGetCertificateStatusRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetCertificateStatus request was received.
         /// </summary>
-        public event OnGetCertificateStatusResponseDelegate?  OnGetCertificateStatusResponse;
+        public event CSMS.OnGetCertificateStatusResponseDelegate?  OnGetCertificateStatusResponse;
 
         #endregion
 
@@ -447,12 +447,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetCRL request was sent from a charging station.
         /// </summary>
-        public event OnGetCRLRequestDelegate?   OnGetCRLRequest;
+        public event CSMS.OnGetCRLRequestDelegate?   OnGetCRLRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetCRL request was received.
         /// </summary>
-        public event OnGetCRLResponseDelegate?  OnGetCRLResponse;
+        public event CSMS.OnGetCRLResponseDelegate?  OnGetCRLResponse;
 
         #endregion
 
@@ -462,12 +462,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ReservationStatusUpdate request was sent from a charging station.
         /// </summary>
-        public event OnReservationStatusUpdateRequestDelegate?   OnReservationStatusUpdateRequest;
+        public event CSMS.OnReservationStatusUpdateRequestDelegate?   OnReservationStatusUpdateRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ReservationStatusUpdate request was received.
         /// </summary>
-        public event OnReservationStatusUpdateResponseDelegate?  OnReservationStatusUpdateResponse;
+        public event CSMS.OnReservationStatusUpdateResponseDelegate?  OnReservationStatusUpdateResponse;
 
         #endregion
 
@@ -476,12 +476,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever an Authorize request was sent from a charging station.
         /// </summary>
-        public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
+        public event CSMS.OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
 
         /// <summary>
         /// An event fired whenever a response to an Authorize request was received.
         /// </summary>
-        public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
+        public event CSMS.OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
 
         #endregion
 
@@ -490,12 +490,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyEVChargingNeeds request was sent from a charging station.
         /// </summary>
-        public event OnNotifyEVChargingNeedsRequestDelegate?   OnNotifyEVChargingNeedsRequest;
+        public event CSMS.OnNotifyEVChargingNeedsRequestDelegate?   OnNotifyEVChargingNeedsRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyEVChargingNeeds request was received.
         /// </summary>
-        public event OnNotifyEVChargingNeedsResponseDelegate?  OnNotifyEVChargingNeedsResponse;
+        public event CSMS.OnNotifyEVChargingNeedsResponseDelegate?  OnNotifyEVChargingNeedsResponse;
 
         #endregion
 
@@ -504,12 +504,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a TransactionEvent was sent from a charging station.
         /// </summary>
-        public event OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
+        public event CSMS.OnTransactionEventRequestDelegate?   OnTransactionEventRequest;
 
         /// <summary>
         /// An event fired whenever a response to a TransactionEvent request was received.
         /// </summary>
-        public event OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
+        public event CSMS.OnTransactionEventResponseDelegate?  OnTransactionEventResponse;
 
         #endregion
 
@@ -518,12 +518,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a StatusNotification request was sent from a charging station.
         /// </summary>
-        public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
+        public event CSMS.OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a StatusNotification request was received.
         /// </summary>
-        public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
+        public event CSMS.OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
 
         #endregion
 
@@ -532,12 +532,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a MeterValues request was sent from a charging station.
         /// </summary>
-        public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
+        public event CSMS.OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a MeterValues request was received.
         /// </summary>
-        public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
+        public event CSMS.OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
 
         #endregion
 
@@ -546,12 +546,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyChargingLimit request was sent from a charging station.
         /// </summary>
-        public event OnNotifyChargingLimitRequestDelegate?   OnNotifyChargingLimitRequest;
+        public event CSMS.OnNotifyChargingLimitRequestDelegate?   OnNotifyChargingLimitRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyChargingLimit request was received.
         /// </summary>
-        public event OnNotifyChargingLimitResponseDelegate?  OnNotifyChargingLimitResponse;
+        public event CSMS.OnNotifyChargingLimitResponseDelegate?  OnNotifyChargingLimitResponse;
 
         #endregion
 
@@ -560,12 +560,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ClearedChargingLimit request was sent from a charging station.
         /// </summary>
-        public event OnClearedChargingLimitRequestDelegate?   OnClearedChargingLimitRequest;
+        public event CSMS.OnClearedChargingLimitRequestDelegate?   OnClearedChargingLimitRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ClearedChargingLimit request was received.
         /// </summary>
-        public event OnClearedChargingLimitResponseDelegate?  OnClearedChargingLimitResponse;
+        public event CSMS.OnClearedChargingLimitResponseDelegate?  OnClearedChargingLimitResponse;
 
         #endregion
 
@@ -574,12 +574,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ReportChargingProfiles request was sent from a charging station.
         /// </summary>
-        public event OnReportChargingProfilesRequestDelegate?   OnReportChargingProfilesRequest;
+        public event CSMS.OnReportChargingProfilesRequestDelegate?   OnReportChargingProfilesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ReportChargingProfiles request was received.
         /// </summary>
-        public event OnReportChargingProfilesResponseDelegate?  OnReportChargingProfilesResponse;
+        public event CSMS.OnReportChargingProfilesResponseDelegate?  OnReportChargingProfilesResponse;
 
         #endregion
 
@@ -588,12 +588,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyEVChargingSchedule request was sent from a charging station.
         /// </summary>
-        public event OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
+        public event CSMS.OnNotifyEVChargingScheduleRequestDelegate?   OnNotifyEVChargingScheduleRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyEVChargingSchedule request was received.
         /// </summary>
-        public event OnNotifyEVChargingScheduleResponseDelegate?  OnNotifyEVChargingScheduleResponse;
+        public event CSMS.OnNotifyEVChargingScheduleResponseDelegate?  OnNotifyEVChargingScheduleResponse;
 
         #endregion
 
@@ -602,12 +602,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyPriorityCharging request was sent from a charging station.
         /// </summary>
-        public event OnNotifyPriorityChargingRequestDelegate?   OnNotifyPriorityChargingRequest;
+        public event CSMS.OnNotifyPriorityChargingRequestDelegate?   OnNotifyPriorityChargingRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyPriorityCharging request was received.
         /// </summary>
-        public event OnNotifyPriorityChargingResponseDelegate?  OnNotifyPriorityChargingResponse;
+        public event CSMS.OnNotifyPriorityChargingResponseDelegate?  OnNotifyPriorityChargingResponse;
 
         #endregion
 
@@ -616,12 +616,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a PullDynamicScheduleUpdate request was sent from a charging station.
         /// </summary>
-        public event OnPullDynamicScheduleUpdateRequestDelegate?   OnPullDynamicScheduleUpdateRequest;
+        public event CSMS.OnPullDynamicScheduleUpdateRequestDelegate?   OnPullDynamicScheduleUpdateRequest;
 
         /// <summary>
         /// An event fired whenever a response to a PullDynamicScheduleUpdate request was received.
         /// </summary>
-        public event OnPullDynamicScheduleUpdateResponseDelegate?  OnPullDynamicScheduleUpdateResponse;
+        public event CSMS.OnPullDynamicScheduleUpdateResponseDelegate?  OnPullDynamicScheduleUpdateResponse;
 
         #endregion
 
@@ -631,12 +631,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyDisplayMessages request was sent from a charging station.
         /// </summary>
-        public event OnNotifyDisplayMessagesRequestDelegate?   OnNotifyDisplayMessagesRequest;
+        public event CSMS.OnNotifyDisplayMessagesRequestDelegate?   OnNotifyDisplayMessagesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyDisplayMessages request was received.
         /// </summary>
-        public event OnNotifyDisplayMessagesResponseDelegate?  OnNotifyDisplayMessagesResponse;
+        public event CSMS.OnNotifyDisplayMessagesResponseDelegate?  OnNotifyDisplayMessagesResponse;
 
         #endregion
 
@@ -645,12 +645,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyCustomerInformation request was sent from a charging station.
         /// </summary>
-        public event OnNotifyCustomerInformationRequestDelegate?   OnNotifyCustomerInformationRequest;
+        public event CSMS.OnNotifyCustomerInformationRequestDelegate?   OnNotifyCustomerInformationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyCustomerInformation request was received.
         /// </summary>
-        public event OnNotifyCustomerInformationResponseDelegate?  OnNotifyCustomerInformationResponse;
+        public event CSMS.OnNotifyCustomerInformationResponseDelegate?  OnNotifyCustomerInformationResponse;
 
         #endregion
 
@@ -662,12 +662,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever an IncomingBinaryDataTransfer request was received.
         /// </summary>
-        public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
+        public event CSMS.OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to an IncomingBinaryDataTransfer request was sent.
         /// </summary>
-        public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
+        public event CSMS.OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
 
         #endregion
 
@@ -681,12 +681,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a Reset request will be sent to the charging station.
         /// </summary>
-        public event OnResetRequestDelegate?   OnResetRequest;
+        public event CSMS.OnResetRequestDelegate?   OnResetRequest;
 
         /// <summary>
         /// An event fired whenever a response to a Reset request was received.
         /// </summary>
-        public event OnResetResponseDelegate?  OnResetResponse;
+        public event CSMS.OnResetResponseDelegate?  OnResetResponse;
 
         #endregion
 
@@ -695,12 +695,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever an UpdateFirmware request will be sent to the charging station.
         /// </summary>
-        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+        public event CSMS.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event fired whenever a response to an UpdateFirmware request was received.
         /// </summary>
-        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+        public event CSMS.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
 
         #endregion
 
@@ -709,12 +709,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a PublishFirmware request will be sent to the charging station.
         /// </summary>
-        public event OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
+        public event CSMS.OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
 
         /// <summary>
         /// An event fired whenever a response to a PublishFirmware request was received.
         /// </summary>
-        public event OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
+        public event CSMS.OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
 
         #endregion
 
@@ -723,12 +723,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever an UnpublishFirmware request will be sent to the charging station.
         /// </summary>
-        public event OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
+        public event CSMS.OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
 
         /// <summary>
         /// An event fired whenever a response to an UnpublishFirmware request was received.
         /// </summary>
-        public event OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
+        public event CSMS.OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
 
         #endregion
 
@@ -737,12 +737,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetBaseReport request will be sent to the charging station.
         /// </summary>
-        public event OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
+        public event CSMS.OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetBaseReport request was received.
         /// </summary>
-        public event OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
+        public event CSMS.OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
 
         #endregion
 
@@ -751,12 +751,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetReport request will be sent to the charging station.
         /// </summary>
-        public event OnGetReportRequestDelegate?   OnGetReportRequest;
+        public event CSMS.OnGetReportRequestDelegate?   OnGetReportRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetReport request was received.
         /// </summary>
-        public event OnGetReportResponseDelegate?  OnGetReportResponse;
+        public event CSMS.OnGetReportResponseDelegate?  OnGetReportResponse;
 
         #endregion
 
@@ -765,12 +765,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetLog request will be sent to the charging station.
         /// </summary>
-        public event OnGetLogRequestDelegate?   OnGetLogRequest;
+        public event CSMS.OnGetLogRequestDelegate?   OnGetLogRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetLog request was received.
         /// </summary>
-        public event OnGetLogResponseDelegate?  OnGetLogResponse;
+        public event CSMS.OnGetLogResponseDelegate?  OnGetLogResponse;
 
         #endregion
 
@@ -779,12 +779,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetVariables request will be sent to the charging station.
         /// </summary>
-        public event OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
+        public event CSMS.OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetVariables request was received.
         /// </summary>
-        public event OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
+        public event CSMS.OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
 
         #endregion
 
@@ -793,12 +793,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetVariables request will be sent to the charging station.
         /// </summary>
-        public event OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
+        public event CSMS.OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetVariables request was received.
         /// </summary>
-        public event OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
+        public event CSMS.OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
 
         #endregion
 
@@ -807,12 +807,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetMonitoringBase request will be sent to the charging station.
         /// </summary>
-        public event OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
+        public event CSMS.OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetMonitoringBase request was received.
         /// </summary>
-        public event OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
+        public event CSMS.OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
 
         #endregion
 
@@ -821,12 +821,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetMonitoringReport request will be sent to the charging station.
         /// </summary>
-        public event OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
+        public event CSMS.OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetMonitoringReport request was received.
         /// </summary>
-        public event OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
+        public event CSMS.OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
 
         #endregion
 
@@ -835,12 +835,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetMonitoringLevel request will be sent to the charging station.
         /// </summary>
-        public event OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
+        public event CSMS.OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetMonitoringLevel request was received.
         /// </summary>
-        public event OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
+        public event CSMS.OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
 
         #endregion
 
@@ -849,12 +849,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetVariableMonitoring request will be sent to the charging station.
         /// </summary>
-        public event OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
+        public event CSMS.OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetVariableMonitoring request was received.
         /// </summary>
-        public event OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
+        public event CSMS.OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
 
         #endregion
 
@@ -863,12 +863,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ClearVariableMonitoring request will be sent to the charging station.
         /// </summary>
-        public event OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
+        public event CSMS.OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ClearVariableMonitoring request was received.
         /// </summary>
-        public event OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
+        public event CSMS.OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
 
         #endregion
 
@@ -877,12 +877,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetNetworkProfile request will be sent to the charging station.
         /// </summary>
-        public event OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
+        public event CSMS.OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetNetworkProfile request was received.
         /// </summary>
-        public event OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
+        public event CSMS.OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
 
         #endregion
 
@@ -891,12 +891,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ChangeAvailability request will be sent to the charging station.
         /// </summary>
-        public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+        public event CSMS.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ChangeAvailability request was received.
         /// </summary>
-        public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+        public event CSMS.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
 
         #endregion
 
@@ -905,12 +905,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a TriggerMessage request will be sent to the charging station.
         /// </summary>
-        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+        public event CSMS.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
         /// <summary>
         /// An event fired whenever a response to a TriggerMessage request was received.
         /// </summary>
-        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+        public event CSMS.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
         #endregion
 
@@ -919,12 +919,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a DataTransfer request will be sent to the charging station.
         /// </summary>
-        public event NetworkingNode.OnDataTransferRequestDelegate?   OnDataTransferRequest;
+        public event CSMS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a DataTransfer request was received.
         /// </summary>
-        public event NetworkingNode.OnDataTransferResponseDelegate?  OnDataTransferResponse;
+        public event CSMS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 
@@ -934,12 +934,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SignedCertificate request will be sent to the charging station.
         /// </summary>
-        public event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+        public event CSMS.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SignedCertificate request was received.
         /// </summary>
-        public event OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+        public event CSMS.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
 
         #endregion
 
@@ -948,12 +948,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever an InstallCertificate request will be sent to the charging station.
         /// </summary>
-        public event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+        public event CSMS.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
 
         /// <summary>
         /// An event fired whenever a response to an InstallCertificate request was received.
         /// </summary>
-        public event OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+        public event CSMS.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
 
         #endregion
 
@@ -962,12 +962,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetInstalledCertificateIds request will be sent to the charging station.
         /// </summary>
-        public event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+        public event CSMS.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetInstalledCertificateIds request was received.
         /// </summary>
-        public event OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+        public event CSMS.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
 
         #endregion
 
@@ -976,12 +976,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a DeleteCertificate request will be sent to the charging station.
         /// </summary>
-        public event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+        public event CSMS.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
 
         /// <summary>
         /// An event fired whenever a response to a DeleteCertificate request was received.
         /// </summary>
-        public event OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+        public event CSMS.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
 
         #endregion
 
@@ -990,12 +990,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyCRL request will be sent to the charging station.
         /// </summary>
-        public event OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
+        public event CSMS.OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyCRL request was received.
         /// </summary>
-        public event OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
+        public event CSMS.OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
 
         #endregion
 
@@ -1005,12 +1005,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetLocalListVersion request will be sent to the charging station.
         /// </summary>
-        public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+        public event CSMS.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetLocalListVersion request was received.
         /// </summary>
-        public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+        public event CSMS.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
         #endregion
 
@@ -1019,12 +1019,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SendLocalList request will be sent to the charging station.
         /// </summary>
-        public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+        public event CSMS.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SendLocalList request was received.
         /// </summary>
-        public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+        public event CSMS.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
 
         #endregion
 
@@ -1033,12 +1033,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ClearCache request will be sent to the charging station.
         /// </summary>
-        public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
+        public event CSMS.OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ClearCache request was received.
         /// </summary>
-        public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
+        public event CSMS.OnClearCacheResponseDelegate?  OnClearCacheResponse;
 
         #endregion
 
@@ -1048,12 +1048,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ReserveNow request will be sent to the charging station.
         /// </summary>
-        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
+        public event CSMS.OnReserveNowRequestDelegate?   OnReserveNowRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ReserveNow request was received.
         /// </summary>
-        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
+        public event CSMS.OnReserveNowResponseDelegate?  OnReserveNowResponse;
 
         #endregion
 
@@ -1062,12 +1062,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a CancelReservation request will be sent to the charging station.
         /// </summary>
-        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+        public event CSMS.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a CancelReservation request was received.
         /// </summary>
-        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+        public event CSMS.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
         #endregion
 
@@ -1076,12 +1076,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a RequestStartTransaction request will be sent to the charging station.
         /// </summary>
-        public event OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
+        public event CSMS.OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a response to a RequestStartTransaction request was received.
         /// </summary>
-        public event OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
+        public event CSMS.OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
 
         #endregion
 
@@ -1090,12 +1090,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a RequestStopTransaction request will be sent to the charging station.
         /// </summary>
-        public event OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
+        public event CSMS.OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a response to a RequestStopTransaction request was received.
         /// </summary>
-        public event OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
+        public event CSMS.OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
 
         #endregion
 
@@ -1104,12 +1104,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetTransactionStatus request will be sent to the charging station.
         /// </summary>
-        public event OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
+        public event CSMS.OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetTransactionStatus request was received.
         /// </summary>
-        public event OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
+        public event CSMS.OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
 
         #endregion
 
@@ -1118,12 +1118,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetChargingProfile request will be sent to the charging station.
         /// </summary>
-        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+        public event CSMS.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetChargingProfile request was received.
         /// </summary>
-        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+        public event CSMS.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
 
         #endregion
 
@@ -1132,12 +1132,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetChargingProfiles request will be sent to the charging station.
         /// </summary>
-        public event OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
+        public event CSMS.OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetChargingProfiles request was received.
         /// </summary>
-        public event OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
+        public event CSMS.OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
 
         #endregion
 
@@ -1146,12 +1146,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ClearChargingProfile request will be sent to the charging station.
         /// </summary>
-        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+        public event CSMS.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ClearChargingProfile request was received.
         /// </summary>
-        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+        public event CSMS.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
 
         #endregion
 
@@ -1160,12 +1160,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetCompositeSchedule request will be sent to the charging station.
         /// </summary>
-        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+        public event CSMS.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetCompositeSchedule request was received.
         /// </summary>
-        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+        public event CSMS.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
 
         #endregion
 
@@ -1174,12 +1174,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a UpdateDynamicSchedule request will be sent to the charging station.
         /// </summary>
-        public event OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
+        public event CSMS.OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
 
         /// <summary>
         /// An event fired whenever a response to a UpdateDynamicSchedule request was received.
         /// </summary>
-        public event OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
+        public event CSMS.OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
 
         #endregion
 
@@ -1188,12 +1188,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the charging station.
         /// </summary>
-        public event OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
+        public event CSMS.OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was received.
         /// </summary>
-        public event OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
+        public event CSMS.OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
 
         #endregion
 
@@ -1202,12 +1202,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a UsePriorityCharging request will be sent to the charging station.
         /// </summary>
-        public event OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
+        public event CSMS.OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
 
         /// <summary>
         /// An event fired whenever a response to a UsePriorityCharging request was received.
         /// </summary>
-        public event OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
+        public event CSMS.OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
 
         #endregion
 
@@ -1216,12 +1216,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever an UnlockConnector request will be sent to the charging station.
         /// </summary>
-        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+        public event CSMS.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event fired whenever a response to an UnlockConnector request was received.
         /// </summary>
-        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+        public event CSMS.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
 
         #endregion
 
@@ -1231,12 +1231,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever an AFRRSignal request will be sent to the charging station.
         /// </summary>
-        public event OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
+        public event CSMS.OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
 
         /// <summary>
         /// An event fired whenever a response to an AFRRSignal request was received.
         /// </summary>
-        public event OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
+        public event CSMS.OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
 
         #endregion
 
@@ -1246,12 +1246,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetDisplayMessage request will be sent to the charging station.
         /// </summary>
-        public event OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
+        public event CSMS.OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetDisplayMessage request was received.
         /// </summary>
-        public event OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
+        public event CSMS.OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
 
         #endregion
 
@@ -1260,12 +1260,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetDisplayMessages request will be sent to the charging station.
         /// </summary>
-        public event OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
+        public event CSMS.OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetDisplayMessages request was received.
         /// </summary>
-        public event OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
+        public event CSMS.OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
 
         #endregion
 
@@ -1274,12 +1274,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a ClearDisplayMessage request will be sent to the charging station.
         /// </summary>
-        public event OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
+        public event CSMS.OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ClearDisplayMessage request was received.
         /// </summary>
-        public event OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
+        public event CSMS.OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
 
         #endregion
 
@@ -1288,12 +1288,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a CostUpdated request will be sent to the charging station.
         /// </summary>
-        public event OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
+        public event CSMS.OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
 
         /// <summary>
         /// An event fired whenever a response to a CostUpdated request was received.
         /// </summary>
-        public event OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
+        public event CSMS.OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
 
         #endregion
 
@@ -1302,12 +1302,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a CustomerInformation request will be sent to the charging station.
         /// </summary>
-        public event OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
+        public event CSMS.OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a CustomerInformation request was received.
         /// </summary>
-        public event OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
+        public event CSMS.OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
 
         #endregion
 
@@ -1378,12 +1378,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a AddSignaturePolicy request will be sent to the charging station.
         /// </summary>
-        public event OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
+        public event CSMS.OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
 
         /// <summary>
         /// An event fired whenever a response to a AddSignaturePolicy request was received.
         /// </summary>
-        public event OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
+        public event CSMS.OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
 
         #endregion
 
@@ -1392,12 +1392,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a UpdateSignaturePolicy request will be sent to the charging station.
         /// </summary>
-        public event OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
+        public event CSMS.OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
 
         /// <summary>
         /// An event fired whenever a response to a UpdateSignaturePolicy request was received.
         /// </summary>
-        public event OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
+        public event CSMS.OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
 
         #endregion
 
@@ -1406,12 +1406,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a DeleteSignaturePolicy request will be sent to the charging station.
         /// </summary>
-        public event OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
+        public event CSMS.OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
 
         /// <summary>
         /// An event fired whenever a response to a DeleteSignaturePolicy request was received.
         /// </summary>
-        public event OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
+        public event CSMS.OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
 
         #endregion
 
@@ -1420,12 +1420,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a AddUserRole request will be sent to the charging station.
         /// </summary>
-        public event OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
+        public event CSMS.OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
 
         /// <summary>
         /// An event fired whenever a response to a AddUserRole request was received.
         /// </summary>
-        public event OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
+        public event CSMS.OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
 
         #endregion
 
@@ -1434,12 +1434,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a UpdateUserRole request will be sent to the charging station.
         /// </summary>
-        public event OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
+        public event CSMS.OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
 
         /// <summary>
         /// An event fired whenever a response to a UpdateUserRole request was received.
         /// </summary>
-        public event OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
+        public event CSMS.OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
 
         #endregion
 
@@ -1448,12 +1448,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a DeleteUserRole request will be sent to the charging station.
         /// </summary>
-        public event OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
+        public event CSMS.OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
 
         /// <summary>
         /// An event fired whenever a response to a DeleteUserRole request was received.
         /// </summary>
-        public event OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
+        public event CSMS.OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
 
         #endregion
 
@@ -1465,12 +1465,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a SetDefaultChargingTariff request will be sent to the charging station.
         /// </summary>
-        public event OnSetDefaultChargingTariffRequestDelegate?   OnSetDefaultChargingTariffRequest;
+        public event CSMS.OnSetDefaultChargingTariffRequestDelegate?   OnSetDefaultChargingTariffRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetDefaultChargingTariff request was received.
         /// </summary>
-        public event OnSetDefaultChargingTariffResponseDelegate?  OnSetDefaultChargingTariffResponse;
+        public event CSMS.OnSetDefaultChargingTariffResponseDelegate?  OnSetDefaultChargingTariffResponse;
 
         #endregion
 
@@ -1479,12 +1479,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a GetDefaultChargingTariff request will be sent to the charging station.
         /// </summary>
-        public event OnGetDefaultChargingTariffRequestDelegate?   OnGetDefaultChargingTariffRequest;
+        public event CSMS.OnGetDefaultChargingTariffRequestDelegate?   OnGetDefaultChargingTariffRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetDefaultChargingTariff request was received.
         /// </summary>
-        public event OnGetDefaultChargingTariffResponseDelegate?  OnGetDefaultChargingTariffResponse;
+        public event CSMS.OnGetDefaultChargingTariffResponseDelegate?  OnGetDefaultChargingTariffResponse;
 
         #endregion
 
@@ -1493,12 +1493,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event fired whenever a RemoveDefaultChargingTariff request will be sent to the charging station.
         /// </summary>
-        public event OnRemoveDefaultChargingTariffRequestDelegate?   OnRemoveDefaultChargingTariffRequest;
+        public event CSMS.OnRemoveDefaultChargingTariffRequestDelegate?   OnRemoveDefaultChargingTariffRequest;
 
         /// <summary>
         /// An event fired whenever a response to a RemoveDefaultChargingTariff request was received.
         /// </summary>
-        public event OnRemoveDefaultChargingTariffResponseDelegate?  OnRemoveDefaultChargingTariffResponse;
+        public event CSMS.OnRemoveDefaultChargingTariffResponseDelegate?  OnRemoveDefaultChargingTariffResponse;
 
         #endregion
 
@@ -1674,110 +1674,110 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Charging Station Request  Messages
 
-        public CustomJObjectSerializerDelegate<CS.BootNotificationRequest>?                          CustomBootNotificationRequestSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<CS.FirmwareStatusNotificationRequest>?                CustomFirmwareStatusNotificationRequestSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<CS.PublishFirmwareStatusNotificationRequest>?         CustomPublishFirmwareStatusNotificationRequestSerializer     { get; set; }
-        public CustomJObjectSerializerDelegate<CS.HeartbeatRequest>?                                 CustomHeartbeatRequestSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<CS.NotifyEventRequest>?                               CustomNotifyEventRequestSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SecurityEventNotificationRequest>?                 CustomSecurityEventNotificationRequestSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<CS.NotifyReportRequest>?                              CustomNotifyReportRequestSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<CS.NotifyMonitoringReportRequest>?                    CustomNotifyMonitoringReportRequestSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<CS.LogStatusNotificationRequest>?                     CustomLogStatusNotificationRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CS.DataTransferRequest>?                              CustomIncomingDataTransferRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.BootNotificationRequest>?                          CustomBootNotificationRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.FirmwareStatusNotificationRequest>?                CustomFirmwareStatusNotificationRequestSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PublishFirmwareStatusNotificationRequest>?         CustomPublishFirmwareStatusNotificationRequestSerializer     { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.HeartbeatRequest>?                                 CustomHeartbeatRequestSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEventRequest>?                               CustomNotifyEventRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SecurityEventNotificationRequest>?                 CustomSecurityEventNotificationRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyReportRequest>?                              CustomNotifyReportRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyMonitoringReportRequest>?                    CustomNotifyMonitoringReportRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.LogStatusNotificationRequest>?                     CustomLogStatusNotificationRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferRequest>?                              CustomIncomingDataTransferRequestSerializer                  { get; set; }
 
-        public CustomJObjectSerializerDelegate<CS.SignCertificateRequest>?                           CustomSignCertificateRequestSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<CS.Get15118EVCertificateRequest>?                     CustomGet15118EVCertificateRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetCertificateStatusRequest>?                      CustomGetCertificateStatusRequestSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetCRLRequest>?                                    CustomGetCRLRequestSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SignCertificateRequest>?                           CustomSignCertificateRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.Get15118EVCertificateRequest>?                     CustomGet15118EVCertificateRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCertificateStatusRequest>?                      CustomGetCertificateStatusRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCRLRequest>?                                    CustomGetCRLRequestSerializer                                { get; set; }
 
-        public CustomJObjectSerializerDelegate<CS.ReservationStatusUpdateRequest>?                   CustomReservationStatusUpdateRequestSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<CS.AuthorizeRequest>?                                 CustomAuthorizeRequestSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<CS.NotifyEVChargingNeedsRequest>?                     CustomNotifyEVChargingNeedsRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CS.TransactionEventRequest>?                          CustomTransactionEventRequestSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<CS.StatusNotificationRequest>?                        CustomStatusNotificationRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<CS.MeterValuesRequest>?                               CustomMeterValuesRequestSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<CS.NotifyChargingLimitRequest>?                       CustomNotifyChargingLimitRequestSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<CS.ClearedChargingLimitRequest>?                      CustomClearedChargingLimitRequestSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<CS.ReportChargingProfilesRequest>?                    CustomReportChargingProfilesRequestSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<CS.NotifyEVChargingScheduleRequest>?                  CustomNotifyEVChargingScheduleRequestSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<CS.NotifyPriorityChargingRequest>?                    CustomNotifyPriorityChargingRequestSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<CS.PullDynamicScheduleUpdateRequest>?                 CustomPullDynamicScheduleUpdateRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReservationStatusUpdateRequest>?                   CustomReservationStatusUpdateRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.AuthorizeRequest>?                                 CustomAuthorizeRequestSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEVChargingNeedsRequest>?                     CustomNotifyEVChargingNeedsRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.TransactionEventRequest>?                          CustomTransactionEventRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.StatusNotificationRequest>?                        CustomStatusNotificationRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.MeterValuesRequest>?                               CustomMeterValuesRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyChargingLimitRequest>?                       CustomNotifyChargingLimitRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearedChargingLimitRequest>?                      CustomClearedChargingLimitRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReportChargingProfilesRequest>?                    CustomReportChargingProfilesRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyEVChargingScheduleRequest>?                  CustomNotifyEVChargingScheduleRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyPriorityChargingRequest>?                    CustomNotifyPriorityChargingRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PullDynamicScheduleUpdateRequest>?                 CustomPullDynamicScheduleUpdateRequestSerializer             { get; set; }
 
-        public CustomJObjectSerializerDelegate<CS.NotifyDisplayMessagesRequest>?                     CustomNotifyDisplayMessagesRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CS.NotifyCustomerInformationRequest>?                 CustomNotifyCustomerInformationRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyDisplayMessagesRequest>?                     CustomNotifyDisplayMessagesRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyCustomerInformationRequest>?                 CustomNotifyCustomerInformationRequestSerializer             { get; set; }
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <CS.BinaryDataTransferRequest>?                        CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+        public CustomBinarySerializerDelegate <OCPPv2_1.CS.BinaryDataTransferRequest>?                        CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
 
         #endregion
 
         #region Charging Station Response Messages
 
-        public CustomJObjectSerializerDelegate<CS.ResetResponse>?                                    CustomResetResponseSerializer                                { get; set; }
-        public CustomJObjectSerializerDelegate<CS.UpdateFirmwareResponse>?                           CustomUpdateFirmwareResponseSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<CS.PublishFirmwareResponse>?                          CustomPublishFirmwareResponseSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<CS.UnpublishFirmwareResponse>?                        CustomUnpublishFirmwareResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetBaseReportResponse>?                            CustomGetBaseReportResponseSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetReportResponse>?                                CustomGetReportResponseSerializer                            { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetLogResponse>?                                   CustomGetLogResponseSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ResetResponse>?                                    CustomResetResponseSerializer                                { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UpdateFirmwareResponse>?                           CustomUpdateFirmwareResponseSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.PublishFirmwareResponse>?                          CustomPublishFirmwareResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UnpublishFirmwareResponse>?                        CustomUnpublishFirmwareResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetBaseReportResponse>?                            CustomGetBaseReportResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetReportResponse>?                                CustomGetReportResponseSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetLogResponse>?                                   CustomGetLogResponseSerializer                               { get; set; }
 
-        public CustomJObjectSerializerDelegate<CS.SetVariablesResponse>?                             CustomSetVariablesResponseSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetVariablesResponse>?                             CustomGetVariablesResponseSerializer                         { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SetMonitoringBaseResponse>?                        CustomSetMonitoringBaseResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetMonitoringReportResponse>?                      CustomGetMonitoringReportResponseSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SetMonitoringLevelResponse>?                       CustomSetMonitoringLevelResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SetVariableMonitoringResponse>?                    CustomSetVariableMonitoringResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<CS.ClearVariableMonitoringResponse>?                  CustomClearVariableMonitoringResponseSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SetNetworkProfileResponse>?                        CustomSetNetworkProfileResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<CS.ChangeAvailabilityResponse>?                       CustomChangeAvailabilityResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<CS.TriggerMessageResponse>?                           CustomTriggerMessageResponseSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<CS.DataTransferResponse>?                             CustomDataTransferResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetVariablesResponse>?                             CustomSetVariablesResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetVariablesResponse>?                             CustomGetVariablesResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetMonitoringBaseResponse>?                        CustomSetMonitoringBaseResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetMonitoringReportResponse>?                      CustomGetMonitoringReportResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetMonitoringLevelResponse>?                       CustomSetMonitoringLevelResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetVariableMonitoringResponse>?                    CustomSetVariableMonitoringResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearVariableMonitoringResponse>?                  CustomClearVariableMonitoringResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetNetworkProfileResponse>?                        CustomSetNetworkProfileResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ChangeAvailabilityResponse>?                       CustomChangeAvailabilityResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.TriggerMessageResponse>?                           CustomTriggerMessageResponseSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferResponse>?                             CustomDataTransferResponseSerializer                         { get; set; }
 
-        public CustomJObjectSerializerDelegate<CS.CertificateSignedResponse>?                        CustomCertificateSignedResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<CS.InstallCertificateResponse>?                       CustomInstallCertificateResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetInstalledCertificateIdsResponse>?               CustomGetInstalledCertificateIdsResponseSerializer           { get; set; }
-        public CustomJObjectSerializerDelegate<CS.DeleteCertificateResponse>?                        CustomDeleteCertificateResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<CS.NotifyCRLResponse>?                                CustomNotifyCRLResponseSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CertificateSignedResponse>?                        CustomCertificateSignedResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.InstallCertificateResponse>?                       CustomInstallCertificateResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetInstalledCertificateIdsResponse>?               CustomGetInstalledCertificateIdsResponseSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DeleteCertificateResponse>?                        CustomDeleteCertificateResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyCRLResponse>?                                CustomNotifyCRLResponseSerializer                            { get; set; }
 
-        public CustomJObjectSerializerDelegate<CS.GetLocalListVersionResponse>?                      CustomGetLocalListVersionResponseSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SendLocalListResponse>?                            CustomSendLocalListResponseSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<CS.ClearCacheResponse>?                               CustomClearCacheResponseSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetLocalListVersionResponse>?                      CustomGetLocalListVersionResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SendLocalListResponse>?                            CustomSendLocalListResponseSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearCacheResponse>?                               CustomClearCacheResponseSerializer                           { get; set; }
 
-        public CustomJObjectSerializerDelegate<CS.ReserveNowResponse>?                               CustomReserveNowResponseSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<CS.CancelReservationResponse>?                        CustomCancelReservationResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<CS.RequestStartTransactionResponse>?                  CustomRequestStartTransactionResponseSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<CS.RequestStopTransactionResponse>?                   CustomRequestStopTransactionResponseSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetTransactionStatusResponse>?                     CustomGetTransactionStatusResponseSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SetChargingProfileResponse>?                       CustomSetChargingProfileResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetChargingProfilesResponse>?                      CustomGetChargingProfilesResponseSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<CS.ClearChargingProfileResponse>?                     CustomClearChargingProfileResponseSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetCompositeScheduleResponse>?                     CustomGetCompositeScheduleResponseSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CS.UpdateDynamicScheduleResponse>?                    CustomUpdateDynamicScheduleResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<CS.NotifyAllowedEnergyTransferResponse>?              CustomNotifyAllowedEnergyTransferResponseSerializer          { get; set; }
-        public CustomJObjectSerializerDelegate<CS.UsePriorityChargingResponse>?                      CustomUsePriorityChargingResponseSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<CS.UnlockConnectorResponse>?                          CustomUnlockConnectorResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ReserveNowResponse>?                               CustomReserveNowResponseSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CancelReservationResponse>?                        CustomCancelReservationResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RequestStartTransactionResponse>?                  CustomRequestStartTransactionResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RequestStopTransactionResponse>?                   CustomRequestStopTransactionResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetTransactionStatusResponse>?                     CustomGetTransactionStatusResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetChargingProfileResponse>?                       CustomSetChargingProfileResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetChargingProfilesResponse>?                      CustomGetChargingProfilesResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearChargingProfileResponse>?                     CustomClearChargingProfileResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetCompositeScheduleResponse>?                     CustomGetCompositeScheduleResponseSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UpdateDynamicScheduleResponse>?                    CustomUpdateDynamicScheduleResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.NotifyAllowedEnergyTransferResponse>?              CustomNotifyAllowedEnergyTransferResponseSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UsePriorityChargingResponse>?                      CustomUsePriorityChargingResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.UnlockConnectorResponse>?                          CustomUnlockConnectorResponseSerializer                      { get; set; }
 
-        public CustomJObjectSerializerDelegate<CS.AFRRSignalResponse>?                               CustomAFRRSignalResponseSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.AFRRSignalResponse>?                               CustomAFRRSignalResponseSerializer                           { get; set; }
 
-        public CustomJObjectSerializerDelegate<CS.SetDisplayMessageResponse>?                        CustomSetDisplayMessageResponseSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetDisplayMessagesResponse>?                       CustomGetDisplayMessagesResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<CS.ClearDisplayMessageResponse>?                      CustomClearDisplayMessageResponseSerializer                  { get; set; }
-        public CustomJObjectSerializerDelegate<CS.CostUpdatedResponse>?                              CustomCostUpdatedResponseSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<CS.CustomerInformationResponse>?                      CustomCustomerInformationResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetDisplayMessageResponse>?                        CustomSetDisplayMessageResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetDisplayMessagesResponse>?                       CustomGetDisplayMessagesResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.ClearDisplayMessageResponse>?                      CustomClearDisplayMessageResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CostUpdatedResponse>?                              CustomCostUpdatedResponseSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.CustomerInformationResponse>?                      CustomCustomerInformationResponseSerializer                  { get; set; }
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <CS.BinaryDataTransferResponse>?                       CustomBinaryDataTransferResponseSerializer                   { get; set; }
-        public CustomBinarySerializerDelegate <CS.GetFileResponse>?                                  CustomGetFileResponseSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SendFileResponse>?                                 CustomSendFileResponseSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<CS.DeleteFileResponse>?                               CustomDeleteFileResponseSerializer                           { get; set; }
+        public CustomBinarySerializerDelegate <OCPPv2_1.CS.BinaryDataTransferResponse>?                       CustomBinaryDataTransferResponseSerializer                   { get; set; }
+        public CustomBinarySerializerDelegate <OCPPv2_1.CS.GetFileResponse>?                                  CustomGetFileResponseSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SendFileResponse>?                                 CustomSendFileResponseSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DeleteFileResponse>?                               CustomDeleteFileResponseSerializer                           { get; set; }
 
 
         // E2E Charging Tariff Extensions
-        public CustomJObjectSerializerDelegate<CS.SetDefaultChargingTariffResponse>?                 CustomSetDefaultChargingTariffResponseSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<CS.GetDefaultChargingTariffResponse>?                 CustomGetDefaultChargingTariffResponseSerializer             { get; set; }
-        public CustomJObjectSerializerDelegate<CS.RemoveDefaultChargingTariffResponse>?              CustomRemoveDefaultChargingTariffResponseSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.SetDefaultChargingTariffResponse>?                 CustomSetDefaultChargingTariffResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.GetDefaultChargingTariffResponse>?                 CustomGetDefaultChargingTariffResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.RemoveDefaultChargingTariffResponse>?              CustomRemoveDefaultChargingTariffResponseSerializer          { get; set; }
 
         #endregion
 
@@ -2276,21 +2276,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region OnTextMessageRequestReceived
+            #region OnJSONMessageRequestReceived
 
             NetworkingNodeChannel.OnJSONMessageRequestReceived += async (timestamp,
-                                                               webSocketServer,
-                                                               webSocketConnection,
-                                                               eventTrackingId,
-                                                               requestTimestamp,
-                                                               requestMessage) => {
+                                                                         webSocketServer,
+                                                                         webSocketConnection,
+                                                                         eventTrackingId,
+                                                                         requestTimestamp,
+                                                                         requestMessage) => {
 
                 var logger = OnJSONMessageRequestReceived;
                 if (logger is not null)
                 {
 
                     var loggerTasks = logger.GetInvocationList().
-                                             OfType <OnWebSocketJSONMessageRequestDelegate>().
+                                             OfType <CSMS.OnWebSocketJSONMessageRequestDelegate>().
                                              Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
                                                                                                webSocketServer,
                                                                                                webSocketConnection,
@@ -2318,17 +2318,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region OnTextMessageResponseSent
+            #region OnJSONMessageResponseSent
 
             NetworkingNodeChannel.OnJSONMessageResponseSent += async (timestamp,
-                                                            webSocketServer,
-                                                            webSocketConnection,
-                                                            eventTrackingId,
-                                                            requestTimestamp,
-                                                            jsonRequestMessage,
-                                                            binaryRequestMessage,
-                                                            responseTimestamp,
-                                                            responseMessage) => {
+                                                                      webSocketServer,
+                                                                      webSocketConnection,
+                                                                      eventTrackingId,
+                                                                      requestTimestamp,
+                                                                      jsonRequestMessage,
+                                                                      binaryRequestMessage,
+                                                                      responseTimestamp,
+                                                                      responseMessage) => {
 
 
                 var logger = OnJSONMessageResponseSent;
@@ -2336,7 +2336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     var loggerTasks = logger.GetInvocationList().
-                                             OfType <OnWebSocketJSONMessageResponseDelegate>().
+                                             OfType <CSMS.OnWebSocketJSONMessageResponseDelegate>().
                                              Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
                                                                                                webSocketServer,
                                                                                                webSocketConnection,
@@ -2367,24 +2367,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region OnTextErrorResponseSent
+            #region OnJSONErrorResponseSent
 
             NetworkingNodeChannel.OnJSONErrorResponseSent += async (timestamp,
-                                                          webSocketServer,
-                                                          webSocketConnection,
-                                                          eventTrackingId,
-                                                          requestTimestamp,
-                                                          jsonRequestMessage,
-                                                          binaryRequestMessage,
-                                                          responseTimestamp,
-                                                          responseMessage) => {
+                                                                    webSocketServer,
+                                                                    webSocketConnection,
+                                                                    eventTrackingId,
+                                                                    requestTimestamp,
+                                                                    jsonRequestMessage,
+                                                                    binaryRequestMessage,
+                                                                    responseTimestamp,
+                                                                    responseMessage) => {
 
                 var logger = OnJSONErrorResponseSent;
                 if (logger is not null)
                 {
 
                     var loggerTasks = logger.GetInvocationList().
-                                             OfType <OnWebSocketTextErrorResponseDelegate>().
+                                             OfType <CSMS.OnWebSocketTextErrorResponseDelegate>().
                                              Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
                                                                                                webSocketServer,
                                                                                                webSocketConnection,
@@ -2416,14 +2416,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             #endregion
 
 
-            #region OnTextMessageRequestSent
+            #region OnJSONMessageRequestSent
 
             NetworkingNodeChannel.OnJSONMessageRequestSent += async (timestamp,
-                                                           webSocketServer,
-                                                           webSocketConnection,
-                                                           eventTrackingId,
-                                                           requestTimestamp,
-                                                           requestMessage) => {
+                                                                     webSocketServer,
+                                                                     webSocketConnection,
+                                                                     eventTrackingId,
+                                                                     requestTimestamp,
+                                                                     requestMessage) => {
 
 
                 var logger = OnJSONMessageRequestSent;
@@ -2458,17 +2458,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region OnTextMessageResponseReceived
+            #region OnJSONMessageResponseReceived
 
             NetworkingNodeChannel.OnJSONMessageResponseReceived += async (timestamp,
-                                                                webSocketServer,
-                                                                webSocketConnection,
-                                                                eventTrackingId,
-                                                                requestTimestamp,
-                                                                jsonRequestMessage,
-                                                                binaryRequestMessage,
-                                                                responseTimestamp,
-                                                                responseMessage) => {
+                                                                          webSocketServer,
+                                                                          webSocketConnection,
+                                                                          eventTrackingId,
+                                                                          requestTimestamp,
+                                                                          jsonRequestMessage,
+                                                                          binaryRequestMessage,
+                                                                          responseTimestamp,
+                                                                          responseMessage) => {
 
 
                 var logger = OnJSONMessageResponseReceived;
@@ -2476,7 +2476,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     var loggerTasks = logger.GetInvocationList().
-                                             OfType <OnWebSocketJSONMessageResponseDelegate>().
+                                             OfType <CSMS.OnWebSocketJSONMessageResponseDelegate>().
                                              Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
                                                                                                webSocketServer,
                                                                                                webSocketConnection,
@@ -2507,24 +2507,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #endregion
 
-            #region OnTextErrorResponseReceived
+            #region OnJSONErrorResponseReceived
 
             NetworkingNodeChannel.OnJSONErrorResponseReceived += async (timestamp,
-                                                              webSocketServer,
-                                                              webSocketConnection,
-                                                              eventTrackingId,
-                                                              requestTimestamp,
-                                                              jsonRequestMessage,
-                                                              binaryRequestMessage,
-                                                              responseTimestamp,
-                                                              responseMessage) => {
+                                                                        webSocketServer,
+                                                                        webSocketConnection,
+                                                                        eventTrackingId,
+                                                                        requestTimestamp,
+                                                                        jsonRequestMessage,
+                                                                        binaryRequestMessage,
+                                                                        responseTimestamp,
+                                                                        responseMessage) => {
 
                 var logger = OnJSONErrorResponseReceived;
                 if (logger is not null)
                 {
 
                     var loggerTasks = logger.GetInvocationList().
-                                             OfType <OnWebSocketTextErrorResponseDelegate>().
+                                             OfType <CSMS.OnWebSocketTextErrorResponseDelegate>().
                                              Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
                                                                                                webSocketServer,
                                                                                                webSocketConnection,
@@ -6626,7 +6626,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                    out var errorResponse
                                )
 
-                                   ? new CSMS.BinaryDataTransferResponse(
+                                   ? new OCPPv2_1.CSMS.BinaryDataTransferResponse(
                                          Request:      request,
                                          Result:       Result.SignatureError(
                                                            $"Invalid signature(s): {errorResponse}"
@@ -6642,7 +6642,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                Data:                   responseBinaryData
                                            )
 
-                                         : new CSMS.BinaryDataTransferResponse(
+                                         : new OCPPv2_1.CSMS.BinaryDataTransferResponse(
                                                Request:                request,
                                                Status:                 BinaryDataTransferStatus.Rejected,
                                                AdditionalStatusInfo:   null,
@@ -6737,7 +6737,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Reset the given charging station.
         /// </summary>
         /// <param name="Request">A Reset request.</param>
-        public async Task<CS.ResetResponse>
+        public async Task<OCPPv2_1.CS.ResetResponse>
             Reset(ResetRequest Request)
 
         {
@@ -6776,12 +6776,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.Reset(Request)
 
-                                      : new CS.ResetResponse(
+                                      : new OCPPv2_1.CS.ResetResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.ResetResponse(
+                                : new OCPPv2_1.CS.ResetResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -6832,7 +6832,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Initiate a firmware update of the given charging station.
         /// </summary>
         /// <param name="Request">An UpdateFirmware request.</param>
-        public async Task<CS.UpdateFirmwareResponse>
+        public async Task<OCPPv2_1.CS.UpdateFirmwareResponse>
             UpdateFirmware(UpdateFirmwareRequest Request)
 
         {
@@ -6872,12 +6872,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.UpdateFirmware(Request)
 
-                                      : new CS.UpdateFirmwareResponse(
+                                      : new OCPPv2_1.CS.UpdateFirmwareResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.UpdateFirmwareResponse(
+                                : new OCPPv2_1.CS.UpdateFirmwareResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -6928,7 +6928,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Publish a firmware onto a local controller.
         /// </summary>
         /// <param name="Request">A PublishFirmware request.</param>
-        public async Task<CS.PublishFirmwareResponse>
+        public async Task<OCPPv2_1.CS.PublishFirmwareResponse>
             PublishFirmware(PublishFirmwareRequest Request)
 
         {
@@ -6967,12 +6967,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.PublishFirmware(Request)
 
-                                      : new CS.PublishFirmwareResponse(
+                                      : new OCPPv2_1.CS.PublishFirmwareResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.PublishFirmwareResponse(
+                                : new OCPPv2_1.CS.PublishFirmwareResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -7023,7 +7023,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Unpublish a firmware from a local controller.
         /// </summary>
         /// <param name="Request">An UnpublishFirmware request.</param>
-        public async Task<CS.UnpublishFirmwareResponse>
+        public async Task<OCPPv2_1.CS.UnpublishFirmwareResponse>
             UnpublishFirmware(UnpublishFirmwareRequest Request)
 
         {
@@ -7062,12 +7062,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.UnpublishFirmware(Request)
 
-                                      : new CS.UnpublishFirmwareResponse(
+                                      : new OCPPv2_1.CS.UnpublishFirmwareResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.UnpublishFirmwareResponse(
+                                : new OCPPv2_1.CS.UnpublishFirmwareResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -7117,7 +7117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Retrieve the base report from the charging station.
         /// </summary>
         /// <param name="Request">A GetBaseReport request.</param>
-        public async Task<CS.GetBaseReportResponse>
+        public async Task<OCPPv2_1.CS.GetBaseReportResponse>
             GetBaseReport(GetBaseReportRequest Request)
 
         {
@@ -7156,12 +7156,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.GetBaseReport(Request)
 
-                                      : new CS.GetBaseReportResponse(
+                                      : new OCPPv2_1.CS.GetBaseReportResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.GetBaseReportResponse(
+                                : new OCPPv2_1.CS.GetBaseReportResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -7212,7 +7212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Retrieve reports from the charging station.
         /// </summary>
         /// <param name="Request">A GetReport request.</param>
-        public async Task<CS.GetReportResponse>
+        public async Task<OCPPv2_1.CS.GetReportResponse>
             GetReport(GetReportRequest Request)
 
         {
@@ -7255,12 +7255,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.GetReport(Request)
 
-                                      : new CS.GetReportResponse(
+                                      : new OCPPv2_1.CS.GetReportResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.GetReportResponse(
+                                : new OCPPv2_1.CS.GetReportResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -7311,7 +7311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Retrieve log files from the charging station.
         /// </summary>
         /// <param name="Request">A GetLog request.</param>
-        public async Task<CS.GetLogResponse>
+        public async Task<OCPPv2_1.CS.GetLogResponse>
             GetLog(GetLogRequest Request)
 
         {
@@ -7351,12 +7351,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.GetLog(Request)
 
-                                      : new CS.GetLogResponse(
+                                      : new OCPPv2_1.CS.GetLogResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.GetLogResponse(
+                                : new OCPPv2_1.CS.GetLogResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -7408,7 +7408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set variable data on a charging station.
         /// </summary>
         /// <param name="Request">A SetVariables request.</param>
-        public async Task<CS.SetVariablesResponse>
+        public async Task<OCPPv2_1.CS.SetVariablesResponse>
             SetVariables(SetVariablesRequest Request)
 
         {
@@ -7451,12 +7451,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.SetVariables(Request)
 
-                                      : new CS.SetVariablesResponse(
+                                      : new OCPPv2_1.CS.SetVariablesResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.SetVariablesResponse(
+                                : new OCPPv2_1.CS.SetVariablesResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -7511,7 +7511,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Get variable data from a charging station.
         /// </summary>
         /// <param name="Request">A GetVariables request.</param>
-        public async Task<CS.GetVariablesResponse>
+        public async Task<OCPPv2_1.CS.GetVariablesResponse>
             GetVariables(GetVariablesRequest Request)
 
         {
@@ -7554,12 +7554,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.GetVariables(Request)
 
-                                      : new CS.GetVariablesResponse(
+                                      : new OCPPv2_1.CS.GetVariablesResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.GetVariablesResponse(
+                                : new OCPPv2_1.CS.GetVariablesResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -7614,7 +7614,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set the monitoring base of a charging station.
         /// </summary>
         /// <param name="Request">A SetMonitoringBase request.</param>
-        public async Task<CS.SetMonitoringBaseResponse>
+        public async Task<OCPPv2_1.CS.SetMonitoringBaseResponse>
             SetMonitoringBase(SetMonitoringBaseRequest Request)
 
         {
@@ -7653,12 +7653,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.SetMonitoringBase(Request)
 
-                                      : new CS.SetMonitoringBaseResponse(
+                                      : new OCPPv2_1.CS.SetMonitoringBaseResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.SetMonitoringBaseResponse(
+                                : new OCPPv2_1.CS.SetMonitoringBaseResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -7709,7 +7709,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Get monitoring report from a charging station.
         /// </summary>
         /// <param name="Request">A GetMonitoringReport request.</param>
-        public async Task<CS.GetMonitoringReportResponse>
+        public async Task<OCPPv2_1.CS.GetMonitoringReportResponse>
             GetMonitoringReport(GetMonitoringReportRequest Request)
 
         {
@@ -7752,12 +7752,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.GetMonitoringReport(Request)
 
-                                      : new CS.GetMonitoringReportResponse(
+                                      : new OCPPv2_1.CS.GetMonitoringReportResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.GetMonitoringReportResponse(
+                                : new OCPPv2_1.CS.GetMonitoringReportResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -7808,7 +7808,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set the monitoring level on a charging station.
         /// </summary>
         /// <param name="Request">A SetMonitoringLevel request.</param>
-        public async Task<CS.SetMonitoringLevelResponse>
+        public async Task<OCPPv2_1.CS.SetMonitoringLevelResponse>
             SetMonitoringLevel(SetMonitoringLevelRequest Request)
 
         {
@@ -7847,12 +7847,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.SetMonitoringLevel(Request)
 
-                                      : new CS.SetMonitoringLevelResponse(
+                                      : new OCPPv2_1.CS.SetMonitoringLevelResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.SetMonitoringLevelResponse(
+                                : new OCPPv2_1.CS.SetMonitoringLevelResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -7903,7 +7903,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set a variable monitoring on a charging station.
         /// </summary>
         /// <param name="Request">A SetVariableMonitoring request.</param>
-        public async Task<CS.SetVariableMonitoringResponse>
+        public async Task<OCPPv2_1.CS.SetVariableMonitoringResponse>
             SetVariableMonitoring(SetVariableMonitoringRequest Request)
 
         {
@@ -7947,12 +7947,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.SetVariableMonitoring(Request)
 
-                                      : new CS.SetVariableMonitoringResponse(
+                                      : new OCPPv2_1.CS.SetVariableMonitoringResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.SetVariableMonitoringResponse(
+                                : new OCPPv2_1.CS.SetVariableMonitoringResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -8007,7 +8007,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Delete a variable monitoring on a charging station.
         /// </summary>
         /// <param name="Request">A ClearVariableMonitoring request.</param>
-        public async Task<CS.ClearVariableMonitoringResponse>
+        public async Task<OCPPv2_1.CS.ClearVariableMonitoringResponse>
             ClearVariableMonitoring(ClearVariableMonitoringRequest Request)
 
         {
@@ -8046,12 +8046,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.ClearVariableMonitoring(Request)
 
-                                      : new CS.ClearVariableMonitoringResponse(
+                                      : new OCPPv2_1.CS.ClearVariableMonitoringResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.ClearVariableMonitoringResponse(
+                                : new OCPPv2_1.CS.ClearVariableMonitoringResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -8103,7 +8103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set the network profile of a charging station.
         /// </summary>
         /// <param name="Request">A SetNetworkProfile request.</param>
-        public async Task<CS.SetNetworkProfileResponse>
+        public async Task<OCPPv2_1.CS.SetNetworkProfileResponse>
             SetNetworkProfile(SetNetworkProfileRequest Request)
 
         {
@@ -8145,12 +8145,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.SetNetworkProfile(Request)
 
-                                      : new CS.SetNetworkProfileResponse(
+                                      : new OCPPv2_1.CS.SetNetworkProfileResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.SetNetworkProfileResponse(
+                                : new OCPPv2_1.CS.SetNetworkProfileResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -8201,7 +8201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Change the availability of the given charging station.
         /// </summary>
         /// <param name="Request">A ChangeAvailability request.</param>
-        public async Task<CS.ChangeAvailabilityResponse>
+        public async Task<OCPPv2_1.CS.ChangeAvailabilityResponse>
             ChangeAvailability(ChangeAvailabilityRequest Request)
 
         {
@@ -8241,12 +8241,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.ChangeAvailability(Request)
 
-                                      : new CS.ChangeAvailabilityResponse(
+                                      : new OCPPv2_1.CS.ChangeAvailabilityResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.ChangeAvailabilityResponse(
+                                : new OCPPv2_1.CS.ChangeAvailabilityResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -8297,7 +8297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Create a trigger for the given message at the given charging station connector.
         /// </summary>
         /// <param name="Request">A TriggerMessage request.</param>
-        public async Task<CS.TriggerMessageResponse>
+        public async Task<OCPPv2_1.CS.TriggerMessageResponse>
             TriggerMessage(TriggerMessageRequest Request)
 
         {
@@ -8337,12 +8337,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.TriggerMessage(Request)
 
-                                      : new CS.TriggerMessageResponse(
+                                      : new OCPPv2_1.CS.TriggerMessageResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.TriggerMessageResponse(
+                                : new OCPPv2_1.CS.TriggerMessageResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -8393,7 +8393,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Transfer the given data to the given charging station.
         /// </summary>
         /// <param name="Request">A DataTransfer request.</param>
-        public async Task<CS.DataTransferResponse>
+        public async Task<OCPPv2_1.CS.DataTransferResponse>
             TransferData(DataTransferRequest Request)
 
         {
@@ -8432,12 +8432,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.TransferData(Request)
 
-                                      : new CS.DataTransferResponse(
+                                      : new OCPPv2_1.CS.DataTransferResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.DataTransferResponse(
+                                : new OCPPv2_1.CS.DataTransferResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -8489,7 +8489,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send the signed certificate to the given charging station.
         /// </summary>
         /// <param name="Request">A CertificateSigned request.</param>
-        public async Task<CS.CertificateSignedResponse>
+        public async Task<OCPPv2_1.CS.CertificateSignedResponse>
             SendSignedCertificate(CertificateSignedRequest Request)
 
         {
@@ -8528,12 +8528,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.SendSignedCertificate(Request)
 
-                                      : new CS.CertificateSignedResponse(
+                                      : new OCPPv2_1.CS.CertificateSignedResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.CertificateSignedResponse(
+                                : new OCPPv2_1.CS.CertificateSignedResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -8584,7 +8584,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Install the given certificate within the charging station.
         /// </summary>
         /// <param name="Request">A InstallCertificate request.</param>
-        public async Task<CS.InstallCertificateResponse>
+        public async Task<OCPPv2_1.CS.InstallCertificateResponse>
             InstallCertificate(InstallCertificateRequest Request)
 
         {
@@ -8623,12 +8623,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.InstallCertificate(Request)
 
-                                      : new CS.InstallCertificateResponse(
+                                      : new OCPPv2_1.CS.InstallCertificateResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.InstallCertificateResponse(
+                                : new OCPPv2_1.CS.InstallCertificateResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -8679,7 +8679,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Retrieve a list of all installed certificates within the charging station.
         /// </summary>
         /// <param name="Request">A GetInstalledCertificateIds request.</param>
-        public async Task<CS.GetInstalledCertificateIdsResponse>
+        public async Task<OCPPv2_1.CS.GetInstalledCertificateIdsResponse>
             GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
 
         {
@@ -8718,12 +8718,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.GetInstalledCertificateIds(Request)
 
-                                      : new CS.GetInstalledCertificateIdsResponse(
+                                      : new OCPPv2_1.CS.GetInstalledCertificateIdsResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.GetInstalledCertificateIdsResponse(
+                                : new OCPPv2_1.CS.GetInstalledCertificateIdsResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -8775,7 +8775,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Delete the given certificate on the charging station.
         /// </summary>
         /// <param name="Request">A DeleteCertificate request.</param>
-        public async Task<CS.DeleteCertificateResponse>
+        public async Task<OCPPv2_1.CS.DeleteCertificateResponse>
             DeleteCertificate(DeleteCertificateRequest Request)
 
         {
@@ -8815,12 +8815,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.DeleteCertificate(Request)
 
-                                      : new CS.DeleteCertificateResponse(
+                                      : new OCPPv2_1.CS.DeleteCertificateResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.DeleteCertificateResponse(
+                                : new OCPPv2_1.CS.DeleteCertificateResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -8871,7 +8871,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Delete the given certificate on the charging station.
         /// </summary>
         /// <param name="Request">A NotifyCRLAvailability request.</param>
-        public async Task<CS.NotifyCRLResponse>
+        public async Task<OCPPv2_1.CS.NotifyCRLResponse>
             NotifyCRLAvailability(NotifyCRLRequest Request)
 
         {
@@ -8910,12 +8910,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.NotifyCRLAvailability(Request)
 
-                                      : new CS.NotifyCRLResponse(
+                                      : new OCPPv2_1.CS.NotifyCRLResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.NotifyCRLResponse(
+                                : new OCPPv2_1.CS.NotifyCRLResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -8966,7 +8966,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Return the local white list of the given charging station.
         /// </summary>
         /// <param name="Request">A GetLocalListVersion request.</param>
-        public async Task<CS.GetLocalListVersionResponse>
+        public async Task<OCPPv2_1.CS.GetLocalListVersionResponse>
             GetLocalListVersion(GetLocalListVersionRequest Request)
 
         {
@@ -9005,12 +9005,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.GetLocalListVersion(Request)
 
-                                      : new CS.GetLocalListVersionResponse(
+                                      : new OCPPv2_1.CS.GetLocalListVersionResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.GetLocalListVersionResponse(
+                                : new OCPPv2_1.CS.GetLocalListVersionResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -9060,7 +9060,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set the local white liste at the given charging station.
         /// </summary>
         /// <param name="Request">A SendLocalList request.</param>
-        public async Task<CS.SendLocalListResponse>
+        public async Task<OCPPv2_1.CS.SendLocalListResponse>
             SendLocalList(SendLocalListRequest Request)
 
         {
@@ -9104,12 +9104,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.SendLocalList(Request)
 
-                                      : new CS.SendLocalListResponse(
+                                      : new OCPPv2_1.CS.SendLocalListResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.SendLocalListResponse(
+                                : new OCPPv2_1.CS.SendLocalListResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -9160,7 +9160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Clear the local white liste cache of the given charging station.
         /// </summary>
         /// <param name="Request">A ClearCache request.</param>
-        public async Task<CS.ClearCacheResponse>
+        public async Task<OCPPv2_1.CS.ClearCacheResponse>
             ClearCache(ClearCacheRequest Request)
 
         {
@@ -9199,12 +9199,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.ClearCache(Request)
 
-                                      : new CS.ClearCacheResponse(
+                                      : new OCPPv2_1.CS.ClearCacheResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.ClearCacheResponse(
+                                : new OCPPv2_1.CS.ClearCacheResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -9256,7 +9256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Create a charging reservation of the given charging station connector.
         /// </summary>
         /// <param name="Request">A ReserveNow request.</param>
-        public async Task<CS.ReserveNowResponse>
+        public async Task<OCPPv2_1.CS.ReserveNowResponse>
             ReserveNow(ReserveNowRequest Request)
 
         {
@@ -9297,12 +9297,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.ReserveNow(Request)
 
-                                      : new CS.ReserveNowResponse(
+                                      : new OCPPv2_1.CS.ReserveNowResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.ReserveNowResponse(
+                                : new OCPPv2_1.CS.ReserveNowResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -9353,7 +9353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Cancel the given charging reservation at the given charging station.
         /// </summary>
         /// <param name="Request">A CancelReservation request.</param>
-        public async Task<CS.CancelReservationResponse>
+        public async Task<OCPPv2_1.CS.CancelReservationResponse>
             CancelReservation(CancelReservationRequest Request)
 
         {
@@ -9392,12 +9392,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.CancelReservation(Request)
 
-                                      : new CS.CancelReservationResponse(
+                                      : new OCPPv2_1.CS.CancelReservationResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.CancelReservationResponse(
+                                : new OCPPv2_1.CS.CancelReservationResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -9448,7 +9448,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A StartCharging request.</param>
-        public async Task<CS.RequestStartTransactionResponse>
+        public async Task<OCPPv2_1.CS.RequestStartTransactionResponse>
             StartCharging(RequestStartTransactionRequest Request)
 
         {
@@ -9514,12 +9514,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.StartCharging(Request)
 
-                                      : new CS.RequestStartTransactionResponse(
+                                      : new OCPPv2_1.CS.RequestStartTransactionResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.RequestStartTransactionResponse(
+                                : new OCPPv2_1.CS.RequestStartTransactionResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -9570,7 +9570,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A StopCharging request.</param>
-        public async Task<CS.RequestStopTransactionResponse>
+        public async Task<OCPPv2_1.CS.RequestStopTransactionResponse>
             StopCharging(RequestStopTransactionRequest Request)
 
         {
@@ -9609,12 +9609,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.StopCharging(Request)
 
-                                      : new CS.RequestStopTransactionResponse(
+                                      : new OCPPv2_1.CS.RequestStopTransactionResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.RequestStopTransactionResponse(
+                                : new OCPPv2_1.CS.RequestStopTransactionResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -9665,7 +9665,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A GetTransactionStatus request.</param>
-        public async Task<CS.GetTransactionStatusResponse>
+        public async Task<OCPPv2_1.CS.GetTransactionStatusResponse>
             GetTransactionStatus(GetTransactionStatusRequest Request)
 
         {
@@ -9704,12 +9704,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.GetTransactionStatus(Request)
 
-                                      : new CS.GetTransactionStatusResponse(
+                                      : new OCPPv2_1.CS.GetTransactionStatusResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.GetTransactionStatusResponse(
+                                : new OCPPv2_1.CS.GetTransactionStatusResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -9759,7 +9759,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A SetChargingProfile request.</param>
-        public async Task<CS.SetChargingProfileResponse>
+        public async Task<OCPPv2_1.CS.SetChargingProfileResponse>
             SetChargingProfile(SetChargingProfileRequest Request)
 
         {
@@ -9821,12 +9821,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.SetChargingProfile(Request)
 
-                                      : new CS.SetChargingProfileResponse(
+                                      : new OCPPv2_1.CS.SetChargingProfileResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.SetChargingProfileResponse(
+                                : new OCPPv2_1.CS.SetChargingProfileResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -9877,7 +9877,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set the charging profile of the given charging station connector.
         /// </summary>
         /// <param name="Request">A GetChargingProfiles request.</param>
-        public async Task<CS.GetChargingProfilesResponse>
+        public async Task<OCPPv2_1.CS.GetChargingProfilesResponse>
             GetChargingProfiles(GetChargingProfilesRequest Request)
 
         {
@@ -9917,12 +9917,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.GetChargingProfiles(Request)
 
-                                      : new CS.GetChargingProfilesResponse(
+                                      : new OCPPv2_1.CS.GetChargingProfilesResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.GetChargingProfilesResponse(
+                                : new OCPPv2_1.CS.GetChargingProfilesResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -9973,7 +9973,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Remove the charging profile at the given charging station connector.
         /// </summary>
         /// <param name="Request">A ClearChargingProfile request.</param>
-        public async Task<CS.ClearChargingProfileResponse>
+        public async Task<OCPPv2_1.CS.ClearChargingProfileResponse>
             ClearChargingProfile(ClearChargingProfileRequest Request)
 
         {
@@ -10013,12 +10013,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.ClearChargingProfile(Request)
 
-                                      : new CS.ClearChargingProfileResponse(
+                                      : new OCPPv2_1.CS.ClearChargingProfileResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.ClearChargingProfileResponse(
+                                : new OCPPv2_1.CS.ClearChargingProfileResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -10069,7 +10069,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Return the charging schedule of the given charging station connector.
         /// </summary>
         /// <param name="Request">A GetCompositeSchedule request.</param>
-        public async Task<CS.GetCompositeScheduleResponse>
+        public async Task<OCPPv2_1.CS.GetCompositeScheduleResponse>
             GetCompositeSchedule(GetCompositeScheduleRequest Request)
 
         {
@@ -10108,12 +10108,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.GetCompositeSchedule(Request)
 
-                                      : new CS.GetCompositeScheduleResponse(
+                                      : new OCPPv2_1.CS.GetCompositeScheduleResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.GetCompositeScheduleResponse(
+                                : new OCPPv2_1.CS.GetCompositeScheduleResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -10166,7 +10166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Update the dynamic charging schedule for the given charging profile.
         /// </summary>
         /// <param name="Request">A UpdateDynamicSchedule request.</param>
-        public async Task<CS.UpdateDynamicScheduleResponse>
+        public async Task<OCPPv2_1.CS.UpdateDynamicScheduleResponse>
             UpdateDynamicSchedule(UpdateDynamicScheduleRequest Request)
 
         {
@@ -10205,12 +10205,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.UpdateDynamicSchedule(Request)
 
-                                      : new CS.UpdateDynamicScheduleResponse(
+                                      : new OCPPv2_1.CS.UpdateDynamicScheduleResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.UpdateDynamicScheduleResponse(
+                                : new OCPPv2_1.CS.UpdateDynamicScheduleResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -10261,7 +10261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Unlock the given charging station connector.
         /// </summary>
         /// <param name="Request">A NotifyAllowedEnergyTransfer request.</param>
-        public async Task<CS.NotifyAllowedEnergyTransferResponse>
+        public async Task<OCPPv2_1.CS.NotifyAllowedEnergyTransferResponse>
             NotifyAllowedEnergyTransfer(NotifyAllowedEnergyTransferRequest Request)
 
         {
@@ -10300,12 +10300,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.NotifyAllowedEnergyTransfer(Request)
 
-                                      : new CS.NotifyAllowedEnergyTransferResponse(
+                                      : new OCPPv2_1.CS.NotifyAllowedEnergyTransferResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.NotifyAllowedEnergyTransferResponse(
+                                : new OCPPv2_1.CS.NotifyAllowedEnergyTransferResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -10356,7 +10356,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Switch to the priority charging profile.
         /// </summary>
         /// <param name="Request">A UsePriorityCharging request.</param>
-        public async Task<CS.UsePriorityChargingResponse>
+        public async Task<OCPPv2_1.CS.UsePriorityChargingResponse>
             UsePriorityCharging(UsePriorityChargingRequest Request)
 
         {
@@ -10395,12 +10395,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.UsePriorityCharging(Request)
 
-                                      : new CS.UsePriorityChargingResponse(
+                                      : new OCPPv2_1.CS.UsePriorityChargingResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.UsePriorityChargingResponse(
+                                : new OCPPv2_1.CS.UsePriorityChargingResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -10451,7 +10451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Unlock the given charging station connector.
         /// </summary>
         /// <param name="Request">A UnlockConnector request.</param>
-        public async Task<CS.UnlockConnectorResponse>
+        public async Task<OCPPv2_1.CS.UnlockConnectorResponse>
             UnlockConnector(UnlockConnectorRequest Request)
 
         {
@@ -10490,12 +10490,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.UnlockConnector(Request)
 
-                                      : new CS.UnlockConnectorResponse(
+                                      : new OCPPv2_1.CS.UnlockConnectorResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.UnlockConnectorResponse(
+                                : new OCPPv2_1.CS.UnlockConnectorResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -10549,7 +10549,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// from the v2xSignalWattCurve in the charging schedule period.
         /// </summary>
         /// <param name="Request">A AFRRSignal request.</param>
-        public async Task<CS.AFRRSignalResponse>
+        public async Task<OCPPv2_1.CS.AFRRSignalResponse>
             SendAFRRSignal(AFRRSignalRequest Request)
 
         {
@@ -10588,12 +10588,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.SendAFRRSignal(Request)
 
-                                      : new CS.AFRRSignalResponse(
+                                      : new OCPPv2_1.CS.AFRRSignalResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.AFRRSignalResponse(
+                                : new OCPPv2_1.CS.AFRRSignalResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -10645,7 +10645,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A SetDisplayMessage request.</param>
-        public async Task<CS.SetDisplayMessageResponse>
+        public async Task<OCPPv2_1.CS.SetDisplayMessageResponse>
             SetDisplayMessage(SetDisplayMessageRequest Request)
 
         {
@@ -10688,12 +10688,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.SetDisplayMessage(Request)
 
-                                      : new CS.SetDisplayMessageResponse(
+                                      : new OCPPv2_1.CS.SetDisplayMessageResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.SetDisplayMessageResponse(
+                                : new OCPPv2_1.CS.SetDisplayMessageResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -10744,7 +10744,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Get all display messages.
         /// </summary>
         /// <param name="Request">A GetDisplayMessages request.</param>
-        public async Task<CS.GetDisplayMessagesResponse>
+        public async Task<OCPPv2_1.CS.GetDisplayMessagesResponse>
             GetDisplayMessages(GetDisplayMessagesRequest Request)
 
         {
@@ -10783,12 +10783,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.GetDisplayMessages(Request)
 
-                                      : new CS.GetDisplayMessagesResponse(
+                                      : new OCPPv2_1.CS.GetDisplayMessagesResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.GetDisplayMessagesResponse(
+                                : new OCPPv2_1.CS.GetDisplayMessagesResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -10839,7 +10839,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Remove a display message.
         /// </summary>
         /// <param name="Request">A ClearDisplayMessage request.</param>
-        public async Task<CS.ClearDisplayMessageResponse>
+        public async Task<OCPPv2_1.CS.ClearDisplayMessageResponse>
             ClearDisplayMessage(ClearDisplayMessageRequest Request)
 
         {
@@ -10878,12 +10878,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.ClearDisplayMessage(Request)
 
-                                      : new CS.ClearDisplayMessageResponse(
+                                      : new OCPPv2_1.CS.ClearDisplayMessageResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.ClearDisplayMessageResponse(
+                                : new OCPPv2_1.CS.ClearDisplayMessageResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -10934,7 +10934,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send updated total costs.
         /// </summary>
         /// <param name="Request">A CostUpdated request.</param>
-        public async Task<CS.CostUpdatedResponse>
+        public async Task<OCPPv2_1.CS.CostUpdatedResponse>
             SendCostUpdated(CostUpdatedRequest Request)
 
         {
@@ -10974,12 +10974,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.SendCostUpdated(Request)
 
-                                      : new CS.CostUpdatedResponse(
+                                      : new OCPPv2_1.CS.CostUpdatedResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.CostUpdatedResponse(
+                                : new OCPPv2_1.CS.CostUpdatedResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11029,7 +11029,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Request customer information.
         /// </summary>
         /// <param name="Request">A CostUpdated request.</param>
-        public async Task<CS.CustomerInformationResponse>
+        public async Task<OCPPv2_1.CS.CustomerInformationResponse>
             RequestCustomerInformation(CustomerInformationRequest Request)
 
         {
@@ -11072,12 +11072,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.RequestCustomerInformation(Request)
 
-                                      : new CS.CustomerInformationResponse(
+                                      : new OCPPv2_1.CS.CustomerInformationResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.CustomerInformationResponse(
+                                : new OCPPv2_1.CS.CustomerInformationResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11131,7 +11131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Transfer the given data to the given charging station.
         /// </summary>
         /// <param name="Request">A BinaryDataTransfer request.</param>
-        public async Task<CS.BinaryDataTransferResponse>
+        public async Task<OCPPv2_1.CS.BinaryDataTransferResponse>
             TransferBinaryData(BinaryDataTransferRequest Request)
 
         {
@@ -11170,12 +11170,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.TransferBinaryData(Request)
 
-                                      : new CS.BinaryDataTransferResponse(
+                                      : new OCPPv2_1.CS.BinaryDataTransferResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.BinaryDataTransferResponse(
+                                : new OCPPv2_1.CS.BinaryDataTransferResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11226,7 +11226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Request the given file from the charging station.
         /// </summary>
         /// <param name="Request">A GetFile request.</param>
-        public async Task<CS.GetFileResponse>
+        public async Task<OCPPv2_1.CS.GetFileResponse>
             GetFile(GetFileRequest Request)
 
         {
@@ -11265,12 +11265,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.GetFile(Request)
 
-                                      : new CS.GetFileResponse(
+                                      : new OCPPv2_1.CS.GetFileResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.GetFileResponse(
+                                : new OCPPv2_1.CS.GetFileResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11321,7 +11321,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Request the given file from the charging station.
         /// </summary>
         /// <param name="Request">A SendFile request.</param>
-        public async Task<CS.SendFileResponse>
+        public async Task<OCPPv2_1.CS.SendFileResponse>
             SendFile(SendFileRequest Request)
 
         {
@@ -11360,12 +11360,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.SendFile(Request)
 
-                                      : new CS.SendFileResponse(
+                                      : new OCPPv2_1.CS.SendFileResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.SendFileResponse(
+                                : new OCPPv2_1.CS.SendFileResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11415,7 +11415,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Delete the given file from the charging station.
         /// </summary>
         /// <param name="Request">A DeleteFile request.</param>
-        public async Task<CS.DeleteFileResponse>
+        public async Task<OCPPv2_1.CS.DeleteFileResponse>
             DeleteFile(DeleteFileRequest Request)
 
         {
@@ -11454,12 +11454,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.DeleteFile(Request)
 
-                                      : new CS.DeleteFileResponse(
+                                      : new OCPPv2_1.CS.DeleteFileResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.DeleteFileResponse(
+                                : new OCPPv2_1.CS.DeleteFileResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11512,7 +11512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Add a signature policy.
         /// </summary>
         /// <param name="Request">An AddSignaturePolicy request.</param>
-        public async Task<CS.AddSignaturePolicyResponse>
+        public async Task<OCPPv2_1.CS.AddSignaturePolicyResponse>
             AddSignaturePolicy(AddSignaturePolicyRequest Request)
 
         {
@@ -11555,12 +11555,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.AddSignaturePolicy(Request)
 
-                                      : new CS.AddSignaturePolicyResponse(
+                                      : new OCPPv2_1.CS.AddSignaturePolicyResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.AddSignaturePolicyResponse(
+                                : new OCPPv2_1.CS.AddSignaturePolicyResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11611,7 +11611,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A UpdateSignaturePolicy request.</param>
-        public async Task<CS.UpdateSignaturePolicyResponse>
+        public async Task<OCPPv2_1.CS.UpdateSignaturePolicyResponse>
             UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request)
 
         {
@@ -11654,12 +11654,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.UpdateSignaturePolicy(Request)
 
-                                      : new CS.UpdateSignaturePolicyResponse(
+                                      : new OCPPv2_1.CS.UpdateSignaturePolicyResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.UpdateSignaturePolicyResponse(
+                                : new OCPPv2_1.CS.UpdateSignaturePolicyResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11710,7 +11710,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A DeleteSignaturePolicy request.</param>
-        public async Task<CS.DeleteSignaturePolicyResponse>
+        public async Task<OCPPv2_1.CS.DeleteSignaturePolicyResponse>
             DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request)
 
         {
@@ -11753,12 +11753,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.DeleteSignaturePolicy(Request)
 
-                                      : new CS.DeleteSignaturePolicyResponse(
+                                      : new OCPPv2_1.CS.DeleteSignaturePolicyResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.DeleteSignaturePolicyResponse(
+                                : new OCPPv2_1.CS.DeleteSignaturePolicyResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11809,7 +11809,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A AddUserRole request.</param>
-        public async Task<CS.AddUserRoleResponse>
+        public async Task<OCPPv2_1.CS.AddUserRoleResponse>
             AddUserRole(AddUserRoleRequest Request)
 
         {
@@ -11852,12 +11852,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.AddUserRole(Request)
 
-                                      : new CS.AddUserRoleResponse(
+                                      : new OCPPv2_1.CS.AddUserRoleResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.AddUserRoleResponse(
+                                : new OCPPv2_1.CS.AddUserRoleResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11908,7 +11908,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A UpdateUserRole request.</param>
-        public async Task<CS.UpdateUserRoleResponse>
+        public async Task<OCPPv2_1.CS.UpdateUserRoleResponse>
             UpdateUserRole(UpdateUserRoleRequest Request)
 
         {
@@ -11951,12 +11951,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.UpdateUserRole(Request)
 
-                                      : new CS.UpdateUserRoleResponse(
+                                      : new OCPPv2_1.CS.UpdateUserRoleResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.UpdateUserRoleResponse(
+                                : new OCPPv2_1.CS.UpdateUserRoleResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -12007,7 +12007,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A DeleteUserRole request.</param>
-        public async Task<CS.DeleteUserRoleResponse>
+        public async Task<OCPPv2_1.CS.DeleteUserRoleResponse>
             DeleteUserRole(DeleteUserRoleRequest Request)
 
         {
@@ -12050,12 +12050,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.DeleteUserRole(Request)
 
-                                      : new CS.DeleteUserRoleResponse(
+                                      : new OCPPv2_1.CS.DeleteUserRoleResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.DeleteUserRoleResponse(
+                                : new OCPPv2_1.CS.DeleteUserRoleResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -12110,7 +12110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// or for a subset of EVSEs of the charging station.
         /// </summary>
         /// <param name="Request">An SetDefaultChargingTariff request.</param>
-        public async Task<CS.SetDefaultChargingTariffResponse>
+        public async Task<OCPPv2_1.CS.SetDefaultChargingTariffResponse>
             SetDefaultChargingTariff(SetDefaultChargingTariffRequest Request)
 
         {
@@ -12160,12 +12160,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.SetDefaultChargingTariff(Request)
 
-                                      : new CS.SetDefaultChargingTariffResponse(
+                                      : new OCPPv2_1.CS.SetDefaultChargingTariffResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.SetDefaultChargingTariffResponse(
+                                : new OCPPv2_1.CS.SetDefaultChargingTariffResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -12217,7 +12217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Get the default charging tariff(s) for the charging station and its EVSEs.
         /// </summary>
         /// <param name="Request">An GetDefaultChargingTariff request.</param>
-        public async Task<CS.GetDefaultChargingTariffResponse>
+        public async Task<OCPPv2_1.CS.GetDefaultChargingTariffResponse>
             GetDefaultChargingTariff(GetDefaultChargingTariffRequest Request)
 
         {
@@ -12256,12 +12256,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.GetDefaultChargingTariff(Request)
 
-                                      : new CS.GetDefaultChargingTariffResponse(
+                                      : new OCPPv2_1.CS.GetDefaultChargingTariffResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.GetDefaultChargingTariffResponse(
+                                : new OCPPv2_1.CS.GetDefaultChargingTariffResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -12324,7 +12324,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// or of a subset of EVSEs of the charging station.
         /// </summary>
         /// <param name="Request">An RemoveDefaultChargingTariff request.</param>
-        public async Task<CS.RemoveDefaultChargingTariffResponse>
+        public async Task<OCPPv2_1.CS.RemoveDefaultChargingTariffResponse>
             RemoveDefaultChargingTariff(RemoveDefaultChargingTariffRequest Request)
 
         {
@@ -12363,12 +12363,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                       ? await centralSystem.Item1.RemoveDefaultChargingTariff(Request)
 
-                                      : new CS.RemoveDefaultChargingTariffResponse(
+                                      : new OCPPv2_1.CS.RemoveDefaultChargingTariffResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.RemoveDefaultChargingTariffResponse(
+                                : new OCPPv2_1.CS.RemoveDefaultChargingTariffResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );

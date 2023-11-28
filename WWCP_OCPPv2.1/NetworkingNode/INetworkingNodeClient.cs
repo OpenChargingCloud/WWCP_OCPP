@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         CustomJObjectSerializerDelegate<TriggerMessageRequest>?                               CustomTriggerMessageRequestSerializer                        { get; set; }
 
-        CustomJObjectSerializerDelegate<CSMS.DataTransferRequest>?                            CustomDataTransferRequestSerializer                          { get; set; }
+        CustomJObjectSerializerDelegate<OCPPv2_1.CSMS.DataTransferRequest>?                   CustomDataTransferRequestSerializer                          { get; set; }
 
 
         CustomJObjectSerializerDelegate<CertificateSignedRequest>?                            CustomCertificateSignedRequestSerializer                     { get; set; }
@@ -365,7 +365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send the given vendor-specific data.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        Task<CS.DataTransferResponse> TransferData(CSMS.DataTransferRequest Request);
+        Task<OCPPv2_1.CS.DataTransferResponse> TransferData(OCPPv2_1.CSMS.DataTransferRequest Request);
 
         #endregion
 
@@ -655,7 +655,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send the given vendor-specific binary data.
         /// </summary>
         /// <param name="Request">A binary data transfer request.</param>
-        Task<CS.BinaryDataTransferResponse> TransferBinaryData(CSMS.BinaryDataTransferRequest Request);
+        Task<OCPPv2_1.CS.BinaryDataTransferResponse> TransferBinaryData(OCPPv2_1.CSMS.BinaryDataTransferRequest Request);
 
         #endregion
 
@@ -665,7 +665,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Request to download the specified file.
         /// </summary>
         /// <param name="Request">A GetFile request.</param>
-        Task<CS.GetFileResponse> GetFile(GetFileRequest Request);
+        Task<OCPPv2_1.CS.GetFileResponse> GetFile(GetFileRequest Request);
 
         #endregion
 
@@ -675,7 +675,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Send the given file to the charging station.
         /// </summary>
         /// <param name="Request">A SendFile request.</param>
-        Task<CS.SendFileResponse> SendFile(SendFileRequest Request);
+        Task<OCPPv2_1.CS.SendFileResponse> SendFile(SendFileRequest Request);
 
         #endregion
 
@@ -685,7 +685,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Delete the given file from the charging station.
         /// </summary>
         /// <param name="Request">A DeleteFile request.</param>
-        Task<CS.DeleteFileResponse> DeleteFile(DeleteFileRequest Request);
+        Task<OCPPv2_1.CS.DeleteFileResponse> DeleteFile(DeleteFileRequest Request);
 
         #endregion
 

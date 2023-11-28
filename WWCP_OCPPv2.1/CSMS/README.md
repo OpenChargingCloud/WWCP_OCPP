@@ -1,4 +1,4 @@
-WWCP OCPP v2.0
+WWCP OCPP v2.1
 ==============
 
 This software will allow the communication between World Wide Charging

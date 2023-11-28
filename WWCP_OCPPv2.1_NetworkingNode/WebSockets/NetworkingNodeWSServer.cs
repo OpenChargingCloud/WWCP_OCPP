@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Events
 
-        public event OnNewNetworkingNodeWSConnectionDelegate?  OnNewNetworkingNodeWSConnection;
+        public event CSMS.OnNewNetworkingNodeWSConnectionDelegate?  OnNewNetworkingNodeWSConnection;
 
 
         #region Generic JSON Messages
@@ -132,33 +132,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a text message request was received.
         /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
+        public event CSMS.OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
 
         /// <summary>
         /// An event sent whenever the response to a text message was sent.
         /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
+        public event CSMS.OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
 
         /// <summary>
         /// An event sent whenever the error response to a text message was sent.
         /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
+        public event CSMS.OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
 
 
         /// <summary>
         /// An event sent whenever a text message request was sent.
         /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
+        public event CSMS.OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever the response to a text message request was received.
         /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
+        public event CSMS.OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
 
         /// <summary>
         /// An event sent whenever an error response to a text message request was received.
         /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
+        public event CSMS.OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
 
         #endregion
 
@@ -167,33 +167,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// An event sent whenever a binary message request was received.
         /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
+        public event CSMS.OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
 
         /// <summary>
         /// An event sent whenever the response to a binary message was sent.
         /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
+        public event CSMS.OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
 
         /// <summary>
         /// An event sent whenever the error response to a binary message was sent.
         /// </summary>
-        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
+        //public event CSMS.OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
 
 
         /// <summary>
         /// An event sent whenever a binary message request was sent.
         /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
+        public event CSMS.OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
 
         /// <summary>
         /// An event sent whenever the response to a binary message request was received.
         /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
+        public event CSMS.OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
 
         /// <summary>
         /// An event sent whenever the error response to a binary message request was sent.
         /// </summary>
-        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
+        //public event CSMS.OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
 
         #endregion
 
@@ -649,7 +649,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var loggerTasks = requestLogger.GetInvocationList().
-                                                        OfType <OnWebSocketJSONMessageRequestDelegate>().
+                                                        OfType <CSMS.OnWebSocketJSONMessageRequestDelegate>().
                                                         Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                                           this,
                                                                                                           Connection,
@@ -744,7 +744,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                         {
 
                             var loggerTasks = logger.GetInvocationList().
-                                                     OfType <OnWebSocketJSONMessageResponseDelegate>().
+                                                     OfType <CSMS.OnWebSocketJSONMessageResponseDelegate>().
                                                      Select (loggingDelegate => loggingDelegate.Invoke(now,
                                                                                                        this,
                                                                                                        Connection,
@@ -896,7 +896,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 {
 
                     var loggerTasks = logger.GetInvocationList().
-                                             OfType <OnWebSocketTextErrorResponseDelegate>().
+                                             OfType <CSMS.OnWebSocketTextErrorResponseDelegate>().
                                              Select (loggingDelegate => loggingDelegate.Invoke(now,
                                                                                                this,
                                                                                                Connection,
@@ -970,7 +970,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         var loggerTasks = requestLogger.GetInvocationList().
-                                                        OfType <OnWebSocketBinaryMessageRequestDelegate>().
+                                                        OfType <CSMS.OnWebSocketBinaryMessageRequestDelegate>().
                                                         Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
                                                                                                           this,
                                                                                                           Connection,
@@ -1123,12 +1123,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="Action">An OCPP action.</param>
         /// <param name="JSONData">The JSON payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
-        public async Task<SendOCPPMessageResults> SendJSONData(EventTracking_Id    EventTrackingId,
-                                                               Request_Id          RequestId,
-                                                               ChargingStation_Id  ChargingStationId,
-                                                               String              Action,
-                                                               JObject             JSONData,
-                                                               DateTime            RequestTimeout)
+        public async Task<CSMS.SendOCPPMessageResults> SendJSONData(EventTracking_Id    EventTrackingId,
+                                                                    Request_Id          RequestId,
+                                                                    ChargingStation_Id  ChargingStationId,
+                                                                    String              Action,
+                                                                    JObject             JSONData,
+                                                                    DateTime            RequestTimeout)
         {
 
             var jsonRequestMessage  = new OCPP_JSONRequestMessage(
@@ -1199,16 +1199,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     }
 
-                    return SendOCPPMessageResults.Success;
+                    return CSMS.SendOCPPMessageResults.Success;
 
                 }
                 else
-                    return SendOCPPMessageResults.UnknownClient;
+                    return CSMS.SendOCPPMessageResults.UnknownClient;
 
             }
             catch (Exception)
             {
-                return SendOCPPMessageResults.TransmissionFailed;
+                return CSMS.SendOCPPMessageResults.TransmissionFailed;
             }
 
         }
@@ -1226,12 +1226,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <param name="Action">An OCPP action.</param>
         /// <param name="BinaryData">The binary payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
-        public async Task<SendOCPPMessageResults> SendBinaryData(EventTracking_Id    EventTrackingId,
-                                                                 Request_Id          RequestId,
-                                                                 ChargingStation_Id  ChargingStationId,
-                                                                 String              Action,
-                                                                 Byte[]              BinaryData,
-                                                                 DateTime            RequestTimeout)
+        public async Task<CSMS.SendOCPPMessageResults> SendBinaryData(EventTracking_Id    EventTrackingId,
+                                                                      Request_Id          RequestId,
+                                                                      ChargingStation_Id  ChargingStationId,
+                                                                      String              Action,
+                                                                      Byte[]              BinaryData,
+                                                                      DateTime            RequestTimeout)
         {
 
             var binaryRequestMessage  = new OCPP_BinaryRequestMessage(
@@ -1302,16 +1302,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     }
 
-                    return SendOCPPMessageResults.Success;
+                    return CSMS.SendOCPPMessageResults.Success;
 
                 }
                 else
-                    return SendOCPPMessageResults.UnknownClient;
+                    return CSMS.SendOCPPMessageResults.UnknownClient;
 
             }
             catch (Exception)
             {
-                return SendOCPPMessageResults.TransmissionFailed;
+                return CSMS.SendOCPPMessageResults.TransmissionFailed;
             }
 
         }
@@ -1340,7 +1340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                       endTime
                                   );
 
-            if (sendJSONResult == SendOCPPMessageResults.Success) {
+            if (sendJSONResult == CSMS.SendOCPPMessageResults.Success) {
 
                 #region Wait for a response... till timeout
 
@@ -1449,7 +1449,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                       endTime
                                   );
 
-            if (sendJSONResult == SendOCPPMessageResults.Success) {
+            if (sendJSONResult == CSMS.SendOCPPMessageResults.Success) {
 
                 #region Wait for a response... till timeout
 
