@@ -132,23 +132,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
     // Incoming JSON requests
 
-    public delegate Task  OnWebSocketClientJSONMessageResponseDelegate  (DateTime                  Timestamp,
-                                                                         ChargingStationWSClient   Client,
-                                                                         EventTracking_Id          EventTrackingId,
-                                                                         DateTime                  RequestTimestamp,
-                                                                         JArray?                   JSONRequestMessage,
-                                                                         Byte[]?                   BinaryRequestMessage,
-                                                                         DateTime                  ResponseTimestamp,
-                                                                         JArray                    ResponseMessage);
+    public delegate Task  OnWebSocketClientJSONMessageResponseDelegate  (DateTime                          Timestamp,
+                                                                         IChargingStationWebSocketClient   Client,
+                                                                         EventTracking_Id                  EventTrackingId,
+                                                                         DateTime                          RequestTimestamp,
+                                                                         JArray?                           JSONRequestMessage,
+                                                                         Byte[]?                           BinaryRequestMessage,
+                                                                         DateTime                          ResponseTimestamp,
+                                                                         JArray                            ResponseMessage);
 
 
-    public delegate Task  OnWebSocketClientBinaryMessageResponseDelegate(DateTime                  Timestamp,
-                                                                         ChargingStationWSClient   Client,
-                                                                         EventTracking_Id          EventTrackingId,
-                                                                         DateTime                  RequestTimestamp,
-                                                                         JArray?                   JSONRequestMessage,
-                                                                         Byte[]?                   BinaryRequestMessage,
-                                                                         DateTime                  ResponseTimestamp,
-                                                                         Byte[]                    ResponseMessage);
+    public delegate Task  OnWebSocketClientBinaryMessageResponseDelegate(DateTime                          Timestamp,
+                                                                         IChargingStationWebSocketClient   Client,
+                                                                         EventTracking_Id                  EventTrackingId,
+                                                                         DateTime                          RequestTimestamp,
+                                                                         JArray?                           JSONRequestMessage,
+                                                                         Byte[]?                           BinaryRequestMessage,
+                                                                         DateTime                          ResponseTimestamp,
+                                                                         Byte[]                            ResponseMessage);
 
 }
