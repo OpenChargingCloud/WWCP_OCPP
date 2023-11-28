@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 {
 
@@ -22,7 +28,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
     /// The common interface of all networking nodes channels.
     /// NetworkingNode might have multiple channels, e.g. a SOAP and a WebSockets channel.
     /// </summary>
-    public interface INetworkingNodeChannel : INetworkingNodeClient,
+    public interface INetworkingNodeChannel : IWebSocketServer,
+                                              INetworkingNodeClient,
                                               INetworkingNodeServer
     {
 

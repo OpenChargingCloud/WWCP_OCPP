@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Server">The sending WebSocket server.</param>
     /// <param name="JSONRequest">The incoming JSON request.</param>
     public delegate Task WebSocketJSONRequestLogHandler          (DateTime                    Timestamp,
-                                                                  CSMSWSServer                Server,
+                                                                  ICSMSChannel                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   ChargingStation_Id          ChargingStationId,
                                                                   EventTracking_Id            EventTrackingId,
@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Server">The sending WebSocket server.</param>
     /// <param name="BinaryRequest">The incoming binary request.</param>
     public delegate Task WebSocketBinaryRequestLogHandler        (DateTime                    Timestamp,
-                                                                  CSMSWSServer                Server,
+                                                                  ICSMSChannel                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   ChargingStation_Id          ChargingStationId,
                                                                   EventTracking_Id            EventTrackingId,
@@ -60,7 +60,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     // Responses
 
     public delegate Task WebSocketJSONRequestJSONResponseLogHandler    (DateTime                    Timestamp,
-                                                                        CSMSWSServer                Server,
+                                                                        ICSMSChannel                Server,
                                                                         WebSocketServerConnection   Connection,
                                                                         ChargingStation_Id          ChargingStationId,
                                                                         EventTracking_Id            EventTrackingId,
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         TimeSpan                    Runtime);
 
     public delegate Task WebSocketJSONRequestBinaryResponseLogHandler  (DateTime                    Timestamp,
-                                                                        CSMSWSServer                Server,
+                                                                        ICSMSChannel                Server,
                                                                         WebSocketServerConnection   Connection,
                                                                         ChargingStation_Id          ChargingStationId,
                                                                         EventTracking_Id            EventTrackingId,
@@ -84,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         TimeSpan                    Runtime);
 
     public delegate Task WebSocketBinaryRequestJSONResponseLogHandler  (DateTime                    Timestamp,
-                                                                        CSMSWSServer                Server,
+                                                                        ICSMSChannel                Server,
                                                                         WebSocketServerConnection   Connection,
                                                                         ChargingStation_Id          ChargingStationId,
                                                                         EventTracking_Id            EventTrackingId,
@@ -96,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                         TimeSpan                    Runtime);
 
     public delegate Task WebSocketBinaryRequestBinaryResponseLogHandler(DateTime                    Timestamp,
-                                                                        CSMSWSServer                Server,
+                                                                        ICSMSChannel                Server,
                                                                         WebSocketServerConnection   Connection,
                                                                         ChargingStation_Id          ChargingStationId,
                                                                         EventTracking_Id            EventTrackingId,
@@ -123,14 +123,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
     public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,
-                                                                  CSMSWSServer                Server,
+                                                                  ICSMSChannel                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
                                                                   JArray                      RequestMessage);
 
     public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTime                    Timestamp,
-                                                                  CSMSWSServer                Server,
+                                                                  ICSMSChannel                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   JArray?                     ResponseMessage);
 
     public delegate Task OnWebSocketTextErrorResponseDelegate    (DateTime                    Timestamp,
-                                                                  CSMSWSServer                Server,
+                                                                  ICSMSChannel                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
@@ -152,14 +152,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
     public delegate Task OnWebSocketBinaryMessageRequestDelegate (DateTime                    Timestamp,
-                                                                  CSMSWSServer                Server,
+                                                                  ICSMSChannel                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
                                                                   Byte[]                      RequestMessage);
 
     public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTime                    Timestamp,
-                                                                  CSMSWSServer                Server,
+                                                                  ICSMSChannel                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,

@@ -52,8 +52,4 @@
     <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="WebSockets\" />
-  </ItemGroup>
-
 </Project>

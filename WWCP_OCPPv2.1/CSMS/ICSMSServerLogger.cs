@@ -43,40 +43,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region WebSocket connection
 
-        /// <summary>
-        /// An event sent whenever the HTTP web socket server started.
-        /// </summary>
-        event OnServerStartedDelegate?                 OnServerStarted;
+        ///// <summary>
+        ///// An event sent whenever the HTTP web socket server started.
+        ///// </summary>
+        //event OnServerStartedDelegate?                 OnServerStarted;
 
-        /// <summary>
-        /// An event sent whenever a new TCP connection was accepted.
-        /// </summary>
-        event OnNewTCPConnectionDelegate?              OnNewTCPConnection;
+        ///// <summary>
+        ///// An event sent whenever a new TCP connection was accepted.
+        ///// </summary>
+        //event OnNewTCPConnectionDelegate?              OnNewTCPConnection;
 
-        /// <summary>
-        /// An event sent whenever a HTTP request was received.
-        /// </summary>
-        event HTTPRequestLogDelegate?                  OnHTTPRequest;
+        ///// <summary>
+        ///// An event sent whenever a HTTP request was received.
+        ///// </summary>
+        //event HTTPRequestLogDelegate?                  OnHTTPRequest;
 
-        /// <summary>
-        /// An event sent whenever the HTTP connection switched successfully to web socket.
-        /// </summary>
-        event OnNewWebSocketConnectionDelegate?        OnNewWebSocketConnection;
+        ///// <summary>
+        ///// An event sent whenever the HTTP connection switched successfully to web socket.
+        ///// </summary>
+        //event OnNewWebSocketConnectionDelegate?        OnNewWebSocketConnection;
 
-        /// <summary>
-        /// An event sent whenever a reponse to a HTTP request was sent.
-        /// </summary>
-        event HTTPResponseLogDelegate?                 OnHTTPResponse;
+        ///// <summary>
+        ///// An event sent whenever a reponse to a HTTP request was sent.
+        ///// </summary>
+        //event HTTPResponseLogDelegate?                 OnHTTPResponse;
 
-        /// <summary>
-        /// An event sent whenever a web socket close frame was received.
-        /// </summary>
-        event OnCloseMessageDelegate?                  OnCloseMessageReceived;
+        ///// <summary>
+        ///// An event sent whenever a web socket close frame was received.
+        ///// </summary>
+        //event OnCloseMessageDelegate?                  OnCloseMessageReceived;
 
-        /// <summary>
-        /// An event sent whenever a TCP connection was closed.
-        /// </summary>
-        event OnTCPConnectionClosedDelegate?           OnTCPConnectionClosed;
+        ///// <summary>
+        ///// An event sent whenever a TCP connection was closed.
+        ///// </summary>
+        //event OnTCPConnectionClosedDelegate?           OnTCPConnectionClosed;
 
         #endregion
 

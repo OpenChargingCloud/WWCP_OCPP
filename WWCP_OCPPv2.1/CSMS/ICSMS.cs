@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
@@ -22,7 +28,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// The common interface of all central systems channels.
     /// CSMS might have multiple channels, e.g. a SOAP and a WebSockets channel.
     /// </summary>
-    public interface ICSMSChannel : ICSMSClient,
+    public interface ICSMSChannel : IWebSocketServer,
+                                    ICSMSClient,
                                     ICSMSServer
     {
 

@@ -1882,7 +1882,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         #region (protected) ValidateTCPConnection        (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         private Task<ConnectionFilterResponse> ValidateTCPConnection(DateTime                      LogTimestamp,
-                                                                     AWebSocketServer              Server,
+                                                                     IWebSocketServer              Server,
                                                                      System.Net.Sockets.TcpClient  Connection,
                                                                      EventTracking_Id              EventTrackingId,
                                                                      CancellationToken             CancellationToken)
@@ -1897,7 +1897,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         #region (protected) ValidateWebSocketConnection  (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         private Task<HTTPResponse?> ValidateWebSocketConnection(DateTime                   LogTimestamp,
-                                                                AWebSocketServer           Server,
+                                                                IWebSocketServer           Server,
                                                                 WebSocketServerConnection  Connection,
                                                                 EventTracking_Id           EventTrackingId,
                                                                 CancellationToken          CancellationToken)
@@ -1991,7 +1991,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
         protected Task ProcessNewWebSocketConnection(DateTime                   LogTimestamp,
-                                                     AWebSocketServer           Server,
+                                                     IWebSocketServer           Server,
                                                      WebSocketServerConnection  Connection,
                                                      EventTracking_Id           EventTrackingId,
                                                      CancellationToken          CancellationToken)
@@ -2061,7 +2061,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, EventTrackingId, StatusCode, Reason)
 
         protected Task ProcessCloseMessage(DateTime                          LogTimestamp,
-                                           AWebSocketServer                  Server,
+                                           IWebSocketServer                  Server,
                                            WebSocketServerConnection         Connection,
                                            EventTracking_Id                  EventTrackingId,
                                            WebSocketFrame.ClosingStatusCode  StatusCode,
