@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 if (ClearDisplayMessageRequest.TryParse(RequestJSON,
                                                         RequestId,
-                                                        ChargingStationIdentity,
+                                                        ChargingStation_Id.Parse(NetworkingNodeIdentity.ToString()),
                                                         out var request,
                                                         out var errorResponse,
                                                         CustomClearDisplayMessageRequestParser) && request is not null) {

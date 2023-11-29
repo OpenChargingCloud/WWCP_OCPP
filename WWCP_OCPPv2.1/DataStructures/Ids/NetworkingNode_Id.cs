@@ -44,6 +44,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public static Boolean IsNotNullOrEmpty(this NetworkingNode_Id? NetworkingNodeId)
             => NetworkingNodeId.HasValue && NetworkingNodeId.Value.IsNotNullOrEmpty;
 
+
+        public static ChargingStation_Id  ToChargingStationId(this NetworkingNode_Id  NetworkingNodeId)
+            => ChargingStation_Id.Parse(NetworkingNodeId.ToString());
+
+        public static ChargingStation_Id? ToChargingStationId(this NetworkingNode_Id? NetworkingNodeId)
+            => NetworkingNodeId.HasValue
+                   ? ChargingStation_Id.Parse(NetworkingNodeId.Value.ToString())
+                   : null;
+
     }
 
 

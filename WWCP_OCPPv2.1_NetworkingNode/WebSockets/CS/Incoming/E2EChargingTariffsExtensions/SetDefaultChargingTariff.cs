@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 if (SetDefaultChargingTariffRequest.TryParse(RequestJSON,
                                                              RequestId,
-                                                             ChargingStationIdentity,
+                                                             ChargingStation_Id.Parse(NetworkingNodeIdentity.ToString()),
                                                              out var request,
                                                              out var errorResponse,
                                                              CustomSetDefaultChargingTariffRequestParser) && request is not null) {

@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 if (DeleteCertificateRequest.TryParse(RequestJSON,
                                                       RequestId,
-                                                      ChargingStationIdentity,
+                                                      ChargingStation_Id.Parse(NetworkingNodeIdentity.ToString()),
                                                       out var request,
                                                       out var errorResponse,
                                                       CustomDeleteCertificateRequestParser) && request is not null) {

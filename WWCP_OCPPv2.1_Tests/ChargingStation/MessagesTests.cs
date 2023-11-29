@@ -1366,20 +1366,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             if (testCSMS01                                    is not null &&
                 testBackendWebSockets01                       is not null &&
-                csmsWebSocketTextMessagesReceived             is not null &&
-                csmsWebSocketTextMessageResponsesSent         is not null &&
+                csms1WebSocketJSONMessagesReceived            is not null &&
+                csms1WebSocketJSONMessageResponsesSent        is not null &&
 
                 chargingStation1                              is not null &&
-                chargingStation1WebSocketTextMessagesReceived is not null &&
-                chargingStation1WebSocketTextMessagesSent     is not null &&
+                chargingStation1WebSocketJSONMessagesReceived is not null &&
+                chargingStation1WebSocketJSONMessagesSent     is not null &&
 
                 chargingStation2                              is not null &&
-                chargingStation2WebSocketTextMessagesReceived is not null &&
-                chargingStation2WebSocketTextMessagesSent     is not null &&
+                chargingStation2WebSocketJSONMessagesReceived is not null &&
+                chargingStation2WebSocketJSONMessagesSent     is not null &&
 
                 chargingStation3                              is not null &&
-                chargingStation3WebSocketTextMessagesReceived is not null &&
-                chargingStation3WebSocketTextMessagesSent     is not null)
+                chargingStation3WebSocketJSONMessagesReceived is not null &&
+                chargingStation3WebSocketJSONMessagesSent     is not null)
 
             {
 
@@ -1538,10 +1538,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 //Assert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Unit,        meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Unit);
 
 
-                Assert.AreEqual(1, chargingStation1WebSocketTextMessagesReceived.Count);
-                Assert.AreEqual(1, csmsWebSocketTextMessagesReceived.            Count);
-                Assert.AreEqual(1, csmsWebSocketTextMessageResponsesSent.        Count);
-                Assert.AreEqual(1, chargingStation1WebSocketTextMessagesSent.    Count);
+                Assert.AreEqual(1, chargingStation1WebSocketJSONMessagesReceived.Count);
+                Assert.AreEqual(1, csms1WebSocketJSONMessagesReceived.            Count);
+                Assert.AreEqual(1, csms1WebSocketJSONMessageResponsesSent.        Count);
+                Assert.AreEqual(1, chargingStation1WebSocketJSONMessagesSent.    Count);
 
             }
 

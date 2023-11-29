@@ -29,7 +29,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public class SendRequestState
     {
 
-        public ChargingStation_Id           ChargingStationId    { get; }
+        public ChargingStation_Id?          ChargingStationId    { get; }
+        public NetworkingNode_Id?           NetworkingNodeId     { get; }
 
         public DateTime                     RequestTimestamp     { get; }
         public OCPP_JSONRequestMessage?     JSONRequest          { get; }
@@ -55,7 +56,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         private SendRequestState(DateTime                     RequestTimestamp,
-                                 ChargingStation_Id           ChargingStationId,
+                                 ChargingStation_Id?          ChargingStationId,
+                                 NetworkingNode_Id?           NetworkingNodeId,
                                  DateTime                     Timeout,
 
                                  OCPP_JSONRequestMessage?     JSONRequest         = null,
@@ -72,6 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.RequestTimestamp   = RequestTimestamp;
             this.ChargingStationId  = ChargingStationId;
+            this.NetworkingNodeId   = NetworkingNodeId;
             this.Timeout            = Timeout;
 
             this.JSONRequest        = JSONRequest;
@@ -104,6 +107,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (RequestTimestamp,
                     ChargingStationId,
+                    null,
+                    Timeout,
+
+                    JSONRequest,
+                    null,
+
+                    ResponseTimestamp,
+                    JSONResponse,
+                    BinaryResponse,
+
+                    ErrorCode,
+                    ErrorDescription,
+                    ErrorDetails);
+
+        public static SendRequestState FromJSONRequest(DateTime                     RequestTimestamp,
+                                                       NetworkingNode_Id            NetworkingNodeId,
+                                                       DateTime                     Timeout,
+
+                                                       OCPP_JSONRequestMessage?     JSONRequest         = null,
+
+                                                       DateTime?                    ResponseTimestamp   = null,
+                                                       OCPP_JSONResponseMessage?    JSONResponse        = null,
+                                                       OCPP_BinaryResponseMessage?  BinaryResponse      = null,
+
+                                                       ResultCode?                  ErrorCode           = null,
+                                                       String?                      ErrorDescription    = null,
+                                                       JObject?                     ErrorDetails        = null)
+
+
+            => new (RequestTimestamp,
+                    null,
+                    NetworkingNodeId,
                     Timeout,
 
                     JSONRequest,
@@ -136,6 +171,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => new (RequestTimestamp,
                     ChargingStationId,
+                    null,
+                    Timeout,
+
+                    null,
+                    BinaryRequest,
+
+                    ResponseTimestamp,
+                    JSONResponse,
+                    BinaryResponse,
+
+                    ErrorCode,
+                    ErrorDescription,
+                    ErrorDetails);
+
+        public static SendRequestState FromBinaryRequest(DateTime                     RequestTimestamp,
+                                                         NetworkingNode_Id            NetworkingNodeId,
+                                                         DateTime                     Timeout,
+
+                                                         OCPP_BinaryRequestMessage?   BinaryRequest       = null,
+
+                                                         DateTime?                    ResponseTimestamp   = null,
+                                                         OCPP_JSONResponseMessage?    JSONResponse        = null,
+                                                         OCPP_BinaryResponseMessage?  BinaryResponse      = null,
+
+                                                         ResultCode?                  ErrorCode           = null,
+                                                         String?                      ErrorDescription    = null,
+                                                         JObject?                     ErrorDetails        = null)
+
+
+            => new (RequestTimestamp,
+                    null,
+                    NetworkingNodeId,
                     Timeout,
 
                     null,

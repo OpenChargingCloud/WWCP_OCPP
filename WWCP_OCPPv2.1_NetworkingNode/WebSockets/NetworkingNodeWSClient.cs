@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 {
 
     /// <summary>
-    /// The charging station HTTP WebSocket client runs on a charging station
+    /// The networking node HTTP WebSocket client runs on a networking node
     /// and connects to a CSMS to invoke methods.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
@@ -71,15 +71,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         #region Properties
 
         /// <summary>
-        /// The unique identification of this charging station.
+        /// The unique identification of this networking node.
         /// </summary>
-        public ChargingStation_Id                    ChargingStationIdentity         { get; }
+        public NetworkingNode_Id                     NetworkingNodeIdentity         { get; }
 
         /// <summary>
         /// The sender identification.
         /// </summary>
         String IEventSender.Id
-            => ChargingStationIdentity.ToString();
+            => NetworkingNodeIdentity.ToString();
 
         /// <summary>
         /// The source URI of the websocket message.
@@ -187,10 +187,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charging station websocket client running on a charging station
+        /// Create a new networking node websocket client running on a networking node
         /// and connecting to a CSMS to invoke methods.
         /// </summary>
-        /// <param name="ChargingStationIdentity">The unique identification of this charging station.</param>
+        /// <param name="NetworkingNodeIdentity">The unique identification of this networking node.</param>
         /// <param name="From">The source URI of the websocket message.</param>
         /// <param name="To">The destination URI of the websocket message.</param>
         /// 
@@ -211,39 +211,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public NetworkingNodeWSClient(ChargingStation_Id                   ChargingStationIdentity,
-                                       String                               From,
-                                       String                               To,
+        public NetworkingNodeWSClient(NetworkingNode_Id                    NetworkingNodeIdentity,
+                                      String                               From,
+                                      String                               To,
 
-                                       URL                                  RemoteURL,
-                                       HTTPHostname?                        VirtualHostname              = null,
-                                       String?                              Description                  = null,
-                                       Boolean?                             PreferIPv4                   = null,
-                                       RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
-                                       LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                                       X509Certificate?                     ClientCert                   = null,
-                                       SslProtocols?                        TLSProtocol                  = null,
-                                       String                               HTTPUserAgent                = DefaultHTTPUserAgent,
-                                       IHTTPAuthentication?                 HTTPAuthentication           = null,
-                                       TimeSpan?                            RequestTimeout               = null,
-                                       TransmissionRetryDelayDelegate?      TransmissionRetryDelay       = null,
-                                       UInt16?                              MaxNumberOfRetries           = 3,
-                                       UInt32?                              InternalBufferSize           = null,
+                                      URL                                  RemoteURL,
+                                      HTTPHostname?                        VirtualHostname              = null,
+                                      String?                              Description                  = null,
+                                      Boolean?                             PreferIPv4                   = null,
+                                      RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
+                                      LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+                                      X509Certificate?                     ClientCert                   = null,
+                                      SslProtocols?                        TLSProtocol                  = null,
+                                      String                               HTTPUserAgent                = DefaultHTTPUserAgent,
+                                      IHTTPAuthentication?                 HTTPAuthentication           = null,
+                                      TimeSpan?                            RequestTimeout               = null,
+                                      TransmissionRetryDelayDelegate?      TransmissionRetryDelay       = null,
+                                      UInt16?                              MaxNumberOfRetries           = 3,
+                                      UInt32?                              InternalBufferSize           = null,
 
-                                       IEnumerable<String>?                 SecWebSocketProtocols        = null,
+                                      IEnumerable<String>?                 SecWebSocketProtocols        = null,
 
-                                       Boolean                              DisableWebSocketPings        = false,
-                                       TimeSpan?                            WebSocketPingEvery           = null,
-                                       TimeSpan?                            SlowNetworkSimulationDelay   = null,
+                                      Boolean                              DisableWebSocketPings        = false,
+                                      TimeSpan?                            WebSocketPingEvery           = null,
+                                      TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                                       Boolean                              DisableMaintenanceTasks      = false,
-                                       TimeSpan?                            MaintenanceEvery             = null,
+                                      Boolean                              DisableMaintenanceTasks      = false,
+                                      TimeSpan?                            MaintenanceEvery             = null,
 
-                                       String?                              LoggingPath                  = null,
-                                       String                               LoggingContext               = null, //CPClientLogger.DefaultContext,
-                                       LogfileCreatorDelegate?              LogfileCreator               = null,
-                                       HTTPClientLogger?                    HTTPLogger                   = null,
-                                       DNSClient?                           DNSClient                    = null)
+                                      String?                              LoggingPath                  = null,
+                                      String                               LoggingContext               = null, //CPClientLogger.DefaultContext,
+                                      LogfileCreatorDelegate?              LogfileCreator               = null,
+                                      HTTPClientLogger?                    HTTPLogger                   = null,
+                                      DNSClient?                           DNSClient                    = null)
 
             : base(RemoteURL,
                    VirtualHostname,
@@ -279,8 +279,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
             #region Initial checks
 
-            if (ChargingStationIdentity.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ChargingStationIdentity),  "The given charging station identification must not be null or empty!");
+            if (NetworkingNodeIdentity.IsNullOrEmpty)
+                throw new ArgumentNullException(nameof(NetworkingNodeIdentity),  "The given networking node identification must not be null or empty!");
 
             if (From.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(From),                     "The given websocket message source must not be null or empty!");
@@ -290,9 +290,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
             #endregion
 
-            this.ChargingStationIdentity  = ChargingStationIdentity;
-            this.From                     = From;
-            this.To                       = To;
+            this.NetworkingNodeIdentity  = NetworkingNodeIdentity;
+            this.From                    = From;
+            this.To                      = To;
 
             //this.Logger                   = new ChargePointwebsocketClient.CPClientLogger(this,
             //                                                                         LoggingPath,
@@ -362,7 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                         var result = methodInfo.Invoke(this,
                                                        [ RequestTimestamp,
                                                          Connection,
-                                                         ChargingStationIdentity,
+                                                         NetworkingNodeIdentity,
                                                          EventTrackingId,
                                                          jsonRequest.RequestId,
                                                          jsonRequest.Payload,
@@ -584,7 +584,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                         var result = methodInfo.Invoke(this,
                                                        [ RequestTimestamp,
                                                          Connection,
-                                                         ChargingStationIdentity,
+                                                         NetworkingNodeIdentity,
                                                          EventTrackingId,
                                                          binaryRequest.RequestId,
                                                          binaryRequest.Payload,
@@ -798,7 +798,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                         requests.TryAdd(RequestId,
                                         SendRequestState.FromJSONRequest(
                                             Timestamp.Now,
-                                            ChargingStationIdentity,
+                                            NetworkingNodeIdentity,
                                             Timestamp.Now + RequestTimeout,
                                             jsonRequestMessage
                                         ));
@@ -882,7 +882,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                         requests.TryAdd(RequestId,
                                         SendRequestState.FromBinaryRequest(
                                             Timestamp.Now,
-                                            ChargingStationIdentity,
+                                            NetworkingNodeIdentity,
                                             Timestamp.Now + RequestTimeout,
                                             binaryRequestMessage
                                         ));
@@ -981,7 +981,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             return SendRequestState.FromJSONRequest(
 
                        Timestamp.Now,
-                       ChargingStationIdentity,
+                       NetworkingNodeIdentity,
                        endTime,
                        JSONRequestMessage,
 
@@ -1036,7 +1036,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             return SendRequestState.FromBinaryRequest(
 
                        Timestamp.Now,
-                       ChargingStationIdentity,
+                       NetworkingNodeIdentity,
                        endTime,
                        BinaryRequestMessage,
 

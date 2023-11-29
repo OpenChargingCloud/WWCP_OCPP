@@ -31,7 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                        INetworkingNodeServerLogger
     {
 
-        CSMS_Id                              Id                       { get; }
+        NetworkingNode_Id                    Id                       { get; }
 
         TimeSpan                             DefaultRequestTimeout    { get; }
 

@@ -20,6 +20,7 @@
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
@@ -35,7 +36,6 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions;
-using System.Collections.ObjectModel;
 
 #endregion
 
@@ -289,7 +289,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// The charging station identification.
             /// </summary>
-            public ChargingStation_Id       Id                          { get; }
+            public NetworkingNode_Id        Id                          { get; }
+
+            public TestNetworkingNode       NetworkingNodeRef           { get; }
 
             /// <summary>
             /// The charging station vendor identification.
@@ -332,19 +334,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// The optional meter type of the main power meter of the charging station.
             /// </summary>
             [Optional]
-            public String?                  MeterType                   { get; }
-
-            /// <summary>
-            /// The optional serial number of the main power meter of the charging station.
-            /// </summary>
-            [Optional]
-            public String?                  MeterSerialNumber           { get; }
-
-            /// <summary>
-            /// The optional public key of the main power meter of the charging station.
-            /// </summary>
-            [Optional]
-            public String?                  MeterPublicKey              { get; }
 
 
             public CustomData?              CustomData                  { get; set; }
@@ -426,15 +415,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// </summary>
             public SignaturePolicy               SignaturePolicy
                 => SignaturePolicies.First();
-
-
-
-            // Controlled by the CSMS!
-
-            private readonly Dictionary<EVSE_Id, ChargingStationEVSE> evses;
-
-            public IEnumerable<ChargingStationEVSE> EVSEs
-                => evses.Values;
 
             #endregion
 
@@ -2128,7 +2108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <param name="SendHeartbeatEvery">The time span between heartbeat requests.</param>
             /// 
             /// <param name="DefaultRequestTimeout">The default request timeout for all requests.</param>
-            public ActingAsCS(ChargingStation_Id                 Id,
+            public ActingAsCS(TestNetworkingNode                 NetworkingNode,
                               String                             VendorName,
                               String                             Model,
 
@@ -2136,12 +2116,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                               String?                            SerialNumber              = null,
                               String?                            FirmwareVersion           = null,
                               Modem?                             Modem                     = null,
-
-                              IEnumerable<ChargingStationEVSE>?  EVSEs                     = null,
-
-                              String?                            MeterType                 = null,
-                              String?                            MeterSerialNumber         = null,
-                              String?                            MeterPublicKey            = null,
 
                               Boolean                            DisableSendHeartbeats     = false,
                               TimeSpan?                          SendHeartbeatEvery        = null,
@@ -2157,9 +2131,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             {
 
-                if (Id.        IsNullOrEmpty)
-                    throw new ArgumentNullException(nameof(Id),          "The given charging station identification must not be null or empty!");
-
                 if (VendorName.IsNullOrEmpty())
                     throw new ArgumentNullException(nameof(VendorName),  "The given charging station vendor must not be null or empty!");
 
@@ -2167,11 +2138,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     throw new ArgumentNullException(nameof(Model),       "The given charging station model must not be null or empty!");
 
 
-                this.Id                       = Id;
-
-                this.evses                    = EVSEs is not null && EVSEs.Any()
-                                                    ? EVSEs.ToDictionary(evse => evse.Id, evse => evse)
-                                                    : new Dictionary<EVSE_Id, ChargingStationEVSE>();
+                this.Id                       = NetworkingNode.Id;
+                this.NetworkingNodeRef        = NetworkingNode;
 
                 //this.Configuration = new Dictionary<String, ConfigurationData> {
                 //    { "hello",          new ConfigurationData("world",    AccessRights.ReadOnly,  false) },
@@ -2187,9 +2155,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 this.SerialNumber             = SerialNumber;
                 this.FirmwareVersion          = FirmwareVersion;
                 this.Modem                    = Modem;
-                this.MeterType                = MeterType;
-                this.MeterSerialNumber        = MeterSerialNumber;
-                this.MeterPublicKey           = MeterPublicKey;
 
                 this.DefaultRequestTimeout    = DefaultRequestTimeout ?? TimeSpan.FromMinutes(1);
 
@@ -2204,12 +2169,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 this.DisableMaintenanceTasks  = DisableMaintenanceTasks;
                 this.MaintenanceEvery         = MaintenanceEvery      ?? DefaultMaintenanceEvery;
-                this.MaintenanceTimer         = new Timer(
-                                                    DoMaintenanceSync,
-                                                    null,
-                                                    this.MaintenanceEvery,
-                                                    this.MaintenanceEvery
-                                                );
+                //this.MaintenanceTimer         = new Timer(
+                //                                    DoMaintenanceSync,
+                //                                    null,
+                //                                    this.MaintenanceEvery,
+                //                                    this.MaintenanceEvery
+                //                                );
 
                 this.HTTPAuthentication       = HTTPAuthentication;
                 this.DNSClient                = DNSClient;
@@ -2374,15 +2339,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.ResetResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.ResetResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid reset request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.ResetResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid reset request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -2422,19 +2388,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             // Reset entire charging station
                             if (!request.EVSEId.HasValue)
-                            {
-
-                                response = new OCPPv2_1.CS.ResetResponse(
-                                               Request:      request,
-                                               Status:       ResetStatus.Accepted,
-                                               StatusInfo:   null,
-                                               CustomData:   null
-                                           );
-
-                            }
-
-                            // Only reset the given EVSE
-                            else if (EVSEs.Any(evse => evse.Id == request.EVSEId))
                             {
 
                                 response = new OCPPv2_1.CS.ResetResponse(
@@ -2563,15 +2516,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.UpdateFirmwareResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.UpdateFirmwareResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid UpdateFirmware request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.UpdateFirmwareResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid UpdateFirmware request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -2724,15 +2678,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.PublishFirmwareResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.PublishFirmwareResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid PublishFirmware request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.PublishFirmwareResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid PublishFirmware request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -2885,15 +2840,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.UnpublishFirmwareResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.UnpublishFirmwareResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid UnpublishFirmware request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.UnpublishFirmwareResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid UnpublishFirmware request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -3040,15 +2996,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.GetBaseReportResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.GetBaseReportResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid GetBaseReport request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.GetBaseReportResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid GetBaseReport request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -3198,15 +3155,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.GetReportResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.GetReportResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid GetReport request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.GetReportResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid GetReport request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -3361,15 +3319,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.GetLogResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.GetLogResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid GetLog request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.GetLogResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid GetLog request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -3523,15 +3482,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.SetVariablesResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.SetVariablesResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid SetVariables request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.SetVariablesResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid SetVariables request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -3694,15 +3654,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.GetVariablesResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.GetVariablesResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid GetVariables request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.GetVariablesResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid GetVariables request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -3866,15 +3827,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.SetMonitoringBaseResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.SetMonitoringBaseResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid SetMonitoringBase request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.SetMonitoringBaseResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid SetMonitoringBase request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -4023,15 +3985,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.GetMonitoringReportResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.GetMonitoringReportResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid GetMonitoringReport request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.GetMonitoringReportResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid GetMonitoringReport request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -4186,15 +4149,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.SetMonitoringLevelResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.SetMonitoringLevelResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid SetMonitoringLevel request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.SetMonitoringLevelResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid SetMonitoringLevel request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -4343,15 +4307,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.SetVariableMonitoringResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.SetVariableMonitoringResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid SetVariableMonitoring request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.SetVariableMonitoringResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid SetVariableMonitoring request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -4517,15 +4482,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.ClearVariableMonitoringResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.ClearVariableMonitoringResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid ClearVariableMonitoring request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.ClearVariableMonitoringResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid ClearVariableMonitoring request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -4679,15 +4645,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.SetNetworkProfileResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.SetNetworkProfileResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid SetNetworkProfile request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.SetNetworkProfileResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid SetNetworkProfile request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -4839,15 +4806,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.ChangeAvailabilityResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.ChangeAvailabilityResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid ChangeAvailability request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.ChangeAvailabilityResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid ChangeAvailability request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -4886,65 +4854,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             // OperationalStatus
                             // EVSE
+ 
+                            response = request.EVSE is null
 
-                            // Operational status of the entire charging station
-                            if (request.EVSE is null)
-                            {
+                                           ? new OCPPv2_1.CS.ChangeAvailabilityResponse(
+                                                 Request:      request,
+                                                 Status:       ChangeAvailabilityStatus.Accepted,
+                                                 CustomData:   null
+                                             )
 
-                                response = new OCPPv2_1.CS.ChangeAvailabilityResponse(
-                                               Request:      request,
-                                               Status:       ChangeAvailabilityStatus.Accepted,
-                                               CustomData:   null
-                                           );
-
-                            }
-
-                            // Operational status for an EVSE and maybe a connector
-                            else
-                            {
-
-                                var evse = EVSEs.FirstOrDefault(evse => evse.Id == request.EVSE.Id);
-
-                                if (evse is null)
-                                {
-
-                                    // Unknown EVSE identification
-                                    response = new OCPPv2_1.CS.ChangeAvailabilityResponse(
-                                                   Request:      request,
-                                                   Status:       ChangeAvailabilityStatus.Rejected,
-                                                   CustomData:   null
-                                               );
-
-                                }
-                                else
-                                {
-
-                                    if (request.EVSE.ConnectorId.HasValue &&
-                                       !evse.Connectors.Any(connector => connector.Id == request.EVSE.ConnectorId.Value))
-                                    {
-
-                                        // Unknown connector identification
-                                        response = new OCPPv2_1.CS.ChangeAvailabilityResponse(
-                                                       Request:      request,
-                                                       Status:       ChangeAvailabilityStatus.Rejected,
-                                                       CustomData:   null
-                                                   );
-
-                                    }
-                                    else
-                                    {
-
-                                        response = new OCPPv2_1.CS.ChangeAvailabilityResponse(
-                                                       Request:      request,
-                                                       Status:       ChangeAvailabilityStatus.Accepted,
-                                                       CustomData:   null
-                                                   );
-
-                                    }
-
-                                }
-
-                            }
+                                           : new OCPPv2_1.CS.ChangeAvailabilityResponse(
+                                                 Request:      request,
+                                                 Status:       ChangeAvailabilityStatus.Rejected,
+                                                 CustomData:   null
+                                             );
 
                         }
 
@@ -5050,15 +4973,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.TriggerMessageResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.TriggerMessageResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid TriggerMessage request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.TriggerMessageResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid TriggerMessage request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -5130,7 +5054,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                               EVSEId:        request.EVSE.Id,
                                               ConnectorId:   Connector_Id.Parse(1),
                                               Timestamp:     Timestamp.Now,
-                                              Status:        evses[request.EVSE.Id].Status,
+                                              Status:        ConnectorStatus.Unavailable,
                                               CustomData:    null
                                           );
                                 }
@@ -5284,15 +5208,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.DataTransferResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.DataTransferResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid DataTransfer request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.DataTransferResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid DataTransfer request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -5490,15 +5415,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.CertificateSignedResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.CertificateSignedResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid CertificateSigned request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.CertificateSignedResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid CertificateSigned request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -5650,15 +5576,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.InstallCertificateResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.InstallCertificateResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid InstallCertificate request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.InstallCertificateResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid InstallCertificate request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -5814,15 +5741,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.GetInstalledCertificateIdsResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.GetInstalledCertificateIdsResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid GetInstalledCertificateIds request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.GetInstalledCertificateIdsResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid GetInstalledCertificateIds request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -5989,15 +5917,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.DeleteCertificateResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.DeleteCertificateResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid DeleteCertificate request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.DeleteCertificateResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid DeleteCertificate request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -6153,15 +6082,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.NotifyCRLResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.NotifyCRLResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid NotifyCRL request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.NotifyCRLResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid NotifyCRL request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -6310,15 +6240,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.GetLocalListVersionResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.GetLocalListVersionResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid GetLocalListVersion request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.GetLocalListVersionResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid GetLocalListVersion request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -6465,15 +6396,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.SendLocalListResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.SendLocalListResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid SendLocalList request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.SendLocalListResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid SendLocalList request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -6628,15 +6560,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.ClearCacheResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.ClearCacheResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid ClearCache request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.ClearCacheResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid ClearCache request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -6785,15 +6718,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.ReserveNowResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.ReserveNowResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid ReserveNow request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.ReserveNowResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid ReserveNow request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -6954,15 +6888,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.CancelReservationResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.CancelReservationResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid CancelReservation request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.CancelReservationResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid CancelReservation request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -7117,15 +7052,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.RequestStartTransactionResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.RequestStartTransactionResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid RequestStartTransaction request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.RequestStartTransactionResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid RequestStartTransaction request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -7192,100 +7128,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             // ToDo: lock(evses)
 
-                            if (request.EVSEId.HasValue &&
-                                evses.TryGetValue(request.EVSEId.Value, out var evse) &&
-                                !evse.IsCharging)
-                            {
-
-                                evse.IsCharging              = true;
-                                evse.TransactionId           = Transaction_Id.NewRandom;
-                                evse.RemoteStartId           = request.RequestStartTransactionRequestId;
-
-                                evse.StartTimestamp          = Timestamp.Now;
-                                evse.MeterStartValue         = 0;
-                                evse.SignedStartMeterValue   = "0";
-
-                                evse.StopTimestamp           = null;
-                                evse.MeterStopValue          = null;
-                                evse.SignedStopMeterValue    = null;
-
-                                evse.IdToken                 = request.IdToken;
-                                evse.GroupIdToken            = request.GroupIdToken;
-                                evse.ChargingProfile         = request.ChargingProfile;
-
-                                _ = Task.Run(async () => {
-
-                                    await Task.Delay(500);
-
-                                    await this.SendTransactionEvent(
-
-                                              EventType:            TransactionEvents.Started,
-                                              Timestamp:            evse.StartTimestamp.Value,
-                                              TriggerReason:        TriggerReason.RemoteStart,
-                                              SequenceNumber:       1,
-                                              TransactionInfo:      new Transaction(
-                                                                        TransactionId:       evse.TransactionId.Value,
-                                                                        ChargingState:       ChargingStates.Charging,
-                                                                        TimeSpentCharging:   TimeSpan.Zero,
-                                                                        StoppedReason:       null,
-                                                                        RemoteStartId:       request.RequestStartTransactionRequestId,
-                                                                        CustomData:          null
-                                                                    ),
-
-                                              Offline:              false,
-                                              NumberOfPhasesUsed:   3,
-                                              CableMaxCurrent:      Ampere.Parse(32),
-                                              ReservationId:        evse.ReservationId,
-                                              IdToken:              evse.IdToken,
-                                              EVSE:                 new EVSE(
-                                                                        Id:            evse.Id,
-                                                                        ConnectorId:   evse.Connectors.First().Id,
-                                                                        CustomData:    null
-                                                                    ),
-                                              MeterValues:          new[] {
-                                                                        new MeterValue(
-                                                                            Timestamp:       evse.StartTimestamp.Value,
-                                                                            SampledValues:   new[] {
-                                                                                                 new SampledValue(
-                                                                                                     Value:                 evse.MeterStartValue.Value,
-                                                                                                     Context:               ReadingContext.TransactionBegin,
-                                                                                                     Measurand:             Measurand.Current_Export,
-                                                                                                     Phase:                 null,
-                                                                                                     MeasurementLocation:   MeasurementLocation.Outlet,
-                                                                                                     SignedMeterValue:      new SignedMeterValue(
-                                                                                                                                SignedMeterData:   evse.SignedStartMeterValue,
-                                                                                                                                SigningMethod:     "secp256r1",
-                                                                                                                                EncodingMethod:    "base64",
-                                                                                                                                PublicKey:         "04cafebabe",
-                                                                                                                                CustomData:        null
-                                                                                                                            ),
-                                                                                                     UnitOfMeasure:         null,
-                                                                                                     CustomData:            null
-                                                                                                 )
-                                                                                             }
-                                                                        )
-                                                                    },
-                                              CustomData:           null
-
-                                          );
-
-                                },
-                                CancellationToken.None);
-
-                                response = new OCPPv2_1.CS.RequestStartTransactionResponse(
-                                               Request:         request,
-                                               Status:          RequestStartStopStatus.Accepted,
-                                               TransactionId:   evse.TransactionId,
-                                               StatusInfo:      null,
-                                               CustomData:      null
-                                           );
-
-                            }
-                            else
-                                response = new OCPPv2_1.CS.RequestStartTransactionResponse(
-                                               request,
-                                               RequestStartStopStatus.Rejected
-                                           );
+                            response = new OCPPv2_1.CS.RequestStartTransactionResponse(
+                                           request,
+                                           RequestStartStopStatus.Rejected
+                                       );
 
                         }
 
@@ -7391,15 +7237,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.RequestStopTransactionResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.RequestStopTransactionResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid RequestStopTransaction request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.RequestStopTransactionResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid RequestStopTransaction request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -7437,87 +7284,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             // TransactionId
 
-                            // ToDo: lock(evses)
-
-                            var evse = evses.Values.FirstOrDefault(evse => request.TransactionId == evse.TransactionId);
-
-                            if (evse is not null)
-                            {
-
-                                evse.IsCharging             = false;
-
-                                evse.StopTimestamp          = Timestamp.Now;
-                                evse.MeterStopValue         = 123;
-                                evse.SignedStopMeterValue   = "123";
-
-                                _ = Task.Run(async () => {
-
-                                    await this.SendTransactionEvent(
-
-                                              EventType:            TransactionEvents.Ended,
-                                              Timestamp:            evse.StopTimestamp.Value,
-                                              TriggerReason:        TriggerReason.RemoteStop,
-                                              SequenceNumber:       2,
-                                              TransactionInfo:      new Transaction(
-                                                                        TransactionId:       evse.TransactionId!.Value,
-                                                                        ChargingState:       ChargingStates.Idle,
-                                                                        TimeSpentCharging:   evse.StopTimestamp - evse.StartTimestamp,
-                                                                        StoppedReason:       StopTransactionReason.Remote,
-                                                                        RemoteStartId:       evse.RemoteStartId,
-                                                                        CustomData:          null
-                                                                    ),
-
-                                              Offline:              false,
-                                              NumberOfPhasesUsed:   3,
-                                              CableMaxCurrent:      Ampere.Parse(32),
-                                              ReservationId:        evse.ReservationId,
-                                              IdToken:              evse.IdToken,
-                                              EVSE:                 new EVSE(
-                                                                        Id:            evse.Id,
-                                                                        ConnectorId:   evse.Connectors.First().Id,
-                                                                        CustomData:    null
-                                                                    ),
-                                              MeterValues:          new[] {
-                                                                        new MeterValue(
-                                                                            Timestamp:       evse.StopTimestamp.Value,
-                                                                            SampledValues:   new[] {
-                                                                                                 new SampledValue(
-                                                                                                     Value:                 evse.MeterStopValue.Value,
-                                                                                                     Context:               ReadingContext.TransactionEnd,
-                                                                                                     Measurand:             Measurand.Current_Export,
-                                                                                                     Phase:                 null,
-                                                                                                     MeasurementLocation:   MeasurementLocation.Outlet,
-                                                                                                     SignedMeterValue:      new SignedMeterValue(
-                                                                                                                                SignedMeterData:   evse.SignedStopMeterValue,
-                                                                                                                                SigningMethod:     "secp256r1",
-                                                                                                                                EncodingMethod:    "base64",
-                                                                                                                                PublicKey:         "04cafebabe",
-                                                                                                                                CustomData:        null
-                                                                                                                            ),
-                                                                                                     UnitOfMeasure:         null,
-                                                                                                     CustomData:            null
-                                                                                                 )
-                                                                                             }
-                                                                        )
-                                                                    },
-                                              CustomData:           null
-
-                                          );
-
-                                },
-                                CancellationToken.None);
-
-                                response = new OCPPv2_1.CS.RequestStopTransactionResponse(
-                                               request,
-                                               RequestStartStopStatus.Accepted
-                                           );
-
-                            }
-                            else
-                                response = new OCPPv2_1.CS.RequestStopTransactionResponse(
-                                               request,
-                                               RequestStartStopStatus.Rejected
-                                           );
+                            response = new OCPPv2_1.CS.RequestStopTransactionResponse(
+                                           request,
+                                           RequestStartStopStatus.Rejected
+                                       );
 
                         }
 
@@ -7623,15 +7393,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.GetTransactionStatusResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.GetTransactionStatusResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid GetTransactionStatus request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.GetTransactionStatusResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid GetTransactionStatus request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -7669,43 +7440,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             // TransactionId
 
-                            if (request.TransactionId.HasValue)
-                            {
-
-                                var foundEVSE =  evses.Values.FirstOrDefault(evse => request.TransactionId == evse.TransactionId);
-
-                                if (foundEVSE is not null)
-                                {
-
-                                    response = new OCPPv2_1.CS.GetTransactionStatusResponse(
-                                                   request,
-                                                   MessagesInQueue:    false,
-                                                   OngoingIndicator:   true
-                                               );
-
-                                }
-                                else
-                                {
-
-                                    response = new OCPPv2_1.CS.GetTransactionStatusResponse(
-                                                   request,
-                                                   MessagesInQueue:    false,
-                                                   OngoingIndicator:   true
-                                               );
-
-                                }
-
-                            }
-                            else
-                            {
-
-                                response = new OCPPv2_1.CS.GetTransactionStatusResponse(
-                                               request,
-                                               MessagesInQueue:    false,
-                                               OngoingIndicator:   true
-                                           );
-
-                            }
+                            response = new OCPPv2_1.CS.GetTransactionStatusResponse(
+                                           request,
+                                           MessagesInQueue:    false,
+                                           OngoingIndicator:   false
+                                       );
 
                         }
 
@@ -7810,15 +7549,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.SetChargingProfileResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.SetChargingProfileResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid SetChargingProfile request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.SetChargingProfileResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid SetChargingProfile request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -7882,44 +7622,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             // EVSEId
                             // ChargingProfile
 
-                            // ToDo: lock(connectors)
-
-                            if (request.EVSEId.Value == 0)
-                            {
-
-                                foreach (var evse in evses.Values)
-                                {
-
-                                    if (!request.ChargingProfile.TransactionId.HasValue)
-                                        evse.ChargingProfile = request.ChargingProfile;
-
-                                    else if (evse.TransactionId == request.ChargingProfile.TransactionId.Value)
-                                        evse.ChargingProfile = request.ChargingProfile;
-
-                                }
-
-                                response = new OCPPv2_1.CS.SetChargingProfileResponse(
-                                               request,
-                                               ChargingProfileStatus.Accepted
-                                           );
-
-                            }
-                            else if (evses.ContainsKey(request.EVSEId))
-                            {
-
-                                evses[request.EVSEId].ChargingProfile = request.ChargingProfile;
-
-                                response = new OCPPv2_1.CS.SetChargingProfileResponse(
-                                               request,
-                                               ChargingProfileStatus.Accepted
-                                           );
-
-                            }
-                            else
-                                response = new OCPPv2_1.CS.SetChargingProfileResponse(
-                                               request,
-                                               ChargingProfileStatus.Rejected
-                                           );
+                            response = new OCPPv2_1.CS.SetChargingProfileResponse(
+                                           request,
+                                           ChargingProfileStatus.Rejected
+                                       );
 
                         }
 
@@ -8025,15 +7731,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.GetChargingProfilesResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.GetChargingProfilesResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid GetChargingProfiles request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.GetChargingProfilesResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid GetChargingProfiles request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -8074,24 +7781,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             // ChargingProfile
                             // EVSEId
 
-                            if (request.EVSEId.HasValue && evses.ContainsKey(request.EVSEId.Value))
-                            {
+                            response = new OCPPv2_1.CS.GetChargingProfilesResponse(
+                                           request,
+                                           GetChargingProfileStatus.Unknown
+                                       );
 
-                                //evses[Request.EVSEId.Value].ChargingProfile = Request.ChargingProfile;
-
-                                response = new OCPPv2_1.CS.GetChargingProfilesResponse(
-                                               request,
-                                               GetChargingProfileStatus.Accepted
-                                           );
-
-                            }
-                            else
-                               response = new OCPPv2_1.CS.GetChargingProfilesResponse(
-                                              request,
-                                              GetChargingProfileStatus.Unknown
-                                          );
-
-                                }
+                        }
 
                     }
 
@@ -8195,15 +7890,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.ClearChargingProfileResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.ClearChargingProfileResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid ClearChargingProfile request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.ClearChargingProfileResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid ClearChargingProfile request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -8354,15 +8050,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.GetCompositeScheduleResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.GetCompositeScheduleResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid GetCompositeSchedule request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.GetCompositeScheduleResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid GetCompositeSchedule request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -8516,15 +8213,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.UpdateDynamicScheduleResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.UpdateDynamicScheduleResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid UpdateDynamicSchedule request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.UpdateDynamicScheduleResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid UpdateDynamicSchedule request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -8689,15 +8387,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.NotifyAllowedEnergyTransferResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.NotifyAllowedEnergyTransferResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid NotifyAllowedEnergyTransfer request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.NotifyAllowedEnergyTransferResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid NotifyAllowedEnergyTransfer request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -8846,15 +8545,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.UsePriorityChargingResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.UsePriorityChargingResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid UsePriorityCharging request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.UsePriorityChargingResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid UsePriorityCharging request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -9004,15 +8704,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.UnlockConnectorResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.UnlockConnectorResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid UnlockConnector request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.UnlockConnectorResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid UnlockConnector request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -9051,29 +8752,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             // EVSEId
                             // ConnectorId
 
-                            // ToDo: lock(connectors)
-
-                            if (evses.TryGetValue    (request.EVSEId,      out var evse) &&
-                                evse. TryGetConnector(request.ConnectorId, out var connector))
-                            {
-
-                                // What to do here?!
-
-                                response = new OCPPv2_1.CS.UnlockConnectorResponse(
-                                               Request:      request,
-                                               Status:       UnlockStatus.Unlocked,
-                                               StatusInfo:   null,
-                                               CustomData:   null
-                                           );
-
-                            }
-                            else
-                                response = new OCPPv2_1.CS.UnlockConnectorResponse(
-                                               Request:      request,
-                                               Status:       UnlockStatus.UnlockFailed,
-                                               StatusInfo:   null,
-                                               CustomData:   null
-                                           );
+                            response = new OCPPv2_1.CS.UnlockConnectorResponse(
+                                           Request:      request,
+                                           Status:       UnlockStatus.UnlockFailed,
+                                           StatusInfo:   null,
+                                           CustomData:   null
+                                       );
 
                         }
 
@@ -9180,15 +8864,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.AFRRSignalResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.AFRRSignalResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid AFRRSignal request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.AFRRSignalResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid AFRRSignal request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -9341,15 +9026,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.SetDisplayMessageResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.SetDisplayMessageResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid SetDisplayMessage request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.SetDisplayMessageResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid SetDisplayMessage request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -9515,15 +9201,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.GetDisplayMessagesResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.GetDisplayMessagesResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid GetDisplayMessages request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.GetDisplayMessagesResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid GetDisplayMessages request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -9691,15 +9378,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.ClearDisplayMessageResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.ClearDisplayMessageResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid ClearDisplayMessage request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.ClearDisplayMessageResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid ClearDisplayMessage request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -9856,15 +9544,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.CostUpdatedResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.CostUpdatedResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid CostUpdated request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.CostUpdatedResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid CostUpdated request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -10024,15 +9713,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.CustomerInformationResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.CustomerInformationResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid CustomerInformation request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.CustomerInformationResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid CustomerInformation request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -10226,15 +9916,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.BinaryDataTransferResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.BinaryDataTransferResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid BinaryDataTransfer request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.BinaryDataTransferResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid BinaryDataTransfer request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -10399,15 +10090,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.GetFileResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.GetFileResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid GetFile request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.GetFileResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid GetFile request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -10565,15 +10257,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.SendFileResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.SendFileResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid SendFile request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.SendFileResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid SendFile request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -10727,15 +10420,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.DeleteFileResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.DeleteFileResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid DeleteFile request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.DeleteFileResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid DeleteFile request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -10892,15 +10586,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.AddSignaturePolicyResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.AddSignaturePolicyResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid AddSignaturePolicy request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.AddSignaturePolicyResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid AddSignaturePolicy request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -11055,15 +10750,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.UpdateSignaturePolicyResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.UpdateSignaturePolicyResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid UpdateSignaturePolicy request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.UpdateSignaturePolicyResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid UpdateSignaturePolicy request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -11216,15 +10912,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.DeleteSignaturePolicyResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.DeleteSignaturePolicyResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid DeleteSignaturePolicy request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.DeleteSignaturePolicyResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid DeleteSignaturePolicy request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -11377,15 +11074,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.AddUserRoleResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.AddUserRoleResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid AddUserRole request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.AddUserRoleResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid AddUserRole request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -11538,15 +11236,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.UpdateUserRoleResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.UpdateUserRoleResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid UpdateUserRole request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.UpdateUserRoleResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid UpdateUserRole request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -11699,15 +11398,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.DeleteUserRoleResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.DeleteUserRoleResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid DeleteUserRole request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.DeleteUserRoleResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid DeleteUserRole request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -11863,15 +11563,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.SetDefaultChargingTariffResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.SetDefaultChargingTariffResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid SetDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.SetDefaultChargingTariffResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid SetDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -11937,9 +11638,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             else if (!request.EVSEIds.Any())
                             {
 
-                                foreach (var evse in evses.Values)
-                                    evse.DefaultChargingTariff = request.ChargingTariff;
-
                                 response = new OCPPv2_1.CS.SetDefaultChargingTariffResponse(
                                                Request:           request,
                                                Status:            SetDefaultChargingTariffStatus.Accepted,
@@ -11955,15 +11653,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                 foreach (var evseId in request.EVSEIds)
                                 {
-                                    if (!evses.ContainsKey(evseId))
-                                    {
                                         response = new OCPPv2_1.CS.SetDefaultChargingTariffResponse(
                                                        Request:   request,
                                                        Result:    Result.SignatureError(
                                                                       $"Invalid EVSE identification: {evseId}"
                                                                   )
                                                    );
-                                    }
                                 }
 
                                 if (response == null)
@@ -11973,8 +11668,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                                     foreach (var evseId in request.EVSEIds)
                                     {
-
-                                        evses[evseId].DefaultChargingTariff = request.ChargingTariff;
 
                                         evseStatusInfos.Add(new EVSEStatusInfo<SetDefaultChargingTariffStatus>(
                                                                 EVSEId:           evseId,
@@ -12103,15 +11796,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.GetDefaultChargingTariffResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.GetDefaultChargingTariffResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid GetDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.GetDefaultChargingTariffResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid GetDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -12147,34 +11841,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             DebugX.Log($"Charging station '{Id}': Incoming GetDefaultChargingTariff!");
 
-                            var chargingTariffGroups  = request.EVSEIds.Any()
-                                                            ? evses.Values.Where(evse => request.EVSEIds.Contains(evse.Id)).GroupBy(evse => evse.DefaultChargingTariff?.Id.ToString() ?? "")
-                                                            : evses.Values.                                                 GroupBy(evse => evse.DefaultChargingTariff?.Id.ToString() ?? "");
-
-                            var chargingTariffMap     = chargingTariffGroups.
-                                                            Where (group => group.Key != "").
-                                                            Select(group => new KeyValuePair<ChargingTariff_Id, IEnumerable<EVSE_Id>>(
-                                                                                group.First().DefaultChargingTariff!.Id,
-                                                                                group.Select(evse => evse.Id)
-                                                                            ));
-
-                            response                  = new OCPPv2_1.CS.GetDefaultChargingTariffResponse(
-                                                            Request:             request,
-                                                            Status:              GenericStatus.Accepted,
-                                                            StatusInfo:          null,
-                                                            ChargingTariffs:     chargingTariffGroups.
-                                                                                     Where (group => group.Key != "").
-                                                                                     Select(group => group.First().DefaultChargingTariff).
-                                                                                     Cast<ChargingTariff>(),
-                                                            ChargingTariffMap:   chargingTariffMap.Any()
-                                                                                     ? new ReadOnlyDictionary<ChargingTariff_Id, IEnumerable<EVSE_Id>>(
-                                                                                           new Dictionary<ChargingTariff_Id, IEnumerable<EVSE_Id>>(
-                                                                                               chargingTariffMap
-                                                                                           )
-                                                                                       )
-                                                                                     : null,
-                                                            CustomData:          null
-                                                        );
+                            response = new OCPPv2_1.CS.GetDefaultChargingTariffResponse(
+                                           Request:             request,
+                                           Status:              GenericStatus.Accepted,
+                                           StatusInfo:          null,
+                                           ChargingTariffs:     null,
+                                           ChargingTariffMap:   null,
+                                           CustomData:          null
+                                       );
 
                         }
 
@@ -12291,15 +11965,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     OCPPv2_1.CS.RemoveDefaultChargingTariffResponse? response = null;
 
-                    if (request.ChargingStationId != Id)
-                    {
-                        response = new OCPPv2_1.CS.RemoveDefaultChargingTariffResponse(
-                                       Request:  request,
-                                       Result:   Result.GenericError(
-                                                     $"Charging station '{Id}': Invalid RemoveDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
-                                                 )
-                                   );
-                    }
+                    //if (request.ChargingStationId != Id)
+                    //{
+                    //    response = new OCPPv2_1.CS.RemoveDefaultChargingTariffResponse(
+                    //                   Request:  request,
+                    //                   Result:   Result.GenericError(
+                    //                                 $"Charging station '{Id}': Invalid RemoveDefaultChargingTariff request for charging station '{request.ChargingStationId}'!"
+                    //                             )
+                    //               );
+                    //}
+                    if (1 == 2) { }
 
                     #endregion
 
@@ -12335,63 +12010,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                             DebugX.Log($"Charging station '{Id}': Incoming RemoveDefaultChargingTariff!");
 
-                            var evseIds          = request.EVSEIds.Any()
-                                                       ? request.EVSEIds
-                                                       : evses.Keys;
-
-                            var evseStatusInfos  = new List<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>();
-
-                            foreach (var evseId in evseIds)
-                            {
-
-                                if (evses[evseId].DefaultChargingTariff is null)
-                                {
-                                    evseStatusInfos.Add(new EVSEStatusInfo<RemoveDefaultChargingTariffStatus>(
-                                                            evseId,
-                                                            RemoveDefaultChargingTariffStatus.NotFound
-                                                        ));
-                                    continue;
-                                }
-
-                                if (!request.ChargingTariffId.HasValue)
-                                {
-                                    evses[evseId].DefaultChargingTariff = null;
-                                    continue;
-                                }
-
-                                var chargingTariff = evses[evseId].DefaultChargingTariff;
-
-                                if (chargingTariff is null)
-                                {
-                                    evseStatusInfos.Add(new EVSEStatusInfo<RemoveDefaultChargingTariffStatus>(
-                                                            evseId,
-                                                            RemoveDefaultChargingTariffStatus.Accepted
-                                                        ));
-                                    continue;
-                                }
-
-                                if (chargingTariff.Id == request.ChargingTariffId.Value)
-                                {
-                                    evses[evseId].DefaultChargingTariff = null;
-                                    evseStatusInfos.Add(new EVSEStatusInfo<RemoveDefaultChargingTariffStatus>(
-                                                            evseId,
-                                                            RemoveDefaultChargingTariffStatus.Accepted
-                                                        ));
-                                    continue;
-                                }
-
-                                evseStatusInfos.Add(new EVSEStatusInfo<RemoveDefaultChargingTariffStatus>(
-                                                        evseId,
-                                                        RemoveDefaultChargingTariffStatus.NotFound
-                                                    ));
-
-                            }
-
                             response = new OCPPv2_1.CS.RemoveDefaultChargingTariffResponse(
                                            Request:           request,
                                            Status:            RemoveDefaultChargingTariffStatus.Accepted,
                                            StatusInfo:        null,
-                                           EVSEStatusInfos:   evseStatusInfos,
+                                           EVSEStatusInfos:   null,
                                            CustomData:        null
                                        );
 
@@ -15782,7 +15405,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// <summary>
             /// The unique identification of this central system.
             /// </summary>
-            public CSMS_Id    Id                        { get; }
+            public NetworkingNode_Id   Id                        { get; }
+
+            public TestNetworkingNode  NetworkingNodeRef         { get; }
 
             /// <summary>
             /// The sender identification.
@@ -15793,19 +15418,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             public CSMS.NetworkingNodeUploadAPI HTTPUploadAPI             { get; }
 
-            public IPPort     HTTPUploadPort            { get; }
+            public IPPort             HTTPUploadPort            { get; }
 
-            public DNSClient  DNSClient                 { get; }
+            public DNSClient          DNSClient                 { get; }
 
             /// <summary>
             /// Require a HTTP Basic Authentication of all charging boxes.
             /// </summary>
-            public Boolean    RequireAuthentication     { get; }
+            public Boolean            RequireAuthentication     { get; }
 
             /// <summary>
             /// The default request timeout for all requests.
             /// </summary>
-            public TimeSpan   DefaultRequestTimeout     { get; }
+            public TimeSpan           DefaultRequestTimeout     { get; }
 
 
             /// <summary>
@@ -17563,20 +17188,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// </summary>
             /// <param name="Id">The unique identification of this central system.</param>
             /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
-            public ActingAsCSMS(CSMS_Id           Id,
-                                Boolean           RequireAuthentication   = true,
-                                TimeSpan?         DefaultRequestTimeout   = null,
-                                IPPort?           HTTPUploadPort          = null,
-                                DNSClient?        DNSClient               = null,
+            public ActingAsCSMS(TestNetworkingNode  NetworkingNode,
+                                Boolean             RequireAuthentication   = true,
+                                TimeSpan?           DefaultRequestTimeout   = null,
+                                IPPort?             HTTPUploadPort          = null,
+                                DNSClient?          DNSClient               = null,
 
-                                SignaturePolicy?  SignaturePolicy         = null)
+                                SignaturePolicy?    SignaturePolicy         = null)
 
             {
 
-                if (Id.IsNullOrEmpty)
-                    throw new ArgumentNullException(nameof(Id), "The given central system identification must not be null or empty!");
-
-                this.Id                      = Id;
+                this.Id                      = NetworkingNode.Id;
+                this.NetworkingNodeRef       = NetworkingNode;
                 this.RequireAuthentication   = RequireAuthentication;
                 this.DefaultRequestTimeout   = DefaultRequestTimeout ?? defaultRequestTimeout;
                 this.HTTPUploadPort          = HTTPUploadPort        ?? DefaultHTTPUploadPort;
@@ -18266,77 +17889,93 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     #endregion
 
+                    OCPPv2_1.CSMS.BootNotificationResponse? response = null;
+
                     // ChargingStation
                     // Reason
 
                     DebugX.Log($"OnBootNotification: {request.ChargingStation?.SerialNumber ?? "-"} ({request.ChargingStationId})");
 
+                    #region Verify request message
 
-                    //await AddChargeBoxIfNotExists(new ChargeBox(Request.ChargeBoxId,
-                    //                                            1,
-                    //                                            Request.ChargePointVendor,
-                    //                                            Request.ChargePointModel,
-                    //                                            null,
-                    //                                            Request.ChargePointSerialNumber,
-                    //                                            Request.ChargeBoxSerialNumber,
-                    //                                            Request.FirmwareVersion,
-                    //                                            Request.Iccid,
-                    //                                            Request.IMSI,
-                    //                                            Request.MeterType,
-                    //                                            Request.MeterSerialNumber));
-
-                    if (!reachableChargingStations.ContainsKey(request.ChargingStationId))
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                            request,
+                            request.ToJSON(
+                                CustomBootNotificationRequestSerializer,
+                                CustomChargingStationSerializer,
+                                CustomSignatureSerializer,
+                                CustomCustomDataSerializer
+                            ),
+                            out var verificationErrorResponse
+                        ))
                     {
 
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.ChargingStationId, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        response = new OCPPv2_1.CSMS.BootNotificationResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature(s): {verificationErrorResponse}"
+                                                 )
+                                   );
+
+                        SignaturePolicy.SignResponseMessage(
+                            response,
+                            response.ToJSON(
+                                CustomBootNotificationResponseSerializer,
+                                CustomStatusInfoSerializer,
+                                CustomSignatureSerializer,
+                                CustomCustomDataSerializer
+                            ),
+                            out var signatureErrorResponse);
 
                     }
-                    else
+
+                    #endregion
+
+
+                    if (response is null)
                     {
 
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.ChargingStationId] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
+                        if (!reachableChargingStations.ContainsKey(request.ChargingStationId))
+                        {
+
+                            if (sender is CSMS.NetworkingNodeWSServer networkingNodeWSServer)
+                                reachableChargingStations.TryAdd(request.ChargingStationId, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(networkingNodeWSServer, Timestamp.Now));
+
+                        }
+                        else
+                        {
+
+                            if (sender is CSMS.NetworkingNodeWSServer networkingNodeWSServer)
+                                reachableChargingStations[request.ChargingStationId] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(networkingNodeWSServer, Timestamp.Now);
+
+                        }
+
+                        response  = await this.NetworkingNodeRef.AsCS.SendBootNotification(request);
+
+
+                        //response =  new OCPPv2_1.CSMS.BootNotificationResponse(
+                        //                     Request:       request,
+                        //                     Status:        RegistrationStatus.Accepted,
+                        //                     CurrentTime:   Timestamp.Now,
+                        //                     Interval:      TimeSpan.FromMinutes(5),
+                        //                     StatusInfo:    null,
+                        //                     CustomData:    null
+                        //                 );
 
                     }
 
 
-                    var response = !SignaturePolicy.VerifyRequestMessage(
-                                       request,
-                                       request.ToJSON(
-                                           CustomBootNotificationRequestSerializer,
-                                           CustomChargingStationSerializer,
-                                           CustomSignatureSerializer,
-                                           CustomCustomDataSerializer
-                                       ),
-                                       out var errorResponse
-                                   )
+                    // ToDo: Add aditional signature!
 
-                                       ? new OCPPv2_1.CSMS.BootNotificationResponse(
-                                             Request:       request,
-                                             Result:        Result.SignatureError(
-                                                                $"Invalid signature(s): {errorResponse}"
-                                                            )
-                                         )
-
-                                       : new OCPPv2_1.CSMS.BootNotificationResponse(
-                                             Request:       request,
-                                             Status:        RegistrationStatus.Accepted,
-                                             CurrentTime:   Timestamp.Now,
-                                             Interval:      TimeSpan.FromMinutes(5),
-                                             StatusInfo:    null,
-                                             CustomData:    null
-                                         );
-
-                    SignaturePolicy.SignResponseMessage(
-                        response,
-                        response.ToJSON(
-                            CustomBootNotificationResponseSerializer,
-                            CustomStatusInfoSerializer,
-                            CustomSignatureSerializer,
-                            CustomCustomDataSerializer
-                        ),
-                        out var errorResponse2);
+                    //SignaturePolicy.SignResponseMessage(
+                    //    response,
+                    //    response.ToJSON(
+                    //        CustomBootNotificationResponseSerializer,
+                    //        CustomStatusInfoSerializer,
+                    //        CustomSignatureSerializer,
+                    //        CustomCustomDataSerializer
+                    //    ),
+                    //    out var errorResponse2);
 
 
                     #region Send OnBootNotificationResponse event
@@ -30093,6 +29732,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
         #region Data
 
+        private          readonly  HashSet<SignaturePolicy>                                                                 signaturePolicies           = new();
 
         #endregion
 
@@ -30101,12 +29741,132 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// <summary>
         /// The unique identification of this networking node.
         /// </summary>
-        public NetworkingNode_Id             Id                        { get; }
+        public NetworkingNode_Id        Id                          { get; }
+
+        /// <summary>
+        /// The networking node vendor identification.
+        /// </summary>
+        [Mandatory]
+        public String                   VendorName                  { get; }
+
+        /// <summary>
+        ///  The networking node model identification.
+        /// </summary>
+        [Mandatory]
+        public String                   Model                       { get; }
 
 
-        public ActingAsCS    AsCS      { get; }
+        /// <summary>
+        /// The optional multi-language networking node description.
+        /// </summary>
+        [Optional]
+        public I18NString?              Description                 { get; }
 
-        public ActingAsCSMS  AsCSMS    { get; }
+        /// <summary>
+        /// The optional serial number of the networking node.
+        /// </summary>
+        [Optional]
+        public String?                  SerialNumber                { get; }
+
+        /// <summary>
+        /// The optional firmware version of the networking node.
+        /// </summary>
+        [Optional]
+        public String?                  FirmwareVersion             { get; }
+
+        /// <summary>
+        /// The modem of the networking node.
+        /// </summary>
+        [Optional]
+        public Modem?                   Modem                       { get; }
+
+
+        public CustomData?              CustomData                  { get; set; }
+
+
+        /// <summary>
+        /// The time span between heartbeat requests.
+        /// </summary>
+        public TimeSpan                 SendHeartbeatEvery          { get; set; }
+
+        /// <summary>
+        /// The time at the CSMS.
+        /// </summary>
+        public DateTime?                CSMSTime                    { get; private set; }
+
+        /// <summary>
+        /// The default request timeout for all requests.
+        /// </summary>
+        public TimeSpan                 DefaultRequestTimeout       { get; }
+
+
+
+
+        /// <summary>
+        /// The maintenance interval.
+        /// </summary>
+        public TimeSpan                 MaintenanceEvery            { get; }
+
+        /// <summary>
+        /// Disable all maintenance tasks.
+        /// </summary>
+        public Boolean                  DisableMaintenanceTasks     { get; set; }
+
+        /// <summary>
+        /// Disable all heartbeats.
+        /// </summary>
+        public Boolean                  DisableSendHeartbeats       { get; set; }
+
+
+        #region ToDo's
+
+        public URL RemoteURL => throw new NotImplementedException();
+
+        public HTTPHostname? VirtualHostname => throw new NotImplementedException();
+
+        public RemoteCertificateValidationHandler? RemoteCertificateValidator => throw new NotImplementedException();
+
+        public X509Certificate? ClientCert => throw new NotImplementedException();
+
+        public SslProtocols TLSProtocol => throw new NotImplementedException();
+
+        public bool PreferIPv4 => throw new NotImplementedException();
+
+        public string HTTPUserAgent => throw new NotImplementedException();
+
+        public TimeSpan RequestTimeout { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public TransmissionRetryDelayDelegate TransmissionRetryDelay => throw new NotImplementedException();
+
+        public ushort MaxNumberOfRetries => throw new NotImplementedException();
+
+        public bool UseHTTPPipelining => throw new NotImplementedException();
+
+        public HTTPClientLogger? HTTPLogger => throw new NotImplementedException();
+
+        #endregion
+
+
+        /// <summary>
+        /// The enumeration of all signature policies.
+        /// </summary>
+        public IEnumerable<SignaturePolicy>  SignaturePolicies
+            => signaturePolicies;
+
+        /// <summary>
+        /// The currently active signature policy.
+        /// </summary>
+        public SignaturePolicy               SignaturePolicy
+            => SignaturePolicies.First();
+
+
+        private ActingAsCS               AsCS                        { get; }
+
+        public  ActingAsCSMS             AsCSMS                      { get; }
+
+
+        public CS.INetworkingNodeClient? CSClient
+            => AsCS.CSClient;
 
 
         /// <summary>
@@ -30135,25 +29895,163 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
         /// Create a new networking node for testing.
         /// </summary>
         /// <param name="Id">The unique identification of this networking node.</param>
-        /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
-        public TestNetworkingNode(NetworkingNode_Id  Id,
-                                  DNSClient?         DNSClient = null)
+        public TestNetworkingNode(NetworkingNode_Id     Id,
+                                  String                VendorName,
+                                  String                Model,
+
+                                  I18NString?           Description               = null,
+                                  String?               SerialNumber              = null,
+                                  String?               FirmwareVersion           = null,
+                                  Modem?                Modem                     = null,
+
+                                  Boolean               DisableSendHeartbeats     = false,
+                                  TimeSpan?             SendHeartbeatEvery        = null,
+
+                                  Boolean               DisableMaintenanceTasks   = false,
+                                  TimeSpan?             MaintenanceEvery          = null,
+
+                                  TimeSpan?             DefaultRequestTimeout     = null,
+                                  IHTTPAuthentication?  HTTPAuthentication        = null,
+                                  DNSClient?            DNSClient                 = null,
+
+                                  SignaturePolicy?      SignaturePolicy           = null)
 
         {
 
             if (Id.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(Id), "The given networking node identification must not be null or empty!");
+                throw new ArgumentNullException(nameof(Id),          "The given networking node identification must not be null or empty!");
 
-            this.Id                      = Id;
+            if (VendorName.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(VendorName),  "The given networking node vendor must not be null or empty!");
+
+            if (Model.     IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Model),       "The given networking node model must not be null or empty!");
+
+            this.Id                       = Id;
+            this.VendorName               = VendorName;
+            this.Model                    = Model;
+            this.Description              = Description;
+            this.SerialNumber             = SerialNumber;
+            this.FirmwareVersion          = FirmwareVersion;
+
 
             Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "HTTPSSEs"));
 
+            this.DNSClient                = DNSClient ?? new DNSClient(SearchForIPv6DNSServers: false);
 
-            this.DNSClient               = DNSClient ?? new DNSClient(SearchForIPv6DNSServers: false);
+         //   this.EnqueuedRequests         = [];
+
+
+            this.AsCSMS                   = new ActingAsCSMS(
+
+                                                NetworkingNode:            this,
+                                                RequireAuthentication:     false,
+                                                DefaultRequestTimeout:     this.DefaultRequestTimeout,
+                                                HTTPUploadPort:            null,
+                                                DNSClient:                 this.DNSClient
+
+                                                //SignaturePolicy:           this.SignaturePolicy
+
+                                            );
+
+            this.AsCS                     = new ActingAsCS(
+
+                                                NetworkingNode:            this,
+                                                VendorName:                this.VendorName,
+                                                Model:                     this.Model,
+
+                                                Description:               this.Description,
+                                                SerialNumber:              this.SerialNumber,
+                                                FirmwareVersion:           this.FirmwareVersion,
+                                                Modem:                     this.Modem,
+
+                                                DisableSendHeartbeats:     this.DisableSendHeartbeats,
+                                                SendHeartbeatEvery:        this.SendHeartbeatEvery,
+
+                                                DisableMaintenanceTasks:   this.DisableMaintenanceTasks,
+                                                MaintenanceEvery:          this.MaintenanceEvery,
+
+                                                DefaultRequestTimeout:     this.DefaultRequestTimeout,
+                                                HTTPAuthentication:        null,
+                                                DNSClient:                 this.DNSClient
+
+                                                //SignaturePolicy:           this.SignaturePolicy
+
+                                            );
 
         }
 
         #endregion
+
+
+        #region ConnectWebSocket(...)
+
+        public Task<HTTPResponse?> ConnectWebSocket(String                               From,
+                                                    String                               To,
+
+                                                    URL                                  RemoteURL,
+                                                    HTTPHostname?                        VirtualHostname              = null,
+                                                    String?                              Description                  = null,
+                                                    RemoteCertificateValidationHandler?  RemoteCertificateValidator   = null,
+                                                    LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+                                                    X509Certificate?                     ClientCert                   = null,
+                                                    SslProtocols?                        TLSProtocol                  = null,
+                                                    Boolean?                             PreferIPv4                   = null,
+                                                    String?                              HTTPUserAgent                = null,
+                                                    IHTTPAuthentication?                 HTTPAuthentication           = null,
+                                                    TimeSpan?                            RequestTimeout               = null,
+                                                    TransmissionRetryDelayDelegate?      TransmissionRetryDelay       = null,
+                                                    UInt16?                              MaxNumberOfRetries           = null,
+                                                    UInt32?                              InternalBufferSize           = null,
+
+                                                    IEnumerable<String>?                 SecWebSocketProtocols        = null,
+
+                                                    Boolean                              DisableMaintenanceTasks      = false,
+                                                    TimeSpan?                            MaintenanceEvery             = null,
+                                                    Boolean                              DisableWebSocketPings        = false,
+                                                    TimeSpan?                            WebSocketPingEvery           = null,
+                                                    TimeSpan?                            SlowNetworkSimulationDelay   = null,
+
+                                                    String?                              LoggingPath                  = null,
+                                                    String?                              LoggingContext               = null,
+                                                    LogfileCreatorDelegate?              LogfileCreator               = null,
+                                                    HTTPClientLogger?                    HTTPLogger                   = null,
+                                                    DNSClient?                           DNSClient                    = null)
+
+            => AsCS.ConnectWebSocket(From,
+                                     To,
+
+                                     RemoteURL,
+                                     VirtualHostname,
+                                     Description,
+                                     RemoteCertificateValidator,
+                                     ClientCertificateSelector,
+                                     ClientCert,
+                                     TLSProtocol,
+                                     PreferIPv4,
+                                     HTTPUserAgent,
+                                     HTTPAuthentication,
+                                     RequestTimeout,
+                                     TransmissionRetryDelay,
+                                     MaxNumberOfRetries,
+                                     InternalBufferSize,
+
+                                     SecWebSocketProtocols,
+
+                                     DisableMaintenanceTasks,
+                                     MaintenanceEvery,
+                                     DisableWebSocketPings,
+                                     WebSocketPingEvery,
+                                     SlowNetworkSimulationDelay,
+
+                                     LoggingPath,
+                                     LoggingContext,
+                                     LogfileCreator,
+                                     HTTPLogger,
+                                     DNSClient);
+
+        #endregion
+
 
 
         private Task HandleErrors(String     Module,

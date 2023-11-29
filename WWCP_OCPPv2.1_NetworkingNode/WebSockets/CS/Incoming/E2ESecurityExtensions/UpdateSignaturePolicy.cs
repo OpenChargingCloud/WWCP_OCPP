@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 if (UpdateSignaturePolicyRequest.TryParse(RequestJSON,
                                                           RequestId,
-                                                          ChargingStationIdentity,
+                                                          ChargingStation_Id.Parse(NetworkingNodeIdentity.ToString()),
                                                           out var request,
                                                           out var errorResponse,
                                                           CustomUpdateSignaturePolicyRequestParser) && request is not null) {

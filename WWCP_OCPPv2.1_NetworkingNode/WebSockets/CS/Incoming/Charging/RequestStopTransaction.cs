@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 if (RequestStopTransactionRequest.TryParse(RequestJSON,
                                                            RequestId,
-                                                           ChargingStationIdentity,
+                                                           ChargingStation_Id.Parse(NetworkingNodeIdentity.ToString()),
                                                            out var request,
                                                            out var errorResponse,
                                                            CustomRequestStopTransactionRequestParser) && request is not null) {

@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.BootNotificationResponse>
 
-            SendBootNotification(this INetworkingNode                                      NetworkingNode,
+            SendBootNotification(this INetworkingNode                                       NetworkingNode,
 
                                  BootReason                                                 BootReason,
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
             => NetworkingNode.SendBootNotification(
                    new OCPPv2_1.CS.BootNotificationRequest(
-                       NetworkingNode.Id,
+                       ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                        new ChargingStation(
                            NetworkingNode.Model,
                            NetworkingNode.VendorName,
@@ -186,7 +186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendFirmwareStatusNotification(
                        new OCPPv2_1.CS.FirmwareStatusNotificationRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            Status,
                            UpdateFirmwareRequestId,
 
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendPublishFirmwareStatusNotification(
                        new OCPPv2_1.CS.PublishFirmwareStatusNotificationRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            Status,
                            PublishFirmwareStatusNotificationRequestId,
                            DownloadLocations,
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendHeartbeat(
                        new OCPPv2_1.CS.HeartbeatRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
 
                            SignKeys,
                            SignInfos,
@@ -355,7 +355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyEvent(
                        new OCPPv2_1.CS.NotifyEventRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            GeneratedAt,
                            SequenceNumber,
                            EventData,
@@ -415,7 +415,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendSecurityEventNotification(
                        new OCPPv2_1.CS.SecurityEventNotificationRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            Type,
                            Timestamp,
                            TechInfo,
@@ -478,7 +478,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyReport(
                        new OCPPv2_1.CS.NotifyReportRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            NotifyReportRequestId,
                            SequenceNumber,
                            GeneratedAt,
@@ -543,7 +543,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyMonitoringReport(
                        new OCPPv2_1.CS.NotifyMonitoringReportRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            NotifyMonitoringReportRequestId,
                            SequenceNumber,
                            GeneratedAt,
@@ -602,7 +602,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendLogStatusNotification(
                        new OCPPv2_1.CS.LogStatusNotificationRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            Status,
                            LogRequestId,
 
@@ -660,7 +660,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.TransferData(
                        new OCPPv2_1.CS.DataTransferRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            VendorId,
                            MessageId,
                            Data,
@@ -720,7 +720,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendCertificateSigningRequest(
                        new OCPPv2_1.CS.SignCertificateRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            CSR,
                            SignCertificateRequestId,
                            CertificateType,
@@ -783,7 +783,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.Get15118EVCertificate(
                        new OCPPv2_1.CS.Get15118EVCertificateRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            ISO15118SchemaVersion,
                            CertificateAction,
                            EXIRequest,
@@ -840,7 +840,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.GetCertificateStatus(
                        new OCPPv2_1.CS.GetCertificateStatusRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            OCSPRequestData,
 
                            SignKeys,
@@ -896,7 +896,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.GetCRL(
                        new OCPPv2_1.CS.GetCRLRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            GetCRLRequestId,
                            CertificateHashData,
 
@@ -953,7 +953,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendReservationStatusUpdate(
                        new OCPPv2_1.CS.ReservationStatusUpdateRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            ReservationId,
                            ReservationUpdateStatus,
 
@@ -1011,7 +1011,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.Authorize(
                        new OCPPv2_1.CS.AuthorizeRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            IdToken,
                            Certificate,
                            ISO15118CertificateHashData,
@@ -1072,7 +1072,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyEVChargingNeeds(
                        new OCPPv2_1.CS.NotifyEVChargingNeedsRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            EVSEId,
                            ChargingNeeds,
                            ReceivedTimestamp,
@@ -1154,7 +1154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendTransactionEvent(
                        new OCPPv2_1.CS.TransactionEventRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
 
                            EventType,
                            Timestamp,
@@ -1227,7 +1227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendStatusNotification(
                        new OCPPv2_1.CS.StatusNotificationRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            Timestamp,
                            Status,
                            EVSEId,
@@ -1285,7 +1285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendMeterValues(
                        new OCPPv2_1.CS.MeterValuesRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            EVSEId,
                            MeterValues,
 
@@ -1343,7 +1343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyChargingLimit(
                        new OCPPv2_1.CS.NotifyChargingLimitRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            ChargingLimit,
                            ChargingSchedules,
                            EVSEId,
@@ -1400,7 +1400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendClearedChargingLimit(
                        new OCPPv2_1.CS.ClearedChargingLimitRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            ChargingLimitSource,
                            EVSEId,
 
@@ -1462,7 +1462,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.ReportChargingProfiles(
                        new OCPPv2_1.CS.ReportChargingProfilesRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            ReportChargingProfilesRequestId,
                            ChargingLimitSource,
                            EVSEId,
@@ -1529,7 +1529,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyEVChargingSchedule(
                        new OCPPv2_1.CS.NotifyEVChargingScheduleRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            TimeBase,
                            EVSEId,
                            ChargingSchedule,
@@ -1590,7 +1590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyPriorityCharging(
                        new OCPPv2_1.CS.NotifyPriorityChargingRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            TransactionId,
                            Activated,
 
@@ -1644,7 +1644,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.PullDynamicScheduleUpdate(
                        new OCPPv2_1.CS.PullDynamicScheduleUpdateRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            ChargingProfileId,
 
                            SignKeys,
@@ -1702,7 +1702,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyDisplayMessages(
                        new OCPPv2_1.CS.NotifyDisplayMessagesRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            NotifyDisplayMessagesRequestId,
                            MessageInfos,
                            ToBeContinued,
@@ -1765,7 +1765,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyCustomerInformation(
                        new OCPPv2_1.CS.NotifyCustomerInformationRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            NotifyCustomerInformationRequestId,
                            Data,
                            SequenceNumber,
@@ -1829,7 +1829,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.TransferBinaryData(
                        new OCPPv2_1.CS.BinaryDataTransferRequest(
-                           NetworkingNode.Id,
+                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
                            VendorId,
                            MessageId,
                            Data,

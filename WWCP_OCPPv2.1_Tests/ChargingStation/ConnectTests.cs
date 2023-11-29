@@ -58,21 +58,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         protected TestChargingStation?              chargingStation2;
         protected TestChargingStation?              chargingStation3;
 
-        protected ConcurrentList<LogJSONRequest>?         chargingStation1WebSocketTextMessagesReceived;
-        protected ConcurrentList<LogJSONRequest>?         chargingStation2WebSocketTextMessagesReceived;
-        protected ConcurrentList<LogJSONRequest>?         chargingStation3WebSocketTextMessagesReceived;
+        protected ConcurrentList<LogJSONRequest>?         chargingStation1WebSocketJSONMessagesReceived;
+        protected ConcurrentList<LogJSONRequest>?         chargingStation2WebSocketJSONMessagesReceived;
+        protected ConcurrentList<LogJSONRequest>?         chargingStation3WebSocketJSONMessagesReceived;
 
-        protected ConcurrentList<LogDataJSONResponse>?         chargingStation1WebSocketTextMessageResponsesReceived;
-        protected ConcurrentList<LogDataJSONResponse>?         chargingStation2WebSocketTextMessageResponsesReceived;
-        protected ConcurrentList<LogDataJSONResponse>?         chargingStation3WebSocketTextMessageResponsesReceived;
+        protected ConcurrentList<LogDataJSONResponse>?         chargingStation1WebSocketJSONMessageResponsesReceived;
+        protected ConcurrentList<LogDataJSONResponse>?         chargingStation2WebSocketJSONMessageResponsesReceived;
+        protected ConcurrentList<LogDataJSONResponse>?         chargingStation3WebSocketJSONMessageResponsesReceived;
 
-        protected ConcurrentList<LogDataJSONResponse>?         chargingStation1WebSocketTextMessageResponsesSent;
-        protected ConcurrentList<LogDataJSONResponse>?         chargingStation2WebSocketTextMessageResponsesSent;
-        protected ConcurrentList<LogDataJSONResponse>?         chargingStation3WebSocketTextMessageResponsesSent;
+        protected ConcurrentList<LogDataJSONResponse>?         chargingStation1WebSocketJSONMessageResponsesSent;
+        protected ConcurrentList<LogDataJSONResponse>?         chargingStation2WebSocketJSONMessageResponsesSent;
+        protected ConcurrentList<LogDataJSONResponse>?         chargingStation3WebSocketJSONMessageResponsesSent;
 
-        protected ConcurrentList<LogJSONRequest>?         chargingStation1WebSocketTextMessagesSent;
-        protected ConcurrentList<LogJSONRequest>?         chargingStation2WebSocketTextMessagesSent;
-        protected ConcurrentList<LogJSONRequest>?         chargingStation3WebSocketTextMessagesSent;
+        protected ConcurrentList<LogJSONRequest>?         chargingStation1WebSocketJSONMessagesSent;
+        protected ConcurrentList<LogJSONRequest>?         chargingStation2WebSocketJSONMessagesSent;
+        protected ConcurrentList<LogJSONRequest>?         chargingStation3WebSocketJSONMessagesSent;
 
         #endregion
 
@@ -174,10 +174,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             #region Charging Station #1
 
-            chargingStation1WebSocketTextMessagesReceived          = new ConcurrentList<LogJSONRequest>();
-            chargingStation1WebSocketTextMessageResponsesSent      = new ConcurrentList<LogDataJSONResponse>();
-            chargingStation1WebSocketTextMessagesSent              = new ConcurrentList<LogJSONRequest>();
-            chargingStation1WebSocketTextMessageResponsesReceived  = new ConcurrentList<LogDataJSONResponse>();
+            chargingStation1WebSocketJSONMessagesReceived          = new ConcurrentList<LogJSONRequest>();
+            chargingStation1WebSocketJSONMessageResponsesSent      = new ConcurrentList<LogDataJSONResponse>();
+            chargingStation1WebSocketJSONMessagesSent              = new ConcurrentList<LogJSONRequest>();
+            chargingStation1WebSocketJSONMessageResponsesReceived  = new ConcurrentList<LogDataJSONResponse>();
 
             chargingStation1 = new TestChargingStation(
                                     Id:                       ChargingStation_Id.Parse("GD001"),
@@ -263,19 +263,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 {
 
                     chargingStation1WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message) => {
-                        chargingStation1WebSocketTextMessagesReceived.        TryAdd(new LogJSONRequest(timestamp, JArray.Parse(message)));
+                        chargingStation1WebSocketJSONMessagesReceived.        TryAdd(new LogJSONRequest(timestamp, JArray.Parse(message)));
                     };
 
                     chargingStation1WebSocketClient.OnJSONMessageResponseSent     += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
-                        chargingStation1WebSocketTextMessageResponsesSent.    TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
+                        chargingStation1WebSocketJSONMessageResponsesSent.    TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
                     };
 
                     chargingStation1WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message) => {
-                        chargingStation1WebSocketTextMessagesSent.            TryAdd(new LogJSONRequest(timestamp, JArray.Parse(message)));
+                        chargingStation1WebSocketJSONMessagesSent.            TryAdd(new LogJSONRequest(timestamp, JArray.Parse(message)));
                     };
 
                     chargingStation1WebSocketClient.OnJSONMessageResponseReceived += async (timestamp, client, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage) => {
-                        chargingStation1WebSocketTextMessageResponsesReceived.TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
+                        chargingStation1WebSocketJSONMessageResponsesReceived.TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
                     };
 
                 }

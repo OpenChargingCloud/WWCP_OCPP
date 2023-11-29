@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
+#region Usings
+
 using Newtonsoft.Json.Linq;
+
+#endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.tests
 {

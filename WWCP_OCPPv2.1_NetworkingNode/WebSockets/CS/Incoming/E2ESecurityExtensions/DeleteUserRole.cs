@@ -122,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 if (DeleteUserRoleRequest.TryParse(RequestJSON,
                                                    RequestId,
-                                                   ChargingStationIdentity,
+                                                   ChargingStation_Id.Parse(NetworkingNodeIdentity.ToString()),
                                                    out var request,
                                                    out var errorResponse,
                                                    CustomDeleteUserRoleRequestParser) && request is not null) {

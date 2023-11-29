@@ -2173,7 +2173,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             //    { "doNotChangeMe",  new ConfigurationData("never",    AccessRights.ReadOnly,  false) },
             //    { "password",       new ConfigurationData("12345678", AccessRights.WriteOnly, false) }
             //};
-            this.EnqueuedRequests         = new List<EnqueuedRequest>();
 
             this.VendorName               = VendorName;
             this.Model                    = Model;
@@ -2209,6 +2208,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             this.DNSClient                = DNSClient;
 
             this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
+
+            this.EnqueuedRequests         = [];
 
         }
 
