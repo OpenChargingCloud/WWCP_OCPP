@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\WWCP_OCPPv2.1_CSMS\WWCP_OCPPv2.1_CSMS.csproj" />
     <ProjectReference Include="..\..\Hermod\HermodTests\HermodTests.csproj" />
     <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj" />
     <ProjectReference Include="..\..\Styx\StyxTests\StyxTests.csproj" />
@@ -27,6 +26,7 @@
     <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv2.1_Adapter\WWCP_OCPPv2.1_Adapter.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv2.1_ChargingStation\WWCP_OCPPv2.1_ChargingStation.csproj" />
+    <ProjectReference Include="..\WWCP_OCPPv2.1_CSMS\WWCP_OCPPv2.1_CSMS.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv2.1_NetworkingNode\WWCP_OCPPv2.1_NetworkingNode.csproj" />
   </ItemGroup>
 

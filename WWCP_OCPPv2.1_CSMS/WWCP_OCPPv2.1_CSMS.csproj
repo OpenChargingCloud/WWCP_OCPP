@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>WWCP_OCPPv2._1_CSMS</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="HTTPRoot\css\events\events.css" />
+    <None Remove="HTTPRoot\css\events\events.min.css" />
+    <None Remove="HTTPRoot\css\template.css" />
+    <None Remove="HTTPRoot\css\template.min.css" />
+    <None Remove="HTTPRoot\defaults\defaults.ts" />
+    <None Remove="HTTPRoot\defaults\_defaults.scss" />
+    <None Remove="HTTPRoot\events\events.js" />
+    <None Remove="HTTPRoot\events\events.js.map" />
+    <None Remove="HTTPRoot\events\events.scss" />
+    <None Remove="HTTPRoot\events\events.ts" />
+    <None Remove="HTTPRoot\events\index.shtml" />
+    <None Remove="HTTPRoot\js\date.format.js" />
+    <None Remove="HTTPRoot\template.html" />
+    <None Remove="HTTPRoot\template.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="HTTPRoot\css\events\events.css" />
+    <EmbeddedResource Include="HTTPRoot\css\events\events.min.css" />
+    <EmbeddedResource Include="HTTPRoot\css\template.css" />
+    <EmbeddedResource Include="HTTPRoot\css\template.min.css" />
+    <EmbeddedResource Include="HTTPRoot\defaults\defaults.ts" />
+    <EmbeddedResource Include="HTTPRoot\defaults\_defaults.scss" />
+    <EmbeddedResource Include="HTTPRoot\events\events.js" />
+    <EmbeddedResource Include="HTTPRoot\events\events.js.map" />
+    <EmbeddedResource Include="HTTPRoot\events\events.scss" />
+    <EmbeddedResource Include="HTTPRoot\events\events.ts" />
+    <EmbeddedResource Include="HTTPRoot\events\index.shtml" />
+    <EmbeddedResource Include="HTTPRoot\js\date.format.js" />
+    <EmbeddedResource Include="HTTPRoot\template.html" />
+    <EmbeddedResource Include="HTTPRoot\template.scss" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj" />
+    <ProjectReference Include="..\..\Styx\Styx\Styx.csproj" />
+    <ProjectReference Include="..\WWCP_OCPPv2.1\WWCP_OCPPv2.1.csproj" />
+  </ItemGroup>
+
+</Project>

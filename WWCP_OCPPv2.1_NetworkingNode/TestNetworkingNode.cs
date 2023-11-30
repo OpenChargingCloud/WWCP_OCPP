@@ -29860,7 +29860,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             => SignaturePolicies.First();
 
 
-        private ActingAsCS               AsCS                        { get; }
+        public  ActingAsCS               AsCS                        { get; }
 
         public  ActingAsCSMS             AsCSMS                      { get; }
 

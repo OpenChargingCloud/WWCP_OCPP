@@ -30,7 +30,7 @@ using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
+namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CS
 {
 
     /// <summary>
