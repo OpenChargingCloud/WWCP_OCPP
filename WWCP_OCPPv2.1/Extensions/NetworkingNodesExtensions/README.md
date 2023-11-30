@@ -11,7 +11,7 @@ improve the overall network security.
 
 2. The charging station connects to the networking node and registers itself as a charging station.
 
-3. The networking node sends an UpdateNetworkTopologyRequest including a network topology information
+3. The networking node sends a NotifyNetworkTopology request including the updated network topology information
 to the charging station management system to inform the charging station management system about
 the newly connected charging station.
 
