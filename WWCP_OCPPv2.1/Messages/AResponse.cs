@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var json = JSONObject.Create(
 
-                           new JProperty("chargingStationId",   Request.ChargingStationId.ToString()),
+                           new JProperty("networkPath",         Request.NetworkPath.      ToJSON()),
                            new JProperty("eventTrackingId",     Request.EventTrackingId.  ToString()),
 
                            new JProperty("request",             JSONObject.Create(

@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new get log request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="LogType">The type of the certificates requested.</param>
         /// <param name="LogRequestId">The unique identification of this request.</param>
         /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
@@ -103,8 +103,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetLogRequest(ChargingStation_Id       ChargingStationId,
+        public GetLogRequest(NetworkingNode_Id        NetworkingNodeId,
                              LogType                  LogType,
                              Int32                    LogRequestId,
                              LogParameters            Log,
@@ -121,10 +122,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                              DateTime?                RequestTimestamp    = null,
                              TimeSpan?                RequestTimeout      = null,
                              EventTracking_Id?        EventTrackingId     = null,
+                             NetworkPath?             NetworkPath         = null,
                              CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "GetLog",
+            : base(NetworkingNodeId,
+                   nameof(GetLogRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -136,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -145,6 +148,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.Log            = Log;
             this.Retries        = Retries;
             this.RetryInterval  = RetryInterval;
+
 
             unchecked
             {
@@ -258,24 +262,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomGetLogRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomGetLogRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a get log request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomGetLogRequestParser">A delegate to parse custom get log requests.</param>
         public static GetLogRequest Parse(JObject                                      JSON,
                                           Request_Id                                   RequestId,
-                                          ChargingStation_Id                           ChargingStationId,
+                                          NetworkingNode_Id                            NetworkingNodeId,
+                                          NetworkPath                                  NetworkPath,
                                           CustomJObjectParserDelegate<GetLogRequest>?  CustomGetLogRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var getLogRequest,
                          out var errorResponse,
                          CustomGetLogRequestParser) &&
@@ -291,7 +298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out GetLogRequest, out ErrorResponse, CustomGetLogRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out GetLogRequest, out ErrorResponse, CustomGetLogRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -300,18 +307,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetLogRequest">The parsed get log request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject             JSON,
                                        Request_Id          RequestId,
-                                       ChargingStation_Id  ChargingStationId,
+                                       NetworkingNode_Id   NetworkingNodeId,
+                                       NetworkPath         NetworkPath,
                                        out GetLogRequest?  GetLogRequest,
                                        out String?         ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out GetLogRequest,
                         out ErrorResponse,
                         null);
@@ -322,13 +332,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetLogRequest">The parsed get log request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetLogRequestParser">A delegate to parse custom get log requests.</param>
         public static Boolean TryParse(JObject                                      JSON,
                                        Request_Id                                   RequestId,
-                                       ChargingStation_Id                           ChargingStationId,
+                                       NetworkingNode_Id                            NetworkingNodeId,
+                                       NetworkPath                                  NetworkPath,
                                        out GetLogRequest?                           GetLogRequest,
                                        out String?                                  ErrorResponse,
                                        CustomJObjectParserDelegate<GetLogRequest>?  CustomGetLogRequestParser)
@@ -432,38 +444,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 GetLogRequest = new GetLogRequest(
-                                    ChargingStationId,
+
+                                    NetworkingNodeId,
                                     LogType,
                                     LogRequestId,
                                     Log,
                                     Retries,
                                     RetryInterval,
+
                                     null,
                                     null,
                                     Signatures,
+
                                     CustomData,
-                                    RequestId
+
+                                    RequestId,
+                                    null,
+                                    null,
+                                    null,
+                                    NetworkPath
+
                                 );
 
                 if (CustomGetLogRequestParser is not null)

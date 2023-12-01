@@ -33,12 +33,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public static class ICSMSExtensions
     {
 
-        #region Reset                      (this CSMS, ChargingStationId, ResetType, EVSEId = null, ...)
+        #region Reset                      (NetworkingNodeId, ResetType, EVSEId = null, ...)
 
         /// <summary>
-        /// Reset the given charging station.
+        /// Reset the given charging station/networking node.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="ResetType">The type of reset that the charging station should perform.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
         /// 
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ResetResponse>
 
             Reset(this ICSMS               CSMS,
-                  ChargingStation_Id       ChargingStationId,
+                  NetworkingNode_Id        NetworkingNodeId,
                   ResetType                ResetType,
                   EVSE_Id?                 EVSEId              = null,
 
@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.Reset(
                        new ResetRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            ResetType,
                            EVSEId,
 
@@ -85,18 +85,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region UpdateFirmware             (this CSMS, ChargingStationId, Firmware, UpdateFirmwareRequestId, ...)
+        #region UpdateFirmware             (NetworkingNodeId, Firmware, UpdateFirmwareRequestId, ...)
 
         /// <summary>
         /// Initiate a firmware update of the given charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="Firmware">The firmware image to be installed at the charging station.</param>
         /// <param name="UpdateFirmwareRequestId">The update firmware request identification.</param>
         /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UpdateFirmwareResponse>
 
             UpdateFirmware(this ICSMS               CSMS,
-                           ChargingStation_Id       ChargingStationId,
+                           NetworkingNode_Id        NetworkingNodeId,
                            Firmware                 Firmware,
                            Int32                    UpdateFirmwareRequestId,
                            Byte?                    Retries             = null,
@@ -134,7 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.UpdateFirmware(
                        new UpdateFirmwareRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            Firmware,
                            UpdateFirmwareRequestId,
                            Retries,
@@ -150,18 +151,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region PublishFirmware            (this CSMS, ChargingStationId, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
+        #region PublishFirmware            (NetworkingNodeId, PublishFirmwareRequestId, DownloadLocation, MD5Checksum, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Publish a firmware onto a local controller.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="PublishFirmwareRequestId">The unique identification of this publish firmware request</param>
         /// <param name="DownloadLocation">An URL for downloading the firmware.onto the local controller.</param>
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
@@ -179,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.PublishFirmwareResponse>
 
             PublishFirmware(this ICSMS               CSMS,
-                            ChargingStation_Id       ChargingStationId,
+                            NetworkingNode_Id        NetworkingNodeId,
                             Int32                    PublishFirmwareRequestId,
                             URL                      DownloadLocation,
                             String                   MD5Checksum,
@@ -201,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.PublishFirmware(
                        new PublishFirmwareRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            PublishFirmwareRequestId,
                            DownloadLocation,
                            MD5Checksum,
@@ -218,18 +220,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region UnpublishFirmware          (this CSMS, ChargingStationId, MD5Checksum, ...)
+        #region UnpublishFirmware          (NetworkingNodeId, MD5Checksum, ...)
 
         /// <summary>
         /// Unpublish a firmware from a local controller.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -243,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UnpublishFirmwareResponse>
 
             UnpublishFirmware(this ICSMS               CSMS,
-                              ChargingStation_Id       ChargingStationId,
+                              NetworkingNode_Id        NetworkingNodeId,
                               String                   MD5Checksum,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -261,7 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.UnpublishFirmware(
                        new UnpublishFirmwareRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            MD5Checksum,
 
                            SignKeys,
@@ -274,18 +277,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region GetBaseReport              (this CSMS, ChargingStationId, GetBaseReportRequestId, ReportBase, ...)
+        #region GetBaseReport              (NetworkingNodeId, GetBaseReportRequestId, ReportBase, ...)
 
         /// <summary>
         /// Retrieve the base report from the charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="GetBaseReportRequestId">An unique identification of the get base report request.</param>
         /// <param name="ReportBase">The requested reporting base.</param>
         /// 
@@ -300,7 +304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetBaseReportResponse>
 
             GetBaseReport(this ICSMS               CSMS,
-                          ChargingStation_Id       ChargingStationId,
+                          NetworkingNode_Id        NetworkingNodeId,
                           Int64                    GetBaseReportRequestId,
                           ReportBase               ReportBase,
 
@@ -319,7 +323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.GetBaseReport(
                        new GetBaseReportRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            GetBaseReportRequestId,
                            ReportBase,
 
@@ -333,19 +337,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region GetReport                  (this CSMS, ChargingStationId, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
+        #region GetReport                  (NetworkingNodeId, GetReportRequestId, ComponentCriteria, ComponentVariables, ...)
 
         /// <summary>
         /// Retrieve reports from the charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="GetReportRequestId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
+        /// <param name="GetReportRequestId">The networking node identification.</param>
         /// <param name="ComponentCriteria">An optional enumeration of criteria for components for which a report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a report is requested.</param>
         /// 
@@ -360,7 +365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetReportResponse>
 
             GetReport(this ICSMS                      CSMS,
-                      ChargingStation_Id              ChargingStationId,
+                      NetworkingNode_Id               NetworkingNodeId,
                       Int32                           GetReportRequestId,
                       IEnumerable<ComponentCriteria>  ComponentCriteria,
                       IEnumerable<ComponentVariable>  ComponentVariables,
@@ -380,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.GetReport(
                        new GetReportRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            GetReportRequestId,
                            ComponentCriteria,
                            ComponentVariables,
@@ -395,18 +400,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region GetLog                     (this CSMS, ChargingStationId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
+        #region GetLog                     (NetworkingNodeId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Retrieve log files from the charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="LogType">The type of the certificates requested.</param>
         /// <param name="LogRequestId">The unique identification of this request.</param>
         /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
@@ -424,7 +430,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetLogResponse>
 
             GetLog(this ICSMS               CSMS,
-                   ChargingStation_Id       ChargingStationId,
+                   NetworkingNode_Id        NetworkingNodeId,
                    LogType                  LogType,
                    Int32                    LogRequestId,
                    LogParameters            Log,
@@ -446,7 +452,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.GetLog(
                        new GetLogRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            LogType,
                            LogRequestId,
                            Log,
@@ -463,6 +469,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -470,12 +477,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetVariables               (this CSMS, ChargingStationId, VariableData, ...)
+        #region SetVariables               (NetworkingNodeId, VariableData, ...)
 
         /// <summary>
         /// Set variable data on a charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="VariableData">An enumeration of variable data to set/change.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -489,7 +496,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetVariablesResponse>
 
             SetVariables(this ICSMS                    CSMS,
-                         ChargingStation_Id            ChargingStationId,
+                         NetworkingNode_Id             NetworkingNodeId,
                          IEnumerable<SetVariableData>  VariableData,
 
                          IEnumerable<KeyPair>?         SignKeys            = null,
@@ -507,7 +514,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.SetVariables(
                        new SetVariablesRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            VariableData,
 
                            SignKeys,
@@ -520,18 +527,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region GetVariables               (this CSMS, ChargingStationId, VariableData, ...)
+        #region GetVariables               (NetworkingNodeId, VariableData, ...)
 
         /// <summary>
         /// Get variable data from a charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="VariableData">An enumeration of requested variable data sets.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -545,7 +553,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetVariablesResponse>
 
             GetVariables(this ICSMS                    CSMS,
-                         ChargingStation_Id            ChargingStationId,
+                         NetworkingNode_Id             NetworkingNodeId,
                          IEnumerable<GetVariableData>  VariableData,
 
                          IEnumerable<KeyPair>?         SignKeys            = null,
@@ -563,7 +571,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.GetVariables(
                        new GetVariablesRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            VariableData,
 
                            SignKeys,
@@ -576,18 +584,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SetMonitoringBase          (this CSMS, ChargingStationId, MonitoringBase, ...)
+        #region SetMonitoringBase          (NetworkingNodeId, MonitoringBase, ...)
 
         /// <summary>
         /// Set the monitoring base of a charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="MonitoringBase">The monitoring base to be set.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -601,7 +610,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetMonitoringBaseResponse>
 
             SetMonitoringBase(this ICSMS               CSMS,
-                              ChargingStation_Id       ChargingStationId,
+                              NetworkingNode_Id        NetworkingNodeId,
                               MonitoringBase           MonitoringBase,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -619,7 +628,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.SetMonitoringBase(
                        new SetMonitoringBaseRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            MonitoringBase,
 
                            SignKeys,
@@ -632,19 +641,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region GetMonitoringReport        (this CSMS, ChargingStationId, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
+        #region GetMonitoringReport        (NetworkingNodeId, GetMonitoringReportRequestId, MonitoringCriteria, ComponentVariables, ...)
 
         /// <summary>
         /// Get monitoring report from a charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
-        /// <param name="GetMonitoringReportRequestId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
+        /// <param name="GetMonitoringReportRequestId">The networking node identification.</param>
         /// <param name="MonitoringCriteria">An optional enumeration of criteria for components for which a monitoring report is requested.</param>
         /// <param name="ComponentVariables">An optional enumeration of components and variables for which a monitoring report is requested.</param>
         /// 
@@ -659,7 +669,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetMonitoringReportResponse>
 
             GetMonitoringReport(this ICSMS                        CSMS,
-                                ChargingStation_Id                ChargingStationId,
+                                NetworkingNode_Id                 NetworkingNodeId,
                                 Int32                             GetMonitoringReportRequestId,
                                 IEnumerable<MonitoringCriterion>  MonitoringCriteria,
                                 IEnumerable<ComponentVariable>    ComponentVariables,
@@ -679,7 +689,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.GetMonitoringReport(
                        new GetMonitoringReportRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            GetMonitoringReportRequestId,
                            MonitoringCriteria,
                            ComponentVariables,
@@ -694,18 +704,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SetMonitoringLevel         (this CSMS, ChargingStationId, Severity, ...)
+        #region SetMonitoringLevel         (NetworkingNodeId, Severity, ...)
 
         /// <summary>
         /// Set the monitoring level on a charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="Severity">The charging station SHALL only report events with a severity number lower than or equal to this severity.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -719,7 +730,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetMonitoringLevelResponse>
 
             SetMonitoringLevel(this ICSMS               CSMS,
-                               ChargingStation_Id       ChargingStationId,
+                               NetworkingNode_Id        NetworkingNodeId,
                                Severities               Severity,
 
                                IEnumerable<KeyPair>?    SignKeys            = null,
@@ -737,7 +748,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.SetMonitoringLevel(
                        new SetMonitoringLevelRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            Severity,
 
                            SignKeys,
@@ -750,18 +761,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SetVariableMonitoring      (this CSMS, ChargingStationId, MonitoringData, ...)
+        #region SetVariableMonitoring      (NetworkingNodeId, MonitoringData, ...)
 
         /// <summary>
         /// Set a variable monitoring on a charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="MonitoringData">An enumeration of monitoring data.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -775,7 +787,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetVariableMonitoringResponse>
 
             SetVariableMonitoring(this ICSMS                      CSMS,
-                                  ChargingStation_Id              ChargingStationId,
+                                  NetworkingNode_Id               NetworkingNodeId,
                                   IEnumerable<SetMonitoringData>  MonitoringData,
 
                                   IEnumerable<KeyPair>?           SignKeys            = null,
@@ -793,7 +805,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.SetVariableMonitoring(
                        new SetVariableMonitoringRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            MonitoringData,
 
                            SignKeys,
@@ -806,18 +818,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region ClearVariableMonitoring    (this CSMS, ChargingStationId, VariableMonitoringIds, ...)
+        #region ClearVariableMonitoring    (NetworkingNodeId, VariableMonitoringIds, ...)
 
         /// <summary>
         /// Delete a variable monitoring on a charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="VariableMonitoringIds">An enumeration of variable monitoring identifications to clear.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -831,7 +844,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ClearVariableMonitoringResponse>
 
             ClearVariableMonitoring(this ICSMS                          CSMS,
-                                    ChargingStation_Id                  ChargingStationId,
+                                    NetworkingNode_Id                   NetworkingNodeId,
                                     IEnumerable<VariableMonitoring_Id>  VariableMonitoringIds,
 
                                     IEnumerable<KeyPair>?               SignKeys            = null,
@@ -849,7 +862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.ClearVariableMonitoring(
                        new ClearVariableMonitoringRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            VariableMonitoringIds,
 
                            SignKeys,
@@ -862,18 +875,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SetNetworkProfile          (this CSMS, ChargingStationId, ConfigurationSlot, NetworkConnectionProfile, ...)
+        #region SetNetworkProfile          (NetworkingNodeId, ConfigurationSlot, NetworkConnectionProfile, ...)
 
         /// <summary>
         /// Set the network profile of a charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="ConfigurationSlot">The slot in which the configuration should be stored.</param>
         /// <param name="NetworkConnectionProfile">The network connection configuration.</param>
         /// 
@@ -888,7 +902,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetNetworkProfileResponse>
 
             SetNetworkProfile(this ICSMS                CSMS,
-                              ChargingStation_Id        ChargingStationId,
+                              NetworkingNode_Id         NetworkingNodeId,
                               Int32                     ConfigurationSlot,
                               NetworkConnectionProfile  NetworkConnectionProfile,
 
@@ -907,7 +921,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.SetNetworkProfile(
                        new SetNetworkProfileRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            ConfigurationSlot,
                            NetworkConnectionProfile,
 
@@ -921,18 +935,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region ChangeAvailability         (this CSMS, ChargingStationId, OperationalStatus, EVSE = null, ...)
+        #region ChangeAvailability         (NetworkingNodeId, OperationalStatus, EVSE = null, ...)
 
         /// <summary>
         /// Change the availability of the given charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="OperationalStatus">A new operational status of the charging station or EVSE.</param>
         /// 
         /// <param name="EVSE">Optional identification of an EVSE/connector for which the operational status should be changed.</param>
@@ -948,7 +963,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ChangeAvailabilityResponse>
 
             ChangeAvailability(this ICSMS               CSMS,
-                               ChargingStation_Id       ChargingStationId,
+                               NetworkingNode_Id        NetworkingNodeId,
                                OperationalStatus        OperationalStatus,
 
                                EVSE?                    EVSE                = null,
@@ -968,7 +983,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.ChangeAvailability(
                        new ChangeAvailabilityRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            OperationalStatus,
                            EVSE,
 
@@ -982,18 +997,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region TriggerMessage             (this CSMS, ChargingStationId, RequestedMessage, EVSEId = null, CustomTrigger = null, ...)
+        #region TriggerMessage             (NetworkingNodeId, RequestedMessage, EVSEId = null, CustomTrigger = null, ...)
 
         /// <summary>
         /// Create a trigger for the given message at the given charging station connector.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
         /// <param name="CustomTrigger">An optional custom trigger.</param>
@@ -1009,7 +1025,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.TriggerMessageResponse>
 
             TriggerMessage(this ICSMS               CSMS,
-                           ChargingStation_Id       ChargingStationId,
+                           NetworkingNode_Id        NetworkingNodeId,
                            MessageTrigger           RequestedMessage,
                            EVSE?                    EVSE                = null,
                            String?                  CustomTrigger       = null,
@@ -1029,7 +1045,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.TriggerMessage(
                        new TriggerMessageRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            RequestedMessage,
                            EVSE,
                            CustomTrigger,
@@ -1044,18 +1060,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region TransferData               (this CSMS, ChargingStationId, VendorId, MessageId = null, Data = null, ...)
+        #region TransferData               (NetworkingNodeId, VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Transfer the given data to the given charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
@@ -1071,7 +1088,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.DataTransferResponse>
 
             TransferData(this ICSMS               CSMS,
-                         ChargingStation_Id       ChargingStationId,
+                         NetworkingNode_Id        NetworkingNodeId,
                          Vendor_Id                VendorId,
                          Message_Id?              MessageId           = null,
                          JToken?                  Data                = null,
@@ -1091,7 +1108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.TransferData(
                        new DataTransferRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            VendorId,
                            MessageId,
                            Data,
@@ -1106,6 +1123,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1113,12 +1131,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SendSignedCertificate      (this CSMS, ChargingStationId, CertificateChain, CertificateType = null, ...)
+        #region SendSignedCertificate      (NetworkingNodeId, CertificateChain, CertificateType = null, ...)
 
         /// <summary>
         /// Send the signed certificate to the given charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="CertificateChain">The signed PEM encoded X.509 certificates. This can also contain the necessary sub CA certificates.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1132,7 +1150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.CertificateSignedResponse>
 
             SendSignedCertificate(this ICSMS               CSMS,
-                                  ChargingStation_Id       ChargingStationId,
+                                  NetworkingNode_Id        NetworkingNodeId,
                                   CertificateChain         CertificateChain,
                                   CertificateSigningUse?   CertificateType     = null,
 
@@ -1151,7 +1169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.SendSignedCertificate(
                        new CertificateSignedRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            CertificateChain,
                            CertificateType,
 
@@ -1165,18 +1183,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region InstallCertificate         (this CSMS, ChargingStationId, CertificateType, Certificate, ...)
+        #region InstallCertificate         (NetworkingNodeId, CertificateType, Certificate, ...)
 
         /// <summary>
         /// Install the given certificate within the charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="CertificateType">The type of the certificate.</param>
         /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
         /// 
@@ -1191,7 +1210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.InstallCertificateResponse>
 
             InstallCertificate(this ICSMS               CSMS,
-                               ChargingStation_Id       ChargingStationId,
+                               NetworkingNode_Id        NetworkingNodeId,
                                InstallCertificateUse    CertificateType,
                                Certificate              Certificate,
 
@@ -1210,7 +1229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.InstallCertificate(
                        new InstallCertificateRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            CertificateType,
                            Certificate,
 
@@ -1224,18 +1243,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region GetInstalledCertificateIds (this CSMS, ChargingStationId, CertificateTypes, ...)
+        #region GetInstalledCertificateIds (NetworkingNodeId, CertificateTypes, ...)
 
         /// <summary>
         /// Retrieve a list of all installed certificates within the charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="CertificateTypes">An optional enumeration of certificate types requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1249,7 +1269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetInstalledCertificateIdsResponse>
 
             GetInstalledCertificateIds(this ICSMS                         CSMS,
-                                       ChargingStation_Id                 ChargingStationId,
+                                       NetworkingNode_Id                  NetworkingNodeId,
                                        IEnumerable<GetCertificateIdUse>?  CertificateTypes    = null,
 
                                        IEnumerable<KeyPair>?              SignKeys            = null,
@@ -1267,7 +1287,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.GetInstalledCertificateIds(
                        new GetInstalledCertificateIdsRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            CertificateTypes,
 
                            SignKeys,
@@ -1280,18 +1300,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region DeleteCertificate          (this CSMS, ChargingStationId, CertificateHashData, ...)
+        #region DeleteCertificate          (NetworkingNodeId, CertificateHashData, ...)
 
         /// <summary>
         /// Delete the given certificate on the charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="CertificateHashData">Indicates the certificate which should be deleted.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1305,7 +1326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.DeleteCertificateResponse>
 
             DeleteCertificate(this ICSMS               CSMS,
-                              ChargingStation_Id       ChargingStationId,
+                              NetworkingNode_Id        NetworkingNodeId,
                               CertificateHashData      CertificateHashData,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -1323,7 +1344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.DeleteCertificate(
                        new DeleteCertificateRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            CertificateHashData,
 
                            SignKeys,
@@ -1336,18 +1357,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region NotifyCRLAvailability      (this CSMS, ChargingStationId, NotifyCRLRequestId, Availability, Location, ...)
+        #region NotifyCRLAvailability      (NetworkingNodeId, NotifyCRLRequestId, Availability, Location, ...)
 
         /// <summary>
         /// Delete the given certificate on the charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="NotifyCRLRequestId">An unique identification of this request.</param>
         /// <param name="Availability">An availability status of the certificate revocation list.</param>
         /// <param name="Location">An optional location of the certificate revocation list.</param>
@@ -1363,7 +1385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.NotifyCRLResponse>
 
             NotifyCRLAvailability(this ICSMS               CSMS,
-                                  ChargingStation_Id       ChargingStationId,
+                                  NetworkingNode_Id        NetworkingNodeId,
                                   Int32                    NotifyCRLRequestId,
                                   NotifyCRLStatus          Availability,
                                   URL?                     Location,
@@ -1383,7 +1405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.NotifyCRLAvailability(
                        new NotifyCRLRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            NotifyCRLRequestId,
                            Availability,
                            Location,
@@ -1398,6 +1420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1405,12 +1428,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region GetLocalListVersion        (this CSMS, ChargingStationId, ...)
+        #region GetLocalListVersion        (NetworkingNodeId, ...)
 
         /// <summary>
         /// Return the local white list of the given charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -1423,7 +1446,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetLocalListVersionResponse>
 
             GetLocalListVersion(this ICSMS               CSMS,
-                                ChargingStation_Id       ChargingStationId,
+                                NetworkingNode_Id        NetworkingNodeId,
 
                                 IEnumerable<KeyPair>?    SignKeys            = null,
                                 IEnumerable<SignInfo>?   SignInfos           = null,
@@ -1440,7 +1463,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.GetLocalListVersion(
                        new GetLocalListVersionRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
 
                            SignKeys,
                            SignInfos,
@@ -1452,18 +1475,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SendLocalList              (this CSMS, ChargingStationId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
+        #region SendLocalList              (NetworkingNodeId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
 
         /// <summary>
         /// Set the local white liste at the given charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
         /// <param name="UpdateType">The type of update (full or differential).</param>
         /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charging station. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
@@ -1479,7 +1503,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SendLocalListResponse>
 
             SendLocalList(this ICSMS                       CSMS,
-                          ChargingStation_Id               ChargingStationId,
+                          NetworkingNode_Id                NetworkingNodeId,
                           UInt64                           ListVersion,
                           UpdateTypes                      UpdateType,
                           IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
@@ -1499,7 +1523,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.SendLocalList(
                        new SendLocalListRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            ListVersion,
                            UpdateType,
                            LocalAuthorizationList,
@@ -1514,18 +1538,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region ClearCache                 (this CSMS, ChargingStationId, ...)
+        #region ClearCache                 (NetworkingNodeId, ...)
 
         /// <summary>
         /// Clear the local white liste cache of the given charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -1538,7 +1563,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ClearCacheResponse>
 
             ClearCache(this ICSMS               CSMS,
-                       ChargingStation_Id       ChargingStationId,
+                       NetworkingNode_Id        NetworkingNodeId,
 
                        IEnumerable<KeyPair>?    SignKeys            = null,
                        IEnumerable<SignInfo>?   SignInfos           = null,
@@ -1555,7 +1580,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.ClearCache(
                        new ClearCacheRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
 
                            SignKeys,
                            SignInfos,
@@ -1567,6 +1592,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1574,12 +1600,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region ReserveNow                 (this CSMS, ChargingStationId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
+        #region ReserveNow                 (NetworkingNodeId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
 
         /// <summary>
         /// Create a charging reservation of the given charging station connector.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
         /// <param name="IdToken">The identifier for which the charging station has to reserve a connector.</param>
@@ -1598,7 +1624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ReserveNowResponse>
 
             ReserveNow(this ICSMS               CSMS,
-                       ChargingStation_Id       ChargingStationId,
+                       NetworkingNode_Id        NetworkingNodeId,
                        Reservation_Id           ReservationId,
                        DateTime                 ExpiryDate,
                        IdToken                  IdToken,
@@ -1621,7 +1647,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.ReserveNow(
                        new ReserveNowRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            ReservationId,
                            ExpiryDate,
                            IdToken,
@@ -1639,18 +1665,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region CancelReservation          (this CSMS, ChargingStationId, ReservationId, ...)
+        #region CancelReservation          (NetworkingNodeId, ReservationId, ...)
 
         /// <summary>
         /// Cancel the given charging reservation at the given charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="ReservationId">The unique identification of this reservation.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1664,7 +1691,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.CancelReservationResponse>
 
             CancelReservation(this ICSMS               CSMS,
-                              ChargingStation_Id       ChargingStationId,
+                              NetworkingNode_Id        NetworkingNodeId,
                               Reservation_Id           ReservationId,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -1682,7 +1709,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.CancelReservation(
                        new CancelReservationRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            ReservationId,
 
                            SignKeys,
@@ -1695,18 +1722,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region StartCharging              (this CSMS, ChargingStationId, RequestStartTransactionRequestId, IdToken, ...)
+        #region StartCharging              (NetworkingNodeId, RequestStartTransactionRequestId, IdToken, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="RequestStartTransactionRequestId">Request identification given by the server to this start request. The charging station might return this in the TransactionEventRequest, letting the server know which transaction was started for this request.</param>
         /// <param name="IdToken">The identification token to start the charging transaction.</param>
         /// <param name="EVSEId">An optional EVSE identification on which the charging transaction should be started (SHALL be > 0).</param>
@@ -1725,7 +1753,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.RequestStartTransactionResponse>
 
             StartCharging(this ICSMS               CSMS,
-                          ChargingStation_Id       ChargingStationId,
+                          NetworkingNode_Id        NetworkingNodeId,
                           RemoteStart_Id           RequestStartTransactionRequestId,
                           IdToken                  IdToken,
                           EVSE_Id?                 EVSEId              = null,
@@ -1748,7 +1776,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.StartCharging(
                        new RequestStartTransactionRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            RequestStartTransactionRequestId,
                            IdToken,
                            EVSEId,
@@ -1766,18 +1794,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region StopCharging               (this CSMS, ChargingStationId, TransactionId, ...)
+        #region StopCharging               (NetworkingNodeId, TransactionId, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="TransactionId">An optional transaction identification for which its status is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1791,7 +1820,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.RequestStopTransactionResponse>
 
             StopCharging(this ICSMS               CSMS,
-                         ChargingStation_Id       ChargingStationId,
+                         NetworkingNode_Id        NetworkingNodeId,
                          Transaction_Id           TransactionId,
 
                          IEnumerable<KeyPair>?    SignKeys            = null,
@@ -1809,7 +1838,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.StopCharging(
                        new RequestStopTransactionRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            TransactionId,
 
                            SignKeys,
@@ -1822,18 +1851,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region GetTransactionStatus       (this CSMS, ChargingStationId, ConnectorId, ChargingProfile, ...)
+        #region GetTransactionStatus       (NetworkingNodeId, ConnectorId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="TransactionId">An optional transaction identification for which its status is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -1847,7 +1877,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetTransactionStatusResponse>
 
             GetTransactionStatus(this ICSMS               CSMS,
-                                 ChargingStation_Id       ChargingStationId,
+                                 NetworkingNode_Id        NetworkingNodeId,
                                  Transaction_Id?          TransactionId       = null,
 
                                  IEnumerable<KeyPair>?    SignKeys            = null,
@@ -1865,7 +1895,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.GetTransactionStatus(
                        new GetTransactionStatusRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            TransactionId,
 
                            SignKeys,
@@ -1878,18 +1908,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SetChargingProfile         (this CSMS, ChargingStationId, EVSEId, ChargingProfile, ...)
+        #region SetChargingProfile         (NetworkingNodeId, EVSEId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="EVSEId">The EVSE identification to which the charging profile applies.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
         /// 
@@ -1904,7 +1935,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetChargingProfileResponse>
 
             SetChargingProfile(this ICSMS               CSMS,
-                               ChargingStation_Id       ChargingStationId,
+                               NetworkingNode_Id        NetworkingNodeId,
                                EVSE_Id                  EVSEId,
                                ChargingProfile          ChargingProfile,
 
@@ -1923,7 +1954,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.SetChargingProfile(
                        new SetChargingProfileRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            EVSEId,
                            ChargingProfile,
 
@@ -1937,18 +1968,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region GetChargingProfiles        (this CSMS, ChargingStationId, EVSEId, ChargingProfile, ...)
+        #region GetChargingProfiles        (NetworkingNodeId, EVSEId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charging station connector.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="EVSEId">The EVSE identification to which the charging profile applies.</param>
         /// <param name="ChargingProfile">The charging profile to be set.</param>
         /// 
@@ -1963,7 +1995,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetChargingProfilesResponse>
 
             GetChargingProfiles(this ICSMS                CSMS,
-                                ChargingStation_Id        ChargingStationId,
+                                NetworkingNode_Id         NetworkingNodeId,
                                 Int64                     GetChargingProfilesRequestId,
                                 ChargingProfileCriterion  ChargingProfile,
                                 EVSE_Id?                  EVSEId              = null,
@@ -1983,7 +2015,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.GetChargingProfiles(
                        new GetChargingProfilesRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            GetChargingProfilesRequestId,
                            ChargingProfile,
                            EVSEId,
@@ -1998,18 +2030,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region ClearChargingProfile       (this CSMS, ChargingStationId, ChargingProfileId, ChargingProfileCriteria, ...)
+        #region ClearChargingProfile       (NetworkingNodeId, ChargingProfileId, ChargingProfileCriteria, ...)
 
         /// <summary>
         /// Remove the charging profile at the given charging station connector.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="ChargingProfileId">An optional identification of the charging profile to clear.</param>
         /// <param name="ChargingProfileCriteria">An optional specification of the charging profile to clear.</param>
         /// 
@@ -2024,7 +2057,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ClearChargingProfileResponse>
 
             ClearChargingProfile(this ICSMS               CSMS,
-                                 ChargingStation_Id       ChargingStationId,
+                                 NetworkingNode_Id        NetworkingNodeId,
                                  ChargingProfile_Id?      ChargingProfileId         = null,
                                  ClearChargingProfile?    ChargingProfileCriteria   = null,
 
@@ -2043,7 +2076,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.ClearChargingProfile(
                        new ClearChargingProfileRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            ChargingProfileId,
                            ChargingProfileCriteria,
 
@@ -2057,18 +2090,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region GetCompositeSchedule       (this CSMS, ChargingStationId, Duration, EVSEId, ChargingRateUnit = null, ...)
+        #region GetCompositeSchedule       (NetworkingNodeId, Duration, EVSEId, ChargingRateUnit = null, ...)
 
         /// <summary>
         /// Return the charging schedule of the given charging station connector.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="Duration">The length of requested schedule.</param>
         /// <param name="EVSEId">The EVSE identification for which the schedule is requested. EVSE identification is 0, the charging station will calculate the expected consumption for the grid connection.</param>
         /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
@@ -2084,7 +2118,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetCompositeScheduleResponse>
 
             GetCompositeSchedule(this ICSMS               CSMS,
-                                 ChargingStation_Id       ChargingStationId,
+                                 NetworkingNode_Id        NetworkingNodeId,
                                  TimeSpan                 Duration,
                                  EVSE_Id                  EVSEId,
                                  ChargingRateUnits?       ChargingRateUnit    = null,
@@ -2104,7 +2138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.GetCompositeSchedule(
                        new GetCompositeScheduleRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            Duration,
                            EVSEId,
                            ChargingRateUnit,
@@ -2119,18 +2153,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region UpdateDynamicSchedule      (this CSMS, ChargingStationId, ChargingProfileId, Limit = null, ...)
+        #region UpdateDynamicSchedule      (NetworkingNodeId, ChargingProfileId, Limit = null, ...)
 
         /// <summary>
         /// Update the dynamic charging schedule for the given charging profile.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="ChargingProfileId">The identification of the charging profile to update.</param>
         /// 
         /// <param name="Limit">Optional charging rate limit in chargingRateUnit.</param>
@@ -2160,7 +2195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UpdateDynamicScheduleResponse>
 
             UpdateDynamicSchedule(this ICSMS               CSMS,
-                                  ChargingStation_Id       ChargingStationId,
+                                  NetworkingNode_Id        NetworkingNodeId,
                                   ChargingProfile_Id       ChargingProfileId,
 
                                   ChargingRateValue?       Limit                 = null,
@@ -2195,7 +2230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 => CSMS.UpdateDynamicSchedule(
                        new UpdateDynamicScheduleRequest(
 
-                           ChargingStationId,
+                           NetworkingNodeId,
                            ChargingProfileId,
 
                            Limit,
@@ -2224,6 +2259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
 
                        )
@@ -2231,12 +2267,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region NotifyAllowedEnergyTransfer(this CSMS, ChargingStationId, AllowedEnergyTransferModes, ...)
+        #region NotifyAllowedEnergyTransfer(NetworkingNodeId, AllowedEnergyTransferModes, ...)
 
         /// <summary>
         /// Unlock the given charging station connector.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="AllowedEnergyTransferModes">An enumeration of allowed energy transfer modes.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2250,7 +2286,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.NotifyAllowedEnergyTransferResponse>
 
             NotifyAllowedEnergyTransfer(this ICSMS                       CSMS,
-                                        ChargingStation_Id               ChargingStationId,
+                                        NetworkingNode_Id                NetworkingNodeId,
                                         IEnumerable<EnergyTransferMode>  AllowedEnergyTransferModes,
 
                                         IEnumerable<KeyPair>?            SignKeys            = null,
@@ -2268,7 +2304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.NotifyAllowedEnergyTransfer(
                        new NotifyAllowedEnergyTransferRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            AllowedEnergyTransferModes,
 
                            SignKeys,
@@ -2281,18 +2317,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region UsePriorityCharging        (this CSMS, ChargingStationId, TransactionId, Activate, ...)
+        #region UsePriorityCharging        (NetworkingNodeId, TransactionId, Activate, ...)
 
         /// <summary>
         /// Switch to the priority charging profile.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
         /// <param name="Activate">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
         /// 
@@ -2307,7 +2344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UsePriorityChargingResponse>
 
             UsePriorityCharging(this ICSMS               CSMS,
-                                ChargingStation_Id       ChargingStationId,
+                                NetworkingNode_Id        NetworkingNodeId,
                                 Transaction_Id           TransactionId,
                                 Boolean                  Activate,
 
@@ -2326,7 +2363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.UsePriorityCharging(
                        new UsePriorityChargingRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            TransactionId,
                            Activate,
 
@@ -2340,18 +2377,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region UnlockConnector            (this CSMS, ChargingStationId, EVSEId, ConnectorId, ...)
+        #region UnlockConnector            (NetworkingNodeId, EVSEId, ConnectorId, ...)
 
         /// <summary>
         /// Unlock the given charging station connector.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -2365,7 +2403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.UnlockConnectorResponse>
 
             UnlockConnector(this ICSMS               CSMS,
-                            ChargingStation_Id       ChargingStationId,
+                            NetworkingNode_Id        NetworkingNodeId,
                             EVSE_Id                  EVSEId,
                             Connector_Id             ConnectorId,
 
@@ -2384,7 +2422,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.UnlockConnector(
                        new UnlockConnectorRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            EVSEId,
                            ConnectorId,
 
@@ -2398,6 +2436,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -2405,14 +2444,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SendAFRRSignal             (this CSMS, ChargingStationId, ActivationTimestamp, Signal, ...)
+        #region SendAFRRSignal             (NetworkingNodeId, ActivationTimestamp, Signal, ...)
 
         /// <summary>
         /// Send an aFRR signal to the charging station.
         /// The charging station uses the value of signal to select a matching power value
         /// from the v2xSignalWattCurve in the charging schedule period.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="ActivationTimestamp">The time when the signal becomes active.</param>
         /// <param name="Signal">Ther value of the signal in v2xSignalWattCurve. Usually between -1 and 1.</param>
         /// 
@@ -2427,7 +2466,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.AFRRSignalResponse>
 
             SendAFRRSignal(this ICSMS               CSMS,
-                           ChargingStation_Id       ChargingStationId,
+                           NetworkingNode_Id        NetworkingNodeId,
                            DateTime                 ActivationTimestamp,
                            AFRR_Signal              Signal,
 
@@ -2446,7 +2485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.SendAFRRSignal(
                        new AFRRSignalRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            ActivationTimestamp,
                            Signal,
 
@@ -2460,6 +2499,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -2467,7 +2507,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region SetDisplayMessage          (this CSMS, ChargingStationId, Message, ...)
+        #region SetDisplayMessage          (NetworkingNodeId, Message, ...)
 
         /// <summary>
         /// Set a display message.
@@ -2485,7 +2525,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetDisplayMessageResponse>
 
             SetDisplayMessage(this ICSMS               CSMS,
-                              ChargingStation_Id       ChargingStationId,
+                              NetworkingNode_Id        NetworkingNodeId,
                               MessageInfo              Message,
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
@@ -2503,7 +2543,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.SetDisplayMessage(
                        new SetDisplayMessageRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            Message,
 
                            SignKeys,
@@ -2516,13 +2556,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region GetDisplayMessages         (this CSMS, ChargingStationId, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null, ...)
+        #region GetDisplayMessages         (NetworkingNodeId, GetDisplayMessagesRequestId, Ids = null, Priority = null, State = null, ...)
 
         /// <summary>
         /// Get all display messages.
@@ -2543,7 +2584,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetDisplayMessagesResponse>
 
             GetDisplayMessages(this ICSMS                       CSMS,
-                               ChargingStation_Id               ChargingStationId,
+                               NetworkingNode_Id                NetworkingNodeId,
                                Int32                            GetDisplayMessagesRequestId,
                                IEnumerable<DisplayMessage_Id>?  Ids                 = null,
                                MessagePriority?                 Priority            = null,
@@ -2564,7 +2605,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.GetDisplayMessages(
                        new GetDisplayMessagesRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            GetDisplayMessagesRequestId,
                            Ids,
                            Priority,
@@ -2580,13 +2621,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region ClearDisplayMessage        (this CSMS, ChargingStationId, DisplayMessageId, ...)
+        #region ClearDisplayMessage        (NetworkingNodeId, DisplayMessageId, ...)
 
         /// <summary>
         /// Remove a display message.
@@ -2604,7 +2646,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.ClearDisplayMessageResponse>
 
             ClearDisplayMessage(this ICSMS               CSMS,
-                                ChargingStation_Id       ChargingStationId,
+                                NetworkingNode_Id        NetworkingNodeId,
                                 DisplayMessage_Id        DisplayMessageId,
 
                                 IEnumerable<KeyPair>?    SignKeys            = null,
@@ -2622,7 +2664,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.ClearDisplayMessage(
                        new ClearDisplayMessageRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            DisplayMessageId,
 
                            SignKeys,
@@ -2635,13 +2677,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SendCostUpdated            (this CSMS, ChargingStationId, TotalCost, TransactionId, ...)
+        #region SendCostUpdated            (NetworkingNodeId, TotalCost, TransactionId, ...)
 
         /// <summary>
         /// Send updated total costs.
@@ -2660,7 +2703,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.CostUpdatedResponse>
 
             SendCostUpdated(this ICSMS               CSMS,
-                            ChargingStation_Id       ChargingStationId,
+                            NetworkingNode_Id        NetworkingNodeId,
                             Decimal                  TotalCost,
                             Transaction_Id           TransactionId,
 
@@ -2679,7 +2722,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.SendCostUpdated(
                        new CostUpdatedRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            TotalCost,
                            TransactionId,
 
@@ -2693,13 +2736,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region RequestCustomerInformation (this CSMS, ChargingStationId, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
+        #region RequestCustomerInformation (NetworkingNodeId, CustomerInformationRequestId, Report, Clear, CustomerIdentifier = null, IdToken = null, CustomerCertificate = null, ...)
 
         /// <summary>
         /// Request customer information.
@@ -2722,7 +2766,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.CustomerInformationResponse>
 
             RequestCustomerInformation(this ICSMS               CSMS,
-                                       ChargingStation_Id       ChargingStationId,
+                                       NetworkingNode_Id        NetworkingNodeId,
                                        Int64                    CustomerInformationRequestId,
                                        Boolean                  Report,
                                        Boolean                  Clear,
@@ -2745,7 +2789,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.RequestCustomerInformation(
                        new CustomerInformationRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            CustomerInformationRequestId,
                            Report,
                            Clear,
@@ -2763,6 +2807,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -2772,12 +2817,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         // Binary Data Streams Extensions
 
-        #region TransferBinaryData         (this CSMS, ChargingStationId, VendorId, MessageId = null, Data = null, ...)
+        #region TransferBinaryData         (NetworkingNodeId, VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Transfer the given binary data to the given charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
         /// <param name="Data">Optional message data as text without specified length or format.</param>
@@ -2792,7 +2837,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.BinaryDataTransferResponse>
 
             TransferBinaryData(this ICSMS               CSMS,
-                               ChargingStation_Id       ChargingStationId,
+                               NetworkingNode_Id        NetworkingNodeId,
                                Vendor_Id                VendorId,
                                Message_Id?              MessageId           = null,
                                Byte[]?                  Data                = null,
@@ -2811,7 +2856,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.TransferBinaryData(
                        new BinaryDataTransferRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            VendorId,
                            MessageId,
                            Data,
@@ -2825,18 +2870,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region GetFile                    (this CSMS, ChargingStationId, Filename, Priority = null, ...)
+        #region GetFile                    (NetworkingNodeId, Filename, Priority = null, ...)
 
         /// <summary>
         /// Request to download the given file from the charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="Filename">The name of the file including its absolute path.</param>
         /// <param name="Priority">The optional priority of the file request.</param>
         /// 
@@ -2850,7 +2896,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetFileResponse>
 
             GetFile(this ICSMS               CSMS,
-                    ChargingStation_Id       ChargingStationId,
+                    NetworkingNode_Id        NetworkingNodeId,
                     FilePath                 Filename,
                     Byte?                    Priority            = null,
 
@@ -2869,7 +2915,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.GetFile(
                        new GetFileRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            Filename,
                            Priority,
 
@@ -2883,18 +2929,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SendFile                   (this CSMS, ChargingStationId, Filename, FileContent, FileContentType = null, ...)
+        #region SendFile                   (NetworkingNodeId, Filename, FileContent, FileContentType = null, ...)
 
         /// <summary>
         /// Send the given file to the charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="FileName">The name of the file including its absolute path.</param>
         /// <param name="FileContent">The file content.</param>
         /// <param name="FileContentType">An optional content/MIME type of the file.</param>
@@ -2913,7 +2960,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SendFileResponse>
 
             SendFile(this ICSMS               CSMS,
-                     ChargingStation_Id       ChargingStationId,
+                     NetworkingNode_Id        NetworkingNodeId,
                      FilePath                 FileName,
                      Byte[]                   FileContent,
                      ContentType?             FileContentType     = null,
@@ -2937,7 +2984,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.SendFile(
                        new SendFileRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            FileName,
                            FileContent,
                            FileContentType,
@@ -2956,18 +3003,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region DeleteFile                   (this CSMS, ChargingStationId, Filename, FileContent, FileContentType = null, ...)
+        #region DeleteFile                   (NetworkingNodeId, Filename, FileContent, FileContentType = null, ...)
 
         /// <summary>
         /// Send the given file to the charging station.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification.</param>
         /// <param name="FileName">The name of the file including its absolute path.</param>
         /// <param name="FileSHA256">An optional SHA256 hash value of the file content.</param>
         /// <param name="FileSHA512">An optional SHA512 hash value of the file content.</param>
@@ -2983,7 +3031,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.DeleteFileResponse>
 
             DeleteFile(this ICSMS               CSMS,
-                       ChargingStation_Id       ChargingStationId,
+                       NetworkingNode_Id        NetworkingNodeId,
                        FilePath                 FileName,
                        Byte[]?                  FileSHA256          = null,
                        Byte[]?                  FileSHA512          = null,
@@ -3003,7 +3051,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.DeleteFile(
                        new DeleteFileRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            FileName,
                            FileSHA256,
                            FileSHA512,
@@ -3018,6 +3066,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -3034,7 +3083,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         // E2E Charging Tariffs Extensions
 
-        #region SetDefaultChargingTariff   (this CSMS, ChargingStationId, ChargingTariff,          EVSEIds = null, ...)
+        #region SetDefaultChargingTariff   (NetworkingNodeId, ChargingTariff,          EVSEIds = null, ...)
 
         /// <summary>
         /// Set a default charging tariff for the charging station,
@@ -3054,7 +3103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.SetDefaultChargingTariffResponse>
 
             SetDefaultChargingTariff(this ICSMS               CSMS,
-                                     ChargingStation_Id       ChargingStationId,
+                                     NetworkingNode_Id        NetworkingNodeId,
                                      ChargingTariff           ChargingTariff,
                                      IEnumerable<EVSE_Id>?    EVSEIds             = null,
 
@@ -3073,7 +3122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.SetDefaultChargingTariff(
                        new SetDefaultChargingTariffRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            ChargingTariff,
                            EVSEIds,
 
@@ -3087,13 +3136,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region GetDefaultChargingTariff   (this CSMS, ChargingStationId,                          EVSEIds = null, ...)
+        #region GetDefaultChargingTariff   (NetworkingNodeId,                          EVSEIds = null, ...)
 
         /// <summary>
         /// Get the default charging tariff(s) for the charging station and its EVSEs.
@@ -3111,7 +3161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.GetDefaultChargingTariffResponse>
 
             GetDefaultChargingTariff(this ICSMS               CSMS,
-                                     ChargingStation_Id       ChargingStationId,
+                                     NetworkingNode_Id        NetworkingNodeId,
                                      IEnumerable<EVSE_Id>?    EVSEIds             = null,
 
                                      IEnumerable<KeyPair>?    SignKeys            = null,
@@ -3129,7 +3179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.GetDefaultChargingTariff(
                        new GetDefaultChargingTariffRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            EVSEIds,
 
                            SignKeys,
@@ -3142,13 +3192,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region RemoveDefaultChargingTariff(this CSMS, ChargingStationId, ChargingTariffId = null, EVSEIds = null, ...)
+        #region RemoveDefaultChargingTariff(NetworkingNodeId, ChargingTariffId = null, EVSEIds = null, ...)
 
         /// <summary>
         /// Remove the default charging tariff of the charging station,
@@ -3168,7 +3219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         public static Task<CS.RemoveDefaultChargingTariffResponse>
 
             RemoveDefaultChargingTariff(this ICSMS               CSMS,
-                                        ChargingStation_Id       ChargingStationId,
+                                        NetworkingNode_Id        NetworkingNodeId,
                                         ChargingTariff_Id?       ChargingTariffId    = null,
                                         IEnumerable<EVSE_Id>?    EVSEIds             = null,
 
@@ -3187,7 +3238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 => CSMS.RemoveDefaultChargingTariff(
                        new RemoveDefaultChargingTariffRequest(
-                           ChargingStationId,
+                           NetworkingNodeId,
                            ChargingTariffId,
                            EVSEIds,
 
@@ -3201,6 +3252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? CSMS.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );

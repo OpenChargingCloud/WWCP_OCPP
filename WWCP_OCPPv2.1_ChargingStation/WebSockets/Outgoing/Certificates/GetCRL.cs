@@ -108,14 +108,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                var requestMessage = await SendRequest(Request.Action,
-                                                       Request.RequestId,
-                                                       Request.ToJSON(
-                                                           CustomGetCRLSerializer,
-                                                           CustomCertificateHashDataSerializer,
-                                                           CustomSignatureSerializer,
-                                                           CustomCustomDataSerializer
-                                                       ));
+                var requestMessage = await SendRequest(
+                                         Request.NetworkingNodeId,
+                                         Request.NetworkPath,
+                                         Request.Action,
+                                         Request.RequestId,
+                                         Request.ToJSON(
+                                             CustomGetCRLSerializer,
+                                             CustomCertificateHashDataSerializer,
+                                             CustomSignatureSerializer,
+                                             CustomCustomDataSerializer
+                                         )
+                                     );
 
                 if (requestMessage.NoErrors)
                 {

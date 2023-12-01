@@ -88,7 +88,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
             Receive_DeleteFile(DateTime                   RequestTimestamp,
                                WebSocketClientConnection  WebSocketConnection,
-                               ChargingStation_Id         ChargingStationId,
+                               NetworkingNode_Id          NetworkingNodeId,
+                               NetworkPath                NetworkPath,
                                EventTracking_Id           EventTrackingId,
                                Request_Id                 RequestId,
                                JObject                    RequestJSON,
@@ -105,7 +106,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnDeleteFileWSRequest?.Invoke(startTime,
                                               WebSocketConnection,
-                                              ChargingStationId,
+                                              NetworkingNodeId,
+                                              NetworkPath,
                                               EventTrackingId,
                                               RequestJSON);
 
@@ -125,7 +127,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 if (DeleteFileRequest.TryParse(RequestJSON,
                                                RequestId,
-                                               ChargingStation_Id.Parse(NetworkingNodeIdentity.ToString()),
+                                               NetworkingNodeId,
+                                               NetworkPath,
                                                out var request,
                                                out var errorResponse,
                                                CustomDeleteFileRequestParser) &&
@@ -233,6 +236,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnDeleteFileWSResponse?.Invoke(endTime,
                                                WebSocketConnection,
+                                               NetworkingNodeId,
+                                               NetworkPath,
                                                EventTrackingId,
                                                RequestTimestamp,
                                                RequestJSON,

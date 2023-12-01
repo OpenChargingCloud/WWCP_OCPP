@@ -93,7 +93,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new publish firmware request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="PublishFirmwareRequestId">The unique identification of this publish firmware request</param>
         /// <param name="DownloadLocation">An URL for downloading the firmware.onto the local controller.</param>
         /// <param name="MD5Checksum">The MD5 checksum over the entire firmware file as a hexadecimal string of length 32.</param>
@@ -107,8 +108,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public PublishFirmwareRequest(ChargingStation_Id       ChargingStationId,
+        public PublishFirmwareRequest(NetworkingNode_Id        NetworkingNodeId,
                                       Int32                    PublishFirmwareRequestId,
                                       URL                      DownloadLocation,
                                       String                   MD5Checksum,
@@ -125,10 +127,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                       DateTime?                RequestTimestamp    = null,
                                       TimeSpan?                RequestTimeout      = null,
                                       EventTracking_Id?        EventTrackingId     = null,
+                                      NetworkPath?             NetworkPath         = null,
                                       CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "PublishFirmware",
+            : base(NetworkingNodeId,
+                   nameof(PublishFirmwareRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -140,6 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -149,6 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.MD5Checksum               = MD5Checksum;
             this.Retries                   = Retries;
             this.RetryInterval             = RetryInterval;
+
 
             unchecked
             {
@@ -227,24 +232,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomPublishFirmwareRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomPublishFirmwareRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a publish firmware request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomPublishFirmwareRequestParser">A delegate to parse custom publish firmware requests.</param>
         public static PublishFirmwareRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
-                                                   ChargingStation_Id                                    ChargingStationId,
+                                                   NetworkingNode_Id                                     NetworkingNodeId,
+                                                   NetworkPath                                           NetworkPath,
                                                    CustomJObjectParserDelegate<PublishFirmwareRequest>?  CustomPublishFirmwareRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var publishFirmwareRequest,
                          out var errorResponse,
                          CustomPublishFirmwareRequestParser) &&
@@ -260,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out PublishFirmwareRequest, out ErrorResponse, CustomPublishFirmwareRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out PublishFirmwareRequest, out ErrorResponse, CustomPublishFirmwareRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -269,18 +277,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="PublishFirmwareRequest">The parsed publish firmware request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                      JSON,
                                        Request_Id                   RequestId,
-                                       ChargingStation_Id           ChargingStationId,
+                                       NetworkingNode_Id            NetworkingNodeId,
+                                       NetworkPath                  NetworkPath,
                                        out PublishFirmwareRequest?  PublishFirmwareRequest,
                                        out String?                  ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out PublishFirmwareRequest,
                         out ErrorResponse,
                         null);
@@ -291,13 +302,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="PublishFirmwareRequest">The parsed publish firmware request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomPublishFirmwareRequestParser">A delegate to parse custom publish firmware requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
-                                       ChargingStation_Id                                    ChargingStationId,
+                                       NetworkingNode_Id                                     NetworkingNodeId,
+                                       NetworkPath                                           NetworkPath,
                                        out PublishFirmwareRequest?                           PublishFirmwareRequest,
                                        out String?                                           ErrorResponse,
                                        CustomJObjectParserDelegate<PublishFirmwareRequest>?  CustomPublishFirmwareRequestParser)
@@ -399,38 +412,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId           [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 PublishFirmwareRequest = new PublishFirmwareRequest(
-                                             ChargingStationId,
+
+                                             NetworkingNodeId,
                                              PublishFirmwareRequestId,
                                              DownloadLocation,
                                              MD5Checksum,
                                              Retries,
                                              RetryInterval,
+
                                              null,
                                              null,
                                              Signatures,
+
                                              CustomData,
-                                             RequestId
+
+                                             RequestId,
+                                             null,
+                                             null,
+                                             null,
+                                             NetworkPath
+
                                          );
 
                 if (CustomPublishFirmwareRequestParser is not null)
@@ -466,25 +469,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             var json = JSONObject.Create(
 
-                                 new JProperty("requestId",      PublishFirmwareRequestId),
-                                 new JProperty("location",       DownloadLocation.ToString()),
-                                 new JProperty("checksum",       MD5Checksum),
+                                 new JProperty("requestId",       PublishFirmwareRequestId),
+                                 new JProperty("location",        DownloadLocation.ToString()),
+                                 new JProperty("checksum",        MD5Checksum),
 
                            Retries.HasValue
-                               ? new JProperty("retries",        Retries.Value)
+                               ? new JProperty("retries",         Retries.Value)
                                : null,
 
                            RetryInterval.HasValue
-                               ? new JProperty("retryInterval",  (UInt64) RetryInterval.Value.TotalSeconds)
+                               ? new JProperty("retryInterval",   (UInt64) RetryInterval.Value.TotalSeconds)
                                : null,
 
                            Signatures.Any()
-                               ? new JProperty("signatures",     new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                            CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",      new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                             CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",     CustomData.ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",      CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

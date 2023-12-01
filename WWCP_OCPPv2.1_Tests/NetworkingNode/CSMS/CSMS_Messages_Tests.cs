@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
     /// Unit tests for charging stations sending messages to the CSMS.
     /// </summary>
     [TestFixture]
-    public class MessagesTests : AChargingStationWithNetworkingNodeTests
+    public class CSMS_Messages_Tests : AChargingStationWithNetworkingNodeTests
     {
 
         #region Reset_ChargingStation_Test()
@@ -78,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
 
                 var resetType  = ResetType.Immediate;
                 var response   = await testCSMS01.Reset(
-                                     ChargingStationId:   chargingStation1.Id,
+                                     NetworkingNodeId:    chargingStation1.Id,
                                      ResetType:           resetType,
                                      CustomData:          null
                                  );
@@ -87,11 +87,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                 Assert.AreEqual(ResetStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                      nnResetRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,    nnResetRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,    nnResetRequests.First().NetworkingNodeId);
                 Assert.AreEqual(resetType,              nnResetRequests.First().ResetType);
 
                 Assert.AreEqual(1,                      csResetRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,    csResetRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,    csResetRequests.First().NetworkingNodeId);
                 Assert.AreEqual(resetType,              csResetRequests.First().ResetType);
 
             }

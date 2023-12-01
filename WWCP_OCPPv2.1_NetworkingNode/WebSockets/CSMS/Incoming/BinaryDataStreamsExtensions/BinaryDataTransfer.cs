@@ -82,7 +82,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
             Receive_BinaryDataTransfer(DateTime                   RequestTimestamp,
                                        WebSocketServerConnection  Connection,
-                                       ChargingStation_Id         ChargingStationId,
+                                       NetworkingNode_Id          NetworkingNodeId,
+                                       NetworkPath                NetworkPath,
                                        EventTracking_Id           EventTrackingId,
                                        Request_Id                 RequestId,
                                        Byte[]                     BinaryRequest,
@@ -100,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                 OnIncomingBinaryDataTransferWSRequest?.Invoke(startTime,
                                                               this,
                                                               Connection,
-                                                              ChargingStationId,
+                                                              NetworkingNodeId,
                                                               EventTrackingId,
                                                               RequestTimestamp,
                                                               BinaryRequest);
@@ -122,7 +123,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                 if (OCPPv2_1.CS.BinaryDataTransferRequest.TryParse(BinaryRequest,
                                                                    RequestId,
-                                                                   ChargingStationId,
+                                                                   NetworkingNodeId,
+                                                                   NetworkPath,
                                                                    out var request,
                                                                    out var errorResponse,
                                                                    CustomBinaryDataTransferRequestParser) && request is not null) {
@@ -229,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                 OnIncomingBinaryDataTransferWSResponse?.Invoke(endTime,
                                                                this,
                                                                Connection,
-                                                               ChargingStationId,
+                                                               NetworkingNodeId,
                                                                EventTrackingId,
                                                                RequestTimestamp,
                                                                BinaryRequest,

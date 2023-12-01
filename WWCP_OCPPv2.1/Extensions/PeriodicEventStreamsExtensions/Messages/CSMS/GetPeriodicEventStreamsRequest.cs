@@ -30,7 +30,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A get periodic event stream request.
     /// </summary>
     public class GetPeriodicEventStreamsRequest : ARequest<GetPeriodicEventStreamsRequest>,
-                                                 IRequest
+                                                  IRequest
     {
 
         #region Data
@@ -57,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new get periodic event stream request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
@@ -66,8 +66,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetPeriodicEventStreamsRequest(ChargingStation_Id       ChargingStationId,
+        public GetPeriodicEventStreamsRequest(NetworkingNode_Id        NetworkingNodeId,
 
                                               IEnumerable<KeyPair>?    SignKeys            = null,
                                               IEnumerable<SignInfo>?   SignInfos           = null,
@@ -79,10 +80,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                               DateTime?                RequestTimestamp    = null,
                                               TimeSpan?                RequestTimeout      = null,
                                               EventTracking_Id?        EventTrackingId     = null,
+                                              NetworkPath?             NetworkPath         = null,
                                               CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "GetPeriodicEventStreams",
+            : base(NetworkingNodeId,
+                   nameof(GetPeriodicEventStreamsRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -94,15 +96,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
 
             unchecked
             {
-
                 hashCode = base.GetHashCode();
-
             }
 
         }
@@ -117,25 +118,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomGetPeriodicEventStreamRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomGetPeriodicEventStreamRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an GetPeriodicEventStreams request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomGetPeriodicEventStreamRequestParser">A delegate to parse custom GetPeriodicEventStreams requests.</param>
         public static GetPeriodicEventStreamsRequest Parse(JObject                                                       JSON,
                                                            Request_Id                                                    RequestId,
-                                                           ChargingStation_Id                                            ChargingStationId,
+                                                           NetworkingNode_Id                                             NetworkingNodeId,
+                                                           NetworkPath                                                   NetworkPath,
                                                            CustomJObjectParserDelegate<GetPeriodicEventStreamsRequest>?  CustomGetPeriodicEventStreamRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var getPeriodicEventStreamsRequest,
                          out var errorResponse,
                          CustomGetPeriodicEventStreamRequestParser) &&
@@ -151,7 +155,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out GetPeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out GetPeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -160,18 +164,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetPeriodicEventStreamRequest">The parsed GetPeriodicEventStreams request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                              JSON,
                                        Request_Id                           RequestId,
-                                       ChargingStation_Id                   ChargingStationId,
+                                       NetworkingNode_Id                    NetworkingNodeId,
+                                       NetworkPath                          NetworkPath,
                                        out GetPeriodicEventStreamsRequest?  GetPeriodicEventStreamRequest,
                                        out String?                          ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out GetPeriodicEventStreamRequest,
                         out ErrorResponse,
                         null);
@@ -182,13 +189,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetPeriodicEventStreamRequest">The parsed GetPeriodicEventStreams request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetPeriodicEventStreamRequestParser">A delegate to parse custom GetPeriodicEventStreams requests.</param>
         public static Boolean TryParse(JObject                                                       JSON,
                                        Request_Id                                                    RequestId,
-                                       ChargingStation_Id                                            ChargingStationId,
+                                       NetworkingNode_Id                                             NetworkingNodeId,
+                                       NetworkPath                                                   NetworkPath,
                                        out GetPeriodicEventStreamsRequest?                           GetPeriodicEventStreamRequest,
                                        out String?                                                   ErrorResponse,
                                        CustomJObjectParserDelegate<GetPeriodicEventStreamsRequest>?  CustomGetPeriodicEventStreamRequestParser)
@@ -227,33 +236,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 GetPeriodicEventStreamRequest = new GetPeriodicEventStreamsRequest(
-                                                    ChargingStationId,
+
+                                                    NetworkingNodeId,
+
                                                     null,
                                                     null,
                                                     Signatures,
+
                                                     CustomData,
-                                                    RequestId
+
+                                                    RequestId,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    NetworkPath
+
                                                 );
 
                 if (CustomGetPeriodicEventStreamRequestParser is not null)

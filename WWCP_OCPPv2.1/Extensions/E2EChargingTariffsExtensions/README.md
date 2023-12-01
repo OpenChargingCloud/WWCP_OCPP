@@ -24,7 +24,7 @@ The charging tariff data structure is based on OCPI v2.2.1 and OCPP v2.1 draft 2
 11. Renamed the OCPI property **"TariffAltText"** to **"Description"** and its data type from **IEnumerable&lt;DisplayText&gt;** to **DisplayTexts** to simplify its usage.
 12. Renamed the OCPI property **"TariffAltURL"** to **"URL"**
 13. Added the optional property **"EVSEIds"** as a list of EVSEs, this charging tariff is valid for.
-14. Added the optional property **"ChargingStationIds"** as a list of charging stations (including all EVSEs), this charging tariff is valid for.
+14. Added the optional property **"NetworkPaths"** as a list of charging stations (including all EVSEs), this charging tariff is valid for.
 15. Added the optional property **"ChargingPoolIds"** as a list of charging pools (including all charging stations and EVSEs), this charging tariff is valid for.
 
 

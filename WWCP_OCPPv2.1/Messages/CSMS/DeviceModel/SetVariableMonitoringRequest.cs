@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new set variable monitoring request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="MonitoringData">An enumeration of monitoring data.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -73,8 +73,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetVariableMonitoringRequest(ChargingStation_Id              ChargingStationId,
+        public SetVariableMonitoringRequest(NetworkingNode_Id               NetworkingNodeId,
                                             IEnumerable<SetMonitoringData>  MonitoringData,
 
                                             IEnumerable<KeyPair>?           SignKeys            = null,
@@ -87,10 +88,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             DateTime?                       RequestTimestamp    = null,
                                             TimeSpan?                       RequestTimeout      = null,
                                             EventTracking_Id?               EventTrackingId     = null,
+                                            NetworkPath?                    NetworkPath         = null,
                                             CancellationToken               CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "SetVariableMonitoring",
+            : base(NetworkingNodeId,
+                   nameof(SetVariableMonitoringRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -102,6 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -112,13 +115,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             this.MonitoringData = MonitoringData.Distinct();
 
-
             unchecked
             {
-
                 hashCode = this.MonitoringData.CalcHashCode() * 3 ^
                            base.               GetHashCode();
-
             }
 
         }
@@ -300,24 +300,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomSetVariableMonitoringRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomSetVariableMonitoringRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a set variable monitoring request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomSetVariableMonitoringRequestParser">A delegate to parse custom set variable monitoring requests.</param>
         public static SetVariableMonitoringRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         ChargingStation_Id                                          ChargingStationId,
+                                                         NetworkingNode_Id                                           NetworkingNodeId,
+                                                         NetworkPath                                                 NetworkPath,
                                                          CustomJObjectParserDelegate<SetVariableMonitoringRequest>?  CustomSetVariableMonitoringRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var setVariableMonitoringRequest,
                          out var errorResponse,
                          CustomSetVariableMonitoringRequestParser) &&
@@ -333,7 +336,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out SetVariableMonitoringRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out SetVariableMonitoringRequest, out ErrorResponse, CustomBootNotificationResponseParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -342,18 +345,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SetVariableMonitoringRequest">The parsed set variable monitoring request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                            JSON,
                                        Request_Id                         RequestId,
-                                       ChargingStation_Id                 ChargingStationId,
+                                       NetworkingNode_Id                  NetworkingNodeId,
+                                       NetworkPath                        NetworkPath,
                                        out SetVariableMonitoringRequest?  SetVariableMonitoringRequest,
                                        out String?                        ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out SetVariableMonitoringRequest,
                         out ErrorResponse,
                         null);
@@ -364,13 +370,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SetVariableMonitoringRequest">The parsed set variable monitoring request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetVariableMonitoringRequestParser">A delegate to parse custom set variable monitoring requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       ChargingStation_Id                                          ChargingStationId,
+                                       NetworkingNode_Id                                           NetworkingNodeId,
+                                       NetworkPath                                                 NetworkPath,
                                        out SetVariableMonitoringRequest?                           SetVariableMonitoringRequest,
                                        out String?                                                 ErrorResponse,
                                        CustomJObjectParserDelegate<SetVariableMonitoringRequest>?  CustomSetVariableMonitoringRequestParser)
@@ -422,34 +430,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 SetVariableMonitoringRequest = new SetVariableMonitoringRequest(
-                                                   ChargingStationId,
+
+                                                   NetworkingNodeId,
                                                    MonitoringData,
+
                                                    null,
                                                    null,
                                                    Signatures,
+
                                                    CustomData,
-                                                   RequestId
+
+                                                   RequestId,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   NetworkPath
+
                                                );
 
                 if (CustomSetVariableMonitoringRequestParser is not null)

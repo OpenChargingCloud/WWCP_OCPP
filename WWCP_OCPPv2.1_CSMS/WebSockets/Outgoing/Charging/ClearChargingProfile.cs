@@ -89,8 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 var sendRequestState = await SendJSONAndWait(
                                                  Request.EventTrackingId,
+                                                 Request.NetworkingNodeId,
+                                                 Request.NetworkPath,
                                                  Request.RequestId,
-                                                 Request.ChargingStationId,
                                                  Request.Action,
                                                  Request.ToJSON(
                                                      CustomClearChargingProfileRequestSerializer,

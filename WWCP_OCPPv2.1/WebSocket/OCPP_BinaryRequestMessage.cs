@@ -27,43 +27,57 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
     /// <summary>
     /// An OCPP HTTP Web Socket binary request message.
     /// </summary>
+    /// <param name="NetworkingNodeId">The optional networking node identification.</param>
+    /// <param name="NetworkPath">The optional network path.</param>
     /// <param name="RequestId">An unique request identification.</param>
     /// <param name="Action">An OCPP action/method name.</param>
     /// <param name="Payload">The binary request message payload.</param>
     /// <param name="ErrorMessage">An optional error message, e.g. during sending of the message.</param>
-    public class OCPP_BinaryRequestMessage(Request_Id  RequestId,
-                                           String      Action,
-                                           Byte[]      Payload,
-                                           String?     ErrorMessage   = null)
+    public class OCPP_BinaryRequestMessage(NetworkingNode_Id?  NetworkingNodeId,
+                                           NetworkPath?        NetworkPath,
+                                           Request_Id          RequestId,
+                                           String              Action,
+                                           Byte[]              Payload,
+                                           String?             ErrorMessage   = null)
     {
 
         #region Properties
 
         /// <summary>
+        /// The optional networking node identification.
+        /// </summary>
+        public NetworkingNode_Id?  NetworkingNodeId    { get; } = NetworkingNodeId;
+
+        /// <summary>
+        /// The optional network path.
+        /// </summary>
+        public NetworkPath?        NetworkPath         { get; } = NetworkPath;
+
+        /// <summary>
         /// The unique request identification.
         /// </summary>
-        public Request_Id  RequestId       { get; } = RequestId;
+        public Request_Id          RequestId           { get; } = RequestId;
 
         /// <summary>
         /// An OCPP action/method name.
         /// </summary>
-        public String      Action          { get; } = Action;
+        public String              Action              { get; } = Action;
 
         /// <summary>
         /// The binary request message payload.
         /// </summary>
-        public Byte[]      Payload         { get; } = Payload;
+        public Byte[]             Payload             { get; } = Payload;
 
         /// <summary>
         /// The optional error message, e.g. during sending of the message.
         /// </summary>
-        public String?     ErrorMessage    { get; } = ErrorMessage;
+        public String?             ErrorMessage        { get; } = ErrorMessage;
 
 
-        public Boolean NoErrors
+        public Boolean             NoErrors
             => ErrorMessage is null;
 
-        public Boolean HasErrors
+        public Boolean             HasErrors
             => ErrorMessage is not null;
 
         #endregion
@@ -123,6 +137,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.WebSockets
                 var payload           = stream.ReadBytes(payloadLength);
 
                 BinaryRequestMessage  = new OCPP_BinaryRequestMessage(
+                                            null,
+                                            null,
                                             requestId,
                                             action,
                                             payload

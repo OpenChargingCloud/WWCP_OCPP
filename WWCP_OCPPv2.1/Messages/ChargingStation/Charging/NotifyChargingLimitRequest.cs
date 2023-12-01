@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a notify charging limit request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="ChargingLimit">The charging limit, its source and whether it is grid critical.</param>
         /// <param name="ChargingSchedules">Optional limits for the available power or current over time, as set by the external source.</param>
         /// <param name="EVSEId">An optional EVSE identification, when the charging schedule contained in this notification applies to an EVSE.</param>
@@ -87,8 +87,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyChargingLimitRequest(ChargingStation_Id              ChargingStationId,
+        public NotifyChargingLimitRequest(NetworkingNode_Id               NetworkingNodeId,
                                           ChargingLimit                   ChargingLimit,
                                           IEnumerable<ChargingSchedule>?  ChargingSchedules   = null,
                                           EVSE_Id?                        EVSEId              = null,
@@ -102,10 +103,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                           DateTime?                       RequestTimestamp    = null,
                                           TimeSpan?                       RequestTimeout      = null,
                                           EventTracking_Id?               EventTrackingId     = null,
+                                          NetworkPath?                    NetworkPath         = null,
                                           CancellationToken               CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "NotifyChargingLimit",
+            : base(NetworkingNodeId,
+                   nameof(NotifyChargingLimitRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -117,6 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -124,6 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.ChargingLimit      = ChargingLimit;
             this.ChargingSchedules  = ChargingSchedules?.Distinct() ?? Array.Empty<ChargingSchedule>();
             this.EVSEId             = EVSEId;
+
 
             unchecked
             {
@@ -147,24 +151,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomNotifyChargingLimitRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomNotifyChargingLimitRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a notify charging limit request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomNotifyChargingLimitRequestParser">A delegate to parse custom notify charging limit requests.</param>
         public static NotifyChargingLimitRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       ChargingStation_Id                                        ChargingStationId,
+                                                       NetworkingNode_Id                                         NetworkingNodeId,
+                                                       NetworkPath                                               NetworkPath,
                                                        CustomJObjectParserDelegate<NotifyChargingLimitRequest>?  CustomNotifyChargingLimitRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var notifyChargingLimitRequest,
                          out var errorResponse,
                          CustomNotifyChargingLimitRequestParser) &&
@@ -180,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out NotifyChargingLimitRequest, out ErrorResponse, CustomNotifyChargingLimitRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out NotifyChargingLimitRequest, out ErrorResponse, CustomNotifyChargingLimitRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -189,18 +196,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyChargingLimitRequest">The parsed notify charging limit request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                          JSON,
                                        Request_Id                       RequestId,
-                                       ChargingStation_Id               ChargingStationId,
+                                       NetworkingNode_Id                NetworkingNodeId,
+                                       NetworkPath                      NetworkPath,
                                        out NotifyChargingLimitRequest?  NotifyChargingLimitRequest,
                                        out String?                      ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out NotifyChargingLimitRequest,
                         out ErrorResponse,
                         null);
@@ -211,13 +221,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyChargingLimitRequest">The parsed notify charging limit request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyChargingLimitRequestParser">A delegate to parse custom notify charging limit requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       ChargingStation_Id                                        ChargingStationId,
+                                       NetworkingNode_Id                                         NetworkingNodeId,
+                                       NetworkPath                                               NetworkPath,
                                        out NotifyChargingLimitRequest?                           NotifyChargingLimitRequest,
                                        out String?                                               ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyChargingLimitRequest>?  CustomNotifyChargingLimitRequestParser)
@@ -298,36 +310,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 NotifyChargingLimitRequest = new NotifyChargingLimitRequest(
-                                                 ChargingStationId,
+
+                                                 NetworkingNodeId,
                                                  ChargingLimit,
                                                  ChargingSchedules,
                                                  EVSEId,
+
                                                  null,
                                                  null,
                                                  Signatures,
+
                                                  CustomData,
-                                                 RequestId
+
+                                                 RequestId,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 NetworkPath
+
                                              );
 
                 if (CustomNotifyChargingLimitRequestParser is not null)

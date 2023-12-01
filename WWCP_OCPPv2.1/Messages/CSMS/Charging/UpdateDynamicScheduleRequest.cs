@@ -139,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create an update dynamic schedule request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="ChargingProfileId">The identification of the charging profile to update.</param>
         /// 
         /// <param name="Limit">Optional charging rate limit in chargingRateUnit.</param>
@@ -165,8 +165,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UpdateDynamicScheduleRequest(ChargingStation_Id       ChargingStationId,
+        public UpdateDynamicScheduleRequest(NetworkingNode_Id        NetworkingNodeId,
                                             ChargingProfile_Id       ChargingProfileId,
 
                                             ChargingRateValue?       Limit                 = null,
@@ -195,10 +196,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             DateTime?                RequestTimestamp      = null,
                                             TimeSpan?                RequestTimeout        = null,
                                             EventTracking_Id?        EventTrackingId       = null,
+                                            NetworkPath?             NetworkPath           = null,
                                             CancellationToken        CancellationToken     = default)
 
-            : base(ChargingStationId,
-                   "UpdateDynamicSchedule",
+            : base(NetworkingNodeId,
+                   nameof(UpdateDynamicScheduleRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -210,6 +212,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -261,6 +264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.SetpointReactive_L2  = SetpointReactive_L2;
             this.SetpointReactive_L3  = SetpointReactive_L3;
 
+
             unchecked
             {
 
@@ -298,24 +302,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomUpdateDynamicScheduleRequestParser = null)
+        #region (static) Parse   (JSON, RequestId,  NetworkingNodeId, NetworkPath, CustomUpdateDynamicScheduleRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an update dynamic schedule request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomUpdateDynamicScheduleRequestParser">A delegate to parse custom update dynamic schedule requests.</param>
         public static UpdateDynamicScheduleRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         ChargingStation_Id                                          ChargingStationId,
+                                                         NetworkingNode_Id                                           NetworkingNodeId,
+                                                         NetworkPath                                                 NetworkPath,
                                                          CustomJObjectParserDelegate<UpdateDynamicScheduleRequest>?  CustomUpdateDynamicScheduleRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var updateDynamicScheduleRequest,
                          out var errorResponse,
                          CustomUpdateDynamicScheduleRequestParser) &&
@@ -331,7 +338,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out UpdateDynamicScheduleRequest, out ErrorResponse, CustomUpdateDynamicScheduleRequestParser = null)
+        #region (static) TryParse(JSON, RequestId,  NetworkingNodeId, NetworkPath, out UpdateDynamicScheduleRequest, out ErrorResponse, CustomUpdateDynamicScheduleRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
+        /// <summary>
+        /// Try to parse the given JSON representation of an update dynamic schedule request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="UpdateDynamicScheduleRequest">The parsed update dynamic schedule request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                            JSON,
+                                       Request_Id                         RequestId,
+                                       NetworkingNode_Id                  NetworkingNodeId,
+                                       NetworkPath                        NetworkPath,
+                                       out UpdateDynamicScheduleRequest?  UpdateDynamicScheduleRequest,
+                                       out String?                        ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        NetworkingNodeId,
+                        NetworkPath,
+                        out UpdateDynamicScheduleRequest,
+                        out ErrorResponse,
+                        null);
+
 
         /// <summary>
         /// Try to parse the given JSON representation of an update dynamic schedule request.
@@ -344,7 +378,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomUpdateDynamicScheduleRequestParser">A delegate to parse custom update dynamic schedule requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       ChargingStation_Id                                          ChargingStationId,
+                                       NetworkingNode_Id                                           NetworkingNodeId,
+                                       NetworkPath                                                 NetworkPath,
                                        out UpdateDynamicScheduleRequest?                           UpdateDynamicScheduleRequest,
                                        out String?                                                 ErrorResponse,
                                        CustomJObjectParserDelegate<UpdateDynamicScheduleRequest>?  CustomUpdateDynamicScheduleRequestParser)
@@ -557,29 +592,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId      [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 UpdateDynamicScheduleRequest = new UpdateDynamicScheduleRequest(
 
-                                                   ChargingStationId,
+                                                   NetworkingNodeId,
                                                    ChargingProfileId,
 
                                                    Limit,
@@ -603,7 +619,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                    Signatures,
 
                                                    CustomData,
-                                                   RequestId
+
+                                                   RequestId,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   NetworkPath
 
                                                );
 

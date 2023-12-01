@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a use priority charging request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
         /// <param name="Activate">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
         /// 
@@ -81,8 +81,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UsePriorityChargingRequest(ChargingStation_Id       ChargingStationId,
+        public UsePriorityChargingRequest(NetworkingNode_Id        NetworkingNodeId,
                                           Transaction_Id           TransactionId,
                                           Boolean                  Activate,
 
@@ -96,10 +97,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           DateTime?                RequestTimestamp    = null,
                                           TimeSpan?                RequestTimeout      = null,
                                           EventTracking_Id?        EventTrackingId     = null,
+                                          NetworkPath?             NetworkPath         = null,
                                           CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "UsePriorityCharging",
+            : base(NetworkingNodeId,
+                   nameof(UsePriorityChargingRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -111,6 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -120,11 +123,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             unchecked
             {
-
                 hashCode = TransactionId.GetHashCode() * 5 ^
                            Activate.     GetHashCode() * 3 ^
                            base.         GetHashCode();
-
             }
 
         }
@@ -139,24 +140,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomUsePriorityChargingRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomUsePriorityChargingRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a use priority charging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomUsePriorityChargingRequestParser">A delegate to parse custom use priority charging requests.</param>
         public static UsePriorityChargingRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       ChargingStation_Id                                        ChargingStationId,
+                                                       NetworkingNode_Id                                         NetworkingNodeId,
+                                                       NetworkPath                                               NetworkPath,
                                                        CustomJObjectParserDelegate<UsePriorityChargingRequest>?  CustomUsePriorityChargingRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var usePriorityChargingRequest,
                          out var errorResponse,
                          CustomUsePriorityChargingRequestParser) &&
@@ -172,20 +176,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out UsePriorityChargingRequest, out ErrorResponse, CustomUsePriorityChargingRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out UsePriorityChargingRequest, out ErrorResponse, CustomUsePriorityChargingRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a use priority charging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="UsePriorityChargingRequest">The parsed use priority charging request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                          JSON,
+                                       Request_Id                       RequestId,
+                                       NetworkingNode_Id                NetworkingNodeId,
+                                       NetworkPath                      NetworkPath,
+                                       out UsePriorityChargingRequest?  UsePriorityChargingRequest,
+                                       out String?                      ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        NetworkingNodeId,
+                        NetworkPath,
+                        out UsePriorityChargingRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a use priority charging request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="UsePriorityChargingRequest">The parsed use priority charging request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomUsePriorityChargingRequestParser">A delegate to parse custom use priority charging requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       ChargingStation_Id                                        ChargingStationId,
+                                       NetworkingNode_Id                                         NetworkingNodeId,
+                                       NetworkPath                                               NetworkPath,
                                        out UsePriorityChargingRequest?                           UsePriorityChargingRequest,
                                        out String?                                               ErrorResponse,
                                        CustomJObjectParserDelegate<UsePriorityChargingRequest>?  CustomUsePriorityChargingRequestParser)
@@ -249,35 +282,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 UsePriorityChargingRequest = new UsePriorityChargingRequest(
-                                                 ChargingStationId,
+
+                                                 NetworkingNodeId,
                                                  TransactionId,
                                                  Activate,
+
                                                  null,
                                                  null,
                                                  Signatures,
+
                                                  CustomData,
-                                                 RequestId
+
+                                                 RequestId,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 NetworkPath
+
                                              );
 
                 if (CustomUsePriorityChargingRequestParser is not null)

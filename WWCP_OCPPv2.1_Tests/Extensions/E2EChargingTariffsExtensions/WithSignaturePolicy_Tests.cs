@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response        = await testCSMS01.SetDefaultChargingTariff(
-                                          ChargingStationId:  chargingStation1.Id,
+                                          NetworkingNodeId:   chargingStation1.Id,
                                           ChargingTariff:     chargingTariff,
                                           CustomData:         null
                                       );
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                         setDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                       setDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                       setDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 Assert.AreEqual(chargingTariff.Id,                         setDefaultChargingTariffRequests.First().ChargingTariff.Id);
                 Assert.AreEqual(1,                                         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count());
@@ -284,7 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response        = await testCSMS01.GetDefaultChargingTariff(
-                                          ChargingStationId:  chargingStation2.Id,
+                                          NetworkingNodeId:   chargingStation2.Id,
                                           CustomData:         null
                                       );
 
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                   getDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation2.Id,                 getDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation2.Id,                 getDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 Assert.AreEqual(1,                                   getDefaultChargingTariffRequests.First().Signatures.Count());
                 Assert.AreEqual(VerificationStatus.ValidSignature,   getDefaultChargingTariffRequests.First().Signatures.First().Status);
@@ -502,7 +502,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1        = await testCSMS01.SetDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation1.Id,
+                                           NetworkingNodeId:   chargingStation1.Id,
                                            ChargingTariff:     chargingTariff,
                                            CustomData:         null
                                        );
@@ -521,7 +521,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                                 setDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                               setDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                               setDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 // Verify the signature of the charging tariff
                 Assert.AreEqual(chargingTariff.Id,                                 setDefaultChargingTariffRequests.First().ChargingTariff.Id);
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response2        = await testCSMS01.GetDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation1.Id,
+                                           NetworkingNodeId:   chargingStation1.Id,
                                            CustomData:         null
                                        );
 
@@ -565,7 +565,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                                               getDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                                               getDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 // Verify the signature of the request
                 Assert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.First().Signatures.Count());
@@ -579,7 +579,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response3        = await testCSMS01.RemoveDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation1.Id,
+                                           NetworkingNodeId:   chargingStation1.Id,
                                            CustomData:         null
                                        );
 
@@ -597,7 +597,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                                               removeDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                                               removeDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 // Verify the signature of the request
                 Assert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.First().Signatures.Count());
@@ -611,7 +611,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response4        = await testCSMS01.GetDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation1.Id,
+                                           NetworkingNodeId:   chargingStation1.Id,
                                            CustomData:         null
                                        );
 
@@ -631,7 +631,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(2,                                                                 getDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).NetworkingNodeId);
 
                 // Verify the signature of the request
                 Assert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.ElementAt(1).Signatures.Count());
@@ -834,7 +834,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1        = await testCSMS01.SetDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation2.Id,
+                                           NetworkingNodeId:   chargingStation2.Id,
                                            ChargingTariff:     chargingTariff,
                                            CustomData:         null
                                        );
@@ -853,7 +853,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                                 setDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 // Verify the signature of the charging tariff
                 Assert.AreEqual(chargingTariff.Id,                                 setDefaultChargingTariffRequests.First().ChargingTariff.Id);
@@ -876,7 +876,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response2        = await testCSMS01.GetDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation2.Id,
+                                           NetworkingNodeId:   chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -897,7 +897,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 // Verify the signature of the request
                 Assert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.First().Signatures.Count());
@@ -911,7 +911,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response3        = await testCSMS01.RemoveDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation2.Id,
+                                           NetworkingNodeId:   chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -929,7 +929,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation2.Id,                                               removeDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation2.Id,                                               removeDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 // Verify the signature of the request
                 Assert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.First().Signatures.Count());
@@ -943,7 +943,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response4        = await testCSMS01.GetDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation2.Id,
+                                           NetworkingNodeId:   chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -963,7 +963,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(2,                                                                 getDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).ChargingStationId);
+                Assert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).NetworkingNodeId);
 
                 // Verify the signature of the request
                 Assert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.ElementAt(1).Signatures.Count());
@@ -1166,7 +1166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1        = await testCSMS01.SetDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation2.Id,
+                                           NetworkingNodeId:   chargingStation2.Id,
                                            ChargingTariff:     chargingTariff,
                                            EVSEIds:            new[] {
                                                                    EVSE_Id.Parse(1)
@@ -1188,7 +1188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                                 setDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 // Verify the signature of the charging tariff
                 Assert.AreEqual(chargingTariff.Id,                                setDefaultChargingTariffRequests.First().ChargingTariff.Id);
@@ -1211,7 +1211,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response2        = await testCSMS01.GetDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation2.Id,
+                                           NetworkingNodeId:   chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1232,7 +1232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 // Verify the signature of the request
                 Assert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.First().Signatures.Count());
@@ -1246,7 +1246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response3        = await testCSMS01.RemoveDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation2.Id,
+                                           NetworkingNodeId:   chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1264,7 +1264,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation2.Id,                                               removeDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation2.Id,                                               removeDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 // Verify the signature of the request
                 Assert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.First().Signatures.Count());
@@ -1278,7 +1278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response4        = await testCSMS01.GetDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation2.Id,
+                                           NetworkingNodeId:   chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1298,7 +1298,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(2,                                                                 getDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).ChargingStationId);
+                Assert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).NetworkingNodeId);
 
                 // Verify the signature of the request
                 Assert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.ElementAt(1).Signatures.Count());
@@ -1577,7 +1577,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1a       = await testCSMS01.SetDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation2.Id,
+                                           NetworkingNodeId:   chargingStation2.Id,
                                            ChargingTariff:     chargingTariff1,
                                            EVSEIds:            new[] {
                                                                    EVSE_Id.Parse(1)
@@ -1599,7 +1599,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                                 setDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 // Verify the signature of the charging tariff
                 Assert.AreEqual(chargingTariff1.Id,                                setDefaultChargingTariffRequests.First().ChargingTariff.Id);
@@ -1622,7 +1622,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response1b       = await testCSMS01.SetDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation2.Id,
+                                           NetworkingNodeId:   chargingStation2.Id,
                                            ChargingTariff:     chargingTariff2,
                                            EVSEIds:            new[] {
                                                                    EVSE_Id.Parse(2)
@@ -1644,7 +1644,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(2,                                                 setDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.ElementAt(1).ChargingStationId);
+                Assert.AreEqual(chargingStation2.Id,                               setDefaultChargingTariffRequests.ElementAt(1).NetworkingNodeId);
 
                 // Verify the signature of the charging tariff
                 Assert.AreEqual(chargingTariff2.Id,                                setDefaultChargingTariffRequests.ElementAt(1).ChargingTariff.Id);
@@ -1667,7 +1667,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response2        = await testCSMS01.GetDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation2.Id,
+                                           NetworkingNodeId:   chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1689,7 +1689,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 // Verify the signature of the request
                 Assert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.First().Signatures.Count());
@@ -1703,7 +1703,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response3        = await testCSMS01.RemoveDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation2.Id,
+                                           NetworkingNodeId:   chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1721,7 +1721,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation2.Id,                                               removeDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation2.Id,                                               removeDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 // Verify the signature of the request
                 Assert.AreEqual(1,                                                                 removeDefaultChargingTariffRequests.First().Signatures.Count());
@@ -1735,7 +1735,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
 
                 var response4        = await testCSMS01.GetDefaultChargingTariff(
-                                           ChargingStationId:  chargingStation2.Id,
+                                           NetworkingNodeId:   chargingStation2.Id,
                                            CustomData:         null
                                        );
 
@@ -1755,7 +1755,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(2,                                                                 getDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).ChargingStationId);
+                Assert.AreEqual(chargingStation2.Id,                                               getDefaultChargingTariffRequests.ElementAt(1).NetworkingNodeId);
 
                 // Verify the signature of the request
                 Assert.AreEqual(1,                                                                 getDefaultChargingTariffRequests.ElementAt(1).Signatures.Count());

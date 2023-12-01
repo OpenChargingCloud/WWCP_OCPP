@@ -34,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
     /// based on a message signature policy to the CSMS.
     /// </summary>
     [TestFixture]
-    public class WithSignaturePolicy_Tests : AChargingStationTests
+    public class CS_WithSignaturePolicy_Tests : AChargingStationTests
     {
 
         #region Init_Test()
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
 
                 Assert.AreEqual(1,                                       bootNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().NetworkingNodeId);
                 Assert.AreEqual(reason,                                  bootNotificationRequests.First().Reason);
                 Assert.AreEqual(1,                                       bootNotificationRequests.First().Signatures.Count());
                 Assert.AreEqual(VerificationStatus.ValidSignature,             bootNotificationRequests.First().Signatures.First().Status);

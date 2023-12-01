@@ -144,7 +144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
                 if (testBackendWebSockets01 is not null)
                 {
 
-                    testCSMS01.AddOrUpdateHTTPBasicAuth(ChargingStation_Id.Parse("test01"), "1234abcd");
+                    testCSMS01.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("test01"), "1234abcd");
 
                     var response = networkingNode1.ConnectWebSocket(
                                        From:                    "From:GD001",

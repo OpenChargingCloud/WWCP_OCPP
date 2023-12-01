@@ -84,7 +84,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             Receive_DeleteUserRole(DateTime                   RequestTimestamp,
                                    WebSocketClientConnection  WebSocketConnection,
-                                   ChargingStation_Id         ChargingStationId,
+                                   NetworkingNode_Id          NetworkingNodeId,
+                                   NetworkPath                NetworkPath,
                                    EventTracking_Id           EventTrackingId,
                                    Request_Id                 RequestId,
                                    JObject                    RequestJSON,
@@ -101,7 +102,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 OnDeleteUserRoleWSRequest?.Invoke(startTime,
                                                   WebSocketConnection,
-                                                  ChargingStationId,
+                                                  NetworkingNodeId,
+                                                  NetworkPath,
                                                   EventTrackingId,
                                                   RequestJSON);
 
@@ -113,15 +115,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            OCPP_JSONResponseMessage?     OCPPResponse        = null;
-            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?  OCPPResponse        = null;
+            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
 
                 if (DeleteUserRoleRequest.TryParse(RequestJSON,
                                                    RequestId,
-                                                   ChargingStationIdentity,
+                                                   NetworkingNodeId,
+                                                   NetworkPath,
                                                    out var request,
                                                    out var errorResponse,
                                                    CustomDeleteUserRoleRequestParser) && request is not null) {
@@ -223,6 +226,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 OnDeleteUserRoleWSResponse?.Invoke(endTime,
                                                    WebSocketConnection,
+                                                   NetworkingNodeId,
+                                                   NetworkPath,
                                                    EventTrackingId,
                                                    RequestTimestamp,
                                                    RequestJSON,

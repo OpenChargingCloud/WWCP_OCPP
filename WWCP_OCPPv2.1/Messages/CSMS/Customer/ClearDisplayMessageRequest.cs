@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new clear display message request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="DisplayMessageId">The identification of the display message to be removed.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -73,8 +73,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ClearDisplayMessageRequest(ChargingStation_Id       ChargingStationId,
+        public ClearDisplayMessageRequest(NetworkingNode_Id        NetworkingNodeId,
                                           DisplayMessage_Id        DisplayMessageId,
 
                                           IEnumerable<KeyPair>?    SignKeys            = null,
@@ -87,10 +88,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                           DateTime?                RequestTimestamp    = null,
                                           TimeSpan?                RequestTimeout      = null,
                                           EventTracking_Id?        EventTrackingId     = null,
+                                          NetworkPath?             NetworkPath         = null,
                                           CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "ClearDisplayMessage",
+            : base(NetworkingNodeId,
+                   nameof(ClearDisplayMessageRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -102,6 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -110,10 +113,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             unchecked
             {
-
                 hashCode = this.DisplayMessageId.GetHashCode() * 3 ^
                            base.                 GetHashCode();
-
             }
 
         }
@@ -161,24 +162,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomClearDisplayMessageRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomClearDisplayMessageRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a clear display message request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomClearDisplayMessageRequestParser">A delegate to parse custom clear display message requests.</param>
         public static ClearDisplayMessageRequest Parse(JObject                                                   JSON,
                                                        Request_Id                                                RequestId,
-                                                       ChargingStation_Id                                        ChargingStationId,
+                                                       NetworkingNode_Id                                         NetworkingNodeId,
+                                                       NetworkPath                                               NetworkPath,
                                                        CustomJObjectParserDelegate<ClearDisplayMessageRequest>?  CustomClearDisplayMessageRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var clearDisplayMessageRequest,
                          out var errorResponse,
                          CustomClearDisplayMessageRequestParser) &&
@@ -194,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out ClearDisplayMessageRequest, out ErrorResponse, CustomClearDisplayMessageRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out ClearDisplayMessageRequest, out ErrorResponse, CustomClearDisplayMessageRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -203,18 +207,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ClearDisplayMessageRequest">The parsed ClearDisplayMessage request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                          JSON,
                                        Request_Id                       RequestId,
-                                       ChargingStation_Id               ChargingStationId,
+                                       NetworkingNode_Id                NetworkingNodeId,
+                                       NetworkPath                      NetworkPath,
                                        out ClearDisplayMessageRequest?  ClearDisplayMessageRequest,
                                        out String?                      ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out ClearDisplayMessageRequest,
                         out ErrorResponse,
                         null);
@@ -231,7 +238,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearDisplayMessageRequestParser">A delegate to parse custom clear display message requests.</param>
         public static Boolean TryParse(JObject                                                   JSON,
                                        Request_Id                                                RequestId,
-                                       ChargingStation_Id                                        ChargingStationId,
+                                       NetworkingNode_Id                                         NetworkingNodeId,
+                                       NetworkPath                                               NetworkPath,
                                        out ClearDisplayMessageRequest?                           ClearDisplayMessageRequest,
                                        out String?                                               ErrorResponse,
                                        CustomJObjectParserDelegate<ClearDisplayMessageRequest>?  CustomClearDisplayMessageRequestParser)
@@ -284,34 +292,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 ClearDisplayMessageRequest = new ClearDisplayMessageRequest(
-                                                 ChargingStationId,
+
+                                                 NetworkingNodeId,
                                                  DisplayMessageId,
+
                                                  null,
                                                  null,
                                                  Signatures,
+
                                                  CustomData,
-                                                 RequestId
+
+                                                 RequestId,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 NetworkPath
+
                                              );
 
                 if (CustomClearDisplayMessageRequestParser is not null)

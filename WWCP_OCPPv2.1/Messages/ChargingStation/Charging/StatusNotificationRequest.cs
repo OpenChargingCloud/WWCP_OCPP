@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a status notification request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="Timestamp">The time for which the status is reported.</param>
         /// <param name="ConnectorStatus">The current status of the connector.</param>
         /// <param name="EVSEId">The identification of the EVSE to which the connector belongs for which the the status is reported.</param>
@@ -94,8 +94,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public StatusNotificationRequest(ChargingStation_Id       ChargingStationId,
+        public StatusNotificationRequest(NetworkingNode_Id        NetworkingNodeId,
                                          DateTime                 Timestamp,
                                          ConnectorStatus          ConnectorStatus,
                                          EVSE_Id                  EVSEId,
@@ -111,10 +112,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                          DateTime?                RequestTimestamp    = null,
                                          TimeSpan?                RequestTimeout      = null,
                                          EventTracking_Id?        EventTrackingId     = null,
+                                         NetworkPath?             NetworkPath         = null,
                                          CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "StatusNotification",
+            : base(NetworkingNodeId,
+                   nameof(StatusNotificationRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -126,6 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -134,6 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.ConnectorStatus  = ConnectorStatus;
             this.EVSEId           = EVSEId;
             this.ConnectorId      = ConnectorId;
+
 
             unchecked
             {
@@ -219,24 +223,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a status notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom status notification requests.</param>
         public static StatusNotificationRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      ChargingStation_Id                                       ChargingStationId,
+                                                      NetworkingNode_Id                                        NetworkingNodeId,
+                                                      NetworkPath                                              NetworkPath,
                                                       CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var statusNotificationRequest,
                          out var errorResponse,
                          CustomStatusNotificationRequestParser) &&
@@ -252,20 +259,49 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out StatusNotificationRequest, out ErrorResponse, CustomStatusNotificationRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out StatusNotificationRequest, out ErrorResponse, CustomStatusNotificationRequestParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
         /// <summary>
         /// Try to parse the given JSON representation of a status notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                         JSON,
+                                       Request_Id                      RequestId,
+                                       NetworkingNode_Id               NetworkingNodeId,
+                                       NetworkPath                     NetworkPath,
+                                       out StatusNotificationRequest?  StatusNotificationRequest,
+                                       out String?                     ErrorResponse)
+
+            => TryParse(JSON,
+                        RequestId,
+                        NetworkingNodeId,
+                        NetworkPath,
+                        out StatusNotificationRequest,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a status notification request.
+        /// </summary>
+        /// <param name="JSON">The JSON to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="StatusNotificationRequest">The parsed status notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomStatusNotificationRequestParser">A delegate to parse custom status notification requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       ChargingStation_Id                                       ChargingStationId,
+                                       NetworkingNode_Id                                        NetworkingNodeId,
+                                       NetworkPath                                              NetworkPath,
                                        out StatusNotificationRequest?                           StatusNotificationRequest,
                                        out String?                                              ErrorResponse,
                                        CustomJObjectParserDelegate<StatusNotificationRequest>?  CustomStatusNotificationRequestParser)
@@ -357,37 +393,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 StatusNotificationRequest = new StatusNotificationRequest(
-                                                ChargingStationId,
+
+                                                NetworkingNodeId,
                                                 Timestamp,
                                                 ConnectorStatus,
                                                 EVSEId,
                                                 ConnectorId,
+
                                                 null,
                                                 null,
                                                 Signatures,
+
                                                 CustomData,
-                                                RequestId
+
+                                                RequestId,
+                                                null,
+                                                null,
+                                                null,
+                                                NetworkPath
+
                                             );
 
                 if (CustomStatusNotificationRequestParser is not null)

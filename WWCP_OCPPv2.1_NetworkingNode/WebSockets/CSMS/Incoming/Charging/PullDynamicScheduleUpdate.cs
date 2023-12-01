@@ -84,7 +84,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
             Receive_PullDynamicScheduleUpdate(DateTime                   RequestTimestamp,
                                               WebSocketServerConnection  Connection,
-                                              ChargingStation_Id         ChargingStationId,
+                                              NetworkPath                NetworkPath,
+                                              NetworkingNode_Id          NetworkingNodeId,
                                               EventTracking_Id           EventTrackingId,
                                               Request_Id                 RequestId,
                                               JObject                    JSONRequest,
@@ -102,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                 OnPullDynamicScheduleUpdateWSRequest?.Invoke(startTime,
                                                              this,
                                                              Connection,
-                                                             ChargingStationId,
+                                                             NetworkingNodeId,
                                                              EventTrackingId,
                                                              RequestTimestamp,
                                                              JSONRequest);
@@ -116,15 +117,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             #endregion
 
 
-            OCPP_JSONResponseMessage?     OCPPResponse        = null;
-            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?  OCPPResponse        = null;
+            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
 
                 if (PullDynamicScheduleUpdateRequest.TryParse(JSONRequest,
                                                               RequestId,
-                                                              ChargingStationId,
+                                                              NetworkingNodeId,
+                                                              NetworkPath,
                                                               out var request,
                                                               out var errorResponse,
                                                               CustomPullDynamicScheduleUpdateRequestParser) && request is not null) {
@@ -230,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                 OnPullDynamicScheduleUpdateWSResponse?.Invoke(endTime,
                                                               this,
                                                               Connection,
-                                                              ChargingStationId,
+                                                              NetworkingNodeId,
                                                               EventTrackingId,
                                                               RequestTimestamp,
                                                               JSONRequest,

@@ -90,7 +90,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new get 15118 EV certificate request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="ISO15118SchemaVersion">ISO/IEC 15118 schema version used for the session between charging station and electric vehicle. Required for parsing the EXI data stream within the central system.</param>
         /// <param name="CertificateAction">Whether certificate needs to be installed or updated.</param>
         /// <param name="EXIRequest">Base64 encoded certificate installation request from the electric vehicle. [max 5600]</param>
@@ -104,8 +104,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public Get15118EVCertificateRequest(ChargingStation_Id       ChargingStationId,
+        public Get15118EVCertificateRequest(NetworkingNode_Id        NetworkingNodeId,
                                             ISO15118SchemaVersion    ISO15118SchemaVersion,
                                             CertificateAction        CertificateAction,
                                             EXIData                  EXIRequest,
@@ -122,10 +123,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             DateTime?                RequestTimestamp                   = null,
                                             TimeSpan?                RequestTimeout                     = null,
                                             EventTracking_Id?        EventTrackingId                    = null,
+                                            NetworkPath?             NetworkPath                        = null,
                                             CancellationToken        CancellationToken                  = default)
 
-            : base(ChargingStationId,
-                   "Get15118EVCertificate",
+            : base(NetworkingNodeId,
+                   nameof(Get15118EVCertificateRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -137,6 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -146,6 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.EXIRequest                        = EXIRequest;
             this.MaximumContractCertificateChains  = MaximumContractCertificateChains;
             this.PrioritizedEMAIds                 = PrioritizedEMAIds?.Distinct() ?? Array.Empty<EMA_Id>();
+
 
             unchecked
             {
@@ -227,24 +231,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomGet15118EVCertificateRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomGet15118EVCertificateRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a get 15118 EV certificate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomGet15118EVCertificateRequestParser">A delegate to parse custom get 15118 EV certificate requests.</param>
         public static Get15118EVCertificateRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         ChargingStation_Id                                          ChargingStationId,
+                                                         NetworkingNode_Id                                           NetworkingNodeId,
+                                                         NetworkPath                                                 NetworkPath,
                                                          CustomJObjectParserDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var get15118EVCertificateRequest,
                          out var errorResponse,
                          CustomGet15118EVCertificateRequestParser) &&
@@ -260,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out Get15118EVCertificateRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out Get15118EVCertificateRequest, OnException = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -269,18 +276,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="Get15118EVCertificateRequest">The parsed Get15118EVCertificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                            JSON,
                                        Request_Id                         RequestId,
-                                       ChargingStation_Id                 ChargingStationId,
+                                       NetworkingNode_Id                  NetworkingNodeId,
+                                       NetworkPath                        NetworkPath,
                                        out Get15118EVCertificateRequest?  Get15118EVCertificateRequest,
                                        out String?                        ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out Get15118EVCertificateRequest,
                         out ErrorResponse,
                         null);
@@ -291,13 +301,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="Get15118EVCertificateRequest">The parsed Get15118EVCertificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGet15118EVCertificateRequestParser">A delegate to parse custom Get15118EVCertificate requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       ChargingStation_Id                                          ChargingStationId,
+                                       NetworkingNode_Id                                           NetworkingNodeId,
+                                       NetworkPath                                                 NetworkPath,
                                        out Get15118EVCertificateRequest?                           Get15118EVCertificateRequest,
                                        out String?                                                 ErrorResponse,
                                        CustomJObjectParserDelegate<Get15118EVCertificateRequest>?  CustomGet15118EVCertificateRequestParser)
@@ -402,38 +414,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargingStationId                   [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 Get15118EVCertificateRequest = new Get15118EVCertificateRequest(
-                                                   ChargingStationId,
+
+                                                   NetworkingNodeId,
                                                    ISO15118SchemaVersion,
                                                    CertificateAction,
                                                    EXIRequest,
                                                    MaximumContractCertificateChains,
                                                    PrioritizedEMAIDs,
+
                                                    null,
                                                    null,
                                                    Signatures,
+
                                                    CustomData,
-                                                   RequestId
+
+                                                   RequestId,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   NetworkPath
+
                                                );
 
                 if (CustomGet15118EVCertificateRequestParser is not null)

@@ -70,31 +70,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  CancellationToken                                          CancellationToken                         = default)
 
 
-            => ChargingStation.SendBootNotification(
-                   new BootNotificationRequest(
-                       ChargingStation.Id,
-                       new ChargingStation(
-                           ChargingStation.Model,
-                           ChargingStation.VendorName,
-                           ChargingStation.SerialNumber,
-                           ChargingStation.Modem,
-                           ChargingStation.FirmwareVersion,
-                           ChargingStation.CustomData
-                       ),
-                       BootReason,
+                => ChargingStation.SendBootNotification(
+                       new BootNotificationRequest(
+                           ChargingStation.Id,
+                           new ChargingStation(
+                               ChargingStation.Model,
+                               ChargingStation.VendorName,
+                               ChargingStation.SerialNumber,
+                               ChargingStation.Modem,
+                               ChargingStation.FirmwareVersion,
+                               ChargingStation.CustomData
+                           ),
+                           BootReason,
 
-                       SignKeys,
-                       SignInfos,
-                       Signatures,
-                       CustomData,
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+                           CustomData,
 
-                       RequestId        ?? ChargingStation.NextRequestId,
-                       RequestTimestamp ?? Timestamp.Now,
-                       RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
-                       EventTrackingId  ?? EventTracking_Id.New,
-                       CancellationToken
-                   )
-               );
+                           RequestId        ?? ChargingStation.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
+                           CancellationToken
+                       )
+                   );
 
             //var signaturePolicy = SignaturePolicy ?? ChargingStation.SignaturePolicy;
 
@@ -200,6 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -259,6 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -309,6 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -371,6 +375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -430,6 +435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -495,6 +501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -560,6 +567,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -616,6 +624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -675,6 +684,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -735,6 +745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -800,6 +811,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -853,6 +865,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -910,6 +923,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -967,6 +981,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1026,6 +1041,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1088,6 +1104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1181,6 +1198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1243,6 +1261,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1299,6 +1318,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1358,6 +1378,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1414,6 +1435,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1479,6 +1501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1546,6 +1569,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1604,6 +1628,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1657,6 +1682,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1717,6 +1743,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1782,6 +1809,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1843,6 +1871,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? ChargingStation.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );

@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
     /// Unit tests for a CSMS sending messages to charging stations.
     /// </summary>
     [TestFixture]
-    public class CSMSMessagesTests : AChargingStationTests
+    public class CSMS_Messages_Tests : AChargingStationTests
     {
 
         #region Reset_ChargingStation_Test()
@@ -70,16 +70,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetType  = ResetType.Immediate;
                 var response   = await testCSMS01.Reset(
-                                     ChargingStationId:   chargingStation1.Id,
-                                     ResetType:           resetType,
-                                     CustomData:          null
+                                     NetworkingNodeId:   chargingStation1.Id,
+                                     ResetType:          resetType,
+                                     CustomData:         null
                                  );
 
-                Assert.AreEqual(ResultCode.OK,         response.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,          response.Result.ResultCode);
                 Assert.AreEqual(ResetStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                      resetRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,    resetRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,    resetRequests.First().NetworkingNodeId);
                 Assert.AreEqual(resetType,              resetRequests.First().ResetType);
 
             }
@@ -119,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetType  = ResetType.Immediate;
                 var response   = await testCSMS01.Reset(
-                                     ChargingStationId:   chargingStation3.Id,
+                                     NetworkingNodeId:    chargingStation3.Id,
                                      ResetType:           resetType,
                                      CustomData:          null
                                  );
@@ -167,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetType  = ResetType.Immediate;
                 var response   = await testCSMS01.Reset(
-                                     ChargingStationId:   chargingStation1.Id,
+                                     NetworkingNodeId:    chargingStation1.Id,
                                      ResetType:           resetType,
                                      EVSEId:              EVSE_Id.Parse(1),
                                      CustomData:          null
@@ -177,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResetStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                      resetRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,    resetRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,    resetRequests.First().NetworkingNodeId);
                 Assert.AreEqual(resetType,              resetRequests.First().ResetType);
                 Assert.IsTrue  (                        resetRequests.First().EVSEId.HasValue);
                 Assert.AreEqual(EVSE_Id.Parse(1),       resetRequests.First().EVSEId!.Value);
@@ -219,7 +219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var resetType  = ResetType.Immediate;
                 var response   = await testCSMS01.Reset(
-                                     ChargingStationId:   chargingStation1.Id,
+                                     NetworkingNodeId:    chargingStation1.Id,
                                      ResetType:           resetType,
                                      EVSEId:              EVSE_Id.Parse(5),
                                      CustomData:          null
@@ -229,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResetStatus.Rejected,   response.Status);
 
                 Assert.AreEqual(1,                      resetRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,    resetRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,    resetRequests.First().NetworkingNodeId);
                 Assert.AreEqual(resetType,              resetRequests.First().ResetType);
                 Assert.IsTrue  (                        resetRequests.First().EVSEId.HasValue);
                 Assert.AreEqual(EVSE_Id.Parse(5),       resetRequests.First().EVSEId!.Value);
@@ -271,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.UpdateFirmware(
-                                   ChargingStationId:         chargingStation1.Id,
+                                   NetworkingNodeId:          chargingStation1.Id,
                                    Firmware:                  new Firmware(
                                                                   FirmwareURL:          URL.Parse("https://example.org/fw0001.bin"),
                                                                   RetrieveTimestamp:    Timestamp.Now,
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     updateFirmwareRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   updateFirmwareRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   updateFirmwareRequests.First().NetworkingNodeId);
 
             }
 
@@ -327,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.PublishFirmware(
-                                   ChargingStationId:          chargingStation1.Id,
+                                   NetworkingNodeId:           chargingStation1.Id,
                                    PublishFirmwareRequestId:   1,
                                    DownloadLocation:           URL.Parse("https://example.org/fw0001.bin"),
                                    MD5Checksum:                "0x1234",
@@ -339,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     publishFirmwareRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   publishFirmwareRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   publishFirmwareRequests.First().NetworkingNodeId);
 
             }
 
@@ -377,7 +377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.UnpublishFirmware(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    MD5Checksum:         "0x1234",
                                    CustomData:          null
                                );
@@ -385,7 +385,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     unpublishFirmwareRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   unpublishFirmwareRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   unpublishFirmwareRequests.First().NetworkingNodeId);
 
             }
 
@@ -423,7 +423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.GetBaseReport(
-                                   ChargingStationId:        chargingStation1.Id,
+                                   NetworkingNodeId:         chargingStation1.Id,
                                    GetBaseReportRequestId:   1,
                                    ReportBase:               ReportBase.FullInventory,
                                    CustomData:               null
@@ -432,7 +432,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     getBaseReportRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   getBaseReportRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   getBaseReportRequests.First().NetworkingNodeId);
 
             }
 
@@ -470,7 +470,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.GetReport(
-                                   ChargingStationId:    chargingStation1.Id,
+                                   NetworkingNodeId:     chargingStation1.Id,
                                    GetReportRequestId:   1,
                                    ComponentCriteria:    new[] {
                                                              ComponentCriteria.Available
@@ -501,7 +501,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     getReportRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   getReportRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   getReportRequests.First().NetworkingNodeId);
 
             }
 
@@ -539,7 +539,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.GetLog(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    LogType:             LogType.DiagnosticsLog,
                                    LogRequestId:        1,
                                    Log:                 new LogParameters(
@@ -554,7 +554,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().NetworkingNodeId);
 
             }
 
@@ -592,7 +592,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.SetVariables(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    VariableData:        new[] {
                                                             new SetVariableData(
                                                                 AttributeValue:   "123",
@@ -621,7 +621,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().NetworkingNodeId);
 
             }
 
@@ -659,7 +659,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.GetVariables(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    VariableData:        new[] {
                                                             new GetVariableData(
                                                                 Component:       new Component(
@@ -687,7 +687,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().NetworkingNodeId);
 
             }
 
@@ -725,7 +725,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.SetMonitoringBase(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    MonitoringBase:      MonitoringBase.All,
                                    CustomData:          null
                                );
@@ -733,7 +733,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().NetworkingNodeId);
 
             }
 
@@ -771,7 +771,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.GetMonitoringReport(
-                                   ChargingStationId:              chargingStation1.Id,
+                                   NetworkingNodeId:               chargingStation1.Id,
                                    GetMonitoringReportRequestId:   1,
                                    MonitoringCriteria:             new[] {
                                                                        MonitoringCriterion.PeriodicMonitoring
@@ -801,7 +801,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().NetworkingNodeId);
 
             }
 
@@ -839,7 +839,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.SetMonitoringLevel(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    Severity:            Severities.Informational,
                                    CustomData:          null
                                );
@@ -847,7 +847,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().NetworkingNodeId);
 
             }
 
@@ -885,7 +885,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.SetVariableMonitoring(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    MonitoringData:      new[] {
                                                             new SetMonitoringData(
                                                                 Value:                  23.2M,
@@ -917,7 +917,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().NetworkingNodeId);
 
             }
 
@@ -955,7 +955,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.ClearVariableMonitoring(
-                                   ChargingStationId:       chargingStation1.Id,
+                                   NetworkingNodeId:        chargingStation1.Id,
                                    VariableMonitoringIds:   new[] {
                                                                 VariableMonitoring_Id.NewRandom
                                                             },
@@ -965,7 +965,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     getLogRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   getLogRequests.First().NetworkingNodeId);
 
             }
 
@@ -1003,7 +1003,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.SetNetworkProfile(
-                                   ChargingStationId:          chargingStation1.Id,
+                                   NetworkingNodeId:           chargingStation1.Id,
                                    ConfigurationSlot:          1,
                                    NetworkConnectionProfile:   new NetworkConnectionProfile(
                                                                    Version:             OCPPVersion.OCPP201,
@@ -1040,7 +1040,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(SetNetworkProfileStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                  setNetworkProfileRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                setNetworkProfileRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                setNetworkProfileRequests.First().NetworkingNodeId);
 
             }
 
@@ -1096,7 +1096,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var operationalStatus  = OperationalStatus.Operative;
 
                 var response           = await testCSMS01.ChangeAvailability(
-                                             ChargingStationId:   chargingStation1.Id,
+                                             NetworkingNodeId:    chargingStation1.Id,
                                              OperationalStatus:   operationalStatus,
                                              EVSE:                new EVSE(
                                                                       Id:            evseId,
@@ -1110,7 +1110,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ChangeAvailabilityStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                   changeAvailabilityRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                 changeAvailabilityRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                 changeAvailabilityRequests.First().NetworkingNodeId);
                 Assert.AreEqual(evseId,                              changeAvailabilityRequests.First().EVSE?.Id);
                 Assert.AreEqual(connectorId,                         changeAvailabilityRequests.First().EVSE?.ConnectorId);
                 Assert.AreEqual(operationalStatus,                   changeAvailabilityRequests.First().OperationalStatus);
@@ -1164,7 +1164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var messageTrigger  = MessageTrigger.StatusNotification;
 
                 var response        = await testCSMS01.TriggerMessage(
-                                          ChargingStationId:  chargingStation1.Id,
+                                          NetworkingNodeId:   chargingStation1.Id,
                                           RequestedMessage:   messageTrigger,
                                           EVSE:               new EVSE(
                                                                   evseId
@@ -1176,7 +1176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(TriggerMessageStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                               triggerMessageRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,             triggerMessageRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,             triggerMessageRequests.First().NetworkingNodeId);
 
             }
 
@@ -1219,7 +1219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var data       = RandomExtensions.RandomString(40);
 
                 var response   = await testCSMS01.TransferData(
-                                     ChargingStationId:   chargingStation1.Id,
+                                     NetworkingNodeId:    chargingStation1.Id,
                                      VendorId:            vendorId,
                                      MessageId:           messageId,
                                      Data:                data,
@@ -1231,7 +1231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(data.Reverse(),        response.Data?.ToString());
 
                 Assert.AreEqual(1,                     dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   dataTransferRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   dataTransferRequests.First().NetworkingNodeId);
                 Assert.AreEqual(vendorId,              dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,             dataTransferRequests.First().MessageId);
                 Assert.AreEqual(data,                  dataTransferRequests.First().Data?.ToString());
@@ -1281,7 +1281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                  );
 
                 var response   = await testCSMS01.TransferData(
-                                     ChargingStationId:   chargingStation1.Id,
+                                     NetworkingNodeId:    chargingStation1.Id,
                                      VendorId:            vendorId,
                                      MessageId:           messageId,
                                      Data:                data,
@@ -1294,7 +1294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(data["key"]?.Value<String>(),   response.Data?["key"]?.Value<String>()?.Reverse());
 
                 Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,            dataTransferRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,            dataTransferRequests.First().NetworkingNodeId);
                 Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
                 Assert.AreEqual(JTokenType.Object,              dataTransferRequests.First().Data?.Type);
@@ -1342,7 +1342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                  );
 
                 var response   = await testCSMS01.TransferData(
-                                     ChargingStationId:   chargingStation1.Id,
+                                     NetworkingNodeId:    chargingStation1.Id,
                                      VendorId:            vendorId,
                                      MessageId:           messageId,
                                      Data:                data,
@@ -1355,7 +1355,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(data[0]?.Value<String>(),       response.Data?[0]?.Value<String>()?.Reverse());
 
                 Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,            dataTransferRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,            dataTransferRequests.First().NetworkingNodeId);
                 Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
                 Assert.AreEqual(JTokenType.Array,               dataTransferRequests.First().Data?.Type);
@@ -1400,7 +1400,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var messageId  = Message_Id.Parse("hello");
                 var data       = "world!";
                 var response   = await testCSMS01.TransferData(
-                                     ChargingStationId:   chargingStation1.Id,
+                                     NetworkingNodeId:    chargingStation1.Id,
                                      VendorId:            vendorId,
                                      MessageId:           messageId,
                                      Data:                data,
@@ -1411,7 +1411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(DataTransferStatus.Rejected,    response.Status);
 
                 Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,            dataTransferRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,            dataTransferRequests.First().NetworkingNodeId);
                 Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
                 Assert.AreEqual(data,                           dataTransferRequests.First().Data?.ToString());
@@ -1454,7 +1454,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 var response = await testCSMS01.SendSignedCertificate(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    CertificateChain:    new CertificateChain(
                                                             Certificates:   new[] {
                                                                                 Certificate.Parse(
@@ -1504,7 +1504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(CertificateSignedStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                  certificateSignedRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                certificateSignedRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                certificateSignedRequests.First().NetworkingNodeId);
 
             }
 
@@ -1543,7 +1543,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 var response = await testCSMS01.InstallCertificate(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    CertificateType:     InstallCertificateUse.V2GRootCertificate,
                                    Certificate:         Certificate.Parse(
                                                             String.Concat(
@@ -1589,7 +1589,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(CertificateStatus.Accepted,     response.Status);
 
                 Assert.AreEqual(1,                              installCertificateRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,            installCertificateRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,            installCertificateRequests.First().NetworkingNodeId);
 
             }
 
@@ -1627,7 +1627,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response1 = await testCSMS01.InstallCertificate(
-                                    ChargingStationId:   chargingStation1.Id,
+                                    NetworkingNodeId:    chargingStation1.Id,
                                     CertificateType:     InstallCertificateUse.V2GRootCertificate,
                                     Certificate:         Certificate.Parse(
                                                              String.Concat(
@@ -1673,7 +1673,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(CertificateStatus.Accepted,     response1.Status);
 
                 Assert.AreEqual(1,                              installCertificateRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,            installCertificateRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,            installCertificateRequests.First().NetworkingNodeId);
 
 
                 await Task.Delay(500);
@@ -1687,7 +1687,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response2  = await testCSMS01.GetInstalledCertificateIds(
-                                           ChargingStationId:  chargingStation1.Id,
+                                           NetworkingNodeId:   chargingStation1.Id,
                                            CertificateTypes:   new[] {
                                                                    GetCertificateIdUse.V2GRootCertificate
                                                                },
@@ -1699,7 +1699,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(GetInstalledCertificateStatus.Accepted,   response2.Status);
 
                 Assert.AreEqual(1,                                        getInstalledCertificateIdsRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                      getInstalledCertificateIdsRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                      getInstalledCertificateIdsRequests.First().NetworkingNodeId);
 
             }
 
@@ -1739,7 +1739,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response1 = await testCSMS01.InstallCertificate(
-                                    ChargingStationId:   chargingStation1.Id,
+                                    NetworkingNodeId:    chargingStation1.Id,
                                     CertificateType:     InstallCertificateUse.V2GRootCertificate,
                                     Certificate:         Certificate.Parse(
                                                              String.Concat(
@@ -1785,7 +1785,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(CertificateStatus.Accepted,     response1.Status);
 
                 Assert.AreEqual(1,                              installCertificateRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,            installCertificateRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,            installCertificateRequests.First().NetworkingNodeId);
 
 
                 await Task.Delay(500);
@@ -1802,7 +1802,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response2 = await testCSMS01.GetInstalledCertificateIds(
-                                    ChargingStationId:   chargingStation1.Id,
+                                    NetworkingNodeId:    chargingStation1.Id,
                                     CertificateTypes:    new[] {
                                                              GetCertificateIdUse.V2GRootCertificate
                                                          },
@@ -1815,7 +1815,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(1,                                        response2.CertificateHashDataChain.Count());
 
                 Assert.AreEqual(1,                                        getInstalledCertificateIdsRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                      getInstalledCertificateIdsRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                      getInstalledCertificateIdsRequests.First().NetworkingNodeId);
 
 
                 await Task.Delay(500);
@@ -1832,7 +1832,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response3 = await testCSMS01.DeleteCertificate(
-                                    ChargingStationId:     chargingStation1.Id,
+                                    NetworkingNodeId:      chargingStation1.Id,
                                     CertificateHashData:   response2.CertificateHashDataChain.First(),
                                     CustomData:            null
                                 );
@@ -1842,14 +1842,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(DeleteCertificateStatus.Accepted,   response3.Status);
 
                 Assert.AreEqual(1,                                  deleteCertificateRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                deleteCertificateRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                deleteCertificateRequests.First().NetworkingNodeId);
 
 
                 // Verification
                 getInstalledCertificateIdsRequests.Clear();
 
                 var response4  = await testCSMS01.GetInstalledCertificateIds(
-                                           ChargingStationId:   chargingStation1.Id,
+                                           NetworkingNodeId:    chargingStation1.Id,
                                            CertificateTypes:    new[] {
                                                                     GetCertificateIdUse.V2GRootCertificate
                                                                 },
@@ -1862,7 +1862,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(0,                                        response4.CertificateHashDataChain.Count());
 
                 Assert.AreEqual(1,                                        getInstalledCertificateIdsRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                      getInstalledCertificateIdsRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                      getInstalledCertificateIdsRequests.First().NetworkingNodeId);
 
 
                 await Task.Delay(500);
@@ -1906,7 +1906,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.NotifyCRLAvailability(
-                                   ChargingStationId:    chargingStation1.Id,
+                                   NetworkingNodeId:     chargingStation1.Id,
                                    NotifyCRLRequestId:   1,
                                    Availability:         NotifyCRLStatus.Available,
                                    Location:             URL.Parse("https://localhost/clr.json"),
@@ -1917,7 +1917,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     notifyCRLRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   notifyCRLRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   notifyCRLRequests.First().NetworkingNodeId);
 
             }
 
@@ -1957,7 +1957,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 var response = await testCSMS01.GetLocalListVersion(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    CustomData:          null
                                );
 
@@ -1965,7 +1965,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     getLocalListVersionRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   getLocalListVersionRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   getLocalListVersionRequests.First().NetworkingNodeId);
 
             }
 
@@ -2004,7 +2004,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 var response  = await testCSMS01.SendLocalList(
-                                    ChargingStationId:        chargingStation1.Id,
+                                    NetworkingNodeId:         chargingStation1.Id,
                                     ListVersion:              1,
                                     UpdateType:               UpdateTypes.Full,
                                     LocalAuthorizationList:   new[] {
@@ -2060,7 +2060,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     sendLocalListRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   sendLocalListRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   sendLocalListRequests.First().NetworkingNodeId);
 
             }
 
@@ -2099,7 +2099,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 var response = await testCSMS01.ClearCache(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    CustomData:          null
                                );
 
@@ -2107,7 +2107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     clearCacheRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   clearCacheRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   clearCacheRequests.First().NetworkingNodeId);
 
             }
 
@@ -2151,7 +2151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var connectorType   = ConnectorType.sType2;
 
                 var response        = await testCSMS01.ReserveNow(
-                                          ChargingStationId:   chargingStation1.Id,
+                                          NetworkingNodeId:    chargingStation1.Id,
                                           ReservationId:       reservationId,
                                           ExpiryDate:          Timestamp.Now + TimeSpan.FromHours(2),
                                           IdToken:             new IdToken(
@@ -2188,7 +2188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ReservationStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                            reserveNowRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,          reserveNowRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,          reserveNowRequests.First().NetworkingNodeId);
 
             }
 
@@ -2227,7 +2227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var reservationId  = Reservation_Id.NewRandom;
                 var response       = await testCSMS01.CancelReservation(
-                                         ChargingStationId:   chargingStation1.Id,
+                                         NetworkingNodeId:    chargingStation1.Id,
                                          ReservationId:       reservationId,
                                          CustomData:          null
                                      );
@@ -2237,7 +2237,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(CancelReservationStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                  cancelReservationRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                cancelReservationRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                cancelReservationRequests.First().NetworkingNodeId);
 
 
             }
@@ -2282,7 +2282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var startResponse = await testCSMS01.StartCharging(
-                                        ChargingStationId:                  chargingStation1.Id,
+                                        NetworkingNodeId:                   chargingStation1.Id,
                                         RequestStartTransactionRequestId:   RemoteStart_Id.NewRandom,
                                         IdToken:                            new IdToken(
                                                                                 Value:             "aabbccdd",
@@ -2306,7 +2306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.IsTrue  (startResponse.TransactionId.HasValue);
 
                 Assert.AreEqual(1,                     requestStartTransactionRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   requestStartTransactionRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   requestStartTransactionRequests.First().NetworkingNodeId);
 
                 await Task.Delay(500);
 
@@ -2315,7 +2315,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 {
 
                     var stopResponse = await testCSMS01.StopCharging(
-                                           ChargingStationId:   chargingStation1.Id,
+                                           NetworkingNodeId:    chargingStation1.Id,
                                            TransactionId:       startResponse.TransactionId.Value,
                                            CustomData:          null
                                        );
@@ -2325,7 +2325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     //Assert.AreEqual(UnlockStatus.Unlocked,   response1.Status);
 
                     Assert.AreEqual(1,                       requestStopTransactionRequests.Count);
-                    Assert.AreEqual(chargingStation1.Id,     requestStopTransactionRequests.First().ChargingStationId);
+                    Assert.AreEqual(chargingStation1.Id,     requestStopTransactionRequests.First().NetworkingNodeId);
 
                 }
 
@@ -2365,7 +2365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.GetTransactionStatus(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    TransactionId:       null,
                                    CustomData:          null
                                );
@@ -2375,7 +2375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 //Assert.AreEqual(UnlockStatus.Unlocked,   response1.Status);
 
                 Assert.AreEqual(1,                       unlockConnectorRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,     unlockConnectorRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,     unlockConnectorRequests.First().NetworkingNodeId);
 
             }
 
@@ -2413,7 +2413,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.SetChargingProfile(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    EVSEId:              chargingStation1.EVSEs.First().Id,
                                    ChargingProfile:     new ChargingProfile(
                                                             ChargingProfileId:        ChargingProfile_Id.NewRandom,
@@ -2483,7 +2483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ChargingProfileStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                setChargingProfileRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,              setChargingProfileRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,              setChargingProfileRequests.First().NetworkingNodeId);
 
             }
 
@@ -2521,7 +2521,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.GetChargingProfiles(
-                                   ChargingStationId:              chargingStation1.Id,
+                                   NetworkingNodeId:               chargingStation1.Id,
                                    GetChargingProfilesRequestId:   1,
                                    ChargingProfile:                new ChargingProfileCriterion(
                                                                        ChargingProfilePurpose:   ChargingProfilePurpose.TxDefaultProfile,
@@ -2543,7 +2543,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(GetChargingProfileStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                   getChargingProfilesRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                 getChargingProfilesRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                 getChargingProfilesRequests.First().NetworkingNodeId);
 
             }
 
@@ -2581,7 +2581,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.ClearChargingProfile(
-                                   ChargingStationId:         chargingStation1.Id,
+                                   NetworkingNodeId:          chargingStation1.Id,
                                    ChargingProfileId:         ChargingProfile_Id.Parse(123),
                                    ChargingProfileCriteria:   new ClearChargingProfile(
                                                                   EVSEId:                   EVSE_Id.Parse(1),
@@ -2597,7 +2597,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ClearChargingProfileStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                     getChargingProfilesRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                   getChargingProfilesRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                   getChargingProfilesRequests.First().NetworkingNodeId);
 
             }
 
@@ -2635,7 +2635,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.GetCompositeSchedule(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    Duration:            TimeSpan.FromSeconds(1),
                                    EVSEId:              EVSE_Id.Parse(1),
                                    ChargingRateUnit:    ChargingRateUnits.Watts,
@@ -2647,7 +2647,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(GenericStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                        getCompositeScheduleRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,      getCompositeScheduleRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,      getCompositeScheduleRequests.First().NetworkingNodeId);
 
             }
 
@@ -2686,7 +2686,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 var response = await testCSMS01.UpdateDynamicSchedule(
 
-                                   ChargingStationId:     chargingStation1.Id,
+                                   NetworkingNodeId:      chargingStation1.Id,
 
                                    ChargingProfileId:     ChargingProfile_Id.Parse(1),
 
@@ -2715,7 +2715,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ChargingProfileStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                updateDynamicScheduleRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,              updateDynamicScheduleRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,              updateDynamicScheduleRequests.First().NetworkingNodeId);
 
             }
 
@@ -2753,7 +2753,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.NotifyAllowedEnergyTransfer(
-                                   ChargingStationId:            chargingStation1.Id,
+                                   NetworkingNodeId:             chargingStation1.Id,
                                    AllowedEnergyTransferModes:   new[] {
                                                                      EnergyTransferMode.AC_SinglePhase,
                                                                      EnergyTransferMode.AC_ThreePhases
@@ -2766,7 +2766,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(NotifyAllowedEnergyTransferStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                                            unlockConnectorRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                          unlockConnectorRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                          unlockConnectorRequests.First().NetworkingNodeId);
 
             }
 
@@ -2804,7 +2804,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.UsePriorityCharging(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    TransactionId:       Transaction_Id.Parse("1234"),
                                    Activate:            true,
                                    CustomData:          null
@@ -2815,7 +2815,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(GenericStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                        usePriorityChargingRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,      usePriorityChargingRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,      usePriorityChargingRequests.First().NetworkingNodeId);
 
             }
 
@@ -2853,7 +2853,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.UnlockConnector(
-                                   ChargingStationId:   chargingStation1.Id,
+                                   NetworkingNodeId:    chargingStation1.Id,
                                    EVSEId:              chargingStation1.EVSEs.First().Id,
                                    ConnectorId:         chargingStation1.EVSEs.First().Connectors.First().Id,
                                    CustomData:          null
@@ -2864,7 +2864,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(UnlockStatus.Unlocked,   response.Status);
 
                 Assert.AreEqual(1,                       unlockConnectorRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,     unlockConnectorRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,     unlockConnectorRequests.First().NetworkingNodeId);
 
             }
 
@@ -2903,7 +2903,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var response = await testCSMS01.SendAFRRSignal(
-                                   ChargingStationId:     chargingStation1.Id,
+                                   NetworkingNodeId:      chargingStation1.Id,
                                    ActivationTimestamp:   Timestamp.Now,
                                    Signal:                AFRR_Signal.Parse(-1),
                                    CustomData:            null
@@ -2914,7 +2914,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(GenericStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                        afrrSignalRequestRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,      afrrSignalRequestRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,      afrrSignalRequestRequests.First().NetworkingNodeId);
 
             }
 
@@ -2955,7 +2955,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var message   = RandomExtensions.RandomString(10);
 
                 var response  = await testCSMS01.SetDisplayMessage(
-                                    ChargingStationId:   chargingStation1.Id,
+                                    NetworkingNodeId:    chargingStation1.Id,
                                     Message:             new MessageInfo(
                                                              Id:               DisplayMessage_Id.NewRandom,
                                                              Priority:         MessagePriority.AlwaysFront,
@@ -2979,7 +2979,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 //Assert.AreEqual(data.Reverse(),        response1.Data?.ToString());
 
                 Assert.AreEqual(1,                     setDisplayMessageRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   setDisplayMessageRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   setDisplayMessageRequests.First().NetworkingNodeId);
                 //Assert.AreEqual(vendorId,               dataTransferRequests.First().VendorId);
                 //Assert.AreEqual(messageId,              dataTransferRequests.First().MessageId);
                 //Assert.AreEqual(data,                   dataTransferRequests.First().Data?.ToString());
@@ -3051,7 +3051,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                     var setMessage   = RandomExtensions.RandomString(10);
 
                     var setResponse  = await testCSMS01.SetDisplayMessage(
-                                           ChargingStationId:   chargingStation1.Id,
+                                           NetworkingNodeId:    chargingStation1.Id,
                                            Message:       new MessageInfo(
                                                               Id:               messageIds[i-1],
                                                               Priority:         i > 7 ? MessagePriority.AlwaysFront : MessagePriority.NormalCycle,
@@ -3104,7 +3104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 var getResponse1  = await testCSMS01.GetDisplayMessages(
-                                              ChargingStationId:             chargingStation1.Id,
+                                              NetworkingNodeId:              chargingStation1.Id,
                                               GetDisplayMessagesRequestId:   1,
                                               Ids:                           null,
                                               Priority:                      null,
@@ -3130,7 +3130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 var getResponse2  = await testCSMS01.GetDisplayMessages(
-                                              ChargingStationId:             chargingStation1.Id,
+                                              NetworkingNodeId:              chargingStation1.Id,
                                               GetDisplayMessagesRequestId:   2,
                                               Ids:                           new[] {
                                                                                  messageIds[0],
@@ -3149,7 +3149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 var getResponse3  = await testCSMS01.GetDisplayMessages(
-                                              ChargingStationId:             chargingStation1.Id,
+                                              NetworkingNodeId:              chargingStation1.Id,
                                               GetDisplayMessagesRequestId:   3,
                                               Ids:                           null,
                                               Priority:                      null,
@@ -3164,7 +3164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 var getResponse4  = await testCSMS01.GetDisplayMessages(
-                                              ChargingStationId:             chargingStation1.Id,
+                                              NetworkingNodeId:              chargingStation1.Id,
                                               GetDisplayMessagesRequestId:   4,
                                               Ids:                           null,
                                               Priority:                      MessagePriority.AlwaysFront,
@@ -3238,7 +3238,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var message1      = RandomExtensions.RandomString(10);
 
                 var setResponse1  = await testCSMS01.SetDisplayMessage(
-                                        ChargingStationId:   chargingStation1.Id,
+                                        NetworkingNodeId:    chargingStation1.Id,
                                         Message:             new MessageInfo(
                                                                  Id:               messageId1,
                                                                  Priority:         MessagePriority.AlwaysFront,
@@ -3265,7 +3265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var message2      = RandomExtensions.RandomString(10);
 
                 var setResponse2  = await testCSMS01.SetDisplayMessage(
-                                        ChargingStationId:   chargingStation1.Id,
+                                        NetworkingNodeId:    chargingStation1.Id,
                                         Message:             new MessageInfo(
                                                                  Id:               messageId2,
                                                                  Priority:         MessagePriority.AlwaysFront,
@@ -3306,7 +3306,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 var getResponse1  = await testCSMS01.GetDisplayMessages(
-                                        ChargingStationId:             chargingStation1.Id,
+                                        NetworkingNodeId:              chargingStation1.Id,
                                         GetDisplayMessagesRequestId:   1,
                                         Ids:                           null,
                                         Priority:                      null,
@@ -3330,7 +3330,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 };
 
                 var clearResponse  = await testCSMS01.ClearDisplayMessage(
-                                         ChargingStationId:   chargingStation1.Id,
+                                         NetworkingNodeId:    chargingStation1.Id,
                                          DisplayMessageId:    messageId1,
                                          CustomData:          null
                                      );
@@ -3344,7 +3344,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
                 // Get Messages AFTER
                 var getResponse2  = await testCSMS01.GetDisplayMessages(
-                                        ChargingStationId:             chargingStation1.Id,
+                                        NetworkingNodeId:              chargingStation1.Id,
                                         GetDisplayMessagesRequestId:   2,
                                         Ids:                           null,
                                         Priority:                      null,
@@ -3412,7 +3412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var message   = RandomExtensions.RandomString(10);
 
                 var response  = await testCSMS01.SendCostUpdated(
-                                    ChargingStationId:   chargingStation1.Id,
+                                    NetworkingNodeId:    chargingStation1.Id,
                                     TotalCost:           1.02M,
                                     TransactionId:       Transaction_Id.NewRandom,
                                     CustomData:          null
@@ -3423,7 +3423,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 //Assert.AreEqual(data.Reverse(),        response.Data?.ToString());
 
                 Assert.AreEqual(1,                     costUpdatedRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   costUpdatedRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   costUpdatedRequests.First().NetworkingNodeId);
                 //Assert.AreEqual(vendorId,              dataTransferRequests.First().VendorId);
                 //Assert.AreEqual(messageId,             dataTransferRequests.First().MessageId);
                 //Assert.AreEqual(data,                  dataTransferRequests.First().Data?.ToString());
@@ -3471,7 +3471,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 var response = await testCSMS01.RequestCustomerInformation(
-                                         ChargingStationId:              chargingStation1.Id,
+                                         NetworkingNodeId:               chargingStation1.Id,
                                          CustomerInformationRequestId:   1,
                                          Report:                         true,
                                          Clear:                          false,
@@ -3502,14 +3502,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     customerInformationRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   customerInformationRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   customerInformationRequests.First().NetworkingNodeId);
 
 
                 await Task.Delay(500);
 
 
                 Assert.AreEqual(1,                     notifyCustomerInformationRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   notifyCustomerInformationRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   notifyCustomerInformationRequests.First().NetworkingNodeId);
 
             }
 

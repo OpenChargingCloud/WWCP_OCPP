@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new install certificate request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="CertificateType">The type of the certificate.</param>
         /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
         /// 
@@ -81,8 +81,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public InstallCertificateRequest(ChargingStation_Id       ChargingStationId,
+        public InstallCertificateRequest(NetworkingNode_Id        NetworkingNodeId,
                                          InstallCertificateUse    CertificateType,
                                          Certificate              Certificate,
 
@@ -96,11 +97,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          DateTime?                RequestTimestamp    = null,
                                          TimeSpan?                RequestTimeout      = null,
                                          EventTracking_Id?        EventTrackingId     = null,
+                                         NetworkPath?             NetworkPath         = null,
                                          CancellationToken        CancellationToken   = default)
 
 
-            : base(ChargingStationId,
-                   "InstallCertificate",
+            : base(NetworkingNodeId,
+                   nameof(InstallCertificateRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -112,6 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -119,14 +122,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.CertificateType  = CertificateType;
             this.Certificate      = Certificate;
 
-
             unchecked
             {
-
                 hashCode = this.CertificateType.GetHashCode() * 5 ^
                            this.Certificate.    GetHashCode() * 3 ^
                            base.                GetHashCode();
-
             }
 
         }
@@ -191,24 +191,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomInstallCertificateRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomInstallCertificateRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an install certificate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomInstallCertificateRequestParser">A delegate to parse custom install certificate requests.</param>
         public static InstallCertificateRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      ChargingStation_Id                                       ChargingStationId,
+                                                      NetworkingNode_Id                                        NetworkingNodeId,
+                                                      NetworkPath                                              NetworkPath,
                                                       CustomJObjectParserDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var installCertificateRequest,
                          out var errorResponse,
                          CustomInstallCertificateRequestParser) &&
@@ -224,7 +227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out InstallCertificateRequest, out ErrorResponse, CustomInstallCertificateRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out InstallCertificateRequest, out ErrorResponse, CustomInstallCertificateRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -233,18 +236,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="InstallCertificateRequestJSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="InstallCertificateRequest">The parsed install certificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                         InstallCertificateRequestJSON,
                                        Request_Id                      RequestId,
-                                       ChargingStation_Id              ChargingStationId,
+                                       NetworkingNode_Id               NetworkingNodeId,
+                                       NetworkPath                     NetworkPath,
                                        out InstallCertificateRequest?  InstallCertificateRequest,
                                        out String?                     ErrorResponse)
 
             => TryParse(InstallCertificateRequestJSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out InstallCertificateRequest,
                         out ErrorResponse,
                         null);
@@ -261,7 +267,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomInstallCertificateRequestParser">A delegate to parse custom install certificate requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       ChargingStation_Id                                       ChargingStationId,
+                                       NetworkingNode_Id                                        NetworkingNodeId,
+                                       NetworkPath                                              NetworkPath,
                                        out InstallCertificateRequest?                           InstallCertificateRequest,
                                        out String?                                              ErrorResponse,
                                        CustomJObjectParserDelegate<InstallCertificateRequest>?  CustomInstallCertificateRequestParser)
@@ -335,35 +342,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 InstallCertificateRequest = new InstallCertificateRequest(
-                                                ChargingStationId,
+
+                                                NetworkingNodeId,
                                                 CertificateType,
                                                 Certificate,
+
                                                 null,
                                                 null,
                                                 Signatures,
+
                                                 CustomData,
-                                                RequestId
+
+                                                RequestId,
+                                                null,
+                                                null,
+                                                null,
+                                                NetworkPath
+
                                             );
 
                 if (CustomInstallCertificateRequestParser is not null)

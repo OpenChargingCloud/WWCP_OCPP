@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
     /// Unit tests for charging stations sending messages to the CSMS.
     /// </summary>
     [TestFixture]
-    public class MessagesTests : AChargingStationTests
+    public class CS_Messages_Tests : AChargingStationTests
     {
 
         #region Init_Test()
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual (RegistrationStatus.Accepted,            response.Status);
 
                 Assert.AreEqual (1,                                      bootNotificationRequests.Count);
-                Assert.AreEqual (chargingStation1.Id,                    bootNotificationRequests.First().ChargingStationId);
+                Assert.AreEqual (chargingStation1.Id,                    bootNotificationRequests.First().NetworkingNodeId);
                 Assert.AreEqual (reason,                                 bootNotificationRequests.First().Reason);
 
                 var chargingStation = bootNotificationRequests.First().ChargingStation;
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     firmwareStatusNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   firmwareStatusNotificationRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   firmwareStatusNotificationRequests.First().NetworkingNodeId);
                 Assert.AreEqual(status,                firmwareStatusNotificationRequests.First().Status);
 
             }
@@ -233,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,                 response.Result.ResultCode);
 
                 Assert.AreEqual(1,                              publishFirmwareStatusNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   publishFirmwareStatusNotificationRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   publishFirmwareStatusNotificationRequests.First().NetworkingNodeId);
                 Assert.AreEqual(status,                         publishFirmwareStatusNotificationRequests.First().Status);
 
             }
@@ -281,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.IsTrue  (Timestamp.Now - response.CurrentTime < TimeSpan.FromSeconds(10));
 
                 Assert.AreEqual(1,                     heartbeatRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   heartbeatRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   heartbeatRequests.First().NetworkingNodeId);
 
             }
 
@@ -360,7 +360,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     notifyEventRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   notifyEventRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   notifyEventRequests.First().NetworkingNodeId);
 
             }
 
@@ -408,7 +408,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     securityEventNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   securityEventNotificationRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   securityEventNotificationRequests.First().NetworkingNodeId);
 
             }
 
@@ -498,7 +498,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     notifyReportRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   notifyReportRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   notifyReportRequests.First().NetworkingNodeId);
 
             }
 
@@ -577,7 +577,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     notifyMonitoringReportRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   notifyMonitoringReportRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   notifyMonitoringReportRequests.First().NetworkingNodeId);
 
             }
 
@@ -624,7 +624,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     securityEventNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   securityEventNotificationRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   securityEventNotificationRequests.First().NetworkingNodeId);
 
             }
 
@@ -678,7 +678,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(data.Reverse(),        response.Data?.ToString());
 
                 Assert.AreEqual(1,                     dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   dataTransferRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   dataTransferRequests.First().NetworkingNodeId);
                 Assert.AreEqual(vendorId,              dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,             dataTransferRequests.First().MessageId);
                 Assert.AreEqual(data,                  dataTransferRequests.First().Data?.ToString());
@@ -740,7 +740,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(data["key"]?.Value<String>(),   response.Data?["key"]?.Value<String>()?.Reverse());
 
                 Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,            dataTransferRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,            dataTransferRequests.First().NetworkingNodeId);
                 Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
                 Assert.AreEqual(JTokenType.Object,              dataTransferRequests.First().Data?.Type);
@@ -800,7 +800,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(data[0]?.Value<String>(),   response.Data?[0]?.Value<String>()?.Reverse());
 
                 Assert.AreEqual(1,                          dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,        dataTransferRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,        dataTransferRequests.First().NetworkingNodeId);
                 Assert.AreEqual(vendorId,                   dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                  dataTransferRequests.First().MessageId);
                 Assert.AreEqual(JTokenType.Array,           dataTransferRequests.First().Data?.Type);
@@ -853,7 +853,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     notifyReportRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   notifyReportRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   notifyReportRequests.First().NetworkingNodeId);
 
             }
 
@@ -901,7 +901,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     notifyReportRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   notifyReportRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   notifyReportRequests.First().NetworkingNodeId);
 
             }
 
@@ -954,7 +954,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     notifyReportRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   notifyReportRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   notifyReportRequests.First().NetworkingNodeId);
 
             }
 
@@ -1006,7 +1006,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     getCRLRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   getCRLRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   getCRLRequests.First().NetworkingNodeId);
 
             }
 
@@ -1054,7 +1054,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     securityEventNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   securityEventNotificationRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   securityEventNotificationRequests.First().NetworkingNodeId);
 
             }
 
@@ -1100,11 +1100,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                 );
 
 
-                Assert.AreEqual(ResultCode.OK,                 response.Result.ResultCode);
+                Assert.AreEqual(ResultCode.OK,                  response.Result.ResultCode);
                 Assert.AreEqual(AuthorizationStatus.Accepted,   response.IdTokenInfo.Status);
 
                 Assert.AreEqual(1,                              authorizeRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,            authorizeRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,            authorizeRequests.First().NetworkingNodeId);
                 Assert.AreEqual(idToken,                        authorizeRequests.First().IdToken);
 
             }
@@ -1175,7 +1175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     notifyEVChargingNeedsRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   notifyEVChargingNeedsRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   notifyEVChargingNeedsRequests.First().NetworkingNodeId);
 
             }
 
@@ -1284,7 +1284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 //Assert.IsTrue  (response1.TransactionId.IsNotNullOrEmpty);
 
                 Assert.AreEqual(1,                              transactionEventRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,            transactionEventRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,            transactionEventRequests.First().NetworkingNodeId);
                 //Assert.AreEqual(connectorId,                    transactionEventRequests.First().ConnectorId);
                 //Assert.AreEqual(idToken,                        transactionEventRequests.First().IdTag);
                 //Assert.AreEqual(startTimestamp.ToIso8601(),     transactionEventRequests.First().StartTimestamp.ToIso8601());
@@ -1343,7 +1343,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,                response.Result.ResultCode);
 
                 Assert.AreEqual(1,                             statusNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,           statusNotificationRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,           statusNotificationRequests.First().NetworkingNodeId);
                 Assert.AreEqual(evseId,                        statusNotificationRequests.First().EVSEId);
                 Assert.AreEqual(connectorId,                   statusNotificationRequests.First().ConnectorId);
                 Assert.AreEqual(connectorStatus,               statusNotificationRequests.First().ConnectorStatus);
@@ -1492,7 +1492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual (ResultCode.OK,                                                  response.Result.ResultCode);
 
                 Assert.AreEqual (1,                                                               meterValuesRequests.Count);
-                Assert.AreEqual (chargingStation1.Id,                                             meterValuesRequests.First().ChargingStationId);
+                Assert.AreEqual (chargingStation1.Id,                                             meterValuesRequests.First().NetworkingNodeId);
                 Assert.AreEqual (evseId,                                                          meterValuesRequests.First().EVSEId);
 
                 Assert.AreEqual (meterValues.Length,                                              meterValuesRequests.First().MeterValues.Count());
@@ -1646,7 +1646,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     notifyChargingLimitRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   notifyChargingLimitRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   notifyChargingLimitRequests.First().NetworkingNodeId);
 
             }
 
@@ -1693,7 +1693,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     transactionEventRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   transactionEventRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   transactionEventRequests.First().NetworkingNodeId);
 
             }
 
@@ -1804,7 +1804,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     transactionEventRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   transactionEventRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   transactionEventRequests.First().NetworkingNodeId);
 
             }
 
@@ -1909,7 +1909,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(GenericStatus.Accepted,   response.Status);
 
                 Assert.AreEqual(1,                        notifyEVChargingScheduleRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,      notifyEVChargingScheduleRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,      notifyEVChargingScheduleRequests.First().NetworkingNodeId);
 
             }
 
@@ -1957,7 +1957,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     notifyPriorityChargingRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   notifyPriorityChargingRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   notifyPriorityChargingRequests.First().NetworkingNodeId);
 
             }
 
@@ -2021,7 +2021,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
 
                 Assert.AreEqual(1,                     pullDynamicScheduleUpdateRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   pullDynamicScheduleUpdateRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   pullDynamicScheduleUpdateRequests.First().NetworkingNodeId);
 
             }
 
@@ -2095,7 +2095,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     notifyDisplayMessagesRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   notifyDisplayMessagesRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   notifyDisplayMessagesRequests.First().NetworkingNodeId);
 
             }
 
@@ -2145,7 +2145,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 Assert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
 
                 Assert.AreEqual(1,                     notifyCustomerInformationRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,   notifyCustomerInformationRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,   notifyCustomerInformationRequests.First().NetworkingNodeId);
 
             }
 

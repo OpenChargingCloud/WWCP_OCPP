@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
     /// Unit tests for charging stations sending messages to the CSMS.
     /// </summary>
     [TestFixture]
-    public class ConnectTests
+    public class CS_Connect_Tests
     {
 
         #region Data
@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             chargingStation1WebSocketJSONMessageResponsesReceived  = new ConcurrentList<LogDataJSONResponse>();
 
             chargingStation1 = new TestChargingStation(
-                                    Id:                       ChargingStation_Id.Parse("GD001"),
+                                    Id:                       NetworkingNode_Id.Parse("GD001"),
                                     VendorName:               "GraphDefined OEM #1",
                                     Model:                    "VCP.1",
                                     Description:              I18NString.Create(Languages.en, "Our first virtual charging station!"),
@@ -222,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             if (testBackendWebSockets01 is not null)
             {
 
-                testCSMS01.AddOrUpdateHTTPBasicAuth(ChargingStation_Id.Parse("test01"), "1234abcd");
+                testCSMS01.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("test01"), "1234abcd");
 
                 var response1 = chargingStation1.ConnectWebSocket(
                                     From:                    "From:GD001",

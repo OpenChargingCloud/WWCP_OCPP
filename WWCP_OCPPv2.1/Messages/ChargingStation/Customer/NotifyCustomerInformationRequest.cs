@@ -91,7 +91,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a notify customer information request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="NotifyCustomerInformationRequestId">The unique identification of the notify customer information request.</param>
         /// <param name="Data">The requested data or a part of the requested data. No format specified in which the data is returned.</param>
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
@@ -105,8 +105,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyCustomerInformationRequest(ChargingStation_Id       ChargingStationId,
+        public NotifyCustomerInformationRequest(NetworkingNode_Id        NetworkingNodeId,
                                                 Int64                    NotifyCustomerInformationRequestId,
                                                 String                   Data,
                                                 UInt32                   SequenceNumber,
@@ -123,10 +124,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 DateTime?                RequestTimestamp    = null,
                                                 TimeSpan?                RequestTimeout      = null,
                                                 EventTracking_Id?        EventTrackingId     = null,
+                                                NetworkPath?             NetworkPath         = null,
                                                 CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "NotifyCustomerInformation",
+            : base(NetworkingNodeId,
+                   nameof(NotifyCustomerInformationRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -138,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -147,6 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.SequenceNumber                      = SequenceNumber;
             this.GeneratedAt                         = GeneratedAt;
             this.ToBeContinued                       = ToBeContinued;
+
 
             unchecked
             {
@@ -227,24 +231,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomNotifyCustomerInformationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomNotifyCustomerInformationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a notify customer information request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomNotifyCustomerInformationRequestParser">A delegate to parse custom notify customer information requests.</param>
         public static NotifyCustomerInformationRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
-                                                             ChargingStation_Id                                              ChargingStationId,
+                                                             NetworkingNode_Id                                               NetworkingNodeId,
+                                                             NetworkPath                                                     NetworkPath,
                                                              CustomJObjectParserDelegate<NotifyCustomerInformationRequest>?  CustomNotifyCustomerInformationRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var notifyCustomerInformationRequest,
                          out var errorResponse,
                          CustomNotifyCustomerInformationRequestParser) &&
@@ -260,7 +267,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out NotifyCustomerInformationRequest, out ErrorResponse, CustomNotifyCustomerInformationRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out NotifyCustomerInformationRequest, out ErrorResponse, CustomNotifyCustomerInformationRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -269,18 +276,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyCustomerInformationRequest">The parsed notify customer information request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                JSON,
                                        Request_Id                             RequestId,
-                                       ChargingStation_Id                     ChargingStationId,
+                                       NetworkingNode_Id                      NetworkingNodeId,
+                                       NetworkPath                            NetworkPath,
                                        out NotifyCustomerInformationRequest?  NotifyCustomerInformationRequest,
                                        out String?                            ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out NotifyCustomerInformationRequest,
                         out ErrorResponse,
                         null);
@@ -291,13 +301,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyCustomerInformationRequest">The parsed notify customer information request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyCustomerInformationRequestParser">A delegate to parse custom notify customer information requests.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
-                                       ChargingStation_Id                                              ChargingStationId,
+                                       NetworkingNode_Id                                               NetworkingNodeId,
+                                       NetworkPath                                                     NetworkPath,
                                        out NotifyCustomerInformationRequest?                           NotifyCustomerInformationRequest,
                                        out String?                                                     ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyCustomerInformationRequest>?  CustomNotifyCustomerInformationRequestParser)
@@ -397,38 +409,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargingStationId                     [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 NotifyCustomerInformationRequest = new NotifyCustomerInformationRequest(
-                                                       ChargingStationId,
+
+                                                       NetworkingNodeId,
                                                        NotifyCustomerInformationRequestId,
                                                        Data,
                                                        SequenceNumber,
                                                        GeneratedAt,
                                                        ToBeContinued,
+
                                                        null,
                                                        null,
                                                        Signatures,
+
                                                        CustomData,
-                                                       RequestId
+
+                                                       RequestId,
+                                                       null,
+                                                       null,
+                                                       null,
+                                                       NetworkPath
+
                                                    );
 
                 if (CustomNotifyCustomerInformationRequestParser is not null)

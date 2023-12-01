@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// The unique identification of this charging station.
         /// </summary>
-        public ChargingStation_Id                    ChargingStationIdentity         { get; }
+        public NetworkingNode_Id                     ChargingStationIdentity         { get; }
 
         /// <summary>
         /// The sender identification.
@@ -210,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public ChargingStationWSClient(ChargingStation_Id                   ChargingStationIdentity,
+        public ChargingStationWSClient(NetworkingNode_Id                    ChargingStationIdentity,
                                        String                               From,
                                        String                               To,
 
@@ -350,7 +350,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     OCPP_JSONResponseMessage?    OCPPJSONResponse     = null;
                     OCPP_BinaryResponseMessage?  OCPPBinaryResponse   = null;
-                    OCPP_JSONErrorMessage?           OCPPErrorResponse    = null;
+                    OCPP_JSONErrorMessage?       OCPPErrorResponse    = null;
 
                     // Try to call the matching 'incoming message processor'
                     if (incomingMessageProcessorsLookup.TryGetValue(jsonRequest.Action, out var methodInfo) && methodInfo is not null)
@@ -362,6 +362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                        [ RequestTimestamp,
                                                          Connection,
                                                          ChargingStationIdentity,
+                                                         NetworkPath.Empty,
                                                          EventTrackingId,
                                                          jsonRequest.RequestId,
                                                          jsonRequest.Payload,
@@ -584,6 +585,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                        [ RequestTimestamp,
                                                          Connection,
                                                          ChargingStationIdentity,
+                                                         NetworkPath.Empty,
                                                          EventTrackingId,
                                                          binaryRequest.RequestId,
                                                          binaryRequest.Payload,
@@ -766,11 +768,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendRequest(Action, RequestId, JSONMessage)
+        #region SendRequest(NetworkingNodeId, NetworkPath, Action, RequestId, JSONMessage)
 
-        public async Task<OCPP_JSONRequestMessage> SendRequest(String      Action,
-                                                               Request_Id  RequestId,
-                                                               JObject     JSONMessage)
+        public async Task<OCPP_JSONRequestMessage> SendRequest(NetworkingNode_Id?  NetworkingNodeId,
+                                                               NetworkPath?        NetworkPath,
+                                                               String              Action,
+                                                               Request_Id          RequestId,
+                                                               JObject             JSONMessage)
         {
 
             OCPP_JSONRequestMessage? jsonRequestMessage = null;
@@ -785,6 +789,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     {
 
                         jsonRequestMessage = new OCPP_JSONRequestMessage(
+                                                 NetworkingNodeId ?? ChargingStationIdentity,
+                                                 NetworkPath      ?? NetworkPath.Empty,
                                                  RequestId,
                                                  Action,
                                                  JSONMessage
@@ -807,11 +813,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     {
 
                         jsonRequestMessage = new OCPP_JSONRequestMessage(
-                                               RequestId,
-                                               Action,
-                                               JSONMessage,
-                                               ErrorMessage: "Invalid HTTP Web Socket connection!"
-                                           );
+                                                 NetworkingNodeId,
+                                                 NetworkPath,
+                                                 RequestId,
+                                                 Action,
+                                                 JSONMessage,
+                                                 ErrorMessage: "Invalid HTTP Web Socket connection!"
+                                             );
 
                     }
 
@@ -823,11 +831,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         e = e.InnerException;
 
                     jsonRequestMessage = new OCPP_JSONRequestMessage(
-                                           RequestId,
-                                           Action,
-                                           JSONMessage,
-                                           ErrorMessage: e.Message
-                                       );
+                                             NetworkingNodeId,
+                                             NetworkPath,
+                                             RequestId,
+                                             Action,
+                                             JSONMessage,
+                                             ErrorMessage: e.Message
+                                         );
 
                     DebugX.LogException(e);
 
@@ -840,11 +850,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             else
                 jsonRequestMessage = new OCPP_JSONRequestMessage(
-                                       RequestId,
-                                       Action,
-                                       JSONMessage,
-                                       ErrorMessage: "Could not aquire the maintenance tasks lock!"
-                                   );
+                                         NetworkingNodeId,
+                                         NetworkPath,
+                                         RequestId,
+                                         Action,
+                                         JSONMessage,
+                                         ErrorMessage: "Could not aquire the maintenance tasks lock!"
+                                     );
 
             return jsonRequestMessage;
 
@@ -852,11 +864,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region SendRequest(Action, RequestId, BinaryMessage)
+        #region SendRequest(NetworkingNodeId, NetworkPath, Action, RequestId, BinaryMessage)
 
-        public async Task<OCPP_BinaryRequestMessage> SendRequest(String      Action,
-                                                                 Request_Id  RequestId,
-                                                                 Byte[]      BinaryMessage)
+        public async Task<OCPP_BinaryRequestMessage> SendRequest(NetworkingNode_Id?  NetworkingNodeId,
+                                                                 NetworkPath?        NetworkPath,
+                                                                 String              Action,
+                                                                 Request_Id          RequestId,
+                                                                 Byte[]              BinaryMessage)
         {
 
             OCPP_BinaryRequestMessage? binaryRequestMessage = null;
@@ -871,6 +885,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     {
 
                         binaryRequestMessage = new OCPP_BinaryRequestMessage(
+                                                   NetworkingNodeId ?? ChargingStationIdentity,
+                                                   NetworkPath      ?? NetworkPath.Empty,
                                                    RequestId,
                                                    Action,
                                                    BinaryMessage
@@ -891,6 +907,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     {
 
                         binaryRequestMessage = new OCPP_BinaryRequestMessage(
+                                                   NetworkingNodeId,
+                                                   NetworkPath,
                                                    RequestId,
                                                    Action,
                                                    BinaryMessage,
@@ -907,6 +925,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         e = e.InnerException;
 
                     binaryRequestMessage = new OCPP_BinaryRequestMessage(
+                                               NetworkingNodeId,
+                                               NetworkPath,
                                                RequestId,
                                                Action,
                                                BinaryMessage,
@@ -924,6 +944,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             else
                 binaryRequestMessage = new OCPP_BinaryRequestMessage(
+                                           NetworkingNodeId,
+                                           NetworkPath,
                                            RequestId,
                                            Action,
                                            BinaryMessage,

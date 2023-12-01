@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
         {
 
             var keyPair                    = KeyPair.GenerateKeys()!;
-            var chargingStationId          = ChargingStation_Id.Parse("DE*GEF*S12345678");
+            var chargingStationId          = NetworkingNode_Id.Parse("DE*GEF*S12345678");
             var vendorId                   = Vendor_Id. GraphDefined;
             var messageId                  = Message_Id.GraphDefined_TestMessage;
             var data                       = "Hello world!".ToUTF8Bytes();
@@ -85,6 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                                  serializedRequest,
                                                  Request_Id.Parse("2"),
                                                  chargingStationId,
+                                                 NetworkPath.Empty,
                                                  out var parsedBinaryDataTransferRequest,
                                                  out var errorResponse2
                                              );

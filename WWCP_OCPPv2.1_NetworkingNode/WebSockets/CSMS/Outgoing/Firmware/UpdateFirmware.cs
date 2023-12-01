@@ -88,17 +88,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             try
             {
 
-                var sendRequestState = await SendJSONAndWait(Request.EventTrackingId,
-                                                         Request.RequestId,
-                                                         Request.ChargingStationId,
-                                                         Request.Action,
-                                                         Request.ToJSON(
-                                                             CustomUpdateFirmwareRequestSerializer,
-                                                             CustomFirmwareSerializer,
-                                                             CustomSignatureSerializer,
-                                                             CustomCustomDataSerializer
-                                                         ),
-                                                         Request.RequestTimeout);
+                var sendRequestState = await SendJSONAndWait(
+                                                 Request.EventTrackingId,
+                                                 Request.NetworkingNodeId,
+                                                 Request.NetworkPath,
+                                                 Request.RequestId,
+                                                 Request.Action,
+                                                 Request.ToJSON(
+                                                     CustomUpdateFirmwareRequestSerializer,
+                                                     CustomFirmwareSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
+                                                 ),
+                                                 Request.RequestTimeout
+                                             );
 
                 if (sendRequestState.NoErrors &&
                     sendRequestState.JSONResponse is not null)

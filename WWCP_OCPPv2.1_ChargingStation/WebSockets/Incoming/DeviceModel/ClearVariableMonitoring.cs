@@ -86,7 +86,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             Receive_ClearVariableMonitoring(DateTime                   RequestTimestamp,
                                             WebSocketClientConnection  WebSocketConnection,
-                                            ChargingStation_Id         ChargingStationId,
+                                            NetworkingNode_Id          NetworkingNodeId,
+                                            NetworkPath                NetworkPath,
                                             EventTracking_Id           EventTrackingId,
                                             Request_Id                 RequestId,
                                             JObject                    RequestJSON,
@@ -103,7 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 OnClearVariableMonitoringWSRequest?.Invoke(startTime,
                                                            WebSocketConnection,
-                                                           ChargingStationId,
+                                                           NetworkingNodeId,
+                                                           NetworkPath,
                                                            EventTrackingId,
                                                            RequestJSON);
 
@@ -115,15 +117,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            OCPP_JSONResponseMessage?     OCPPResponse        = null;
-            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?  OCPPResponse        = null;
+            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
 
                 if (ClearVariableMonitoringRequest.TryParse(RequestJSON,
                                                             RequestId,
-                                                            ChargingStationIdentity,
+                                                            NetworkingNodeId,
+                                                            NetworkPath,
                                                             out var request,
                                                             out var errorResponse,
                                                             CustomClearVariableMonitoringRequestParser) && request is not null) {
@@ -231,6 +234,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 OnClearVariableMonitoringWSResponse?.Invoke(endTime,
                                                             WebSocketConnection,
+                                                            NetworkingNodeId,
+                                                            NetworkPath,
                                                             EventTrackingId,
                                                             RequestTimestamp,
                                                             RequestJSON,

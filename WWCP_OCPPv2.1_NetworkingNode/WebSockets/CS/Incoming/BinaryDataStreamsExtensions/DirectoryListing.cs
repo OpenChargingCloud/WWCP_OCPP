@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// and connects to a CSMS to invoke methods.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON parser delegates
@@ -87,7 +87,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
             Receive_ListDirectory(DateTime                   RequestTimestamp,
                                   WebSocketClientConnection  WebSocketConnection,
-                                  ChargingStation_Id         ChargingStationId,
+                                  NetworkingNode_Id          NetworkingNodeId,
+                                  NetworkPath                NetworkPath,
                                   EventTracking_Id           EventTrackingId,
                                   Request_Id                 RequestId,
                                   JObject                    RequestJSON,
@@ -104,7 +105,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnListDirectoryWSRequest?.Invoke(startTime,
                                                  WebSocketConnection,
-                                                 ChargingStationId,
+                                                 NetworkingNodeId,
+                                                 NetworkPath,
                                                  EventTrackingId,
                                                  RequestJSON);
 
@@ -124,7 +126,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 if (ListDirectoryRequest.TryParse(RequestJSON,
                                                   RequestId,
-                                                  ChargingStation_Id.Parse(NetworkingNodeIdentity.ToString()),
+                                                  NetworkingNodeId,
+                                                  NetworkPath,
                                                   out var request,
                                                   out var errorResponse,
                                                   CustomListDirectoryRequestParser) &&
@@ -232,6 +235,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnListDirectoryWSResponse?.Invoke(endTime,
                                                   WebSocketConnection,
+                                                  NetworkingNodeId,
+                                                  NetworkPath,
                                                   EventTrackingId,
                                                   RequestTimestamp,
                                                   RequestJSON,

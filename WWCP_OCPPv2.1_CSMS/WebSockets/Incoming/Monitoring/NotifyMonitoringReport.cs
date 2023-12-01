@@ -83,7 +83,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             Receive_NotifyMonitoringReport(DateTime                   RequestTimestamp,
                                            WebSocketServerConnection  Connection,
-                                           ChargingStation_Id         ChargingStationId,
+                                           NetworkingNode_Id          NetworkingNodeId,
+                                           NetworkPath                NetworkPath,
                                            EventTracking_Id           EventTrackingId,
                                            Request_Id                 RequestId,
                                            JObject                    JSONRequest,
@@ -101,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 OnNotifyMonitoringReportWSRequest?.Invoke(startTime,
                                                           this,
                                                           Connection,
-                                                          ChargingStationId,
+                                                          NetworkingNodeId,
                                                           EventTrackingId,
                                                           RequestTimestamp,
                                                           JSONRequest);
@@ -115,15 +116,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            OCPP_JSONResponseMessage?     OCPPResponse        = null;
-            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?  OCPPResponse        = null;
+            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
 
                 if (NotifyMonitoringReportRequest.TryParse(JSONRequest,
                                                            RequestId,
-                                                           ChargingStationId,
+                                                           NetworkingNodeId,
+                                                           NetworkPath,
                                                            out var request,
                                                            out var errorResponse,
                                                            CustomNotifyMonitoringReportRequestParser) && request is not null) {
@@ -229,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 OnNotifyMonitoringReportWSResponse?.Invoke(endTime,
                                                            this,
                                                            Connection,
-                                                           ChargingStationId,
+                                                           NetworkingNodeId,
                                                            EventTrackingId,
                                                            RequestTimestamp,
                                                            JSONRequest,

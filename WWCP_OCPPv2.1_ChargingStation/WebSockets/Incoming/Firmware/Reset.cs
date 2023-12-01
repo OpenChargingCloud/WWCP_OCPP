@@ -54,22 +54,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a reset websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?     OnResetWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnResetWSRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnResetRequestDelegate?        OnResetRequest;
+        public event OnResetRequestDelegate?                       OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a reset request was received.
         /// </summary>
-        public event OnResetDelegate?               OnReset;
+        public event OnResetDelegate?                              OnReset;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OnResetResponseDelegate?       OnResetResponse;
+        public event OnResetResponseDelegate?                      OnResetResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a reset request was sent.
@@ -86,7 +86,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             Receive_Reset(DateTime                   RequestTimestamp,
                           WebSocketClientConnection  WebSocketConnection,
-                          ChargingStation_Id         ChargingStationId,
+                          NetworkingNode_Id          NetworkingNodeId,
+                          NetworkPath                NetworkPath,
                           EventTracking_Id           EventTrackingId,
                           Request_Id                 RequestId,
                           JObject                    RequestJSON,
@@ -103,7 +104,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 OnResetWSRequest?.Invoke(startTime,
                                          WebSocketConnection,
-                                         ChargingStationId,
+                                         NetworkingNodeId,
+                                         NetworkPath,
                                          EventTrackingId,
                                          RequestJSON);
 
@@ -115,15 +117,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            OCPP_JSONResponseMessage?     OCPPResponse        = null;
-            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?  OCPPResponse        = null;
+            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
 
                 if (ResetRequest.TryParse(RequestJSON,
                                           RequestId,
-                                          ChargingStationIdentity,
+                                          NetworkingNodeId,
+                                          NetworkPath,
                                           out var request,
                                           out var errorResponse,
                                           CustomResetRequestParser) && request is not null) {
@@ -230,6 +233,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 OnResetWSResponse?.Invoke(endTime,
                                           WebSocketConnection,
+                                          NetworkingNodeId,
+                                          NetworkPath,
                                           EventTrackingId,
                                           RequestTimestamp,
                                           RequestJSON,

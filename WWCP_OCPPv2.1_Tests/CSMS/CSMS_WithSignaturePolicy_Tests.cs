@@ -38,7 +38,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
     /// based on a message signature policy to charging stations.
     /// </summary>
     [TestFixture]
-    public class WithSignaturePolicy_Tests : AChargingStationTests
+    public class CSMS_WithSignaturePolicy_Tests : AChargingStationTests
     {
 
         #region AddSignaturePolicy_Test()
@@ -105,7 +105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 //Assert.AreEqual(now2.ToIso8601(),                        response.Signatures.First().Timestamp?.  ToIso8601());
 
                 //Assert.AreEqual(1,                                       setSignaturePolicyRequests.Count);
-                //Assert.AreEqual(chargingStation1.Id,                     setSignaturePolicyRequests.First().ChargingStationId);
+                //Assert.AreEqual(chargingStation1.Id,                     setSignaturePolicyRequests.First().NetworkingNodeId);
                 //Assert.AreEqual(reason,                                  bootNotificationRequests.First().Reason);
                 //Assert.AreEqual(1,                                       bootNotificationRequests.First().Signatures.Count());
                 //Assert.AreEqual(VerificationStatus.ValidSignature,             bootNotificationRequests.First().Signatures.First().Status);
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var resetType       = ResetType.Immediate;
                 var now             = Timestamp.Now;
                 var response        = await testCSMS01.Reset(
-                                          ChargingStationId:   chargingStation1.Id,
+                                          NetworkingNodeId:    chargingStation1.Id,
                                           ResetType:           resetType,
                                           CustomData:          null
                                       );
@@ -173,7 +173,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 Assert.AreEqual(1,                             resetRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,           resetRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,           resetRequests.First().NetworkingNodeId);
                 Assert.AreEqual(resetType,                     resetRequests.First().ResetType);
                 Assert.AreEqual(1,                             resetRequests.First().Signatures.Count());
                 Assert.AreEqual(VerificationStatus.ValidSignature,   resetRequests.First().Signatures.First().Status);

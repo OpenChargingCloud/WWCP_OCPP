@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 Assert.AreEqual(data.Reverse().ToUTF8String(),   response.Data?.ToUTF8String());
 
                 Assert.AreEqual(1,                               binaryDataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,             binaryDataTransferRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,             binaryDataTransferRequests.First().NetworkingNodeId);
                 Assert.AreEqual(vendorId,                        binaryDataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                       binaryDataTransferRequests.First().MessageId);
                 Assert.AreEqual(data,                            binaryDataTransferRequests.First().Data);

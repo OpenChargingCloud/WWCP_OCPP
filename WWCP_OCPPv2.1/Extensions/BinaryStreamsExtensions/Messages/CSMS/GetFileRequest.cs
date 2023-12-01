@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new GetFile request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="FileName">The name of the file including its absolute path.</param>
         /// <param name="Priority">The optional priority of the file request.</param>
         /// 
@@ -80,8 +80,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetFileRequest(ChargingStation_Id       ChargingStationId,
+        public GetFileRequest(NetworkingNode_Id        NetworkingNodeId,
                               FilePath                 FileName,
                               Byte?                    Priority            = null,
 
@@ -95,10 +96,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               DateTime?                RequestTimestamp    = null,
                               TimeSpan?                RequestTimeout      = null,
                               EventTracking_Id?        EventTrackingId     = null,
+                              NetworkPath?             NetworkPath         = null,
                               CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "GetFile",
+            : base(NetworkingNodeId,
+                   nameof(GetFileRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -110,6 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -117,14 +120,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.FileName  = FileName;
             this.Priority  = Priority;
 
-
             unchecked
             {
-
                 hashCode = this.FileName. GetHashCode()       * 5 ^
                           (this.Priority?.GetHashCode() ?? 0) * 3 ^
                            base.          GetHashCode();
-
             }
 
         }
@@ -138,25 +138,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomGetFileRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomGetFileRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a GetFileRequest request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomGetFileRequestParser">A delegate to parse custom GetFileRequest requests.</param>
         public static GetFileRequest Parse(JObject                                       JSON,
                                            Request_Id                                    RequestId,
-                                           ChargingStation_Id                            ChargingStationId,
+                                           NetworkingNode_Id                             NetworkingNodeId,
+                                           NetworkPath                                   NetworkPath,
                                            CustomJObjectParserDelegate<GetFileRequest>?  CustomGetFileRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var getFileRequest,
                          out var errorResponse,
                          CustomGetFileRequestParser) &&
@@ -172,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out getFileRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out getFileRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -181,18 +184,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetFileRequest">The parsed GetFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject              JSON,
                                        Request_Id           RequestId,
-                                       ChargingStation_Id   ChargingStationId,
+                                       NetworkingNode_Id    NetworkingNodeId,
+                                       NetworkPath          NetworkPath,
                                        out GetFileRequest?  GetFileRequest,
                                        out String?          ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out GetFileRequest,
                         out ErrorResponse,
                         null);
@@ -203,13 +209,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetFileRequest">The parsed GetFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetFileRequestParser">A delegate to parse custom GetFileRequest requests.</param>
         public static Boolean TryParse(JObject                                       JSON,
                                        Request_Id                                    RequestId,
-                                       ChargingStation_Id                            ChargingStationId,
+                                       NetworkingNode_Id                             NetworkingNodeId,
+                                       NetworkPath                                   NetworkPath,
                                        out GetFileRequest?                           GetFileRequest,
                                        out String?                                   ErrorResponse,
                                        CustomJObjectParserDelegate<GetFileRequest>?  CustomGetFileRequestParser)
@@ -274,29 +282,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 GetFileRequest = new GetFileRequest(
 
-                                     ChargingStationId,
+                                     NetworkingNodeId,
                                      FileName,
                                      Priority,
 
@@ -305,7 +294,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      Signatures,
 
                                      CustomData,
-                                     RequestId
+
+                                     RequestId,
+                                     null,
+                                     null,
+                                     null,
+                                     NetworkPath
 
                                  );
 

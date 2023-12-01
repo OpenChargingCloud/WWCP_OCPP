@@ -45,13 +45,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => NetworkingNodeId.HasValue && NetworkingNodeId.Value.IsNotNullOrEmpty;
 
 
-        public static ChargingStation_Id  ToChargingStationId(this NetworkingNode_Id  NetworkingNodeId)
-            => ChargingStation_Id.Parse(NetworkingNodeId.ToString());
+        //public static ChargingStation_Id  ToChargingStationId(this NetworkingNode_Id  NetworkingNodeId)
+        //    => ChargingStation_Id.Parse(NetworkingNodeId.ToString());
 
-        public static ChargingStation_Id? ToChargingStationId(this NetworkingNode_Id? NetworkingNodeId)
-            => NetworkingNodeId.HasValue
-                   ? ChargingStation_Id.Parse(NetworkingNodeId.Value.ToString())
-                   : null;
+        //public static ChargingStation_Id? ToChargingStationId(this NetworkingNode_Id? NetworkingNodeId)
+        //    => NetworkingNodeId.HasValue
+        //           ? ChargingStation_Id.Parse(NetworkingNodeId.Value.ToString())
+        //           : null;
 
     }
 
@@ -193,6 +193,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => new (
                    new String(InternalId?.ToCharArray())
                );
+
+        #endregion
+
+
+        #region Static definitions
+
+        /// <summary>
+        /// 0 / Zero.
+        /// </summary>
+        public static NetworkingNode_Id Zero { get; }
+            = new ("0");
 
         #endregion
 

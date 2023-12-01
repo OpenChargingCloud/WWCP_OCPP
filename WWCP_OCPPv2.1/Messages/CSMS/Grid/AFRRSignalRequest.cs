@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new automatic frequency restoration reserve (AFRR) signal request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="ActivationTimestamp">The time when the signal becomes active.</param>
         /// <param name="Signal">The value of the AFRR signal in v2xSignalWattCurve. Usually between -1 and 1.</param>
         /// 
@@ -80,8 +80,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public AFRRSignalRequest(ChargingStation_Id       ChargingStationId,
+        public AFRRSignalRequest(NetworkingNode_Id        NetworkingNodeId,
                                  DateTime                 ActivationTimestamp,
                                  AFRR_Signal              Signal,
 
@@ -95,10 +96,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                  DateTime?                RequestTimestamp    = null,
                                  TimeSpan?                RequestTimeout      = null,
                                  EventTracking_Id?        EventTrackingId     = null,
+                                 NetworkPath?             NetworkPath         = null,
                                  CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "AFRRSignal",
+            : base(NetworkingNodeId,
+                   nameof(AFRRSignalRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -110,6 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -138,24 +141,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomAFRRSignalRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomAFRRSignalRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an AFRR signal request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomAFRRSignalRequestParser">A delegate to parse custom AFRR signal requests.</param>
         public static AFRRSignalRequest Parse(JObject                                          JSON,
                                               Request_Id                                       RequestId,
-                                              ChargingStation_Id                               ChargingStationId,
+                                              NetworkingNode_Id                                NetworkingNodeId,
+                                              NetworkPath                                      NetworkPath,
                                               CustomJObjectParserDelegate<AFRRSignalRequest>?  CustomAFRRSignalRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var afrrSignalRequest,
                          out var errorResponse,
                          CustomAFRRSignalRequestParser) &&
@@ -171,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON,  RequestId, ChargingStationId, out AFRRSignalRequest, out ErrorResponse, CustomAFRRSignalRequestParser = null)
+        #region (static) TryParse(JSON,  RequestId, NetworkingNodeId, NetworkPath, out AFRRSignalRequest, out ErrorResponse, CustomAFRRSignalRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -180,18 +186,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="AFRRSignalRequest">The parsed AFRR signal request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                 JSON,
                                        Request_Id              RequestId,
-                                       ChargingStation_Id      ChargingStationId,
+                                       NetworkingNode_Id       NetworkingNodeId,
+                                       NetworkPath             NetworkPath,
                                        out AFRRSignalRequest?  AFRRSignalRequest,
                                        out String?             ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out AFRRSignalRequest,
                         out ErrorResponse,
                         null);
@@ -202,13 +211,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="AFRRSignalRequest">The parsed AFRR signal request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomAFRRSignalRequestParser">A delegate to parse custom AFRR signal requests.</param>
         public static Boolean TryParse(JObject                                          JSON,
                                        Request_Id                                       RequestId,
-                                       ChargingStation_Id                               ChargingStationId,
+                                       NetworkingNode_Id                                NetworkingNodeId,
+                                       NetworkPath                                      NetworkPath,
                                        out AFRRSignalRequest?                           AFRRSignalRequest,
                                        out String?                                      ErrorResponse,
                                        CustomJObjectParserDelegate<AFRRSignalRequest>?  CustomAFRRSignalRequestParser)
@@ -272,35 +283,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId      [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 AFRRSignalRequest = new AFRRSignalRequest(
-                                        ChargingStationId,
+
+                                        NetworkingNodeId,
                                         ActivationTimestamp,
                                         Signal,
+
                                         null,
                                         null,
                                         Signatures,
+
                                         CustomData,
-                                        RequestId
+
+                                        RequestId,
+                                        null,
+                                        null,
+                                        null,
+                                        NetworkPath
+
                                     );
 
                 if (CustomAFRRSignalRequestParser is not null)

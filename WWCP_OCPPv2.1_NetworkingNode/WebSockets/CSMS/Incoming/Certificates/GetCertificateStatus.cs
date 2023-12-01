@@ -84,7 +84,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
             Receive_GetCertificateStatus(DateTime                   RequestTimestamp,
                                          WebSocketServerConnection  Connection,
-                                         ChargingStation_Id         ChargingStationId,
+                                         NetworkingNode_Id          NetworkingNodeId,
+                                         NetworkPath                NetworkPath,
                                          EventTracking_Id           EventTrackingId,
                                          Request_Id                 RequestId,
                                          JObject                    JSONRequest,
@@ -102,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                 OnGetCertificateStatusWSRequest?.Invoke(startTime,
                                                         this,
                                                         Connection,
-                                                        ChargingStationId,
+                                                        NetworkingNodeId,
                                                         EventTrackingId,
                                                         RequestTimestamp,
                                                         JSONRequest);
@@ -124,7 +125,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                 if (GetCertificateStatusRequest.TryParse(JSONRequest,
                                                          RequestId,
-                                                         ChargingStationId,
+                                                         NetworkingNodeId,
+                                                         NetworkPath,
                                                          out var request,
                                                          out var errorResponse,
                                                          CustomGetCertificateStatusRequestParser) && request is not null) {
@@ -231,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                 OnGetCertificateStatusWSResponse?.Invoke(endTime,
                                                          this,
                                                          Connection,
-                                                         ChargingStationId,
+                                                         NetworkingNodeId,
                                                          EventTrackingId,
                                                          RequestTimestamp,
                                                          JSONRequest,

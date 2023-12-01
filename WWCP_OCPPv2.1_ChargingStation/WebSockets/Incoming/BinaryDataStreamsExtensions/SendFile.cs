@@ -83,7 +83,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             Receive_SendFile(DateTime                   RequestTimestamp,
                              WebSocketClientConnection  WebSocketConnection,
-                             ChargingStation_Id         ChargingStationId,
+                             NetworkingNode_Id          NetworkingNodeId,
+                             NetworkPath                NetworkPath,
                              EventTracking_Id           EventTrackingId,
                              Request_Id                 RequestId,
                              Byte[]                     RequestBinary,
@@ -100,7 +101,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 OnSendFileWSRequest?.Invoke(startTime,
                                             WebSocketConnection,
-                                            ChargingStationId,
+                                            NetworkingNodeId,
+                                            NetworkPath,
                                             EventTrackingId,
                                             RequestBinary);
 
@@ -112,15 +114,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             #endregion
 
-            OCPP_JSONResponseMessage?     OCPPResponse        = null;
-            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?  OCPPResponse        = null;
+            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
 
                 if (CSMS.SendFileRequest.TryParse(RequestBinary,
                                                   RequestId,
-                                                  ChargingStationIdentity,
+                                                  NetworkingNodeId,
+                                                  NetworkPath,
                                                   out var request,
                                                   out var errorResponse,
                                                   CustomSendFileRequestParser) &&
@@ -228,6 +231,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 OnSendFileWSResponse?.Invoke(endTime,
                                              WebSocketConnection,
+                                             NetworkingNodeId,
+                                             NetworkPath,
                                              EventTrackingId,
                                              RequestTimestamp,
                                              RequestBinary,

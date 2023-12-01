@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new SendFile request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="FileName">The name of the file including its absolute path.</param>
         /// <param name="FileContent">The file content.</param>
         /// <param name="FileContentType">An optional content/MIME type of the file.</param>
@@ -113,8 +113,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SendFileRequest(ChargingStation_Id       ChargingStationId,
+        public SendFileRequest(NetworkingNode_Id        NetworkingNodeId,
                                FilePath                 FileName,
                                Byte[]                   FileContent,
                                ContentType?             FileContentType     = null,
@@ -133,10 +134,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                DateTime?                RequestTimestamp    = null,
                                TimeSpan?                RequestTimeout      = null,
                                EventTracking_Id?        EventTrackingId     = null,
+                               NetworkPath?             NetworkPath         = null,
                                CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "SendFile",
+            : base(NetworkingNodeId,
+                   nameof(SendFileRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -148,6 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -164,9 +167,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             unchecked
             {
 
-                hashCode = this.FileName. GetHashCode()       * 5 ^
-                          (this.Priority?.GetHashCode() ?? 0) * 3 ^
-                           base.          GetHashCode();
+                hashCode = this.FileName.       GetHashCode()       * 19 ^
+                           this.FileContent.    GetHashCode()       * 17 ^
+                           this.FileContentType.GetHashCode()       * 13 ^
+                           this.FileSHA256.     GetHashCode()       * 11 ^
+                           this.FileSHA512.     GetHashCode()       *  7 ^
+                           this.FileSignatures. CalcHashCode()      *  5 ^
+                          (this.Priority?.      GetHashCode() ?? 0) *  3 ^
+                           base.                GetHashCode();
 
             }
 
@@ -181,25 +189,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (Binary, RequestId, ChargingStationId, CustomSendFileRequestParser = null)
+        #region (static) Parse   (Binary, RequestId, NetworkingNodeId, NetworkPath, CustomSendFileRequestParser = null)
 
         /// <summary>
         /// Parse the given binary representation of a SendFileRequest request.
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomSendFileRequestParser">A delegate to parse custom SendFileRequest requests.</param>
         public static SendFileRequest Parse(Byte[]                                        Binary,
                                             Request_Id                                    RequestId,
-                                            ChargingStation_Id                            ChargingStationId,
+                                            NetworkingNode_Id                             NetworkingNodeId,
+                                            NetworkPath                                   NetworkPath,
                                             CustomBinaryParserDelegate<SendFileRequest>?  CustomSendFileRequestParser   = null)
         {
 
 
             if (TryParse(Binary,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var sendFileRequest,
                          out var errorResponse,
                          CustomSendFileRequestParser) &&
@@ -215,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(Binary, RequestId, ChargingStationId, out SendFileRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(Binary, RequestId, NetworkingNodeId, NetworkPath, out SendFileRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -224,18 +235,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SendFileRequest">The parsed SendFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(Byte[]                Binary,
                                        Request_Id            RequestId,
-                                       ChargingStation_Id    ChargingStationId,
+                                       NetworkingNode_Id     NetworkingNodeId,
+                                       NetworkPath           NetworkPath,
                                        out SendFileRequest?  SendFileRequest,
                                        out String?           ErrorResponse)
 
             => TryParse(Binary,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out SendFileRequest,
                         out ErrorResponse,
                         null);
@@ -246,13 +260,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SendFileRequest">The parsed SendFileRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSendFileRequestParser">A delegate to parse custom SendFileRequest requests.</param>
         public static Boolean TryParse(Byte[]                                        Binary,
                                        Request_Id                                    RequestId,
-                                       ChargingStation_Id                            ChargingStationId,
+                                       NetworkingNode_Id                             NetworkingNodeId,
+                                       NetworkPath                                   NetworkPath,
                                        out SendFileRequest?                          SendFileRequest,
                                        out String?                                   ErrorResponse,
                                        CustomBinaryParserDelegate<SendFileRequest>?  CustomSendFileRequestParser)
@@ -376,7 +392,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 SendFileRequest = new SendFileRequest(
 
-                                      ChargingStationId,
+                                      NetworkingNodeId,
                                       fileName.Value,
                                       fileContent,
                                       fileContentType,
@@ -390,7 +406,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                       signatures,
 
                                       null, // CustomData
-                                      RequestId
+
+                                      RequestId,
+                                      null,
+                                      null,
+                                      null,
+                                      NetworkPath
 
                                   );
 

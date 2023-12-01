@@ -31,51 +31,57 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     {
 
         /// <summary>
+        /// The networking node identification of the message sender or destination.
+        /// </summary>
+        [Mandatory]
+        NetworkingNode_Id  NetworkingNodeId     { get; }
+
+        /// <summary>
+        /// The network path of the request.
+        /// </summary>
+        [Mandatory]
+        NetworkPath        NetworkPath          { get; }
+
+        /// <summary>
         /// The request identification.
         /// </summary>
         [Mandatory]
-        Request_Id          RequestId            { get; }
+        Request_Id         RequestId            { get; }
 
         /// <summary>
         /// The timestamp of the request message creation.
         /// </summary>
         [Mandatory]
-        DateTime            RequestTimestamp     { get; }
+        DateTime           RequestTimestamp     { get; }
 
         /// <summary>
         /// The timeout of this request.
         /// </summary>
         [Mandatory]
-        TimeSpan            RequestTimeout       { get; }
+        TimeSpan           RequestTimeout       { get; }
 
         /// <summary>
         /// An event tracking identification for correlating this request with other events.
         /// </summary>
         [Mandatory]
-        EventTracking_Id    EventTrackingId      { get; }
-
-        /// <summary>
-        /// The charging station identification.
-        /// </summary>
-        [Mandatory]
-        ChargingStation_Id  ChargingStationId    { get; }
+        EventTracking_Id   EventTrackingId      { get; }
 
         /// <summary>
         /// The OCPP HTTP Web Socket action.
         /// </summary>
         [Mandatory]
-        String              Action               { get; }
+        String             Action               { get; }
 
         /// <summary>
         /// The custom data object to allow to store any kind of customer specific data.
         /// </summary>
         [Optional]
-        CustomData?         CustomData           { get; }
+        CustomData?        CustomData           { get; }
 
         /// <summary>
         /// An optional token to cancel this request.
         /// </summary>
-        CancellationToken   CancellationToken    { get; }
+        CancellationToken  CancellationToken    { get; }
 
     }
 

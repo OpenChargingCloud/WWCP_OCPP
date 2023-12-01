@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
@@ -37,9 +36,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// and connects to a CSMS to invoke methods.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON parser delegates
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an AddUserRole websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?        OnAddUserRoleWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnAddUserRoleWSRequest;
 
         /// <summary>
         /// An event sent whenever an AddUserRole request was received.
         /// </summary>
-        public event CS.OnAddUserRoleRequestDelegate?     OnAddUserRoleRequest;
+        public event CS.OnAddUserRoleRequestDelegate?              OnAddUserRoleRequest;
 
         /// <summary>
         /// An event sent whenever an AddUserRole request was received.
         /// </summary>
-        public event CS.OnAddUserRoleDelegate?            OnAddUserRole;
+        public event CS.OnAddUserRoleDelegate?                     OnAddUserRole;
 
         /// <summary>
         /// An event sent whenever a response to an AddUserRole request was sent.
         /// </summary>
-        public event CS.OnAddUserRoleResponseDelegate?    OnAddUserRoleResponse;
+        public event CS.OnAddUserRoleResponseDelegate?             OnAddUserRoleResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an AddUserRole request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?       OnAddUserRoleWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnAddUserRoleWSResponse;
 
         #endregion
 
@@ -85,7 +84,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
             Receive_AddUserRole(DateTime                   RequestTimestamp,
                                 WebSocketClientConnection  WebSocketConnection,
-                                ChargingStation_Id         ChargingStationId,
+                                NetworkingNode_Id          NetworkingNodeId,
+                                NetworkPath                NetworkPath,
                                 EventTracking_Id           EventTrackingId,
                                 Request_Id                 RequestId,
                                 JObject                    RequestJSON,
@@ -102,7 +102,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnAddUserRoleWSRequest?.Invoke(startTime,
                                                WebSocketConnection,
-                                               ChargingStationId,
+                                               NetworkingNodeId,
+                                               NetworkPath,
                                                EventTrackingId,
                                                RequestJSON);
 
@@ -114,15 +115,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
             #endregion
 
-            OCPP_JSONResponseMessage?     OCPPResponse        = null;
-            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?  OCPPResponse        = null;
+            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
 
                 if (AddUserRoleRequest.TryParse(RequestJSON,
                                                 RequestId,
-                                                ChargingStation_Id.Parse(NetworkingNodeIdentity.ToString()),
+                                                NetworkingNodeId,
+                                                NetworkPath,
                                                 out var request,
                                                 out var errorResponse,
                                                 CustomAddUserRoleRequestParser) && request is not null) {
@@ -224,6 +226,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnAddUserRoleWSResponse?.Invoke(endTime,
                                                 WebSocketConnection,
+                                                NetworkingNodeId,
+                                                NetworkPath,
                                                 EventTrackingId,
                                                 RequestTimestamp,
                                                 RequestJSON,

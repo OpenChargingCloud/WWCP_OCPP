@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
@@ -34,9 +33,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         #region Properties
 
         /// <summary>
-        /// The unique identifications of all connected charging stations.
+        /// The unique identifications of all connected networking nodes.
         /// </summary>
-        IEnumerable<ChargingStation_Id>  ChargingStationIds    { get; }
+        IEnumerable<NetworkingNode_Id>  NetworkingNodeIds    { get; }
 
         #endregion
 

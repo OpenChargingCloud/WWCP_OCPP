@@ -50,10 +50,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Properties
 
         /// <summary>
-        /// The charging station identification.
+        /// The networking node identification of the message sender or destination.
         /// </summary>
         [Mandatory]
-        public ChargingStation_Id  ChargingStationId    { get; }
+        public NetworkingNode_Id   NetworkingNodeId     { get; }
+
+        /// <summary>
+        /// The network path of the request.
+        /// </summary>
+        [Mandatory]
+        public NetworkPath         NetworkPath          { get; }
 
         /// <summary>
         /// The request identification.
@@ -97,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new generic OCPP request message.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The networking node identification of the message sender or destination.</param>
         /// <param name="Action">The OCPP HTTP Web Socket action.</param>
         /// 
         /// <param name="SignKeys">An optional enumeration of keys to be used for signing this request.</param>
@@ -110,8 +116,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">An optional network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ARequest(ChargingStation_Id       ChargingStationId,
+        public ARequest(NetworkingNode_Id        NetworkingNodeId,
                         String                   Action,
 
                         IEnumerable<KeyPair>?    SignKeys            = null,
@@ -124,6 +131,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         DateTime?                RequestTimestamp    = null,
                         TimeSpan?                RequestTimeout      = null,
                         EventTracking_Id?        EventTrackingId     = null,
+                        NetworkPath?             NetworkPath         = null,
                         CancellationToken        CancellationToken   = default)
 
             : base(SignKeys,
@@ -133,24 +141,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         {
 
-            this.ChargingStationId  = ChargingStationId;
+            this.NetworkingNodeId   = NetworkingNodeId;
             this.Action             = Action;
 
             this.RequestId          = RequestId        ?? Request_Id.NewRandom();
             this.RequestTimestamp   = RequestTimestamp ?? Timestamp.Now;
             this.RequestTimeout     = RequestTimeout   ?? DefaultRequestTimeout;
             this.EventTrackingId    = EventTrackingId  ?? EventTracking_Id.New;
+            this.NetworkPath        = NetworkPath      ?? NetworkPath.Empty;
             this.CancellationToken  = CancellationToken;
 
             unchecked
             {
 
-                hashCode = this.ChargingStationId.GetHashCode() * 13 ^
-                           this.Action.           GetHashCode() * 11 ^
-                           this.RequestId.        GetHashCode() *  7 ^
-                           this.RequestTimestamp. GetHashCode() *  5 ^
-                           this.RequestTimeout.   GetHashCode() *  3 ^
-                           this.EventTrackingId.  GetHashCode();
+                hashCode = this.NetworkingNodeId.GetHashCode() * 17 ^
+                           this.NetworkPath.     GetHashCode() * 13 ^
+                           this.Action.          GetHashCode() * 11 ^
+                           this.RequestId.       GetHashCode() *  7 ^
+                           this.RequestTimestamp.GetHashCode() *  5 ^
+                           this.RequestTimeout.  GetHashCode() *  3 ^
+                           this.EventTrackingId. GetHashCode();
 
             }
 
@@ -168,14 +178,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         {
 
             var json = JSONObject.Create(
-                           new JProperty("id",                  RequestId.        ToString()),
-                           new JProperty("timestamp",           RequestTimestamp. ToIso8601()),
-                           new JProperty("eventTrackingId",     EventTrackingId.  ToString()),
-                           new JProperty("connection",          Connection?.      ToJSON()),
-                           new JProperty("chargingStationId",   ChargingStationId.ToString()),
-                           new JProperty("timeout",             RequestTimeout.   TotalSeconds),
-                           new JProperty("action",              Action),
-                           new JProperty("data",                RequestData)
+                           new JProperty("id",                 RequestId.       ToString()),
+                           new JProperty("timestamp",          RequestTimestamp.ToIso8601()),
+                           new JProperty("eventTrackingId",    EventTrackingId. ToString()),
+                           new JProperty("connection",         Connection?.     ToJSON()),
+                           new JProperty("networkingNodeId",   NetworkingNodeId.ToString()),
+                           new JProperty("networkPath",        NetworkPath.     ToJSON()),
+                           new JProperty("timeout",            RequestTimeout.  TotalSeconds),
+                           new JProperty("action",             Action),
+                           new JProperty("data",               RequestData)
                        );
 
             return json;
@@ -203,12 +214,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             => ARequest is not null &&
 
-               ChargingStationId.Equals(ARequest.ChargingStationId) &&
-               RequestId.        Equals(ARequest.RequestId)         &&
-               RequestTimestamp. Equals(ARequest.RequestTimestamp)  &&
-               RequestTimeout.   Equals(ARequest.RequestTimeout)    &&
-               EventTrackingId.  Equals(ARequest.EventTrackingId)   &&
-               Action.           Equals(ARequest.Action)            &&
+               NetworkPath.     Equals(ARequest.NetworkPath)      &&
+               RequestId.       Equals(ARequest.RequestId)        &&
+               RequestTimestamp.Equals(ARequest.RequestTimestamp) &&
+               RequestTimeout.  Equals(ARequest.RequestTimeout)   &&
+               EventTrackingId. Equals(ARequest.EventTrackingId)  &&
+               Action.          Equals(ARequest.Action)           &&
 
              ((CustomData is     null && ARequest.CustomData is     null) ||
               (CustomData is not null && ARequest.CustomData is not null && CustomData.Equals(ARequest.CustomData)));
@@ -236,9 +247,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         public override String ToString()
 
-            => $"{Action} ({RequestId}) for charging station '{ChargingStationId}'";
+            => $"{Action}/{RequestId} '{NetworkingNodeId}' via [{NetworkPath}]";
 
         #endregion
+
 
     }
 

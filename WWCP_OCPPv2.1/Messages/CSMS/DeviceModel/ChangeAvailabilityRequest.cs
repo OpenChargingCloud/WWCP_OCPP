@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new change availability request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="OperationalStatus">A new operational status of the charging station or EVSE.</param>
         /// <param name="EVSE">An optional EVSE (EVSE/connector identifications) for which the operational status should be changed.</param>
         /// 
@@ -81,8 +81,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ChangeAvailabilityRequest(ChargingStation_Id       ChargingStationId,
+        public ChangeAvailabilityRequest(NetworkingNode_Id        NetworkingNodeId,
                                          OperationalStatus        OperationalStatus,
                                          EVSE?                    EVSE                = null,
 
@@ -96,10 +97,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          DateTime?                RequestTimestamp    = null,
                                          TimeSpan?                RequestTimeout      = null,
                                          EventTracking_Id?        EventTrackingId     = null,
+                                         NetworkPath?             NetworkPath         = null,
                                          CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "ChangeAvailability",
+            : base(NetworkingNodeId,
+                   nameof(ChangeAvailabilityRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -111,6 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -120,11 +123,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             unchecked
             {
-
                 hashCode = this.OperationalStatus.GetHashCode()       * 5 ^
                           (this.EVSE?.            GetHashCode() ?? 0) * 3 ^
                            base.                  GetHashCode();
-
             }
 
         }
@@ -206,24 +207,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomChangeAvailabilityRequestSerializer = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomChangeAvailabilityRequestSerializer = null)
 
         /// <summary>
         /// Parse the given JSON representation of a change availability request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomChangeAvailabilityRequestSerializer">A delegate to parse custom ChangeAvailability requests.</param>
         public static ChangeAvailabilityRequest Parse(JObject                                                  JSON,
                                                       Request_Id                                               RequestId,
-                                                      ChargingStation_Id                                       ChargingStationId,
+                                                      NetworkingNode_Id                                        NetworkingNodeId,
+                                                      NetworkPath                                              NetworkPath,
                                                       CustomJObjectParserDelegate<ChangeAvailabilityRequest>?  CustomChangeAvailabilityRequestSerializer   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var changeAvailabilityRequest,
                          out var errorResponse,
                          CustomChangeAvailabilityRequestSerializer) &&
@@ -239,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out ChangeAvailabilityRequest, out ErrorResponse, CustomChangeAvailabilityRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out ChangeAvailabilityRequest, out ErrorResponse, CustomChangeAvailabilityRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -248,18 +252,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ChangeAvailabilityRequest">The parsed ChangeAvailability request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                         JSON,
                                        Request_Id                      RequestId,
-                                       ChargingStation_Id              ChargingStationId,
+                                       NetworkingNode_Id               NetworkingNodeId,
+                                       NetworkPath                     NetworkPath,
                                        out ChangeAvailabilityRequest?  ChangeAvailabilityRequest,
                                        out String?                     ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out ChangeAvailabilityRequest,
                         out ErrorResponse,
                         null);
@@ -270,13 +277,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ChangeAvailabilityRequest">The parsed ChangeAvailability request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomChangeAvailabilityRequestParser">A delegate to parse custom ChangeAvailability requests.</param>
         public static Boolean TryParse(JObject                                                  JSON,
                                        Request_Id                                               RequestId,
-                                       ChargingStation_Id                                       ChargingStationId,
+                                       NetworkingNode_Id                                        NetworkingNodeId,
+                                       NetworkPath                                              NetworkPath,
                                        out ChangeAvailabilityRequest?                           ChangeAvailabilityRequest,
                                        out String?                                              ErrorResponse,
                                        CustomJObjectParserDelegate<ChangeAvailabilityRequest>?  CustomChangeAvailabilityRequestParser)
@@ -342,35 +351,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 ChangeAvailabilityRequest = new ChangeAvailabilityRequest(
-                                                ChargingStationId,
+
+                                                NetworkingNodeId,
                                                 OperationalStatus,
                                                 EVSE,
+
                                                 null,
                                                 null,
                                                 Signatures,
+
                                                 CustomData,
-                                                RequestId
+
+                                                RequestId,
+                                                null,
+                                                null,
+                                                null,
+                                                NetworkPath
+
                                             );
 
                 if (CustomChangeAvailabilityRequestParser is not null)

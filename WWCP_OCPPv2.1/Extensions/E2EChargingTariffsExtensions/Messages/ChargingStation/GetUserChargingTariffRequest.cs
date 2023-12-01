@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new get user charging tariff request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="IdToken">An identification token for which the applicable charging tariff is requested.</param>
         /// 
         /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
@@ -76,8 +76,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetUserChargingTariffRequest(ChargingStation_Id       ChargingStationId,
+        public GetUserChargingTariffRequest(NetworkingNode_Id        NetworkingNodeId,
                                             IdToken                  IdToken,
 
                                             IEnumerable<KeyPair>?    SignKeys            = null,
@@ -90,10 +91,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                             DateTime?                RequestTimestamp    = null,
                                             TimeSpan?                RequestTimeout      = null,
                                             EventTracking_Id?        EventTrackingId     = null,
+                                            NetworkPath?             NetworkPath         = null,
                                             CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "GetUserChargingTariff",
+            : base(NetworkingNodeId,
+                   nameof(GetUserChargingTariffRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -105,18 +107,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
 
-            this.IdToken  = IdToken;
+            this.IdToken = IdToken;
 
             unchecked
             {
-
                 hashCode = this.IdToken.GetHashCode() * 3 ^
                            base.        GetHashCode();
-
             }
 
         }
@@ -130,25 +131,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomGetUserChargingTariffRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomGetUserChargingTariffRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an GetUserChargingTariff request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomGetUserChargingTariffRequestParser">A delegate to parse custom GetUserChargingTariff requests.</param>
         public static GetUserChargingTariffRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         ChargingStation_Id                                          ChargingStationId,
+                                                         NetworkingNode_Id                                           NetworkingNodeId,
+                                                         NetworkPath                                                 NetworkPath,
                                                          CustomJObjectParserDelegate<GetUserChargingTariffRequest>?  CustomGetUserChargingTariffRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var getUserChargingTariffRequest,
                          out var errorResponse,
                          CustomGetUserChargingTariffRequestParser) &&
@@ -164,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out getUserChargingTariffRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out getUserChargingTariffRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -173,18 +177,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="getUserChargingTariffRequest">The parsed GetUserChargingTariff request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                            JSON,
                                        Request_Id                         RequestId,
-                                       ChargingStation_Id                 ChargingStationId,
+                                       NetworkingNode_Id                  NetworkingNodeId,
+                                       NetworkPath                        NetworkPath,
                                        out GetUserChargingTariffRequest?  getUserChargingTariffRequest,
                                        out String?                        ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out getUserChargingTariffRequest,
                         out ErrorResponse,
                         null);
@@ -195,13 +202,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetUserChargingTariffRequest">The parsed GetUserChargingTariff request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetUserChargingTariffRequestParser">A delegate to parse custom GetUserChargingTariff requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       ChargingStation_Id                                          ChargingStationId,
+                                       NetworkingNode_Id                                           NetworkingNodeId,
+                                       NetworkPath                                                 NetworkPath,
                                        out GetUserChargingTariffRequest?                           GetUserChargingTariffRequest,
                                        out String?                                                 ErrorResponse,
                                        CustomJObjectParserDelegate<GetUserChargingTariffRequest>?  CustomGetUserChargingTariffRequestParser)
@@ -254,34 +263,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 GetUserChargingTariffRequest = new GetUserChargingTariffRequest(
-                                                   ChargingStationId,
+
+                                                   NetworkingNodeId,
                                                    IdToken,
+
                                                    null,
                                                    null,
                                                    Signatures,
+
                                                    CustomData,
-                                                   RequestId
+
+                                                   RequestId,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   NetworkPath
+
                                                );
 
                 if (CustomGetUserChargingTariffRequestParser is not null)

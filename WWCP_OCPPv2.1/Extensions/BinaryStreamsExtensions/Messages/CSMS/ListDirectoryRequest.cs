@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new ListDirectory request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="DirectoryPath">The absolute path of the directory to list.</param>
         /// <param name="Format">The optional response format of the directory listing.</param>
         /// 
@@ -104,8 +104,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ListDirectoryRequest(ChargingStation_Id       ChargingStationId,
+        public ListDirectoryRequest(NetworkingNode_Id        NetworkingNodeId,
                                     FilePath                 DirectoryPath,
                                     ListDirectoryFormat?     Format                 = null,
                                     Boolean?                 WithFileSizes          = null,
@@ -123,10 +124,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     DateTime?                RequestTimestamp       = null,
                                     TimeSpan?                RequestTimeout         = null,
                                     EventTracking_Id?        EventTrackingId        = null,
+                                    NetworkPath?             NetworkPath            = null,
                                     CancellationToken        CancellationToken      = default)
 
-            : base(ChargingStationId,
-                   "ListDirectory",
+            : base(NetworkingNodeId,
+                   nameof(ListDirectoryRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -138,6 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -149,12 +152,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.WithSHA256FileHashes  = WithSHA256FileHashes ?? false;
             this.WithSHA512FileHashes  = WithSHA512FileHashes ?? false;
 
+
             unchecked
             {
 
-                hashCode = this.DirectoryPath.GetHashCode() * 5 ^
-                           this.Format.       GetHashCode() * 3 ^
-                           base.              GetHashCode();
+                hashCode = this.DirectoryPath.       GetHashCode() * 17 ^
+                           this.Format.              GetHashCode() * 13 ^
+                           this.WithFileSizes.       GetHashCode() * 11 ^
+                           this.WithFileDates.       GetHashCode() *  7 ^
+                           this.WithSHA256FileHashes.GetHashCode() *  5 ^
+                           this.WithSHA512FileHashes.GetHashCode() *  3 ^
+                           base.                     GetHashCode();
 
             }
 
@@ -169,25 +177,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomListDirectoryRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomListDirectoryRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a ListDirectoryRequest request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomListDirectoryRequestParser">A delegate to parse custom ListDirectoryRequest requests.</param>
         public static ListDirectoryRequest Parse(JObject                                             JSON,
                                                  Request_Id                                          RequestId,
-                                                 ChargingStation_Id                                  ChargingStationId,
+                                                 NetworkingNode_Id                                   NetworkingNodeId,
+                                                 NetworkPath                                         NetworkPath,
                                                  CustomJObjectParserDelegate<ListDirectoryRequest>?  CustomListDirectoryRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var listDirectoryRequest,
                          out var errorResponse,
                          CustomListDirectoryRequestParser) &&
@@ -203,7 +214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out listDirectoryRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out listDirectoryRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -212,18 +223,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ListDirectoryRequest">The parsed ListDirectoryRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                    JSON,
                                        Request_Id                 RequestId,
-                                       ChargingStation_Id         ChargingStationId,
+                                       NetworkingNode_Id          NetworkingNodeId,
+                                       NetworkPath                NetworkPath,
                                        out ListDirectoryRequest?  ListDirectoryRequest,
                                        out String?                ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out ListDirectoryRequest,
                         out ErrorResponse,
                         null);
@@ -234,13 +248,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ListDirectoryRequest">The parsed ListDirectoryRequest request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomListDirectoryRequestParser">A delegate to parse custom ListDirectoryRequest requests.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        Request_Id                                          RequestId,
-                                       ChargingStation_Id                                  ChargingStationId,
+                                       NetworkingNode_Id                                   NetworkingNodeId,
+                                       NetworkPath                                         NetworkPath,
                                        out ListDirectoryRequest?                           ListDirectoryRequest,
                                        out String?                                         ErrorResponse,
                                        CustomJObjectParserDelegate<ListDirectoryRequest>?  CustomListDirectoryRequestParser)
@@ -358,29 +374,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId       [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 ListDirectoryRequest = new ListDirectoryRequest(
 
-                                           ChargingStationId,
+                                           NetworkingNodeId,
                                            DirectoryPath,
                                            Format,
                                            WithFileSizes,
@@ -393,7 +390,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            Signatures,
 
                                            CustomData,
-                                           RequestId
+
+                                           RequestId,
+                                           null,
+                                           null,
+                                           null,
+                                           NetworkPath
 
                                        );
 

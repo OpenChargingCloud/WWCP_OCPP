@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new get composite schedule request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="Duration">The length of requested schedule.</param>
         /// <param name="EVSEId">The EVSE identification for which the schedule is requested. EVSE identification is 0, the charging station will calculate the expected consumption for the grid connection.</param>
         /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
@@ -89,8 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetCompositeScheduleRequest(ChargingStation_Id       ChargingStationId,
+        public GetCompositeScheduleRequest(NetworkingNode_Id        NetworkingNodeId,
                                            TimeSpan                 Duration,
                                            EVSE_Id                  EVSEId,
                                            ChargingRateUnits?       ChargingRateUnit    = null,
@@ -105,10 +106,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            DateTime?                RequestTimestamp    = null,
                                            TimeSpan?                RequestTimeout      = null,
                                            EventTracking_Id?        EventTrackingId     = null,
+                                           NetworkPath?             NetworkPath         = null,
                                            CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "GetCompositeSchedule",
+            : base(NetworkingNodeId,
+                   nameof(GetCompositeScheduleRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -120,6 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -127,6 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.Duration          = Duration;
             this.EVSEId            = EVSEId;
             this.ChargingRateUnit  = ChargingRateUnit;
+
 
             unchecked
             {
@@ -201,24 +205,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomGetCompositeScheduleRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomGetCompositeScheduleRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a get composite schedule request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomGetCompositeScheduleRequestParser">A delegate to parse custom get composite schedule requests.</param>
         public static GetCompositeScheduleRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
-                                                        ChargingStation_Id                                         ChargingStationId,
+                                                        NetworkingNode_Id                                          NetworkingNodeId,
+                                                        NetworkPath                                                NetworkPath,
                                                         CustomJObjectParserDelegate<GetCompositeScheduleRequest>?  CustomGetCompositeScheduleRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var getCompositeScheduleRequest,
                          out var errorResponse,
                          CustomGetCompositeScheduleRequestParser) &&
@@ -234,7 +241,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out GetCompositeScheduleRequest, out ErrorResponse, CustomGetCompositeScheduleRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out GetCompositeScheduleRequest, out ErrorResponse, CustomGetCompositeScheduleRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -243,18 +250,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetCompositeScheduleRequest">The parsed get composite schedule request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                           JSON,
                                        Request_Id                        RequestId,
-                                       ChargingStation_Id                ChargingStationId,
+                                       NetworkingNode_Id                 NetworkingNodeId,
+                                       NetworkPath                       NetworkPath,
                                        out GetCompositeScheduleRequest?  GetCompositeScheduleRequest,
                                        out String?                       ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out GetCompositeScheduleRequest,
                         out ErrorResponse,
                         null);
@@ -265,13 +275,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetCompositeScheduleRequest">The parsed get composite schedule request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetCompositeScheduleRequestParser">A delegate to parse custom get composite schedule requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
-                                       ChargingStation_Id                                         ChargingStationId,
+                                       NetworkingNode_Id                                          NetworkingNodeId,
+                                       NetworkPath                                                NetworkPath,
                                        out GetCompositeScheduleRequest?                           GetCompositeScheduleRequest,
                                        out String?                                                ErrorResponse,
                                        CustomJObjectParserDelegate<GetCompositeScheduleRequest>?  CustomGetCompositeScheduleRequestParser)
@@ -349,36 +361,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 GetCompositeScheduleRequest = new GetCompositeScheduleRequest(
-                                                  ChargingStationId,
+
+                                                  NetworkingNodeId,
                                                   Duration,
                                                   EVSEId,
                                                   ChargingRateUnit,
+
                                                   null,
                                                   null,
                                                   Signatures,
+
                                                   CustomData,
-                                                  RequestId
+
+                                                  RequestId,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  NetworkPath
+
                                               );
 
                 if (CustomGetCompositeScheduleRequestParser is not null)

@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
     public static class INetworkingNodeExtensions
     {
 
-        #region SendBootNotification(BootReason, ...)
+        #region SendBootNotification                  (BootReason, ...)
 
         /// <summary>
         /// Send a boot notification.
@@ -70,31 +70,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                                  CancellationToken                                          CancellationToken                         = default)
 
 
-            => NetworkingNode.SendBootNotification(
-                   new OCPPv2_1.CS.BootNotificationRequest(
-                       ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
-                       new ChargingStation(
-                           NetworkingNode.Model,
-                           NetworkingNode.VendorName,
-                           NetworkingNode.SerialNumber,
-                           NetworkingNode.Modem,
-                           NetworkingNode.FirmwareVersion,
-                           NetworkingNode.CustomData
-                       ),
-                       BootReason,
+                => NetworkingNode.SendBootNotification(
+                       new OCPPv2_1.CS.BootNotificationRequest(
+                           NetworkingNode.Id,
+                           new ChargingStation(
+                               NetworkingNode.Model,
+                               NetworkingNode.VendorName,
+                               NetworkingNode.SerialNumber,
+                               NetworkingNode.Modem,
+                               NetworkingNode.FirmwareVersion,
+                               NetworkingNode.CustomData
+                           ),
+                           BootReason,
 
-                       SignKeys,
-                       SignInfos,
-                       Signatures,
-                       CustomData,
+                           SignKeys,
+                           SignInfos,
+                           Signatures,
+                           CustomData,
 
-                       RequestId        ?? NetworkingNode.NextRequestId,
-                       RequestTimestamp ?? Timestamp.Now,
-                       RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
-                       EventTrackingId  ?? EventTracking_Id.New,
-                       CancellationToken
-                   )
-               );
+                           RequestId        ?? NetworkingNode.NextRequestId,
+                           RequestTimestamp ?? Timestamp.Now,
+                           RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
+                           EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
+                           CancellationToken
+                       )
+                   );
 
             //var signaturePolicy = SignaturePolicy ?? NetworkingNode.SignaturePolicy;
 
@@ -150,7 +151,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
         #endregion
 
-        #region SendFirmwareStatusNotification       (Status, ...)
+        #region SendFirmwareStatusNotification        (Status, ...)
 
         /// <summary>
         /// Send a firmware status notification to the CSMS.
@@ -166,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.FirmwareStatusNotificationResponse>
 
-            SendFirmwareStatusNotification(this INetworkingNode    NetworkingNode,
+            SendFirmwareStatusNotification(this INetworkingNode     NetworkingNode,
 
                                            FirmwareStatus           Status,
                                            Int64?                   UpdateFirmwareRequestId   = null,
@@ -186,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendFirmwareStatusNotification(
                        new OCPPv2_1.CS.FirmwareStatusNotificationRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            Status,
                            UpdateFirmwareRequestId,
 
@@ -200,13 +201,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SendPublishFirmwareStatusNotification(Status, PublishFirmwareStatusNotificationRequestId, DownloadLocations, ...)
+        #region SendPublishFirmwareStatusNotification (Status, PublishFirmwareStatusNotificationRequestId, DownloadLocations, ...)
 
         /// <summary>
         /// Send a publish firmware status notification to the CSMS.
@@ -223,7 +225,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.PublishFirmwareStatusNotificationResponse>
 
-            SendPublishFirmwareStatusNotification(this INetworkingNode    NetworkingNode,
+            SendPublishFirmwareStatusNotification(this INetworkingNode     NetworkingNode,
 
                                                   PublishFirmwareStatus    Status,
                                                   Int32?                   PublishFirmwareStatusNotificationRequestId,
@@ -244,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendPublishFirmwareStatusNotification(
                        new OCPPv2_1.CS.PublishFirmwareStatusNotificationRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            Status,
                            PublishFirmwareStatusNotificationRequestId,
                            DownloadLocations,
@@ -259,13 +261,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SendHeartbeat                        (...)
+        #region SendHeartbeat                         (...)
 
         /// <summary>
         /// Send a heartbeat.
@@ -279,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.HeartbeatResponse>
 
-            SendHeartbeat(this INetworkingNode    NetworkingNode,
+            SendHeartbeat(this INetworkingNode     NetworkingNode,
 
 
                           IEnumerable<KeyPair>?    SignKeys            = null,
@@ -297,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendHeartbeat(
                        new OCPPv2_1.CS.HeartbeatRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
 
                            SignKeys,
                            SignInfos,
@@ -309,13 +312,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region NotifyEvent                          (GeneratedAt, SequenceNumber, EventData, ToBeContinued = null, ...)
+        #region NotifyEvent                           (GeneratedAt, SequenceNumber, EventData, ToBeContinued = null, ...)
 
         /// <summary>
         /// Notify about an event.
@@ -333,7 +337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.NotifyEventResponse>
 
-            NotifyEvent(this INetworkingNode    NetworkingNode,
+            NotifyEvent(this INetworkingNode     NetworkingNode,
 
                         DateTime                 GeneratedAt,
                         UInt32                   SequenceNumber,
@@ -355,7 +359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyEvent(
                        new OCPPv2_1.CS.NotifyEventRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            GeneratedAt,
                            SequenceNumber,
                            EventData,
@@ -371,13 +375,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SendSecurityEventNotification        (Type, Timestamp, TechInfo = null, TechInfo = null, ...)
+        #region SendSecurityEventNotification         (Type, Timestamp, TechInfo = null, TechInfo = null, ...)
 
         /// <summary>
         /// Send a security event notification.
@@ -394,7 +399,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.SecurityEventNotificationResponse>
 
-            SendSecurityEventNotification(this INetworkingNode    NetworkingNode,
+            SendSecurityEventNotification(this INetworkingNode     NetworkingNode,
 
                                           SecurityEventType        Type,
                                           DateTime                 Timestamp,
@@ -415,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendSecurityEventNotification(
                        new OCPPv2_1.CS.SecurityEventNotificationRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            Type,
                            Timestamp,
                            TechInfo,
@@ -430,13 +435,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region NotifyReport                         (SequenceNumber, GeneratedAt, ReportData, ...)
+        #region NotifyReport                          (SequenceNumber, GeneratedAt, ReportData, ...)
 
         /// <summary>
         /// Notify about a report.
@@ -455,7 +461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.NotifyReportResponse>
 
-            NotifyReport(this INetworkingNode  NetworkingNode,
+            NotifyReport(this INetworkingNode     NetworkingNode,
 
                          Int32                    NotifyReportRequestId,
                          UInt32                   SequenceNumber,
@@ -478,7 +484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyReport(
                        new OCPPv2_1.CS.NotifyReportRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            NotifyReportRequestId,
                            SequenceNumber,
                            GeneratedAt,
@@ -495,13 +501,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region NotifyMonitoringReport               (NotifyMonitoringReportRequestId, SequenceNumber, GeneratedAt, MonitoringData, ToBeContinued = null, ...)
+        #region NotifyMonitoringReport                (NotifyMonitoringReportRequestId, SequenceNumber, GeneratedAt, MonitoringData, ToBeContinued = null, ...)
 
         /// <summary>
         /// Notify about a monitoring report.
@@ -520,7 +527,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.NotifyMonitoringReportResponse>
 
-            NotifyMonitoringReport(this INetworkingNode  NetworkingNode,
+            NotifyMonitoringReport(this INetworkingNode         NetworkingNode,
 
                                    Int32                        NotifyMonitoringReportRequestId,
                                    UInt32                       SequenceNumber,
@@ -543,7 +550,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyMonitoringReport(
                        new OCPPv2_1.CS.NotifyMonitoringReportRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            NotifyMonitoringReportRequestId,
                            SequenceNumber,
                            GeneratedAt,
@@ -560,13 +567,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SendLogStatusNotification            (Status, LogRequestId = null, ...)
+        #region SendLogStatusNotification             (Status, LogRequestId = null, ...)
 
         /// <summary>
         /// Send a log status notification.
@@ -582,7 +590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.LogStatusNotificationResponse>
 
-            SendLogStatusNotification(this INetworkingNode    NetworkingNode,
+            SendLogStatusNotification(this INetworkingNode     NetworkingNode,
 
                                       UploadLogStatus          Status,
                                       Int32?                   LogRequestId        = null,
@@ -602,7 +610,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendLogStatusNotification(
                        new OCPPv2_1.CS.LogStatusNotificationRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            Status,
                            LogRequestId,
 
@@ -616,13 +624,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region TransferData                         (VendorId, MessageId = null, Data = null, ...)
+        #region TransferData                          (VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Send the given vendor-specific data to the CSMS.
@@ -639,7 +648,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.DataTransferResponse>
 
-            TransferData(this INetworkingNode    NetworkingNode,
+            TransferData(this INetworkingNode     NetworkingNode,
 
                          Vendor_Id                VendorId,
                          Message_Id?              MessageId           = null,
@@ -660,7 +669,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.TransferData(
                        new OCPPv2_1.CS.DataTransferRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            VendorId,
                            MessageId,
                            Data,
@@ -675,6 +684,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -682,7 +692,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         #endregion
 
 
-        #region SendCertificateSigningRequest        (CSR, SignCertificateRequestId, CertificateType = null, ...)
+        #region SendCertificateSigningRequest         (CSR, SignCertificateRequestId, CertificateType = null, ...)
 
         /// <summary>
         /// Send a heartbeat.
@@ -699,7 +709,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.SignCertificateResponse>
 
-            SendCertificateSigningRequest(this INetworkingNode    NetworkingNode,
+            SendCertificateSigningRequest(this INetworkingNode     NetworkingNode,
 
                                           String                   CSR,
                                           Int32                    SignCertificateRequestId,
@@ -720,7 +730,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendCertificateSigningRequest(
                        new OCPPv2_1.CS.SignCertificateRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            CSR,
                            SignCertificateRequestId,
                            CertificateType,
@@ -735,13 +745,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region Get15118EVCertificate                (ISO15118SchemaVersion, CertificateAction, EXIRequest, ...)
+        #region Get15118EVCertificate                 (ISO15118SchemaVersion, CertificateAction, EXIRequest, ...)
 
         /// <summary>
         /// Get an ISO 15118 contract certificate.
@@ -760,7 +771,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.Get15118EVCertificateResponse>
 
-            Get15118EVCertificate(this INetworkingNode    NetworkingNode,
+            Get15118EVCertificate(this INetworkingNode     NetworkingNode,
 
                                   ISO15118SchemaVersion    ISO15118SchemaVersion,
                                   CertificateAction        CertificateAction,
@@ -783,7 +794,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.Get15118EVCertificate(
                        new OCPPv2_1.CS.Get15118EVCertificateRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            ISO15118SchemaVersion,
                            CertificateAction,
                            EXIRequest,
@@ -800,13 +811,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region GetCertificateStatus                 (OCSPRequestData, ...)
+        #region GetCertificateStatus                  (OCSPRequestData, ...)
 
         /// <summary>
         /// Get the status of a certificate.
@@ -821,7 +833,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.GetCertificateStatusResponse>
 
-            GetCertificateStatus(this INetworkingNode    NetworkingNode,
+            GetCertificateStatus(this INetworkingNode     NetworkingNode,
 
                                  OCSPRequestData          OCSPRequestData,
 
@@ -840,7 +852,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.GetCertificateStatus(
                        new OCPPv2_1.CS.GetCertificateStatusRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            OCSPRequestData,
 
                            SignKeys,
@@ -853,13 +865,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region GetCRLRequest                        (GetCRLRequestId, CertificateHashData, ...)
+        #region GetCRLRequest                         (GetCRLRequestId, CertificateHashData, ...)
 
         /// <summary>
         /// Get a certificate revocation list from CSMS for the specified certificate.
@@ -876,7 +889,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.GetCRLResponse>
 
-            GetCRLRequest(this INetworkingNode    NetworkingNode,
+            GetCRLRequest(this INetworkingNode     NetworkingNode,
 
                           UInt32                   GetCRLRequestId,
                           CertificateHashData      CertificateHashData,
@@ -896,7 +909,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.GetCRL(
                        new OCPPv2_1.CS.GetCRLRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            GetCRLRequestId,
                            CertificateHashData,
 
@@ -910,6 +923,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -917,7 +931,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         #endregion
 
 
-        #region SendReservationStatusUpdate          (ReservationId, ReservationUpdateStatus, ...)
+        #region SendReservationStatusUpdate           (ReservationId, ReservationUpdateStatus, ...)
 
         /// <summary>
         /// Send a reservation status update.
@@ -933,7 +947,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.ReservationStatusUpdateResponse>
 
-            SendReservationStatusUpdate(this INetworkingNode  NetworkingNode,
+            SendReservationStatusUpdate(this INetworkingNode     NetworkingNode,
 
                                         Reservation_Id           ReservationId,
                                         ReservationUpdateStatus  ReservationUpdateStatus,
@@ -953,7 +967,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendReservationStatusUpdate(
                        new OCPPv2_1.CS.ReservationStatusUpdateRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            ReservationId,
                            ReservationUpdateStatus,
 
@@ -967,13 +981,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region Authorize                            (IdToken, Certificate = null, ISO15118CertificateHashData = null, ...)
+        #region Authorize                             (IdToken, Certificate = null, ISO15118CertificateHashData = null, ...)
 
         /// <summary>
         /// Authorize the given token.
@@ -990,7 +1005,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.AuthorizeResponse>
 
-            Authorize(this INetworkingNode  NetworkingNode,
+            Authorize(this INetworkingNode           NetworkingNode,
 
                       IdToken                        IdToken,
                       Certificate?                   Certificate                   = null,
@@ -1011,7 +1026,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.Authorize(
                        new OCPPv2_1.CS.AuthorizeRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            IdToken,
                            Certificate,
                            ISO15118CertificateHashData,
@@ -1026,13 +1041,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region NotifyEVChargingNeeds                (EVSEId, ChargingNeeds, ReceivedTimestamp = null, MaxScheduleTuples = null, ...)
+        #region NotifyEVChargingNeeds                 (EVSEId, ChargingNeeds, ReceivedTimestamp = null, MaxScheduleTuples = null, ...)
 
         /// <summary>
         /// Notify about EV charging needs.
@@ -1050,7 +1066,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.NotifyEVChargingNeedsResponse>
 
-            NotifyEVChargingNeeds(this INetworkingNode    NetworkingNode,
+            NotifyEVChargingNeeds(this INetworkingNode     NetworkingNode,
 
                                   EVSE_Id                  EVSEId,
                                   ChargingNeeds            ChargingNeeds,
@@ -1072,7 +1088,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyEVChargingNeeds(
                        new OCPPv2_1.CS.NotifyEVChargingNeedsRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            EVSEId,
                            ChargingNeeds,
                            ReceivedTimestamp,
@@ -1088,13 +1104,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SendTransactionEvent                 (EventType, Timestamp, TriggerReason, SequenceNumber, TransactionInfo, ...)
+        #region SendTransactionEvent                  (EventType, Timestamp, TriggerReason, SequenceNumber, TransactionInfo, ...)
 
         /// <summary>
         /// Send a transaction event.
@@ -1122,11 +1139,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.TransactionEventResponse>
 
-            SendTransactionEvent(this INetworkingNode     NetworkingNode,
+            SendTransactionEvent(this INetworkingNode      NetworkingNode,
 
                                  TransactionEvents         EventType,
                                  DateTime                  Timestamp,
-                                 TriggerReason            TriggerReason,
+                                 TriggerReason             TriggerReason,
                                  UInt32                    SequenceNumber,
                                  Transaction               TransactionInfo,
 
@@ -1154,7 +1171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendTransactionEvent(
                        new OCPPv2_1.CS.TransactionEventRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
 
                            EventType,
                            Timestamp,
@@ -1181,13 +1198,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SendStatusNotification               (EVSEId, ConnectorId, Timestamp, Status, ...)
+        #region SendStatusNotification                (EVSEId, ConnectorId, Timestamp, Status, ...)
 
         /// <summary>
         /// Send a status notification for the given connector.
@@ -1205,7 +1223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.StatusNotificationResponse>
 
-            SendStatusNotification(this INetworkingNode    NetworkingNode,
+            SendStatusNotification(this INetworkingNode     NetworkingNode,
 
                                    EVSE_Id                  EVSEId,
                                    Connector_Id             ConnectorId,
@@ -1227,7 +1245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendStatusNotification(
                        new OCPPv2_1.CS.StatusNotificationRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            Timestamp,
                            Status,
                            EVSEId,
@@ -1243,13 +1261,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? org.GraphDefined.Vanaheimr.Illias.Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SendMeterValues                      (EVSEId, MeterValues, ...)
+        #region SendMeterValues                       (EVSEId, MeterValues, ...)
 
         /// <summary>
         /// Send a meter values for the given connector.
@@ -1265,7 +1284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.MeterValuesResponse>
 
-            SendMeterValues(this INetworkingNode  NetworkingNode,
+            SendMeterValues(this INetworkingNode     NetworkingNode,
 
                             EVSE_Id                  EVSEId, // 0 => main power meter; 1 => first EVSE
                             IEnumerable<MeterValue>  MeterValues,
@@ -1285,7 +1304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendMeterValues(
                        new OCPPv2_1.CS.MeterValuesRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            EVSEId,
                            MeterValues,
 
@@ -1299,13 +1318,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region NotifyChargingLimit                  (ChargingLimit, ChargingSchedules, EVSEId = null, ...)
+        #region NotifyChargingLimit                   (ChargingLimit, ChargingSchedules, EVSEId = null, ...)
 
         /// <summary>
         /// Notify about a charging limit.
@@ -1322,7 +1342,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.NotifyChargingLimitResponse>
 
-            NotifyChargingLimit(this INetworkingNode  NetworkingNode,
+            NotifyChargingLimit(this INetworkingNode           NetworkingNode,
 
                                 ChargingLimit                  ChargingLimit,
                                 IEnumerable<ChargingSchedule>  ChargingSchedules,
@@ -1343,7 +1363,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyChargingLimit(
                        new OCPPv2_1.CS.NotifyChargingLimitRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            ChargingLimit,
                            ChargingSchedules,
                            EVSEId,
@@ -1358,13 +1378,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region SendClearedChargingLimit             (ChargingLimitSource, EVSEId, ...)
+        #region SendClearedChargingLimit              (ChargingLimitSource, EVSEId, ...)
 
         /// <summary>
         /// Send a heartbeat.
@@ -1380,7 +1401,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.ClearedChargingLimitResponse>
 
-            SendClearedChargingLimit(this INetworkingNode    NetworkingNode,
+            SendClearedChargingLimit(this INetworkingNode     NetworkingNode,
 
                                      ChargingLimitSource      ChargingLimitSource,
                                      EVSE_Id?                 EVSEId,
@@ -1400,7 +1421,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.SendClearedChargingLimit(
                        new OCPPv2_1.CS.ClearedChargingLimitRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            ChargingLimitSource,
                            EVSEId,
 
@@ -1414,13 +1435,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region ReportChargingProfiles               (ReportChargingProfilesRequestId, ChargingLimitSource, EVSEId, ChargingProfiles, ToBeContinued = null, ...)
+        #region ReportChargingProfiles                (ReportChargingProfilesRequestId, ChargingLimitSource, EVSEId, ChargingProfiles, ToBeContinued = null, ...)
 
         /// <summary>
         /// Report about all charging profiles.
@@ -1439,7 +1461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.ReportChargingProfilesResponse>
 
-            ReportChargingProfiles(this INetworkingNode         NetworkingNode,
+            ReportChargingProfiles(this INetworkingNode          NetworkingNode,
 
                                    Int32                         ReportChargingProfilesRequestId,
                                    ChargingLimitSource           ChargingLimitSource,
@@ -1462,7 +1484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.ReportChargingProfiles(
                        new OCPPv2_1.CS.ReportChargingProfilesRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            ReportChargingProfilesRequestId,
                            ChargingLimitSource,
                            EVSEId,
@@ -1479,13 +1501,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region NotifyEVChargingSchedule             (NotifyEVChargingScheduleRequestId, TimeBase, EVSEId, ChargingSchedule, SelectedScheduleTupleId = null, PowerToleranceAcceptance = null, ...)
+        #region NotifyEVChargingSchedule              (NotifyEVChargingScheduleRequestId, TimeBase, EVSEId, ChargingSchedule, SelectedScheduleTupleId = null, PowerToleranceAcceptance = null, ...)
 
         /// <summary>
         /// Notify about an EV charging schedule.
@@ -1505,7 +1528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.NotifyEVChargingScheduleResponse>
 
-            NotifyEVChargingSchedule(this INetworkingNode    NetworkingNode,
+            NotifyEVChargingSchedule(this INetworkingNode     NetworkingNode,
 
                                      Int32                    NotifyEVChargingScheduleRequestId,
                                      DateTime                 TimeBase,
@@ -1529,7 +1552,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyEVChargingSchedule(
                        new OCPPv2_1.CS.NotifyEVChargingScheduleRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            TimeBase,
                            EVSEId,
                            ChargingSchedule,
@@ -1546,13 +1569,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region NotifyPriorityCharging               (NotifyPriorityChargingRequestId, TransactionId, Activated, ...)
+        #region NotifyPriorityCharging                (NotifyPriorityChargingRequestId, TransactionId, Activated, ...)
 
         /// <summary>
         /// Notify about priority charging.
@@ -1569,7 +1593,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.NotifyPriorityChargingResponse>
 
-            NotifyPriorityCharging(this INetworkingNode    NetworkingNode,
+            NotifyPriorityCharging(this INetworkingNode     NetworkingNode,
 
                                    Int32                    NotifyPriorityChargingRequestId,
                                    Transaction_Id           TransactionId,
@@ -1590,7 +1614,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyPriorityCharging(
                        new OCPPv2_1.CS.NotifyPriorityChargingRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            TransactionId,
                            Activated,
 
@@ -1604,13 +1628,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region PullDynamicScheduleUpdate            (ChargingProfileId, ...)
+        #region PullDynamicScheduleUpdate             (ChargingProfileId, ...)
 
         /// <summary>
         /// Report about all charging profiles.
@@ -1625,7 +1650,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.PullDynamicScheduleUpdateResponse>
 
-            PullDynamicScheduleUpdate(this INetworkingNode    NetworkingNode,
+            PullDynamicScheduleUpdate(this INetworkingNode     NetworkingNode,
 
                                       ChargingProfile_Id       ChargingProfileId,
 
@@ -1644,7 +1669,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.PullDynamicScheduleUpdate(
                        new OCPPv2_1.CS.PullDynamicScheduleUpdateRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            ChargingProfileId,
 
                            SignKeys,
@@ -1657,6 +1682,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1664,7 +1690,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         #endregion
 
 
-        #region NotifyDisplayMessages                (NotifyDisplayMessagesRequestId, MessageInfos, ToBeContinued, ...)
+        #region NotifyDisplayMessages                 (NotifyDisplayMessagesRequestId, MessageInfos, ToBeContinued, ...)
 
         /// <summary>
         /// NotifyDisplayMessages the given token.
@@ -1681,7 +1707,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.NotifyDisplayMessagesResponse>
 
-            NotifyDisplayMessages(this INetworkingNode     NetworkingNode,
+            NotifyDisplayMessages(this INetworkingNode      NetworkingNode,
 
                                   Int32                     NotifyDisplayMessagesRequestId,
                                   IEnumerable<MessageInfo>  MessageInfos,
@@ -1702,7 +1728,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyDisplayMessages(
                        new OCPPv2_1.CS.NotifyDisplayMessagesRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            NotifyDisplayMessagesRequestId,
                            MessageInfos,
                            ToBeContinued,
@@ -1717,13 +1743,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
 
         #endregion
 
-        #region NotifyCustomerInformation            (NotifyCustomerInformationRequestId, Data, SequenceNumber, GeneratedAt, ToBeContinued = null, ...)
+        #region NotifyCustomerInformation             (NotifyCustomerInformationRequestId, Data, SequenceNumber, GeneratedAt, ToBeContinued = null, ...)
 
         /// <summary>
         /// NotifyCustomerInformation the given token.
@@ -1742,7 +1769,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.NotifyCustomerInformationResponse>
 
-            NotifyCustomerInformation(this INetworkingNode    NetworkingNode,
+            NotifyCustomerInformation(this INetworkingNode     NetworkingNode,
 
                                       Int64                    NotifyCustomerInformationRequestId,
                                       String                   Data,
@@ -1765,7 +1792,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.NotifyCustomerInformation(
                        new OCPPv2_1.CS.NotifyCustomerInformationRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            NotifyCustomerInformationRequestId,
                            Data,
                            SequenceNumber,
@@ -1782,6 +1809,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );
@@ -1791,7 +1819,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
         // Binary Data Streams Extensions
 
-        #region TransferBinaryData                   (VendorId, MessageId = null, Data = null, ...)
+        #region TransferBinaryData                    (VendorId, MessageId = null, Data = null, ...)
 
         /// <summary>
         /// Transfer the given binary data to the CSMS.
@@ -1809,7 +1837,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPPv2_1.CSMS.BinaryDataTransferResponse>
 
-            TransferBinaryData(this INetworkingNode    NetworkingNode,
+            TransferBinaryData(this INetworkingNode     NetworkingNode,
 
                                Vendor_Id                VendorId,
                                Message_Id?              MessageId           = null,
@@ -1829,7 +1857,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
 
                 => NetworkingNode.TransferBinaryData(
                        new OCPPv2_1.CS.BinaryDataTransferRequest(
-                           ChargingStation_Id.Parse(NetworkingNode.Id.ToString()),
+                           NetworkingNode.Id,
                            VendorId,
                            MessageId,
                            Data,
@@ -1843,6 +1871,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS.Extensions
                            RequestTimestamp ?? Timestamp.Now,
                            RequestTimeout   ?? NetworkingNode.DefaultRequestTimeout,
                            EventTrackingId  ?? EventTracking_Id.New,
+                           NetworkPath.Empty,
                            CancellationToken
                        )
                    );

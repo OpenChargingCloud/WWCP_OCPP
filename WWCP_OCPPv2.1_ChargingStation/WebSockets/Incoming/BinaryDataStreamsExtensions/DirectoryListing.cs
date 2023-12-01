@@ -85,7 +85,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             Receive_ListDirectory(DateTime                   RequestTimestamp,
                                   WebSocketClientConnection  WebSocketConnection,
-                                  ChargingStation_Id         ChargingStationId,
+                                  NetworkingNode_Id          NetworkingNodeId,
+                                  NetworkPath                NetworkPath,
                                   EventTracking_Id           EventTrackingId,
                                   Request_Id                 RequestId,
                                   JObject                    RequestJSON,
@@ -102,7 +103,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 OnListDirectoryWSRequest?.Invoke(startTime,
                                                  WebSocketConnection,
-                                                 ChargingStationId,
+                                                 NetworkingNodeId,
+                                                 NetworkPath,
                                                  EventTrackingId,
                                                  RequestJSON);
 
@@ -122,7 +124,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 if (CSMS.ListDirectoryRequest.TryParse(RequestJSON,
                                                        RequestId,
-                                                       ChargingStationIdentity,
+                                                       NetworkingNodeId,
+                                                       NetworkPath,
                                                        out var request,
                                                        out var errorResponse,
                                                        CustomListDirectoryRequestParser) &&
@@ -230,6 +233,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 OnListDirectoryWSResponse?.Invoke(endTime,
                                                   WebSocketConnection,
+                                                  NetworkingNodeId,
+                                                  NetworkPath,
                                                   EventTrackingId,
                                                   RequestTimestamp,
                                                   RequestJSON,

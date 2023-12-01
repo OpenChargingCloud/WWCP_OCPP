@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new binary data transfer request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification.</param>
         /// <param name="Data">Optional vendor-specific binary data.</param>
@@ -90,8 +90,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public BinaryDataTransferRequest(ChargingStation_Id       ChargingStationId,
+        public BinaryDataTransferRequest(NetworkingNode_Id        NetworkingNodeId,
                                          Vendor_Id                VendorId,
                                          Message_Id?              MessageId           = null,
                                          Byte[]?                  Data                = null,
@@ -105,10 +106,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                          DateTime?                RequestTimestamp    = null,
                                          TimeSpan?                RequestTimeout      = null,
                                          EventTracking_Id?        EventTrackingId     = null,
+                                         NetworkPath?             NetworkPath         = null,
                                          CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "BinaryDataTransfer",
+            : base(NetworkingNodeId,
+                   nameof(BinaryDataTransferRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -120,6 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -128,7 +131,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.MessageId  = MessageId;
             this.Data       = Data;
             this.Format     = Format ?? BinaryFormats.TextIds;
-
 
             unchecked
             {
@@ -152,24 +154,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (Binary, RequestId, ChargingStationId, CustomDataTransferRequestParser = null)
+        #region (static) Parse   (Binary, RequestId, NetworkingNodeId, NetworkPath, CustomDataTransferRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a binary data transfer request.
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomDataTransferRequestParser">A delegate to parse custom binary data transfer requests.</param>
         public static BinaryDataTransferRequest Parse(Byte[]                                                  Binary,
                                                       Request_Id                                              RequestId,
-                                                      ChargingStation_Id                                      ChargingStationId,
+                                                      NetworkingNode_Id                                       NetworkingNodeId,
+                                                      NetworkPath                                             NetworkPath,
                                                       CustomBinaryParserDelegate<BinaryDataTransferRequest>?  CustomDataTransferRequestParser   = null)
         {
 
             if (TryParse(Binary,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var binaryDataTransferRequest,
                          out var errorResponse,
                          CustomDataTransferRequestParser) &&
@@ -185,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(Binary, RequestId, ChargingStationId, out BinaryDataTransferRequest, OnException = null)
+        #region (static) TryParse(Binary, RequestId, NetworkingNodeId, NetworkPath, out BinaryDataTransferRequest, OnException = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -194,18 +199,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Binary">The binary data to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="BinaryDataTransferRequest">The parsed BinaryDataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(Byte[]                          Binary,
                                        Request_Id                      RequestId,
-                                       ChargingStation_Id              ChargingStationId,
+                                       NetworkingNode_Id               NetworkingNodeId,
+                                       NetworkPath                     NetworkPath,
                                        out BinaryDataTransferRequest?  BinaryDataTransferRequest,
                                        out String?                     ErrorResponse)
 
             => TryParse(Binary,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out BinaryDataTransferRequest,
                         out ErrorResponse,
                         null);
@@ -216,13 +224,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="Binary">The binary to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="BinaryDataTransferRequest">The parsed BinaryDataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomBinaryDataTransferRequestParser">A delegate to parse custom BinaryDataTransfer requests.</param>
         public static Boolean TryParse(Byte[]                                                  Binary,
                                        Request_Id                                              RequestId,
-                                       ChargingStation_Id                                      ChargingStationId,
+                                       NetworkingNode_Id                                       NetworkingNodeId,
+                                       NetworkPath                                             NetworkPath,
                                        out BinaryDataTransferRequest?                          BinaryDataTransferRequest,
                                        out String?                                             ErrorResponse,
                                        CustomBinaryParserDelegate<BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestParser)
@@ -268,7 +278,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     //BinaryDataTransferRequest = new BinaryDataTransferRequest(
 
-                    //                                ChargingStationId,
+                    //                                NetworkPath,
                     //                                vendorId,
                     //                                messageId,
                     //                                data,
@@ -322,7 +332,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     BinaryDataTransferRequest = new BinaryDataTransferRequest(
 
-                                                    ChargingStationId,
+                                                    NetworkingNodeId,
                                                     vendorId,
                                                     messageId,
                                                     data,
@@ -332,7 +342,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                     null,
                                                     null, //signatures,
 
-                                                    RequestId
+                                                    RequestId,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    NetworkPath
 
                                                 );
 

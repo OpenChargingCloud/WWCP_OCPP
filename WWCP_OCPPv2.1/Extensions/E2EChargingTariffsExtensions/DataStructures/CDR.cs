@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An optional enumeration of charging station identifications, this tariff is valid for.
         /// </summary>
         [Optional]
-        public ChargingStation_Id?              ChargingStationId        { get; }
+        public NetworkPath       ?              NetworkPath        { get; }
 
         /// <summary>
         /// An optional enumeration of charging pool identifications, this tariff is valid for.
@@ -191,7 +191,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                    CSOOperator_Id                CSOOperatorId,
                    GlobalEVSE_Id                 EVSEId,
-                   ChargingStation_Id?           ChargingStationId,
+                   NetworkPath       ?           NetworkPath,
                    ChargingPool_Id?              ChargingPoolId,
                    IEnumerable<MeteringValue>    MeteringValues,
 
@@ -249,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             this.CSOOperatorId          = CSOOperatorId;
             this.EVSEId                 = EVSEId;
-            this.ChargingStationId      = ChargingStationId;
+            this.NetworkPath      = NetworkPath;
             this.ChargingPoolId         = ChargingPoolId;
             this.MeteringValues         = MeteringValues.  Distinct();
             this.ChargingPeriods        = ChargingPeriods?.Distinct() ?? Array.Empty<ChargingPeriod>();
@@ -311,7 +311,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              out CDR?                 CDR,
                                              out String?              ErrorResponse,
 
-                                             ChargingStation_Id?      ChargingStationId     = null,
+                                             NetworkPath       ?      NetworkPath     = null,
                                              ChargingPool_Id?         ChargingPoolId        = null,
                                              Measurand?               Measurand             = null,
                                              MeasurementLocation?     MeasurementLocation   = null)
@@ -533,7 +533,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                       CSOOperatorId,
                       EVSEId,
-                      ChargingStationId,
+                      NetworkPath,
                       ChargingPoolId,
                       new[] {
                           startMeteringValue,
@@ -1164,7 +1164,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                    CSOOperatorId,
                    EVSEId,
-                   ChargingStationId,
+                   NetworkPath,
                    ChargingPoolId,
                    MeteringValues. Select(meteringValue  => meteringValue.Clone()). ToArray(),
 

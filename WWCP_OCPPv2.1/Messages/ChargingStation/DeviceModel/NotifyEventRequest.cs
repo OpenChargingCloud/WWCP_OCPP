@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a notify event request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="GeneratedAt">The timestamp of the moment this message was generated at the charging station.</param>
         /// <param name="SequenceNumber">The sequence number of this message. First message starts at 0.</param>
         /// <param name="EventData">The enumeration of event data.</param>
@@ -99,8 +99,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyEventRequest(ChargingStation_Id       ChargingStationId,
+        public NotifyEventRequest(NetworkingNode_Id        NetworkingNodeId,
                                   DateTime                 GeneratedAt,
                                   UInt32                   SequenceNumber,
                                   IEnumerable<EventData>   EventData,
@@ -116,10 +117,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                   DateTime?                RequestTimestamp    = null,
                                   TimeSpan?                RequestTimeout      = null,
                                   EventTracking_Id?        EventTrackingId     = null,
+                                  NetworkPath?             NetworkPath         = null,
                                   CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "NotifyEvent",
+            : base(NetworkingNodeId,
+                   nameof(NotifyEventRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -131,6 +133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -143,6 +146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.SequenceNumber  = SequenceNumber;
             this.EventData       = EventData.Distinct();
             this.ToBeContinued   = ToBeContinued;
+
 
             unchecked
             {
@@ -390,24 +394,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomNotifyEventRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomNotifyEventRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a notify event request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomNotifyEventRequestParser">A delegate to parse custom notify event requests.</param>
         public static NotifyEventRequest Parse(JObject                                           JSON,
                                                Request_Id                                        RequestId,
-                                               ChargingStation_Id                                ChargingStationId,
+                                               NetworkingNode_Id                                 NetworkingNodeId,
+                                               NetworkPath                                       NetworkPath,
                                                CustomJObjectParserDelegate<NotifyEventRequest>?  CustomNotifyEventRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var notifyEventRequest,
                          out var errorResponse,
                          CustomNotifyEventRequestParser) &&
@@ -423,7 +430,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out NotifyEventRequest, out ErrorResponse, CustomNotifyEventRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out NotifyEventRequest, out ErrorResponse, CustomNotifyEventRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -432,18 +439,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyEventRequest">The parsed notify event request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                  JSON,
                                        Request_Id               RequestId,
-                                       ChargingStation_Id       ChargingStationId,
+                                       NetworkingNode_Id        NetworkingNodeId,
+                                       NetworkPath              NetworkPath,
                                        out NotifyEventRequest?  NotifyEventRequest,
                                        out String?              ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out NotifyEventRequest,
                         out ErrorResponse,
                         null);
@@ -454,13 +464,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyEventRequest">The parsed notify event request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyEventRequestParser">A delegate to parse custom notify event requests.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
-                                       ChargingStation_Id                                ChargingStationId,
+                                       NetworkingNode_Id                                 NetworkingNodeId,
+                                       NetworkPath                                       NetworkPath,
                                        out NotifyEventRequest?                           NotifyEventRequest,
                                        out String?                                       ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyEventRequest>?  CustomNotifyEventRequestParser)
@@ -549,37 +561,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 NotifyEventRequest = new NotifyEventRequest(
-                                         ChargingStationId,
+
+                                         NetworkingNodeId,
                                          GeneratedAt,
                                          SequenceNumber,
                                          EventData,
                                          ToBeContinued,
+
                                          null,
                                          null,
                                          Signatures,
+
                                          CustomData,
-                                         RequestId
+
+                                         RequestId,
+                                         null,
+                                         null,
+                                         null,
+                                         NetworkPath
+
                                      );
 
                 if (CustomNotifyEventRequestParser is not null)

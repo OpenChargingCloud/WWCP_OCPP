@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new unlock connector request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="EVSEId">The identifier of the EVSE to be unlocked.</param>
         /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
         /// 
@@ -80,8 +80,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UnlockConnectorRequest(ChargingStation_Id       ChargingStationId,
+        public UnlockConnectorRequest(NetworkingNode_Id        NetworkingNodeId,
                                       EVSE_Id                  EVSEId,
                                       Connector_Id             ConnectorId,
 
@@ -95,10 +96,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                       DateTime?                RequestTimestamp    = null,
                                       TimeSpan?                RequestTimeout      = null,
                                       EventTracking_Id?        EventTrackingId     = null,
+                                      NetworkPath?             NetworkPath         = null,
                                       CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "UnlockConnector",
+            : base(NetworkingNodeId,
+                   nameof(UnlockConnectorRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -110,6 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -119,11 +122,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             unchecked
             {
-
                 hashCode = this.EVSEId.     GetHashCode() * 5 ^
                            this.ConnectorId.GetHashCode() * 3 ^
                            base.            GetHashCode();
-
             }
 
         }
@@ -176,24 +177,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomUnlockConnectorRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomUnlockConnectorRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an unlock connector request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomUnlockConnectorRequestParser">A delegate to parse custom unlock connector requests.</param>
         public static UnlockConnectorRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
-                                                   ChargingStation_Id                                    ChargingStationId,
+                                                   NetworkingNode_Id                                     NetworkingNodeId,
+                                                   NetworkPath                                           NetworkPath,
                                                    CustomJObjectParserDelegate<UnlockConnectorRequest>?  CustomUnlockConnectorRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var unlockConnectorRequest,
                          out var errorResponse,
                          CustomUnlockConnectorRequestParser) &&
@@ -209,7 +213,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON,  RequestId, ChargingStationId, out UnlockConnectorRequest, out ErrorResponse, CustomUnlockConnectorRequestParser = null)
+        #region (static) TryParse(JSON,  RequestId, NetworkingNodeId, NetworkPath, out UnlockConnectorRequest, out ErrorResponse, CustomUnlockConnectorRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -218,18 +222,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="UnlockConnectorRequest">The parsed unlock connector request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                      JSON,
                                        Request_Id                   RequestId,
-                                       ChargingStation_Id           ChargingStationId,
+                                       NetworkingNode_Id            NetworkingNodeId,
+                                       NetworkPath                  NetworkPath,
                                        out UnlockConnectorRequest?  UnlockConnectorRequest,
                                        out String?                  ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out UnlockConnectorRequest,
                         out ErrorResponse,
                         null);
@@ -240,13 +247,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="UnlockConnectorRequest">The parsed unlock connector request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomUnlockConnectorRequestParser">A delegate to parse custom unlock connector requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
-                                       ChargingStation_Id                                    ChargingStationId,
+                                       NetworkingNode_Id                                     NetworkingNodeId,
+                                       NetworkPath                                           NetworkPath,
                                        out UnlockConnectorRequest?                           UnlockConnectorRequest,
                                        out String?                                           ErrorResponse,
                                        CustomJObjectParserDelegate<UnlockConnectorRequest>?  CustomUnlockConnectorRequestParser)
@@ -311,35 +320,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 UnlockConnectorRequest = new UnlockConnectorRequest(
-                                             ChargingStationId,
+
+                                             NetworkingNodeId,
                                              EVSEId,
                                              ConnectorId,
+
                                              null,
                                              null,
                                              Signatures,
+
                                              CustomData,
-                                             RequestId
+
+                                             RequestId,
+                                             null,
+                                             null,
+                                             null,
+                                             NetworkPath
+
                                          );
 
                 if (CustomUnlockConnectorRequestParser is not null)

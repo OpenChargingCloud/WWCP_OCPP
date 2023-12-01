@@ -137,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a transaction event request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="EventType">The type of this transaction event. The first event of a transaction SHALL be of type "started", the last of type "ended". All others should be of type "updated".</param>
         /// <param name="Timestamp">The timestamp at which this transaction event occurred.</param>
         /// <param name="TriggerReason">The reason the charging station sends this message.</param>
@@ -160,8 +160,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public TransactionEventRequest(ChargingStation_Id        ChargingStationId,
+        public TransactionEventRequest(NetworkingNode_Id         NetworkingNodeId,
                                        TransactionEvents         EventType,
                                        DateTime                  Timestamp,
                                        TriggerReason             TriggerReason,
@@ -187,10 +188,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                        DateTime?                 RequestTimestamp        = null,
                                        TimeSpan?                 RequestTimeout          = null,
                                        EventTracking_Id?         EventTrackingId         = null,
+                                       NetworkPath?              NetworkPath             = null,
                                        CancellationToken         CancellationToken       = default)
 
-            : base(ChargingStationId,
-                   "TransactionEvent",
+            : base(NetworkingNodeId,
+                   nameof(TransactionEventRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -202,6 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -749,24 +752,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomTransactionEventRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomTransactionEventRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a transaction event request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomTransactionEventRequestParser">A delegate to parse custom transaction event requests.</param>
         public static TransactionEventRequest Parse(JObject                                                JSON,
                                                     Request_Id                                             RequestId,
-                                                    ChargingStation_Id                                     ChargingStationId,
+                                                    NetworkingNode_Id                                      NetworkingNodeId,
+                                                    NetworkPath                                            NetworkPath,
                                                     CustomJObjectParserDelegate<TransactionEventRequest>?  CustomTransactionEventRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var transactionEventRequest,
                          out var errorResponse,
                          CustomTransactionEventRequestParser) &&
@@ -782,7 +788,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out TransactionEventRequest, out ErrorResponse, CustomTransactionEventRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out TransactionEventRequest, out ErrorResponse, CustomTransactionEventRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -791,18 +797,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="TransactionEventRequest">The parsed transaction event request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                       JSON,
                                        Request_Id                    RequestId,
-                                       ChargingStation_Id            ChargingStationId,
+                                       NetworkingNode_Id             NetworkingNodeId,
+                                       NetworkPath                   NetworkPath,
                                        out TransactionEventRequest?  TransactionEventRequest,
                                        out String?                   ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out TransactionEventRequest,
                         out ErrorResponse,
                         null);
@@ -813,13 +822,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="TransactionEventRequest">The parsed transaction event request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomTransactionEventRequestParser">A delegate to parse custom transaction event requests.</param>
         public static Boolean TryParse(JObject                                                JSON,
                                        Request_Id                                             RequestId,
-                                       ChargingStation_Id                                     ChargingStationId,
+                                       NetworkingNode_Id                                      NetworkingNodeId,
+                                       NetworkPath                                            NetworkPath,
                                        out TransactionEventRequest?                           TransactionEventRequest,
                                        out String?                                            ErrorResponse,
                                        CustomJObjectParserDelegate<TransactionEventRequest>?  CustomTransactionEventRequestParser)
@@ -1036,29 +1047,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargingStationId        [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 TransactionEventRequest = new TransactionEventRequest(
 
-                                              ChargingStationId,
+                                              NetworkingNodeId,
 
                                               EventType,
                                               Timestamp,
@@ -1081,7 +1073,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                                               CustomData,
 
-                                              RequestId
+                                              RequestId,
+                                              null,
+                                              null,
+                                              null,
+                                              NetworkPath
 
                                           );
 

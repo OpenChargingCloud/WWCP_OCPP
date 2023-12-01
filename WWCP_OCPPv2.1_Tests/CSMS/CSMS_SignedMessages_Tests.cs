@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
     /// Unit tests for a CSMS sending signed messages to charging stations.
     /// </summary>
     [TestFixture]
-    public class SignedMessages_Tests : AChargingStationTests
+    public class CSMS_SignedMessages_Tests : AChargingStationTests
     {
 
         #region Reset_Test()
@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 var resetType  = ResetType.Immediate;
                 var now        = Timestamp.Now;
                 var response   = await testCSMS01.Reset(
-                                     ChargingStationId:   chargingStation1.Id,
+                                     NetworkingNodeId:    chargingStation1.Id,
                                      ResetType:           resetType,
                                      SignInfos:           new[] {
                                                               keyPair.ToSignInfo1(
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
 
 
                 Assert.AreEqual(1,                                   resetRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                 resetRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                 resetRequests.First().NetworkingNodeId);
                 Assert.AreEqual(resetType,                           resetRequests.First().ResetType);
                 Assert.AreEqual(1,                                   resetRequests.First().Signatures.Count());
                 Assert.AreEqual(VerificationStatus.ValidSignature,   resetRequests.First().Signatures.First().Status);

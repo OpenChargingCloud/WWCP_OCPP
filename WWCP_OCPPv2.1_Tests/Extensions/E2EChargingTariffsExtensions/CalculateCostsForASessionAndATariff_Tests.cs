@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             #region Define a  charging station identification
 
-            var chargingStationId  = ChargingStation_Id.Parse("cp001");
+            var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
             Assert.IsNotNull(chargingStationId);
             Assert.IsFalse  (chargingStationId.IsNullOrEmpty);
@@ -181,7 +181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             ChargingStationId:         chargingStationId,
+                                             NetworkingNodeId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
@@ -244,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             ChargingStationId:         chargingStationId,
+                                             NetworkingNodeId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
@@ -425,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             #region Define a  charging station identification
 
-            var chargingStationId  = ChargingStation_Id.Parse("cp001");
+            var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
             Assert.IsNotNull(chargingStationId);
             Assert.IsFalse  (chargingStationId.IsNullOrEmpty);
@@ -465,7 +465,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             ChargingStationId:         chargingStationId,
+                                             NetworkingNodeId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
@@ -528,7 +528,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             ChargingStationId:         chargingStationId,
+                                             NetworkingNodeId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
@@ -713,7 +713,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             #region Define a  charging station identification
 
-            var chargingStationId  = ChargingStation_Id.Parse("cp001");
+            var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
             Assert.IsNotNull(chargingStationId);
             Assert.IsFalse  (chargingStationId.IsNullOrEmpty);
@@ -753,7 +753,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             ChargingStationId:         chargingStationId,
+                                             NetworkingNodeId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
@@ -816,7 +816,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             ChargingStationId:         chargingStationId,
+                                             NetworkingNodeId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
@@ -1018,7 +1018,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             #region Define a  charging station identification
 
-            var chargingStationId  = ChargingStation_Id.Parse("cp001");
+            var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
             Assert.IsNotNull(chargingStationId);
             Assert.IsFalse  (chargingStationId.IsNullOrEmpty);
@@ -1058,7 +1058,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             ChargingStationId:         chargingStationId,
+                                             NetworkingNodeId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
@@ -1121,7 +1121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             ChargingStationId:         chargingStationId,
+                                             NetworkingNodeId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
@@ -1348,7 +1348,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             #region Define a  charging station identification
 
-            var chargingStationId  = ChargingStation_Id.Parse("cp001");
+            var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
             Assert.IsNotNull(chargingStationId);
             Assert.IsFalse  (chargingStationId.IsNullOrEmpty);
@@ -1388,7 +1388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             ChargingStationId:         chargingStationId,
+                                             NetworkingNodeId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
@@ -1451,7 +1451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             ChargingStationId:         chargingStationId,
+                                             NetworkingNodeId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),
@@ -1646,7 +1646,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             #region Define a  charging station identification
 
-            var chargingStationId  = ChargingStation_Id.Parse("cp001");
+            var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
             Assert.IsNotNull(chargingStationId);
             Assert.IsFalse  (chargingStationId.IsNullOrEmpty);
@@ -1686,7 +1686,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             ChargingStationId:         chargingStationId,
+                                             NetworkingNodeId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Started,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(10),
@@ -1749,7 +1749,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                          new CS.TransactionEventRequest(
 
-                                             ChargingStationId:         chargingStationId,
+                                             NetworkingNodeId:          chargingStationId,
 
                                              EventType:                 TransactionEvents.Ended,
                                              Timestamp:                 timeReference + TimeSpan.FromMinutes(49),

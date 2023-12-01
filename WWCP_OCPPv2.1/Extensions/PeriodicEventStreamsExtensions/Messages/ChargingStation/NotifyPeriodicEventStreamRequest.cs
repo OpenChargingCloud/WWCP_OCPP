@@ -30,8 +30,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// A notify periodic event stream request.
     /// </summary>
     /// <remarks>There will be NO RESPONSE to this request!</remarks>
-    public class NotifyPeriodicEventStream : ARequest<NotifyPeriodicEventStream>,
-                                             IRequest
+    public class NotifyPeriodicEventStreamRequest : ARequest<NotifyPeriodicEventStreamRequest>,
+                                                    IRequest
     {
 
         #region Data
@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new notify periodic event stream request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="Id">The unique identification of the periodic event stream.</param>
         /// <param name="StreamDataElements">An enumeration of periodic event stream data elements.</param>
         /// 
@@ -81,25 +81,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyPeriodicEventStream(ChargingStation_Id              ChargingStationId,
-                                         PeriodicEventStream_Id          Id,
-                                         IEnumerable<StreamDataElement>  StreamDataElements,
+        public NotifyPeriodicEventStreamRequest(NetworkingNode_Id               NetworkingNodeId,
+                                                PeriodicEventStream_Id          Id,
+                                                IEnumerable<StreamDataElement>  StreamDataElements,
 
-                                         IEnumerable<KeyPair>?           SignKeys            = null,
-                                         IEnumerable<SignInfo>?          SignInfos           = null,
-                                         IEnumerable<Signature>?         Signatures          = null,
+                                                IEnumerable<KeyPair>?           SignKeys            = null,
+                                                IEnumerable<SignInfo>?          SignInfos           = null,
+                                                IEnumerable<Signature>?         Signatures          = null,
 
-                                         CustomData?                     CustomData          = null,
+                                                CustomData?                     CustomData          = null,
 
-                                         Request_Id?                     RequestId           = null,
-                                         DateTime?                       RequestTimestamp    = null,
-                                         TimeSpan?                       RequestTimeout      = null,
-                                         EventTracking_Id?               EventTrackingId     = null,
-                                         CancellationToken               CancellationToken   = default)
+                                                Request_Id?                     RequestId           = null,
+                                                DateTime?                       RequestTimestamp    = null,
+                                                TimeSpan?                       RequestTimeout      = null,
+                                                EventTracking_Id?               EventTrackingId     = null,
+                                                NetworkPath?                    NetworkPath         = null,
+                                                CancellationToken               CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "NotifyPeriodicEventStream",
+            : base(NetworkingNodeId,
+                   nameof(NotifyPeriodicEventStreamRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -111,6 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -144,25 +147,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomNotifyPeriodicEventStreamRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomNotifyPeriodicEventStreamRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an NotifyPeriodicEventStream request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomNotifyPeriodicEventStreamRequestParser">A delegate to parse custom NotifyPeriodicEventStream requests.</param>
-        public static NotifyPeriodicEventStream Parse(JObject                                                         JSON,
+        public static NotifyPeriodicEventStreamRequest Parse(JObject                                                         JSON,
                                                              Request_Id                                                      RequestId,
-                                                             ChargingStation_Id                                              ChargingStationId,
-                                                             CustomJObjectParserDelegate<NotifyPeriodicEventStream>?  CustomNotifyPeriodicEventStreamRequestParser   = null)
+                                                             NetworkingNode_Id                                               NetworkingNodeId,
+                                                             NetworkPath                                                     NetworkPath,
+                                                             CustomJObjectParserDelegate<NotifyPeriodicEventStreamRequest>?  CustomNotifyPeriodicEventStreamRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var notifyPeriodicEventStreamRequest,
                          out var errorResponse,
                          CustomNotifyPeriodicEventStreamRequestParser) &&
@@ -178,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out NotifyPeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out NotifyPeriodicEventStreamRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -187,18 +193,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyPeriodicEventStreamRequest">The parsed NotifyPeriodicEventStream request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                JSON,
                                        Request_Id                             RequestId,
-                                       ChargingStation_Id                     ChargingStationId,
-                                       out NotifyPeriodicEventStream?  NotifyPeriodicEventStreamRequest,
+                                       NetworkingNode_Id                      NetworkingNodeId,
+                                       NetworkPath                            NetworkPath,
+                                       out NotifyPeriodicEventStreamRequest?  NotifyPeriodicEventStreamRequest,
                                        out String?                            ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out NotifyPeriodicEventStreamRequest,
                         out ErrorResponse,
                         null);
@@ -209,16 +218,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyPeriodicEventStreamRequest">The parsed NotifyPeriodicEventStream request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyPeriodicEventStreamRequestParser">A delegate to parse custom NotifyPeriodicEventStream requests.</param>
         public static Boolean TryParse(JObject                                                         JSON,
                                        Request_Id                                                      RequestId,
-                                       ChargingStation_Id                                              ChargingStationId,
-                                       out NotifyPeriodicEventStream?                           NotifyPeriodicEventStreamRequest,
+                                       NetworkingNode_Id                                               NetworkingNodeId,
+                                       NetworkPath                                                     NetworkPath,
+                                       out NotifyPeriodicEventStreamRequest?                           NotifyPeriodicEventStreamRequest,
                                        out String?                                                     ErrorResponse,
-                                       CustomJObjectParserDelegate<NotifyPeriodicEventStream>?  CustomNotifyPeriodicEventStreamRequestParser)
+                                       CustomJObjectParserDelegate<NotifyPeriodicEventStreamRequest>?  CustomNotifyPeriodicEventStreamRequestParser)
         {
 
             try
@@ -252,7 +263,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-
                 #region Signatures            [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
@@ -281,29 +291,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargingStationId     [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
+                NotifyPeriodicEventStreamRequest = new NotifyPeriodicEventStreamRequest(
 
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
-
-                NotifyPeriodicEventStreamRequest = new NotifyPeriodicEventStream(
-
-                                                       ChargingStationId,
+                                                       NetworkingNodeId,
                                                        Id,
                                                        StreamDataElements,
 
@@ -312,7 +303,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                        Signatures,
 
                                                        CustomData,
-                                                       RequestId
+
+                                                       RequestId,
+                                                       null,
+                                                       null,
+                                                       null,
+                                                       NetworkPath
 
                                                    );
 
@@ -343,7 +339,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CustomStreamDataElementSerializer">A delegate to serialize custom stream data elements.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyPeriodicEventStream>?  CustomNotifyPeriodicEventStreamRequestSerializer   = null,
+        public JObject ToJSON(CustomJObjectSerializerDelegate<NotifyPeriodicEventStreamRequest>?  CustomNotifyPeriodicEventStreamRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<StreamDataElement>?                 CustomStreamDataElementSerializer                  = null,
                               CustomJObjectSerializerDelegate<Signature>?                         CustomSignatureSerializer                          = null,
                               CustomJObjectSerializerDelegate<CustomData>?                        CustomCustomDataSerializer                         = null)
@@ -384,8 +380,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NotifyPeriodicEventStreamRequest1">A NotifyPeriodicEventStream request.</param>
         /// <param name="NotifyPeriodicEventStreamRequest2">Another NotifyPeriodicEventStream request.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (NotifyPeriodicEventStream? NotifyPeriodicEventStreamRequest1,
-                                           NotifyPeriodicEventStream? NotifyPeriodicEventStreamRequest2)
+        public static Boolean operator == (NotifyPeriodicEventStreamRequest? NotifyPeriodicEventStreamRequest1,
+                                           NotifyPeriodicEventStreamRequest? NotifyPeriodicEventStreamRequest2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -410,8 +406,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="NotifyPeriodicEventStreamRequest1">A NotifyPeriodicEventStream request.</param>
         /// <param name="NotifyPeriodicEventStreamRequest2">Another NotifyPeriodicEventStream request.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (NotifyPeriodicEventStream? NotifyPeriodicEventStreamRequest1,
-                                           NotifyPeriodicEventStream? NotifyPeriodicEventStreamRequest2)
+        public static Boolean operator != (NotifyPeriodicEventStreamRequest? NotifyPeriodicEventStreamRequest1,
+                                           NotifyPeriodicEventStreamRequest? NotifyPeriodicEventStreamRequest2)
 
             => !(NotifyPeriodicEventStreamRequest1 == NotifyPeriodicEventStreamRequest2);
 
@@ -429,7 +425,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Object">A NotifyPeriodicEventStreamRequest request to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is NotifyPeriodicEventStream notifyPeriodicEventStreamRequest &&
+            => Object is NotifyPeriodicEventStreamRequest notifyPeriodicEventStreamRequest &&
                    Equals(notifyPeriodicEventStreamRequest);
 
         #endregion
@@ -440,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Compares two NotifyPeriodicEventStreamRequest requests for equality.
         /// </summary>
         /// <param name="NotifyPeriodicEventStreamRequest">A NotifyPeriodicEventStreamRequest request to compare with.</param>
-        public override Boolean Equals(NotifyPeriodicEventStream? NotifyPeriodicEventStreamRequest)
+        public override Boolean Equals(NotifyPeriodicEventStreamRequest? NotifyPeriodicEventStreamRequest)
 
             => NotifyPeriodicEventStreamRequest is not null &&
 

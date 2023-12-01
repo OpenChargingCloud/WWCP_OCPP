@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a notify priority charging request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="TransactionId">The transaction for which priority charging is requested.</param>
         /// <param name="Activated">True, when priority charging was activated, or false, when it has stopped using the priority charging profile.</param>
         /// 
@@ -81,8 +81,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public NotifyPriorityChargingRequest(ChargingStation_Id       ChargingStationId,
+        public NotifyPriorityChargingRequest(NetworkingNode_Id        NetworkingNodeId,
                                              Transaction_Id           TransactionId,
                                              Boolean                  Activated,
 
@@ -96,10 +97,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              DateTime?                RequestTimestamp    = null,
                                              TimeSpan?                RequestTimeout      = null,
                                              EventTracking_Id?        EventTrackingId     = null,
+                                             NetworkPath?             NetworkPath         = null,
                                              CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "NotifyPriorityCharging",
+            : base(NetworkingNodeId,
+                   nameof(NotifyPriorityChargingRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -111,6 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -120,11 +123,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
             unchecked
             {
-
                 hashCode = TransactionId.GetHashCode() * 5 ^
                            Activated.    GetHashCode() * 3 ^
                            base.         GetHashCode();
-
             }
 
         }
@@ -139,24 +140,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomNotifyPriorityChargingRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomNotifyPriorityChargingRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a notify priority charging request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomNotifyPriorityChargingRequestParser">A delegate to parse custom notify priority charging requests.</param>
         public static NotifyPriorityChargingRequest Parse(JObject                                                      JSON,
                                                           Request_Id                                                   RequestId,
-                                                          ChargingStation_Id                                           ChargingStationId,
+                                                          NetworkingNode_Id                                            NetworkingNodeId,
+                                                          NetworkPath                                                  NetworkPath,
                                                           CustomJObjectParserDelegate<NotifyPriorityChargingRequest>?  CustomNotifyPriorityChargingRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var notifyPriorityChargingRequest,
                          out var errorResponse,
                          CustomNotifyPriorityChargingRequestParser) &&
@@ -172,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out NotifyPriorityChargingRequest, out ErrorResponse, CustomNotifyPriorityChargingRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out NotifyPriorityChargingRequest, out ErrorResponse, CustomNotifyPriorityChargingRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -181,18 +185,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyPriorityChargingRequest">The parsed notify priority charging request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                             JSON,
                                        Request_Id                          RequestId,
-                                       ChargingStation_Id                  ChargingStationId,
+                                       NetworkingNode_Id                   NetworkingNodeId,
+                                       NetworkPath                         NetworkPath,
                                        out NotifyPriorityChargingRequest?  NotifyPriorityChargingRequest,
                                        out String?                         ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out NotifyPriorityChargingRequest,
                         out ErrorResponse,
                         null);
@@ -203,13 +210,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="NotifyPriorityChargingRequest">The parsed notify priority charging request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomNotifyPriorityChargingRequestParser">A delegate to parse custom notify priority charging requests.</param>
         public static Boolean TryParse(JObject                                                      JSON,
                                        Request_Id                                                   RequestId,
-                                       ChargingStation_Id                                           ChargingStationId,
+                                       NetworkingNode_Id                                            NetworkingNodeId,
+                                       NetworkPath                                                  NetworkPath,
                                        out NotifyPriorityChargingRequest?                           NotifyPriorityChargingRequest,
                                        out String?                                                  ErrorResponse,
                                        CustomJObjectParserDelegate<NotifyPriorityChargingRequest>?  CustomNotifyPriorityChargingRequestParser)
@@ -220,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 NotifyPriorityChargingRequest = null;
 
-                #region TransactionId        [mandatory]
+                #region TransactionId    [mandatory]
 
                 if (!JSON.ParseMandatory("transactionId",
                                          "transaction identification",
@@ -233,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region Activated            [mandatory]
+                #region Activated        [mandatory]
 
                 if (!JSON.ParseMandatory("activated",
                                          "activated",
@@ -245,7 +254,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region Signatures           [optional, OCPP_CSE]
+                #region Signatures       [optional, OCPP_CSE]
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
@@ -259,7 +268,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region CustomData           [optional]
+                #region CustomData       [optional]
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
@@ -273,35 +282,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 NotifyPriorityChargingRequest = new NotifyPriorityChargingRequest(
-                                                    ChargingStationId,
+
+                                                    NetworkingNodeId,
                                                     TransactionId,
                                                     Activated,
+
                                                     null,
                                                     null,
                                                     Signatures,
+
                                                     CustomData,
-                                                    RequestId
+
+                                                    RequestId,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    NetworkPath
+
                                                 );
 
                 if (CustomNotifyPriorityChargingRequestParser is not null)

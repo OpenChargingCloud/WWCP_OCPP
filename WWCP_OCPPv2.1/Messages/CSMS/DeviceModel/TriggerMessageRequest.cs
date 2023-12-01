@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new trigger message request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="RequestedMessage">The message to trigger.</param>
         /// <param name="EVSE">An optional EVSE (and connector) identification whenever the message applies to a specific EVSE and/or connector.</param>
         /// <param name="CustomTrigger">An optional custom trigger, when requestedMessage == "CustomTrigger".</param>
@@ -88,8 +88,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public TriggerMessageRequest(ChargingStation_Id       ChargingStationId,
+        public TriggerMessageRequest(NetworkingNode_Id        NetworkingNodeId,
                                      MessageTrigger           RequestedMessage,
                                      EVSE?                    EVSE                = null,
                                      String?                  CustomTrigger       = null,
@@ -104,10 +105,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                      DateTime?                RequestTimestamp    = null,
                                      TimeSpan?                RequestTimeout      = null,
                                      EventTracking_Id?        EventTrackingId     = null,
+                                     NetworkPath?             NetworkPath         = null,
                                      CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "TriggerMessage",
+            : base(NetworkingNodeId,
+                   nameof(TriggerMessageRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -119,6 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -126,7 +129,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.RequestedMessage  = RequestedMessage;
             this.EVSE              = EVSE;
             this.CustomTrigger     = CustomTrigger;
-
 
             unchecked
             {
@@ -228,24 +230,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomTriggerMessageRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomTriggerMessageRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a trigger message request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom trigger message requests.</param>
         public static TriggerMessageRequest Parse(JObject                                              JSON,
                                                   Request_Id                                           RequestId,
-                                                  ChargingStation_Id                                   ChargingStationId,
+                                                  NetworkingNode_Id                                    NetworkingNodeId,
+                                                  NetworkPath                                          NetworkPath,
                                                   CustomJObjectParserDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var triggerMessageRequest,
                          out var errorResponse,
                          CustomTriggerMessageRequestParser) &&
@@ -261,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out TriggerMessageRequest, out ErrorResponse, CustomTriggerMessageRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out TriggerMessageRequest, out ErrorResponse, CustomTriggerMessageRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -270,18 +275,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                     JSON,
                                        Request_Id                  RequestId,
-                                       ChargingStation_Id          ChargingStationId,
+                                       NetworkingNode_Id           NetworkingNodeId,
+                                       NetworkPath                 NetworkPath,
                                        out TriggerMessageRequest?  TriggerMessageRequest,
                                        out String?                 ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out TriggerMessageRequest,
                         out ErrorResponse,
                         null);
@@ -292,13 +300,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="TriggerMessageRequest">The parsed trigger message request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomTriggerMessageRequestParser">A delegate to parse custom trigger message requests.</param>
         public static Boolean TryParse(JObject                                              JSON,
                                        Request_Id                                           RequestId,
-                                       ChargingStation_Id                                   ChargingStationId,
+                                       NetworkingNode_Id                                    NetworkingNodeId,
+                                       NetworkPath                                          NetworkPath,
                                        out TriggerMessageRequest?                           TriggerMessageRequest,
                                        out String?                                          ErrorResponse,
                                        CustomJObjectParserDelegate<TriggerMessageRequest>?  CustomTriggerMessageRequestParser)
@@ -371,29 +381,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 TriggerMessageRequest = new TriggerMessageRequest(
 
-                                            ChargingStationId,
+                                            NetworkingNodeId,
                                             MessageTrigger,
                                             EVSE,
                                             CustomTrigger,
@@ -403,7 +394,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             Signatures,
 
                                             CustomData,
-                                            RequestId
+
+                                            RequestId,
+                                            null,
+                                            null,
+                                            null,
+                                            NetworkPath
 
                                         );
 

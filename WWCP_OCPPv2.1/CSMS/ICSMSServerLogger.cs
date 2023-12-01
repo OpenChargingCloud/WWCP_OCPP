@@ -34,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Properties
 
         /// <summary>
-        /// The unique identifications of all connected charging stations.
+        /// The unique identifications of all connected networking nodes.
         /// </summary>
-        IEnumerable<ChargingStation_Id>  ChargingStationIds    { get; }
+        IEnumerable<NetworkingNode_Id>  NetworkingNodeIds    { get; }
 
         #endregion
 

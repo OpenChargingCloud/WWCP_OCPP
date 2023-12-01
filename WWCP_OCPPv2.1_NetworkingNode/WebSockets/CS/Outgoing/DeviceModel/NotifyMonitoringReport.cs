@@ -109,18 +109,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             try
             {
 
-                var requestMessage = await SendRequest(Request.Action,
-                                                       Request.RequestId,
-                                                       Request.ToJSON(
-                                                           CustomNotifyMonitoringReportRequestSerializer,
-                                                           CustomMonitoringDataSerializer,
-                                                           CustomComponentSerializer,
-                                                           CustomEVSESerializer,
-                                                           CustomVariableSerializer,
-                                                           CustomVariableMonitoringSerializer,
-                                                           CustomSignatureSerializer,
-                                                           CustomCustomDataSerializer
-                                                       ));
+                var requestMessage = await SendRequest(
+                                         Request.NetworkingNodeId,
+                                         Request.NetworkPath,
+                                         Request.Action,
+                                         Request.RequestId,
+                                         Request.ToJSON(
+                                             CustomNotifyMonitoringReportRequestSerializer,
+                                             CustomMonitoringDataSerializer,
+                                             CustomComponentSerializer,
+                                             CustomEVSESerializer,
+                                             CustomVariableSerializer,
+                                             CustomVariableMonitoringSerializer,
+                                             CustomSignatureSerializer,
+                                             CustomCustomDataSerializer
+                                         )
+                                     );
 
                 if (requestMessage.NoErrors)
                 {

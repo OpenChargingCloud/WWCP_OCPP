@@ -35,7 +35,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="JSONRequest">The incoming JSON request.</param>
     public delegate Task WSClientJSONRequestLogHandler(DateTime                    Timestamp,
                                                        WebSocketClientConnection   Connection,
-                                                       ChargingStation_Id          ChargingStationId,
+                                                       NetworkingNode_Id           NetworkingNodeId,
+                                                       NetworkPath                 NetworkPath,
                                                        EventTracking_Id            EventTrackingId,
                                                        JObject                     JSONRequest);
 
@@ -47,7 +48,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="BinaryRequest">The incoming binary request.</param>
     public delegate Task WSClientBinaryRequestLogHandler(DateTime                    Timestamp,
                                                          WebSocketClientConnection   Connection,
-                                                         ChargingStation_Id          ChargingStationId,
+                                                         NetworkingNode_Id           NetworkingNodeId,
+                                                         NetworkPath                 NetworkPath,
                                                          EventTracking_Id            EventTrackingId,
                                                          Byte[]                      BinaryRequest);
 
@@ -66,6 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task WSClientJSONRequestJSONResponseLogHandler    (DateTime                    Timestamp,
                                                                        WebSocketClientConnection   Connection,
+                                                                       NetworkingNode_Id           NetworkingNodeId,
+                                                                       NetworkPath                 NetworkPath,
                                                                        EventTracking_Id            EventTrackingId,
                                                                        DateTime                    RequestTimestamp,
                                                                        JObject                     JSONRequest,
@@ -84,6 +88,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task WSClientJSONRequestBinaryResponseLogHandler  (DateTime                    Timestamp,
                                                                        WebSocketClientConnection   Connection,
+                                                                       NetworkingNode_Id           NetworkingNodeId,
+                                                                       NetworkPath                 NetworkPath,
                                                                        EventTracking_Id            EventTrackingId,
                                                                        DateTime                    RequestTimestamp,
                                                                        JObject                     JSONRequest,
@@ -102,6 +108,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task WSClientBinaryRequestJSONResponseLogHandler  (DateTime                    Timestamp,
                                                                        WebSocketClientConnection   Connection,
+                                                                       NetworkingNode_Id           NetworkingNodeId,
+                                                                       NetworkPath                 NetworkPath,
                                                                        EventTracking_Id            EventTrackingId,
                                                                        DateTime                    RequestTimestamp,
                                                                        Byte[]                      BinaryRequest,
@@ -120,6 +128,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task WSClientBinaryRequestBinaryResponseLogHandler(DateTime                    Timestamp,
                                                                        WebSocketClientConnection   Connection,
+                                                                       NetworkingNode_Id           NetworkingNodeId,
+                                                                       NetworkPath                 NetworkPath,
                                                                        EventTracking_Id            EventTrackingId,
                                                                        DateTime                    RequestTimestamp,
                                                                        Byte[]                      BinaryRequest,

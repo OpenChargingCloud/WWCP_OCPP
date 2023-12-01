@@ -75,8 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new authorize request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
-        /// 
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="IdToken">The identifier that needs to be authorized.</param>
         /// <param name="Certificate">An optional X.509 certificated presented by the electric vehicle/user (PEM format).</param>
         /// <param name="ISO15118CertificateHashData">Optional information to verify the electric vehicle/user contract certificate via OCSP.</param>
@@ -88,9 +87,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public AuthorizeRequest(ChargingStation_Id             ChargingStationId,
-
+        public AuthorizeRequest(NetworkingNode_Id              NetworkingNodeId,
                                 IdToken                        IdToken,
                                 Certificate?                   Certificate                   = null,
                                 IEnumerable<OCSPRequestData>?  ISO15118CertificateHashData   = null,
@@ -105,10 +104,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                 DateTime?                      RequestTimestamp              = null,
                                 TimeSpan?                      RequestTimeout                = null,
                                 EventTracking_Id?              EventTrackingId               = null,
+                                NetworkPath?                   NetworkPath                   = null,
                                 CancellationToken              CancellationToken             = default)
 
-            : base(ChargingStationId,
-                   "Authorize",
+            : base(NetworkingNodeId,
+                   nameof(AuthorizeRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -120,6 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -127,6 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             this.IdToken                      = IdToken;
             this.Certificate                  = Certificate;
             this.ISO15118CertificateHashData  = ISO15118CertificateHashData?.Distinct() ?? Array.Empty<OCSPRequestData>();
+
 
             unchecked
             {
@@ -319,24 +321,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomAuthorizeRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomAuthorizeRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an authorize request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom authorize requests.</param>
         public static AuthorizeRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
-                                             ChargingStation_Id                              ChargingStationId,
+                                             NetworkingNode_Id                               NetworkingNodeId,
+                                             NetworkPath                                     NetworkPath,
                                              CustomJObjectParserDelegate<AuthorizeRequest>?  CustomAuthorizeRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var authorizeRequest,
                          out var errorResponse,
                          CustomAuthorizeRequestParser) &&
@@ -352,7 +357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out AuthorizeRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out AuthorizeRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -361,18 +366,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                JSON,
                                        Request_Id             RequestId,
-                                       ChargingStation_Id     ChargingStationId,
+                                       NetworkingNode_Id      NetworkingNodeId,
+                                       NetworkPath            NetworkPath,
                                        out AuthorizeRequest?  AuthorizeRequest,
                                        out String?            ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out AuthorizeRequest,
                         out ErrorResponse,
                         null);
@@ -383,13 +391,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="AuthorizeRequest">The parsed authorize request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomAuthorizeRequestParser">A delegate to parse custom authorize requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
-                                       ChargingStation_Id                              ChargingStationId,
+                                       NetworkingNode_Id                               NetworkingNodeId,
+                                       NetworkPath                                     NetworkPath,
                                        out AuthorizeRequest?                           AuthorizeRequest,
                                        out String?                                     ErrorResponse,
                                        CustomJObjectParserDelegate<AuthorizeRequest>?  CustomAuthorizeRequestParser)
@@ -472,36 +482,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargingStationId              [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 AuthorizeRequest = new AuthorizeRequest(
-                                       ChargingStationId,
+
+                                       NetworkingNodeId,
                                        IdToken,
                                        Certificate,
                                        ISO15118CertificateHashData,
+
                                        null,
                                        null,
                                        Signatures,
+
                                        CustomData,
-                                       RequestId
+
+                                       RequestId,
+                                       null,
+                                       null,
+                                       null,
+                                       NetworkPath
+
                                    );
 
                 if (CustomAuthorizeRequestParser is not null)

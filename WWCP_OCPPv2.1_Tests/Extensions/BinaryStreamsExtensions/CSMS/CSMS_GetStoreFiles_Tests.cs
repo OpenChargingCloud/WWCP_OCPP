@@ -70,7 +70,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 var filename   = FilePath.Parse("/hello/world.txt");
 
                 var response   = await testCSMS01.GetFile(
-                                     ChargingStationId:  chargingStation1.Id,
+                                     NetworkingNodeId:   chargingStation1.Id,
                                      Filename:           filename
                                  );
 
@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 Assert.AreEqual(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   response.FileSHA512.ToHexString());
 
                 Assert.AreEqual(1,                                                             getFileRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                                           getFileRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                                           getFileRequests.First().NetworkingNodeId);
                 Assert.AreEqual(filename,                                                      getFileRequests.First().FileName);
 
             }
@@ -126,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 var filename   = FilePath.Parse("/hello/world.txt");
 
                 var response   = await testCSMS01.SendFile(
-                                     ChargingStationId:  chargingStation1.Id,
+                                     NetworkingNodeId:   chargingStation1.Id,
                                      FileName:           filename,
                                      FileContent:        "Hello world!".ToUTF8Bytes(),
                                      FileContentType:    ContentType.Text.Plain,
@@ -143,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 Assert.AreEqual(filename,                                                      response.FileName);
 
                 Assert.AreEqual(1,                                                             sendFileRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                                           sendFileRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                                           sendFileRequests.First().NetworkingNodeId);
                 Assert.AreEqual("Hello world!",                                                sendFileRequests.First().FileContent.ToUTF8String());
                 Assert.AreEqual(ContentType.Text.Plain,                                        sendFileRequests.First().FileContentType);
                 Assert.AreEqual(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   sendFileRequests.First().FileSHA256.ToHexString());
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 var filename   = FilePath.Parse("/hello/world.txt");
 
                 var response   = await testCSMS01.DeleteFile(
-                                     ChargingStationId:  chargingStation1.Id,
+                                     NetworkingNodeId:   chargingStation1.Id,
                                      FileName:           filename,
                                      FileSHA256:         SHA256.HashData("Hello world!".ToUTF8Bytes()),
                                      FileSHA512:         SHA512.HashData("Hello world!".ToUTF8Bytes())
@@ -200,7 +200,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 Assert.AreEqual(filename,                   response.FileName);
 
                 Assert.AreEqual(1,                          deleteFileRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,        deleteFileRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,        deleteFileRequests.First().NetworkingNodeId);
 
             }
 

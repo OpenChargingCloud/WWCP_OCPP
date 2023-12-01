@@ -180,7 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
 
                 var response        = await testCSMS01.SetDefaultChargingTariff(
-                                          ChargingStationId:  chargingStation1.Id,
+                                          NetworkingNodeId:   chargingStation1.Id,
                                           ChargingTariff:     chargingTariff,
                                           CustomData:         null
                                       );
@@ -195,7 +195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 #region Verify the request at the charging station
 
                 Assert.AreEqual(1,                                         setDefaultChargingTariffRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                       setDefaultChargingTariffRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                       setDefaultChargingTariffRequests.First().NetworkingNodeId);
 
                 Assert.AreEqual(chargingTariff.Id,                         setDefaultChargingTariffRequests.First().ChargingTariff.Id);
                 Assert.AreEqual(1,                                         setDefaultChargingTariffRequests.First().ChargingTariff.Signatures.Count());

@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new sign certificate request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="CSR">The PEM encoded RFC 2986 certificate signing request (CSR) [max 5500].</param>
         /// <param name="SignCertificateRequestId">A sign certificate request identification.</param>
         /// <param name="CertificateType">Whether the certificate is to be used for both the 15118 connection (if implemented) and the charging station to central system (CSMS) connection.</param>
@@ -89,8 +89,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SignCertificateRequest(ChargingStation_Id       ChargingStationId,
+        public SignCertificateRequest(NetworkingNode_Id        NetworkingNodeId,
                                       String                   CSR,
                                       Int32                    SignCertificateRequestId,
                                       CertificateSigningUse?   CertificateType     = null,
@@ -105,10 +106,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                       DateTime?                RequestTimestamp    = null,
                                       TimeSpan?                RequestTimeout      = null,
                                       EventTracking_Id?        EventTrackingId     = null,
+                                      NetworkPath?             NetworkPath         = null,
                                       CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "SignCertificate",
+            : base(NetworkingNodeId,
+                   nameof(SignCertificateRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -120,6 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -200,24 +203,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomSignCertificateRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomSignCertificateRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a sign certificate request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom SignCertificate requests.</param>
         public static SignCertificateRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
-                                                   ChargingStation_Id                                    ChargingStationId,
+                                                   NetworkingNode_Id                                     NetworkingNodeId,
+                                                   NetworkPath                                           NetworkPath,
                                                    CustomJObjectParserDelegate<SignCertificateRequest>?  CustomSignCertificateRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var signCertificateRequest,
                          out var errorResponse,
                          CustomSignCertificateRequestParser) &&
@@ -233,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out SignCertificateRequest, out ErrorResponse, CustomSignCertificateRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out SignCertificateRequest, out ErrorResponse, CustomSignCertificateRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -242,18 +248,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SignCertificateRequest">The parsed sign certificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                      JSON,
                                        Request_Id                   RequestId,
-                                       ChargingStation_Id           ChargingStationId,
+                                       NetworkingNode_Id            NetworkingNodeId,
+                                       NetworkPath                  NetworkPath,
                                        out SignCertificateRequest?  SignCertificateRequest,
                                        out String?                  ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out SignCertificateRequest,
                         out ErrorResponse,
                         null);
@@ -264,13 +273,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SignCertificateRequest">The parsed sign certificate request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSignCertificateRequestParser">A delegate to parse custom sign certificate requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
-                                       ChargingStation_Id                                    ChargingStationId,
+                                       NetworkingNode_Id                                     NetworkingNodeId,
+                                       NetworkPath                                           NetworkPath,
                                        out SignCertificateRequest?                           SignCertificateRequest,
                                        out String?                                           ErrorResponse,
                                        CustomJObjectParserDelegate<SignCertificateRequest>?  CustomSignCertificateRequestParser)
@@ -347,29 +358,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargingStationId           [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 SignCertificateRequest = new SignCertificateRequest(
 
-                                             ChargingStationId,
+                                             NetworkingNodeId,
                                              CSR,
                                              SignCertificateRequestId,
                                              CertificateType,
@@ -379,7 +371,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                              Signatures,
 
                                              CustomData,
-                                             RequestId
+
+                                             RequestId,
+                                             null,
+                                             null,
+                                             null,
+                                             NetworkPath
 
                                          );
 

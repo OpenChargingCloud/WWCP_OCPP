@@ -33,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
     /// Unit tests for charging stations sending sending signed messages to the CSMS.
     /// </summary>
     [TestFixture]
-    public class SignedMessages_Tests : AChargingStationTests
+    public class CS_SignedMessages_Tests : AChargingStationTests
     {
 
         #region Init_Test()
@@ -125,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
 
                 Assert.AreEqual(1,                                       bootNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().ChargingStationId);
+                Assert.AreEqual(chargingStation1.Id,                     bootNotificationRequests.First().NetworkingNodeId);
                 Assert.AreEqual(reason,                                  bootNotificationRequests.First().Reason);
                 Assert.AreEqual(1,                                       bootNotificationRequests.First().Signatures.Count());
                 Assert.AreEqual(VerificationStatus.ValidSignature,       bootNotificationRequests.First().Signatures.First().Status);

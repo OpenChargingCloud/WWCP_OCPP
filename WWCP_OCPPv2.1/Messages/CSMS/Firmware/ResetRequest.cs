@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             => DefaultJSONLDContext;
 
         /// <summary>
-        /// The type of reset that the charging station should perform.
+        /// The type of reset that the charging station/networking node should perform.
         /// </summary>
         [Mandatory]
         public ResetType      ResetType    { get; }
@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new reset request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="ResetType">The type of reset that the charging station should perform.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
         /// 
@@ -80,8 +80,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ResetRequest(ChargingStation_Id       ChargingStationId,
+        public ResetRequest(NetworkingNode_Id        NetworkingNodeId,
                             ResetType                ResetType,
                             EVSE_Id?                 EVSEId              = null,
 
@@ -95,11 +96,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                             DateTime?                RequestTimestamp    = null,
                             TimeSpan?                RequestTimeout      = null,
                             EventTracking_Id?        EventTrackingId     = null,
+                            NetworkPath?             NetworkPath         = null,
                             CancellationToken        CancellationToken   = default)
 
-
-            : base(ChargingStationId,
-                   "Reset",
+            : base(NetworkingNodeId,
+                   nameof(ResetRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -111,6 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -118,14 +120,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             this.ResetType  = ResetType;
             this.EVSEId     = EVSEId;
 
-
             unchecked
             {
-
                 hashCode = this.ResetType.GetHashCode()       * 5 ^
                           (this.EVSEId?.  GetHashCode() ?? 0) * 3 ^
                            base.          GetHashCode();
-
             }
 
         }
@@ -186,24 +185,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomResetRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomResetRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a reset request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomResetRequestParser">A delegate to parse custom reset requests.</param>
         public static ResetRequest Parse(JObject                                     JSON,
                                          Request_Id                                  RequestId,
-                                         ChargingStation_Id                          ChargingStationId,
+                                         NetworkingNode_Id                           NetworkingNodeId,
+                                         NetworkPath                                 NetworkPath,
                                          CustomJObjectParserDelegate<ResetRequest>?  CustomResetRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var resetRequest,
                          out var errorResponse,
                          CustomResetRequestParser) &&
@@ -219,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out ResetRequest, out ErrorResponse, CustomResetRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out ResetRequest, out ErrorResponse, CustomResetRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -228,18 +230,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="ResetRequestJSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ResetRequest">The parsed reset request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject             ResetRequestJSON,
-                                       Request_Id          RequestId,
-                                       ChargingStation_Id  ChargingStationId,
-                                       out ResetRequest?   ResetRequest,
-                                       out String?         ErrorResponse)
+        public static Boolean TryParse(JObject            ResetRequestJSON,
+                                       Request_Id         RequestId,
+                                       NetworkingNode_Id  NetworkingNodeId,
+                                       NetworkPath        NetworkPath,
+                                       out ResetRequest?  ResetRequest,
+                                       out String?        ErrorResponse)
 
             => TryParse(ResetRequestJSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out ResetRequest,
                         out ErrorResponse,
                         null);
@@ -250,13 +255,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ResetRequest">The parsed reset request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomResetRequestParser">A delegate to parse custom Reset requests.</param>
         public static Boolean TryParse(JObject                                     JSON,
                                        Request_Id                                  RequestId,
-                                       ChargingStation_Id                          ChargingStationId,
+                                       NetworkingNode_Id                           NetworkingNodeId,
+                                       NetworkPath                                 NetworkPath,
                                        out ResetRequest?                           ResetRequest,
                                        out String?                                 ErrorResponse,
                                        CustomJObjectParserDelegate<ResetRequest>?  CustomResetRequestParser)
@@ -322,35 +329,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 ResetRequest = new ResetRequest(
-                                   ChargingStationId,
+
+                                   NetworkingNodeId,
                                    ResetType,
                                    EVSEId,
+
                                    null,
                                    null,
                                    Signatures,
+
                                    CustomData,
-                                   RequestId
+
+                                   RequestId,
+                                   null,
+                                   null,
+                                   null,
+                                   NetworkPath
+
                                );
 
                 if (CustomResetRequestParser is not null)

@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new clear charging profile request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="ChargingProfileId">An optional identification of the charging profile to clear.</param>
         /// <param name="ChargingProfileCriteria">An optional specification of the charging profile to clear.</param>
         /// 
@@ -80,8 +80,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ClearChargingProfileRequest(ChargingStation_Id       ChargingStationId,
+        public ClearChargingProfileRequest(NetworkingNode_Id        NetworkingNodeId,
                                            ChargingProfile_Id?      ChargingProfileId         = null,
                                            ClearChargingProfile?    ChargingProfileCriteria   = null,
 
@@ -95,10 +96,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                            DateTime?                RequestTimestamp          = null,
                                            TimeSpan?                RequestTimeout            = null,
                                            EventTracking_Id?        EventTrackingId           = null,
+                                           NetworkPath?             NetworkPath               = null,
                                            CancellationToken        CancellationToken         = default)
 
-            : base(ChargingStationId,
-                   "ClearChargingProfile",
+            : base(NetworkingNodeId,
+                   nameof(ClearChargingProfileRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -110,6 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -119,11 +122,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             unchecked
             {
-
                 hashCode = (this.ChargingProfileId?.      GetHashCode() ?? 0) * 5 ^
                            (this.ChargingProfileCriteria?.GetHashCode() ?? 0) * 3 ^
                             base.                         GetHashCode();
-
             }
 
         }
@@ -205,24 +206,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomClearChargingProfileRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomClearChargingProfileRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a clear charging profile request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomClearChargingProfileRequestParser">A delegate to parse custom clear charging profile requests.</param>
         public static ClearChargingProfileRequest Parse(JObject                                                    JSON,
                                                         Request_Id                                                 RequestId,
-                                                        ChargingStation_Id                                         ChargingStationId,
+                                                        NetworkingNode_Id                                          NetworkingNodeId,
+                                                        NetworkPath                                                NetworkPath,
                                                         CustomJObjectParserDelegate<ClearChargingProfileRequest>?  CustomClearChargingProfileRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var clearChargingProfileRequest,
                          out var errorResponse,
                          CustomClearChargingProfileRequestParser) &&
@@ -238,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out ClearChargingProfileRequest, out ErrorResponse, CustomClearChargingProfileRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out ClearChargingProfileRequest, out ErrorResponse, CustomClearChargingProfileRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -247,18 +251,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="ClearChargingProfileRequest">The parsed ClearChargingProfile request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                           JSON,
                                        Request_Id                        RequestId,
-                                       ChargingStation_Id                ChargingStationId,
+                                       NetworkingNode_Id                 NetworkingNodeId,
+                                       NetworkPath                       NetworkPath,
                                        out ClearChargingProfileRequest?  ClearChargingProfileRequest,
                                        out String?                       ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out ClearChargingProfileRequest,
                         out ErrorResponse,
                         null);
@@ -275,7 +282,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="CustomClearChargingProfileRequestParser">A delegate to parse custom clear charging profile requests.</param>
         public static Boolean TryParse(JObject                                                    JSON,
                                        Request_Id                                                 RequestId,
-                                       ChargingStation_Id                                         ChargingStationId,
+                                       NetworkingNode_Id                                          NetworkingNodeId,
+                                       NetworkPath                                                NetworkPath,
                                        out ClearChargingProfileRequest?                           ClearChargingProfileRequest,
                                        out String?                                                ErrorResponse,
                                        CustomJObjectParserDelegate<ClearChargingProfileRequest>?  CustomClearChargingProfileRequestParser)
@@ -342,35 +350,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId          [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 ClearChargingProfileRequest = new ClearChargingProfileRequest(
-                                                  ChargingStationId,
+
+                                                  NetworkingNodeId,
                                                   ChargingProfileId,
                                                   ChargingProfileCriteria,
+
                                                   null,
                                                   null,
                                                   Signatures,
+
                                                   CustomData,
-                                                  RequestId
+
+                                                  RequestId,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  NetworkPath
+
                                               );
 
                 if (CustomClearChargingProfileRequestParser is not null)

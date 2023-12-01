@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new boot notification request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="ChargingStation">A physical system where an electrical vehicle (EV) can be charged.</param>
         /// <param name="Reason">The the reason for sending this boot notification to the CSMS.</param>
         /// 
@@ -84,25 +84,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public UpdateSignaturePolicyRequest(ChargingStation_Id       ChargingStationId,
-                                       ChargingStation          ChargingStation,
-                                       BootReason               Reason,
+        public UpdateSignaturePolicyRequest(NetworkingNode_Id        NetworkingNodeId,
+                                            ChargingStation          ChargingStation,
+                                            BootReason               Reason,
 
-                                       IEnumerable<KeyPair>?    SignKeys            = null,
-                                       IEnumerable<SignInfo>?   SignInfos           = null,
-                                       IEnumerable<Signature>?  Signatures          = null,
+                                            IEnumerable<KeyPair>?    SignKeys            = null,
+                                            IEnumerable<SignInfo>?   SignInfos           = null,
+                                            IEnumerable<Signature>?  Signatures          = null,
 
-                                       CustomData?              CustomData          = null,
+                                            CustomData?              CustomData          = null,
 
-                                       Request_Id?              RequestId           = null,
-                                       DateTime?                RequestTimestamp    = null,
-                                       TimeSpan?                RequestTimeout      = null,
-                                       EventTracking_Id?        EventTrackingId     = null,
-                                       CancellationToken        CancellationToken   = default)
+                                            Request_Id?              RequestId           = null,
+                                            DateTime?                RequestTimestamp    = null,
+                                            TimeSpan?                RequestTimeout      = null,
+                                            EventTracking_Id?        EventTrackingId     = null,
+                                            NetworkPath?             NetworkPath         = null,
+                                            CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "UpdateSignaturePolicy",
+            : base(NetworkingNodeId,
+                   nameof(UpdateSignaturePolicyRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -114,6 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -254,25 +257,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomUpdateSignaturePolicyRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomUpdateSignaturePolicyRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a boot notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomUpdateSignaturePolicyRequestParser">A delegate to parse custom boot notification requests.</param>
-        public static UpdateSignaturePolicyRequest Parse(JObject                                                JSON,
-                                                    Request_Id                                             RequestId,
-                                                    ChargingStation_Id                                     ChargingStationId,
-                                                    CustomJObjectParserDelegate<UpdateSignaturePolicyRequest>?  CustomUpdateSignaturePolicyRequestParser   = null)
+        public static UpdateSignaturePolicyRequest Parse(JObject                                                     JSON,
+                                                         Request_Id                                                  RequestId,
+                                                         NetworkingNode_Id                                           NetworkingNodeId,
+                                                         NetworkPath                                                 NetworkPath,
+                                                         CustomJObjectParserDelegate<UpdateSignaturePolicyRequest>?  CustomUpdateSignaturePolicyRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var updateSignaturePolicyRequest,
                          out var errorResponse,
                          CustomUpdateSignaturePolicyRequestParser) &&
@@ -288,7 +294,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out UpdateSignaturePolicyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out UpdateSignaturePolicyRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -297,18 +303,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="UpdateSignaturePolicyRequest">The parsed boot notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                       JSON,
-                                       Request_Id                    RequestId,
-                                       ChargingStation_Id            ChargingStationId,
+        public static Boolean TryParse(JObject                            JSON,
+                                       Request_Id                         RequestId,
+                                       NetworkingNode_Id                  NetworkingNodeId,
+                                       NetworkPath                        NetworkPath,
                                        out UpdateSignaturePolicyRequest?  UpdateSignaturePolicyRequest,
-                                       out String?                   ErrorResponse)
+                                       out String?                        ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out UpdateSignaturePolicyRequest,
                         out ErrorResponse,
                         null);
@@ -319,15 +328,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="UpdateSignaturePolicyRequest">The parsed boot notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomUpdateSignaturePolicyRequestParser">A delegate to parse custom boot notification requests.</param>
-        public static Boolean TryParse(JObject                                                JSON,
-                                       Request_Id                                             RequestId,
-                                       ChargingStation_Id                                     ChargingStationId,
+        public static Boolean TryParse(JObject                                                     JSON,
+                                       Request_Id                                                  RequestId,
+                                       NetworkingNode_Id                                           NetworkingNodeId,
+                                       NetworkPath                                                 NetworkPath,
                                        out UpdateSignaturePolicyRequest?                           UpdateSignaturePolicyRequest,
-                                       out String?                                            ErrorResponse,
+                                       out String?                                                 ErrorResponse,
                                        CustomJObjectParserDelegate<UpdateSignaturePolicyRequest>?  CustomUpdateSignaturePolicyRequestParser)
         {
 
@@ -391,40 +402,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 UpdateSignaturePolicyRequest = new UpdateSignaturePolicyRequest(
-                                              ChargingStationId,
-                                              ChargingStation,
-                                              Reason,
-                                              null,
-                                              null,
-                                              Signatures,
-                                              CustomData,
-                                              RequestId
-                                          );
+
+                                                   NetworkingNodeId,
+                                                   ChargingStation,
+                                                   Reason,
+
+                                                   null,
+                                                   null,
+                                                   Signatures,
+
+                                                   CustomData,
+
+                                                   RequestId,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   NetworkPath
+
+                                               );
 
                 if (CustomUpdateSignaturePolicyRequestParser is not null)
                     UpdateSignaturePolicyRequest = CustomUpdateSignaturePolicyRequestParser(JSON,
-                                                                                  UpdateSignaturePolicyRequest);
+                                                                                            UpdateSignaturePolicyRequest);
 
                 return true;
 
@@ -432,7 +433,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
                 UpdateSignaturePolicyRequest  = null;
-                ErrorResponse            = "The given JSON representation of a boot notification request is invalid: " + e.Message;
+                ErrorResponse                 = "The given JSON representation of a boot notification request is invalid: " + e.Message;
                 return false;
             }
 

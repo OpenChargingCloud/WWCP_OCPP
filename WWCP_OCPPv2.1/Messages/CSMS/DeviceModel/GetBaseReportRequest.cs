@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a get base report request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="GetBaseReportRequestId">An unique identification of the get base report request.</param>
         /// <param name="ReportBase">The requested reporting base.</param>
         /// 
@@ -80,8 +80,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public GetBaseReportRequest(ChargingStation_Id       ChargingStationId,
+        public GetBaseReportRequest(NetworkingNode_Id        NetworkingNodeId,
                                     Int64                    GetBaseReportRequestId,
                                     ReportBase               ReportBase,
 
@@ -95,10 +96,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                     DateTime?                RequestTimestamp    = null,
                                     TimeSpan?                RequestTimeout      = null,
                                     EventTracking_Id?        EventTrackingId     = null,
+                                    NetworkPath?             NetworkPath         = null,
                                     CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "GetBaseReport",
+            : base(NetworkingNodeId,
+                   nameof(GetBaseReportRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -110,6 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -119,11 +122,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             unchecked
             {
-
                 hashCode = this.GetBaseReportRequestId.GetHashCode() * 5 ^
                            this.ReportBase.            GetHashCode() * 3 ^
                            base.                       GetHashCode();
-
             }
 
         }
@@ -186,24 +187,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomGetBaseReportRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomGetBaseReportRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a get base report request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomGetBaseReportRequestParser">A delegate to parse custom get base report requests.</param>
         public static GetBaseReportRequest Parse(JObject                                             JSON,
                                                  Request_Id                                          RequestId,
-                                                 ChargingStation_Id                                  ChargingStationId,
+                                                 NetworkingNode_Id                                   NetworkingNodeId,
+                                                 NetworkPath                                         NetworkPath,
                                                  CustomJObjectParserDelegate<GetBaseReportRequest>?  CustomGetBaseReportRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var getBaseReportRequest,
                          out var errorResponse,
                          CustomGetBaseReportRequestParser) &&
@@ -219,7 +223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out GetBaseReportRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out GetBaseReportRequest, out ErrorResponse, CustomRemoteStartTransactionRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -228,18 +232,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetBaseReportRequest">The parsed GetBaseReport request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                    JSON,
                                        Request_Id                 RequestId,
-                                       ChargingStation_Id         ChargingStationId,
+                                       NetworkingNode_Id          NetworkingNodeId,
+                                       NetworkPath                NetworkPath,
                                        out GetBaseReportRequest?  GetBaseReportRequest,
                                        out String?                ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out GetBaseReportRequest,
                         out ErrorResponse,
                         null);
@@ -250,13 +257,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="GetBaseReportRequest">The parsed get base report request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomGetBaseReportRequestParser">A delegate to parse custom get base report requests.</param>
         public static Boolean TryParse(JObject                                             JSON,
                                        Request_Id                                          RequestId,
-                                       ChargingStation_Id                                  ChargingStationId,
+                                       NetworkingNode_Id                                   NetworkingNodeId,
+                                       NetworkPath                                         NetworkPath,
                                        out GetBaseReportRequest?                           GetBaseReportRequest,
                                        out String?                                         ErrorResponse,
                                        CustomJObjectParserDelegate<GetBaseReportRequest>?  CustomGetBaseReportRequestParser)
@@ -320,35 +329,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId         [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 GetBaseReportRequest = new GetBaseReportRequest(
-                                           ChargingStationId,
+
+                                           NetworkingNodeId,
                                            GetBaseReportRequestId,
                                            ReportBase,
+
                                            null,
                                            null,
                                            Signatures,
+
                                            CustomData,
-                                           RequestId
+
+                                           RequestId,
+                                           null,
+                                           null,
+                                           null,
+                                           NetworkPath
+
                                        );
 
                 if (CustomGetBaseReportRequestParser is not null)

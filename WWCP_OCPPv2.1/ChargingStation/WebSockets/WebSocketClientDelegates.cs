@@ -32,10 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
+    /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+    /// <param name="NetworkPath">The network path of the request.</param>
+    /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
     /// <param name="JSONRequest">The incoming JSON request.</param>
     public delegate Task WSClientJSONRequestLogHandler(DateTime                    Timestamp,
                                                        WebSocketClientConnection   Connection,
-                                                       ChargingStation_Id          ChargingStationId,
+                                                       NetworkingNode_Id           NetworkingNodeId,
+                                                       NetworkPath                 NetworkPath,
                                                        EventTracking_Id            EventTrackingId,
                                                        JObject                     JSONRequest);
 
@@ -44,10 +48,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
+    /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+    /// <param name="NetworkPath">The network path of the request.</param>
+    /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
     /// <param name="BinaryRequest">The incoming binary request.</param>
     public delegate Task WSClientBinaryRequestLogHandler(DateTime                    Timestamp,
                                                          WebSocketClientConnection   Connection,
-                                                         ChargingStation_Id          ChargingStationId,
+                                                         NetworkingNode_Id           NetworkingNodeId,
+                                                         NetworkPath                 NetworkPath,
                                                          EventTracking_Id            EventTrackingId,
                                                          Byte[]                      BinaryRequest);
 
@@ -60,12 +68,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
+    /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+    /// <param name="RequestTimestamp">The request timestamp.</param>
     /// <param name="JSONRequest">The incoming JSON WebSocket request.</param>
     /// <param name="JSONResponse">The outgoing JSON WebSocket response.</param>
     /// <param name="ErrorResponse">The outgoing WebSocket error response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task WSClientJSONRequestJSONResponseLogHandler    (DateTime                    Timestamp,
                                                                        WebSocketClientConnection   Connection,
+                                                                       NetworkingNode_Id           NetworkingNodeId,
+                                                                       NetworkPath                 NetworkPath,
                                                                        EventTracking_Id            EventTrackingId,
                                                                        DateTime                    RequestTimestamp,
                                                                        JObject                     JSONRequest,
@@ -78,12 +90,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
+    /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+    /// <param name="RequestTimestamp">The request timestamp.</param>
     /// <param name="JSONRequest">The incoming JSON WebSocket request.</param>
     /// <param name="BinaryResponse">The outgoing binary WebSocket response.</param>
     /// <param name="ErrorResponse">The outgoing WebSocket error response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task WSClientJSONRequestBinaryResponseLogHandler  (DateTime                    Timestamp,
                                                                        WebSocketClientConnection   Connection,
+                                                                       NetworkingNode_Id           NetworkingNodeId,
+                                                                       NetworkPath                 NetworkPath,
                                                                        EventTracking_Id            EventTrackingId,
                                                                        DateTime                    RequestTimestamp,
                                                                        JObject                     JSONRequest,
@@ -96,12 +112,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
+    /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+    /// <param name="RequestTimestamp">The request timestamp.</param>
     /// <param name="BinaryRequest">The incoming binary WebSocket request.</param>
     /// <param name="JSONResponse">The outgoing JSON WebSocket response.</param>
     /// <param name="ErrorResponse">The outgoing WebSocket error response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task WSClientBinaryRequestJSONResponseLogHandler  (DateTime                    Timestamp,
                                                                        WebSocketClientConnection   Connection,
+                                                                       NetworkingNode_Id           NetworkingNodeId,
+                                                                       NetworkPath                 NetworkPath,
                                                                        EventTracking_Id            EventTrackingId,
                                                                        DateTime                    RequestTimestamp,
                                                                        Byte[]                      BinaryRequest,
@@ -114,12 +134,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the incoming request.</param>
     /// <param name="Connection">The HTTP WebSocket client connection.</param>
+    /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+    /// <param name="RequestTimestamp">The request timestamp.</param>
     /// <param name="BinaryRequest">The incoming binary WebSocket request.</param>
     /// <param name="BinaryResponse">The outgoing binary WebSocket response.</param>
     /// <param name="ErrorResponse">The outgoing WebSocket error response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task WSClientBinaryRequestBinaryResponseLogHandler(DateTime                    Timestamp,
                                                                        WebSocketClientConnection   Connection,
+                                                                       NetworkingNode_Id           NetworkingNodeId,
+                                                                       NetworkPath                 NetworkPath,
                                                                        EventTracking_Id            EventTrackingId,
                                                                        DateTime                    RequestTimestamp,
                                                                        Byte[]                      BinaryRequest,

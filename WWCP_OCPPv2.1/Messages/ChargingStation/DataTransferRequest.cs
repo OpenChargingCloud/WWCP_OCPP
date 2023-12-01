@@ -75,7 +75,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// Create a new data transfer request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification.</param>
         /// <param name="Data">Optional vendor-specific message data (a JSON token).</param>
@@ -87,8 +87,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public DataTransferRequest(ChargingStation_Id       ChargingStationId,
+        public DataTransferRequest(NetworkingNode_Id        NetworkingNodeId,
                                    Vendor_Id                VendorId,
                                    Message_Id?              MessageId           = null,
                                    JToken?                  Data                = null,
@@ -103,10 +104,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    DateTime?                RequestTimestamp    = null,
                                    TimeSpan?                RequestTimeout      = null,
                                    EventTracking_Id?        EventTrackingId     = null,
+                                   NetworkPath?             NetworkPath         = null,
                                    CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "DataTransfer",
+            : base(NetworkingNodeId,
+                   nameof(DataTransferRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -118,6 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -190,24 +193,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomDataTransferRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomDataTransferRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a data transfer request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomDataTransferRequestParser">A delegate to parse custom data transfer requests.</param>
         public static DataTransferRequest Parse(JObject                                            JSON,
                                                 Request_Id                                         RequestId,
-                                                ChargingStation_Id                                 ChargingStationId,
+                                                NetworkingNode_Id                                  NetworkingNodeId,
+                                                NetworkPath                                        NetworkPath,
                                                 CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var dataTransferRequest,
                          out var errorResponse,
                          CustomDataTransferRequestParser) &&
@@ -223,7 +229,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out DataTransferRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out DataTransferRequest, OnException = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -232,18 +238,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                   JSON,
                                        Request_Id                RequestId,
-                                       ChargingStation_Id        ChargingStationId,
+                                       NetworkingNode_Id         NetworkingNodeId,
+                                       NetworkPath               NetworkPath,
                                        out DataTransferRequest?  DataTransferRequest,
                                        out String?               ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out DataTransferRequest,
                         out ErrorResponse,
                         null);
@@ -254,13 +263,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomDataTransferRequestParser">A delegate to parse custom DataTransfer requests.</param>
         public static Boolean TryParse(JObject                                            JSON,
                                        Request_Id                                         RequestId,
-                                       ChargingStation_Id                                 ChargingStationId,
+                                       NetworkingNode_Id                                  NetworkingNodeId,
+                                       NetworkPath                                        NetworkPath,
                                        out DataTransferRequest?                           DataTransferRequest,
                                        out String?                                        ErrorResponse,
                                        CustomJObjectParserDelegate<DataTransferRequest>?  CustomDataTransferRequestParser)
@@ -332,36 +343,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 DataTransferRequest = new DataTransferRequest(
-                                          ChargingStationId,
+
+                                          NetworkingNodeId,
                                           VendorId,
                                           MessageId,
                                           Data,
+
                                           null,
                                           null,
                                           Signatures,
+
                                           CustomData,
-                                          RequestId
+
+                                          RequestId,
+                                          null,
+                                          null,
+                                          null,
+                                          NetworkPath
+
                                       );
 
                 if (CustomDataTransferRequestParser is not null)

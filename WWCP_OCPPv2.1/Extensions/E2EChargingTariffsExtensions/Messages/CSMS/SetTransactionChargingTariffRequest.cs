@@ -69,7 +69,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// Create a new set transaction charging tariff request.
         /// </summary>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
         /// <param name="TransactionId">An transaction identification for which the applicable charging tariff is requested.</param>
         /// <param name="ChargingTariff">A charging tariff.</param>
         /// 
@@ -80,8 +80,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public SetTransactionChargingTariffRequest(ChargingStation_Id       ChargingStationId,
+        public SetTransactionChargingTariffRequest(NetworkingNode_Id        NetworkingNodeId,
                                                    Transaction_Id           TransactionId,
                                                    ChargingTariff           ChargingTariff,
 
@@ -95,10 +96,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                    DateTime?                RequestTimestamp    = null,
                                                    TimeSpan?                RequestTimeout      = null,
                                                    EventTracking_Id?        EventTrackingId     = null,
+                                                   NetworkPath?             NetworkPath         = null,
                                                    CancellationToken        CancellationToken   = default)
 
-            : base(ChargingStationId,
-                   "SetTransactionChargingTariff",
+            : base(NetworkingNodeId,
+                   nameof(SetTransactionChargingTariffRequest)[..^7],
 
                    SignKeys,
                    SignInfos,
@@ -110,13 +112,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
 
             this.TransactionId   = TransactionId;
             this.ChargingTariff  = ChargingTariff;
-
 
             unchecked
             {
@@ -138,25 +140,28 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargingStationId, CustomSetTransactionChargingTariffRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomSetTransactionChargingTariffRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an SetTransactionChargingTariff request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomSetTransactionChargingTariffRequestParser">A delegate to parse custom SetTransactionChargingTariff requests.</param>
         public static SetTransactionChargingTariffRequest Parse(JObject                                                            JSON,
                                                                 Request_Id                                                         RequestId,
-                                                                ChargingStation_Id                                                 ChargingStationId,
+                                                                NetworkingNode_Id                                                  NetworkingNodeId,
+                                                                NetworkPath                                                        NetworkPath,
                                                                 CustomJObjectParserDelegate<SetTransactionChargingTariffRequest>?  CustomSetTransactionChargingTariffRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargingStationId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var setTransactionChargingTariffRequest,
                          out var errorResponse,
                          CustomSetTransactionChargingTariffRequestParser) &&
@@ -172,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargingStationId, out SetTransactionChargingTariffRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out SetTransactionChargingTariffRequest, out ErrorResponse, CustomAuthorizeRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -181,18 +186,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SetTransactionChargingTariffRequest">The parsed SetTransactionChargingTariff request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                                   JSON,
                                        Request_Id                                RequestId,
-                                       ChargingStation_Id                        ChargingStationId,
+                                       NetworkingNode_Id                         NetworkingNodeId,
+                                       NetworkPath                               NetworkPath,
                                        out SetTransactionChargingTariffRequest?  SetTransactionChargingTariffRequest,
                                        out String?                               ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargingStationId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out SetTransactionChargingTariffRequest,
                         out ErrorResponse,
                         null);
@@ -203,13 +211,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargingStationId">The charging station identification.</param>
+        /// <param name="NetworkingNodeId">The charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="SetTransactionChargingTariffRequest">The parsed SetTransactionChargingTariff request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomSetTransactionChargingTariffRequestParser">A delegate to parse custom SetTransactionChargingTariff requests.</param>
         public static Boolean TryParse(JObject                                                            JSON,
                                        Request_Id                                                         RequestId,
-                                       ChargingStation_Id                                                 ChargingStationId,
+                                       NetworkingNode_Id                                                  NetworkingNodeId,
+                                       NetworkPath                                                        NetworkPath,
                                        out SetTransactionChargingTariffRequest?                           SetTransactionChargingTariffRequest,
                                        out String?                                                        ErrorResponse,
                                        CustomJObjectParserDelegate<SetTransactionChargingTariffRequest>?  CustomSetTransactionChargingTariffRequestParser)
@@ -276,29 +286,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #endregion
 
-                #region ChargingStationId    [optional, OCPP_CSE]
-
-                if (JSON.ParseOptional("chargingStationId",
-                                       "charging station identification",
-                                       ChargingStation_Id.TryParse,
-                                       out ChargingStation_Id? chargingStationId_PayLoad,
-                                       out ErrorResponse))
-                {
-
-                    if (ErrorResponse is not null)
-                        return false;
-
-                    if (chargingStationId_PayLoad.HasValue)
-                        ChargingStationId = chargingStationId_PayLoad.Value;
-
-                }
-
-                #endregion
-
 
                 SetTransactionChargingTariffRequest = new SetTransactionChargingTariffRequest(
 
-                                                          ChargingStationId,
+                                                          NetworkingNodeId,
                                                           TransactionId,
                                                           ChargingTariff,
 
@@ -307,7 +298,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                           Signatures,
 
                                                           CustomData,
-                                                          RequestId
+
+                                                          RequestId,
+                                                          null,
+                                                          null,
+                                                          null,
+                                                          NetworkPath
 
                                                       );
 

@@ -87,7 +87,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
             Receive_DataTransfer(DateTime                   RequestTimestamp,
                                  WebSocketClientConnection  WebSocketConnection,
-                                 ChargingStation_Id         ChargingStationId,
+                                 NetworkingNode_Id          NetworkingNodeId,
+                                 NetworkPath                NetworkPath,
                                  EventTracking_Id           EventTrackingId,
                                  Request_Id                 RequestId,
                                  JObject                    RequestJSON,
@@ -104,7 +105,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnIncomingDataTransferWSRequest?.Invoke(startTime,
                                                         WebSocketConnection,
-                                                        ChargingStationId,
+                                                        NetworkingNodeId,
+                                                        NetworkPath,
                                                         EventTrackingId,
                                                         RequestJSON);
 
@@ -124,7 +126,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 if (OCPPv2_1.CSMS.DataTransferRequest.TryParse(RequestJSON,
                                                                RequestId,
-                                                               ChargingStation_Id.Parse(NetworkingNodeIdentity.ToString()),
+                                                               NetworkingNodeId,
+                                                               NetworkPath,
                                                                out var request,
                                                                out var errorResponse,
                                                                CustomIncomingDataTransferRequestParser) && request is not null) {
@@ -231,6 +234,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnIncomingDataTransferWSResponse?.Invoke(endTime,
                                                          WebSocketConnection,
+                                                         NetworkingNodeId,
+                                                         NetworkPath,
                                                          EventTrackingId,
                                                          RequestTimestamp,
                                                          RequestJSON,

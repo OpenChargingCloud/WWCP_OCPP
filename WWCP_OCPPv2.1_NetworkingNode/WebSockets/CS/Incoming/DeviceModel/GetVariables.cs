@@ -87,7 +87,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
             Receive_GetVariables(DateTime                   RequestTimestamp,
                                  WebSocketClientConnection  WebSocketConnection,
-                                 ChargingStation_Id         ChargingStationId,
+                                 NetworkingNode_Id          NetworkingNodeId,
+                                 NetworkPath                NetworkPath,
                                  EventTracking_Id           EventTrackingId,
                                  Request_Id                 RequestId,
                                  JObject                    RequestJSON,
@@ -104,7 +105,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnGetVariablesWSRequest?.Invoke(startTime,
                                                 WebSocketConnection,
-                                                ChargingStationId,
+                                                NetworkingNodeId,
+                                                NetworkPath,
                                                 EventTrackingId,
                                                 RequestJSON);
 
@@ -116,15 +118,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
             #endregion
 
-            OCPP_JSONResponseMessage?     OCPPResponse        = null;
-            OCPP_JSONErrorMessage?  OCPPErrorResponse   = null;
+            OCPP_JSONResponseMessage?  OCPPResponse        = null;
+            OCPP_JSONErrorMessage?     OCPPErrorResponse   = null;
 
             try
             {
 
                 if (GetVariablesRequest.TryParse(RequestJSON,
                                                  RequestId,
-                                                 ChargingStation_Id.Parse(NetworkingNodeIdentity.ToString()),
+                                                 NetworkingNodeId,
+                                                 NetworkPath,
                                                  out var request,
                                                  out var errorResponse,
                                                  CustomGetVariablesRequestParser) && request is not null) {
@@ -235,6 +238,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                 OnGetVariablesWSResponse?.Invoke(endTime,
                                                  WebSocketConnection,
+                                                 NetworkingNodeId,
+                                                 NetworkPath,
                                                  EventTrackingId,
                                                  RequestTimestamp,
                                                  RequestJSON,

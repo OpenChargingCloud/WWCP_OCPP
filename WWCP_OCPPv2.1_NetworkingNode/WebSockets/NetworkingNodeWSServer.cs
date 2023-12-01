@@ -53,34 +53,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public const            String                                                                                 DefaultHTTPServiceName            = $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON NetworkingNode API";
+        public const            String                                                                                DefaultHTTPServiceName            = $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON NetworkingNode API";
 
         /// <summary>
         /// The default HTTP server TCP port.
         /// </summary>
-        public static readonly  IPPort                                                                                 DefaultHTTPServerPort             = IPPort.Parse(2010);
+        public static readonly  IPPort                                                                                DefaultHTTPServerPort             = IPPort.Parse(2010);
 
         /// <summary>
         /// The default HTTP server URI prefix.
         /// </summary>
-        public static readonly  HTTPPath                                                                               DefaultURLPrefix                  = HTTPPath.Parse("/" + Version.String);
+        public static readonly  HTTPPath                                                                              DefaultURLPrefix                  = HTTPPath.Parse("/" + Version.String);
 
         /// <summary>
         /// The default request timeout.
         /// </summary>
-        public static readonly  TimeSpan                                                                               DefaultRequestTimeout             = TimeSpan.FromSeconds(30);
+        public static readonly  TimeSpan                                                                              DefaultRequestTimeout             = TimeSpan.FromSeconds(30);
 
 
-        public  const           String                                                                                 chargingStationId_WebSocketKey    = "chargingStationId";
+        public  const           String                                                                                networkingNodeId_WebSocketKey     = "networkingNodeId";
+        public  const           String                                                                                networkingMode_WebSocketKey       = "networkingMode";
 
-        private readonly        ConcurrentDictionary<ChargingStation_Id, Tuple<WebSocketServerConnection, DateTime>>   connectedChargingStations         = new();
+        private readonly        ConcurrentDictionary<NetworkingNode_Id, Tuple<WebSocketServerConnection, DateTime>>   connectedNetworkingNodes          = new();
 
-        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                                     requests                          = new();
+        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                                    requests                          = new();
 
 
-        private const           String                                                                                 LogfileName                       = "NetworkingNodeWSServer.log";
+        private const           String                                                                                LogfileName                       = "NetworkingNodeWSServer.log";
 
-        private readonly        Dictionary<String, MethodInfo>                                                         incomingMessageProcessorsLookup   = [];
+        private readonly        Dictionary<String, MethodInfo>                                                        incomingMessageProcessorsLookup   = [];
 
         #endregion
 
@@ -93,20 +94,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             => HTTPServiceName;
 
         /// <summary>
-        /// The enumeration of all connected charging stations.
+        /// The enumeration of all connected networking nodes.
         /// </summary>
-        public IEnumerable<ChargingStation_Id> ChargingStationIds
-            => connectedChargingStations.Keys;
+        public IEnumerable<NetworkingNode_Id> NetworkingNodeIds
+            => connectedNetworkingNodes.Keys;
 
         /// <summary>
-        /// Require a HTTP Basic Authentication of all charging boxes.
+        /// Require a HTTP Basic Authentication of all networking nodes.
         /// </summary>
         public Boolean                                            RequireAuthentication    { get; }
 
         /// <summary>
         /// Logins and passwords for HTTP Basic Authentication.
         /// </summary>
-        public ConcurrentDictionary<ChargingStation_Id, String?>  ChargingBoxLogins        { get; }
+        public ConcurrentDictionary<NetworkingNode_Id, String?>   NetworkingNodeLogins        { get; }
             = new();
 
         /// <summary>
@@ -375,18 +376,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         #endregion
 
 
-        #region AddOrUpdateHTTPBasicAuth(ChargingStationId, Password)
+        #region AddOrUpdateHTTPBasicAuth(NetworkingNodeId, Password)
 
         /// <summary>
-        /// Add the given HTTP Basic Authentication password for the given charging station.
+        /// Add the given HTTP Basic Authentication password for the given networking node.
         /// </summary>
-        /// <param name="ChargingStationId">The unique identification of the charging station.</param>
-        /// <param name="Password">The password of the charging station.</param>
-        public void AddOrUpdateHTTPBasicAuth(ChargingStation_Id  ChargingStationId,
-                                             String              Password)
+        /// <param name="NetworkingNodeId">The unique identification of the networking node.</param>
+        /// <param name="Password">The password of the networking node.</param>
+        public void AddOrUpdateHTTPBasicAuth(NetworkingNode_Id  NetworkingNodeId,
+                                             String             Password)
         {
 
-            ChargingBoxLogins.AddOrUpdate(ChargingStationId,
+            NetworkingNodeLogins.AddOrUpdate(NetworkingNodeId,
                                           Password,
                                           (chargingStationId, password) => Password);
 
@@ -394,17 +395,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region RemoveHTTPBasicAuth     (ChargingStationId)
+        #region RemoveHTTPBasicAuth     (NetworkingNodeId)
 
         /// <summary>
-        /// Remove the given HTTP Basic Authentication for the given charging station.
+        /// Remove the given HTTP Basic Authentication for the given networking node.
         /// </summary>
-        /// <param name="ChargingStationId">The unique identification of the charging station.</param>
-        public Boolean RemoveHTTPBasicAuth(ChargingStation_Id ChargingStationId)
+        /// <param name="NetworkingNodeId">The unique identification of the networking node.</param>
+        public Boolean RemoveHTTPBasicAuth(NetworkingNode_Id NetworkingNodeId)
         {
 
-            if (ChargingBoxLogins.ContainsKey(ChargingStationId))
-                return ChargingBoxLogins.TryRemove(ChargingStationId, out _);
+            if (NetworkingNodeLogins.ContainsKey(NetworkingNodeId))
+                return NetworkingNodeLogins.TryRemove(NetworkingNodeId, out _);
 
             return true;
 
@@ -495,7 +496,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                 if (Connection.HTTPRequest?.Authorization is HTTPBasicAuthentication basicAuthentication)
                 {
 
-                    if (ChargingBoxLogins.TryGetValue(ChargingStation_Id.Parse(basicAuthentication.Username), out var password) &&
+                    if (NetworkingNodeLogins.TryGetValue(NetworkingNode_Id.Parse(basicAuthentication.Username), out var password) &&
                         basicAuthentication.Password == password)
                     {
                         DebugX.Log(nameof(NetworkingNodeWSServer), " connection from " + Connection.RemoteSocket + " using authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
@@ -535,26 +536,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                      CancellationToken          CancellationToken)
         {
 
-            if (!Connection.HasCustomData(chargingStationId_WebSocketKey) &&
+            if (!Connection.HasCustomData(networkingNodeId_WebSocketKey) &&
                 Connection.HTTPRequest is not null &&
-                ChargingStation_Id.TryParse(Connection.HTTPRequest.Path.ToString()[(Connection.HTTPRequest.Path.ToString().LastIndexOf("/") + 1)..], out var chargingStationId))
+                NetworkingNode_Id.TryParse(Connection.HTTPRequest.Path.ToString()[(Connection.HTTPRequest.Path.ToString().LastIndexOf("/") + 1)..], out var networkingNodeId))
             {
 
                 // Add the charging station identification to the WebSocket connection
-                Connection.TryAddCustomData(chargingStationId_WebSocketKey, chargingStationId);
+                Connection.TryAddCustomData(networkingNodeId_WebSocketKey, networkingNodeId);
 
-                if (!connectedChargingStations.ContainsKey(chargingStationId))
-                     connectedChargingStations.TryAdd(chargingStationId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+                if (!connectedNetworkingNodes.ContainsKey(networkingNodeId))
+                     connectedNetworkingNodes.TryAdd(networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
 
                 else
                 {
 
-                    DebugX.Log($"{nameof(NetworkingNodeWSServer)} Duplicate charging station '{chargingStationId}' detected!");
+                    DebugX.Log($"{nameof(NetworkingNodeWSServer)} Duplicate charging station '{networkingNodeId}' detected!");
 
-                    var oldChargingStation_WebSocketConnection = connectedChargingStations[chargingStationId].Item1;
+                    var oldChargingStation_WebSocketConnection = connectedNetworkingNodes[networkingNodeId].Item1;
 
-                    connectedChargingStations.TryRemove(chargingStationId, out _);
-                    connectedChargingStations.TryAdd   (chargingStationId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+                    connectedNetworkingNodes.TryRemove(networkingNodeId, out _);
+                    connectedNetworkingNodes.TryAdd   (networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
 
                     try
                     {
@@ -601,10 +602,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                            String?                           Reason)
         {
 
-            if (Connection.TryGetCustomDataAs<ChargingStation_Id>(chargingStationId_WebSocketKey, out var chargingStationId))
+            if (Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey, out var networkingNodeId))
             {
                 //DebugX.Log(nameof(NetworkingNodeWSServer), " Charging station " + chargingStationId + " disconnected!");
-                connectedChargingStations.TryRemove(chargingStationId, out _);
+                connectedNetworkingNodes.TryRemove(networkingNodeId, out _);
             }
 
             return Task.CompletedTask;
@@ -673,10 +674,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                     #region Initial checks
 
-                    var chargingStationId  = Connection.TryGetCustomDataAs<ChargingStation_Id>(chargingStationId_WebSocketKey);
+                    var networkingNodeId   = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey);
                     var requestData        = jsonArray[3]?.Value<JObject>();
 
-                    if (!chargingStationId.HasValue)
+                    if (!networkingNodeId.HasValue)
                         OCPPErrorResponse  = new OCPP_JSONErrorMessage(
                                                  jsonRequest.RequestId,
                                                  ResultCode.ProtocolError,
@@ -707,7 +708,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                         var result = methodInfo.Invoke(this,
                                                        [ RequestTimestamp,
                                                          Connection,
-                                                         chargingStationId.Value,
+                                                         networkingNodeId.Value,
+                                                         NetworkPath.Empty,
                                                          EventTrackingId,
                                                          jsonRequest.RequestId,
                                                          jsonRequest.Payload,
@@ -717,11 +719,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                             (OCPPResponse, OCPPErrorResponse) = await textProcessor;
                         }
 
+                        else
+                            DebugX.Log($"Received undefined '{jsonRequest.Action}' JSON request message handler within {nameof(NetworkingNodeWSServer)}!");
+
                     }
 
                     #endregion
 
                     else
+                    {
+
+                        DebugX.Log($"Received unknown '{jsonRequest.Action}' JSON request message handler within {nameof(NetworkingNodeWSServer)}!");
+
                         OCPPErrorResponse = new OCPP_JSONErrorMessage(
                                                  jsonRequest.RequestId,
                                                  ResultCode.ProtocolError,
@@ -730,6 +739,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                      new JProperty("request", TextMessage)
                                                  )
                                              );
+
+                    }
 
 
                     #region OnTextMessageResponseSent
@@ -994,9 +1005,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                     #region Initial checks
 
-                    var chargingStationId  = Connection.TryGetCustomDataAs<ChargingStation_Id>(chargingStationId_WebSocketKey);
+                    var networkingNodeId   = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey);
 
-                    if (!chargingStationId.HasValue)
+                    if (!networkingNodeId.HasValue)
                         OCPPErrorResponse  = new OCPP_JSONErrorMessage(
                                                  binaryRequest.RequestId,
                                                  ResultCode.ProtocolError,
@@ -1017,7 +1028,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                         var result = methodInfo.Invoke(this,
                                                        [ RequestTimestamp,
                                                          Connection,
-                                                         chargingStationId.Value,
+                                                         networkingNodeId.Value,
+                                                         NetworkPath.Empty,
                                                          EventTrackingId,
                                                          binaryRequest.RequestId,
                                                          binaryRequest.Payload,
@@ -1028,9 +1040,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                             (OCPPResponse, OCPPErrorResponse) = await binaryProcessor;
                         }
 
+                        else
+                            DebugX.Log($"Received undefined '{binaryRequest.Action}' binary request message handler within {nameof(NetworkingNodeWSServer)}!");
+
                     }
 
                     #endregion
+
+                    {
+
+                        DebugX.Log($"Received unknown '{binaryRequest.Action}' binary request message handler within {nameof(NetworkingNodeWSServer)}!");
+
+                        OCPPErrorResponse = new OCPP_JSONErrorMessage(
+                                                 binaryRequest.RequestId,
+                                                 ResultCode.ProtocolError,
+                                                 $"The OCPP message '{binaryRequest.Action}' is unkown!",
+                                                 new JObject(
+                                                     new JProperty("request", BinaryMessage.ToBase64())
+                                                 )
+                                             );
+
+                    }
 
                 }
 
@@ -1112,52 +1142,57 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         // Send data...
 
-        #region SendJSONData  (EventTrackingId, RequestId, ChargingStationId, Action, JSONData,   RequestTimeout)
+        #region SendJSONData  (EventTrackingId, NetworkingNodeId, NetworkPath, RequestId, Action, JSONData,   RequestTimeout)
 
         /// <summary>
         /// Send (and forget) the given JSON.
         /// </summary>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkingNodeId">The networking node identification of the message destination.</param>
+        /// <param name="NetworkPath">The network path.</param>
         /// <param name="RequestId">A unique request identification.</param>
-        /// <param name="ChargingStationId">A charging station identification.</param>
         /// <param name="Action">An OCPP action.</param>
         /// <param name="JSONData">The JSON payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
-        public async Task<CSMS.SendOCPPMessageResults> SendJSONData(EventTracking_Id    EventTrackingId,
-                                                                    Request_Id          RequestId,
-                                                                    ChargingStation_Id  ChargingStationId,
-                                                                    String              Action,
-                                                                    JObject             JSONData,
-                                                                    DateTime            RequestTimeout)
+        public async Task<SendOCPPMessageResults> SendJSONData(EventTracking_Id   EventTrackingId,
+                                                               NetworkingNode_Id  NetworkingNodeId,
+                                                               NetworkPath        NetworkPath,
+                                                               Request_Id         RequestId,
+                                                               String             Action,
+                                                               JObject            JSONData,
+                                                               DateTime           RequestTimeout)
         {
-
-            var jsonRequestMessage  = new OCPP_JSONRequestMessage(
-                                          RequestId,
-                                          Action,
-                                          JSONData
-                                      );
-
-            var ocppJSONMessage     = jsonRequestMessage.ToJSON();
 
             try
             {
 
-                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<ChargingStation_Id>(chargingStationId_WebSocketKey) == ChargingStationId).
+                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) == NetworkingNodeId).
                                                                  ToArray();
 
                 if (webSocketConnections.Length != 0)
                 {
 
+                    var jsonRequestMessage  = new OCPP_JSONRequestMessage(
+                                                  NetworkingNodeId,
+                                                  NetworkPath,
+                                                  RequestId,
+                                                  Action,
+                                                  JSONData
+                                              );
+
                     requests.TryAdd(RequestId,
                                     SendRequestState.FromJSONRequest(
                                         Timestamp.Now,
-                                        ChargingStationId,
+                                        NetworkingNodeId,
                                         RequestTimeout,
                                         jsonRequestMessage
                                     ));
 
                     foreach (var webSocketConnection in webSocketConnections)
                     {
+
+                        var networkingMode   = webSocketConnection.TryGetCustomDataAs<Boolean>(networkingMode_WebSocketKey);
+                        var ocppJSONMessage  = jsonRequestMessage. ToJSON(networkingMode ?? false);
 
                         #region OnTextMessageRequestSent
 
@@ -1199,68 +1234,72 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                     }
 
-                    return CSMS.SendOCPPMessageResults.Success;
+                    return SendOCPPMessageResults.Success;
 
                 }
                 else
-                    return CSMS.SendOCPPMessageResults.UnknownClient;
+                    return SendOCPPMessageResults.UnknownClient;
 
             }
             catch (Exception)
             {
-                return CSMS.SendOCPPMessageResults.TransmissionFailed;
+                return SendOCPPMessageResults.TransmissionFailed;
             }
 
         }
 
         #endregion
 
-        #region SendBinaryData(EventTrackingId, RequestId, ChargingStationId, Action, BinaryData, RequestTimeout)
+        #region SendBinaryData(EventTrackingId, NetworkingNodeId, NetworkPath, RequestId, Action, BinaryData, RequestTimeout)
 
         /// <summary>
         /// Send (and forget) the given binary data.
         /// </summary>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkingNodeId">The networking node identification of the message destination.</param>
+        /// <param name="NetworkPath">The network path.</param>
         /// <param name="RequestId">A unique request identification.</param>
-        /// <param name="ChargingStationId">A charging station identification.</param>
         /// <param name="Action">An OCPP action.</param>
         /// <param name="BinaryData">The binary payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
-        public async Task<CSMS.SendOCPPMessageResults> SendBinaryData(EventTracking_Id    EventTrackingId,
-                                                                      Request_Id          RequestId,
-                                                                      ChargingStation_Id  ChargingStationId,
-                                                                      String              Action,
-                                                                      Byte[]              BinaryData,
-                                                                      DateTime            RequestTimeout)
+        public async Task<SendOCPPMessageResults> SendBinaryData(EventTracking_Id   EventTrackingId,
+                                                                 NetworkingNode_Id  NetworkingNodeId,
+                                                                 NetworkPath        NetworkPath,
+                                                                 Request_Id         RequestId,
+                                                                 String             Action,
+                                                                 Byte[]             BinaryData,
+                                                                 DateTime           RequestTimeout)
         {
-
-            var binaryRequestMessage  = new OCPP_BinaryRequestMessage(
-                                            RequestId,
-                                            Action,
-                                            BinaryData
-                                        );
-
-            var ocppBinaryMessage     = binaryRequestMessage.ToByteArray();
 
             try
             {
 
-                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<ChargingStation_Id>(chargingStationId_WebSocketKey) == ChargingStationId).
+                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) == NetworkingNodeId).
                                                                  ToArray();
 
                 if (webSocketConnections.Length != 0)
                 {
 
+                    var binaryRequestMessage  = new OCPP_BinaryRequestMessage(
+                                                    NetworkingNodeId,
+                                                    NetworkPath,
+                                                    RequestId,
+                                                    Action,
+                                                    BinaryData
+                                                );
+
                     requests.TryAdd(RequestId,
                                     SendRequestState.FromBinaryRequest(
                                         Timestamp.Now,
-                                        ChargingStationId,
+                                        NetworkingNodeId,
                                         RequestTimeout,
                                         binaryRequestMessage
                                     ));
 
                     foreach (var webSocketConnection in webSocketConnections)
                     {
+
+                        var ocppBinaryMessage = binaryRequestMessage.ToByteArray();
 
                         #region OnBinaryMessageRequestSent
 
@@ -1290,9 +1329,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         #endregion
 
-                        var success = await SendBinaryMessage(webSocketConnection,
-                                                              ocppBinaryMessage,
-                                                              EventTrackingId);
+                        var success = await SendBinaryMessage(
+                                                webSocketConnection,
+                                                ocppBinaryMessage,
+                                                EventTrackingId
+                                            );
 
                         if (success == SendStatus.Success)
                             break;
@@ -1302,16 +1343,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                     }
 
-                    return CSMS.SendOCPPMessageResults.Success;
+                    return SendOCPPMessageResults.Success;
 
                 }
                 else
-                    return CSMS.SendOCPPMessageResults.UnknownClient;
+                    return SendOCPPMessageResults.UnknownClient;
 
             }
             catch (Exception)
             {
-                return CSMS.SendOCPPMessageResults.TransmissionFailed;
+                return SendOCPPMessageResults.TransmissionFailed;
             }
 
         }
@@ -1319,28 +1360,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         #endregion
 
 
-        #region SendJSONAndWait  (EventTrackingId, RequestId, ChargingStationId, OCPPAction, JSONPayload,   RequestTimeout = null)
+        #region SendJSONAndWait  (EventTrackingId, NetworkingNodeId, NetworkPath, RequestId, OCPPAction, JSONPayload,   RequestTimeout = null)
 
-        public async Task<SendRequestState> SendJSONAndWait(EventTracking_Id    EventTrackingId,
-                                                            Request_Id          RequestId,
-                                                            ChargingStation_Id  ChargingStationId,
-                                                            String              OCPPAction,
-                                                            JObject             JSONPayload,
-                                                            TimeSpan?           RequestTimeout   = null)
+        public async Task<SendRequestState> SendJSONAndWait(EventTracking_Id   EventTrackingId,
+                                                            NetworkingNode_Id  NetworkingNodeId,
+                                                            NetworkPath        NetworkPath,
+                                                            Request_Id         RequestId,
+                                                            String             OCPPAction,
+                                                            JObject            JSONPayload,
+                                                            TimeSpan?          RequestTimeout)
         {
 
             var endTime         = Timestamp.Now + (RequestTimeout ?? this.RequestTimeout ?? DefaultRequestTimeout);
 
             var sendJSONResult  = await SendJSONData(
                                       EventTrackingId,
+                                      NetworkingNodeId,
+                                      NetworkPath,
                                       RequestId,
-                                      ChargingStationId,
                                       OCPPAction,
                                       JSONPayload,
                                       endTime
                                   );
 
-            if (sendJSONResult == CSMS.SendOCPPMessageResults.Success) {
+            if (sendJSONResult == SendOCPPMessageResults.Success) {
 
                 #region Wait for a response... till timeout
 
@@ -1411,9 +1454,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             return SendRequestState.FromJSONRequest(
 
                        now,
-                       ChargingStationId,
+                       NetworkingNodeId,
                        now,
                        new OCPP_JSONRequestMessage(
+                           NetworkingNodeId,
+                           NetworkPath,
                            RequestId,
                            OCPPAction,
                            JSONPayload
@@ -1428,11 +1473,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region SendBinaryAndWait(EventTrackingId, RequestId, ChargingStationId, OCPPAction, BinaryPayload, RequestTimeout = null)
+        #region SendBinaryAndWait(EventTrackingId, NetworkingNodeId, NetworkPath, RequestId, OCPPAction, BinaryPayload, RequestTimeout = null)
 
         public async Task<SendRequestState> SendBinaryAndWait(EventTracking_Id    EventTrackingId,
+                                                              NetworkingNode_Id   NetworkingNodeId,
+                                                              NetworkPath         NetworkPath,
                                                               Request_Id          RequestId,
-                                                              ChargingStation_Id  ChargingStationId,
                                                               String              OCPPAction,
                                                               Byte[]              BinaryPayload,
                                                               TimeSpan?           RequestTimeout   = null)
@@ -1442,14 +1488,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
             var sendJSONResult  = await SendBinaryData(
                                       EventTrackingId,
+                                      NetworkingNodeId,
+                                      NetworkPath,
                                       RequestId,
-                                      ChargingStationId,
                                       OCPPAction,
                                       BinaryPayload,
                                       endTime
                                   );
 
-            if (sendJSONResult == CSMS.SendOCPPMessageResults.Success) {
+            if (sendJSONResult == SendOCPPMessageResults.Success) {
 
                 #region Wait for a response... till timeout
 
@@ -1520,9 +1567,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             return SendRequestState.FromBinaryRequest(
 
                        now,
-                       ChargingStationId,
+                       NetworkingNodeId,
                        now,
                        new OCPP_BinaryRequestMessage(
+                           NetworkingNodeId,
+                           NetworkPath,
                            RequestId,
                            OCPPAction,
                            BinaryPayload
