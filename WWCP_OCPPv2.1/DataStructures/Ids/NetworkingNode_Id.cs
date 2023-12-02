@@ -85,7 +85,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
         public readonly Boolean IsNotNullOrEmpty
-            => InternalId.IsNullOrEmpty();
+            => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the networking node identification.

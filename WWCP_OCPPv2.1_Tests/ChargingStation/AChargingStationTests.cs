@@ -95,8 +95,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             chargingStation1WebSocketJSONMessagesSent              = [];
             chargingStation1WebSocketJSONMessageResponsesReceived  = [];
 
+            var chargingStation1Id = NetworkingNode_Id.Parse("GD-CP001");
+
             chargingStation1 = new TestChargingStation(
-                                    Id:                       NetworkingNode_Id.Parse("GD001"),
+                                    Id:                       chargingStation1Id,
                                     VendorName:               "GraphDefined OEM #1",
                                     Model:                    "VCP.1",
                                     Description:              I18NString.Create(Languages.en, "Our first virtual charging station!"),
@@ -139,13 +141,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 testNetworkingNodeWebSockets01 is not null)
             {
 
-                testCSMS01.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("test01"), "1234abcd");
+                testCSMS01.AddOrUpdateHTTPBasicAuth(chargingStation1Id, "1234abcd");
 
                 var response = chargingStation1.ConnectWebSocket(
                                    From:                    "From:GD001",
                                    To:                      "To:OCPPTest01",
                                    RemoteURL:               URL.Parse("http://127.0.0.1:" + (testNetworkingNodeWebSockets01?.IPPort ?? testBackendWebSockets01?.IPPort).ToString() + "/" + chargingStation1.Id),
-                                   HTTPAuthentication:      HTTPBasicAuthentication.Create("test01", "1234abcd"),
+                                   HTTPAuthentication:      HTTPBasicAuthentication.Create(chargingStation1Id.ToString(), "1234abcd"),
                                    DisableWebSocketPings:   true
                                ).Result;
 
@@ -213,8 +215,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             chargingStation2WebSocketJSONMessagesSent              = [];
             chargingStation2WebSocketJSONMessageResponsesReceived  = [];
 
+            var chargingStation2Id = NetworkingNode_Id.Parse("GD-CP002");
+
             chargingStation2  = new TestChargingStation(
-                                    Id:                       NetworkingNode_Id.Parse("CP002"),
+                                    Id:                       chargingStation2Id,
                                     VendorName:               "GraphDefined OEM #2",
                                     Model:                    "VCP.2",
                                     Description:              I18NString.Create(Languages.en, "Our 2nd virtual charging station!"),
@@ -266,13 +270,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             if (testBackendWebSockets01 is not null)
             {
 
-                testCSMS01.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("test02"), "1234abcd");
+                testCSMS01.AddOrUpdateHTTPBasicAuth(chargingStation2Id, "1234abcd");
 
                 var response = chargingStation2.ConnectWebSocket(
                                    From:                    "From:GD002",
                                    To:                      "To:OCPPTest01",
                                    RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargingStation2.Id),
-                                   HTTPAuthentication:      HTTPBasicAuthentication.Create("test01", "1234abcd"),
+                                   HTTPAuthentication:      HTTPBasicAuthentication.Create(chargingStation2Id.ToString(), "1234abcd"),
                                    DisableWebSocketPings:   true
                                ).Result;
 
@@ -336,8 +340,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             chargingStation3WebSocketJSONMessagesSent              = [];
             chargingStation3WebSocketJSONMessageResponsesReceived  = [];
 
+            var chargingStation3Id = NetworkingNode_Id.Parse("GD-CP003");
+
             chargingStation3 = new TestChargingStation(
-                                    Id:                       NetworkingNode_Id.Parse("CP003"),
+                                    Id:                       chargingStation3Id,
                                     VendorName:               "GraphDefined OEM #3",
                                     Model:                    "VCP.3",
                                     Description:              I18NString.Create(Languages.en, "Our 3rd virtual charging station!"),

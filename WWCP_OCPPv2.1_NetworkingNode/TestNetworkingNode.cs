@@ -193,6 +193,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Data
 
+            private readonly            TestNetworkingNode          parentNetworkingNode;
+
             private readonly            HashSet<SignaturePolicy>    signaturePolicies           = new();
 
 
@@ -246,8 +248,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// The charging station identification.
             /// </summary>
             public NetworkingNode_Id        Id                          { get; }
-
-            public TestNetworkingNode       NetworkingNodeRef           { get; }
 
             /// <summary>
             /// The charging station vendor identification.
@@ -2095,7 +2095,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
 
                 this.Id                       = NetworkingNode.Id;
-                this.NetworkingNodeRef        = NetworkingNode;
+                this.parentNetworkingNode        = NetworkingNode;
 
                 //this.Configuration = new Dictionary<String, ConfigurationData> {
                 //    { "hello",          new ConfigurationData("world",    AccessRights.ReadOnly,  false) },
@@ -15336,6 +15336,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
             #region Data
 
+            private          readonly  TestNetworkingNode                                                                      parentNetworkingNode;
+
             private          readonly  HashSet<SignaturePolicy>                                                                signaturePolicies           = new();
 
             private          readonly  HashSet<CSMS.INetworkingNodeChannel>                                                    centralSystemServers        = new();
@@ -15364,8 +15366,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             /// The unique identification of this central system.
             /// </summary>
             public NetworkingNode_Id   Id                        { get; }
-
-            public TestNetworkingNode  NetworkingNodeRef         { get; }
 
             /// <summary>
             /// The sender identification.
@@ -17157,7 +17157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
             {
 
                 this.Id                      = NetworkingNode.Id;
-                this.NetworkingNodeRef       = NetworkingNode;
+                this.parentNetworkingNode       = NetworkingNode;
                 this.RequireAuthentication   = RequireAuthentication;
                 this.DefaultRequestTimeout   = DefaultRequestTimeout ?? defaultRequestTimeout;
                 this.HTTPUploadPort          = HTTPUploadPort        ?? DefaultHTTPUploadPort;
@@ -17328,13 +17328,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                     CancellationToken) =>
                     {
 
-                        if (Connection.TryGetCustomDataAs(NetworkingNode.CSMS.NetworkingNodeWSServer.networkingNodeId_WebSocketKey, out NetworkPath? networkPath) &&
-                            networkPath is not null)
+                        // A new connection from the same networking node/charging station will replace the older one!
+                        if (Connection.TryGetCustomDataAs(NetworkingNode.CSMS.NetworkingNodeWSServer.networkingNodeId_WebSocketKey, out NetworkingNode_Id? networkingNodeId) &&
+                            networkingNodeId.HasValue &&
+                            networkingNodeId.IsNotNullOrEmpty())
                         {
-                            if (!reachableChargingStations.ContainsKey(networkPath.Origin))
-                                reachableChargingStations.TryAdd(networkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(CSMS, Timestamp.Now));
+                            if (!reachableChargingStations.ContainsKey(networkingNodeId.Value))
+                                reachableChargingStations.TryAdd(networkingNodeId.Value, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(CSMS, Timestamp.Now));
                             else
-                                reachableChargingStations[networkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(CSMS, Timestamp.Now);
+                                reachableChargingStations[networkingNodeId.Value] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(CSMS, Timestamp.Now);
                         }
 
                     };
@@ -17853,7 +17855,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // ChargingStation
                     // Reason
 
-                    DebugX.Log($"OnBootNotification: {request.ChargingStation?.SerialNumber ?? "-"} ({request.NetworkPath.Origin})");
+                    DebugX.Log($"OnBootNotification: {request.ChargingStation?.SerialNumber ?? "-"} ({request.NetworkPath.Origin?.ToString() ?? "-"})");
 
                     #region Verify request message
 
@@ -17870,10 +17872,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     {
 
                         response = new OCPPv2_1.CSMS.BootNotificationResponse(
-                                       Request:  request,
-                                       Result:   Result.SignatureError(
-                                                     $"Invalid signature(s): {verificationErrorResponse}"
-                                                 )
+                                       Request:   request,
+                                       Result:    Result.SignatureError(
+                                                      $"Invalid signature(s): {verificationErrorResponse}"
+                                                  )
                                    );
 
                         SignaturePolicy.SignResponseMessage(
@@ -17894,22 +17896,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     if (response is null)
                     {
 
-                        if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                        {
+                        request.NetworkPath.Append(Id);
 
-                            if (sender is CSMS.NetworkingNodeWSServer networkingNodeWSServer)
-                                reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(networkingNodeWSServer, Timestamp.Now));
+                        // ToDo: Add aditional request signature!
 
-                        }
-                        else
-                        {
-
-                            if (sender is CSMS.NetworkingNodeWSServer networkingNodeWSServer)
-                                reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(networkingNodeWSServer, Timestamp.Now);
-
-                        }
-
-                        response  = await this.NetworkingNodeRef.AsCS.SendBootNotification(request);
+                        // Implicit sending to upstream CSMS!
+                        response  = await parentNetworkingNode.AsCS.SendBootNotification(request);
 
 
                         //response =  new OCPPv2_1.CSMS.BootNotificationResponse(
@@ -18021,17 +18013,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // UpdateFirmwareRequestId
 
                     DebugX.Log("OnFirmwareStatus: " + request.Status);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-                    }
-                    else
-                    {
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-                    }
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -18149,22 +18130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // PublishFirmwareStatusNotificationRequestId
                     // DownloadLocations
 
-                    DebugX.Log("OnPublishFirmwareStatusNotification: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnPublishFirmwareStatusNotification: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -18279,22 +18245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     #endregion
 
 
-                    DebugX.Log("OnHeartbeat: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnHeartbeat: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -18414,22 +18365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // EventData
                     // ToBeContinued
 
-                    DebugX.Log("OnNotifyEvent: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnNotifyEvent: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -18551,22 +18487,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // Timestamp
                     // TechInfo
 
-                    DebugX.Log("OnSecurityEventNotification: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnSecurityEventNotification: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -18685,22 +18606,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // GeneratedAt
                     // ReportData
 
-                    DebugX.Log("OnNotifyReport: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnNotifyReport: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -18826,22 +18732,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // MonitoringData
                     // ToBeContinued
 
-                    DebugX.Log("OnNotifyMonitoringReport: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnNotifyMonitoringReport: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -18963,22 +18854,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // Status
                     // LogRquestId
 
-                    DebugX.Log("OnLogStatusNotification: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnLogStatusNotification: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -19099,17 +18975,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     DebugX.Log("OnIncomingDataTransfer: " + request.VendorId  + ", " +
                                                             request.MessageId + ", " +
                                                             request.Data);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-                    }
-                    else
-                    {
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-                    }
 
 
                     var responseData = request.Data;
@@ -19281,22 +19146,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // CSR
                     // CertificateType
 
-                    DebugX.Log("OnSignCertificate: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnSignCertificate: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -19419,22 +19269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // MaximumContractCertificateChains
                     // PrioritizedEMAIds
 
-                    DebugX.Log("OnGet15118EVCertificate: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnGet15118EVCertificate: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -19555,22 +19390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     // OCSPRequestData
 
-                    DebugX.Log("OnGetCertificateStatus: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnGetCertificateStatus: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -19692,22 +19512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // GetCRLRequestId
                     // CertificateHashData
 
-                    DebugX.Log("OnGetCRL: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnGetCRL: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -19830,26 +19635,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // ReservationId
                     // ReservationUpdateStatus
 
-                    DebugX.Log("OnReservationStatusUpdate: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                        //if (Sender is CSMSSOAPServer centralSystemSOAPServer)
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                        //if (Sender is CSMSSOAPServer centralSystemSOAPServer)
-
-                    }
+                    DebugX.Log("OnReservationStatusUpdate: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -19967,27 +19753,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // Certificate
                     // ISO15118CertificateHashData
 
-                    DebugX.Log("OnAuthorize: " + request.NetworkPath.Origin + ", " +
+                    DebugX.Log("OnAuthorize: " + request.NetworkPath.Origin.Value + ", " +
                                                  request.IdToken);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                        //if (Sender is CSMSSOAPServer centralSystemSOAPServer)
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                        //if (Sender is CSMSSOAPServer centralSystemSOAPServer)
-
-                    }
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -20118,22 +19885,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // ChargingNeeds
                     // MaxScheduleTuples
 
-                    DebugX.Log("OnNotifyEVChargingNeeds: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnNotifyEVChargingNeeds: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -20276,27 +20028,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // MeterValues
                     // PreconditioningStatus
 
-                    DebugX.Log("OnTransactionEvent: " + request.NetworkPath.Origin + ", " +
+                    DebugX.Log("OnTransactionEvent: " + request.NetworkPath.Origin.Value + ", " +
                                                         request.IdToken);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                        //if (Sender is CSMSSOAPServer centralSystemSOAPServer)
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                        //if (Sender is CSMSSOAPServer centralSystemSOAPServer)
-
-                    }
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -20433,17 +20166,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     DebugX.Log($"OnStatusNotification: {request.EVSEId}/{request.ConnectorId} => {request.ConnectorStatus}");
 
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-                    }
-                    else
-                    {
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-                    }
-
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
                                        request,
@@ -20564,17 +20286,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     DebugX.Log(request.MeterValues.SafeSelect(meterValue => meterValue.Timestamp.ToIso8601() +
                                                                             meterValue.SampledValues.SafeSelect(sampledValue => sampledValue.Context + ", " + sampledValue.Value + ", " + sampledValue.Value).AggregateWith("; ")).AggregateWith(Environment.NewLine));
 
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-                    }
-                    else
-                    {
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-                    }
-
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
                                        request,
@@ -20693,22 +20404,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // ChargingSchedules
                     // EVSEId
 
-                    DebugX.Log("OnNotifyChargingLimit: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnNotifyChargingLimit: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -20849,22 +20545,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // ChargingLimitSource
                     // EVSEId
 
-                    DebugX.Log("OnClearedChargingLimit: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnClearedChargingLimit: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -20984,22 +20665,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // ChargingProfiles
                     // ToBeContinued
 
-                    DebugX.Log("OnReportChargingProfiles: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnReportChargingProfiles: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -21144,22 +20810,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // SelectedScheduleTupleId
                     // PowerToleranceAcceptance
 
-                    DebugX.Log("OnNotifyEVChargingSchedule: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnNotifyEVChargingSchedule: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -21303,22 +20954,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // TransactionId
                     // Activated
 
-                    DebugX.Log("OnNotifyPriorityCharging: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnNotifyPriorityCharging: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -21434,22 +21070,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                     // ChargingProfileId
 
-                    DebugX.Log("OnPullDynamicScheduleUpdate: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnPullDynamicScheduleUpdate: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -21592,17 +21213,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     //DebugX.Log(Request.NotifyDisplayMessages.SafeSelect(meterValue => meterValue.Timestamp.ToIso8601() +
                     //                          meterValue.SampledValues.SafeSelect(sampledValue => sampledValue.Context + ", " + sampledValue.Value + ", " + sampledValue.Value).AggregateWith("; ")).AggregateWith(Environment.NewLine));
 
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-                    }
-                    else
-                    {
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-                    }
-
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
                                        request,
@@ -21725,22 +21335,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     // GeneratedAt
                     // ToBeContinued
 
-                    DebugX.Log("OnNotifyCustomerInformation: " + request.NetworkPath.Origin);
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    }
-                    else
-                    {
-
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    }
+                    DebugX.Log("OnNotifyCustomerInformation: " + request.NetworkPath.Origin.Value);
 
 
                     var response = !SignaturePolicy.VerifyRequestMessage(
@@ -21864,17 +21459,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                     DebugX.Log("OnIncomingBinaryDataTransfer: " + request.VendorId  + ", " +
                                                                   request.MessageId + ", " +
                                                                   request.Data?.ToUTF8String() ?? "-");
-
-                    if (!reachableChargingStations.ContainsKey(request.NetworkPath.Origin))
-                    {
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations.TryAdd(request.NetworkPath.Origin, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now));
-                    }
-                    else
-                    {
-                        if (sender is CSMS.NetworkingNodeWSServer centralSystemWSServer)
-                            reachableChargingStations[request.NetworkPath.Origin] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(centralSystemWSServer, Timestamp.Now);
-                    }
 
 
                     var responseBinaryData = new Byte[0];
@@ -22030,7 +21614,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22125,7 +21709,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22221,7 +21805,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22316,7 +21900,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22410,7 +21994,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22505,7 +22089,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22604,7 +22188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22701,7 +22285,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22804,7 +22388,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -22907,7 +22491,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23002,7 +22586,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23101,7 +22685,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23196,7 +22780,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23300,7 +22884,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23396,7 +22980,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23494,7 +23078,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23590,7 +23174,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23686,7 +23270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23782,7 +23366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23877,7 +23461,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -23972,7 +23556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24068,7 +23652,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24164,7 +23748,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24259,7 +23843,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24353,7 +23937,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24453,7 +24037,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24549,7 +24133,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24646,7 +24230,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24741,7 +24325,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24863,7 +24447,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -24958,7 +24542,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25052,7 +24636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25170,7 +24754,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25266,7 +24850,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25362,7 +24946,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25459,7 +25043,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25554,7 +25138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25649,7 +25233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25744,7 +25328,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25842,7 +25426,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -25938,7 +25522,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26037,7 +25621,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26132,7 +25716,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26228,7 +25812,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26323,7 +25907,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26424,7 +26008,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26519,7 +26103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26614,7 +26198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26708,7 +26292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26805,7 +26389,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -26904,7 +26488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -27003,7 +26587,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -27102,7 +26686,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -27201,7 +26785,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -27300,7 +26884,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -27403,7 +26987,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -27510,7 +27094,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(
@@ -27617,7 +27201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender, out var centralSystem) &&
+                var response  = reachableChargingStations.TryGetValue(Request.NetworkPath.Sender.Value, out var centralSystem) &&
                                     centralSystem is not null
 
                                     ? SignaturePolicy.SignRequestMessage(

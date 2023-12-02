@@ -112,8 +112,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
                 networkingNode1WebSocketJSONMessagesSent              = [];
                 networkingNode1WebSocketJSONMessageResponsesReceived  = [];
 
+                var networkingNode1Id = NetworkingNode_Id.Parse("GD-NN001");
+
                 networkingNode1 = new TestNetworkingNode(
-                                      Id:                       NetworkingNode_Id.Parse("GDNN001"),
+                                      Id:                       networkingNode1Id,
                                       VendorName:               "GraphDefined OEM #1",
                                       Model:                    "VCP.1",
                                       Description:              I18NString.Create(Languages.en, "Our first virtual networking node!"),
@@ -144,13 +146,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode
                 if (testBackendWebSockets01 is not null)
                 {
 
-                    testCSMS01.AddOrUpdateHTTPBasicAuth(NetworkingNode_Id.Parse("test01"), "1234abcd");
+                    testCSMS01.AddOrUpdateHTTPBasicAuth(networkingNode1Id, "1234abcd");
 
                     var response = networkingNode1.ConnectWebSocket(
                                        From:                    "From:GD001",
                                        To:                      "To:OCPPTest01",
                                        RemoteURL:               URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + networkingNode1.Id),
-                                       HTTPAuthentication:      HTTPBasicAuthentication.Create("test01", "1234abcd"),
+                                       HTTPAuthentication:      HTTPBasicAuthentication.Create(networkingNode1Id.ToString(), "1234abcd"),
                                        DisableWebSocketPings:   true
                                    ).Result;
 

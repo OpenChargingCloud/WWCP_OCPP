@@ -536,39 +536,94 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                      CancellationToken          CancellationToken)
         {
 
+            #region Store the networking node/charging station identification within the Web Socket connection
+
             if (!Connection.HasCustomData(networkingNodeId_WebSocketKey) &&
-                Connection.HTTPRequest is not null &&
-                NetworkingNode_Id.TryParse(Connection.HTTPRequest.Path.ToString()[(Connection.HTTPRequest.Path.ToString().LastIndexOf("/") + 1)..], out var networkingNodeId))
+                Connection.HTTPRequest is not null)
             {
 
-                // Add the charging station identification to the WebSocket connection
-                Connection.TryAddCustomData(networkingNodeId_WebSocketKey, networkingNodeId);
+                //ToDo: TLS certificates
 
-                if (!connectedNetworkingNodes.ContainsKey(networkingNodeId))
-                     connectedNetworkingNodes.TryAdd(networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+                #region HTTP Basic Authentication is used
 
-                else
+                if (Connection.HTTPRequest.Authorization is HTTPBasicAuthentication httpBasicAuthentication)
                 {
 
-                    DebugX.Log($"{nameof(NetworkingNodeWSServer)} Duplicate charging station '{networkingNodeId}' detected!");
-
-                    var oldChargingStation_WebSocketConnection = connectedNetworkingNodes[networkingNodeId].Item1;
-
-                    connectedNetworkingNodes.TryRemove(networkingNodeId, out _);
-                    connectedNetworkingNodes.TryAdd   (networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
-
-                    try
+                    if (NetworkingNode_Id.TryParse(httpBasicAuthentication.Username, out var networkingNodeId))
                     {
-                        oldChargingStation_WebSocketConnection.Close();
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log($"{nameof(NetworkingNodeWSServer)} Closing old HTTP WebSocket connection failed: {e.Message}");
+
+                        // Add the networking node/charging station identification to the Web Socket connection
+                        Connection.TryAddCustomData(networkingNodeId_WebSocketKey, networkingNodeId);
+
+                        if (!connectedNetworkingNodes.TryGetValue(networkingNodeId, out var value))
+                            connectedNetworkingNodes.TryAdd(networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+
+                        else
+                        {
+
+                            DebugX.Log($"{nameof(NetworkingNodeWSServer)} Duplicate networking node '{networkingNodeId}' detected!");
+
+                            var oldNetworkingNode_WebSocketConnection = value.Item1;
+
+                            connectedNetworkingNodes.TryRemove(networkingNodeId, out _);
+                            connectedNetworkingNodes.TryAdd   (networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+
+                            try
+                            {
+                                oldNetworkingNode_WebSocketConnection.Close();
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log($"{nameof(NetworkingNodeWSServer)} Closing old HTTP WebSocket connection failed: {e.Message}");
+                            }
+
+                        }
+
                     }
 
                 }
 
+                #endregion
+
+                #region No authentication at all...
+
+                else if (NetworkingNode_Id.TryParse(Connection.HTTPRequest.Path.ToString()[(Connection.HTTPRequest.Path.ToString().LastIndexOf("/") + 1)..], out var networkingNodeId))
+                {
+
+                    // Add the networking node/charging station identification to the Web Socket connection
+                    Connection.TryAddCustomData(networkingNodeId_WebSocketKey, networkingNodeId);
+
+                    if (!connectedNetworkingNodes.TryGetValue(networkingNodeId, out Tuple<WebSocketServerConnection, DateTime>? value))
+                         connectedNetworkingNodes.TryAdd(networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+
+                    else
+                    {
+
+                        DebugX.Log($"{nameof(NetworkingNodeWSServer)} Duplicate charging station '{networkingNodeId}' detected!");
+
+                        var oldChargingStation_WebSocketConnection = value.Item1;
+
+                        connectedNetworkingNodes.TryRemove(networkingNodeId, out _);
+                        connectedNetworkingNodes.TryAdd   (networkingNodeId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+
+                        try
+                        {
+                            oldChargingStation_WebSocketConnection.Close();
+                        }
+                        catch (Exception e)
+                        {
+                            DebugX.Log($"{nameof(NetworkingNodeWSServer)} Closing old HTTP WebSocket connection failed: {e.Message}");
+                        }
+
+                    }
+
+                }
+
+                #endregion
+
             }
+
+            #endregion
 
             #region Send OnNewNetworkingNodeWSConnection event
 
@@ -577,10 +632,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             {
 
                 OnNewNetworkingNodeWSConnection?.Invoke(LogTimestamp,
-                                              this,
-                                              Connection,
-                                              EventTrackingId,
-                                              CancellationToken);
+                                                        this,
+                                                        Connection,
+                                                        EventTrackingId,
+                                                        CancellationToken);
 
             }
 
@@ -640,7 +695,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                 var jsonArray = JArray.Parse(TextMessage);
 
-                     if (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError)  && jsonRequest       is not null)
+                if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError)  && jsonRequest       is not null)
                 {
 
                     #region OnTextMessageRequestReceived
@@ -705,11 +760,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                              methodInfo is not null)
                     {
 
+                        #region Validate/generate 'network path'
+
+                        var networkPath = jsonRequest.NetworkPath ?? NetworkPath.Empty;
+
+                        if (networkPath.Sender! != networkingNodeId.Value)
+                            networkPath.Append(networkingNodeId.Value);
+
+                        #endregion
+
+                        //ToDo: Maybe this could be done via code generation!
                         var result = methodInfo.Invoke(this,
                                                        [ RequestTimestamp,
                                                          Connection,
                                                          networkingNodeId.Value,
-                                                         NetworkPath.Empty,
+                                                         networkPath,
                                                          EventTrackingId,
                                                          jsonRequest.RequestId,
                                                          jsonRequest.Payload,
@@ -726,6 +791,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                     #endregion
 
+                    #region error...
+
                     else
                     {
 
@@ -741,6 +808,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                              );
 
                     }
+
+                    #endregion
 
 
                     #region OnTextMessageResponseSent

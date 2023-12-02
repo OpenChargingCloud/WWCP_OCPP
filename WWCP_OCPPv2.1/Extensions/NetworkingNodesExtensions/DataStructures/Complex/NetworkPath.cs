@@ -22,31 +22,11 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
 {
-
-    public static class NetworkPathExtensions
-    {
-
-        public static NetworkPath Add(this NetworkPath   NetworkPath,
-                                      NetworkingNode_Id  NetworkingNodeId)
-
-            => new (new List<NetworkingNode_Id>(NetworkPath.NetworkingNodeIds).
-                        AddAndReturnList(NetworkingNodeId));
-
-        //public static NetworkPath Add(this NetworkPath    NetworkPath,
-        //                              ChargingStation_Id  ChargingStationId)
-
-        //    => new (new List<NetworkingNode_Id>(NetworkPath.NetworkingNodeIds).
-        //                AddAndReturnList(NetworkingNode_Id.Parse(ChargingStationId.ToString())));
-
-    }
-
-
 
     /// <summary>
     /// A network path.
@@ -56,13 +36,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                IComparable
     {
 
+        #region Data
+
+        private readonly List<NetworkingNode_Id> networkingNodeIds = [];
+
+        #endregion
+
         #region Properties
 
         /// <summary>
         /// The ordered list of networking node identifications along the network path.
         /// </summary>
         [Mandatory]
-        public IEnumerable<NetworkingNode_Id>  NetworkingNodeIds    { get; } = [ NetworkingNode_Id.Zero ];
+        public IEnumerable<NetworkingNode_Id>  NetworkingNodeIds
+
+            => networkingNodeIds;
 
 
         /// <summary>
@@ -70,36 +58,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// and thus often a charging station identification.
         /// </summary>
         [Optional]
-        public NetworkingNode_Id               Origin
+        public NetworkingNode_Id?              Origin
 
-            => NetworkingNodeIds.First();
-
-        ///// <summary>
-        ///// The first networking node aka the origin of the network path
-        ///// and thus often a charging station identification.
-        ///// </summary>
-        //[Optional]
-        //public ChargingStation_Id              OriginAsChargingStationId
-
-        //    => ChargingStation_Id.Parse(NetworkingNodeIds.First().ToString());
+            => NetworkingNodeIds.Any()
+                   ? NetworkingNodeIds.First()
+                   : null;
 
 
         /// <summary>
-        /// The first networking node aka the sender of the current message.
+        /// The last networking node aka the sender of the current message.
         /// </summary>
         [Optional]
-        public NetworkingNode_Id               Sender
+        public NetworkingNode_Id?              Sender
 
-            => NetworkingNodeIds.Last();
+            => NetworkingNodeIds.Any()
+                   ? NetworkingNodeIds.Last()
+                   : null;
 
-        ///// <summary>
-        ///// The last networking node aka the sender of the current message
-        ///// as a charging station identification.
-        ///// </summary>
-        //[Optional]
-        //public ChargingStation_Id              SenderAsNetworkPath
 
-        //    => ChargingStation_Id.Parse(NetworkingNodeIds.Last().ToString());
+        /// <summary>
+        /// An empty network path.
+        /// </summary>
+        public static NetworkPath               Empty    { get; }
+
+            = new(Array.Empty<NetworkingNode_Id>());
 
         #endregion
 
@@ -108,16 +90,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Create a new a network path.
         /// </summary>
-        /// <param name="NetworkingNodeIds">An ordered list of networking node identifications along the network path.</param>
-        public NetworkPath(IEnumerable<NetworkingNode_Id> NetworkingNodeIds)
+        /// <param name="NetworkingNodeIds">An optional ordered list of networking node identifications along the network path.</param>
+        public NetworkPath(IEnumerable<NetworkingNode_Id>? NetworkingNodeIds = null)
         {
 
-            this.NetworkingNodeIds = NetworkingNodeIds;
-
-            unchecked
-            {
-                hashCode = this.NetworkingNodeIds.CalcHashCode();
-            }
+            if (NetworkingNodeIds is not null && NetworkingNodeIds.Any())
+                networkingNodeIds.AddRange(NetworkingNodeIds);
 
         }
 
@@ -258,28 +236,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
+        #region Append(NetworkingNodeId)
 
-        public static NetworkPath Empty { get; }
-            = new (Array.Empty<NetworkingNode_Id>());
+        /// <summary>
+        /// Append the given networking node identification to the network path, but
+        /// ignore the given networking node identification if it is already the last one.
+        /// </summary>
+        /// <param name="NetworkingNodeId">A networking node identification.</param>
+        public NetworkPath Append(NetworkingNode_Id NetworkingNodeId)
+        {
 
+            if (networkingNodeIds.Count  == 0 ||
+                networkingNodeIds.Last() != NetworkingNodeId)
+            {
+                networkingNodeIds.Add(NetworkingNodeId);
+            }
 
-        public static NetworkPath From(INetworkingNode NetworkingNode)
+            return this;
 
-            => new (new List<NetworkingNode_Id>() { NetworkingNode.Id });
+        }
 
-        public static NetworkPath From(NetworkingNode_Id NetworkingNodeId)
-
-            => new (new List<NetworkingNode_Id>() { NetworkingNodeId });
-
-
-        //public static NetworkPath From(IChargingStation ChargingStation)
-
-        //    => new (new List<NetworkingNode_Id>() { NetworkingNode_Id.Parse(ChargingStation.Id.ToString()) });
-
-        //public static NetworkPath From(ChargingStation_Id ChargingStationId)
-
-        //    => new (new List<NetworkingNode_Id>() { NetworkingNode_Id.Parse(ChargingStationId.ToString()) });
-
+        #endregion
 
 
         #region Operator overloading
@@ -495,13 +472,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (override) GetHashCode()
 
-        private readonly Int32 hashCode;
-
         /// <summary>
         /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-            => hashCode;
+
+            => networkingNodeIds.CalcHashCode();
 
         #endregion
 
@@ -515,7 +491,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => NetworkingNodeIds.AggregateWith(", ");
 
         #endregion
-
 
     }
 
