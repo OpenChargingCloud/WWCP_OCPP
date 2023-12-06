@@ -453,7 +453,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                HTTPStatusCode  = HTTPStatusCode.BadRequest,
                                Server          = HTTPServiceName,
                                Date            = Timestamp.Now,
-                               ContentType     = HTTPContentType.JSON_UTF8,
+                               ContentType     = HTTPContentType.Application.JSON_UTF8,
                                Content         = JSONObject.Create(
                                                      new JProperty("description",
                                                      JSONObject.Create(
@@ -475,7 +475,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                HTTPStatusCode  = HTTPStatusCode.BadRequest,
                                Server          = HTTPServiceName,
                                Date            = Timestamp.Now,
-                               ContentType     = HTTPContentType.JSON_UTF8,
+                               ContentType     = HTTPContentType.Application.JSON_UTF8,
                                Content         = JSONObject.Create(
                                                      new JProperty("description",
                                                          JSONObject.Create(

@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = new[] { "PUT" },
-                                                 ContentType                = HTTPContentType.TEXT_UTF8,
+                                                 ContentType                = HTTPContentType.Text.PLAIN,
                                                  Content                    = e.Message.ToUTF8Bytes(),
                                                  Connection                 = "close"
                                              };
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = new[] { "PUT" },
-                                                 ContentType                = HTTPContentType.TEXT_UTF8,
+                                                 ContentType                = HTTPContentType.Text.PLAIN,
                                                  Content                    = e.Message.ToUTF8Bytes(),
                                                  Connection                 = "close"
                                              };
@@ -292,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = new[] { "GET" },
-                                                 ContentType                = HTTPContentType.OCTETSTREAM,
+                                                 ContentType                = HTTPContentType.Application.OCTETSTREAM,
                                                  Content                    = data,
                                                  Connection                 = "close"
                                              };
@@ -309,7 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = new[] { "PUT" },
-                                                 ContentType                = HTTPContentType.TEXT_UTF8,
+                                                 ContentType                = HTTPContentType.Text.PLAIN,
                                                  Content                    = e.Message.ToUTF8Bytes(),
                                                  Connection                 = "close"
                                              };

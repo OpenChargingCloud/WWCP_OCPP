@@ -62,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The default HTTP/SOAP/XML content type.
         /// </summary>
-        public new static readonly HTTPContentType  DefaultContentType     = HTTPContentType.XMLTEXT_UTF8;
+        public new static readonly HTTPContentType  DefaultContentType     = HTTPContentType.Text.XML_UTF8;
 
         /// <summary>
         /// The default request timeout.
@@ -575,7 +575,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
                         Date            = Timestamp.Now,
-                        ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                        ContentType     = HTTPContentType.Text.XML_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/BootNotificationResponse",
                                                              Request_Id.NewRandom().ToString(),
@@ -737,7 +737,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
                         Date            = Timestamp.Now,
-                        ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                        ContentType     = HTTPContentType.Text.XML_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/HeartbeatResponse",
                                                              Request_Id.NewRandom().ToString(),
@@ -900,7 +900,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
                         Date            = Timestamp.Now,
-                        ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                        ContentType     = HTTPContentType.Text.XML_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/AuthorizeResponse",
                                                              Request_Id.NewRandom().ToString(),
@@ -1062,7 +1062,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
                         Date            = Timestamp.Now,
-                        ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                        ContentType     = HTTPContentType.Text.XML_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/StartTransactionResponse",
                                                              Request_Id.NewRandom().ToString(),
@@ -1224,7 +1224,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
                         Date            = Timestamp.Now,
-                        ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                        ContentType     = HTTPContentType.Text.XML_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/StatusNotificationResponse",
                                                              Request_Id.NewRandom().ToString(),
@@ -1386,7 +1386,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
                         Date            = Timestamp.Now,
-                        ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                        ContentType     = HTTPContentType.Text.XML_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/MeterValuesResponse",
                                                              Request_Id.NewRandom().ToString(),
@@ -1548,7 +1548,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
                         Date            = Timestamp.Now,
-                        ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                        ContentType     = HTTPContentType.Text.XML_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/StopTransactionResponse",
                                                              Request_Id.NewRandom().ToString(),
@@ -1712,7 +1712,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
                         Date            = Timestamp.Now,
-                        ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                        ContentType     = HTTPContentType.Text.XML_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/DataTransferResponse",
                                                              Request_Id.NewRandom().ToString(),
@@ -1875,7 +1875,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
                         Date            = Timestamp.Now,
-                        ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                        ContentType     = HTTPContentType.Text.XML_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/DiagnosticsStatusNotificationResponse",
                                                              Request_Id.NewRandom().ToString(),
@@ -2038,7 +2038,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         HTTPStatusCode  = HTTPStatusCode.OK,
                         Server          = SOAPServer.HTTPServer.DefaultServerName,
                         Date            = Timestamp.Now,
-                        ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                        ContentType     = HTTPContentType.Text.XML_UTF8,
                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                              "/FirmwareStatusNotificationResponse",
                                                              Request_Id.NewRandom().ToString(),

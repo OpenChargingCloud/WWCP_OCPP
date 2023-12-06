@@ -93,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     HTTPStatusCode  = HTTPStatusCode.BadRequest,
                     Server          = OCPPWebAPI.HTTPServiceName,
                     Date            = Timestamp.Now,
-                    ContentType     = HTTPContentType.JSON_UTF8,
+                    ContentType     = HTTPContentType.Application.JSON_UTF8,
                     Content         = @"{ ""description"": ""Invalid charging station identification!"" }".ToUTF8Bytes(),
                     Connection      = "close"
                 };
@@ -163,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     HTTPStatusCode  = HTTPStatusCode.BadRequest,
                     Server          = OCPPWebAPI.HTTPServiceName,
                     Date            = Timestamp.Now,
-                    ContentType     = HTTPContentType.JSON_UTF8,
+                    ContentType     = HTTPContentType.Application.JSON_UTF8,
                     Content         = @"{ ""description"": ""Invalid charging station identification!"" }".ToUTF8Bytes(),
                     Connection      = "close"
                 };
@@ -178,7 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     HTTPStatusCode  = HTTPStatusCode.NotFound,
                     Server          = OCPPWebAPI.HTTPServiceName,
                     Date            = Timestamp.Now,
-                    ContentType     = HTTPContentType.JSON_UTF8,
+                    ContentType     = HTTPContentType.Application.JSON_UTF8,
                     Content         = @"{ ""description"": ""Unknown charging station identification!"" }".ToUTF8Bytes(),
                     Connection      = "close"
                 };
@@ -4450,148 +4450,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region / (HTTPRoot)
 
-            HTTPBaseAPI.AddMethodCallback(
+            HTTPBaseAPI.MapResourceAssemblyFolder(
                 HTTPHostname.Any,
-                HTTPMethod.GET,
-                new HTTPPath[] {
-                    HTTPPath.Parse("/index.html"),
-                    HTTPPath.Parse("/"),
-                    HTTPPath.Parse("/{FileName}")
-                },
-                //HTTPContentType.HTML_UTF8,
-                HTTPDelegate: Request => {
-
-                    var filePath = (Request.ParsedURLParameters is not null && Request.ParsedURLParameters.Length > 0)
-                                       ? Request.ParsedURLParameters.Last().Replace("/", ".")
-                                       : "index.html";
-
-                    if (filePath.EndsWith(".",      StringComparison.Ordinal))
-                        filePath += "index.shtml";
-
-
-                    if (filePath.EndsWith(".shtml", StringComparison.Ordinal))
-                    {
-
-                        var file = MixWithHTMLTemplate(filePath);
-
-                        if (file.IsNullOrEmpty())
-                            return Task.FromResult(
-                                new HTTPResponse.Builder(Request) {
-                                    HTTPStatusCode  = HTTPStatusCode.NotFound,
-                                    Server          = HTTPServiceName,
-                                    Date            = Timestamp.Now,
-                                    CacheControl    = "public, max-age=300",
-                                    Connection      = "close"
-                                }.AsImmutable);
-
-                        else
-                            return Task.FromResult(
-                                new HTTPResponse.Builder(Request) {
-                                    HTTPStatusCode  = HTTPStatusCode.OK,
-                                    ContentType     = HTTPContentType.HTML_UTF8,
-                                    Content         = file.ToUTF8Bytes(),
-                                    Connection      = "close"
-                                }.AsImmutable);
-
-                    }
-
-                    else
-                    {
-
-                        var fileStream = GetResourceMemoryStream(filePath);//this.GetType().Assembly.GetManifestResourceStream(HTTPRoot + "" + FilePath);
-
-                        #region File not found!
-
-                        if (fileStream is null)
-                            return Task.FromResult(
-                                new HTTPResponse.Builder(Request) {
-                                    HTTPStatusCode  = HTTPStatusCode.NotFound,
-                                    Server          = HTTPServiceName,
-                                    Date            = Timestamp.Now,
-                                    CacheControl    = "public, max-age=300",
-                                    Connection      = "close"
-                                }.AsImmutable);
-
-                        #endregion
-
-                        #region Choose HTTP Content Type based on the file name extension...
-
-                        var fileName             = filePath[(filePath.LastIndexOf("/") + 1)..];
-                        var responseContentType  = fileName.Remove(0, fileName.LastIndexOf(".") + 1) switch {
-                                                       "htm"   => HTTPContentType.HTML_UTF8,
-                                                       "html"  => HTTPContentType.HTML_UTF8,
-                                                       "css"   => HTTPContentType.CSS_UTF8,
-                                                       "gif"   => HTTPContentType.GIF,
-                                                       "jpg"   => HTTPContentType.JPEG,
-                                                       "jpeg"  => HTTPContentType.JPEG,
-                                                       "svg"   => HTTPContentType.SVG,
-                                                       "png"   => HTTPContentType.PNG,
-                                                       "ico"   => HTTPContentType.ICO,
-                                                       "swf"   => HTTPContentType.SWF,
-                                                       "js"    => HTTPContentType.JAVASCRIPT_UTF8,
-                                                       "txt"   => HTTPContentType.TEXT_UTF8,
-                                                       "xml"   => HTTPContentType.XMLTEXT_UTF8,
-                                                       _       => HTTPContentType.OCTETSTREAM,
-                                                   };
-
-                        #endregion
-
-                        #region Create HTTP Response
-
-                        return Task.FromResult(
-                            new HTTPResponse.Builder(Request) {
-                                HTTPStatusCode  = HTTPStatusCode.OK,
-                                Server          = HTTPServiceName,
-                                Date            = Timestamp.Now,
-                                ContentType     = responseContentType,
-                                Content         = fileStream.ToArray(),
-//                                CacheControl    = "public, max-age=300",
-                                //Expires          = "Mon, 25 Jun 2015 21:31:12 GMT",
-//                                KeepAlive       = new KeepAliveType(TimeSpan.FromMinutes(5), 500),
-//                                Connection      = "Keep-Alive",
-                                Connection      = "close"
-                            }.AsImmutable);
-
-                        #endregion
-
-                    }
-
-                });
-
-            #endregion
-
-            #region / (HTTPRoot)
-
-            //HTTPBaseAPI.RegisterResourcesFolder(this,
-            //                                HTTPHostname.Any,
-            //                                URLPathPrefix,
-            //                                "cloud.charging.open.protocols.OCPPv2_1.WebAPI.HTTPRoot",
-            //                                DefaultFilename: "index.html");
-
-            //HTTPServer.AddMethodCallback(HTTPHostname.Any,
-            //                             HTTPMethod.GET,
-            //                             URLPathPrefix,
-            //                             HTTPDelegate: Request => {
-
-            //                                 return Task.FromResult(
-            //                                     new HTTPResponse.Builder(Request) {
-            //                                         HTTPStatusCode             = HTTPStatusCode.OK,
-            //                                         Server                     = DefaultHTTPServerName,
-            //                                         Date                       = Timestamp.Now,
-            //                                         AccessControlAllowOrigin   = "*",
-            //                                         AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-            //                                         AccessControlAllowHeaders  = new[] { "Authorization" },
-            //                                         ContentType                = HTTPContentType.HTML_UTF8,
-            //                                         Content                    = ("<html><body>" +
-            //                                                                          "This is an Open Charge Point Protocol v1.6 HTTP service!<br /><br />" +
-            //                                                                          "<ul>" +
-            //                                                                              "<li><a href=\"" + URLPathPrefix.ToString() + "/chargeBoxes\">Charge Boxes</a></li>" +
-            //                                                                          "</ul>" +
-            //                                                                       "<body></html>").ToUTF8Bytes(),
-            //                                         Connection                 = "close"
-            //                                     }.AsImmutable);
-
-            //                             });
+                URLPathPrefix,
+                "default",
+                DefaultFilename: "index.html"
+            );
 
             #endregion
 
@@ -4601,7 +4465,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
                                           HTTPMethod.GET,
                                           URLPathPrefix + "chargeBoxIds",
-                                          HTTPContentType.JSON_UTF8,
+                                          HTTPContentType.Application.JSON_UTF8,
                                           HTTPDelegate: Request => {
 
                                               return Task.FromResult(
@@ -4612,7 +4476,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                       AccessControlAllowOrigin   = "*",
                                                       AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
                                                       AccessControlAllowHeaders  = new[] { "Authorization" },
-                                                      ContentType                = HTTPContentType.JSON_UTF8,
+                                                      ContentType                = HTTPContentType.Application.JSON_UTF8,
                                                       Content                    = JSONArray.Create(
                                                                                        ChargeBoxes.Select(chargeBox => new JObject(new JProperty("@id", chargeBox.Id.ToString())))
                                                                                    ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
@@ -4628,7 +4492,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
                                           HTTPMethod.GET,
                                           URLPathPrefix + "chargeBoxes",
-                                          HTTPContentType.JSON_UTF8,
+                                          HTTPContentType.Application.JSON_UTF8,
                                           HTTPDelegate: Request => {
 
                                               return Task.FromResult(
@@ -4639,7 +4503,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                       AccessControlAllowOrigin   = "*",
                                                       AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
                                                       AccessControlAllowHeaders  = new[] { "Authorization" },
-                                                      ContentType                = HTTPContentType.JSON_UTF8,
+                                                      ContentType                = HTTPContentType.Application.JSON_UTF8,
                                                       Content                    = JSONArray.Create(
                                                                                        ChargeBoxes.Select(chargeBox => chargeBox.ToJSON())
                                                                                    ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
@@ -4656,7 +4520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
                                       HTTPMethod.GET,
                                       URLPathPrefix + "chargeBoxes/{chargeBoxId}",
-                                      HTTPContentType.JSON_UTF8,
+                                      HTTPContentType.Application.JSON_UTF8,
                                       HTTPDelegate: Request => {
 
                                           #region Get HTTP user and its organizations
@@ -4695,7 +4559,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                   AccessControlAllowOrigin   = "*",
                                                   AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
                                                   AccessControlAllowHeaders  = new[] { "Authorization" },
-                                                  ContentType                = HTTPContentType.JSON_UTF8,
+                                                  ContentType                = HTTPContentType.Application.JSON_UTF8,
                                                   Content                    = ChargeBox.ToJSON().ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
                                                   Connection                 = "close"
                                               }.AsImmutable);
@@ -4715,7 +4579,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
                                           HTTPMethod.GET,
                                           URLPathPrefix + "events",
-                                          HTTPContentType.HTML_UTF8,
+                                          HTTPContentType.Text.HTML_UTF8,
                                           HTTPDelegate: Request => {
 
                                           #region Get HTTP user and its organizations
@@ -4740,7 +4604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                          AccessControlAllowOrigin   = "*",
                                                          AccessControlAllowMethods  = new[] { "GET" },
                                                          AccessControlAllowHeaders  = new[] { "Content-Type", "Accept", "Authorization" },
-                                                         ContentType                = HTTPContentType.HTML_UTF8,
+                                                         ContentType                = HTTPContentType.Text.HTML_UTF8,
                                                          Content                    = MixWithHTMLTemplate("events.index.shtml").ToUTF8Bytes(),
                                                          Connection                 = "close",
                                                          Vary                       = "Accept"

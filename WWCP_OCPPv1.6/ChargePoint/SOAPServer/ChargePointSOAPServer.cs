@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The default HTTP/SOAP/XML content type.
         /// </summary>
-        public new static readonly HTTPContentType  DefaultContentType      = HTTPContentType.XMLTEXT_UTF8;
+        public new static readonly HTTPContentType  DefaultContentType      = HTTPContentType.Text.XML_UTF8;
 
         /// <summary>
         /// The default query timeout.
@@ -833,7 +833,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                         HTTPStatusCode  = HTTPStatusCode.OK,
                                                         Server          = SOAPServer.HTTPServer.DefaultServerName,
                                                         Date            = Timestamp.Now,
-                                                        ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                                                        ContentType     = HTTPContentType.Text.XML_UTF8,
                                                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                                                              "/ResetResponse",
                                                                                              OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
@@ -997,7 +997,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                         HTTPStatusCode  = HTTPStatusCode.OK,
                                                         Server          = SOAPServer.HTTPServer.DefaultServerName,
                                                         Date            = Timestamp.Now,
-                                                        ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                                                        ContentType     = HTTPContentType.Text.XML_UTF8,
                                                         Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                                                              "/ReserveNowResponse",
                                                                                              OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
@@ -1118,7 +1118,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     HTTPStatusCode  = HTTPStatusCode.OK,
                                                     Server          = SOAPServer.HTTPServer.DefaultServerName,
                                                     Date            = Timestamp.Now,
-                                                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                                                    ContentType     = HTTPContentType.Text.XML_UTF8,
                                                     Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                                                          "/CancelReservationResponse",
                                                                                          OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
@@ -1230,7 +1230,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     HTTPStatusCode  = HTTPStatusCode.OK,
                                                     Server          = SOAPServer.HTTPServer.DefaultServerName,
                                                     Date            = Timestamp.Now,
-                                                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                                                    ContentType     = HTTPContentType.Text.XML_UTF8,
                                                     Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                                                          "/RemoteStartTransactionResponse",
                                                                                          NextMessageId(),
@@ -1341,7 +1341,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     HTTPStatusCode  = HTTPStatusCode.OK,
                                                     Server          = SOAPServer.HTTPServer.DefaultServerName,
                                                     Date            = Timestamp.Now,
-                                                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                                                    ContentType     = HTTPContentType.Text.XML_UTF8,
                                                     Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                                                          "/RemoteStopTransactionResponse",
                                                                                          OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id
@@ -1453,7 +1453,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                     HTTPStatusCode  = HTTPStatusCode.OK,
                                                     Server          = SOAPServer.HTTPServer.DefaultServerName,
                                                     Date            = Timestamp.Now,
-                                                    ContentType     = HTTPContentType.XMLTEXT_UTF8,
+                                                    ContentType     = HTTPContentType.Text.XML_UTF8,
                                                     Content         = SOAP.Encapsulation(OCPPHeader.ChargeBoxIdentity,
                                                                                          "/DataTransferResponse",
                                                                                          OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id

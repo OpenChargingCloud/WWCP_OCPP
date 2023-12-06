@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     HTTPStatusCode  = HTTPStatusCode.BadRequest,
                     Server          = OCPPWebAPI.DefaultHTTPServerName,
                     Date            = Timestamp.Now,
-                    ContentType     = HTTPContentType.JSON_UTF8,
+                    ContentType     = HTTPContentType.Application.JSON_UTF8,
                     Content         = @"{ ""description"": ""Invalid charge box identification!"" }".ToUTF8Bytes(),
                     Connection      = "close"
                 };
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     HTTPStatusCode  = HTTPStatusCode.BadRequest,
                     Server          = OCPPWebAPI.DefaultHTTPServerName,
                     Date            = Timestamp.Now,
-                    ContentType     = HTTPContentType.JSON_UTF8,
+                    ContentType     = HTTPContentType.Application.JSON_UTF8,
                     Content         = @"{ ""description"": ""Invalid charge box identification!"" }".ToUTF8Bytes(),
                     Connection      = "close"
                 };
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     HTTPStatusCode  = HTTPStatusCode.NotFound,
                     Server          = OCPPWebAPI.DefaultHTTPServerName,
                     Date            = Timestamp.Now,
-                    ContentType     = HTTPContentType.JSON_UTF8,
+                    ContentType     = HTTPContentType.Application.JSON_UTF8,
                     Content         = @"{ ""description"": ""Unknown charge box identification!"" }".ToUTF8Bytes(),
                     Connection      = "close"
                 };
@@ -1369,11 +1369,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region / (HTTPRoot)
 
-            HTTPServer.RegisterResourcesFolder(this,
-                                               HTTPHostname.Any,
-                                               URLPathPrefix,
-                                               "cloud.charging.open.protocols.OCPPv1_6.WebAPI.HTTPRoot",
-                                               DefaultFilename: "index.html");
+            this.MapResourceAssemblyFolder(HTTPHostname.Any,
+                                           URLPathPrefix,
+                                           "cloud.charging.open.protocols.OCPPv1_6.WebAPI.HTTPRoot",
+                                           DefaultFilename: "index.html");
 
             //HTTPServer.AddMethodCallback(HTTPHostname.Any,
             //                             HTTPMethod.GET,
@@ -1388,7 +1387,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             //                                         AccessControlAllowOrigin   = "*",
             //                                         AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
             //                                         AccessControlAllowHeaders  = new[] { "Authorization" },
-            //                                         ContentType                = HTTPContentType.HTML_UTF8,
+            //                                         ContentType                = HTTPContentType.Text.HTML_UTF8,
             //                                         Content                    = ("<html><body>" +
             //                                                                          "This is an Open Charge Point Protocol v1.6 HTTP service!<br /><br />" +
             //                                                                          "<ul>" +
@@ -1408,7 +1407,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             AddMethodCallback(HTTPHostname.Any,
                               HTTPMethod.GET,
                               URLPathPrefix + "chargeBoxIds",
-                              HTTPContentType.JSON_UTF8,
+                              HTTPContentType.Application.JSON_UTF8,
                               HTTPDelegate: Request => {
 
                                   return Task.FromResult(
@@ -1419,7 +1418,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                           AccessControlAllowOrigin   = "*",
                                           AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
                                           AccessControlAllowHeaders  = new[] { "Authorization" },
-                                          ContentType                = HTTPContentType.JSON_UTF8,
+                                          ContentType                = HTTPContentType.Application.JSON_UTF8,
                                           Content                    = JSONArray.Create(
                                                                            CentralSystem.ChargeBoxIds.Select(chargeBoxId => new JObject(new JProperty("@id", chargeBoxId.ToString())))
                                                                        ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
@@ -1435,7 +1434,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             AddMethodCallback(HTTPHostname.Any,
                               HTTPMethod.GET,
                               URLPathPrefix + "chargeBoxes",
-                              HTTPContentType.JSON_UTF8,
+                              HTTPContentType.Application.JSON_UTF8,
                               HTTPDelegate: Request => {
 
                                   return Task.FromResult(
@@ -1446,7 +1445,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                           AccessControlAllowOrigin   = "*",
                                           AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
                                           AccessControlAllowHeaders  = new[] { "Authorization" },
-                                          ContentType                = HTTPContentType.JSON_UTF8,
+                                          ContentType                = HTTPContentType.Application.JSON_UTF8,
                                           Content                    = JSONArray.Create(
                                                                            CentralSystem.ChargeBoxes.Select(chargeBox => chargeBox.ToJSON())
                                                                        ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
@@ -1463,7 +1462,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             AddMethodCallback(HTTPHostname.Any,
                               HTTPMethod.GET,
                               URLPathPrefix + "chargeBoxes/{chargeBoxId}",
-                              HTTPContentType.JSON_UTF8,
+                              HTTPContentType.Application.JSON_UTF8,
                               HTTPDelegate: Request => {
 
                                   #region Get HTTP user and its organizations
@@ -1502,7 +1501,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                           AccessControlAllowOrigin   = "*",
                                           AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
                                           AccessControlAllowHeaders  = new[] { "Authorization" },
-                                          ContentType                = HTTPContentType.JSON_UTF8,
+                                          ContentType                = HTTPContentType.Application.JSON_UTF8,
                                           Content                    = ChargeBox.ToJSON().ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
                                           Connection                 = "close"
                                       }.AsImmutable);
@@ -1522,7 +1521,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             AddMethodCallback(Hostname,
                               HTTPMethod.GET,
                               URLPathPrefix + "events",
-                              HTTPContentType.HTML_UTF8,
+                              HTTPContentType.Text.HTML_UTF8,
                               HTTPDelegate: Request => {
 
                                   #region Get HTTP user and its organizations
@@ -1547,7 +1546,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = new[] { "GET" },
                                                  AccessControlAllowHeaders  = new[] { "Content-Type", "Accept", "Authorization" },
-                                                 ContentType                = HTTPContentType.HTML_UTF8,
+                                                 ContentType                = HTTPContentType.Text.HTML_UTF8,
                                                  Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
                                                  Connection                 = "close",
                                                  Vary                       = "Accept"

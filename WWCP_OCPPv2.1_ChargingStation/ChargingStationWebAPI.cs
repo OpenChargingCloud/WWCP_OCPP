@@ -982,7 +982,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             //                                         AccessControlAllowOrigin   = "*",
             //                                         AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
             //                                         AccessControlAllowHeaders  = new[] { "Authorization" },
-            //                                         ContentType                = HTTPContentType.HTML_UTF8,
+            //                                         ContentType                = HTTPContentType.Text.HTML_UTF8,
             //                                         Content                    = ("<html><body>" +
             //                                                                          "This is an Open Charge Point Protocol v1.6 HTTP service!<br /><br />" +
             //                                                                          "<ul>" +
@@ -1007,7 +1007,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
                                       HTTPMethod.GET,
                                       URLPathPrefix + "events",
-                                      HTTPContentType.HTML_UTF8,
+                                      HTTPContentType.Text.HTML_UTF8,
                                       HTTPDelegate: Request => {
 
                                           #region Get HTTP user and its organizations
@@ -1032,7 +1032,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                          AccessControlAllowOrigin   = "*",
                                                          AccessControlAllowMethods  = new[] { "GET" },
                                                          AccessControlAllowHeaders  = new[] { "Content-Type", "Accept", "Authorization" },
-                                                         ContentType                = HTTPContentType.HTML_UTF8,
+                                                         ContentType                = HTTPContentType.Text.HTML_UTF8,
                                                          Content                    = MixWithHTMLTemplate("events.events.shtml").ToUTF8Bytes(),
                                                          Connection                 = "close",
                                                          Vary                       = "Accept"

@@ -202,7 +202,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = new[] { "PUT" },
-                                                 ContentType                = HTTPContentType.TEXT_UTF8,
+                                                 ContentType                = HTTPContentType.Text.PLAIN,
                                                  Content                    = e.Message.ToUTF8Bytes(),
                                                  Connection                 = "close"
                                              };
@@ -256,7 +256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                                  Date                       = Timestamp.Now,
                                                  AccessControlAllowOrigin   = "*",
                                                  AccessControlAllowMethods  = new[] { "PUT" },
-                                                 ContentType                = HTTPContentType.TEXT_UTF8,
+                                                 ContentType                = HTTPContentType.Text.PLAIN,
                                                  Content                    = e.Message.ToUTF8Bytes(),
                                                  Connection                 = "close"
                                              };
