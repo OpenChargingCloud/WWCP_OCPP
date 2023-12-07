@@ -127,7 +127,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
-                                                                  JArray                      RequestMessage);
+                                                                  JArray                      RequestMessage,
+                                                                  CancellationToken           CancellationToken);
 
     public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTime                    Timestamp,
                                                                   INetworkingNodeChannel      Server,
@@ -156,7 +157,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
-                                                                  Byte[]                      RequestMessage);
+                                                                  Byte[]                      RequestMessage,
+                                                                  CancellationToken           CancellationToken);
 
     public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTime                    Timestamp,
                                                                   INetworkingNodeChannel      Server,

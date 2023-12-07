@@ -128,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
             csms1WebSocketJSONMessagesSent              = [];
             csms1WebSocketJSONMessageResponsesReceived  = [];
 
-            testBackendWebSockets01.OnTextMessageReceived         += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage) => {
+            testBackendWebSockets01.OnTextMessageReceived         += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage, cancellationToken) => {
                 csms1WebSocketJSONMessagesReceived.        Add(new LogJSONRequest(timestamp, JArray.Parse(requestMessage)));
                 return Task.CompletedTask;
             };
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 return Task.CompletedTask;
             };
 
-            testBackendWebSockets01.OnTextMessageSent             += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage) => {
+            testBackendWebSockets01.OnTextMessageSent             += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage, cancellationToken) => {
                 csms1WebSocketJSONMessagesSent.            Add(new LogJSONRequest(timestamp, JArray.Parse(requestMessage)));
                 return Task.CompletedTask;
             };

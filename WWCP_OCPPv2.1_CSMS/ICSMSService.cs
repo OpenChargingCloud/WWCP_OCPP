@@ -17,10 +17,7 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
@@ -33,12 +30,62 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public interface ICSMSService : ICSMS
     {
 
+        #region WebSocket connections
 
-        IEnumerable<ChargeBox>           ChargeBoxes           { get; }
+        /// <summary>
+        /// An event sent whenever the HTTP web socket server started.
+        /// </summary>
+        event OnServerStartedDelegate?                 OnServerStarted;
+
+        /// <summary>
+        /// An event sent whenever a new TCP connection was accepted.
+        /// </summary>
+        event OnValidateTCPConnectionDelegate?         OnValidateTCPConnection;
+
+        /// <summary>
+        /// An event sent whenever a new TCP connection was accepted.
+        /// </summary>
+        event OnNewTCPConnectionDelegate?              OnNewTCPConnection;
+
+        /// <summary>
+        /// An event sent whenever a HTTP request was received.
+        /// </summary>
+        event HTTPRequestLogDelegate?                  OnHTTPRequest;
+
+        /// <summary>
+        /// An event sent whenever the HTTP headers of a new web socket connection
+        /// need to be validated or filtered by an upper layer application logic.
+        /// </summary>
+        event OnValidateWebSocketConnectionDelegate?   OnValidateWebSocketConnection;
+
+        /// <summary>
+        /// An event sent whenever the HTTP connection switched successfully to web socket.
+        /// </summary>
+        event OnCSMSNewWebSocketConnectionDelegate?    OnNewWebSocketConnection;
+
+        /// <summary>
+        /// An event sent whenever a reponse to a HTTP request was sent.
+        /// </summary>
+        event HTTPResponseLogDelegate?                 OnHTTPResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket close frame was received.
+        /// </summary>
+        event OnCSMSCloseMessageReceivedDelegate?      OnCloseMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a TCP connection was closed.
+        /// </summary>
+        event OnCSMSTCPConnectionClosedDelegate?       OnTCPConnectionClosed;
+
+        #endregion
+
+
+        IEnumerable<ChargingStation>  ChargingStations    { get; }
 
      //   IEnumerable<ChargingStation_Id>  ChargingStationIds    { get; }
 
-        Boolean TryGetChargeBox(ChargingStation_Id ChargingStationId, out ChargeBox? ChargeBox);
+        Boolean TryGetChargingStation(ChargingStation_Id ChargingStationId, out ChargingStation? ChargingStation);
 
     }
 

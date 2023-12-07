@@ -30,20 +30,58 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     #region Connection Management
 
     /// <summary>
-    /// A delegate for logging new HTTP web socket connections.
+    /// A delegate for logging new HTTP Web Socket connections.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="CSMSChannel">The HTTP web socket channel.</param>
-    /// <param name="NewConnection">The new HTTP web socket connection.</param>
+    /// <param name="CSMSChannel">The HTTP Web Socket channel.</param>
+    /// <param name="NewConnection">The new HTTP Web Socket connection.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
     /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
     /// <param name="CancellationToken">A token to cancel the processing.</param>
-    public delegate Task OnNewCSMSWebSocketConnectionDelegate        (DateTime                    Timestamp,
-                                                                      ICSMSChannel                CSMSChannel,
-                                                                      WebSocketServerConnection   NewConnection,
-                                                                      NetworkingNode_Id           NetworkingNodeId,
-                                                                      EventTracking_Id            EventTrackingId,
-                                                                      CancellationToken           CancellationToken);
+    public delegate Task OnCSMSNewWebSocketConnectionDelegate        (DateTime                           Timestamp,
+                                                                      ICSMSChannel                       CSMSChannel,
+                                                                      WebSocketServerConnection          NewConnection,
+                                                                      NetworkingNode_Id                  NetworkingNodeId,
+                                                                      EventTracking_Id                   EventTrackingId,
+                                                                      CancellationToken                  CancellationToken);
+
+    /// <summary>
+    /// A delegate for logging a HTTP Web Socket CLOSE message.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="CSMSChannel">The HTTP Web Socket channel.</param>
+    /// <param name="Connection">The HTTP Web Socket connection to be closed.</param>
+    /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
+    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="StatusCode">The HTTP Web Socket Closing Status Code.</param>
+    /// <param name="Reason">An optional HTTP Web Socket closing reason.</param>
+    /// <param name="CancellationToken">A token to cancel the processing.</param>
+    public delegate Task OnCSMSCloseMessageReceivedDelegate          (DateTime                           Timestamp,
+                                                                      ICSMSChannel                       CSMSChannel,
+                                                                      WebSocketServerConnection          Connection,
+                                                                      NetworkingNode_Id                  NetworkingNodeId,
+                                                                      EventTracking_Id                   EventTrackingId,
+                                                                      WebSocketFrame.ClosingStatusCode   StatusCode,
+                                                                      String?                            Reason,
+                                                                      CancellationToken                  CancellationToken);
+
+    /// <summary>
+    /// A delegate for logging a closed TCP connection.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="CSMSChannel">The HTTP Web Socket channel.</param>
+    /// <param name="Connection">The HTTP Web Socket connection to be closed.</param>
+    /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
+    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="Reason">An optional closing reason.</param>
+    /// <param name="CancellationToken">A token to cancel the processing.</param>
+    public delegate Task OnCSMSTCPConnectionClosedDelegate           (DateTime                           Timestamp,
+                                                                      ICSMSChannel                       CSMSChannel,
+                                                                      WebSocketServerConnection          Connection,
+                                                                      NetworkingNode_Id                  NetworkingNodeId,
+                                                                      EventTracking_Id                   EventTrackingId,
+                                                                      String?                            Reason,
+                                                                      CancellationToken                  CancellationToken);
 
     #endregion
 
@@ -53,8 +91,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A delegate for logging an OCPP JSON request.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="CSMSChannel">The HTTP web socket channel.</param>
-    /// <param name="Connection">The HTTP web socket connection.</param>
+    /// <param name="CSMSChannel">The HTTP Web Socket channel.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
     /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
     /// <param name="RequestTimestamp">The timestamp of the incoming OCPP request.</param>
@@ -65,14 +103,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                       NetworkingNode_Id           NetworkingNodeId,
                                                                       EventTracking_Id            EventTrackingId,
                                                                       DateTime                    RequestTimestamp,
-                                                                      JObject                     JSONRequest);
+                                                                      JObject                     JSONRequest,
+                                                                      CancellationToken           CancellationToken);
 
     /// <summary>
     /// A delegate for logging a binary OCPP request.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="CSMSChannel">The HTTP web socket channel.</param>
-    /// <param name="Connection">The HTTP web socket connection.</param>
+    /// <param name="CSMSChannel">The HTTP Web Socket channel.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
     /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
     /// <param name="RequestTimestamp">The timestamp of the incoming OCPP request.</param>
@@ -83,7 +122,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                       NetworkingNode_Id           NetworkingNodeId,
                                                                       EventTracking_Id            EventTrackingId,
                                                                       DateTime                    RequestTimestamp,
-                                                                      Byte[]                      BinaryRequest);
+                                                                      Byte[]                      BinaryRequest,
+                                                                      CancellationToken           CancellationToken);
 
     #endregion
 
@@ -93,8 +133,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A delegate for logging an OCPP JSON response after a JSON request.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="CSMSChannel">The HTTP web socket channel.</param>
-    /// <param name="Connection">The HTTP web socket connection.</param>
+    /// <param name="CSMSChannel">The HTTP Web Socket channel.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
     /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
     /// <param name="RequestTimestamp">The timestamp of the incoming OCPP request.</param>
@@ -119,8 +159,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A delegate for logging a binary OCPP response after a JSON request.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="CSMSChannel">The HTTP web socket channel.</param>
-    /// <param name="Connection">The HTTP web socket connection.</param>
+    /// <param name="CSMSChannel">The HTTP Web Socket channel.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
     /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
     /// <param name="RequestTimestamp">The timestamp of the incoming OCPP request.</param>
@@ -145,8 +185,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A delegate for logging an OCPP JSON response after a binary request.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="CSMSChannel">The HTTP web socket channel.</param>
-    /// <param name="Connection">The HTTP web socket connection.</param>
+    /// <param name="CSMSChannel">The HTTP Web Socket channel.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
     /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
     /// <param name="RequestTimestamp">The timestamp of the incoming OCPP request.</param>
@@ -171,8 +211,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A delegate for logging a binary OCPP response after a binary request.
     /// </summary>
     /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="CSMSChannel">The HTTP web socket channel.</param>
-    /// <param name="Connection">The HTTP web socket connection.</param>
+    /// <param name="CSMSChannel">The HTTP Web Socket channel.</param>
+    /// <param name="Connection">The HTTP Web Socket connection.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
     /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
     /// <param name="RequestTimestamp">The timestamp of the incoming OCPP request.</param>
@@ -213,7 +253,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
-                                                                  JArray                      RequestMessage);
+                                                                  JArray                      RequestMessage,
+                                                                  CancellationToken           CancellationToken);
 
     public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTime                    Timestamp,  // OK!
                                                                   ICSMSChannel                Server,
@@ -242,7 +283,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
-                                                                  Byte[]                      RequestMessage);
+                                                                  Byte[]                      RequestMessage,
+                                                                  CancellationToken           CancellationToken);
 
     public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTime                    Timestamp,
                                                                   ICSMSChannel                Server,

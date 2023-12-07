@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                 if (chargingStation1WebSocketClient is not null)
                 {
 
-                    chargingStation1WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message) => {
+                    chargingStation1WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
                         chargingStation1WebSocketTextMessagesReceived.        Add(new LogData1(timestamp, message));
                     };
 
@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                         chargingStation1WebSocketTextMessageResponsesSent.    Add(new LogData2(requestTimestamp, requestMessage, responseTimestamp, responseMessage));
                     };
 
-                    chargingStation1WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message) => {
+                    chargingStation1WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
                         chargingStation1WebSocketTextMessagesSent.            Add(new LogData1(timestamp, message));
                     };
 

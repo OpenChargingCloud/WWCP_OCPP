@@ -40,11 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region WebSocket connection
-
-        event OnNewCSMSWebSocketConnectionDelegate?  OnNewCSMSWebSocketConnection;
-
-        #endregion
+        
 
 
         #region OnJSONMessage   (-Received/-ResponseSent/-ErrorResponseSent)

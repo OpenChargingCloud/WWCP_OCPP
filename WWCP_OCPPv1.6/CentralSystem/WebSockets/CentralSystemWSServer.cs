@@ -50,12 +50,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="ChargeBoxId">The sending charge box identification.</param>
     /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
     /// <param name="CancellationToken">A token to cancel the processing.</param>
-    public delegate Task OnNewCentralSystemWebSocketConnectionDelegate(DateTime                    Timestamp,
-                                                                       ICentralSystem              CentralSystem,
-                                                                       WebSocketServerConnection   NewConnection,
-                                                                       ChargeBox_Id                ChargeBoxId,
-                                                                       EventTracking_Id            EventTrackingId,
-                                                                       CancellationToken           CancellationToken);
+    public delegate Task OnCentralSystemNewWebSocketConnectionDelegate(DateTime                           Timestamp,
+                                                                       ICentralSystem                     CentralSystem,
+                                                                       WebSocketServerConnection          NewConnection,
+                                                                       ChargeBox_Id                       ChargeBoxId,
+                                                                       EventTracking_Id                   EventTrackingId,
+                                                                       CancellationToken                  CancellationToken);
+
+    /// <summary>
+    /// A delegate for logging a HTTP Web Socket CLOSE message.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="CentralSystem">The OCPP central system.</param>
+    /// <param name="Connection">The HTTP Web Socket connection to be closed.</param>
+    /// <param name="ChargeBoxId">The sending charge box identification.</param>
+    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="StatusCode">The HTTP Web Socket Closing Status Code.</param>
+    /// <param name="Reason">An optional HTTP Web Socket closing reason.</param>
+    /// <param name="CancellationToken">A token to cancel the processing.</param>
+    public delegate Task OnCentralSystemCloseMessageReceivedDelegate  (DateTime                           Timestamp,
+                                                                       ICentralSystem                     CentralSystem,
+                                                                       WebSocketServerConnection          Connection,
+                                                                       ChargeBox_Id                       ChargeBoxId,
+                                                                       EventTracking_Id                   EventTrackingId,
+                                                                       WebSocketFrame.ClosingStatusCode   StatusCode,
+                                                                       String?                            Reason,
+                                                                       CancellationToken                  CancellationToken);
+
+    /// <summary>
+    /// A delegate for logging a closed TCP connection.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="CentralSystem">The OCPP central system.</param>
+    /// <param name="Connection">The HTTP Web Socket connection to be closed.</param>
+    /// <param name="ChargeBoxId">The sending charge box identification.</param>
+    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="Reason">An optional closing reason.</param>
+    /// <param name="CancellationToken">A token to cancel the processing.</param>
+    public delegate Task OnCentralSystemTCPConnectionClosedDelegate   (DateTime                           Timestamp,
+                                                                       ICentralSystem                     CentralSystem,
+                                                                       WebSocketServerConnection          Connection,
+                                                                       ChargeBox_Id                       ChargeBoxId,
+                                                                       EventTracking_Id                   EventTrackingId,
+                                                                       String?                            Reason,
+                                                                       CancellationToken                  CancellationToken);
 
     #endregion
 
@@ -200,7 +238,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public static readonly  TimeSpan                                                                        DefaultRequestTimeout      = TimeSpan.FromMinutes(1);
 
 
-        private readonly        ConcurrentDictionary<ChargeBox_Id, Tuple<WebSocketServerConnection, DateTime>>  connectedChargingBoxes     = [];
+        private readonly        ConcurrentDictionary<ChargeBox_Id, Tuple<WebSocketServerConnection, DateTime>>  connectedChargeBoxes     = [];
 
         private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                              requests                   = [];
 
@@ -219,7 +257,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             => HTTPServiceName;
 
         public IEnumerable<ChargeBox_Id> ChargeBoxIds
-            => connectedChargingBoxes.Keys;
+            => connectedChargeBoxes.Keys;
 
         /// <summary>
         /// Require a HTTP Basic Authentication of all charging boxes.
@@ -252,7 +290,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Events
 
-        public event OnNewCentralSystemWebSocketConnectionDelegate?   OnNewCentralSystemWebSocketConnection;
+        public event OnCentralSystemNewWebSocketConnectionDelegate?   OnCentralSystemNewWebSocketConnection;
+
+        public event OnCentralSystemCloseMessageReceivedDelegate?     OnCentralSystemCloseMessageReceived;
 
 
         /// <summary>
@@ -1394,12 +1434,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
 
-        protected Task ProcessNewWebSocketConnection(DateTime                   LogTimestamp,
-                                                     IWebSocketServer           Server,
-                                                     WebSocketServerConnection  Connection,
-                                                     EventTracking_Id           EventTrackingId,
-                                                     CancellationToken          CancellationToken)
+        protected async Task ProcessNewWebSocketConnection(DateTime                   LogTimestamp,
+                                                           IWebSocketServer           Server,
+                                                           WebSocketServerConnection  Connection,
+                                                           EventTracking_Id           EventTrackingId,
+                                                           CancellationToken          CancellationToken)
         {
+
+            #region Store the networking node/charging station identification within the Web Socket connection
 
             if (!Connection.TryGetCustomDataAs(chargeBoxId_WebSocketKey, out ChargeBox_Id chargeBoxId) &&
                  Connection.HTTPRequest is not null)
@@ -1418,8 +1460,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         // Add the networking node/charging station identification to the Web Socket connection
                         Connection.TryAddCustomData(chargeBoxId_WebSocketKey, chargeBoxId);
 
-                        if (!connectedChargingBoxes.TryGetValue(chargeBoxId, out var value))
-                            connectedChargingBoxes.TryAdd(chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+                        if (!connectedChargeBoxes.TryGetValue(chargeBoxId, out var value))
+                            connectedChargeBoxes.TryAdd(chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
 
                         else
                         {
@@ -1428,8 +1470,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                             var oldNetworkingNode_WebSocketConnection = value.Item1;
 
-                            connectedChargingBoxes.TryRemove(chargeBoxId, out _);
-                            connectedChargingBoxes.TryAdd   (chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+                            connectedChargeBoxes.TryRemove(chargeBoxId, out _);
+                            connectedChargeBoxes.TryAdd   (chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
 
                             try
                             {
@@ -1437,7 +1479,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log($"{nameof(CentralSystemWSServer)} Closing old HTTP WebSocket connection failed: {e.Message}");
+                                await HandleErrors(
+                                          nameof(CentralSystemWSServer),
+                                          nameof(ProcessNewWebSocketConnection),
+                                          e,
+                                          "Closing old HTTP WebSocket connection failed!"
+                                      );
                             }
 
                         }
@@ -1456,8 +1503,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     // Add the charging station identification to the WebSocket connection
                     Connection.TryAddCustomData(chargeBoxId_WebSocketKey, chargeBoxId);
 
-                    if (!connectedChargingBoxes.TryGetValue(chargeBoxId, out Tuple<WebSocketServerConnection, DateTime>? value))
-                         connectedChargingBoxes.TryAdd(chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+                    if (!connectedChargeBoxes.TryGetValue(chargeBoxId, out Tuple<WebSocketServerConnection, DateTime>? value))
+                         connectedChargeBoxes.TryAdd(chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
 
                     else
                     {
@@ -1466,8 +1513,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         var oldChargingStation_WebSocketConnection = value.Item1;
 
-                        connectedChargingBoxes.TryRemove(chargeBoxId, out _);
-                        connectedChargingBoxes.TryAdd   (chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+                        connectedChargeBoxes.TryRemove(chargeBoxId, out _);
+                        connectedChargeBoxes.TryAdd   (chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
 
                         try
                         {
@@ -1486,49 +1533,97 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             }
 
-            #region Send OnNewCentralSystemWSConnection event
+            #endregion
 
-            var OnNewCentralSystemWebSocketConnectionLocal = OnNewCentralSystemWebSocketConnection;
-            if (OnNewCentralSystemWebSocketConnectionLocal is not null)
+            #region Send OnCentralSystemNewWebSocketConnection event
+
+            var logger = OnCentralSystemNewWebSocketConnection;
+            if (logger is not null)
             {
 
-                OnNewCentralSystemWebSocketConnectionLocal?.Invoke(LogTimestamp,
-                                                                   this,
-                                                                   Connection,
-                                                                   chargeBoxId,
-                                                                   EventTrackingId,
-                                                                   CancellationToken);
+                var loggerTasks = logger.GetInvocationList().
+                                         OfType <OnCentralSystemNewWebSocketConnectionDelegate>().
+                                         Select (loggingDelegate => loggingDelegate.Invoke(LogTimestamp,
+                                                                                           this,
+                                                                                           Connection,
+                                                                                           chargeBoxId,
+                                                                                           EventTrackingId,
+                                                                                           CancellationToken)).
+                                         ToArray();
+
+                try
+                {
+                    await Task.WhenAll(loggerTasks);
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(CentralSystemWSServer),
+                              nameof(OnCentralSystemNewWebSocketConnection),
+                              e
+                          );
+                }
 
             }
 
             #endregion
 
-            return Task.CompletedTask;
-
         }
 
         #endregion
 
-        #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, EventTrackingId, StatusCode, Reason)
+        #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, EventTrackingId, StatusCode, Reason, CancellationToken)
 
-        protected Task ProcessCloseMessage(DateTime                          LogTimestamp,
-                                           IWebSocketServer                  Server,
-                                           WebSocketServerConnection         Connection,
-                                           EventTracking_Id                  EventTrackingId,
-                                           WebSocketFrame.ClosingStatusCode  StatusCode,
-                                           String?                           Reason)
+        protected async Task ProcessCloseMessage(DateTime                          LogTimestamp,
+                                                 IWebSocketServer                  Server,
+                                                 WebSocketServerConnection         Connection,
+                                                 EventTracking_Id                  EventTrackingId,
+                                                 WebSocketFrame.ClosingStatusCode  StatusCode,
+                                                 String?                           Reason,
+                                                 CancellationToken                 CancellationToken)
         {
 
-            lock (connectedChargingBoxes)
+            if (Connection.TryGetCustomDataAs<ChargeBox_Id>(chargeBoxId_WebSocketKey, out var chargeBoxId))
             {
-                if (Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId", out var chargeBoxId))
-                {
-                    //DebugX.Log(nameof(CentralSystemWSServer), " Charge box " + chargeBoxId + " disconnected!");
-                    connectedChargingBoxes.TryRemove(chargeBoxId, out _);
-                }
-            }
 
-            return Task.CompletedTask;
+                connectedChargeBoxes.TryRemove(chargeBoxId, out _);
+
+                #region Send OnCentralSystemCloseMessageReceived event
+
+                var logger = OnCentralSystemCloseMessageReceived;
+                if (logger is not null)
+                {
+
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnCentralSystemCloseMessageReceivedDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(LogTimestamp,
+                                                                                               this,
+                                                                                               Connection,
+                                                                                               chargeBoxId,
+                                                                                               EventTrackingId,
+                                                                                               StatusCode,
+                                                                                               Reason,
+                                                                                               CancellationToken)).
+                                             ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(loggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(CentralSystemWSServer),
+                                  nameof(OnCentralSystemCloseMessageReceived),
+                                  e
+                              );
+                    }
+
+                }
+
+                #endregion
+
+            }
 
         }
 
@@ -1598,7 +1693,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #region Initial checks
 
-                    var chargeBoxId  = Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId");
+                    var chargeBoxId  = Connection.TryGetCustomDataAs<ChargeBox_Id>(chargeBoxId_WebSocketKey);
                     var requestId    = Request_Id.TryParse(json[1]?.Value<String>() ?? "");
                     var action       = json[2]?.Value<String>()?.Trim();
                     var requestData  = json[3]?.Value<JObject>();
@@ -3969,20 +4064,24 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region SendRequest(RequestId, ChargeBoxId, OCPPAction, JSONPayload, Timeout = null)
 
-        public async Task<SendRequestState> SendRequest(Request_Id    RequestId,
-                                                        ChargeBox_Id  ChargeBoxId,
-                                                        String        OCPPAction,
-                                                        JObject       JSONPayload,
-                                                        TimeSpan?     Timeout   = null)
+        public async Task<SendRequestState> SendRequest(Request_Id         RequestId,
+                                                        ChargeBox_Id       ChargeBoxId,
+                                                        String             OCPPAction,
+                                                        JObject            JSONPayload,
+                                                        TimeSpan?          Timeout,
+                                                        CancellationToken  CancellationToken   = default)
         {
 
             var endTime         = Timestamp.Now + (Timeout ?? TimeSpan.FromSeconds(30));
 
-            var sendJSONResult  = await SendJSON(RequestId,
-                                                 ChargeBoxId,
-                                                 OCPPAction,
-                                                 JSONPayload,
-                                                 endTime);
+            var sendJSONResult  = await SendJSON(
+                                      RequestId,
+                                      ChargeBoxId,
+                                      OCPPAction,
+                                      JSONPayload,
+                                      endTime,
+                                      CancellationToken
+                                  );
 
             if (sendJSONResult == SendJSONResults.Success) {
 
@@ -3994,7 +4093,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     try
                     {
 
-                        await Task.Delay(25);
+                        await Task.Delay(25, CancellationToken);
 
                         if (requests.TryGetValue(RequestId, out var sendRequestState1) &&
                             sendRequestState1?.Response is not null ||
@@ -4079,11 +4178,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Action">An OCPP action.</param>
         /// <param name="JSON">The JSON payload.</param>
         /// <param name="RequestTimeout">A request timeout.</param>
-        public async Task<SendJSONResults> SendJSON(Request_Id    RequestId,
-                                                    ChargeBox_Id  ChargeBoxId,
-                                                    String        Action,
-                                                    JObject       JSON,
-                                                    DateTime      RequestTimeout)
+        public async Task<SendJSONResults> SendJSON(Request_Id         RequestId,
+                                                    ChargeBox_Id       ChargeBoxId,
+                                                    String             Action,
+                                                    JObject            JSON,
+                                                    DateTime           RequestTimeout,
+                                                    CancellationToken  CancellationToken   = default)
         {
 
             var wsRequestMessage = new OCPP_WebSocket_RequestMessage(
@@ -4095,10 +4195,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId") == ChargeBoxId).
+                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<ChargeBox_Id>(chargeBoxId_WebSocketKey) == ChargeBoxId).
                                                                  ToArray();
 
-                if (webSocketConnections.Any())
+                if (webSocketConnections.Length != 0)
                 {
 
                     requests.TryAdd(RequestId,
@@ -4115,7 +4215,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         var success = await SendTextMessage(
                                                 webSocketConnection,
                                                 wsRequestMessage.ToJSON().ToString(Formatting.None),
-                                                EventTracking_Id.New
+                                                EventTracking_Id.New,
+                                                CancellationToken
                                             );
 
                         if (success == SendStatus.Success)
@@ -4250,11 +4351,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             ChangeAvailabilityResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomChangeAvailabilityRequestSerializer),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendRequest(
+                                             Request.RequestId,
+                                             Request.ChargeBoxId,
+                                             Request.Action,
+                                             Request.ToJSON(CustomChangeAvailabilityRequestSerializer),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -4331,11 +4434,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             GetConfigurationResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomGetConfigurationRequestSerializer),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendRequest(
+                                             Request.RequestId,
+                                             Request.ChargeBoxId,
+                                             Request.Action,
+                                             Request.ToJSON(CustomGetConfigurationRequestSerializer),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -4412,11 +4517,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             ChangeConfigurationResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomChangeConfigurationRequestSerializer),
-                                                     Request.RequestTimeout);
+            var sendRequestState = await SendRequest(
+                                             Request.RequestId,
+                                             Request.ChargeBoxId,
+                                             Request.Action,
+                                             Request.ToJSON(CustomChangeConfigurationRequestSerializer),
+                                             Request.RequestTimeout
+                                         );
 
             if (sendRequestState.NoErrors &&
                 sendRequestState.Response is not null)
@@ -6288,6 +6395,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         }
 
         #endregion
+
+
+        private Task HandleErrors(String     Module,
+                                  String     Caller,
+                                  Exception  Exception,
+                                  String?    Description   = null)
+        {
+
+            DebugX.LogException(Exception, $"{Module}.{Caller}{(Description is not null ? $" {Description}" : "")}");
+
+            return Task.CompletedTask;
+
+        }
 
 
     }

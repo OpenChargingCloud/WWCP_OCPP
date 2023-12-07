@@ -39,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     public static class CSMSWebAPIExtensions
     {
 
-        #region ParseChargeBoxId(this HTTPRequest, OCPPWebAPI, out ChargeBoxId,                out HTTPResponse)
+        #region ParseChargingStationId(this HTTPRequest, OCPPWebAPI, out ChargingStationId,                out HTTPResponse)
 
         /// <summary>
         /// Parse the given HTTP request and return the charging station identification
@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="HTTPRequest">A HTTP request.</param>
         /// <param name="OCPPWebAPI">The OCPP WebAPI.</param>
-        /// <param name="ChargeBoxId">The parsed unique charging station identification.</param>
+        /// <param name="ChargingStationId">The parsed unique charging station identification.</param>
         /// <param name="HTTPResponse">A HTTP error response.</param>
         /// <returns>True, when charging station identification was found; false else.</returns>
-        public static Boolean ParseChargeBoxId(this HTTPRequest           HTTPRequest,
+        public static Boolean ParseChargingStationId(this HTTPRequest           HTTPRequest,
                                                CSMSWebAPI                 OCPPWebAPI,
-                                               out ChargingStation_Id?          ChargeBoxId,
+                                               out ChargingStation_Id?          ChargingStationId,
                                                out HTTPResponse.Builder?  HTTPResponse)
         {
 
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            ChargeBoxId   = null;
+            ChargingStationId   = null;
             HTTPResponse  = null;
 
             if (HTTPRequest.ParsedURLParameters.Length < 1)
@@ -84,9 +84,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             }
 
-            ChargeBoxId = ChargingStation_Id.TryParse(HTTPRequest.ParsedURLParameters[0]);
+            ChargingStationId = ChargingStation_Id.TryParse(HTTPRequest.ParsedURLParameters[0]);
 
-            if (!ChargeBoxId.HasValue)
+            if (!ChargingStationId.HasValue)
             {
 
                 HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ParseChargeBox  (this HTTPRequest, OCPPWebAPI, out ChargeBoxId, out ChargeBox, out HTTPResponse)
+        #region ParseChargingStation  (this HTTPRequest, OCPPWebAPI, out ChargingStationId, out ChargingStation, out HTTPResponse)
 
         /// <summary>
         /// Parse the given HTTP request and return the charging station identification
@@ -117,14 +117,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="HTTPRequest">A HTTP request.</param>
         /// <param name="OCPPWebAPI">The OCPP WebAPI.</param>
-        /// <param name="ChargeBoxId">The parsed unique charging station identification.</param>
-        /// <param name="ChargeBox">The resolved charging station.</param>
+        /// <param name="ChargingStationId">The parsed unique charging station identification.</param>
+        /// <param name="ChargingStation">The resolved charging station.</param>
         /// <param name="HTTPResponse">A HTTP error response.</param>
         /// <returns>True, when charging station identification was found; false else.</returns>
-        public static Boolean ParseChargeBox(this HTTPRequest           HTTPRequest,
+        public static Boolean ParseChargingStation(this HTTPRequest           HTTPRequest,
                                              CSMSWebAPI                 OCPPWebAPI,
-                                             out ChargingStation_Id?          ChargeBoxId,
-                                             out ChargeBox?             ChargeBox,
+                                             out ChargingStation_Id?          ChargingStationId,
+                                             out CSMS.ChargingStation?             ChargingStation,
                                              out HTTPResponse.Builder?  HTTPResponse)
         {
 
@@ -138,8 +138,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            ChargeBoxId   = null;
-            ChargeBox     = null;
+            ChargingStationId   = null;
+            ChargingStation     = null;
             HTTPResponse  = null;
 
             if (HTTPRequest.ParsedURLParameters.Length < 1) {
@@ -155,9 +155,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             }
 
-            ChargeBoxId = ChargingStation_Id.TryParse(HTTPRequest.ParsedURLParameters[0]);
+            ChargingStationId = ChargingStation_Id.TryParse(HTTPRequest.ParsedURLParameters[0]);
 
-            if (!ChargeBoxId.HasValue) {
+            if (!ChargingStationId.HasValue) {
 
                 HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
                     HTTPStatusCode  = HTTPStatusCode.BadRequest,
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             }
 
-            if (!OCPPWebAPI.TryGetChargeBox(ChargeBoxId.Value, out ChargeBox)) {
+            if (!OCPPWebAPI.TryGetChargingStation(ChargingStationId.Value, out ChargingStation)) {
 
                 HTTPResponse = new HTTPResponse.Builder(HTTPRequest) {
                     HTTPStatusCode  = HTTPStatusCode.NotFound,
@@ -264,9 +264,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => csmss.Values;
 
 
-        public IEnumerable<ChargeBox> ChargeBoxes
+        public IEnumerable<CSMS.ChargingStation> ChargingStationes
 
-            => csmss.Values.SelectMany(c => c.ChargeBoxes);
+            => csmss.Values.SelectMany(c => c.ChargingStations);
 
         #endregion
 
@@ -592,7 +592,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                         webSocketConnection,
                                                         eventTrackingId,
                                                         requestTimestamp,
-                                                        requestMessage) =>
+                                                        requestMessage,
+                                                        cancellationToken) =>
 
                 await this.EventLog.SubmitEvent("OnTextMessageRequestReceived",
                                                 JSONObject.Create(
@@ -653,7 +654,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                     webSocketConnection,
                                                     eventTrackingId,
                                                     requestTimestamp,
-                                                    requestMessage) =>
+                                                    requestMessage,
+                                                    cancellationToken) =>
 
                 await this.EventLog.SubmitEvent("OnTextMessageRequestSent",
                                                 JSONObject.Create(
@@ -717,7 +719,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                           webSocketConnection,
                                                           eventTrackingId,
                                                           requestTimestamp,
-                                                          requestMessage) =>
+                                                          requestMessage,
+                                                          cancellationToken) =>
 
                 await this.EventLog.SubmitEvent("OnBinaryMessageRequestReceived",
                                                 JSONObject.Create(
@@ -778,7 +781,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                       webSocketConnection,
                                                       eventTrackingId,
                                                       requestTimestamp,
-                                                      requestMessage) =>
+                                                      requestMessage,
+                                                      cancellationToken) =>
 
                 await this.EventLog.SubmitEvent("OnBinaryMessageRequestSent",
                                                 JSONObject.Create(
@@ -2790,7 +2794,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                          connection,
                                                          eventTrackingId,
                                                          statusCode,
-                                                         reason) =>
+                                                         reason,
+                                                         cancellationToken) =>
 
                 await this.EventLog.SubmitEvent("OnCloseMessageReceived",
                                                 JSONObject.Create(
@@ -2808,7 +2813,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                         sender,
                                                         connection,
                                                         reason,
-                                                        eventTrackingId) =>
+                                                        eventTrackingId,
+                                                        cancellationToken) =>
 
                 await this.EventLog.SubmitEvent("OnTCPConnectionClosed",
                                                 JSONObject.Create(
@@ -4424,8 +4430,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (request.Path.StartsWith(URLPathPrefix + "/js")        ||
                     request.Path.StartsWith(URLPathPrefix + "/events")    ||
-                    request.Path.StartsWith(URLPathPrefix + "/chargeBox") ||
-                    request.Path.StartsWith(URLPathPrefix + "/chargeBoxes"))
+                    request.Path.StartsWith(URLPathPrefix + "/chargingStation") ||
+                    request.Path.StartsWith(URLPathPrefix + "/chargingStations"))
                 {
                     return HTTPExtAPI.Anonymous;
                 }
@@ -4460,11 +4466,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            #region ~/chargeBoxIds
+            #region ~/chargingStationIds
 
             HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
                                           HTTPMethod.GET,
-                                          URLPathPrefix + "chargeBoxIds",
+                                          URLPathPrefix + "chargingStationIds",
                                           HTTPContentType.Application.JSON_UTF8,
                                           HTTPDelegate: Request => {
 
@@ -4478,7 +4484,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                       AccessControlAllowHeaders  = new[] { "Authorization" },
                                                       ContentType                = HTTPContentType.Application.JSON_UTF8,
                                                       Content                    = JSONArray.Create(
-                                                                                       ChargeBoxes.Select(chargeBox => new JObject(new JProperty("@id", chargeBox.Id.ToString())))
+                                                                                       ChargingStationes.Select(chargingStation => new JObject(new JProperty("@id", chargingStation.Id.ToString())))
                                                                                    ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
                                                       Connection                 = "close"
                                                   }.AsImmutable);
@@ -4487,11 +4493,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region ~/chargeBoxes
+            #region ~/chargingStations
 
             HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
                                           HTTPMethod.GET,
-                                          URLPathPrefix + "chargeBoxes",
+                                          URLPathPrefix + "chargingStations",
                                           HTTPContentType.Application.JSON_UTF8,
                                           HTTPDelegate: Request => {
 
@@ -4505,7 +4511,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                       AccessControlAllowHeaders  = new[] { "Authorization" },
                                                       ContentType                = HTTPContentType.Application.JSON_UTF8,
                                                       Content                    = JSONArray.Create(
-                                                                                       ChargeBoxes.Select(chargeBox => chargeBox.ToJSON())
+                                                                                       ChargingStationes.Select(chargingStation => chargingStation.ToJSON())
                                                                                    ).ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
                                                       Connection                 = "close"
                                                   }.AsImmutable);
@@ -4515,56 +4521,56 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             #endregion
 
 
-            #region ~/chargeBoxes/{chargeBoxId}
+            #region ~/chargingStations/{chargingStationId}
 
             HTTPBaseAPI.AddMethodCallback(HTTPHostname.Any,
-                                      HTTPMethod.GET,
-                                      URLPathPrefix + "chargeBoxes/{chargeBoxId}",
-                                      HTTPContentType.Application.JSON_UTF8,
-                                      HTTPDelegate: Request => {
+                                          HTTPMethod.GET,
+                                          URLPathPrefix + "chargingStations/{chargingStationId}",
+                                          HTTPContentType.Application.JSON_UTF8,
+                                          HTTPDelegate: Request => {
 
-                                          #region Get HTTP user and its organizations
+                                              #region Get HTTP user and its organizations
 
-                                          //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
-                                          //if (!TryGetHTTPUser(Request,
-                                          //                    out User                   HTTPUser,
-                                          //                    out HashSet<Organization>  HTTPOrganizations,
-                                          //                    out HTTPResponse.Builder   Response,
-                                          //                    AccessLevel:               Access_Levels.ReadOnly,
-                                          //                    Recursive:                 true))
-                                          //{
-                                          //    return Task.FromResult(Response.AsImmutable);
-                                          //}
+                                              //// Will return HTTP 401 Unauthorized, when the HTTP user is unknown!
+                                              //if (!TryGetHTTPUser(Request,
+                                              //                    out User                   HTTPUser,
+                                              //                    out HashSet<Organization>  HTTPOrganizations,
+                                              //                    out HTTPResponse.Builder   Response,
+                                              //                    AccessLevel:               Access_Levels.ReadOnly,
+                                              //                    Recursive:                 true))
+                                              //{
+                                              //    return Task.FromResult(Response.AsImmutable);
+                                              //}
 
-                                          #endregion
+                                              #endregion
 
-                                          #region Check ChargeBoxId URL parameter
+                                              #region Check ChargingStationId URL parameter
 
-                                          if (!Request.ParseChargeBox(this,
-                                                                      out ChargingStation_Id?          ChargeBoxId,
-                                                                      out ChargeBox?             ChargeBox,
-                                                                      out HTTPResponse.Builder?  Response))
-                                          {
-                                              return Task.FromResult(Response.AsImmutable);
-                                          }
+                                              if (!Request.ParseChargingStation(this,
+                                                                                out ChargingStation_Id?    ChargingStationId,
+                                                                                out CSMS.ChargingStation?  ChargingStation,
+                                                                                out HTTPResponse.Builder?  Response))
+                                              {
+                                                  return Task.FromResult(Response.AsImmutable);
+                                              }
 
-                                          #endregion
+                                              #endregion
 
 
-                                          return Task.FromResult(
-                                              new HTTPResponse.Builder(Request) {
-                                                  HTTPStatusCode             = HTTPStatusCode.OK,
-                                                  Server                     = HTTPServiceName,
-                                                  Date                       = Timestamp.Now,
-                                                  AccessControlAllowOrigin   = "*",
-                                                  AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
-                                                  AccessControlAllowHeaders  = new[] { "Authorization" },
-                                                  ContentType                = HTTPContentType.Application.JSON_UTF8,
-                                                  Content                    = ChargeBox.ToJSON().ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
-                                                  Connection                 = "close"
-                                              }.AsImmutable);
+                                              return Task.FromResult(
+                                                  new HTTPResponse.Builder(Request) {
+                                                      HTTPStatusCode             = HTTPStatusCode.OK,
+                                                      Server                     = HTTPServiceName,
+                                                      Date                       = Timestamp.Now,
+                                                      AccessControlAllowOrigin   = "*",
+                                                      AccessControlAllowMethods  = new[] { "OPTIONS", "GET" },
+                                                      AccessControlAllowHeaders  = new[] { "Authorization" },
+                                                      ContentType                = HTTPContentType.Application.JSON_UTF8,
+                                                      Content                    = ChargingStation.ToJSON().ToUTF8Bytes(Newtonsoft.Json.Formatting.None),
+                                                      Connection                 = "close"
+                                                  }.AsImmutable);
 
-                                      });
+                                          });
 
             #endregion
 
@@ -4622,18 +4628,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region TryGetChargeBox(ChargeBoxId, out ChargeBox)
+        #region TryGetChargingStation(ChargingStationId, out ChargingStation)
 
-        public Boolean TryGetChargeBox(ChargingStation_Id ChargeBoxId, out ChargeBox? ChargeBox)
+        public Boolean TryGetChargingStation(ChargingStation_Id ChargingStationId, out CSMS.ChargingStation? ChargingStation)
         {
 
             foreach (var csms in csmss.Values)
             {
-                if (csms.TryGetChargeBox(ChargeBoxId, out ChargeBox))
+                if (csms.TryGetChargingStation(ChargingStationId, out ChargingStation))
                     return true;
             }
 
-            ChargeBox = null;
+            ChargingStation = null;
             return false;
 
         }

@@ -21,8 +21,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The common interface of all CSMS servers.
     /// </summary>
-    public interface ICSMSServer : ICSMSServerLogger
+    public interface ICSMSServerEvents : ICSMSServerLogger
     {
+
+        #region WebSocket connection
+
+        event OnCSMSNewWebSocketConnectionDelegate?  OnCSMSNewWebSocketConnection;
+
+        event OnCSMSCloseMessageReceivedDelegate?    OnCSMSCloseMessageReceived;
+
+        #endregion
+
 
         #region OnBootNotification
 

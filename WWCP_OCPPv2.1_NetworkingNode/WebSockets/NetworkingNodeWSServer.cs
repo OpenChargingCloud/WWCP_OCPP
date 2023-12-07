@@ -284,30 +284,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
         public NetworkingNodeWSServer(String                               HTTPServiceName              = DefaultHTTPServiceName,
-                            IIPAddress?                          IPAddress                    = null,
-                            IPPort?                              TCPPort                      = null,
+                                      IIPAddress?                          IPAddress                    = null,
+                                      IPPort?                              TCPPort                      = null,
 
-                            Boolean                              RequireAuthentication        = true,
-                            Boolean                              DisableWebSocketPings        = false,
-                            TimeSpan?                            WebSocketPingEvery           = null,
-                            TimeSpan?                            SlowNetworkSimulationDelay   = null,
+                                      Boolean                              RequireAuthentication        = true,
+                                      Boolean                              DisableWebSocketPings        = false,
+                                      TimeSpan?                            WebSocketPingEvery           = null,
+                                      TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                            ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
-                            RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
-                            LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                            SslProtocols?                        AllowedTLSProtocols          = null,
-                            Boolean?                             ClientCertificateRequired    = null,
-                            Boolean?                             CheckCertificateRevocation   = null,
+                                      ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+                                      RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
+                                      LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+                                      SslProtocols?                        AllowedTLSProtocols          = null,
+                                      Boolean?                             ClientCertificateRequired    = null,
+                                      Boolean?                             CheckCertificateRevocation   = null,
 
-                            ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
-                            ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
-                            Boolean?                             ServerThreadIsBackground     = null,
-                            ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
-                            TimeSpan?                            ConnectionTimeout            = null,
-                            UInt32?                              MaxClientConnections         = null,
+                                      ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
+                                      ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
+                                      Boolean?                             ServerThreadIsBackground     = null,
+                                      ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
+                                      TimeSpan?                            ConnectionTimeout            = null,
+                                      UInt32?                              MaxClientConnections         = null,
 
-                            DNSClient?                           DNSClient                    = null,
-                            Boolean                              AutoStart                    = false)
+                                      DNSClient?                           DNSClient                    = null,
+                                      Boolean                              AutoStart                    = false)
 
             : base(IPAddress,
                    TCPPort ?? IPPort.Parse(8000),
@@ -416,7 +416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         // Receive data...
 
-        #region (protected) ValidateTCPConnection        (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
+        #region (protected) ValidateTCPConnection        (LogTimestamp, Server, Connection, EventTrackingId, ...)
 
         private Task<ConnectionFilterResponse> ValidateTCPConnection(DateTime                      LogTimestamp,
                                                                      IWebSocketServer              Server,
@@ -431,7 +431,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region (protected) ValidateWebSocketConnection  (LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
+        #region (protected) ValidateWebSocketConnection  (LogTimestamp, Server, Connection, EventTrackingId, ...)
 
         private Task<HTTPResponse?> ValidateWebSocketConnection(DateTime                   LogTimestamp,
                                                                 IWebSocketServer           Server,
@@ -527,7 +527,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
+        #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, EventTrackingId, ...)
 
         protected Task ProcessNewWebSocketConnection(DateTime                   LogTimestamp,
                                                      IWebSocketServer           Server,
@@ -647,14 +647,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, EventTrackingId, StatusCode, Reason)
+        #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, EventTrackingId, StatusCode, Reason, ...)
 
         protected Task ProcessCloseMessage(DateTime                          LogTimestamp,
                                            IWebSocketServer                  Server,
                                            WebSocketServerConnection         Connection,
                                            EventTracking_Id                  EventTrackingId,
                                            WebSocketFrame.ClosingStatusCode  StatusCode,
-                                           String?                           Reason)
+                                           String?                           Reason,
+                                           CancellationToken                 CancellationToken)
         {
 
             if (Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey, out var networkingNodeId))
@@ -670,7 +671,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         #endregion
 
 
-        #region (protected) ProcessTextMessage           (RequestTimestamp, Connection, TextMessage,   EventTrackingId, CancellationToken)
+        #region (protected) ProcessTextMessage           (RequestTimestamp, Connection, TextMessage,   EventTrackingId, ...)
 
         /// <summary>
         /// Process all text messages of this WebSocket API.
@@ -711,7 +712,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                                                                           Connection,
                                                                                                           EventTrackingId,
                                                                                                           Timestamp.Now,
-                                                                                                          jsonArray)).
+                                                                                                          jsonArray,
+                                                                                                          CancellationToken)).
                                                         ToArray();
 
                         try
@@ -1017,7 +1019,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region (protected) ProcessBinaryMessage         (RequestTimestamp, Connection, BinaryMessage, EventTrackingId, CancellationToken)
+        #region (protected) ProcessBinaryMessage         (RequestTimestamp, Connection, BinaryMessage, EventTrackingId, ...)
 
         /// <summary>
         /// Process all text messages of this WebSocket API.
@@ -1056,7 +1058,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                                                                           Connection,
                                                                                                           EventTrackingId,
                                                                                                           Timestamp.Now,
-                                                                                                          BinaryMessage)).
+                                                                                                          BinaryMessage,
+                                                                                                          CancellationToken)).
                                                         ToArray();
 
                         try
@@ -1211,7 +1214,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         // Send data...
 
-        #region SendJSONData  (EventTrackingId, NetworkingNodeId, NetworkPath, RequestId, Action, JSONData,   RequestTimeout)
+        #region SendJSONData     (EventTrackingId, NetworkingNodeId, NetworkPath, RequestId, Action, JSONData,   RequestTimeout)
 
         /// <summary>
         /// Send (and forget) the given JSON.
@@ -1229,7 +1232,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                                Request_Id         RequestId,
                                                                String             Action,
                                                                JObject            JSONData,
-                                                               DateTime           RequestTimeout)
+                                                               DateTime           RequestTimeout,
+                                                               CancellationToken  CancellationToken   = default)
         {
 
             try
@@ -1275,7 +1279,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                                                                               this,
                                                                                                               webSocketConnection,
                                                                                                               EventTrackingId,
-                                                                                                              ocppJSONMessage.ToString())).
+                                                                                                              ocppJSONMessage.ToString(),
+                                                                                                              CancellationToken)).
                                                             ToArray();
 
                             try
@@ -1291,9 +1296,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                         #endregion
 
-                        var success = await SendTextMessage(webSocketConnection,
-                                                            ocppJSONMessage.ToString(),
-                                                            EventTrackingId);
+                        var success = await SendTextMessage(
+                                                webSocketConnection,
+                                                ocppJSONMessage.ToString(),
+                                                EventTrackingId,
+                                                CancellationToken
+                                            );
 
                         if (success == SendStatus.Success)
                             break;
@@ -1319,7 +1327,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #endregion
 
-        #region SendBinaryData(EventTrackingId, NetworkingNodeId, NetworkPath, RequestId, Action, BinaryData, RequestTimeout)
+        #region SendBinaryData   (EventTrackingId, NetworkingNodeId, NetworkPath, RequestId, Action, BinaryData, RequestTimeout)
 
         /// <summary>
         /// Send (and forget) the given binary data.
@@ -1337,7 +1345,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                                  Request_Id         RequestId,
                                                                  String             Action,
                                                                  Byte[]             BinaryData,
-                                                                 DateTime           RequestTimeout)
+                                                                 DateTime           RequestTimeout,
+                                                                 CancellationToken  CancellationToken   = default)
         {
 
             try
@@ -1382,7 +1391,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                                                                               this,
                                                                                                               webSocketConnection,
                                                                                                               EventTrackingId,
-                                                                                                              ocppBinaryMessage)).
+                                                                                                              ocppBinaryMessage,
+                                                                                                              CancellationToken)).
                                                             ToArray();
 
                             try
@@ -1401,7 +1411,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                         var success = await SendBinaryMessage(
                                                 webSocketConnection,
                                                 ocppBinaryMessage,
-                                                EventTrackingId
+                                                EventTrackingId,
+                                                CancellationToken
                                             );
 
                         if (success == SendStatus.Success)
@@ -1437,7 +1448,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                             Request_Id         RequestId,
                                                             String             OCPPAction,
                                                             JObject            JSONPayload,
-                                                            TimeSpan?          RequestTimeout)
+                                                            TimeSpan?          RequestTimeout,
+                                                            CancellationToken  CancellationToken   = default)
         {
 
             var endTime         = Timestamp.Now + (RequestTimeout ?? this.RequestTimeout ?? DefaultRequestTimeout);
@@ -1449,7 +1461,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                       RequestId,
                                       OCPPAction,
                                       JSONPayload,
-                                      endTime
+                                      endTime,
+                                      CancellationToken
                                   );
 
             if (sendJSONResult == SendOCPPMessageResults.Success) {
@@ -1462,7 +1475,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     try
                     {
 
-                        await Task.Delay(25);
+                        await Task.Delay(25, CancellationToken);
 
                         if (requests.TryGetValue(RequestId, out var sendRequestState) &&
                            (sendRequestState?.JSONResponse   is not null ||
@@ -1550,7 +1563,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                                               Request_Id          RequestId,
                                                               String              OCPPAction,
                                                               Byte[]              BinaryPayload,
-                                                              TimeSpan?           RequestTimeout   = null)
+                                                              TimeSpan?           RequestTimeout,
+                                                              CancellationToken   CancellationToken   = default)
         {
 
             var endTime         = Timestamp.Now + (RequestTimeout ?? this.RequestTimeout ?? DefaultRequestTimeout);
@@ -1562,7 +1576,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                       RequestId,
                                       OCPPAction,
                                       BinaryPayload,
-                                      endTime
+                                      endTime,
+                                      CancellationToken
                                   );
 
             if (sendJSONResult == SendOCPPMessageResults.Success) {
@@ -1575,7 +1590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                     try
                     {
 
-                        await Task.Delay(25);
+                        await Task.Delay(25, CancellationToken);
 
                         if (requests.TryGetValue(RequestId, out var sendRequestState) &&
                            (sendRequestState?.JSONResponse   is not null ||

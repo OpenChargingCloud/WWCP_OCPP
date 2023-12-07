@@ -31,6 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using System.Threading;
 
 #endregion
 
@@ -102,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An enumeration of central system servers.
         /// </summary>
-        public IEnumerable<ICSMSServer> CSMSServers
+        public IEnumerable<ICSMSServerEvents> CSMSServers
             => centralSystemServers;
 
 
@@ -165,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever the HTTP connection switched successfully to web socket.
         /// </summary>
-        public event OnNewCSMSWebSocketConnectionDelegate?    OnNewCSMSWebSocketConnection;
+        public event OnCSMSNewWebSocketConnectionDelegate?    OnNewWebSocketConnection;
 
         /// <summary>
         /// An event sent whenever a reponse to a HTTP request was sent.
@@ -175,12 +176,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever a web socket close frame was received.
         /// </summary>
-        public event OnCloseMessageDelegate?                  OnCloseMessageReceived;
+        public event OnCSMSCloseMessageReceivedDelegate?      OnCloseMessageReceived;
 
         /// <summary>
         /// An event sent whenever a TCP connection was closed.
         /// </summary>
-        public event OnTCPConnectionClosedDelegate?           OnTCPConnectionClosed;
+        public event OnCSMSTCPConnectionClosedDelegate?       OnTCPConnectionClosed;
 
         #endregion
 
@@ -2066,7 +2067,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         private void AttachCSMSChannel(ICSMSChannel CSMSChannel)
         {
 
-
             centralSystemServers.Add(CSMSChannel);
 
 
@@ -2076,7 +2076,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnServerStarted += (Timestamp,
                                             server,
-                                            eventTrackingId) => {
+                                            eventTrackingId,
+                                            cancellationToken) => {
 
                 DebugX.Log($"OCPP {Version.String} web socket server has started on {server.IPSocket}!");
                 return Task.CompletedTask;
@@ -2089,7 +2090,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnNewTCPConnection += async (timestamp,
                                                      webSocketServer,
-                                                     newWebSocketConnection,
+                                                     newTCPConnection,
                                                      eventTrackingId,
                                                      cancellationToken) => {
 
@@ -2101,7 +2102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              OfType <OnNewTCPConnectionDelegate>().
                                              Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
                                                                                                webSocketServer,
-                                                                                               newWebSocketConnection,
+                                                                                               newTCPConnection,
                                                                                                eventTrackingId,
                                                                                                cancellationToken)).
                                              ToArray();
@@ -2125,9 +2126,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnNewCSMSWebSocketConnection
+            #region OnNewWebSocketConnection
 
-            CSMSChannel.OnNewCSMSWebSocketConnection += async (timestamp,
+            CSMSChannel.OnCSMSNewWebSocketConnection += async (timestamp,
                                                                csmsChannel,
                                                                newConnection,
                                                                networkingNodeId,
@@ -2136,15 +2137,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 // A new connection from the same networking node/charging station will replace the older one!
                 if (!reachableChargingStations.TryAdd(networkingNodeId, new Tuple<ICSMSChannel, DateTime>(csmsChannel, timestamp)))
-                    reachableChargingStations[networkingNodeId] = new Tuple<ICSMSChannel, DateTime>(csmsChannel, timestamp);
+                    reachableChargingStations[networkingNodeId]       = new Tuple<ICSMSChannel, DateTime>(csmsChannel, timestamp);
 
 
-                var logger = OnNewCSMSWebSocketConnection;
+                var logger = OnNewWebSocketConnection;
                 if (logger is not null)
                 {
 
                     var loggerTasks = logger.GetInvocationList().
-                                             OfType <OnNewCSMSWebSocketConnectionDelegate>().
+                                             OfType <OnCSMSNewWebSocketConnectionDelegate>().
                                              Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
                                                                                                csmsChannel,
                                                                                                newConnection,
@@ -2161,7 +2162,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     {
                         await HandleErrors(
                                   nameof(TestCSMS),
-                                  nameof(OnNewCSMSWebSocketConnection),
+                                  nameof(OnNewWebSocketConnection),
                                   e
                               );
                     }
@@ -2174,25 +2175,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnCloseMessageReceived
 
-            CSMSChannel.OnCloseMessageReceived += async (timestamp,
-                                                         server,
-                                                         connection,
-                                                         eventTrackingId,
-                                                         statusCode,
-                                                         reason) => {
+            CSMSChannel.OnCSMSCloseMessageReceived += async (timestamp,
+                                                             server,
+                                                             connection,
+                                                             networkingNodeId,
+                                                             eventTrackingId,
+                                                             statusCode,
+                                                             reason,
+                                                             cancellationToken) => {
 
                 var logger = OnCloseMessageReceived;
                 if (logger is not null)
                 {
 
                     var loggerTasks = logger.GetInvocationList().
-                                             OfType <OnCloseMessageDelegate>().
+                                             OfType <OnCSMSCloseMessageReceivedDelegate>().
                                              Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
                                                                                                server,
                                                                                                connection,
+                                                                                               networkingNodeId,
                                                                                                eventTrackingId,
                                                                                                statusCode,
-                                                                                               reason)).
+                                                                                               reason,
+                                                                                               cancellationToken)).
                                              ToArray();
 
                     try
@@ -2219,8 +2224,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMSChannel.OnTCPConnectionClosed += async (timestamp,
                                                         server,
                                                         connection,
+                                                        eventTrackingId,
                                                         reason,
-                                                        eventTrackingId) => {
+                                                        cancellationToken) => {
 
                 var logger = OnTCPConnectionClosed;
                 if (logger is not null)
@@ -2231,8 +2237,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
                                                                                                server,
                                                                                                connection,
+                                                                                               eventTrackingId,
                                                                                                reason,
-                                                                                               eventTrackingId)).
+                                                                                               cancellationToken)).
                                              ToArray();
 
                     try
@@ -2268,7 +2275,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                webSocketConnection,
                                                                eventTrackingId,
                                                                requestTimestamp,
-                                                               requestMessage) => {
+                                                               requestMessage,
+                                                               cancellationToken) => {
 
                 var logger = OnJSONMessageRequestReceived;
                 if (logger is not null)
@@ -2281,7 +2289,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                                webSocketConnection,
                                                                                                eventTrackingId,
                                                                                                requestTimestamp,
-                                                                                               requestMessage)).
+                                                                                               requestMessage,
+                                                                                               cancellationToken)).
                                              ToArray();
 
                     try
@@ -2408,7 +2417,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            webSocketConnection,
                                                            eventTrackingId,
                                                            requestTimestamp,
-                                                           requestMessage) => {
+                                                           requestMessage,
+                                                           cancellationToken) => {
 
 
                 var logger = OnJSONMessageRequestSent;
@@ -2421,7 +2431,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                                webSocketServer,
                                                                                                webSocketConnection,
                                                                                                eventTrackingId,
-                                                                                               requestMessage.ToString())).
+                                                                                               requestMessage.ToString(),
+                                                                                               cancellationToken)).
                                              ToArray();
 
                     try
@@ -2590,13 +2601,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 DebugX.Log($"OnBootNotification: {request.ChargingStation?.SerialNumber ?? "-"} ({request.NetworkingNodeId})");
 
 
-                //await AddChargeBoxIfNotExists(new ChargeBox(Request.ChargeBoxId,
+                //await AddChargingStationIfNotExists(new ChargingStation(Request.ChargingStationId,
                 //                                            1,
                 //                                            Request.ChargePointVendor,
                 //                                            Request.ChargePointModel,
                 //                                            null,
                 //                                            Request.ChargePointSerialNumber,
-                //                                            Request.ChargeBoxSerialNumber,
+                //                                            Request.ChargingStationSerialNumber,
                 //                                            Request.FirmwareVersion,
                 //                                            Request.Iccid,
                 //                                            Request.IMSI,
@@ -4725,7 +4736,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #endregion
 
-                // ChargeBoxId
+                // ChargingStationId
                 // EventType
                 // Timestamp
                 // TriggerReason
@@ -12027,43 +12038,43 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ChargeBoxes
+        #region ChargingStationes
 
         #region Data
 
         /// <summary>
         /// An enumeration of all charging stationes.
         /// </summary>
-        protected internal readonly ConcurrentDictionary<ChargingStation_Id, ChargeBox> chargeBoxes = new();
+        protected internal readonly ConcurrentDictionary<ChargingStation_Id, CSMS.ChargingStation> chargeBoxes = new();
 
         /// <summary>
         /// An enumeration of all charging stationes.
         /// </summary>
-        public IEnumerable<ChargeBox> ChargeBoxes
+        public IEnumerable<CSMS.ChargingStation> ChargingStations
             => chargeBoxes.Values;
 
         #endregion
 
 
-        #region (protected internal) WriteToDatabaseFileAndNotify(ChargeBox,                      MessageType,    OldChargeBox = null, ...)
+        #region (protected internal) WriteToDatabaseFileAndNotify(ChargingStation,                      MessageType,    OldChargingStation = null, ...)
 
         ///// <summary>
         ///// Write the given chargeBox to the database and send out notifications.
         ///// </summary>
-        ///// <param name="ChargeBox">The charging station.</param>
+        ///// <param name="ChargingStation">The charging station.</param>
         ///// <param name="MessageType">The chargeBox notification.</param>
-        ///// <param name="OldChargeBox">The old/updated charging station.</param>
+        ///// <param name="OldChargingStation">The old/updated charging station.</param>
         ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         ///// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        //protected internal async Task WriteToDatabaseFileAndNotify(ChargeBox             ChargeBox,
+        //protected internal async Task WriteToDatabaseFileAndNotify(ChargingStation             ChargingStation,
         //                                                           NotificationMessageType  MessageType,
-        //                                                           ChargeBox             OldChargeBox   = null,
+        //                                                           ChargingStation             OldChargingStation   = null,
         //                                                           EventTracking_Id         EventTrackingId   = null,
         //                                                           User_Id?                 CurrentUserId     = null)
         //{
 
-        //    if (ChargeBox is null)
-        //        throw new ArgumentNullException(nameof(ChargeBox),  "The given chargeBox must not be null or empty!");
+        //    if (ChargingStation is null)
+        //        throw new ArgumentNullException(nameof(ChargingStation),  "The given chargeBox must not be null or empty!");
 
         //    if (MessageType.IsNullOrEmpty)
         //        throw new ArgumentNullException(nameof(MessageType),   "The given message type must not be null or empty!");
@@ -12072,13 +12083,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //    var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
         //    await WriteToDatabaseFile(MessageType,
-        //                              ChargeBox.ToJSON(false, true),
+        //                              ChargingStation.ToJSON(false, true),
         //                              eventTrackingId,
         //                              CurrentUserId);
 
-        //    await SendNotifications(ChargeBox,
+        //    await SendNotifications(ChargingStation,
         //                            MessageType,
-        //                            OldChargeBox,
+        //                            OldChargingStation,
         //                            eventTrackingId,
         //                            CurrentUserId);
 
@@ -12086,39 +12097,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (protected internal) SendNotifications           (ChargeBox,                      MessageType(s), OldChargeBox = null, ...)
+        #region (protected internal) SendNotifications           (ChargingStation,                      MessageType(s), OldChargingStation = null, ...)
 
-        //protected virtual String ChargeBoxHTMLInfo(ChargeBox ChargeBox)
+        //protected virtual String ChargingStationHTMLInfo(ChargingStation ChargingStation)
 
-        //    => String.Concat(ChargeBox.Name.IsNeitherNullNorEmpty()
-        //                         ? String.Concat("<a href=\"https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargeBox.Id, "\">", ChargeBox.Name.FirstText(), "</a> ",
-        //                                        "(<a href=\"https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargeBox.Id, "\">", ChargeBox.Id, "</a>)")
-        //                         : String.Concat("<a href=\"https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargeBox.Id, "\">", ChargeBox.Id, "</a>"));
+        //    => String.Concat(ChargingStation.Name.IsNeitherNullNorEmpty()
+        //                         ? String.Concat("<a href=\"https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargingStation.Id, "\">", ChargingStation.Name.FirstText(), "</a> ",
+        //                                        "(<a href=\"https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargingStation.Id, "\">", ChargingStation.Id, "</a>)")
+        //                         : String.Concat("<a href=\"https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargingStation.Id, "\">", ChargingStation.Id, "</a>"));
 
-        //protected virtual String ChargeBoxTextInfo(ChargeBox ChargeBox)
+        //protected virtual String ChargingStationTextInfo(ChargingStation ChargingStation)
 
-        //    => String.Concat(ChargeBox.Name.IsNeitherNullNorEmpty()
-        //                         ? String.Concat("'", ChargeBox.Name.FirstText(), "' (", ChargeBox.Id, ")")
-        //                         : String.Concat("'", ChargeBox.Id.ToString(), "'"));
+        //    => String.Concat(ChargingStation.Name.IsNeitherNullNorEmpty()
+        //                         ? String.Concat("'", ChargingStation.Name.FirstText(), "' (", ChargingStation.Id, ")")
+        //                         : String.Concat("'", ChargingStation.Id.ToString(), "'"));
 
 
         ///// <summary>
         ///// Send chargeBox notifications.
         ///// </summary>
-        ///// <param name="ChargeBox">The charging station.</param>
+        ///// <param name="ChargingStation">The charging station.</param>
         ///// <param name="MessageType">The chargeBox notification.</param>
-        ///// <param name="OldChargeBox">The old/updated charging station.</param>
+        ///// <param name="OldChargingStation">The old/updated charging station.</param>
         ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         ///// <param name="CurrentUserId">The invoking chargeBox identification</param>
-        //protected internal virtual Task SendNotifications(ChargeBox             ChargeBox,
+        //protected internal virtual Task SendNotifications(ChargingStation             ChargingStation,
         //                                                  NotificationMessageType  MessageType,
-        //                                                  ChargeBox             OldChargeBox   = null,
+        //                                                  ChargingStation             OldChargingStation   = null,
         //                                                  EventTracking_Id         EventTrackingId   = null,
         //                                                  User_Id?                 CurrentUserId     = null)
 
-        //    => SendNotifications(ChargeBox,
+        //    => SendNotifications(ChargingStation,
         //                         new NotificationMessageType[] { MessageType },
-        //                         OldChargeBox,
+        //                         OldChargingStation,
         //                         EventTrackingId,
         //                         CurrentUserId);
 
@@ -12126,41 +12137,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         ///// <summary>
         ///// Send chargeBox notifications.
         ///// </summary>
-        ///// <param name="ChargeBox">The charging station.</param>
+        ///// <param name="ChargingStation">The charging station.</param>
         ///// <param name="MessageTypes">The chargeBox notifications.</param>
-        ///// <param name="OldChargeBox">The old/updated charging station.</param>
+        ///// <param name="OldChargingStation">The old/updated charging station.</param>
         ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         ///// <param name="CurrentUserId">The invoking chargeBox identification</param>
-        //protected internal async virtual Task SendNotifications(ChargeBox                          ChargeBox,
+        //protected internal async virtual Task SendNotifications(ChargingStation                          ChargingStation,
         //                                                        IEnumerable<NotificationMessageType>  MessageTypes,
-        //                                                        ChargeBox                          OldChargeBox   = null,
+        //                                                        ChargingStation                          OldChargingStation   = null,
         //                                                        EventTracking_Id                      EventTrackingId   = null,
         //                                                        User_Id?                              CurrentUserId     = null)
         //{
 
-        //    if (ChargeBox is null)
-        //        throw new ArgumentNullException(nameof(ChargeBox),  "The given chargeBox must not be null or empty!");
+        //    if (ChargingStation is null)
+        //        throw new ArgumentNullException(nameof(ChargingStation),  "The given chargeBox must not be null or empty!");
 
         //    var messageTypesHash = new HashSet<NotificationMessageType>(MessageTypes.Where(messageType => !messageType.IsNullOrEmpty));
 
         //    if (messageTypesHash.IsNullOrEmpty())
         //        throw new ArgumentNullException(nameof(MessageTypes),  "The given enumeration of message types must not be null or empty!");
 
-        //    if (messageTypesHash.Contains(addChargeBoxIfNotExists_MessageType))
-        //        messageTypesHash.Add(addChargeBox_MessageType);
+        //    if (messageTypesHash.Contains(addChargingStationIfNotExists_MessageType))
+        //        messageTypesHash.Add(addChargingStation_MessageType);
 
-        //    if (messageTypesHash.Contains(addOrUpdateChargeBox_MessageType))
-        //        messageTypesHash.Add(OldChargeBox == null
-        //                               ? addChargeBox_MessageType
-        //                               : updateChargeBox_MessageType);
+        //    if (messageTypesHash.Contains(addOrUpdateChargingStation_MessageType))
+        //        messageTypesHash.Add(OldChargingStation == null
+        //                               ? addChargingStation_MessageType
+        //                               : updateChargingStation_MessageType);
 
         //    var messageTypes = messageTypesHash.ToArray();
 
 
         //    ComparizionResult? comparizionResult = null;
 
-        //    if (messageTypes.Contains(updateChargeBox_MessageType))
-        //        comparizionResult = ChargeBox.CompareWith(OldChargeBox);
+        //    if (messageTypes.Contains(updateChargingStation_MessageType))
+        //        comparizionResult = ChargingStation.CompareWith(OldChargingStation);
 
 
         //    if (!DisableNotifications)
@@ -12173,19 +12184,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //            try
         //            {
 
-        //                var AllTelegramNotifications  = ChargeBox.GetNotificationsOf<TelegramNotification>(messageTypes).
+        //                var AllTelegramNotifications  = ChargingStation.GetNotificationsOf<TelegramNotification>(messageTypes).
         //                                                     ToSafeHashSet();
 
         //                if (AllTelegramNotifications.SafeAny())
         //                {
 
-        //                    if (messageTypes.Contains(addChargeBox_MessageType))
-        //                        await TelegramClient.SendTelegrams(ChargeBoxHTMLInfo(ChargeBox) + " was successfully created.",
+        //                    if (messageTypes.Contains(addChargingStation_MessageType))
+        //                        await TelegramClient.SendTelegrams(ChargingStationHTMLInfo(ChargingStation) + " was successfully created.",
         //                                                           AllTelegramNotifications.Select(TelegramNotification => TelegramNotification.Username),
         //                                                           Telegram.Bot.Types.Enums.ParseMode.Html);
 
-        //                    if (messageTypes.Contains(updateChargeBox_MessageType))
-        //                        await TelegramClient.SendTelegrams(ChargeBoxHTMLInfo(ChargeBox) + " information had been successfully updated.\n" + comparizionResult?.ToTelegram(),
+        //                    if (messageTypes.Contains(updateChargingStation_MessageType))
+        //                        await TelegramClient.SendTelegrams(ChargingStationHTMLInfo(ChargingStation) + " information had been successfully updated.\n" + comparizionResult?.ToTelegram(),
         //                                                           AllTelegramNotifications.Select(TelegramNotification => TelegramNotification.Username),
         //                                                           Telegram.Bot.Types.Enums.ParseMode.Html);
 
@@ -12205,21 +12216,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //        try
         //        {
 
-        //            var AllSMSNotifications  = ChargeBox.GetNotificationsOf<SMSNotification>(messageTypes).
+        //            var AllSMSNotifications  = ChargingStation.GetNotificationsOf<SMSNotification>(messageTypes).
         //                                                    ToSafeHashSet();
 
         //            if (AllSMSNotifications.SafeAny())
         //            {
 
-        //                if (messageTypes.Contains(addChargeBox_MessageType))
-        //                    SendSMS(String.Concat("ChargeBox '", ChargeBox.Name.FirstText(), "' was successfully created. ",
-        //                                          "https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargeBox.Id),
+        //                if (messageTypes.Contains(addChargingStation_MessageType))
+        //                    SendSMS(String.Concat("ChargingStation '", ChargingStation.Name.FirstText(), "' was successfully created. ",
+        //                                          "https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargingStation.Id),
         //                            AllSMSNotifications.Select(smsPhoneNumber => smsPhoneNumber.PhoneNumber.ToString()).ToArray(),
         //                            SMSSenderName);
 
-        //                if (messageTypes.Contains(updateChargeBox_MessageType))
-        //                    SendSMS(String.Concat("ChargeBox '", ChargeBox.Name.FirstText(), "' information had been successfully updated. ",
-        //                                          "https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargeBox.Id),
+        //                if (messageTypes.Contains(updateChargingStation_MessageType))
+        //                    SendSMS(String.Concat("ChargingStation '", ChargingStation.Name.FirstText(), "' information had been successfully updated. ",
+        //                                          "https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargingStation.Id),
         //                                          // + {Updated information}
         //                            AllSMSNotifications.Select(smsPhoneNumber => smsPhoneNumber.PhoneNumber.ToString()).ToArray(),
         //                            SMSSenderName);
@@ -12239,26 +12250,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //        try
         //        {
 
-        //            var AllHTTPSNotifications  = ChargeBox.GetNotificationsOf<HTTPSNotification>(messageTypes).
+        //            var AllHTTPSNotifications  = ChargingStation.GetNotificationsOf<HTTPSNotification>(messageTypes).
         //                                                      ToSafeHashSet();
 
         //            if (AllHTTPSNotifications.SafeAny())
         //            {
 
-        //                if (messageTypes.Contains(addChargeBox_MessageType))
+        //                if (messageTypes.Contains(addChargingStation_MessageType))
         //                    await SendHTTPSNotifications(AllHTTPSNotifications,
         //                                                 new JObject(
         //                                                     new JProperty("chargeBoxCreated",
-        //                                                         ChargeBox.ToJSON()
+        //                                                         ChargingStation.ToJSON()
         //                                                     ),
         //                                                     new JProperty("timestamp", Timestamp.Now.ToIso8601())
         //                                                 ));
 
-        //                if (messageTypes.Contains(updateChargeBox_MessageType))
+        //                if (messageTypes.Contains(updateChargingStation_MessageType))
         //                    await SendHTTPSNotifications(AllHTTPSNotifications,
         //                                                 new JObject(
         //                                                     new JProperty("chargeBoxUpdated",
-        //                                                         ChargeBox.ToJSON()
+        //                                                         ChargingStation.ToJSON()
         //                                                     ),
         //                                                     new JProperty("timestamp", Timestamp.Now.ToIso8601())
         //                                                 ));
@@ -12280,53 +12291,53 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //            try
         //            {
 
-        //                var AllEMailNotifications  = ChargeBox.GetNotificationsOf<EMailNotification>(messageTypes).
+        //                var AllEMailNotifications  = ChargingStation.GetNotificationsOf<EMailNotification>(messageTypes).
         //                                                          ToSafeHashSet();
 
         //                if (AllEMailNotifications.SafeAny())
         //                {
 
-        //                    if (messageTypes.Contains(addChargeBox_MessageType))
+        //                    if (messageTypes.Contains(addChargingStation_MessageType))
         //                        await SMTPClient.Send(
         //                                 new HTMLEMailBuilder() {
 
         //                                     From           = Robot.EMail,
         //                                     To             = EMailAddressListBuilder.Create(EMailAddressList.Create(AllEMailNotifications.Select(emailnotification => emailnotification.EMailAddress))),
         //                                     Passphrase     = APIPassphrase,
-        //                                     Subject        = ChargeBoxTextInfo(ChargeBox) + " was successfully created",
+        //                                     Subject        = ChargingStationTextInfo(ChargingStation) + " was successfully created",
 
         //                                     HTMLText       = String.Concat(HTMLEMailHeader(ExternalDNSName, BasePath, EMailType.Notification),
-        //                                                                    ChargeBoxHTMLInfo(ChargeBox) + " was successfully created.",
+        //                                                                    ChargingStationHTMLInfo(ChargingStation) + " was successfully created.",
         //                                                                    HTMLEMailFooter(ExternalDNSName, BasePath, EMailType.Notification)),
 
         //                                     PlainText      = String.Concat(TextEMailHeader(ExternalDNSName, BasePath, EMailType.Notification),
-        //                                                                    ChargeBoxTextInfo(ChargeBox) + " was successfully created.\r\n",
-        //                                                                    "https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargeBox.Id, "\r\r\r\r",
+        //                                                                    ChargingStationTextInfo(ChargingStation) + " was successfully created.\r\n",
+        //                                                                    "https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargingStation.Id, "\r\r\r\r",
         //                                                                    TextEMailFooter(ExternalDNSName, BasePath, EMailType.Notification)),
 
         //                                     SecurityLevel  = EMailSecurity.autosign
 
         //                                 });
 
-        //                    if (messageTypes.Contains(updateChargeBox_MessageType))
+        //                    if (messageTypes.Contains(updateChargingStation_MessageType))
         //                        await SMTPClient.Send(
         //                                 new HTMLEMailBuilder() {
 
         //                                     From           = Robot.EMail,
         //                                     To             = EMailAddressListBuilder.Create(EMailAddressList.Create(AllEMailNotifications.Select(emailnotification => emailnotification.EMailAddress))),
         //                                     Passphrase     = APIPassphrase,
-        //                                     Subject        = ChargeBoxTextInfo(ChargeBox) + " information had been successfully updated",
+        //                                     Subject        = ChargingStationTextInfo(ChargingStation) + " information had been successfully updated",
 
         //                                     HTMLText       = String.Concat(HTMLEMailHeader(ExternalDNSName, BasePath, EMailType.Notification),
-        //                                                                    ChargeBoxHTMLInfo(ChargeBox) + " information had been successfully updated.<br /><br />",
+        //                                                                    ChargingStationHTMLInfo(ChargingStation) + " information had been successfully updated.<br /><br />",
         //                                                                    comparizionResult?.ToHTML() ?? "",
         //                                                                    HTMLEMailFooter(ExternalDNSName, BasePath, EMailType.Notification)),
 
         //                                     PlainText      = String.Concat(TextEMailHeader(ExternalDNSName, BasePath, EMailType.Notification),
-        //                                                                    ChargeBoxTextInfo(ChargeBox) + " information had been successfully updated.\r\r\r\r",
+        //                                                                    ChargingStationTextInfo(ChargingStation) + " information had been successfully updated.\r\r\r\r",
         //                                                                    comparizionResult?.ToText() ?? "",
         //                                                                    "\r\r\r\r",
-        //                                                                    "https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargeBox.Id, "\r\r\r\r",
+        //                                                                    "https://", ExternalDNSName, BasePath, "/chargeBoxs/", ChargingStation.Id, "\r\r\r\r",
         //                                                                    TextEMailFooter(ExternalDNSName, BasePath, EMailType.Notification)),
 
         //                                     SecurityLevel  = EMailSecurity.autosign
@@ -12350,24 +12361,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (protected internal) SendNotifications           (ChargeBox, ParentChargeBoxes, MessageType(s), ...)
+        #region (protected internal) SendNotifications           (ChargingStation, ParentChargingStationes, MessageType(s), ...)
 
         ///// <summary>
         ///// Send chargeBox notifications.
         ///// </summary>
-        ///// <param name="ChargeBox">The charging station.</param>
-        ///// <param name="ParentChargeBoxes">The enumeration of parent charging stationes.</param>
+        ///// <param name="ChargingStation">The charging station.</param>
+        ///// <param name="ParentChargingStationes">The enumeration of parent charging stationes.</param>
         ///// <param name="MessageType">The chargeBox notification.</param>
         ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         ///// <param name="CurrentUserId">The invoking chargeBox identification</param>
-        //protected internal virtual Task SendNotifications(ChargeBox               ChargeBox,
-        //                                                  IEnumerable<ChargeBox>  ParentChargeBoxes,
+        //protected internal virtual Task SendNotifications(ChargingStation               ChargingStation,
+        //                                                  IEnumerable<ChargingStation>  ParentChargingStationes,
         //                                                  NotificationMessageType    MessageType,
         //                                                  EventTracking_Id           EventTrackingId   = null,
         //                                                  User_Id?                   CurrentUserId     = null)
 
-        //    => SendNotifications(ChargeBox,
-        //                         ParentChargeBoxes,
+        //    => SendNotifications(ChargingStation,
+        //                         ParentChargingStationes,
         //                         new NotificationMessageType[] { MessageType },
         //                         EventTrackingId,
         //                         CurrentUserId);
@@ -12376,23 +12387,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         ///// <summary>
         ///// Send chargeBox notifications.
         ///// </summary>
-        ///// <param name="ChargeBox">The charging station.</param>
-        ///// <param name="ParentChargeBoxes">The enumeration of parent charging stationes.</param>
+        ///// <param name="ChargingStation">The charging station.</param>
+        ///// <param name="ParentChargingStationes">The enumeration of parent charging stationes.</param>
         ///// <param name="MessageTypes">The user notifications.</param>
         ///// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         ///// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        //protected internal async virtual Task SendNotifications(ChargeBox                          ChargeBox,
-        //                                                        IEnumerable<ChargeBox>             ParentChargeBoxes,
+        //protected internal async virtual Task SendNotifications(ChargingStation                          ChargingStation,
+        //                                                        IEnumerable<ChargingStation>             ParentChargingStationes,
         //                                                        IEnumerable<NotificationMessageType>  MessageTypes,
         //                                                        EventTracking_Id                      EventTrackingId   = null,
         //                                                        User_Id?                              CurrentUserId     = null)
         //{
 
-        //    if (ChargeBox is null)
-        //        throw new ArgumentNullException(nameof(ChargeBox),         "The given chargeBox must not be null or empty!");
+        //    if (ChargingStation is null)
+        //        throw new ArgumentNullException(nameof(ChargingStation),         "The given chargeBox must not be null or empty!");
 
-        //    if (ParentChargeBoxes is null)
-        //        ParentChargeBoxes = new ChargeBox[0];
+        //    if (ParentChargingStationes is null)
+        //        ParentChargingStationes = new ChargingStation[0];
 
         //    var messageTypesHash = new HashSet<NotificationMessageType>(MessageTypes.Where(messageType => !messageType.IsNullOrEmpty));
 
@@ -12403,7 +12414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //    //    messageTypesHash.Add(addUser_MessageType);
 
         //    //if (messageTypesHash.Contains(addOrUpdateUser_MessageType))
-        //    //    messageTypesHash.Add(OldChargeBox == null
+        //    //    messageTypesHash.Add(OldChargingStation == null
         //    //                           ? addUser_MessageType
         //    //                           : updateUser_MessageType);
 
@@ -12420,16 +12431,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //            try
         //            {
 
-        //                var AllTelegramNotifications  = ParentChargeBoxes.
-        //                                                    SelectMany(parent => parent.User2ChargeBoxEdges).
-        //                                                    SelectMany(edge   => edge.Source.GetNotificationsOf<TelegramNotification>(deleteChargeBox_MessageType)).
+        //                var AllTelegramNotifications  = ParentChargingStationes.
+        //                                                    SelectMany(parent => parent.User2ChargingStationEdges).
+        //                                                    SelectMany(edge   => edge.Source.GetNotificationsOf<TelegramNotification>(deleteChargingStation_MessageType)).
         //                                                    ToSafeHashSet();
 
         //                if (AllTelegramNotifications.SafeAny())
         //                {
 
-        //                    if (messageTypes.Contains(deleteChargeBox_MessageType))
-        //                        await TelegramClient.SendTelegrams(ChargeBoxHTMLInfo(ChargeBox) + " has been deleted.",
+        //                    if (messageTypes.Contains(deleteChargingStation_MessageType))
+        //                        await TelegramClient.SendTelegrams(ChargingStationHTMLInfo(ChargingStation) + " has been deleted.",
         //                                                           AllTelegramNotifications.Select(TelegramNotification => TelegramNotification.Username),
         //                                                           Telegram.Bot.Types.Enums.ParseMode.Html);
 
@@ -12449,16 +12460,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //        try
         //        {
 
-        //            var AllSMSNotifications = ParentChargeBoxes.
-        //                                          SelectMany(parent => parent.User2ChargeBoxEdges).
-        //                                          SelectMany(edge   => edge.Source.GetNotificationsOf<SMSNotification>(deleteChargeBox_MessageType)).
+        //            var AllSMSNotifications = ParentChargingStationes.
+        //                                          SelectMany(parent => parent.User2ChargingStationEdges).
+        //                                          SelectMany(edge   => edge.Source.GetNotificationsOf<SMSNotification>(deleteChargingStation_MessageType)).
         //                                          ToSafeHashSet();
 
         //            if (AllSMSNotifications.SafeAny())
         //            {
 
-        //                if (messageTypes.Contains(deleteChargeBox_MessageType))
-        //                    SendSMS(String.Concat("ChargeBox '", ChargeBox.Name.FirstText(), "' has been deleted."),
+        //                if (messageTypes.Contains(deleteChargingStation_MessageType))
+        //                    SendSMS(String.Concat("ChargingStation '", ChargingStation.Name.FirstText(), "' has been deleted."),
         //                            AllSMSNotifications.Select(smsPhoneNumber => smsPhoneNumber.PhoneNumber.ToString()).ToArray(),
         //                            SMSSenderName);
 
@@ -12477,19 +12488,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //        try
         //        {
 
-        //            var AllHTTPSNotifications = ParentChargeBoxes.
-        //                                            SelectMany(parent => parent.User2ChargeBoxEdges).
-        //                                            SelectMany(edge   => edge.Source.GetNotificationsOf<HTTPSNotification>(deleteChargeBox_MessageType)).
+        //            var AllHTTPSNotifications = ParentChargingStationes.
+        //                                            SelectMany(parent => parent.User2ChargingStationEdges).
+        //                                            SelectMany(edge   => edge.Source.GetNotificationsOf<HTTPSNotification>(deleteChargingStation_MessageType)).
         //                                            ToSafeHashSet();
 
         //            if (AllHTTPSNotifications.SafeAny())
         //            {
 
-        //                if (messageTypes.Contains(deleteChargeBox_MessageType))
+        //                if (messageTypes.Contains(deleteChargingStation_MessageType))
         //                    await SendHTTPSNotifications(AllHTTPSNotifications,
         //                                                 new JObject(
         //                                                     new JProperty("chargeBoxDeleted",
-        //                                                         ChargeBox.ToJSON()
+        //                                                         ChargingStation.ToJSON()
         //                                                     ),
         //                                                     new JProperty("timestamp", Timestamp.Now.ToIso8601())
         //                                                 ));
@@ -12511,29 +12522,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         //            try
         //            {
 
-        //                var AllEMailNotifications = ParentChargeBoxes.
-        //                                                SelectMany(parent => parent.User2ChargeBoxEdges).
-        //                                                SelectMany(edge   => edge.Source.GetNotificationsOf<EMailNotification>(deleteChargeBox_MessageType)).
+        //                var AllEMailNotifications = ParentChargingStationes.
+        //                                                SelectMany(parent => parent.User2ChargingStationEdges).
+        //                                                SelectMany(edge   => edge.Source.GetNotificationsOf<EMailNotification>(deleteChargingStation_MessageType)).
         //                                                ToSafeHashSet();
 
         //                if (AllEMailNotifications.SafeAny())
         //                {
 
-        //                    if (messageTypes.Contains(deleteChargeBox_MessageType))
+        //                    if (messageTypes.Contains(deleteChargingStation_MessageType))
         //                        await SMTPClient.Send(
         //                             new HTMLEMailBuilder() {
 
         //                                 From           = Robot.EMail,
         //                                 To             = EMailAddressListBuilder.Create(EMailAddressList.Create(AllEMailNotifications.Select(emailnotification => emailnotification.EMailAddress))),
         //                                 Passphrase     = APIPassphrase,
-        //                                 Subject        = ChargeBoxTextInfo(ChargeBox) + " has been deleted",
+        //                                 Subject        = ChargingStationTextInfo(ChargingStation) + " has been deleted",
 
         //                                 HTMLText       = String.Concat(HTMLEMailHeader(ExternalDNSName, BasePath, EMailType.Notification),
-        //                                                                ChargeBoxHTMLInfo(ChargeBox) + " has been deleted.<br />",
+        //                                                                ChargingStationHTMLInfo(ChargingStation) + " has been deleted.<br />",
         //                                                                HTMLEMailFooter(ExternalDNSName, BasePath, EMailType.Notification)),
 
         //                                 PlainText      = String.Concat(TextEMailHeader(ExternalDNSName, BasePath, EMailType.Notification),
-        //                                                                ChargeBoxTextInfo(ChargeBox) + " has been deleted.\r\n",
+        //                                                                ChargingStationTextInfo(ChargingStation) + " has been deleted.\r\n",
         //                                                                TextEMailFooter(ExternalDNSName, BasePath, EMailType.Notification)),
 
         //                                 SecurityLevel  = EMailSecurity.autosign
@@ -12557,9 +12568,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (protected internal) GetChargeBoxSerializator (Request, ChargeBox)
+        #region (protected internal) GetChargingStationSerializator (Request, ChargingStation)
 
-        protected internal ChargeBoxToJSONDelegate GetChargeBoxSerializator(HTTPRequest  Request,
+        protected internal ChargingStationToJSONDelegate GetChargingStationSerializator(HTTPRequest  Request,
                                                                             User         User)
         {
 
@@ -12583,39 +12594,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region AddChargeBox           (ChargeBox, OnAdded = null, ...)
+        #region AddChargingStation           (ChargingStation, OnAdded = null, ...)
 
         /// <summary>
         /// A delegate called whenever a charging station was added.
         /// </summary>
         /// <param name="Timestamp">The timestamp when the chargeBox was added.</param>
-        /// <param name="ChargeBox">The added charging station.</param>
+        /// <param name="ChargingStation">The added charging station.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public delegate Task OnChargeBoxAddedDelegate(DateTime           Timestamp,
-                                                      ChargeBox          ChargeBox,
+        public delegate Task OnChargingStationAddedDelegate(DateTime           Timestamp,
+                                                      CSMS.ChargingStation          ChargingStation,
                                                       EventTracking_Id?  EventTrackingId   = null,
                                                       User_Id?           CurrentUserId     = null);
 
         /// <summary>
         /// An event fired whenever a charging station was added.
         /// </summary>
-        public event OnChargeBoxAddedDelegate? OnChargeBoxAdded;
+        public event OnChargingStationAddedDelegate? OnChargingStationAdded;
 
 
-        #region (protected internal) _AddChargeBox(ChargeBox, OnAdded = null, ...)
+        #region (protected internal) _AddChargingStation(ChargingStation, OnAdded = null, ...)
 
         /// <summary>
         /// Add the given chargeBox to the API.
         /// </summary>
-        /// <param name="ChargeBox">A new chargeBox to be added to this API.</param>
+        /// <param name="ChargingStation">A new chargeBox to be added to this API.</param>
         /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        protected internal async Task<AddChargeBoxResult>
+        protected internal async Task<AddChargingStationResult>
 
-            _AddChargeBox(ChargeBox                             ChargeBox,
-                          Action<ChargeBox, EventTracking_Id>?  OnAdded           = null,
+            _AddChargingStation(CSMS.ChargingStation                             ChargingStation,
+                          Action<CSMS.ChargingStation, EventTracking_Id>?  OnAdded           = null,
                           EventTracking_Id?                     EventTrackingId   = null,
                           User_Id?                              CurrentUserId     = null)
 
@@ -12623,69 +12634,69 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
-            if (ChargeBox.API is not null && ChargeBox.API != this)
-                return AddChargeBoxResult.ArgumentError(
-                           ChargeBox,
+            if (ChargingStation.API is not null && ChargingStation.API != this)
+                return AddChargingStationResult.ArgumentError(
+                           ChargingStation,
                            "The given chargeBox is already attached to another API!".ToI18NString(),
                            eventTrackingId,
                            Id,
                            this
                        );
 
-            if (chargeBoxes.ContainsKey(ChargeBox.Id))
-                return AddChargeBoxResult.ArgumentError(
-                           ChargeBox,
-                           $"ChargeBox identification '{ChargeBox.Id}' already exists!".ToI18NString(),
+            if (chargeBoxes.ContainsKey(ChargingStation.Id))
+                return AddChargingStationResult.ArgumentError(
+                           ChargingStation,
+                           $"ChargingStation identification '{ChargingStation.Id}' already exists!".ToI18NString(),
                            eventTrackingId,
                            Id,
                            this
                        );
 
-            //if (ChargeBox.Id.Length < MinChargeBoxIdLength)
-            //    return AddChargeBoxResult.ArgumentError(ChargeBox,
+            //if (ChargingStation.Id.Length < MinChargingStationIdLength)
+            //    return AddChargingStationResult.ArgumentError(ChargingStation,
             //                                               eventTrackingId,
-            //                                               nameof(ChargeBox),
-            //                                               "ChargeBox identification '" + ChargeBox.Id + "' is too short!");
+            //                                               nameof(ChargingStation),
+            //                                               "ChargingStation identification '" + ChargingStation.Id + "' is too short!");
 
-            //if (ChargeBox.Name.IsNullOrEmpty() || ChargeBox.Name.IsNullOrEmpty())
-            //    return AddChargeBoxResult.ArgumentError(ChargeBox,
+            //if (ChargingStation.Name.IsNullOrEmpty() || ChargingStation.Name.IsNullOrEmpty())
+            //    return AddChargingStationResult.ArgumentError(ChargingStation,
             //                                               eventTrackingId,
-            //                                               nameof(ChargeBox),
+            //                                               nameof(ChargingStation),
             //                                               "The given chargeBox name must not be null!");
 
-            //if (ChargeBox.Name.Length < MinChargeBoxNameLength)
-            //    return AddChargeBoxResult.ArgumentError(ChargeBox,
-            //                                       nameof(ChargeBox),
-            //                                       "ChargeBox name '" + ChargeBox.Name + "' is too short!");
+            //if (ChargingStation.Name.Length < MinChargingStationNameLength)
+            //    return AddChargingStationResult.ArgumentError(ChargingStation,
+            //                                       nameof(ChargingStation),
+            //                                       "ChargingStation name '" + ChargingStation.Name + "' is too short!");
 
-            ChargeBox.API = this;
+            ChargingStation.API = this;
 
 
-            //await WriteToDatabaseFile(addChargeBox_MessageType,
-            //                          ChargeBox.ToJSON(false, true),
+            //await WriteToDatabaseFile(addChargingStation_MessageType,
+            //                          ChargingStation.ToJSON(false, true),
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            chargeBoxes.TryAdd(ChargeBox.Id, ChargeBox);
+            chargeBoxes.TryAdd(ChargingStation.Id, ChargingStation);
 
-            OnAdded?.Invoke(ChargeBox,
+            OnAdded?.Invoke(ChargingStation,
                             eventTrackingId);
 
-            var OnChargeBoxAddedLocal = OnChargeBoxAdded;
-            if (OnChargeBoxAddedLocal is not null)
-                await OnChargeBoxAddedLocal.Invoke(Timestamp.Now,
-                                                   ChargeBox,
+            var OnChargingStationAddedLocal = OnChargingStationAdded;
+            if (OnChargingStationAddedLocal is not null)
+                await OnChargingStationAddedLocal.Invoke(Timestamp.Now,
+                                                   ChargingStation,
                                                    eventTrackingId,
                                                    CurrentUserId);
 
-            //await SendNotifications(ChargeBox,
-            //                        addChargeBox_MessageType,
+            //await SendNotifications(ChargingStation,
+            //                        addChargingStation_MessageType,
             //                        null,
             //                        eventTrackingId,
             //                        CurrentUserId);
 
-            return AddChargeBoxResult.Success(
-                       ChargeBox,
+            return AddChargingStationResult.Success(
+                       ChargingStation,
                        eventTrackingId,
                        Id,
                        this
@@ -12695,19 +12706,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region AddChargeBox                      (ChargeBox, OnAdded = null, ...)
+        #region AddChargingStation                      (ChargingStation, OnAdded = null, ...)
 
         /// <summary>
         /// Add the given chargeBox and add him/her to the given charging station.
         /// </summary>
-        /// <param name="ChargeBox">A new charging station.</param>
+        /// <param name="ChargingStation">A new charging station.</param>
         /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public async Task<AddChargeBoxResult>
+        public async Task<AddChargingStationResult>
 
-            AddChargeBox(ChargeBox                             ChargeBox,
-                         Action<ChargeBox, EventTracking_Id>?  OnAdded           = null,
+            AddChargingStation(CSMS.ChargingStation                             ChargingStation,
+                         Action<CSMS.ChargingStation, EventTracking_Id>?  OnAdded           = null,
                          EventTracking_Id?                     EventTrackingId   = null,
                          User_Id?                              CurrentUserId     = null)
 
@@ -12720,7 +12731,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 try
                 {
 
-                    return await _AddChargeBox(ChargeBox,
+                    return await _AddChargingStation(ChargingStation,
                                                OnAdded,
                                                eventTrackingId,
                                                CurrentUserId);
@@ -12729,8 +12740,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 catch (Exception e)
                 {
 
-                    return AddChargeBoxResult.Error(
-                               ChargeBox,
+                    return AddChargingStationResult.Error(
+                               ChargingStation,
                                e,
                                eventTrackingId,
                                Id,
@@ -12750,8 +12761,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             }
 
-            return AddChargeBoxResult.LockTimeout(
-                       ChargeBox,
+            return AddChargingStationResult.LockTimeout(
+                       ChargingStation,
                        SemaphoreSlimTimeout,
                        eventTrackingId,
                        Id,
@@ -12764,21 +12775,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region AddChargeBoxIfNotExists(ChargeBox, OnAdded = null, ...)
+        #region AddChargingStationIfNotExists(ChargingStation, OnAdded = null, ...)
 
-        #region (protected internal) _AddChargeBoxIfNotExists(ChargeBox, OnAdded = null, ...)
+        #region (protected internal) _AddChargingStationIfNotExists(ChargingStation, OnAdded = null, ...)
 
         /// <summary>
         /// When it has not been created before, add the given chargeBox to the API.
         /// </summary>
-        /// <param name="ChargeBox">A new chargeBox to be added to this API.</param>
+        /// <param name="ChargingStation">A new chargeBox to be added to this API.</param>
         /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        protected internal async Task<AddChargeBoxResult>
+        protected internal async Task<AddChargingStationResult>
 
-            _AddChargeBoxIfNotExists(ChargeBox                             ChargeBox,
-                                     Action<ChargeBox, EventTracking_Id>?  OnAdded           = null,
+            _AddChargingStationIfNotExists(CSMS.ChargingStation                             ChargingStation,
+                                     Action<CSMS.ChargingStation, EventTracking_Id>?  OnAdded           = null,
                                      EventTracking_Id?                     EventTrackingId   = null,
                                      User_Id?                              CurrentUserId     = null)
 
@@ -12786,68 +12797,68 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
-            if (ChargeBox.API != null && ChargeBox.API != this)
-                return AddChargeBoxResult.ArgumentError(
-                           ChargeBox,
+            if (ChargingStation.API != null && ChargingStation.API != this)
+                return AddChargingStationResult.ArgumentError(
+                           ChargingStation,
                            "The given chargeBox is already attached to another API!".ToI18NString(),
                            eventTrackingId,
                            Id,
                            this
                        );
 
-            if (chargeBoxes.ContainsKey(ChargeBox.Id))
-                return AddChargeBoxResult.NoOperation(
-                           chargeBoxes[ChargeBox.Id],
+            if (chargeBoxes.ContainsKey(ChargingStation.Id))
+                return AddChargingStationResult.NoOperation(
+                           chargeBoxes[ChargingStation.Id],
                            eventTrackingId,
                            Id,
                            this
                        );
 
-            //if (ChargeBox.Id.Length < MinChargeBoxIdLength)
-            //    return AddChargeBoxResult.ArgumentError(ChargeBox,
+            //if (ChargingStation.Id.Length < MinChargingStationIdLength)
+            //    return AddChargingStationResult.ArgumentError(ChargingStation,
             //                                                          eventTrackingId,
-            //                                                          nameof(ChargeBox),
-            //                                                          "ChargeBox identification '" + ChargeBox.Id + "' is too short!");
+            //                                                          nameof(ChargingStation),
+            //                                                          "ChargingStation identification '" + ChargingStation.Id + "' is too short!");
 
-            //if (ChargeBox.Name.IsNullOrEmpty() || ChargeBox.Name.IsNullOrEmpty())
-            //    return AddChargeBoxResult.ArgumentError(ChargeBox,
+            //if (ChargingStation.Name.IsNullOrEmpty() || ChargingStation.Name.IsNullOrEmpty())
+            //    return AddChargingStationResult.ArgumentError(ChargingStation,
             //                                                          eventTrackingId,
-            //                                                          nameof(ChargeBox),
+            //                                                          nameof(ChargingStation),
             //                                                          "The given chargeBox name must not be null!");
 
-            //if (ChargeBox.Name.Length < MinChargeBoxNameLength)
-            //    return AddChargeBoxResult.ArgumentError(ChargeBox,
-            //                                                  nameof(ChargeBox),
-            //                                                  "ChargeBox name '" + ChargeBox.Name + "' is too short!");
+            //if (ChargingStation.Name.Length < MinChargingStationNameLength)
+            //    return AddChargingStationResult.ArgumentError(ChargingStation,
+            //                                                  nameof(ChargingStation),
+            //                                                  "ChargingStation name '" + ChargingStation.Name + "' is too short!");
 
-            ChargeBox.API = this;
+            ChargingStation.API = this;
 
 
-            //await WriteToDatabaseFile(addChargeBoxIfNotExists_MessageType,
-            //                          ChargeBox.ToJSON(false, true),
+            //await WriteToDatabaseFile(addChargingStationIfNotExists_MessageType,
+            //                          ChargingStation.ToJSON(false, true),
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            chargeBoxes.TryAdd(ChargeBox.Id, ChargeBox);
+            chargeBoxes.TryAdd(ChargingStation.Id, ChargingStation);
 
-            OnAdded?.Invoke(ChargeBox,
+            OnAdded?.Invoke(ChargingStation,
                             eventTrackingId);
 
-            var OnChargeBoxAddedLocal = OnChargeBoxAdded;
-            if (OnChargeBoxAddedLocal != null)
-                await OnChargeBoxAddedLocal.Invoke(Timestamp.Now,
-                                                   ChargeBox,
+            var OnChargingStationAddedLocal = OnChargingStationAdded;
+            if (OnChargingStationAddedLocal != null)
+                await OnChargingStationAddedLocal.Invoke(Timestamp.Now,
+                                                   ChargingStation,
                                                    eventTrackingId,
                                                    CurrentUserId);
 
-            //await SendNotifications(ChargeBox,
-            //                        addChargeBoxIfNotExists_MessageType,
+            //await SendNotifications(ChargingStation,
+            //                        addChargingStationIfNotExists_MessageType,
             //                        null,
             //                        eventTrackingId,
             //                        CurrentUserId);
 
-            return AddChargeBoxResult.Success(
-                       ChargeBox,
+            return AddChargingStationResult.Success(
+                       ChargingStation,
                        eventTrackingId,
                        Id,
                        this
@@ -12857,19 +12868,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region AddChargeBoxIfNotExists                      (ChargeBox, OnAdded = null, ...)
+        #region AddChargingStationIfNotExists                      (ChargingStation, OnAdded = null, ...)
 
         /// <summary>
         /// Add the given chargeBox and add him/her to the given charging station.
         /// </summary>
-        /// <param name="ChargeBox">A new charging station.</param>
+        /// <param name="ChargingStation">A new charging station.</param>
         /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public async Task<AddChargeBoxResult>
+        public async Task<AddChargingStationResult>
 
-            AddChargeBoxIfNotExists(ChargeBox                             ChargeBox,
-                                    Action<ChargeBox, EventTracking_Id>?  OnAdded           = null,
+            AddChargingStationIfNotExists(CSMS.ChargingStation                             ChargingStation,
+                                    Action<CSMS.ChargingStation, EventTracking_Id>?  OnAdded           = null,
                                     EventTracking_Id?                     EventTrackingId   = null,
                                     User_Id?                              CurrentUserId     = null)
 
@@ -12882,7 +12893,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 try
                 {
 
-                    return await _AddChargeBoxIfNotExists(ChargeBox,
+                    return await _AddChargingStationIfNotExists(ChargingStation,
                                                           OnAdded,
                                                           eventTrackingId,
                                                           CurrentUserId);
@@ -12891,8 +12902,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 catch (Exception e)
                 {
 
-                    return AddChargeBoxResult.Error(
-                               ChargeBox,
+                    return AddChargingStationResult.Error(
+                               ChargingStation,
                                e,
                                eventTrackingId,
                                Id,
@@ -12912,8 +12923,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             }
 
-            return AddChargeBoxResult.LockTimeout(
-                       ChargeBox,
+            return AddChargingStationResult.LockTimeout(
+                       ChargingStation,
                        SemaphoreSlimTimeout,
                        eventTrackingId,
                        Id,
@@ -12926,23 +12937,23 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region AddOrUpdateChargeBox   (ChargeBox, OnAdded = null, OnUpdated = null, ...)
+        #region AddOrUpdateChargingStation   (ChargingStation, OnAdded = null, OnUpdated = null, ...)
 
-        #region (protected internal) _AddOrUpdateChargeBox(ChargeBox, OnAdded = null, OnUpdated = null, ...)
+        #region (protected internal) _AddOrUpdateChargingStation(ChargingStation, OnAdded = null, OnUpdated = null, ...)
 
         /// <summary>
         /// Add or update the given chargeBox to/within the API.
         /// </summary>
-        /// <param name="ChargeBox">A charging station.</param>
+        /// <param name="ChargingStation">A charging station.</param>
         /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        protected internal async Task<AddOrUpdateChargeBoxResult>
+        protected internal async Task<AddOrUpdateChargingStationResult>
 
-            _AddOrUpdateChargeBox(ChargeBox                             ChargeBox,
-                                  Action<ChargeBox, EventTracking_Id>?  OnAdded           = null,
-                                  Action<ChargeBox, EventTracking_Id>?  OnUpdated         = null,
+            _AddOrUpdateChargingStation(CSMS.ChargingStation                             ChargingStation,
+                                  Action<CSMS.ChargingStation, EventTracking_Id>?  OnAdded           = null,
+                                  Action<CSMS.ChargingStation, EventTracking_Id>?  OnUpdated         = null,
                                   EventTracking_Id?                     EventTrackingId   = null,
                                   User_Id?                              CurrentUserId     = null)
 
@@ -12950,70 +12961,70 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
-            if (ChargeBox.API != null && ChargeBox.API != this)
-                return AddOrUpdateChargeBoxResult.ArgumentError(
-                           ChargeBox,
+            if (ChargingStation.API != null && ChargingStation.API != this)
+                return AddOrUpdateChargingStationResult.ArgumentError(
+                           ChargingStation,
                            "The given chargeBox is already attached to another API!".ToI18NString(),
                            eventTrackingId,
                            Id,
                            this
                        );
 
-            //if (ChargeBox.Id.Length < MinChargeBoxIdLength)
-            //    return AddOrUpdateChargeBoxResult.ArgumentError(ChargeBox,
+            //if (ChargingStation.Id.Length < MinChargingStationIdLength)
+            //    return AddOrUpdateChargingStationResult.ArgumentError(ChargingStation,
             //                                                       eventTrackingId,
-            //                                                       nameof(ChargeBox),
-            //                                                       "The given chargeBox identification '" + ChargeBox.Id + "' is too short!");
+            //                                                       nameof(ChargingStation),
+            //                                                       "The given chargeBox identification '" + ChargingStation.Id + "' is too short!");
 
-            //if (ChargeBox.Name.IsNullOrEmpty() || ChargeBox.Name.IsNullOrEmpty())
-            //    return AddOrUpdateChargeBoxResult.ArgumentError(ChargeBox,
+            //if (ChargingStation.Name.IsNullOrEmpty() || ChargingStation.Name.IsNullOrEmpty())
+            //    return AddOrUpdateChargingStationResult.ArgumentError(ChargingStation,
             //                                                       eventTrackingId,
-            //                                                       nameof(ChargeBox),
+            //                                                       nameof(ChargingStation),
             //                                                       "The given chargeBox name must not be null!");
 
-            //if (ChargeBox.Name.Length < MinChargeBoxNameLength)
-            //    return AddOrUpdateChargeBoxResult.ArgumentError(ChargeBox,
+            //if (ChargingStation.Name.Length < MinChargingStationNameLength)
+            //    return AddOrUpdateChargingStationResult.ArgumentError(ChargingStation,
             //                                               eventTrackingId,
-            //                                               nameof(ChargeBox),
-            //                                               "ChargeBox name '" + ChargeBox.Name + "' is too short!");
+            //                                               nameof(ChargingStation),
+            //                                               "ChargingStation name '" + ChargingStation.Name + "' is too short!");
 
-            ChargeBox.API = this;
+            ChargingStation.API = this;
 
 
-            //await WriteToDatabaseFile(addOrUpdateChargeBox_MessageType,
-            //                          ChargeBox.ToJSON(false, true),
+            //await WriteToDatabaseFile(addOrUpdateChargingStation_MessageType,
+            //                          ChargingStation.ToJSON(false, true),
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            if (chargeBoxes.TryGetValue(ChargeBox.Id, out var OldChargeBox))
+            if (chargeBoxes.TryGetValue(ChargingStation.Id, out var OldChargingStation))
             {
-                chargeBoxes.TryRemove(OldChargeBox.Id, out _);
-                ChargeBox.CopyAllLinkedDataFromBase(OldChargeBox);
+                chargeBoxes.TryRemove(OldChargingStation.Id, out _);
+                ChargingStation.CopyAllLinkedDataFromBase(OldChargingStation);
             }
 
-            chargeBoxes.TryAdd(ChargeBox.Id, ChargeBox);
+            chargeBoxes.TryAdd(ChargingStation.Id, ChargingStation);
 
-            if (OldChargeBox is null)
+            if (OldChargingStation is null)
             {
 
-                OnAdded?.Invoke(ChargeBox,
+                OnAdded?.Invoke(ChargingStation,
                                 eventTrackingId);
 
-                var OnChargeBoxAddedLocal = OnChargeBoxAdded;
-                if (OnChargeBoxAddedLocal != null)
-                    await OnChargeBoxAddedLocal.Invoke(Timestamp.Now,
-                                                       ChargeBox,
+                var OnChargingStationAddedLocal = OnChargingStationAdded;
+                if (OnChargingStationAddedLocal != null)
+                    await OnChargingStationAddedLocal.Invoke(Timestamp.Now,
+                                                       ChargingStation,
                                                        eventTrackingId,
                                                        CurrentUserId);
 
-                //await SendNotifications(ChargeBox,
-                //                        addChargeBox_MessageType,
+                //await SendNotifications(ChargingStation,
+                //                        addChargingStation_MessageType,
                 //                        null,
                 //                        eventTrackingId,
                 //                        CurrentUserId);
 
-                return AddOrUpdateChargeBoxResult.Added(
-                           ChargeBox,
+                return AddOrUpdateChargingStationResult.Added(
+                           ChargingStation,
                            eventTrackingId,
                            Id,
                            this
@@ -13021,25 +13032,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             }
 
-            OnUpdated?.Invoke(ChargeBox,
+            OnUpdated?.Invoke(ChargingStation,
                               eventTrackingId);
 
-            var OnChargeBoxUpdatedLocal = OnChargeBoxUpdated;
-            if (OnChargeBoxUpdatedLocal != null)
-                await OnChargeBoxUpdatedLocal.Invoke(Timestamp.Now,
-                                                        ChargeBox,
-                                                        OldChargeBox,
+            var OnChargingStationUpdatedLocal = OnChargingStationUpdated;
+            if (OnChargingStationUpdatedLocal != null)
+                await OnChargingStationUpdatedLocal.Invoke(Timestamp.Now,
+                                                        ChargingStation,
+                                                        OldChargingStation,
                                                         eventTrackingId,
                                                         CurrentUserId);
 
-            //await SendNotifications(ChargeBox,
-            //                        updateChargeBox_MessageType,
-            //                        OldChargeBox,
+            //await SendNotifications(ChargingStation,
+            //                        updateChargingStation_MessageType,
+            //                        OldChargingStation,
             //                        eventTrackingId,
             //                        CurrentUserId);
 
-            return AddOrUpdateChargeBoxResult.Updated(
-                       ChargeBox,
+            return AddOrUpdateChargingStationResult.Updated(
+                       ChargingStation,
                        eventTrackingId,
                        Id,
                        this
@@ -13049,21 +13060,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region AddOrUpdateChargeBox                      (ChargeBox, OnAdded = null, OnUpdated = null, ...)
+        #region AddOrUpdateChargingStation                      (ChargingStation, OnAdded = null, OnUpdated = null, ...)
 
         /// <summary>
         /// Add or update the given chargeBox to/within the API.
         /// </summary>
-        /// <param name="ChargeBox">A charging station.</param>
+        /// <param name="ChargingStation">A charging station.</param>
         /// <param name="OnAdded">A delegate run whenever the chargeBox has been added successfully.</param>
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public async Task<AddOrUpdateChargeBoxResult>
+        public async Task<AddOrUpdateChargingStationResult>
 
-            AddOrUpdateChargeBox(ChargeBox                             ChargeBox,
-                                 Action<ChargeBox, EventTracking_Id>?  OnAdded           = null,
-                                 Action<ChargeBox, EventTracking_Id>?  OnUpdated         = null,
+            AddOrUpdateChargingStation(CSMS.ChargingStation                             ChargingStation,
+                                 Action<CSMS.ChargingStation, EventTracking_Id>?  OnAdded           = null,
+                                 Action<CSMS.ChargingStation, EventTracking_Id>?  OnUpdated         = null,
                                  EventTracking_Id?                     EventTrackingId   = null,
                                  User_Id?                              CurrentUserId     = null)
 
@@ -13076,7 +13087,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 try
                 {
 
-                    return await _AddOrUpdateChargeBox(ChargeBox,
+                    return await _AddOrUpdateChargingStation(ChargingStation,
                                                        OnAdded,
                                                        OnUpdated,
                                                        eventTrackingId,
@@ -13086,8 +13097,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 catch (Exception e)
                 {
 
-                    return AddOrUpdateChargeBoxResult.Error(
-                               ChargeBox,
+                    return AddOrUpdateChargingStationResult.Error(
+                               ChargingStation,
                                e,
                                eventTrackingId,
                                Id,
@@ -13106,8 +13117,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
             }
 
-            return AddOrUpdateChargeBoxResult.LockTimeout(
-                       ChargeBox,
+            return AddOrUpdateChargingStationResult.LockTimeout(
+                       ChargingStation,
                        SemaphoreSlimTimeout,
                        eventTrackingId,
                        Id,
@@ -13120,41 +13131,41 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region UpdateChargeBox        (ChargeBox,                 OnUpdated = null, ...)
+        #region UpdateChargingStation        (ChargingStation,                 OnUpdated = null, ...)
 
         /// <summary>
         /// A delegate called whenever a charging station was updated.
         /// </summary>
         /// <param name="Timestamp">The timestamp when the chargeBox was updated.</param>
-        /// <param name="ChargeBox">The updated charging station.</param>
-        /// <param name="OldChargeBox">The old charging station.</param>
+        /// <param name="ChargingStation">The updated charging station.</param>
+        /// <param name="OldChargingStation">The old charging station.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public delegate Task OnChargeBoxUpdatedDelegate(DateTime           Timestamp,
-                                                        ChargeBox          ChargeBox,
-                                                        ChargeBox          OldChargeBox,
+        public delegate Task OnChargingStationUpdatedDelegate(DateTime           Timestamp,
+                                                        CSMS.ChargingStation          ChargingStation,
+                                                        CSMS.ChargingStation          OldChargingStation,
                                                         EventTracking_Id?  EventTrackingId   = null,
                                                         User_Id?           CurrentUserId     = null);
 
         /// <summary>
         /// An event fired whenever a charging station was updated.
         /// </summary>
-        public event OnChargeBoxUpdatedDelegate? OnChargeBoxUpdated;
+        public event OnChargingStationUpdatedDelegate? OnChargingStationUpdated;
 
 
-        #region (protected internal) _UpdateChargeBox(ChargeBox,                 OnUpdated = null, ...)
+        #region (protected internal) _UpdateChargingStation(ChargingStation,                 OnUpdated = null, ...)
 
         /// <summary>
         /// Update the given chargeBox to/within the API.
         /// </summary>
-        /// <param name="ChargeBox">A charging station.</param>
+        /// <param name="ChargingStation">A charging station.</param>
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        protected internal async Task<UpdateChargeBoxResult>
+        protected internal async Task<UpdateChargingStationResult>
 
-            _UpdateChargeBox(ChargeBox                             ChargeBox,
-                             Action<ChargeBox, EventTracking_Id>?  OnUpdated         = null,
+            _UpdateChargingStation(CSMS.ChargingStation                             ChargingStation,
+                             Action<CSMS.ChargingStation, EventTracking_Id>?  OnUpdated         = null,
                              EventTracking_Id?                     EventTrackingId   = null,
                              User_Id?                              CurrentUserId     = null)
 
@@ -13162,55 +13173,55 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
-            if (!_TryGetChargeBox(ChargeBox.Id, out var OldChargeBox))
-                return UpdateChargeBoxResult.ArgumentError(
-                           ChargeBox,
-                           $"The given chargeBox '{ChargeBox.Id}' does not exists in this API!".ToI18NString(),
+            if (!_TryGetChargingStation(ChargingStation.Id, out var OldChargingStation))
+                return UpdateChargingStationResult.ArgumentError(
+                           ChargingStation,
+                           $"The given chargeBox '{ChargingStation.Id}' does not exists in this API!".ToI18NString(),
                            eventTrackingId,
                            Id,
                            this
                        );
 
-            if (ChargeBox.API != null && ChargeBox.API != this)
-                return UpdateChargeBoxResult.ArgumentError(
-                           ChargeBox,
+            if (ChargingStation.API != null && ChargingStation.API != this)
+                return UpdateChargingStationResult.ArgumentError(
+                           ChargingStation,
                            "The given chargeBox is already attached to another API!".ToI18NString(),
                            eventTrackingId,
                            Id,
                            this
                        );
 
-            ChargeBox.API = this;
+            ChargingStation.API = this;
 
 
-            //await WriteToDatabaseFile(updateChargeBox_MessageType,
-            //                          ChargeBox.ToJSON(),
+            //await WriteToDatabaseFile(updateChargingStation_MessageType,
+            //                          ChargingStation.ToJSON(),
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            chargeBoxes.TryRemove(OldChargeBox.Id, out _);
-            ChargeBox.CopyAllLinkedDataFromBase(OldChargeBox);
-            chargeBoxes.TryAdd(ChargeBox.Id, ChargeBox);
+            chargeBoxes.TryRemove(OldChargingStation.Id, out _);
+            ChargingStation.CopyAllLinkedDataFromBase(OldChargingStation);
+            chargeBoxes.TryAdd(ChargingStation.Id, ChargingStation);
 
-            OnUpdated?.Invoke(ChargeBox,
+            OnUpdated?.Invoke(ChargingStation,
                               eventTrackingId);
 
-            var OnChargeBoxUpdatedLocal = OnChargeBoxUpdated;
-            if (OnChargeBoxUpdatedLocal is not null)
-                await OnChargeBoxUpdatedLocal.Invoke(Timestamp.Now,
-                                                     ChargeBox,
-                                                     OldChargeBox,
+            var OnChargingStationUpdatedLocal = OnChargingStationUpdated;
+            if (OnChargingStationUpdatedLocal is not null)
+                await OnChargingStationUpdatedLocal.Invoke(Timestamp.Now,
+                                                     ChargingStation,
+                                                     OldChargingStation,
                                                      eventTrackingId,
                                                      CurrentUserId);
 
-            //await SendNotifications(ChargeBox,
-            //                        updateChargeBox_MessageType,
-            //                        OldChargeBox,
+            //await SendNotifications(ChargingStation,
+            //                        updateChargingStation_MessageType,
+            //                        OldChargingStation,
             //                        eventTrackingId,
             //                        CurrentUserId);
 
-            return UpdateChargeBoxResult.Success(
-                       ChargeBox,
+            return UpdateChargingStationResult.Success(
+                       ChargingStation,
                        eventTrackingId,
                        Id,
                        this
@@ -13220,19 +13231,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region UpdateChargeBox                      (ChargeBox,                 OnUpdated = null, ...)
+        #region UpdateChargingStation                      (ChargingStation,                 OnUpdated = null, ...)
 
         /// <summary>
         /// Update the given chargeBox to/within the API.
         /// </summary>
-        /// <param name="ChargeBox">A charging station.</param>
+        /// <param name="ChargingStation">A charging station.</param>
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public async Task<UpdateChargeBoxResult>
+        public async Task<UpdateChargingStationResult>
 
-            UpdateChargeBox(ChargeBox                             ChargeBox,
-                            Action<ChargeBox, EventTracking_Id>?  OnUpdated         = null,
+            UpdateChargingStation(CSMS.ChargingStation                             ChargingStation,
+                            Action<CSMS.ChargingStation, EventTracking_Id>?  OnUpdated         = null,
                             EventTracking_Id?                     EventTrackingId   = null,
                             User_Id?                              CurrentUserId     = null)
 
@@ -13245,7 +13256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 try
                 {
 
-                    return await _UpdateChargeBox(ChargeBox,
+                    return await _UpdateChargingStation(ChargingStation,
                                                   OnUpdated,
                                                   eventTrackingId,
                                                   CurrentUserId);
@@ -13254,8 +13265,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 catch (Exception e)
                 {
 
-                    return UpdateChargeBoxResult.Error(
-                               ChargeBox,
+                    return UpdateChargingStationResult.Error(
+                               ChargingStation,
                                e,
                                eventTrackingId,
                                Id,
@@ -13274,8 +13285,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
             }
 
-            return UpdateChargeBoxResult.LockTimeout(
-                       ChargeBox,
+            return UpdateChargingStationResult.LockTimeout(
+                       ChargingStation,
                        SemaphoreSlimTimeout,
                        eventTrackingId,
                        Id,
@@ -13287,21 +13298,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region (protected internal) _UpdateChargeBox(ChargeBox, UpdateDelegate, OnUpdated = null, ...)
+        #region (protected internal) _UpdateChargingStation(ChargingStation, UpdateDelegate, OnUpdated = null, ...)
 
         /// <summary>
         /// Update the given charging station.
         /// </summary>
-        /// <param name="ChargeBox">An charging station.</param>
+        /// <param name="ChargingStation">An charging station.</param>
         /// <param name="UpdateDelegate">A delegate to update the given charging station.</param>
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        protected internal async Task<UpdateChargeBoxResult>
+        protected internal async Task<UpdateChargingStationResult>
 
-            _UpdateChargeBox(ChargeBox                             ChargeBox,
-                             Action<ChargeBox.Builder>             UpdateDelegate,
-                             Action<ChargeBox, EventTracking_Id>?  OnUpdated         = null,
+            _UpdateChargingStation(CSMS.ChargingStation                             ChargingStation,
+                             Action<CSMS.ChargingStation.Builder>             UpdateDelegate,
+                             Action<CSMS.ChargingStation, EventTracking_Id>?  OnUpdated         = null,
                              EventTracking_Id?                     EventTrackingId   = null,
                              User_Id?                              CurrentUserId     = null)
 
@@ -13309,18 +13320,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
-            if (!_ChargeBoxExists(ChargeBox.Id))
-                return UpdateChargeBoxResult.ArgumentError(
-                           ChargeBox,
-                           $"The given chargeBox '{ChargeBox.Id}' does not exists in this API!".ToI18NString(),
+            if (!_ChargingStationExists(ChargingStation.Id))
+                return UpdateChargingStationResult.ArgumentError(
+                           ChargingStation,
+                           $"The given chargeBox '{ChargingStation.Id}' does not exists in this API!".ToI18NString(),
                            eventTrackingId,
                            Id,
                            this
                        );
 
-            if (ChargeBox.API != this)
-                return UpdateChargeBoxResult.ArgumentError(
-                           ChargeBox,
+            if (ChargingStation.API != this)
+                return UpdateChargingStationResult.ArgumentError(
+                           ChargingStation,
                            "The given chargeBox is not attached to this API!".ToI18NString(),
                            eventTrackingId,
                            Id,
@@ -13328,8 +13339,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        );
 
             if (UpdateDelegate is null)
-                return UpdateChargeBoxResult.ArgumentError(
-                           ChargeBox,
+                return UpdateChargingStationResult.ArgumentError(
+                           ChargingStation,
                            "The given update delegate must not be null!".ToI18NString(),
                            eventTrackingId,
                            Id,
@@ -13337,38 +13348,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        );
 
 
-            var builder = ChargeBox.ToBuilder();
+            var builder = ChargingStation.ToBuilder();
             UpdateDelegate(builder);
-            var updatedChargeBox = builder.ToImmutable;
+            var updatedChargingStation = builder.ToImmutable;
 
-            //await WriteToDatabaseFile(updateChargeBox_MessageType,
-            //                          updatedChargeBox.ToJSON(),
+            //await WriteToDatabaseFile(updateChargingStation_MessageType,
+            //                          updatedChargingStation.ToJSON(),
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            chargeBoxes.TryRemove(ChargeBox.Id, out _);
-            updatedChargeBox.CopyAllLinkedDataFromBase(ChargeBox);
-            chargeBoxes.TryAdd(updatedChargeBox.Id, updatedChargeBox);
+            chargeBoxes.TryRemove(ChargingStation.Id, out _);
+            updatedChargingStation.CopyAllLinkedDataFromBase(ChargingStation);
+            chargeBoxes.TryAdd(updatedChargingStation.Id, updatedChargingStation);
 
-            OnUpdated?.Invoke(updatedChargeBox,
+            OnUpdated?.Invoke(updatedChargingStation,
                               eventTrackingId);
 
-            var OnChargeBoxUpdatedLocal = OnChargeBoxUpdated;
-            if (OnChargeBoxUpdatedLocal is not null)
-                await OnChargeBoxUpdatedLocal.Invoke(Timestamp.Now,
-                                                     updatedChargeBox,
-                                                     ChargeBox,
+            var OnChargingStationUpdatedLocal = OnChargingStationUpdated;
+            if (OnChargingStationUpdatedLocal is not null)
+                await OnChargingStationUpdatedLocal.Invoke(Timestamp.Now,
+                                                     updatedChargingStation,
+                                                     ChargingStation,
                                                      eventTrackingId,
                                                      CurrentUserId);
 
-            //await SendNotifications(updatedChargeBox,
-            //                        updateChargeBox_MessageType,
-            //                        ChargeBox,
+            //await SendNotifications(updatedChargingStation,
+            //                        updateChargingStation_MessageType,
+            //                        ChargingStation,
             //                        eventTrackingId,
             //                        CurrentUserId);
 
-            return UpdateChargeBoxResult.Success(
-                       ChargeBox,
+            return UpdateChargingStationResult.Success(
+                       ChargingStation,
                        eventTrackingId,
                        Id,
                        this
@@ -13378,21 +13389,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region UpdateChargeBox                      (ChargeBox, UpdateDelegate, OnUpdated = null, ...)
+        #region UpdateChargingStation                      (ChargingStation, UpdateDelegate, OnUpdated = null, ...)
 
         /// <summary>
         /// Update the given charging station.
         /// </summary>
-        /// <param name="ChargeBox">An charging station.</param>
+        /// <param name="ChargingStation">An charging station.</param>
         /// <param name="UpdateDelegate">A delegate to update the given charging station.</param>
         /// <param name="OnUpdated">A delegate run whenever the chargeBox has been updated successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional chargeBox identification initiating this command/request.</param>
-        public async Task<UpdateChargeBoxResult>
+        public async Task<UpdateChargingStationResult>
 
-            UpdateChargeBox(ChargeBox                             ChargeBox,
-                            Action<ChargeBox.Builder>             UpdateDelegate,
-                            Action<ChargeBox, EventTracking_Id>?  OnUpdated         = null,
+            UpdateChargingStation(CSMS.ChargingStation                             ChargingStation,
+                            Action<CSMS.ChargingStation.Builder>             UpdateDelegate,
+                            Action<CSMS.ChargingStation, EventTracking_Id>?  OnUpdated         = null,
                             EventTracking_Id?                     EventTrackingId   = null,
                             User_Id?                              CurrentUserId     = null)
 
@@ -13405,7 +13416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 try
                 {
 
-                    return await _UpdateChargeBox(ChargeBox,
+                    return await _UpdateChargingStation(ChargingStation,
                                                   UpdateDelegate,
                                                   OnUpdated,
                                                   eventTrackingId,
@@ -13415,8 +13426,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 catch (Exception e)
                 {
 
-                    return UpdateChargeBoxResult.Error(
-                               ChargeBox,
+                    return UpdateChargingStationResult.Error(
+                               ChargingStation,
                                e,
                                eventTrackingId,
                                Id,
@@ -13435,8 +13446,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
             }
 
-            return UpdateChargeBoxResult.LockTimeout(
-                       ChargeBox,
+            return UpdateChargingStationResult.LockTimeout(
+                       ChargingStation,
                        SemaphoreSlimTimeout,
                        eventTrackingId,
                        Id,
@@ -13449,39 +13460,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region DeleteChargeBox        (ChargeBox, OnDeleted = null, ...)
+        #region DeleteChargingStation        (ChargingStation, OnDeleted = null, ...)
 
         /// <summary>
         /// A delegate called whenever a charging station was deleted.
         /// </summary>
         /// <param name="Timestamp">The timestamp when the chargeBox was deleted.</param>
-        /// <param name="ChargeBox">The chargeBox to be deleted.</param>
+        /// <param name="ChargingStation">The chargeBox to be deleted.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public delegate Task OnChargeBoxDeletedDelegate(DateTime           Timestamp,
-                                                        ChargeBox          ChargeBox,
+        public delegate Task OnChargingStationDeletedDelegate(DateTime           Timestamp,
+                                                        CSMS.ChargingStation          ChargingStation,
                                                         EventTracking_Id?  EventTrackingId   = null,
                                                         User_Id?           CurrentUserId     = null);
 
         /// <summary>
         /// An event fired whenever a charging station was deleted.
         /// </summary>
-        public event OnChargeBoxDeletedDelegate? OnChargeBoxDeleted;
+        public event OnChargingStationDeletedDelegate? OnChargingStationDeleted;
 
 
-        #region (protected internal virtual) _CanDeleteChargeBox(ChargeBox)
+        #region (protected internal virtual) _CanDeleteChargingStation(ChargingStation)
 
         /// <summary>
         /// Determines whether the chargeBox can safely be deleted from the API.
         /// </summary>
-        /// <param name="ChargeBox">The chargeBox to be deleted.</param>
-        protected internal virtual I18NString? _CanDeleteChargeBox(ChargeBox ChargeBox)
+        /// <param name="ChargingStation">The chargeBox to be deleted.</param>
+        protected internal virtual I18NString? _CanDeleteChargingStation(CSMS.ChargingStation ChargingStation)
         {
 
-            //if (ChargeBox.Users.Any())
+            //if (ChargingStation.Users.Any())
             //    return new I18NString(Languages.en, "The chargeBox still has members!");
 
-            //if (ChargeBox.SubChargeBoxes.Any())
+            //if (ChargingStation.SubChargingStationes.Any())
             //    return new I18NString(Languages.en, "The chargeBox still has sub chargeBoxs!");
 
             return null;
@@ -13490,19 +13501,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region (protected internal) _DeleteChargeBox(ChargeBox, OnDeleted = null, ...)
+        #region (protected internal) _DeleteChargingStation(ChargingStation, OnDeleted = null, ...)
 
         /// <summary>
         /// Delete the given charging station.
         /// </summary>
-        /// <param name="ChargeBox">The chargeBox to be deleted.</param>
+        /// <param name="ChargingStation">The chargeBox to be deleted.</param>
         /// <param name="OnDeleted">A delegate run whenever the chargeBox has been deleted successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        protected internal async Task<DeleteChargeBoxResult>
+        protected internal async Task<DeleteChargingStationResult>
 
-            _DeleteChargeBox(ChargeBox                             ChargeBox,
-                             Action<ChargeBox, EventTracking_Id>?  OnDeleted         = null,
+            _DeleteChargingStation(CSMS.ChargingStation                             ChargingStation,
+                             Action<CSMS.ChargingStation, EventTracking_Id>?  OnDeleted         = null,
                              EventTracking_Id?                     EventTrackingId   = null,
                              User_Id?                              CurrentUserId     = null)
 
@@ -13510,18 +13521,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
-            if (ChargeBox.API != this)
-                return DeleteChargeBoxResult.ArgumentError(
-                           ChargeBox,
+            if (ChargingStation.API != this)
+                return DeleteChargingStationResult.ArgumentError(
+                           ChargingStation,
                            "The given chargeBox is not attached to this API!".ToI18NString(),
                            eventTrackingId,
                            Id,
                            this
                        );
 
-            if (!chargeBoxes.TryGetValue(ChargeBox.Id, out var ChargeBoxToBeDeleted))
-                return DeleteChargeBoxResult.ArgumentError(
-                           ChargeBox,
+            if (!chargeBoxes.TryGetValue(ChargingStation.Id, out var ChargingStationToBeDeleted))
+                return DeleteChargingStationResult.ArgumentError(
+                           ChargingStation,
                            "The given chargeBox does not exists in this API!".ToI18NString(),
                            eventTrackingId,
                            Id,
@@ -13529,11 +13540,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                        );
 
 
-            var veto = _CanDeleteChargeBox(ChargeBox);
+            var veto = _CanDeleteChargingStation(ChargingStation);
 
             if (veto is not null)
-                return DeleteChargeBoxResult.CanNotBeRemoved(
-                           ChargeBox,
+                return DeleteChargingStationResult.CanNotBeRemoved(
+                           ChargingStation,
                            eventTrackingId,
                            Id,
                            this,
@@ -13543,13 +13554,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             //// Get all parent chargeBoxs now, because later
             //// the --isChildOf--> edge will no longer be available!
-            //var parentChargeBoxes = ChargeBox.GetAllParents(parent => parent != NoOwner).
+            //var parentChargingStationes = ChargingStation.GetAllParents(parent => parent != NoOwner).
             //                                       ToArray();
 
 
             //// Remove all: this --edge--> other_chargeBox
-            //foreach (var edge in ChargeBox.ChargeBox2ChargeBoxOutEdges.ToArray())
-            //    await _UnlinkChargeBoxes(edge.Source,
+            //foreach (var edge in ChargingStation.ChargingStation2ChargingStationOutEdges.ToArray())
+            //    await _UnlinkChargingStationes(edge.Source,
             //                               edge.EdgeLabel,
             //                               edge.Target,
             //                               EventTrackingId,
@@ -13557,8 +13568,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             //                               CurrentUserId:          CurrentUserId);
 
             //// Remove all: this <--edge-- other_chargeBox
-            //foreach (var edge in ChargeBox.ChargeBox2ChargeBoxInEdges.ToArray())
-            //    await _UnlinkChargeBoxes(edge.Target,
+            //foreach (var edge in ChargingStation.ChargingStation2ChargingStationInEdges.ToArray())
+            //    await _UnlinkChargingStationes(edge.Target,
             //                               edge.EdgeLabel,
             //                               edge.Source,
             //                               EventTrackingId,
@@ -13566,32 +13577,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             //                               CurrentUserId:          CurrentUserId);
 
 
-            //await WriteToDatabaseFile(deleteChargeBox_MessageType,
-            //                          ChargeBox.ToJSON(false, true),
+            //await WriteToDatabaseFile(deleteChargingStation_MessageType,
+            //                          ChargingStation.ToJSON(false, true),
             //                          eventTrackingId,
             //                          CurrentUserId);
 
-            chargeBoxes.TryRemove(ChargeBox.Id, out _);
+            chargeBoxes.TryRemove(ChargingStation.Id, out _);
 
-            OnDeleted?.Invoke(ChargeBox,
+            OnDeleted?.Invoke(ChargingStation,
                               eventTrackingId);
 
-            var OnChargeBoxDeletedLocal = OnChargeBoxDeleted;
-            if (OnChargeBoxDeletedLocal is not null)
-                await OnChargeBoxDeletedLocal.Invoke(Timestamp.Now,
-                                                     ChargeBox,
+            var OnChargingStationDeletedLocal = OnChargingStationDeleted;
+            if (OnChargingStationDeletedLocal is not null)
+                await OnChargingStationDeletedLocal.Invoke(Timestamp.Now,
+                                                     ChargingStation,
                                                      eventTrackingId,
                                                      CurrentUserId);
 
-            //await SendNotifications(ChargeBox,
-            //                        parentChargeBoxes,
-            //                        deleteChargeBox_MessageType,
+            //await SendNotifications(ChargingStation,
+            //                        parentChargingStationes,
+            //                        deleteChargingStation_MessageType,
             //                        eventTrackingId,
             //                        CurrentUserId);
 
 
-            return DeleteChargeBoxResult.Success(
-                       ChargeBox,
+            return DeleteChargingStationResult.Success(
+                       ChargingStation,
                        eventTrackingId,
                        Id,
                        this
@@ -13601,19 +13612,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region DeleteChargeBox                      (ChargeBox, OnDeleted = null, ...)
+        #region DeleteChargingStation                      (ChargingStation, OnDeleted = null, ...)
 
         /// <summary>
         /// Delete the given charging station.
         /// </summary>
-        /// <param name="ChargeBox">The chargeBox to be deleted.</param>
+        /// <param name="ChargingStation">The chargeBox to be deleted.</param>
         /// <param name="OnDeleted">A delegate run whenever the chargeBox has been deleted successfully.</param>
         /// <param name="EventTrackingId">An optional unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public async Task<DeleteChargeBoxResult>
+        public async Task<DeleteChargingStationResult>
 
-            DeleteChargeBox(ChargeBox                             ChargeBox,
-                            Action<ChargeBox, EventTracking_Id>?  OnDeleted         = null,
+            DeleteChargingStation(CSMS.ChargingStation                             ChargingStation,
+                            Action<CSMS.ChargingStation, EventTracking_Id>?  OnDeleted         = null,
                             EventTracking_Id?                     EventTrackingId   = null,
                             User_Id?                              CurrentUserId     = null)
 
@@ -13626,7 +13637,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 try
                 {
 
-                    return await _DeleteChargeBox(ChargeBox,
+                    return await _DeleteChargingStation(ChargingStation,
                                                   OnDeleted,
                                                   eventTrackingId,
                                                   CurrentUserId);
@@ -13635,8 +13646,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 catch (Exception e)
                 {
 
-                    return DeleteChargeBoxResult.Error(
-                               ChargeBox,
+                    return DeleteChargingStationResult.Error(
+                               ChargingStation,
                                e,
                                eventTrackingId,
                                Id,
@@ -13656,8 +13667,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             }
 
-            return DeleteChargeBoxResult.LockTimeout(
-                       ChargeBox,
+            return DeleteChargingStationResult.LockTimeout(
+                       ChargingStation,
                        SemaphoreSlimTimeout,
                        eventTrackingId,
                        Id,
@@ -13671,30 +13682,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region ChargeBoxExists(ChargeBoxId)
+        #region ChargingStationExists(ChargingStationId)
 
         /// <summary>
         /// Determines whether the given chargeBox identification exists within this API.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
-        protected internal Boolean _ChargeBoxExists(ChargingStation_Id ChargeBoxId)
+        /// <param name="ChargingStationId">The unique identification of an charging station.</param>
+        protected internal Boolean _ChargingStationExists(ChargingStation_Id ChargingStationId)
 
-            => ChargeBoxId.IsNotNullOrEmpty && chargeBoxes.ContainsKey(ChargeBoxId);
-
-        /// <summary>
-        /// Determines whether the given chargeBox identification exists within this API.
-        /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
-        protected internal Boolean _ChargeBoxExists(ChargingStation_Id? ChargeBoxId)
-
-            => ChargeBoxId.IsNotNullOrEmpty() && chargeBoxes.ContainsKey(ChargeBoxId.Value);
-
+            => ChargingStationId.IsNotNullOrEmpty && chargeBoxes.ContainsKey(ChargingStationId);
 
         /// <summary>
         /// Determines whether the given chargeBox identification exists within this API.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
-        public Boolean ChargeBoxExists(ChargingStation_Id ChargeBoxId)
+        /// <param name="ChargingStationId">The unique identification of an charging station.</param>
+        protected internal Boolean _ChargingStationExists(ChargingStation_Id? ChargingStationId)
+
+            => ChargingStationId.IsNotNullOrEmpty() && chargeBoxes.ContainsKey(ChargingStationId.Value);
+
+
+        /// <summary>
+        /// Determines whether the given chargeBox identification exists within this API.
+        /// </summary>
+        /// <param name="ChargingStationId">The unique identification of an charging station.</param>
+        public Boolean ChargingStationExists(ChargingStation_Id ChargingStationId)
         {
 
             if (ChargingStationSemaphore.Wait(SemaphoreSlimTimeout))
@@ -13702,7 +13713,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 try
                 {
 
-                    return _ChargeBoxExists(ChargeBoxId);
+                    return _ChargingStationExists(ChargingStationId);
 
                 }
                 catch
@@ -13725,8 +13736,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Determines whether the given chargeBox identification exists within this API.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
-        public Boolean ChargeBoxExists(ChargingStation_Id? ChargeBoxId)
+        /// <param name="ChargingStationId">The unique identification of an charging station.</param>
+        public Boolean ChargingStationExists(ChargingStation_Id? ChargingStationId)
         {
 
             if (ChargingStationSemaphore.Wait(SemaphoreSlimTimeout))
@@ -13734,7 +13745,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 try
                 {
 
-                    return _ChargeBoxExists(ChargeBoxId);
+                    return _ChargingStationExists(ChargingStationId);
 
                 }
                 catch
@@ -13756,16 +13767,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region GetChargeBox   (ChargeBoxId)
+        #region GetChargingStation   (ChargingStationId)
 
         /// <summary>
         /// Get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
-        protected internal ChargeBox? _GetChargeBox(ChargingStation_Id ChargeBoxId)
+        /// <param name="ChargingStationId">The unique identification of an charging station.</param>
+        protected internal CSMS.ChargingStation? _GetChargingStation(ChargingStation_Id ChargingStationId)
         {
 
-            if (ChargeBoxId.IsNotNullOrEmpty && chargeBoxes.TryGetValue(ChargeBoxId, out var chargeBox))
+            if (ChargingStationId.IsNotNullOrEmpty && chargeBoxes.TryGetValue(ChargingStationId, out var chargeBox))
                 return chargeBox;
 
             return default;
@@ -13775,11 +13786,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
-        protected internal ChargeBox? _GetChargeBox(ChargingStation_Id? ChargeBoxId)
+        /// <param name="ChargingStationId">The unique identification of an charging station.</param>
+        protected internal CSMS.ChargingStation? _GetChargingStation(ChargingStation_Id? ChargingStationId)
         {
 
-            if (ChargeBoxId is not null && chargeBoxes.TryGetValue(ChargeBoxId.Value, out var chargeBox))
+            if (ChargingStationId is not null && chargeBoxes.TryGetValue(ChargingStationId.Value, out var chargeBox))
                 return chargeBox;
 
             return default;
@@ -13790,8 +13801,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
-        public ChargeBox? GetChargeBox(ChargingStation_Id ChargeBoxId)
+        /// <param name="ChargingStationId">The unique identification of an charging station.</param>
+        public CSMS.ChargingStation? GetChargingStation(ChargingStation_Id ChargingStationId)
         {
 
             if (ChargingStationSemaphore.Wait(SemaphoreSlimTimeout))
@@ -13799,7 +13810,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 try
                 {
 
-                    return _GetChargeBox(ChargeBoxId);
+                    return _GetChargingStation(ChargingStationId);
 
                 }
                 catch
@@ -13822,8 +13833,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
-        public ChargeBox? GetChargeBox(ChargingStation_Id? ChargeBoxId)
+        /// <param name="ChargingStationId">The unique identification of an charging station.</param>
+        public CSMS.ChargingStation? GetChargingStation(ChargingStation_Id? ChargingStationId)
         {
 
             if (ChargingStationSemaphore.Wait(SemaphoreSlimTimeout))
@@ -13831,7 +13842,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 try
                 {
 
-                    return _GetChargeBox(ChargeBoxId);
+                    return _GetChargingStation(ChargingStationId);
 
                 }
                 catch
@@ -13853,24 +13864,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region TryGetChargeBox(ChargeBoxId, out ChargeBox)
+        #region TryGetChargingStation(ChargingStationId, out ChargingStation)
 
         /// <summary>
         /// Try to get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
-        /// <param name="ChargeBox">The charging station.</param>
-        protected internal Boolean _TryGetChargeBox(ChargingStation_Id    ChargeBoxId,
-                                                    out ChargeBox?  ChargeBox)
+        /// <param name="ChargingStationId">The unique identification of an charging station.</param>
+        /// <param name="ChargingStation">The charging station.</param>
+        protected internal Boolean _TryGetChargingStation(ChargingStation_Id    ChargingStationId,
+                                                    out CSMS.ChargingStation?  ChargingStation)
         {
 
-            if (ChargeBoxId.IsNotNullOrEmpty && chargeBoxes.TryGetValue(ChargeBoxId, out var chargeBox))
+            if (ChargingStationId.IsNotNullOrEmpty && chargeBoxes.TryGetValue(ChargingStationId, out var chargeBox))
             {
-                ChargeBox = chargeBox;
+                ChargingStation = chargeBox;
                 return true;
             }
 
-            ChargeBox = null;
+            ChargingStation = null;
             return false;
 
         }
@@ -13878,19 +13889,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Try to get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
-        /// <param name="ChargeBox">The charging station.</param>
-        protected internal Boolean _TryGetChargeBox(ChargingStation_Id?   ChargeBoxId,
-                                                    out ChargeBox?  ChargeBox)
+        /// <param name="ChargingStationId">The unique identification of an charging station.</param>
+        /// <param name="ChargingStation">The charging station.</param>
+        protected internal Boolean _TryGetChargingStation(ChargingStation_Id?   ChargingStationId,
+                                                    out CSMS.ChargingStation?  ChargingStation)
         {
 
-            if (ChargeBoxId is not null && chargeBoxes.TryGetValue(ChargeBoxId.Value, out var chargeBox))
+            if (ChargingStationId is not null && chargeBoxes.TryGetValue(ChargingStationId.Value, out var chargeBox))
             {
-                ChargeBox = chargeBox;
+                ChargingStation = chargeBox;
                 return true;
             }
 
-            ChargeBox = null;
+            ChargingStation = null;
             return false;
 
         }
@@ -13899,10 +13910,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Try to get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
-        /// <param name="ChargeBox">The charging station.</param>
-        public Boolean TryGetChargeBox(ChargingStation_Id    ChargeBoxId,
-                                       out ChargeBox?  ChargeBox)
+        /// <param name="ChargingStationId">The unique identification of an charging station.</param>
+        /// <param name="ChargingStation">The charging station.</param>
+        public Boolean TryGetChargingStation(ChargingStation_Id    ChargingStationId,
+                                       out CSMS.ChargingStation?  ChargingStation)
         {
 
             if (ChargingStationSemaphore.Wait(SemaphoreSlimTimeout))
@@ -13910,7 +13921,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 try
                 {
 
-                    return _TryGetChargeBox(ChargeBoxId, out ChargeBox);
+                    return _TryGetChargingStation(ChargingStationId, out ChargingStation);
 
                 }
                 catch
@@ -13926,7 +13937,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
             }
 
-            ChargeBox = null;
+            ChargingStation = null;
             return false;
 
         }
@@ -13934,10 +13945,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Try to get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charging station.</param>
-        /// <param name="ChargeBox">The charging station.</param>
-        public Boolean TryGetChargeBox(ChargingStation_Id?   ChargeBoxId,
-                                       out ChargeBox?  ChargeBox)
+        /// <param name="ChargingStationId">The unique identification of an charging station.</param>
+        /// <param name="ChargingStation">The charging station.</param>
+        public Boolean TryGetChargingStation(ChargingStation_Id?   ChargingStationId,
+                                       out CSMS.ChargingStation?  ChargingStation)
         {
 
             if (ChargingStationSemaphore.Wait(SemaphoreSlimTimeout))
@@ -13945,7 +13956,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 try
                 {
 
-                    return _TryGetChargeBox(ChargeBoxId, out ChargeBox);
+                    return _TryGetChargingStation(ChargingStationId, out ChargingStation);
 
                 }
                 catch
@@ -13961,7 +13972,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                 }
             }
 
-            ChargeBox = null;
+            ChargingStation = null;
             return false;
 
         }

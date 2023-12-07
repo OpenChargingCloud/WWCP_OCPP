@@ -1209,7 +1209,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
 
             centralSystemServer.OnServerStarted += async (Timestamp,
                                                           server,
-                                                          eventTrackingId) => {
+                                                          eventTrackingId,
+                                                          cancellationToken) => {
 
                 DebugX.Log("OCPP " + Version.Number + " web socket server has started on " + server.IPSocket);
 
@@ -1261,14 +1262,16 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                                                 webSocketServer,
                                                                 webSocketConnection,
                                                                 eventTrackingId,
-                                                                requestMessage) => {
+                                                                requestMessage,
+                                                                cancellationToken) => {
 
                 if (OnTextMessageRequest is not null)
                     await OnTextMessageRequest.Invoke(timestamp,
                                                       webSocketServer,
                                                       webSocketConnection,
                                                       eventTrackingId,
-                                                      requestMessage);
+                                                      requestMessage,
+                                                      cancellationToken);
 
             };
 

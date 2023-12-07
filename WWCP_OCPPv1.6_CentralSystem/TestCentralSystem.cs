@@ -112,7 +112,79 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Events
 
-        // CP -> CS
+        #region WebSocket connections
+
+        /// <summary>
+        /// An event sent whenever the HTTP web socket server started.
+        /// </summary>
+        public event OnServerStartedDelegate?                         OnServerStarted;
+
+        /// <summary>
+        /// An event sent whenever a new TCP connection was accepted.
+        /// </summary>
+        public event OnValidateTCPConnectionDelegate?                 OnValidateTCPConnection;
+
+        /// <summary>
+        /// An event sent whenever a new TCP connection was accepted.
+        /// </summary>
+        public event OnNewTCPConnectionDelegate?                      OnNewTCPConnection;
+
+        /// <summary>
+        /// An event sent whenever a HTTP request was received.
+        /// </summary>
+        public event HTTPRequestLogDelegate?                          OnHTTPRequest;
+
+        /// <summary>
+        /// An event sent whenever the HTTP headers of a new web socket connection
+        /// need to be validated or filtered by an upper layer application logic.
+        /// </summary>
+        public event OnValidateWebSocketConnectionDelegate?           OnValidateWebSocketConnection;
+
+        /// <summary>
+        /// An event sent whenever the HTTP connection switched successfully to web socket.
+        /// </summary>
+        public event OnCentralSystemNewWebSocketConnectionDelegate?   OnNewWebSocketConnection;
+
+        /// <summary>
+        /// An event sent whenever a reponse to a HTTP request was sent.
+        /// </summary>
+        public event HTTPResponseLogDelegate?                         OnHTTPResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket close frame was received.
+        /// </summary>
+        public event OnCentralSystemCloseMessageReceivedDelegate?     OnCloseMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a TCP connection was closed.
+        /// </summary>
+        public event OnCentralSystemTCPConnectionClosedDelegate?      OnTCPConnectionClosed;
+
+        #endregion
+
+
+        #region OnTextMessage  (Request/Response)
+
+        public event OnWebSocketTextMessageDelegate?                  OnTextMessageRequest;
+
+        //public event OnWebSocketTextMessageDelegate                   OnTextMessage;
+
+        public event OnWebSocketTextMessageResponseDelegate?          OnTextMessageResponse;
+
+        #endregion
+
+        #region OnBinaryMessage(Request/Response)
+
+        public event OnWebSocketBinaryMessageDelegate?           OnBinaryMessageRequest;
+
+        //public event OnWebSocketBinaryMessageDelegate           OnBinaryMessage;
+
+        public event OnWebSocketBinaryMessageResponseDelegate?   OnBinaryMessageResponse;
+
+        #endregion
+
+
+        #region CSMS <- Charging Station Messages
 
         #region OnBootNotification
 
@@ -264,9 +336,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         // SignCertificate
         // SignedFirmwareStatusNotification
 
+        #endregion
 
-
-        // CS -> CP
+        #region CSMS <- Charging Station Messages
 
         #region OnReset
 
@@ -637,50 +709,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-
-
-        // WebSocket events
-
-        #region OnNewTCPConnection
-
-        public event OnNewTCPConnectionDelegate?                      OnNewTCPConnection;
-
-        public event OnNewCentralSystemWebSocketConnectionDelegate?   OnNewCentralSystemWebSocketConnection;
-
-        #endregion
-
-        #region OnTextMessage  (Request/Response)
-
-        public event OnWebSocketTextMessageDelegate?                  OnTextMessageRequest;
-
-        //public event OnWebSocketTextMessageDelegate                   OnTextMessage;
-
-        public event OnWebSocketTextMessageResponseDelegate?          OnTextMessageResponse;
-
-        #endregion
-
-        #region OnBinaryMessage(Request/Response)
-
-        public event OnWebSocketBinaryMessageDelegate?    OnBinaryMessageRequest;
-
-        //public event OnWebSocketBinaryMessageDelegate           OnBinaryMessage;
-
-        public event OnWebSocketBinaryMessageResponseDelegate?   OnBinaryMessageResponse;
-
-        #endregion
-
-        #region On(Ping/Pong)Message
-
-        //public event OnWebSocketMessageDelegate                 OnPingMessage;
-
-        //public event OnWebSocketMessageDelegate                 OnPongMessage;
-
-        #endregion
-
-        #region OnCloseMessage
-
-        public event OnCloseMessageDelegate?                     OnCloseMessage;
-
         #endregion
 
         #endregion
@@ -769,26 +797,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="RegisterHTTPRootService">Register HTTP root services for sending a notice to clients connecting via HTML or plain text.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CentralSystemSOAPServer CreateSOAPService(String           HTTPServerName            = CentralSystemSOAPServer.DefaultHTTPServerName,
-                                                         IPPort?          TCPPort                   = null,
-                                                         String           ServiceName               = null,
-                                                         HTTPPath?        URLPrefix                 = null,
-                                                         HTTPContentType  ContentType               = null,
-                                                         Boolean          RegisterHTTPRootService   = true,
-                                                         DNSClient        DNSClient                 = null,
-                                                         Boolean          AutoStart                 = false)
+        public CentralSystemSOAPServer CreateSOAPService(String            HTTPServerName            = CentralSystemSOAPServer.DefaultHTTPServerName,
+                                                         IPPort?           TCPPort                   = null,
+                                                         String?           ServiceName               = null,
+                                                         HTTPPath?         URLPrefix                 = null,
+                                                         HTTPContentType?  ContentType               = null,
+                                                         Boolean           RegisterHTTPRootService   = true,
+                                                         DNSClient?        DNSClient                 = null,
+                                                         Boolean           AutoStart                 = false)
         {
 
-            var centralSystemServer = new CentralSystemSOAPServer(HTTPServerName,
-                                                                  TCPPort,
-                                                                  ServiceName,
-                                                                  URLPrefix,
-                                                                  ContentType,
-                                                                  RegisterHTTPRootService,
-                                                                  DNSClient ?? this.DNSClient,
-                                                                  AutoStart);
+            var centralSystemServer = new CentralSystemSOAPServer(
+                                          HTTPServerName,
+                                          TCPPort,
+                                          ServiceName,
+                                          URLPrefix,
+                                          ContentType,
+                                          RegisterHTTPRootService,
+                                          DNSClient ?? this.DNSClient,
+                                          false
+                                      );
 
             Attach(centralSystemServer);
+
+            if (AutoStart)
+                centralSystemServer.Start();
 
             return centralSystemServer;
 
@@ -839,7 +872,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             centralSystemServer.OnServerStarted += async (Timestamp,
                                                           server,
-                                                          eventTrackingId) => {
+                                                          eventTrackingId,
+                                                          cancellationToken) => {
 
                 DebugX.Log("OCPP " + Version.Number + " web socket server has started on " + server.IPSocket);
 
@@ -847,20 +881,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #endregion
 
-
             #region OnNewTCPConnection
 
-            centralSystemServer.OnNewTCPConnection += async (Timestamp,
-                                                             WebSocketServer,
-                                                             NewWebSocketConnection,
-                                                             EventTrackingId,
-                                                             CancellationToken) => {
+            centralSystemServer.OnNewTCPConnection += async (timestamp,
+                                                             centralSystem,
+                                                             newTCPConnection,
+                                                             eventTrackingId,
+                                                             cancellationToken) => {
 
-                OnNewTCPConnection?.Invoke(Timestamp,
-                                           WebSocketServer,
-                                           NewWebSocketConnection,
-                                           EventTrackingId,
-                                           CancellationToken);
+                var logger = OnNewTCPConnection;
+                if (logger is not null)
+                {
+
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnNewTCPConnectionDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                               centralSystem,
+                                                                                               newTCPConnection,
+                                                                                               eventTrackingId,
+                                                                                               cancellationToken)).
+                                             ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(loggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCentralSystem),
+                                  nameof(OnNewTCPConnection),
+                                  e
+                              );
+                    }
+
+                }
 
             };
 
@@ -868,19 +923,134 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region OnNewWebSocketConnection
 
-            centralSystemServer.OnNewCentralSystemWebSocketConnection += async (Timestamp,
-                                                                                WebSocketServer,
-                                                                                NewWebSocketConnection,
-                                                                                ChargeBoxId,
-                                                                                EventTrackingId,
-                                                                                CancellationToken) => {
+            centralSystemServer.OnCentralSystemNewWebSocketConnection += async (timestamp,
+                                                                                centralSystem,
+                                                                                newConnection,
+                                                                                chargeBoxId,
+                                                                                eventTrackingId,
+                                                                                cancellationToken) => {
 
-                OnNewCentralSystemWebSocketConnection?.Invoke(Timestamp,
-                                                              WebSocketServer,
-                                                              NewWebSocketConnection,
-                                                              ChargeBoxId,
-                                                              EventTrackingId,
-                                                              CancellationToken);
+                // A new connection from the same charge box will replace the older one!
+                if (!reachableChargingBoxes.TryAdd(chargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystem, timestamp)))
+                     reachableChargingBoxes[chargeBoxId]      = new Tuple<ICentralSystem, DateTime>(centralSystem, timestamp);
+
+
+                var logger = OnNewWebSocketConnection;
+                if (logger is not null)
+                {
+
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnCentralSystemNewWebSocketConnectionDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                               centralSystem,
+                                                                                               newConnection,
+                                                                                               chargeBoxId,
+                                                                                               eventTrackingId,
+                                                                                               cancellationToken)).
+                                             ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(loggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCentralSystem),
+                                  nameof(OnNewWebSocketConnection),
+                                  e
+                              );
+                    }
+
+                }
+
+            };
+
+            #endregion
+
+            #region OnCloseMessageReceived
+
+            centralSystemServer.OnCentralSystemCloseMessageReceived += async (timestamp,
+                                                                              server,
+                                                                              connection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              statusCode,
+                                                                              reason,
+                                                                              cancellationToken) => {
+
+                var logger = OnCloseMessageReceived;
+                if (logger is not null)
+                {
+
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnCentralSystemCloseMessageReceivedDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                               server,
+                                                                                               connection,
+                                                                                               networkingNodeId,
+                                                                                               eventTrackingId,
+                                                                                               statusCode,
+                                                                                               reason,
+                                                                                               cancellationToken)).
+                                             ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(loggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCentralSystem),
+                                  nameof(OnCloseMessageReceived),
+                                  e
+                              );
+                    }
+
+                }
+
+            };
+
+            #endregion
+
+            #region OnTCPConnectionClosed
+
+            centralSystemServer.OnTCPConnectionClosed += async (timestamp,
+                                                                server,
+                                                                connection,
+                                                                eventTrackingId,
+                                                                reason,
+                                                                cancellationToken) => {
+
+                var logger = OnTCPConnectionClosed;
+                if (logger is not null)
+                {
+
+                    var loggerTasks = logger.GetInvocationList().
+                                             OfType <OnTCPConnectionClosedDelegate>().
+                                             Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                                                                               server,
+                                                                                               connection,
+                                                                                               eventTrackingId,
+                                                                                               reason,
+                                                                                               cancellationToken)).
+                                             ToArray();
+
+                    try
+                    {
+                        await Task.WhenAll(loggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCentralSystem),
+                                  nameof(OnTCPConnectionClosed),
+                                  e
+                              );
+                    }
+
+                }
 
             };
 
@@ -893,14 +1063,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                 webSocketServer,
                                                                 webSocketConnection,
                                                                 eventTrackingId,
-                                                                requestMessage) => {
+                                                                requestMessage,
+                                                                cancellationToken) => {
 
                 if (OnTextMessageRequest is not null)
                     await OnTextMessageRequest.Invoke(timestamp,
                                                       webSocketServer,
                                                       webSocketConnection,
                                                       eventTrackingId,
-                                                      requestMessage);
+                                                      requestMessage,
+                                                      cancellationToken);
 
             };
 
@@ -932,24 +1104,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            #region OnCloseMessageReceived
-
-            //centralSystemServer.OnCloseMessageReceived += async (timestamp,
-            //                                                     server,
-            //                                                     connection,
-            //                                                     message,
-            //                                                     eventTrackingId) => {
-
-            //    DebugX.Log(String.Concat("HTTP web socket server on ",
-            //                             server.IPSocket,
-            //                             " closed connection to ",
-            //                             connection.RemoteSocket));
-
-            //};
-
-            #endregion
-
-
             if (AutoStart)
                 centralSystemServer.Start();
 
@@ -964,32 +1118,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public void Attach(ICentralSystemServer CentralSystemServer)
         {
 
-            #region Initial checks
-
-            if (CentralSystemServer is null)
-                throw new ArgumentNullException(nameof(CentralSystemServer), "The given central system must not be null!");
-
-            #endregion
-
-
             centralSystemServers.Add(CentralSystemServer);
-
-
-            if (CentralSystemServer is CentralSystemWSServer centralSystemWSServer)
-            {
-                centralSystemWSServer.OnNewCentralSystemWebSocketConnection += async (timestamp,
-                                                                                      centralSystem,
-                                                                                      connection,
-                                                                                      chargeBoxId,
-                                                                                      eventTrackingId,
-                                                                                      cancellationToken) =>
-                {
-
-                    if (!reachableChargingBoxes.TryAdd(chargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystem, Timestamp.Now)))
-                         reachableChargingBoxes[chargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystem, Timestamp.Now);
-
-                };
-            }
 
 
             // Wire events...
@@ -6344,6 +6473,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         // GetLog
         // InstallCertificate
         // SignedUpdateFirmware
+
+
+
+        private Task HandleErrors(String     Module,
+                                  String     Caller,
+                                  Exception  ExceptionOccured)
+        {
+
+            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
+
+            return Task.CompletedTask;
+
+        }
+
 
     }
 

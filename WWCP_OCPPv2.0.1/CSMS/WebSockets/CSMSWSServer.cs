@@ -32,6 +32,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_0_1.CS;
 using cloud.charging.open.protocols.OCPPv2_0_1.WebSockets;
+using System.Threading;
 
 #endregion
 
@@ -2058,14 +2059,15 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
         #endregion
 
-        #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, EventTrackingId, StatusCode, Reason)
+        #region (protected) ProcessCloseMessage          (LogTimestamp, Server, Connection, EventTrackingId, StatusCode, Reason, CancellationToken)
 
         protected Task ProcessCloseMessage(DateTime                          LogTimestamp,
                                            IWebSocketServer                  Server,
                                            WebSocketServerConnection         Connection,
                                            EventTracking_Id                  EventTrackingId,
                                            WebSocketFrame.ClosingStatusCode  StatusCode,
-                                           String?                           Reason)
+                                           String?                           Reason,
+                                           CancellationToken                 CancellationToken)
         {
 
             lock (connectedChargingBoxes)

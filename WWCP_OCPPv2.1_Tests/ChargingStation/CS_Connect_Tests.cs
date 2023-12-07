@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
             csmsWebSocketTextMessageResponsesReceived  = new ConcurrentList<LogDataJSONResponse>();
 
 
-            testBackendWebSockets01.OnServerStarted               += (timestamp, server, eventTrackingId) => {
+            testBackendWebSockets01.OnServerStarted               += (timestamp, server, eventTrackingId, cancellationToken) => {
                 return Task.CompletedTask;
             };
 
@@ -150,7 +150,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
 
 
-            testBackendWebSockets01.OnTextMessageReceived         += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage) => {
+            testBackendWebSockets01.OnTextMessageReceived         += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage, cancellationToken) => {
                 csmsWebSocketTextMessagesReceived.        TryAdd(new LogJSONRequest(timestamp, JArray.Parse(requestMessage)));
                 return Task.CompletedTask;
             };
@@ -160,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 return Task.CompletedTask;
             };
 
-            testBackendWebSockets01.OnTextMessageSent             += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage) => {
+            testBackendWebSockets01.OnTextMessageSent             += (timestamp, webSocketServer, webSocketConnection, eventTrackingId, requestMessage, cancellationToken) => {
                 csmsWebSocketTextMessagesSent.            TryAdd(new LogJSONRequest(timestamp, JArray.Parse(requestMessage)));
                 return Task.CompletedTask;
             };
@@ -262,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 if (chargingStation1WebSocketClient is not null)
                 {
 
-                    chargingStation1WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message) => {
+                    chargingStation1WebSocketClient.OnTextMessageReceived         += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
                         chargingStation1WebSocketJSONMessagesReceived.        TryAdd(new LogJSONRequest(timestamp, JArray.Parse(message)));
                     };
 
@@ -270,7 +270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                         chargingStation1WebSocketJSONMessageResponsesSent.    TryAdd(new LogDataJSONResponse(requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, responseMessage));
                     };
 
-                    chargingStation1WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message) => {
+                    chargingStation1WebSocketClient.OnTextMessageSent             += async (timestamp, webSocketServer, webSocketConnection, webSocketFrame, eventTrackingId, message, cancellationToken) => {
                         chargingStation1WebSocketJSONMessagesSent.            TryAdd(new LogJSONRequest(timestamp, JArray.Parse(message)));
                     };
 

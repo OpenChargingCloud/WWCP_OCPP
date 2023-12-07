@@ -17333,10 +17333,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                             networkingNodeId.HasValue &&
                             networkingNodeId.IsNotNullOrEmpty())
                         {
-                            if (!reachableChargingStations.ContainsKey(networkingNodeId.Value))
-                                reachableChargingStations.TryAdd(networkingNodeId.Value, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(CSMS, Timestamp.Now));
-                            else
-                                reachableChargingStations[networkingNodeId.Value] = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(CSMS, Timestamp.Now);
+                            if (!reachableChargingStations.TryAdd(networkingNodeId.Value, new Tuple<CSMS.INetworkingNodeChannel, DateTime>(CSMS, Timestamp.Now)))
+                                reachableChargingStations[networkingNodeId.Value]       = new Tuple<CSMS.INetworkingNodeChannel, DateTime>(CSMS, Timestamp.Now);
                         }
 
                     };
@@ -17349,7 +17347,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 CSMSChannel.OnServerStarted += (Timestamp,
                                                 server,
-                                                eventTrackingId) => {
+                                                eventTrackingId,
+                                                cancellationToken) => {
 
                     DebugX.Log($"OCPP {Version.String} web socket server has started on {server.IPSocket}!");
                     return Task.CompletedTask;
@@ -17445,7 +17444,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                              connection,
                                                              eventTrackingId,
                                                              statusCode,
-                                                             reason) => {
+                                                             reason,
+                                                             cancellationToken) => {
 
                     var logger = OnCloseMessageReceived;
                     if (logger is not null)
@@ -17458,7 +17458,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                    connection,
                                                                                                    eventTrackingId,
                                                                                                    statusCode,
-                                                                                                   reason)).
+                                                                                                   reason,
+                                                                                                   cancellationToken)).
                                                  ToArray();
 
                         try
@@ -17486,7 +17487,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                             server,
                                                             connection,
                                                             reason,
-                                                            eventTrackingId) => {
+                                                            eventTrackingId,
+                                                            cancellationToken) => {
 
                     var logger = OnTCPConnectionClosed;
                     if (logger is not null)
@@ -17498,7 +17500,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                    server,
                                                                                                    connection,
                                                                                                    reason,
-                                                                                                   eventTrackingId)).
+                                                                                                   eventTrackingId,
+                                                                                                   cancellationToken)).
                                                  ToArray();
 
                         try
@@ -17527,14 +17530,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                #region OnTextMessageRequestReceived
+                #region OnJSONMessageRequestReceived
 
                 CSMSChannel.OnJSONMessageRequestReceived += async (timestamp,
                                                                    webSocketServer,
                                                                    webSocketConnection,
                                                                    eventTrackingId,
                                                                    requestTimestamp,
-                                                                   requestMessage) => {
+                                                                   requestMessage,
+                                                                   cancellationToken) => {
 
                     var logger = OnJSONMessageRequestReceived;
                     if (logger is not null)
@@ -17547,7 +17551,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                    webSocketConnection,
                                                                                                    eventTrackingId,
                                                                                                    requestTimestamp,
-                                                                                                   requestMessage)).
+                                                                                                   requestMessage,
+                                                                                                   cancellationToken)).
                                                  ToArray();
 
                         try
@@ -17569,7 +17574,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #endregion
 
-                #region OnTextMessageResponseSent
+                #region OnJSONMessageResponseSent
 
                 CSMSChannel.OnJSONMessageResponseSent += async (timestamp,
                                                                 webSocketServer,
@@ -17618,7 +17623,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #endregion
 
-                #region OnTextErrorResponseSent
+                #region OnJSONErrorResponseSent
 
                 CSMSChannel.OnJSONErrorResponseSent += async (timestamp,
                                                               webSocketServer,
@@ -17667,14 +17672,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                 #endregion
 
 
-                #region OnTextMessageRequestSent
+                #region OnJSONMessageRequestSent
 
                 CSMSChannel.OnJSONMessageRequestSent += async (timestamp,
                                                                webSocketServer,
                                                                webSocketConnection,
                                                                eventTrackingId,
                                                                requestTimestamp,
-                                                               requestMessage) => {
+                                                               requestMessage,
+                                                               cancellationToken) => {
 
 
                     var logger = OnJSONMessageRequestSent;
@@ -17687,7 +17693,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                    webSocketServer,
                                                                                                    webSocketConnection,
                                                                                                    eventTrackingId,
-                                                                                                   requestMessage.ToString())).
+                                                                                                   requestMessage.ToString(),
+                                                                                                   cancellationToken)).
                                                  ToArray();
 
                         try
@@ -17709,7 +17716,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #endregion
 
-                #region OnTextMessageResponseReceived
+                #region OnJSONMessageResponseReceived
 
                 CSMSChannel.OnJSONMessageResponseReceived += async (timestamp,
                                                                     webSocketServer,
@@ -17758,7 +17765,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
 
                 #endregion
 
-                #region OnTextErrorResponseReceived
+                #region OnJSONErrorResponseReceived
 
                 CSMSChannel.OnJSONErrorResponseReceived += async (timestamp,
                                                                   webSocketServer,

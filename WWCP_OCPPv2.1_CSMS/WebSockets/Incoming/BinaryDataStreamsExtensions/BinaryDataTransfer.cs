@@ -105,7 +105,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                               NetworkingNodeId,
                                                               EventTrackingId,
                                                               RequestTimestamp,
-                                                              BinaryRequest);
+                                                              BinaryRequest,
+                                                              CancellationToken);
 
             }
             catch (Exception e)

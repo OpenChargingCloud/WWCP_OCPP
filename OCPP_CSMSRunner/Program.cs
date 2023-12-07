@@ -58,11 +58,10 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
         #region Data
 
-        private const           String         debugLogFile      = "debug.log";
-        private const           String         ocppVersion1_6    = "v1.6";
-        private const           String         ocppVersion2_1    = "v2.1";
-        private static readonly SemaphoreSlim  loggingLockV1_6   = new (1, 1);
-        private static readonly SemaphoreSlim  loggingLockV2_1   = new (1, 1);
+        private const           String         debugLogFile     = "debug.log";
+        private const           String         ocppVersion1_6   = "v1.6";
+        private const           String         ocppVersion2_1   = "v2.1";
+        private static readonly SemaphoreSlim  loggingLock      = new (1, 1);
 
         #endregion
 
@@ -79,7 +78,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
             var dnsClient            = new DNSClient(SearchForIPv6DNSServers: false);
 
             var loggingFileNameV1_6  = Path.Combine(AppContext.BaseDirectory, "OCPPv1.6_Messages.log");
-            var loggingFileName      = Path.Combine(AppContext.BaseDirectory, "OCPPv2.1_Messages.log");
+            var loggingFileNameV2_1  = Path.Combine(AppContext.BaseDirectory, "OCPPv2.1_Messages.log");
 
             #endregion
 
@@ -121,24 +120,88 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             //testCentralSystemV1_6.AddHTTPBasicAuth(OCPPv1_6.ChargeBox_Id.Parse("CP001"), "test1234test1234");
 
-            testCentralSystemV1_6.OnNewTCPConnection                    += async (timestamp, server, connection,              eventTrackingId, cancellationToken) => {
-                await loggingLockV1_6.WaitAsync(cancellationToken);
-                DebugX.Log($"New OCPP v1.6 TCP connection from {connection.RemoteSocket}");
-                await File.AppendAllTextAsync(
-                    loggingFileNameV1_6,
-                    $"{timestamp.ToIso8601()}\tNEW TCP\t-\t{connection.RemoteSocket}{Environment.NewLine}",
-                    cancellationToken
-                );
+            testCentralSystemV1_6.OnNewTCPConnection       += async (timestamp, server, connection,              eventTrackingId,                     cancellationToken) => {
+                try
+                {
+                    await loggingLock.WaitAsync(cancellationToken);
+                    DebugX.Log($"New TCP connection from {connection.RemoteSocket}");
+                    await File.AppendAllTextAsync(
+                        loggingFileNameV1_6,
+                        $"{timestamp.ToIso8601()}\tNEW TCP\t-\t{connection.RemoteSocket}{Environment.NewLine}",
+                        cancellationToken
+                    );
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(testCentralSystemV1_6)}.{nameof(testCentralSystemV1_6.OnNewTCPConnection)}");
+                }
+                finally
+                {
+                    loggingLock.Release();
+                }
             };
 
-            testCentralSystemV1_6.OnNewCentralSystemWebSocketConnection += async (timestamp, server, connection, chargeBoxId, eventTrackingId, cancellationToken) => {
-                await loggingLockV1_6.WaitAsync(cancellationToken);
-                DebugX.Log($"New OCPP v1.6 HTTP web socket connection from {chargeBoxId} ({connection.RemoteSocket})");
-                await File.AppendAllTextAsync(
-                    loggingFileNameV1_6,
-                    $"{timestamp.ToIso8601()}\tNEW WS\t{chargeBoxId}\t{connection.RemoteSocket}{Environment.NewLine}",
-                    cancellationToken
-                );
+            testCentralSystemV1_6.OnNewWebSocketConnection += async (timestamp, server, connection, chargeBoxId, eventTrackingId,                     cancellationToken) => {
+                try
+                {
+                    await loggingLock.WaitAsync(cancellationToken);
+                    DebugX.Log($"New HTTP web socket connection from charge box '{chargeBoxId}' ({connection.RemoteSocket})");
+                    await File.AppendAllTextAsync(
+                        loggingFileNameV1_6,
+                        $"{timestamp.ToIso8601()}\tNEW WS\t{chargeBoxId}\t{connection.RemoteSocket}{Environment.NewLine}",
+                        cancellationToken
+                    );
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(testCentralSystemV1_6)}.{nameof(testCentralSystemV1_6.OnNewWebSocketConnection)}");
+                }
+                finally
+                {
+                    loggingLock.Release();
+                }
+            };
+
+            testCentralSystemV1_6.OnCloseMessageReceived   += async (timestamp, server, connection, chargeBoxId, eventTrackingId, statusCode, reason, cancellationToken) => {
+                try
+                {
+                    await loggingLock.WaitAsync(cancellationToken);
+                    DebugX.Log($"Charge box '{chargeBoxId}' ({connection.RemoteSocket}) closed its HTTP web socket connection");
+                    await File.AppendAllTextAsync(
+                        loggingFileNameV1_6,
+                        $"{timestamp.ToIso8601()}\tCLOSE\t{chargeBoxId}\t{connection.RemoteSocket}{Environment.NewLine}",
+                        cancellationToken
+                    );
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(testCentralSystemV1_6)}.{nameof(testCentralSystemV1_6.OnCloseMessageReceived)}");
+                }
+                finally
+                {
+                    loggingLock.Release();
+                }
+            };
+
+            testCentralSystemV1_6.OnTCPConnectionClosed    += async (timestamp, server, connection, chargeBoxId, eventTrackingId, reason,             cancellationToken) => {
+                try
+                {
+                    await loggingLock.WaitAsync(cancellationToken);
+                    DebugX.Log($"Charge box '{chargeBoxId}' ({connection.RemoteSocket}) closed its HTTP web socket connection{(reason is not null ? $", reason: '{reason}'" : "")}");
+                    await File.AppendAllTextAsync(
+                        loggingFileNameV1_6,
+                        $"{timestamp.ToIso8601()}\tCLOSE\t{chargeBoxId}\t{connection.RemoteSocket}{Environment.NewLine}",
+                        cancellationToken
+                    );
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(testCentralSystemV1_6)}.{nameof(testCentralSystemV1_6.OnTCPConnectionClosed)}");
+                }
+                finally
+                {
+                    loggingLock.Release();
+                }
             };
 
             #endregion
@@ -164,24 +227,88 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
             //testCSMSv2_1.AddOrUpdateHTTPBasicAuth(OCPPv2_1.NetworkingNode_Id.Parse("CP001"), "dummy-dev-password");
 
 
-            testCSMSv2_1.OnNewTCPConnection           += async (timestamp, server, connection,                   eventTrackingId, cancellationToken) => {
-                await loggingLockV2_1.WaitAsync(cancellationToken);
-                DebugX.Log($"New TCP connection from {connection.RemoteSocket}");
-                await File.AppendAllTextAsync(
-                    loggingFileName,
-                    $"{timestamp.ToIso8601()}\tNEW TCP\t-\t{connection.RemoteSocket}{Environment.NewLine}",
-                    cancellationToken
-                );
+            testCSMSv2_1.OnNewTCPConnection       += async (timestamp, server, connection,                   eventTrackingId,                     cancellationToken) => {
+                try
+                {
+                    await loggingLock.WaitAsync(cancellationToken);
+                    DebugX.Log($"New TCP connection from {connection.RemoteSocket}");
+                    await File.AppendAllTextAsync(
+                        loggingFileNameV2_1,
+                        $"{timestamp.ToIso8601()}\tNEW TCP\t-\t{connection.RemoteSocket}{Environment.NewLine}",
+                        cancellationToken
+                    );
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(testCSMSv2_1)}.{nameof(testCSMSv2_1.OnNewTCPConnection)}");
+                }
+                finally
+                {
+                    loggingLock.Release();
+                }
             };
 
-            testCSMSv2_1.OnNewCSMSWebSocketConnection += async (timestamp, server, connection, networkingNodeId, eventTrackingId, cancellationToken) => {
-                await loggingLockV2_1.WaitAsync(cancellationToken);
-                DebugX.Log($"New HTTP web socket connection from {networkingNodeId} ({connection.RemoteSocket})");
-                await File.AppendAllTextAsync(
-                    loggingFileName,
-                    $"{timestamp.ToIso8601()}\tNEW WS\t{networkingNodeId}\t{connection.RemoteSocket}{Environment.NewLine}",
-                    cancellationToken
-                );
+            testCSMSv2_1.OnNewWebSocketConnection += async (timestamp, server, connection, networkingNodeId, eventTrackingId,                     cancellationToken) => {
+                try
+                {
+                    await loggingLock.WaitAsync(cancellationToken);
+                    DebugX.Log($"New HTTP web socket connection from networking node '{networkingNodeId}' ({connection.RemoteSocket})");
+                    await File.AppendAllTextAsync(
+                        loggingFileNameV2_1,
+                        $"{timestamp.ToIso8601()}\tNEW WS\t{networkingNodeId}\t{connection.RemoteSocket}{Environment.NewLine}",
+                        cancellationToken
+                    );
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(testCSMSv2_1)}.{nameof(testCSMSv2_1.OnNewWebSocketConnection)}");
+                }
+                finally
+                {
+                    loggingLock.Release();
+                }
+            };
+
+            testCSMSv2_1.OnCloseMessageReceived   += async (timestamp, server, connection, networkingNodeId, eventTrackingId, statusCode, reason, cancellationToken) => {
+                try
+                {
+                    await loggingLock.WaitAsync(cancellationToken);
+                    DebugX.Log($"Networking node '{networkingNodeId}' ({connection.RemoteSocket}) closed its HTTP web socket connection");
+                    await File.AppendAllTextAsync(
+                        loggingFileNameV2_1,
+                        $"{timestamp.ToIso8601()}\tCLOSE\t{networkingNodeId}\t{connection.RemoteSocket}{Environment.NewLine}",
+                        cancellationToken
+                    );
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(testCSMSv2_1)}.{nameof(testCSMSv2_1.OnCloseMessageReceived)}");
+                }
+                finally
+                {
+                    loggingLock.Release();
+                }
+            };
+
+            testCSMSv2_1.OnTCPConnectionClosed    += async (timestamp, server, connection, networkingNodeId, eventTrackingId, reason,             cancellationToken) => {
+                try
+                {
+                    await loggingLock.WaitAsync(cancellationToken);
+                    DebugX.Log($"Networking node '{networkingNodeId}' ({connection.RemoteSocket}) closed its HTTP web socket connection{(reason is not null ? $", reason: '{reason}'" : "")}");
+                    await File.AppendAllTextAsync(
+                        loggingFileNameV2_1,
+                        $"{timestamp.ToIso8601()}\tCLOSE\t{networkingNodeId}\t{connection.RemoteSocket}{Environment.NewLine}",
+                        cancellationToken
+                    );
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(testCSMSv2_1)}.{nameof(testCSMSv2_1.OnCloseMessageReceived)}");
+                }
+                finally
+                {
+                    loggingLock.Release();
+                }
             };
 
 
@@ -189,29 +316,32 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
 
 
-            testCSMSv2_1.OnJSONMessageRequestReceived   += async (timestamp, server, connection, eventTrackingId, requestTimestamp, requestMessage) => {
-                await loggingLockV2_1.WaitAsync();
+
+
+
+            testCSMSv2_1.OnJSONMessageRequestReceived   += async (timestamp, server, connection, eventTrackingId, requestTimestamp, requestMessage, cancellationToken) => {
+                await loggingLock.WaitAsync();
                 DebugX.Log($"Received a JSON web socket request: '{requestMessage.ToString(Formatting.None)}'!");
                 await File.AppendAllTextAsync(
-                    loggingFileName,
+                    loggingFileNameV2_1,
                     $"{requestTimestamp.ToIso8601()}\tIN\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{requestMessage.ToString(Formatting.None)}{Environment.NewLine}"
                 );
             };
 
-            testCSMSv2_1.OnBinaryMessageRequestReceived += async (timestamp, server, connection, eventTrackingId, requestTimestamp, requestMessage) => {
-                await loggingLockV2_1.WaitAsync();
+            testCSMSv2_1.OnBinaryMessageRequestReceived += async (timestamp, server, connection, eventTrackingId, requestTimestamp, requestMessage, cancellationToken) => {
+                await loggingLock.WaitAsync();
                 DebugX.Log($"Received a binary web socket request: '{requestMessage.ToBase64()}'!");
                 await File.AppendAllTextAsync(
-                    loggingFileName,
+                    loggingFileNameV2_1,
                     $"{requestTimestamp.ToIso8601()}\tIN\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{requestMessage.ToBase64()}{Environment.NewLine}"
                 );
             };
 
             testCSMSv2_1.OnJSONMessageResponseSent += async (timestamp, server, connection, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, jsonResponseMessage) => {
-                await loggingLockV2_1.WaitAsync();
+                await loggingLock.WaitAsync();
                 DebugX.Log($"Sent a JSON web socket response: '{jsonResponseMessage.ToString(Formatting.None)}'!");
                 await File.AppendAllTextAsync(
-                    loggingFileName,
+                    loggingFileNameV2_1,
                     $"{responseTimestamp.ToIso8601()}\tOUT\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{jsonResponseMessage.ToString(Formatting.None)}{Environment.NewLine}"
                 );
             };
@@ -257,23 +387,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
             //    );
             //};
 
-            testCSMSv2_1.OnCloseMessageReceived += async (timestamp, server, connection, eventTrackingId, statusCode, reason) => {
-                DebugX.Log(String.Concat("HTTP web socket server on ", server.IPSocket, " charge box ", connection.TryGetCustomData("chargingStationId") + " (" + connection.RemoteSocket + ") closed web socket connection"));
-                lock (testCSMSv2_1)
-                {
-                    File.AppendAllText(Path.Combine(AppContext.BaseDirectory, "TextMessages.log"),
-                                       String.Concat(timestamp.ToIso8601(), "\tCLOSE\t", connection.TryGetCustomData("chargingStationId"), "\t", connection.RemoteSocket, Environment.NewLine));
-                }
-            };
 
-            testCSMSv2_1.OnTCPConnectionClosed  += async (timestamp, server, connection, reason, eventTrackingId) => {
-                DebugX.Log(String.Concat("HTTP web socket server on ", server.IPSocket, " closed TCP connection with ", connection.TryGetCustomData("chargingStationId") + $", reason: {reason} " + " (" + connection.RemoteSocket + ")"));
-                lock (testCSMSv2_1)
-                {
-                    File.AppendAllText(Path.Combine(AppContext.BaseDirectory, "TextMessages.log"),
-                                       String.Concat(timestamp.ToIso8601(), "\tQUIT\t", connection.TryGetCustomData("chargingStationId"), "\t", connection.RemoteSocket, Environment.NewLine));
-                }
-            };
 
 
 

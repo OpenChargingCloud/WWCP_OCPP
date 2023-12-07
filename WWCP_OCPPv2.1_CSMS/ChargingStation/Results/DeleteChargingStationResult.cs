@@ -26,33 +26,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The result of an add or update charging station request.
+    /// The result of a delete charging station request.
     /// </summary>
-    public class AddOrUpdateChargeBoxResult : AEnitityResult<ChargeBox, ChargingStation_Id>
+    public class DeleteChargingStationResult : AEnitityResult<ChargingStation, ChargingStation_Id>
     {
 
         #region Properties
 
-        public ChargeBox?       ChargeBox
+        public ChargingStation?  ChargingStation
             => Entity;
-
-        public AddedOrUpdated?  AddedOrUpdated    { get; internal set; }
 
         #endregion
 
         #region Constructor(s)
 
-        public AddOrUpdateChargeBoxResult(ChargeBox              ChargeBox,
-                                          CommandResult          Result,
-                                          EventTracking_Id?      EventTrackingId   = null,
-                                          IId?                   SenderId          = null,
-                                          Object?                Sender            = null,
-                                          AddedOrUpdated?        AddedOrUpdated    = null,
-                                          I18NString?            Description       = null,
-                                          IEnumerable<Warning>?  Warnings          = null,
-                                          TimeSpan?              Runtime           = null)
+        public DeleteChargingStationResult(ChargingStation              ChargingStation,
+                                     CommandResult          Result,
+                                     EventTracking_Id?      EventTrackingId   = null,
+                                     IId?                   SenderId          = null,
+                                     Object?                Sender            = null,
+                                     I18NString?            Description       = null,
+                                     IEnumerable<Warning>?  Warnings          = null,
+                                     TimeSpan?              Runtime           = null)
 
-            : base(ChargeBox,
+            : base(ChargingStation,
                    Result,
                    EventTrackingId,
                    SenderId,
@@ -61,20 +58,37 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                    Warnings,
                    Runtime)
 
-        {
+        { }
 
-            this.AddedOrUpdated = AddedOrUpdated;
 
-        }
+        public DeleteChargingStationResult(ChargingStation_Id           ChargingStationId,
+                                     CommandResult          Result,
+                                     EventTracking_Id?      EventTrackingId   = null,
+                                     IId?                   SenderId          = null,
+                                     Object?                Sender            = null,
+                                     I18NString?            Description       = null,
+                                     IEnumerable<Warning>?  Warnings          = null,
+                                     TimeSpan?              Runtime           = null)
+
+            : base(ChargingStationId,
+                   Result,
+                   EventTrackingId,
+                   SenderId,
+                   Sender,
+                   Description,
+                   Warnings,
+                   Runtime)
+
+        { }
 
         #endregion
 
 
-        #region (static) AdminDown    (ChargeBox, ...)
+        #region (static) AdminDown      (ChargingStation,   ...)
 
-        public static AddOrUpdateChargeBoxResult
+        public static DeleteChargingStationResult
 
-            AdminDown(ChargeBox              ChargeBox,
+            AdminDown(ChargingStation              ChargingStation,
                       EventTracking_Id?      EventTrackingId   = null,
                       IId?                   SenderId          = null,
                       Object?                Sender            = null,
@@ -82,23 +96,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                       IEnumerable<Warning>?  Warnings          = null,
                       TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.AdminDown,
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.NoOperation,
                         Description,
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) NoOperation  (ChargeBox, ...)
+        #region (static) NoOperation    (ChargingStation,   ...)
 
-        public static AddOrUpdateChargeBoxResult
+        public static DeleteChargingStationResult
 
-            NoOperation(ChargeBox              ChargeBox,
+            NoOperation(ChargingStation              ChargingStation,
                         EventTracking_Id?      EventTrackingId   = null,
                         IId?                   SenderId          = null,
                         Object?                Sender            = null,
@@ -106,12 +119,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         IEnumerable<Warning>?  Warnings          = null,
                         TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.NoOperation,
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.NoOperation,
                         Description,
                         Warnings,
                         Runtime);
@@ -119,11 +131,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region (static) Enqueued     (ChargeBox, ...)
+        #region (static) Enqueued       (ChargingStation,   ...)
 
-        public static AddOrUpdateChargeBoxResult
+        public static DeleteChargingStationResult
 
-            Enqueued(ChargeBox              ChargeBox,
+            Enqueued(ChargingStation              ChargingStation,
                      EventTracking_Id?      EventTrackingId   = null,
                      IId?                   SenderId          = null,
                      Object?                Sender            = null,
@@ -131,47 +143,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                      IEnumerable<Warning>?  Warnings          = null,
                      TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.Enqueued,
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Enqueued,
                         Description,
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) Added        (ChargeBox, ...)
+        #region (static) Success        (ChargingStation,   ...)
 
-        public static AddOrUpdateChargeBoxResult
+        public static DeleteChargingStationResult
 
-            Added(ChargeBox              ChargeBox,
-                  EventTracking_Id?      EventTrackingId   = null,
-                  IId?                   SenderId          = null,
-                  Object?                Sender            = null,
-                  I18NString?            Description       = null,
-                  IEnumerable<Warning>?  Warnings          = null,
-                  TimeSpan?              Runtime           = null)
-
-                => new (ChargeBox,
-                        CommandResult.Success,
-                        EventTrackingId,
-                        SenderId,
-                        Sender,
-                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Add,
-                        Description,
-                        Warnings,
-                        Runtime);
-
-        #endregion
-
-        #region (static) Updated      (ChargeBox, ...)
-
-        public static AddOrUpdateChargeBoxResult
-
-            Updated(ChargeBox              ChargeBox,
+            Success(ChargingStation              ChargingStation,
                     EventTracking_Id?      EventTrackingId   = null,
                     IId?                   SenderId          = null,
                     Object?                Sender            = null,
@@ -179,12 +166,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     IEnumerable<Warning>?  Warnings          = null,
                     TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.Success,
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Update,
                         Description,
                         Warnings,
                         Runtime);
@@ -192,11 +178,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        #region (static) ArgumentError(ChargeBox, Description, ...)
+        #region (static) CanNotBeRemoved(ChargingStation,   ...)
 
-        public static AddOrUpdateChargeBoxResult
+        public static DeleteChargingStationResult
 
-            ArgumentError(ChargeBox              ChargeBox,
+            CanNotBeRemoved(ChargingStation              ChargingStation,
+                            EventTracking_Id?      EventTrackingId   = null,
+                            IId?                   SenderId          = null,
+                            Object?                Sender            = null,
+                            I18NString?            Description       = null,
+                            IEnumerable<Warning>?  Warnings          = null,
+                            TimeSpan?              Runtime           = null)
+
+                => new (ChargingStation,
+                        CommandResult.Success,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+
+        #region (static) ArgumentError  (ChargingStation,   Description, ...)
+
+        public static DeleteChargingStationResult
+
+            ArgumentError(ChargingStation              ChargingStation,
                           I18NString             Description,
                           EventTracking_Id?      EventTrackingId   = null,
                           IId?                   SenderId          = null,
@@ -204,23 +214,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                           IEnumerable<Warning>?  Warnings          = null,
                           TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.ArgumentError,
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
                         Description,
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) Error        (ChargeBox, Description, ...)
+        #region (static) ArgumentError  (ChargingStationId, Description, ...)
 
-        public static AddOrUpdateChargeBoxResult
+        public static DeleteChargingStationResult
 
-            Error(ChargeBox              ChargeBox,
+            ArgumentError(ChargingStation_Id           ChargingStationId,
+                          I18NString             Description,
+                          EventTracking_Id?      EventTrackingId   = null,
+                          IId?                   SenderId          = null,
+                          Object?                Sender            = null,
+                          IEnumerable<Warning>?  Warnings          = null,
+                          TimeSpan?              Runtime           = null)
+
+                => new (ChargingStationId,
+                        CommandResult.ArgumentError,
+                        EventTrackingId,
+                        SenderId,
+                        Sender,
+                        Description,
+                        Warnings,
+                        Runtime);
+
+        #endregion
+
+        #region (static) Error          (ChargingStation,   Description, ...)
+
+        public static DeleteChargingStationResult
+
+            Error(ChargingStation              ChargingStation,
                   I18NString             Description,
                   EventTracking_Id?      EventTrackingId   = null,
                   IId?                   SenderId          = null,
@@ -228,23 +260,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                   IEnumerable<Warning>?  Warnings          = null,
                   TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.Error,
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
                         Description,
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) Error        (ChargeBox, Exception,   ...)
+        #region (static) Error          (ChargingStation,   Exception,   ...)
 
-        public static AddOrUpdateChargeBoxResult
+        public static DeleteChargingStationResult
 
-            Error(ChargeBox              ChargeBox,
+            Error(ChargingStation              ChargingStation,
                   Exception              Exception,
                   EventTracking_Id?      EventTrackingId   = null,
                   IId?                   SenderId          = null,
@@ -252,23 +283,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                   IEnumerable<Warning>?  Warnings          = null,
                   TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.Error,
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
                         Exception.Message.ToI18NString(),
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) Timeout      (ChargeBox, Timeout,     ...)
+        #region (static) Timeout        (ChargingStation,   Timeout,     ...)
 
-        public static AddOrUpdateChargeBoxResult
+        public static DeleteChargingStationResult
 
-            Timeout(ChargeBox              ChargeBox,
+            Timeout(ChargingStation              ChargingStation,
                     TimeSpan               Timeout,
                     EventTracking_Id?      EventTrackingId   = null,
                     IId?                   SenderId          = null,
@@ -276,23 +306,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     IEnumerable<Warning>?  Warnings          = null,
                     TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.Timeout,
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
                         $"Timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,
                         Runtime);
 
         #endregion
 
-        #region (static) LockTimeout  (ChargeBox, Timeout,     ...)
+        #region (static) LockTimeout    (ChargingStation,   Timeout,     ...)
 
-        public static AddOrUpdateChargeBoxResult
+        public static DeleteChargingStationResult
 
-            LockTimeout(ChargeBox              ChargeBox,
+            LockTimeout(ChargingStation              ChargingStation,
                         TimeSpan               Timeout,
                         EventTracking_Id?      EventTrackingId   = null,
                         IId?                   SenderId          = null,
@@ -300,12 +329,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         IEnumerable<Warning>?  Warnings          = null,
                         TimeSpan?              Runtime           = null)
 
-                => new (ChargeBox,
+                => new (ChargingStation,
                         CommandResult.LockTimeout,
                         EventTrackingId,
                         SenderId,
                         Sender,
-                        org.GraphDefined.Vanaheimr.Illias.AddedOrUpdated.Failed,
                         $"Lock timeout after {Timeout.TotalSeconds} seconds!".ToI18NString(),
                         Warnings,
                         Runtime);

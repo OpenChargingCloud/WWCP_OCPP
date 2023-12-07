@@ -25,28 +25,28 @@ using org.GraphDefined.Vanaheimr.Hermod;
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
-    public class UnlinkChargeBoxsResult : AResult<ChargeBox, ChargeBox>
+    public class UnlinkChargingStationsResult : AResult<ChargingStation, ChargingStation>
     {
 
-        public ChargeBox                        ChargeBoxOut
+        public ChargingStation                        ChargingStationOut
             => Object1;
 
-        public ChargeBox2ChargeBoxEdgeLabel  EdgeLabel       { get; }
+        public ChargingStation2ChargingStationEdgeLabel  EdgeLabel       { get; }
 
-        public ChargeBox                        ChargeBoxIn
+        public ChargingStation                        ChargingStationIn
             => Object2;
 
 
-        public UnlinkChargeBoxsResult(ChargeBox                        ChargeBoxOut,
-                                         ChargeBox2ChargeBoxEdgeLabel  EdgeLabel,
-                                         ChargeBox                        ChargeBoxIn,
+        public UnlinkChargingStationsResult(ChargingStation                        ChargingStationOut,
+                                         ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
+                                         ChargingStation                        ChargingStationIn,
                                          EventTracking_Id                    EventTrackingId,
                                          Boolean                             IsSuccess,
                                          String                              Argument           = null,
                                          I18NString                          ErrorDescription   = null)
 
-            : base(ChargeBoxOut,
-                   ChargeBoxIn,
+            : base(ChargingStationOut,
+                   ChargingStationIn,
                    EventTrackingId,
                    IsSuccess,
                    Argument,
@@ -59,88 +59,88 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         }
 
 
-        public static UnlinkChargeBoxsResult Success(ChargeBox                        ChargeBoxOut,
-                                                        ChargeBox2ChargeBoxEdgeLabel  EdgeLabel,
-                                                        ChargeBox                        ChargeBoxIn,
+        public static UnlinkChargingStationsResult Success(ChargingStation                        ChargingStationOut,
+                                                        ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
+                                                        ChargingStation                        ChargingStationIn,
                                                         EventTracking_Id                    EventTrackingId)
 
-            => new UnlinkChargeBoxsResult(ChargeBoxOut,
+            => new UnlinkChargingStationsResult(ChargingStationOut,
                                              EdgeLabel,
-                                             ChargeBoxIn,
+                                             ChargingStationIn,
                                              EventTrackingId,
                                              true);
 
 
-        public static UnlinkChargeBoxsResult ArgumentError(ChargeBox                        ChargeBoxOut,
-                                                              ChargeBox2ChargeBoxEdgeLabel  EdgeLabel,
-                                                              ChargeBox                        ChargeBoxIn,
+        public static UnlinkChargingStationsResult ArgumentError(ChargingStation                        ChargingStationOut,
+                                                              ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
+                                                              ChargingStation                        ChargingStationIn,
                                                               EventTracking_Id                    EventTrackingId,
                                                               String                              Argument,
                                                               String                              Description)
 
-            => new UnlinkChargeBoxsResult(ChargeBoxOut,
+            => new UnlinkChargingStationsResult(ChargingStationOut,
                                              EdgeLabel,
-                                             ChargeBoxIn,
+                                             ChargingStationIn,
                                              EventTrackingId,
                                              false,
                                              Argument,
                                              I18NString.Create(Languages.en,
                                                                Description));
 
-        public static UnlinkChargeBoxsResult ArgumentError(ChargeBox                        ChargeBoxOut,
-                                                              ChargeBox2ChargeBoxEdgeLabel  EdgeLabel,
-                                                              ChargeBox                        ChargeBoxIn,
+        public static UnlinkChargingStationsResult ArgumentError(ChargingStation                        ChargingStationOut,
+                                                              ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
+                                                              ChargingStation                        ChargingStationIn,
                                                               EventTracking_Id                    EventTrackingId,
                                                               String                              Argument,
                                                               I18NString                          Description)
 
-            => new UnlinkChargeBoxsResult(ChargeBoxOut,
+            => new UnlinkChargingStationsResult(ChargingStationOut,
                                              EdgeLabel,
-                                             ChargeBoxIn,
+                                             ChargingStationIn,
                                              EventTrackingId,
                                              false,
                                              Argument,
                                              Description);
 
 
-        public static UnlinkChargeBoxsResult Failed(ChargeBox                        ChargeBoxOut,
-                                                       ChargeBox2ChargeBoxEdgeLabel  EdgeLabel,
-                                                       ChargeBox                        ChargeBoxIn,
+        public static UnlinkChargingStationsResult Failed(ChargingStation                        ChargingStationOut,
+                                                       ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
+                                                       ChargingStation                        ChargingStationIn,
                                                        EventTracking_Id                    EventTrackingId,
                                                        String                              Description)
 
-            => new UnlinkChargeBoxsResult(ChargeBoxOut,
+            => new UnlinkChargingStationsResult(ChargingStationOut,
                                              EdgeLabel,
-                                             ChargeBoxIn,
+                                             ChargingStationIn,
                                              EventTrackingId,
                                              false,
                                              null,
                                              I18NString.Create(Languages.en,
                                                                Description));
 
-        public static UnlinkChargeBoxsResult Failed(ChargeBox                        ChargeBoxOut,
-                                                       ChargeBox2ChargeBoxEdgeLabel  EdgeLabel,
-                                                       ChargeBox                        ChargeBoxIn,
+        public static UnlinkChargingStationsResult Failed(ChargingStation                        ChargingStationOut,
+                                                       ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
+                                                       ChargingStation                        ChargingStationIn,
                                                        EventTracking_Id                    EventTrackingId,
                                                        I18NString                          Description)
 
-            => new UnlinkChargeBoxsResult(ChargeBoxOut,
+            => new UnlinkChargingStationsResult(ChargingStationOut,
                                              EdgeLabel,
-                                             ChargeBoxIn,
+                                             ChargingStationIn,
                                              EventTrackingId,
                                              false,
                                              null,
                                              Description);
 
-        public static UnlinkChargeBoxsResult Failed(ChargeBox                        ChargeBoxOut,
-                                                       ChargeBox2ChargeBoxEdgeLabel  EdgeLabel,
-                                                       ChargeBox                        ChargeBoxIn,
+        public static UnlinkChargingStationsResult Failed(ChargingStation                        ChargingStationOut,
+                                                       ChargingStation2ChargingStationEdgeLabel  EdgeLabel,
+                                                       ChargingStation                        ChargingStationIn,
                                                        EventTracking_Id                    EventTrackingId,
                                                        Exception                           Exception)
 
-            => new UnlinkChargeBoxsResult(ChargeBoxOut,
+            => new UnlinkChargingStationsResult(ChargingStationOut,
                                              EdgeLabel,
-                                             ChargeBoxIn,
+                                             ChargingStationIn,
                                              EventTrackingId,
                                              false,
                                              null,
