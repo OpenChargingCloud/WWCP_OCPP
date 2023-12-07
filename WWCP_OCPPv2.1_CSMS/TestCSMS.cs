@@ -165,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever the HTTP connection switched successfully to web socket.
         /// </summary>
-        public event OnNewWebSocketConnectionDelegate?        OnNewWebSocketConnection;
+        public event OnNewCSMSWebSocketConnectionDelegate?    OnNewCSMSWebSocketConnection;
 
         /// <summary>
         /// An event sent whenever a reponse to a HTTP request was sent.
@@ -2070,30 +2070,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             centralSystemServers.Add(CSMSChannel);
 
 
-            if (CSMSChannel is CSMSWSServer centralSystemWSServer)
-            {
-                centralSystemWSServer.OnNewCSMSWSConnection += async (LogTimestamp,
-                                                                      CSMS,
-                                                                      Connection,
-                                                                      EventTrackingId,
-                                                                      CancellationToken) =>
-                {
-
-                    // A new connection from the same networking node/charging station will replace the older one!
-                    if (Connection.TryGetCustomDataAs(CSMSWSServer.networkingNodeId_WebSocketKey, out NetworkingNode_Id? networkingNodeId) &&
-                        networkingNodeId.HasValue &&
-                        networkingNodeId.IsNotNullOrEmpty())
-                    {
-                        if (!reachableChargingStations.ContainsKey(networkingNodeId.Value))
-                            reachableChargingStations.TryAdd(networkingNodeId.Value, new Tuple<ICSMSChannel, DateTime>(CSMS, Timestamp.Now));
-                        else
-                            reachableChargingStations[networkingNodeId.Value] = new Tuple<ICSMSChannel, DateTime>(CSMS, Timestamp.Now);
-                    }
-
-                };
-            }
-
-
             #region WebSocket related
 
             #region OnServerStarted
@@ -2149,23 +2125,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
-            #region OnNewWebSocketConnection
+            #region OnNewCSMSWebSocketConnection
 
-            CSMSChannel.OnNewWebSocketConnection += async (timestamp,
-                                                           webSocketServer,
-                                                           newWebSocketConnection,
-                                                           eventTrackingId,
-                                                           cancellationToken) => {
+            CSMSChannel.OnNewCSMSWebSocketConnection += async (timestamp,
+                                                               csmsChannel,
+                                                               newConnection,
+                                                               networkingNodeId,
+                                                               eventTrackingId,
+                                                               cancellationToken) => {
 
-                var logger = OnNewWebSocketConnection;
+                // A new connection from the same networking node/charging station will replace the older one!
+                if (!reachableChargingStations.TryAdd(networkingNodeId, new Tuple<ICSMSChannel, DateTime>(csmsChannel, timestamp)))
+                    reachableChargingStations[networkingNodeId] = new Tuple<ICSMSChannel, DateTime>(csmsChannel, timestamp);
+
+
+                var logger = OnNewCSMSWebSocketConnection;
                 if (logger is not null)
                 {
 
                     var loggerTasks = logger.GetInvocationList().
-                                             OfType <OnNewWebSocketConnectionDelegate>().
+                                             OfType <OnNewCSMSWebSocketConnectionDelegate>().
                                              Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
-                                                                                               webSocketServer,
-                                                                                               newWebSocketConnection,
+                                                                                               csmsChannel,
+                                                                                               newConnection,
+                                                                                               networkingNodeId,
                                                                                                eventTrackingId,
                                                                                                cancellationToken)).
                                              ToArray();
@@ -2178,7 +2161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     {
                         await HandleErrors(
                                   nameof(TestCSMS),
-                                  nameof(OnNewWebSocketConnection),
+                                  nameof(OnNewCSMSWebSocketConnection),
                                   e
                               );
                     }

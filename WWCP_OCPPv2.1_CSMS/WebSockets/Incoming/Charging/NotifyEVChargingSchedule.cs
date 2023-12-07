@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyEVChargingSchedule WebSocket request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?               OnNotifyEVChargingScheduleWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                   OnNotifyEVChargingScheduleWSRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyEVChargingSchedule request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyEVChargingSchedule was sent.
         /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?   OnNotifyEVChargingScheduleWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnNotifyEVChargingScheduleWSResponse;
 
         #endregion
 

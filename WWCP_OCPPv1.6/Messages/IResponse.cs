@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using org.GraphDefined.Vanaheimr.Illias;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -27,12 +33,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The machine-readable result code.
         /// </summary>
+        [Mandatory]
         Result    Result               { get; }
 
         /// <summary>
-        /// The timestamp of the response message creation.
+        /// The timestamp of the response.
         /// </summary>
+        [Mandatory]
         DateTime  ResponseTimestamp    { get; }
+
+        /// <summary>
+        /// The runtime of the request.
+        /// </summary>
+        [Mandatory]
+        TimeSpan  Runtime              { get; }
 
     }
 

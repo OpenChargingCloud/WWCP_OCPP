@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a BootNotification WebSocket request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?               OnBootNotificationWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                   OnBootNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a BootNotification request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a WebSocket response to a BootNotification was sent.
         /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?   OnBootNotificationWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnBootNotificationWSResponse;
 
         #endregion
 

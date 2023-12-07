@@ -1,11 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>cloud.charging.open.protocols.OCPPv1_6.WebAPI</RootNamespace>
+    <RootNamespace>WWCP_OCPPv1._6_CentralSystem</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>cloud.charging.open.protocols.OCPPv1_6.WebAPI</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -44,10 +43,6 @@
     <EmbeddedResource Include="HTTPRoot\template.html" />
     <EmbeddedResource Include="HTTPRoot\template.min.css" />
     <EmbeddedResource Include="HTTPRoot\template.scss" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>

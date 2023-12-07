@@ -27,85 +27,176 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
-    /// <summary>
-    /// The delegate for the HTTP WebSocket request log.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the incoming request.</param>
-    /// <param name="Server">The sending WebSocket server.</param>
-    /// <param name="JSONRequest">The incoming JSON request.</param>
-    public delegate Task WebSocketJSONRequestLogHandler          (DateTime                    Timestamp,
-                                                                  ICSMSChannel                Server,
-                                                                  WebSocketServerConnection   Connection,
-                                                                  NetworkingNode_Id           NetworkingNodeId,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
-                                                                  JObject                     JSONRequest);
+    #region Connection Management
 
     /// <summary>
-    /// The delegate for the HTTP WebSocket request log.
+    /// A delegate for logging new HTTP web socket connections.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the incoming request.</param>
-    /// <param name="Server">The sending WebSocket server.</param>
-    /// <param name="BinaryRequest">The incoming binary request.</param>
-    public delegate Task WebSocketBinaryRequestLogHandler        (DateTime                    Timestamp,
-                                                                  ICSMSChannel                Server,
-                                                                  WebSocketServerConnection   Connection,
-                                                                  NetworkingNode_Id           NetworkingNodeId,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
-                                                                  Byte[]                      BinaryRequest);
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="CSMSChannel">The HTTP web socket channel.</param>
+    /// <param name="NewConnection">The new HTTP web socket connection.</param>
+    /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
+    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="CancellationToken">A token to cancel the processing.</param>
+    public delegate Task OnNewCSMSWebSocketConnectionDelegate        (DateTime                    Timestamp,
+                                                                      ICSMSChannel                CSMSChannel,
+                                                                      WebSocketServerConnection   NewConnection,
+                                                                      NetworkingNode_Id           NetworkingNodeId,
+                                                                      EventTracking_Id            EventTrackingId,
+                                                                      CancellationToken           CancellationToken);
+
+    #endregion
+
+    #region OCPP Requests
+
+    /// <summary>
+    /// A delegate for logging an OCPP JSON request.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="CSMSChannel">The HTTP web socket channel.</param>
+    /// <param name="Connection">The HTTP web socket connection.</param>
+    /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
+    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="RequestTimestamp">The timestamp of the incoming OCPP request.</param>
+    /// <param name="JSONRequest">The incoming OCPP JSON request.</param>
+    public delegate Task OnOCPPJSONRequestLogDelegate                (DateTime                    Timestamp,
+                                                                      ICSMSChannel                CSMSChannel,
+                                                                      WebSocketServerConnection   Connection,
+                                                                      NetworkingNode_Id           NetworkingNodeId,
+                                                                      EventTracking_Id            EventTrackingId,
+                                                                      DateTime                    RequestTimestamp,
+                                                                      JObject                     JSONRequest);
+
+    /// <summary>
+    /// A delegate for logging a binary OCPP request.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="CSMSChannel">The HTTP web socket channel.</param>
+    /// <param name="Connection">The HTTP web socket connection.</param>
+    /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
+    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="RequestTimestamp">The timestamp of the incoming OCPP request.</param>
+    /// <param name="BinaryRequest">The incoming binary OCPP request.</param>
+    public delegate Task OnOCPPBinaryRequestLogDelegate              (DateTime                    Timestamp,
+                                                                      ICSMSChannel                CSMSChannel,
+                                                                      WebSocketServerConnection   Connection,
+                                                                      NetworkingNode_Id           NetworkingNodeId,
+                                                                      EventTracking_Id            EventTrackingId,
+                                                                      DateTime                    RequestTimestamp,
+                                                                      Byte[]                      BinaryRequest);
+
+    #endregion
+
+    #region OCPP Responses
+
+    /// <summary>
+    /// A delegate for logging an OCPP JSON response after a JSON request.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="CSMSChannel">The HTTP web socket channel.</param>
+    /// <param name="Connection">The HTTP web socket connection.</param>
+    /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
+    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="RequestTimestamp">The timestamp of the incoming OCPP request.</param>
+    /// <param name="JSONRequest">The incoming OCPP JSON request.</param>
+    /// <param name="ResponseTimestamp">The timestamp of the incoming OCPP response.</param>
+    /// <param name="JSONResponse">The outgoing OCPP JSON response.</param>
+    /// <param name="ErrorResponse">In case of errors, the outgoing OCPP error response.</param>
+    /// <param name="Runtime">The overall runtime of the request.</param>
+    public delegate Task OnOCPPJSONRequestJSONResponseLogDelegate    (DateTime                    Timestamp,
+                                                                      ICSMSChannel                CSMSChannel,
+                                                                      WebSocketServerConnection   Connection,
+                                                                      NetworkingNode_Id           NetworkingNodeId,
+                                                                      EventTracking_Id            EventTrackingId,
+                                                                      DateTime                    RequestTimestamp,
+                                                                      JObject                     JSONRequest,
+                                                                      DateTime                    ResponseTimestamp,
+                                                                      JObject?                    JSONResponse,
+                                                                      JArray?                     ErrorResponse,
+                                                                      TimeSpan                    Runtime);
+
+    /// <summary>
+    /// A delegate for logging a binary OCPP response after a JSON request.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="CSMSChannel">The HTTP web socket channel.</param>
+    /// <param name="Connection">The HTTP web socket connection.</param>
+    /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
+    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="RequestTimestamp">The timestamp of the incoming OCPP request.</param>
+    /// <param name="JSONRequest">The incoming OCPP JSON request.</param>
+    /// <param name="ResponseTimestamp">The timestamp of the incoming OCPP response.</param>
+    /// <param name="BinaryResponse">The outgoing binary OCPP response.</param>
+    /// <param name="ErrorResponse">In case of errors, the outgoing OCPP error response.</param>
+    /// <param name="Runtime">The overall runtime of the request.</param>
+    public delegate Task OnOCPPJSONRequestBinaryResponseLogDelegate  (DateTime                    Timestamp,
+                                                                      ICSMSChannel                CSMSChannel,
+                                                                      WebSocketServerConnection   Connection,
+                                                                      NetworkingNode_Id           NetworkingNodeId,
+                                                                      EventTracking_Id            EventTrackingId,
+                                                                      DateTime                    RequestTimestamp,
+                                                                      JObject                     JSONRequest,
+                                                                      DateTime                    ResponseTimestamp,
+                                                                      Byte[]?                     BinaryResponse,
+                                                                      JArray?                     ErrorResponse,
+                                                                      TimeSpan                    Runtime);
+
+    /// <summary>
+    /// A delegate for logging an OCPP JSON response after a binary request.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="CSMSChannel">The HTTP web socket channel.</param>
+    /// <param name="Connection">The HTTP web socket connection.</param>
+    /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
+    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="RequestTimestamp">The timestamp of the incoming OCPP request.</param>
+    /// <param name="BinaryRequest">The incoming binary OCPP request.</param>
+    /// <param name="ResponseTimestamp">The timestamp of the incoming OCPP response.</param>
+    /// <param name="JSONResponse">The outgoing OCPP JSON response.</param>
+    /// <param name="ErrorResponse">In case of errors, the outgoing OCPP error response.</param>
+    /// <param name="Runtime">The overall runtime of the request.</param>
+    public delegate Task OnOCPPBinaryRequestJSONResponseLogDelegate  (DateTime                    Timestamp,
+                                                                      ICSMSChannel                CSMSChannel,
+                                                                      WebSocketServerConnection   Connection,
+                                                                      NetworkingNode_Id           NetworkingNodeId,
+                                                                      EventTracking_Id            EventTrackingId,
+                                                                      DateTime                    RequestTimestamp,
+                                                                      Byte[]                      BinaryRequest,
+                                                                      DateTime                    ResponseTimestamp,
+                                                                      JObject?                    JSONResponse,
+                                                                      JArray?                     ErrorResponse,
+                                                                      TimeSpan                    Runtime);
+
+    /// <summary>
+    /// A delegate for logging a binary OCPP response after a binary request.
+    /// </summary>
+    /// <param name="Timestamp">The logging timestamp.</param>
+    /// <param name="CSMSChannel">The HTTP web socket channel.</param>
+    /// <param name="Connection">The HTTP web socket connection.</param>
+    /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
+    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="RequestTimestamp">The timestamp of the incoming OCPP request.</param>
+    /// <param name="BinaryRequest">The incoming binary OCPP request.</param>
+    /// <param name="ResponseTimestamp">The timestamp of the incoming OCPP response.</param>
+    /// <param name="BinaryResponse">The outgoing binary OCPP response.</param>
+    /// <param name="ErrorResponse">In case of errors, the outgoing OCPP error response.</param>
+    /// <param name="Runtime">The overall runtime of the request.</param>
+    public delegate Task OnOCPPBinaryRequestBinaryResponseLogDelegate(DateTime                    Timestamp,
+                                                                      ICSMSChannel                CSMSChannel,
+                                                                      WebSocketServerConnection   Connection,
+                                                                      NetworkingNode_Id           NetworkingNodeId,
+                                                                      EventTracking_Id            EventTrackingId,
+                                                                      DateTime                    RequestTimestamp,
+                                                                      Byte[]                      BinaryRequest,
+                                                                      DateTime                    ResponseTimestamp,
+                                                                      Byte[]?                     BinaryResponse,
+                                                                      JArray?                     ErrorResponse,
+                                                                      TimeSpan                    Runtime);
+
+    #endregion
 
 
 
-    // Responses
-
-    public delegate Task WebSocketJSONRequestJSONResponseLogHandler    (DateTime                    Timestamp,
-                                                                        ICSMSChannel                Server,
-                                                                        WebSocketServerConnection   Connection,
-                                                                        NetworkingNode_Id           NetworkingNodeId,
-                                                                        EventTracking_Id            EventTrackingId,
-                                                                        DateTime                    RequestTimestamp,
-                                                                        JObject                     JSONRequest,
-                                                                        DateTime                    ResponseTimestamp,
-                                                                        JObject?                    JSONResponse,
-                                                                        JArray?                     ErrorResponse,
-                                                                        TimeSpan                    Runtime);
-
-    public delegate Task WebSocketJSONRequestBinaryResponseLogHandler  (DateTime                    Timestamp,
-                                                                        ICSMSChannel                Server,
-                                                                        WebSocketServerConnection   Connection,
-                                                                        NetworkingNode_Id           NetworkingNodeId,
-                                                                        EventTracking_Id            EventTrackingId,
-                                                                        DateTime                    RequestTimestamp,
-                                                                        JObject                     JSONRequest,
-                                                                        DateTime                    ResponseTimestamp,
-                                                                        Byte[]?                     BinaryResponse,
-                                                                        JArray?                     ErrorResponse,
-                                                                        TimeSpan                    Runtime);
-
-    public delegate Task WebSocketBinaryRequestJSONResponseLogHandler  (DateTime                    Timestamp,
-                                                                        ICSMSChannel                Server,
-                                                                        WebSocketServerConnection   Connection,
-                                                                        NetworkingNode_Id           NetworkingNodeId,
-                                                                        EventTracking_Id            EventTrackingId,
-                                                                        DateTime                    RequestTimestamp,
-                                                                        Byte[]                      BinaryRequest,
-                                                                        DateTime                    ResponseTimestamp,
-                                                                        JObject?                    JSONResponse,
-                                                                        JArray?                     ErrorResponse,
-                                                                        TimeSpan                    Runtime);
-
-    public delegate Task WebSocketBinaryRequestBinaryResponseLogHandler(DateTime                    Timestamp,
-                                                                        ICSMSChannel                Server,
-                                                                        WebSocketServerConnection   Connection,
-                                                                        NetworkingNode_Id           NetworkingNodeId,
-                                                                        EventTracking_Id            EventTrackingId,
-                                                                        DateTime                    RequestTimestamp,
-                                                                        Byte[]                      BinaryRequest,
-                                                                        DateTime                    ResponseTimestamp,
-                                                                        Byte[]?                     BinaryResponse,
-                                                                        JArray?                     ErrorResponse,
-                                                                        TimeSpan                    Runtime);
 
 
 
@@ -114,22 +205,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
 
-    public delegate Task OnNewCSMSWSConnectionDelegate           (DateTime                    Timestamp,
-                                                                  ICSMSChannel                CSMS,
-                                                                  WebSocketServerConnection   NewWebSocketConnection,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  CancellationToken           CancellationToken);
 
 
 
-    public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,
+    public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,  // OK!
                                                                   ICSMSChannel                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
                                                                   JArray                      RequestMessage);
 
-    public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTime                    Timestamp,
+    public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTime                    Timestamp,  // OK!
                                                                   ICSMSChannel                Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
@@ -137,7 +223,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   JArray                      JSONRequestMessage,
                                                                   Byte[]                      BinaryRequestMessage,
                                                                   DateTime                    ResponseTimestamp,
-                                                                  JArray?                     ResponseMessage);
+                                                                  JArray                      ResponseMessage);
 
     public delegate Task OnWebSocketTextErrorResponseDelegate    (DateTime                    Timestamp,
                                                                   ICSMSChannel                Server,
@@ -147,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   String                      TextRequestMessage,
                                                                   Byte[]                      BinaryRequestMessage,
                                                                   DateTime                    ResponseTimestamp,
-                                                                  String?                     TextResponseMessage);
+                                                                  String                      TextResponseMessage);
 
 
 
@@ -166,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                   JArray                      JSONRequestMessage,
                                                                   Byte[]                      BinaryRequestMessage,
                                                                   DateTime                    ResponseTimestamp,
-                                                                  Byte[]?                     ResponseMessage);
+                                                                  Byte[]                      ResponseMessage);
 
     //public delegate Task OnWebSocketBinaryErrorResponseDelegate  (DateTime                    Timestamp,
     //                                                              CSMSWSServer                Server,
@@ -175,6 +261,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     //                                                              DateTime                    RequestTimestamp,
     //                                                              Byte[]                      RequestMessage,
     //                                                              DateTime                    ResponseTimestamp,
-    //                                                              Byte[]?                     ResponseMessage);
+    //                                                              Byte[]                      ResponseMessage);
 
 }

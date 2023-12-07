@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetCRL WebSocket request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?               OnGetCRLWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                   OnGetCRLWSRequest;
 
         /// <summary>
         /// An event sent whenever a GetCRL request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a WebSocket response to a GetCRL was sent.
         /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?   OnGetCRLWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnGetCRLWSResponse;
 
         #endregion
 

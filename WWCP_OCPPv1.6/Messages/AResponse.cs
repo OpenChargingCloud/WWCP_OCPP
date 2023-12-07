@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using org.GraphDefined.Vanaheimr.Illias;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv1_6
 {
 
@@ -35,29 +41,52 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public TRequest  Request    { get; }
 
-        /// <summary>
-        /// The runtime of the request.
-        /// </summary>
-        public TimeSpan  Runtime    { get; }
-
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new generic response.
+        /// Create a new abstract generic response.
         /// </summary>
         /// <param name="Request">The request leading to this result.</param>
         /// <param name="Result">A generic result.</param>
-        public AResponse(TRequest  Request,
-                         Result    Result)
+        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+        public AResponse(TRequest   Request,
+                         Result     Result,
+                         DateTime?  ResponseTimestamp   = null)
 
-            : base(Result)
+            : this(Request,
+                   Result,
+                   ResponseTimestamp ?? Timestamp.Now,
+                   null)
+
+        { }
+
+
+        /// <summary>
+        /// Create a new abstract generic response.
+        /// </summary>
+        /// <param name="Request">The request leading to this result.</param>
+        /// <param name="Result">A generic result.</param>
+        /// <param name="ResponseTimestamp">The response timestamp.</param>
+        public AResponse(TRequest   Request,
+                         Result     Result,
+                         DateTime   ResponseTimestamp,
+                         TimeSpan?  Runtime   = null)
+
+            : base(Result,
+                   ResponseTimestamp,
+                   Runtime ?? ResponseTimestamp - Request.RequestTimestamp)
 
         {
 
-            this.Request  = Request;
-            this.Runtime  = ResponseTimestamp - Request.RequestTimestamp;
+            this.Request = Request;
+
+            unchecked
+            {
+                hashCode = this.Request.GetHashCode() * 3 ^
+                           base.        GetHashCode();
+            }
 
         }
 
@@ -96,36 +125,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region IEquatable<AResponse> Members
-
-        ///// <summary>
-        ///// Compares two abstract generic responses for equality.
-        ///// </summary>
-        ///// <param name="AResponse">An abstract generic response to compare with.</param>
-        //public abstract Boolean Equals(TResponse? AResponse);
-
-        #endregion
-
         #endregion
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Request.GetHashCode() * 5 ^
-                       Runtime.GetHashCode() * 3 ^
-
-                       base.GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -147,26 +157,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The machine-readable result code.
         /// </summary>
+        [Mandatory]
         public Result    Result               { get; }
 
         /// <summary>
-        /// The timestamp of the response message creation.
+        /// The timestamp of the response.
         /// </summary>
+        [Mandatory]
         public DateTime  ResponseTimestamp    { get; }
+
+        /// <summary>
+        /// The runtime of the request.
+        /// </summary>
+        [Mandatory]
+        public TimeSpan  Runtime              { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new generic response.
+        /// Create a new abstract generic response.
         /// </summary>
         /// <param name="Result">A generic result.</param>
-        public AResponse(Result  Result)
+        /// <param name="ResponseTimestamp">The timestamp of the response.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public AResponse(Result    Result,
+                         DateTime  ResponseTimestamp,
+                         TimeSpan  Runtime)
         {
 
             this.Result             = Result;
-            this.ResponseTimestamp  = org.GraphDefined.Vanaheimr.Illias.Timestamp.Now;
+            this.ResponseTimestamp  = ResponseTimestamp;
+            this.Runtime            = Runtime;
+
+            unchecked
+            {
+
+                hashCode = this.Result.           GetHashCode() * 5 ^
+                           this.ResponseTimestamp.GetHashCode() * 3 ^
+                           this.Runtime.          GetHashCode();
+
+            }
 
         }
 
@@ -262,20 +294,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Result.           GetHashCode() * 3 ^
-                       ResponseTimestamp.GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

@@ -31,16 +31,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     {
 
         /// <summary>
-        /// The timestamp of the response message creation.
-        /// </summary>
-        [Mandatory]
-        DateTime       ResponseTimestamp    { get; }
-
-        /// <summary>
         /// The machine-readable result code.
         /// </summary>
         [Mandatory]
-        Result         Result               { get; }
+        Result    Result               { get; }
+
+        /// <summary>
+        /// The timestamp of the response.
+        /// </summary>
+        [Mandatory]
+        DateTime  ResponseTimestamp    { get; }
+
+        /// <summary>
+        /// The runtime of the request.
+        /// </summary>
+        [Mandatory]
+        TimeSpan  Runtime              { get; }
 
     }
 

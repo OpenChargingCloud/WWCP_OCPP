@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a StatusNotification WebSocket request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?               OnStatusNotificationWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                   OnStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a StatusNotification request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a WebSocket response to a StatusNotification request was sent.
         /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?   OnStatusNotificationWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnStatusNotificationWSResponse;
 
         #endregion
 

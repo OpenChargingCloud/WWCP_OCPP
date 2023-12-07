@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a TransactionEvent WebSocket request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?               OnTransactionEventWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                   OnTransactionEventWSRequest;
 
         /// <summary>
         /// An event sent whenever a TransactionEvent request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a TransactionEvent WebSocket response was sent.
         /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?   OnTransactionEventWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnTransactionEventWSResponse;
 
         #endregion
 

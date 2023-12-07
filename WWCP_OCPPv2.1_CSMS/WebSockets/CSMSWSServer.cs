@@ -125,8 +125,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Events
 
-        public event OnNewCSMSWSConnectionDelegate?  OnNewCSMSWSConnection;
+        #region Connection Management
 
+        public event OnNewCSMSWebSocketConnectionDelegate?  OnNewCSMSWebSocketConnection;
+
+        #endregion
 
         #region Generic JSON Messages
 
@@ -538,8 +541,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region Store the networking node/charging station identification within the Web Socket connection
 
-            if (!Connection.HasCustomData(networkingNodeId_WebSocketKey) &&
-                Connection.HTTPRequest is not null)
+            if (!Connection.TryGetCustomDataAs(networkingNodeId_WebSocketKey, out NetworkingNode_Id networkingNodeId) &&
+                 Connection.HTTPRequest is not null)
             {
 
                 //ToDo: TLS certificates
@@ -549,7 +552,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 if (Connection.HTTPRequest.Authorization is HTTPBasicAuthentication httpBasicAuthentication)
                 {
 
-                    if (NetworkingNode_Id.TryParse(httpBasicAuthentication.Username, out var networkingNodeId))
+                    if (NetworkingNode_Id.TryParse(httpBasicAuthentication.Username, out networkingNodeId))
                     {
 
                         // Add the networking node/charging station identification to the Web Socket connection
@@ -587,7 +590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 #region No authentication at all...
 
-                else if (NetworkingNode_Id.TryParse(Connection.HTTPRequest.Path.ToString()[(Connection.HTTPRequest.Path.ToString().LastIndexOf("/") + 1)..], out var networkingNodeId))
+                else if (NetworkingNode_Id.TryParse(Connection.HTTPRequest.Path.ToString()[(Connection.HTTPRequest.Path.ToString().LastIndexOf("/") + 1)..], out networkingNodeId))
                 {
 
                     // Add the charging station identification to the WebSocket connection
@@ -627,15 +630,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
             #region Send OnNewCSMSWSConnection event
 
-            var OnNewCSMSWSConnectionLocal = OnNewCSMSWSConnection;
+            var OnNewCSMSWSConnectionLocal = OnNewCSMSWebSocketConnection;
             if (OnNewCSMSWSConnectionLocal is not null)
             {
 
-                OnNewCSMSWSConnection?.Invoke(LogTimestamp,
-                                              this,
-                                              Connection,
-                                              EventTrackingId,
-                                              CancellationToken);
+                OnNewCSMSWebSocketConnection?.Invoke(LogTimestamp,
+                                                     this,
+                                                     Connection,
+                                                     networkingNodeId,
+                                                     EventTrackingId,
+                                                     CancellationToken);
 
             }
 

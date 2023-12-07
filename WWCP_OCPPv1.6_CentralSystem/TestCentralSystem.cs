@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Collections.Concurrent;
+
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
@@ -40,23 +42,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Data
 
-        private          readonly  HashSet<ICentralSystemServer>                               centralSystemServers;
+        private          readonly  HashSet<ICentralSystemServer>                                         centralSystemServers     = [];
 
-        private          readonly  Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>>   reachableChargingBoxes;
+        private          readonly  ConcurrentDictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>>   reachableChargingBoxes   = [];
 
-        private          readonly  HTTPExtAPI                                                  TestAPI;
+        private          readonly  HTTPExtAPI                                                            TestAPI;
 
-        private          readonly  OCPPWebAPI                                                  WebAPI;
+        private          readonly  OCPPWebAPI                                                            WebAPI;
 
-        protected static readonly  SemaphoreSlim                                               ChargeBoxesSemaphore    = new (1, 1);
+        protected static readonly  SemaphoreSlim                                                         ChargeBoxesSemaphore     = new (1, 1);
 
-        protected static readonly  TimeSpan                                                    SemaphoreSlimTimeout    = TimeSpan.FromSeconds(5);
+        protected static readonly  TimeSpan                                                              SemaphoreSlimTimeout     = TimeSpan.FromSeconds(5);
 
-        public    static readonly  IPPort                                                      DefaultHTTPUploadPort   = IPPort.Parse(9901);
+        public    static readonly  IPPort                                                                DefaultHTTPUploadPort    = IPPort.Parse(9901);
 
-        private                    Int64                                                       internalRequestId       = 900000;
+        private                    Int64                                                                 internalRequestId        = 900000;
 
-        private                    TimeSpan                                                    defaultRequestTimeout   = TimeSpan.FromSeconds(30);
+        private                    TimeSpan                                                              defaultRequestTimeout    = TimeSpan.FromSeconds(30);
 
         #endregion
 
@@ -641,25 +643,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region OnNewTCPConnection
 
-        public event OnNewTCPConnectionDelegate?                 OnNewTCPConnection;
+        public event OnNewTCPConnectionDelegate?                      OnNewTCPConnection;
 
-        public event OnNewWebSocketConnectionDelegate?           OnNewWebSocketConnection;
-
-        #endregion
-
-        #region OnMessage
-
-        //public event OnWebSocketMessageDelegate                 OnMessage;
+        public event OnNewCentralSystemWebSocketConnectionDelegate?   OnNewCentralSystemWebSocketConnection;
 
         #endregion
 
         #region OnTextMessage  (Request/Response)
 
-        public event OnWebSocketTextMessageDelegate?      OnTextMessageRequest;
+        public event OnWebSocketTextMessageDelegate?                  OnTextMessageRequest;
 
-        //public event OnWebSocketTextMessageDelegate             OnTextMessage;
+        //public event OnWebSocketTextMessageDelegate                   OnTextMessage;
 
-        public event OnWebSocketTextMessageResponseDelegate?     OnTextMessageResponse;
+        public event OnWebSocketTextMessageResponseDelegate?          OnTextMessageResponse;
 
         #endregion
 
@@ -706,25 +702,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             if (CentralSystemId.IsNullOrEmpty)
                 throw new ArgumentNullException(nameof(CentralSystemId), "The given central system identification must not be null or empty!");
 
-            this.CentralSystemId         = CentralSystemId;
-            this.RequireAuthentication   = RequireAuthentication;
-            this.DefaultRequestTimeout   = DefaultRequestTimeout ?? defaultRequestTimeout;
-            this.HTTPUploadPort          = HTTPUploadPort        ?? DefaultHTTPUploadPort;
-            this.centralSystemServers    = new HashSet<ICentralSystemServer>();
-            this.reachableChargingBoxes  = new Dictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>>();
-            this.chargeBoxes             = new Dictionary<ChargeBox_Id, ChargeBox>();
+            this.CentralSystemId        = CentralSystemId;
+            this.RequireAuthentication  = RequireAuthentication;
+            this.DefaultRequestTimeout  = DefaultRequestTimeout ?? defaultRequestTimeout;
+            this.HTTPUploadPort         = HTTPUploadPort        ?? DefaultHTTPUploadPort;
 
             Directory.CreateDirectory("HTTPSSEs");
 
-            this.TestAPI                 = new HTTPExtAPI(
-                                               HTTPServerPort:        IPPort.Parse(3500),
-                                               HTTPServerName:        "GraphDefined OCPP Test Central System",
-                                               HTTPServiceName:       "GraphDefined OCPP Test Central System Service",
-                                               APIRobotEMailAddress:  EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
-                                               SMTPClient:            new NullMailer(),
-                                               DNSClient:             DNSClient,
-                                               AutoStart:             true
-                                           );
+            this.TestAPI                = new HTTPExtAPI(
+                                              HTTPServerPort:        IPPort.Parse(3500),
+                                              HTTPServerName:        "GraphDefined OCPP v1.6 Test Central System",
+                                              HTTPServiceName:       "GraphDefined OCPP v1.6 Test Central System Service",
+                                              APIRobotEMailAddress:  EMailAddress.Parse("GraphDefined OCPP Test Central System Robot <robot@charging.cloud>"),
+                                              SMTPClient:            new NullMailer(),
+                                              DNSClient:             DNSClient,
+                                              AutoStart:             true
+                                          );
 
             this.TestAPI.HTTPServer.AddAuth(request => {
 
@@ -875,17 +868,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region OnNewWebSocketConnection
 
-            centralSystemServer.OnNewWebSocketConnection += async (Timestamp,
-                                                                   WebSocketServer,
-                                                                   NewWebSocketConnection,
-                                                                   EventTrackingId,
-                                                                   CancellationToken) => {
+            centralSystemServer.OnNewCentralSystemWebSocketConnection += async (Timestamp,
+                                                                                WebSocketServer,
+                                                                                NewWebSocketConnection,
+                                                                                ChargeBoxId,
+                                                                                EventTrackingId,
+                                                                                CancellationToken) => {
 
-                OnNewWebSocketConnection?.Invoke(Timestamp,
-                                                 WebSocketServer,
-                                                 NewWebSocketConnection,
-                                                 EventTrackingId,
-                                                 CancellationToken);
+                OnNewCentralSystemWebSocketConnection?.Invoke(Timestamp,
+                                                              WebSocketServer,
+                                                              NewWebSocketConnection,
+                                                              ChargeBoxId,
+                                                              EventTrackingId,
+                                                              CancellationToken);
 
             };
 
@@ -982,21 +977,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             if (CentralSystemServer is CentralSystemWSServer centralSystemWSServer)
             {
-                centralSystemWSServer.OnNewCentralSystemWSConnection += async (LogTimestamp,
-                                                                               CentralSystem,
-                                                                               Connection,
-                                                                               EventTrackingId,
-                                                                               CancellationToken) =>
+                centralSystemWSServer.OnNewCentralSystemWebSocketConnection += async (timestamp,
+                                                                                      centralSystem,
+                                                                                      connection,
+                                                                                      chargeBoxId,
+                                                                                      eventTrackingId,
+                                                                                      cancellationToken) =>
                 {
 
-                    if (Connection.TryGetCustomDataAs("chargeBoxId", out ChargeBox_Id chargeBoxId))
-                    {
-                        //ToDo: lock(...)
-                        if (!reachableChargingBoxes.ContainsKey(chargeBoxId))
-                            reachableChargingBoxes.Add(chargeBoxId, new Tuple<ICentralSystem, DateTime>(CentralSystem, Timestamp.Now));
-                        else
-                            reachableChargingBoxes[chargeBoxId]   = new Tuple<ICentralSystem, DateTime>(CentralSystem, Timestamp.Now);
-                    }
+                    if (!reachableChargingBoxes.TryAdd(chargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystem, Timestamp.Now)))
+                         reachableChargingBoxes[chargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystem, Timestamp.Now);
 
                 };
             }
@@ -1056,7 +1046,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 {
 
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
 
                     //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
 
@@ -1139,7 +1129,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 {
 
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
 
                     //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
 
@@ -1222,7 +1212,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 {
 
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
 
                     //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
 
@@ -1311,7 +1301,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 {
 
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
 
                     //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
 
@@ -1404,7 +1394,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
                 }
                 else
                 {
@@ -1478,7 +1468,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
                 }
                 else
                 {
@@ -1623,7 +1613,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
                 }
                 else
                 {
@@ -1695,7 +1685,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
                 }
                 else
                 {
@@ -1765,7 +1755,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
                 {
                     if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.Add(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
+                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
                 }
                 else
                 {
@@ -1842,7 +1832,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An enumeration of all charge boxes.
         /// </summary>
-        protected internal readonly Dictionary<ChargeBox_Id, ChargeBox> chargeBoxes;
+        protected internal readonly Dictionary<ChargeBox_Id, ChargeBox> chargeBoxes = [];
 
         /// <summary>
         /// An enumeration of all charge boxes.
@@ -3874,7 +3864,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnResetRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnResetRequest));
             }
 
             #endregion
@@ -3904,7 +3894,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnResetResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnResetResponse));
             }
 
             #endregion
@@ -3970,7 +3960,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnChangeAvailabilityRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnChangeAvailabilityRequest));
             }
 
             #endregion
@@ -4000,7 +3990,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnChangeAvailabilityResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnChangeAvailabilityResponse));
             }
 
             #endregion
@@ -4063,7 +4053,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetConfigurationRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetConfigurationRequest));
             }
 
             #endregion
@@ -4093,7 +4083,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetConfigurationResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetConfigurationResponse));
             }
 
             #endregion
@@ -4159,7 +4149,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnChangeConfigurationRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnChangeConfigurationRequest));
             }
 
             #endregion
@@ -4189,7 +4179,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnChangeConfigurationResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnChangeConfigurationResponse));
             }
 
             #endregion
@@ -4258,7 +4248,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnDataTransferRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDataTransferRequest));
             }
 
             #endregion
@@ -4288,7 +4278,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnDataTransferResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDataTransferResponse));
             }
 
             #endregion
@@ -4363,7 +4353,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetDiagnosticsRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetDiagnosticsRequest));
             }
 
             #endregion
@@ -4393,7 +4383,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetDiagnosticsResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetDiagnosticsResponse));
             }
 
             #endregion
@@ -4459,7 +4449,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnTriggerMessageRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnTriggerMessageRequest));
             }
 
             #endregion
@@ -4489,7 +4479,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnTriggerMessageResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnTriggerMessageResponse));
             }
 
             #endregion
@@ -4561,7 +4551,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnUpdateFirmwareRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateFirmwareRequest));
             }
 
             #endregion
@@ -4591,7 +4581,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnUpdateFirmwareResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateFirmwareResponse));
             }
 
             #endregion
@@ -4667,7 +4657,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnReserveNowRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnReserveNowRequest));
             }
 
             #endregion
@@ -4697,7 +4687,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnReserveNowResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnReserveNowResponse));
             }
 
             #endregion
@@ -4760,7 +4750,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnCancelReservationRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnCancelReservationRequest));
             }
 
             #endregion
@@ -4790,7 +4780,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnCancelReservationResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnCancelReservationResponse));
             }
 
             #endregion
@@ -4859,7 +4849,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnRemoteStartTransactionRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnRemoteStartTransactionRequest));
             }
 
             #endregion
@@ -4889,7 +4879,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnRemoteStartTransactionResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnRemoteStartTransactionResponse));
             }
 
             #endregion
@@ -4952,7 +4942,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnRemoteStopTransactionRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnRemoteStopTransactionRequest));
             }
 
             #endregion
@@ -4982,7 +4972,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnRemoteStopTransactionResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnRemoteStopTransactionResponse));
             }
 
             #endregion
@@ -5048,7 +5038,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSetChargingProfileRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSetChargingProfileRequest));
             }
 
             #endregion
@@ -5078,7 +5068,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSetChargingProfileResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSetChargingProfileResponse));
             }
 
             #endregion
@@ -5150,7 +5140,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnClearChargingProfileRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnClearChargingProfileRequest));
             }
 
             #endregion
@@ -5180,7 +5170,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnClearChargingProfileResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnClearChargingProfileResponse));
             }
 
             #endregion
@@ -5249,7 +5239,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetCompositeScheduleRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetCompositeScheduleRequest));
             }
 
             #endregion
@@ -5279,7 +5269,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetCompositeScheduleResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetCompositeScheduleResponse));
             }
 
             #endregion
@@ -5342,7 +5332,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnUnlockConnectorRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUnlockConnectorRequest));
             }
 
             #endregion
@@ -5372,7 +5362,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnUnlockConnectorResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUnlockConnectorResponse));
             }
 
             #endregion
@@ -5433,7 +5423,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetLocalListVersionRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetLocalListVersionRequest));
             }
 
             #endregion
@@ -5463,7 +5453,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetLocalListVersionResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetLocalListVersionResponse));
             }
 
             #endregion
@@ -5532,7 +5522,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSendLocalListRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendLocalListRequest));
             }
 
             #endregion
@@ -5562,7 +5552,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSendLocalListResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendLocalListResponse));
             }
 
             #endregion
@@ -5622,7 +5612,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnClearCacheRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnClearCacheRequest));
             }
 
             #endregion
@@ -5652,7 +5642,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnClearCacheResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnClearCacheResponse));
             }
 
             #endregion
@@ -5719,7 +5709,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnCertificateSignedRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnCertificateSignedRequest));
             }
 
             #endregion
@@ -5749,7 +5739,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnCertificateSignedResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnCertificateSignedResponse));
             }
 
             #endregion
@@ -5812,7 +5802,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnDeleteCertificateRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteCertificateRequest));
             }
 
             #endregion
@@ -5842,7 +5832,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnDeleteCertificateResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteCertificateResponse));
             }
 
             #endregion
@@ -5908,7 +5898,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnExtendedTriggerMessageRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnExtendedTriggerMessageRequest));
             }
 
             #endregion
@@ -5938,7 +5928,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnExtendedTriggerMessageResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnExtendedTriggerMessageResponse));
             }
 
             #endregion
@@ -6001,7 +5991,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetInstalledCertificateIdsRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetInstalledCertificateIdsRequest));
             }
 
             #endregion
@@ -6031,7 +6021,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetInstalledCertificateIdsResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetInstalledCertificateIdsResponse));
             }
 
             #endregion
@@ -6106,7 +6096,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetLogRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetLogRequest));
             }
 
             #endregion
@@ -6136,7 +6126,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnGetLogResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetLogResponse));
             }
 
             #endregion
@@ -6202,7 +6192,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnInstallCertificateRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnInstallCertificateRequest));
             }
 
             #endregion
@@ -6232,7 +6222,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnInstallCertificateResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnInstallCertificateResponse));
             }
 
             #endregion
@@ -6304,7 +6294,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSignedUpdateFirmwareRequest));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignedUpdateFirmwareRequest));
             }
 
             #endregion
@@ -6334,7 +6324,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnSignedUpdateFirmwareResponse));
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignedUpdateFirmwareResponse));
             }
 
             #endregion

@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate WebSocket request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                OnPullDynamicScheduleUpdateWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                    OnPullDynamicScheduleUpdateWSRequest;
 
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a WebSocket response to a PullDynamicScheduleUpdate was sent.
         /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?    OnPullDynamicScheduleUpdateWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnPullDynamicScheduleUpdateWSResponse;
 
         #endregion
 

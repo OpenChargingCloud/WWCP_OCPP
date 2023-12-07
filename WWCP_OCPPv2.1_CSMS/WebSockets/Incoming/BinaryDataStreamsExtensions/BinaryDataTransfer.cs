@@ -51,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer WebSocket request was received.
         /// </summary>
-        public event WebSocketBinaryRequestLogHandler?                 OnIncomingBinaryDataTransferWSRequest;
+        public event OnOCPPBinaryRequestLogDelegate?                 OnIncomingBinaryDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OnIncomingBinaryDataTransferRequestDelegate?      OnIncomingBinaryDataTransferRequest;
+        public event OnIncomingBinaryDataTransferRequestDelegate?    OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OnIncomingBinaryDataTransferDelegate?             OnIncomingBinaryDataTransfer;
+        public event OnIncomingBinaryDataTransferDelegate?           OnIncomingBinaryDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OnIncomingBinaryDataTransferResponseDelegate?     OnIncomingBinaryDataTransferResponse;
+        public event OnIncomingBinaryDataTransferResponseDelegate?   OnIncomingBinaryDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event WebSocketBinaryRequestBinaryResponseLogHandler?   OnIncomingBinaryDataTransferWSResponse;
+        public event OnOCPPBinaryRequestBinaryResponseLogDelegate?   OnIncomingBinaryDataTransferWSResponse;
 
         #endregion
 

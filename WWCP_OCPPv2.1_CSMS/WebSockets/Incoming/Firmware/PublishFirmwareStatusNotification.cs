@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a PublishFirmwareStatusNotification WebSocket request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?                        OnPublishFirmwareStatusNotificationWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                            OnPublishFirmwareStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a PublishFirmwareStatusNotification request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a WebSocket response to a PublishFirmwareStatusNotification request was sent.
         /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?            OnPublishFirmwareStatusNotificationWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?            OnPublishFirmwareStatusNotificationWSResponse;
 
         #endregion
 

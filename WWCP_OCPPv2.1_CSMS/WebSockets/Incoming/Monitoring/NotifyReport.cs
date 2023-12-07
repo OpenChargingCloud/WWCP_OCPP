@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyReport WebSocket request was received.
         /// </summary>
-        public event WebSocketJSONRequestLogHandler?               OnNotifyReportWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                   OnNotifyReportWSRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyReport request was received.
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyReport was sent.
         /// </summary>
-        public event WebSocketJSONRequestJSONResponseLogHandler?   OnNotifyReportWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnNotifyReportWSResponse;
 
         #endregion
 
