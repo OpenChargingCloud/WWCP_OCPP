@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Threading;
+using System.Collections.Concurrent;
 using System.Security.Authentication;
 
 using Newtonsoft.Json;
@@ -32,7 +34,6 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_0_1.CS;
 using cloud.charging.open.protocols.OCPPv2_0_1.WebSockets;
-using System.Threading;
 
 #endregion
 
@@ -166,30 +167,30 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public const            String                                                                DefaultHTTPServiceName    = "GraphDefined OCPP " + Version.Number + " HTTP/WebSocket/JSON CSMS API";
+        public const            String                                                                          DefaultHTTPServiceName    = "GraphDefined OCPP " + Version.Number + " HTTP/WebSocket/JSON CSMS API";
 
         /// <summary>
         /// The default HTTP server TCP port.
         /// </summary>
-        public static readonly  IPPort                                                                DefaultHTTPServerPort     = IPPort.Parse(2010);
+        public static readonly  IPPort                                                                          DefaultHTTPServerPort     = IPPort.Parse(2010);
 
         /// <summary>
         /// The default HTTP server URI prefix.
         /// </summary>
-        public static readonly  HTTPPath                                                              DefaultURLPrefix          = HTTPPath.Parse("/" + Version.Number);
+        public static readonly  HTTPPath                                                                        DefaultURLPrefix          = HTTPPath.Parse("/" + Version.Number);
 
         /// <summary>
         /// The default request timeout.
         /// </summary>
-        public static readonly  TimeSpan                                                              DefaultRequestTimeout     = TimeSpan.FromMinutes(1);
+        public static readonly  TimeSpan                                                                        DefaultRequestTimeout     = TimeSpan.FromMinutes(1);
 
 
-        private readonly        Dictionary<ChargeBox_Id, Tuple<WebSocketServerConnection, DateTime>>  connectedChargingBoxes;
+        private readonly        ConcurrentDictionary<ChargeBox_Id, Tuple<WebSocketServerConnection, DateTime>>  connectedChargingBoxes    = [];
 
-        private readonly        Dictionary<Request_Id, SendRequestState>                              requests;
+        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                              requests                  = [];
 
 
-        private const           String                                                                LogfileName               = "CSMSWSServer.log";
+        private const           String                                                                          LogfileName               = "CSMSWSServer.log";
 
         #endregion
 
@@ -1864,8 +1865,6 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
             this.RequireAuthentication           = RequireAuthentication;
             this.ChargingBoxLogins               = new Dictionary<ChargeBox_Id, String?>();
-            this.connectedChargingBoxes          = new Dictionary<ChargeBox_Id, Tuple<WebSocketServerConnection, DateTime>>();
-            this.requests                        = new Dictionary<Request_Id, SendRequestState>();
 
             base.OnValidateTCPConnection        += ValidateTCPConnection;
             base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
@@ -1989,12 +1988,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
         #endregion
 
-        #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
+        #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, EventTrackingId, SharedSubprotocols, CancellationToken)
 
         protected Task ProcessNewWebSocketConnection(DateTime                   LogTimestamp,
                                                      IWebSocketServer           Server,
                                                      WebSocketServerConnection  Connection,
                                                      EventTracking_Id           EventTrackingId,
+                                                     IEnumerable<String>        SharedSubprotocols,
                                                      CancellationToken          CancellationToken)
         {
 
@@ -2010,7 +2010,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 {
 
                     if (!connectedChargingBoxes.ContainsKey(chargeBoxId))
-                        connectedChargingBoxes.Add(chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+                        connectedChargingBoxes.TryAdd(chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
 
                     else
                     {
@@ -2019,8 +2019,8 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                         var oldChargingBox_WebSocketConnection = connectedChargingBoxes[chargeBoxId].Item1;
 
-                        connectedChargingBoxes.Remove(chargeBoxId);
-                        connectedChargingBoxes.Add(chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
+                        connectedChargingBoxes.TryRemove(chargeBoxId, out _);
+                        connectedChargingBoxes.TryAdd(chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
 
                         try
                         {
@@ -2075,7 +2075,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 if (Connection.TryGetCustomDataAs<ChargeBox_Id>("chargeBoxId", out var chargeBoxId))
                 {
                     //DebugX.Log(nameof(CSMSWSServer), " Charge box " + chargeBoxId + " disconnected!");
-                    connectedChargingBoxes.Remove(chargeBoxId);
+                    connectedChargingBoxes.TryRemove(chargeBoxId, out _);
                 }
             }
 
@@ -6184,7 +6184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
 
                             lock (requests)
                             {
-                                requests.Remove(RequestId);
+                                requests.TryRemove(RequestId, out _);
                             }
 
                             return sendRequestState;
@@ -6209,7 +6209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                     if (requests.TryGetValue(RequestId, out var sendRequestState) && sendRequestState is not null)
                     {
                         sendRequestState.ErrorCode = ResultCodes.Timeout;
-                        requests.Remove(RequestId);
+                        requests.TryRemove(RequestId, out _);
                         return sendRequestState;
                     }
                 }
@@ -6227,7 +6227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                     if (requests.TryGetValue(RequestId, out var sendRequestState) && sendRequestState is not null)
                     {
                         sendRequestState.ErrorCode = ResultCodes.Timeout;
-                        requests.Remove(RequestId);
+                        requests.TryRemove(RequestId, out _);
                         return sendRequestState;
                     }
                 }
@@ -6291,13 +6291,13 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.CSMS
                 if (webSocketConnections.Any())
                 {
 
-                    requests.Add(RequestId,
-                                 new SendRequestState(
-                                     Timestamp.Now,
-                                     ChargeBoxId,
-                                     wsRequestMessage,
-                                     RequestTimeout
-                                 ));
+                    requests.TryAdd(RequestId,
+                                    new SendRequestState(
+                                        Timestamp.Now,
+                                        ChargeBoxId,
+                                        wsRequestMessage,
+                                        RequestTimeout
+                                    ));
 
                     foreach (var webSocketConnection in webSocketConnections)
                     {

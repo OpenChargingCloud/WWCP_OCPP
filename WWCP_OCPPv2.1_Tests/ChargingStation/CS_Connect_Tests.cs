@@ -109,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             Assert.IsNotNull(testCSMS01);
 
-            testBackendWebSockets01  = testCSMS01.CreateWebSocketService(
+            testBackendWebSockets01  = testCSMS01.AttachWebSocketService(
                                            TCPPort:                 IPPort.Parse(9101),
                                            DisableWebSocketPings:   DisableWebSocketPings,
                                            AutoStart:               true
@@ -140,7 +140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
             // OnValidateWebSocketConnection
 
-            testBackendWebSockets01.OnNewWebSocketConnection      += (timestamp, server, connection, eventTrackingId, cancellationToken) => {
+            testBackendWebSockets01.OnNewWebSocketConnection      += (timestamp, server, connection, eventTrackingId, sharedSubprotocols, cancellationToken) => {
                 return Task.CompletedTask;
             };
 

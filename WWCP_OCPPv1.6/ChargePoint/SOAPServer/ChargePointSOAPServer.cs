@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The default HTTP/SOAP/XML server name.
         /// </summary>
-        public new const           String           DefaultHTTPServerName   = "GraphDefined OCPP " + Version.Number + " HTTP/SOAP/XML Charge Point API";
+        public new const           String           DefaultHTTPServerName   = "GraphDefined OCPP " + Version.String + " HTTP/SOAP/XML Charge Point API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server TCP port.
@@ -53,12 +53,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The default TCP service name shown e.g. on service startup.
         /// </summary>
-        public const               String           DefaultServiceName      = "OCPP " + Version.Number + " charge point API";
+        public const               String           DefaultServiceName      = "OCPP " + Version.String + " charge point API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
         /// </summary>
-        public new static readonly HTTPPath         DefaultURLPrefix        = HTTPPath.Parse("/" + Version.Number);
+        public new static readonly HTTPPath         DefaultURLPrefix        = HTTPPath.Parse("/" + Version.String);
 
         /// <summary>
         /// The default HTTP/SOAP/XML content type.

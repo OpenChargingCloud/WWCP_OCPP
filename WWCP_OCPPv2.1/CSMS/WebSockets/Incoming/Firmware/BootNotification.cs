@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Sender">The sender of the boot notification request.</param>
     /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The boot notification request.</param>
-    /// <param name="CancellationToken">A token to cancel this boot notification request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<BootNotificationResponse>
 
         OnBootNotificationDelegate(DateTime                    Timestamp,

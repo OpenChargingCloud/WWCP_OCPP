@@ -37,12 +37,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="NewConnection">The new HTTP Web Socket connection.</param>
     /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
     /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
+    /// <param name="SharedSubprotocols">An enumeration of shared HTTP Web Sockets subprotocols.</param>
     /// <param name="CancellationToken">A token to cancel the processing.</param>
     public delegate Task OnCSMSNewWebSocketConnectionDelegate        (DateTime                           Timestamp,
                                                                       ICSMSChannel                       CSMSChannel,
                                                                       WebSocketServerConnection          NewConnection,
                                                                       NetworkingNode_Id                  NetworkingNodeId,
                                                                       EventTracking_Id                   EventTrackingId,
+                                                                      IEnumerable<String>                SharedSubprotocols,
                                                                       CancellationToken                  CancellationToken);
 
     /// <summary>
@@ -251,6 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,  // OK!
                                                                   ICSMSChannel                Server,
                                                                   WebSocketServerConnection   Connection,
+                                                                  NetworkingNode_Id           NetworkingNodeId,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
                                                                   JArray                      RequestMessage,
@@ -281,6 +284,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task OnWebSocketBinaryMessageRequestDelegate (DateTime                    Timestamp,
                                                                   ICSMSChannel                Server,
                                                                   WebSocketServerConnection   Connection,
+                                                                  NetworkingNode_Id           NetworkingNodeId,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
                                                                   Byte[]                      RequestMessage,

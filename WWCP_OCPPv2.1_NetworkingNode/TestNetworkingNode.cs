@@ -17403,6 +17403,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                webSocketServer,
                                                                newWebSocketConnection,
                                                                eventTrackingId,
+                                                               sharedSubprotocols,
                                                                cancellationToken) => {
 
                     var logger = OnNewWebSocketConnection;
@@ -17415,6 +17416,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                                                    webSocketServer,
                                                                                                    newWebSocketConnection,
                                                                                                    eventTrackingId,
+                                                                                                   sharedSubprotocols,
                                                                                                    cancellationToken)).
                                                  ToArray();
 

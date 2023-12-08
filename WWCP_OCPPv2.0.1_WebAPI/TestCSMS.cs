@@ -1243,12 +1243,14 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1
                                                                    WebSocketServer,
                                                                    NewWebSocketConnection,
                                                                    EventTrackingId,
+                                                                   SharedSubprotocols,
                                                                    CancellationToken) => {
 
                 OnNewWebSocketConnection?.Invoke(Timestamp,
                                                  WebSocketServer,
                                                  NewWebSocketConnection,
                                                  EventTrackingId,
+                                                 SharedSubprotocols,
                                                  CancellationToken);
 
             };

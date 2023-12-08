@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The default HTTP/SOAP/XML server name.
         /// </summary>
-        public new const           String           DefaultHTTPServerName  = "GraphDefined OCPP " + Version.Number + " HTTP/SOAP/XML Central System API";
+        public new const           String           DefaultHTTPServerName  = "GraphDefined OCPP " + Version.String + " HTTP/SOAP/XML Central System API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server TCP port.
@@ -52,12 +52,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The default TCP service name shown e.g. on service startup.
         /// </summary>
-        public     const           String           DefaultServiceName     = "OCPP " + Version.Number + " Central System API";
+        public     const           String           DefaultServiceName     = "OCPP " + Version.String + " Central System API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
         /// </summary>
-        public new static readonly HTTPPath         DefaultURLPrefix       = HTTPPath.Parse("/" + Version.Number);
+        public new static readonly HTTPPath         DefaultURLPrefix       = HTTPPath.Parse("/" + Version.String);
 
         /// <summary>
         /// The default HTTP/SOAP/XML content type.
@@ -527,6 +527,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                       this,
+                                                                                                                      null,
                                                                                                                       request,
                                                                                                                       Request.CancellationToken)).
                                           ToArray();
@@ -689,6 +690,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)?.Invoke(Timestamp.Now,
                                                                                                                this,
+                                                                                                               null,
                                                                                                                request,
                                                                                                                Request.CancellationToken)).
                                           ToArray();
@@ -852,6 +854,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)?.Invoke(Timestamp.Now,
                                                                                                                this,
+                                                                                                               null,
                                                                                                                request,
                                                                                                                Request.CancellationToken)).
                                           ToArray();
@@ -1014,6 +1017,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStartTransactionDelegate)?.Invoke(Timestamp.Now,
                                                                                                                       this,
+                                                                                                                      null,
                                                                                                                       request,
                                                                                                                       Request.CancellationToken)).
                                           ToArray();
@@ -1176,6 +1180,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                         this,
+                                                                                                                        null,
                                                                                                                         request,
                                                                                                                         Request.CancellationToken)).
                                           ToArray();
@@ -1338,6 +1343,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)?.Invoke(Timestamp.Now,
                                                                                                                  this,
+                                                                                                                 null,
                                                                                                                  request,
                                                                                                                  Request.CancellationToken)).
                                           ToArray();
@@ -1500,6 +1506,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStopTransactionDelegate)?.Invoke(Timestamp.Now,
                                                                                                                      this,
+                                                                                                                     null,
                                                                                                                      request,
                                                                                                                      Request.CancellationToken)).
                                           ToArray();
@@ -1664,6 +1671,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                           this,
+                                                                                                                          null,
                                                                                                                           request,
                                                                                                                           Request.CancellationToken)).
                                           ToArray();
@@ -1827,6 +1835,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                    this,
+                                                                                                                                   null,
                                                                                                                                    request,
                                                                                                                                    Request.CancellationToken)).
                                           ToArray();
@@ -1990,6 +1999,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                 this,
+                                                                                                                                null,
                                                                                                                                 request,
                                                                                                                                 Request.CancellationToken)).
                                           ToArray();

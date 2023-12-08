@@ -33,7 +33,6 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
-using System.Threading;
 
 #endregion
 
@@ -531,12 +530,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #endregion
 
-        #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, EventTrackingId, CancellationToken)
+        #region (protected) ProcessNewWebSocketConnection(LogTimestamp, Server, Connection, EventTrackingId, SharedSubprotocols, CancellationToken)
 
         protected async Task ProcessNewWebSocketConnection(DateTime                   LogTimestamp,
                                                            IWebSocketServer           Server,
                                                            WebSocketServerConnection  Connection,
                                                            EventTracking_Id           EventTrackingId,
+                                                           IEnumerable<String>        SharedSubprotocols,
                                                            CancellationToken          CancellationToken)
         {
 
@@ -642,6 +642,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                                                            Connection,
                                                                                            networkingNodeId,
                                                                                            EventTrackingId,
+                                                                                           SharedSubprotocols,
                                                                                            CancellationToken)).
                                          ToArray();
 
@@ -747,57 +748,48 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
-                var jsonArray = JArray.Parse(TextMessage);
+                var jsonArray        = JArray.Parse(TextMessage);
+                var networkingNodeId = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
 
                 if      (OCPP_JSONRequestMessage. TryParse(jsonArray, out var jsonRequest,  out var requestParsingError)  && jsonRequest       is not null)
                 {
 
                     #region OnTextMessageRequestReceived
 
-                    var requestLogger = OnJSONMessageRequestReceived;
-                    if (requestLogger is not null)
+                    var onJSONMessageRequestReceived = OnJSONMessageRequestReceived;
+                    if (onJSONMessageRequestReceived is not null)
                     {
-
-                        var loggerTasks = requestLogger.GetInvocationList().
-                                                        OfType <OnWebSocketJSONMessageRequestDelegate>().
-                                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                                          this,
-                                                                                                          Connection,
-                                                                                                          EventTrackingId,
-                                                                                                          Timestamp.Now,
-                                                                                                          jsonArray,
-                                                                                                          CancellationToken)).
-                                                        ToArray();
-
                         try
                         {
-                            await Task.WhenAll(loggerTasks);
+
+                            await Task.WhenAll(onJSONMessageRequestReceived.GetInvocationList().
+                                                   OfType <OnWebSocketJSONMessageRequestDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  this,
+                                                                                  Connection,
+                                                                                  networkingNodeId,
+                                                                                  EventTrackingId,
+                                                                                  Timestamp.Now,
+                                                                                  jsonArray,
+                                                                                  CancellationToken
+                                                                              )).
+                                                   ToArray());
+
                         }
                         catch (Exception e)
                         {
                             DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnJSONMessageRequestReceived));
                         }
-
                     }
 
                     #endregion
 
                     #region Initial checks
 
-                    var networkingNodeId   = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey);
-                    var requestData        = jsonArray[3]?.Value<JObject>();
+                    var requestData = jsonArray[3]?.Value<JObject>();
 
-                    if (!networkingNodeId.HasValue)
-                        OCPPErrorResponse  = new OCPP_JSONErrorMessage(
-                                                 jsonRequest.RequestId,
-                                                 ResultCode.ProtocolError,
-                                                 "The given 'charging station identity' must not be null or empty!",
-                                                 new JObject(
-                                                     new JProperty("request", TextMessage)
-                                                 )
-                                             );
-
-                    else if (requestData is null)
+                    if (requestData is null)
                         OCPPErrorResponse  = new OCPP_JSONErrorMessage(
                                                  jsonRequest.RequestId,
                                                  ResultCode.ProtocolError,
@@ -819,8 +811,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         var networkPath = jsonRequest.NetworkPath ?? NetworkPath.Empty;
 
-                        if (networkPath.Sender! != networkingNodeId.Value)
-                            networkPath.Append(networkingNodeId.Value);
+                        if (networkPath.Sender! != networkingNodeId)
+                            networkPath.Append(networkingNodeId);
 
                         #endregion
 
@@ -828,7 +820,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         var result = methodInfo.Invoke(this,
                                                        [ RequestTimestamp,
                                                          Connection,
-                                                         networkingNodeId.Value,
+                                                         networkingNodeId,
                                                          networkPath,
                                                          EventTrackingId,
                                                          jsonRequest.RequestId,
@@ -867,43 +859,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     #endregion
 
 
-                    #region OnTextMessageResponseSent
+                    #region OnJSONMessageResponseSent
 
                     var now = Timestamp.Now;
 
                     if (OCPPResponse is not null || OCPPErrorResponse is not null)
                     {
 
-                        var logger = OnJSONMessageResponseSent;
-                        if (logger is not null)
+                        var onJSONMessageResponseSent = OnJSONMessageResponseSent;
+                        if (onJSONMessageResponseSent is not null)
                         {
-
-                            var loggerTasks = logger.GetInvocationList().
-                                                     OfType <OnWebSocketJSONMessageResponseDelegate>().
-                                                     Select (loggingDelegate => loggingDelegate.Invoke(now,
-                                                                                                       this,
-                                                                                                       Connection,
-                                                                                                       EventTrackingId,
-                                                                                                       RequestTimestamp,
-                                                                                                       jsonArray,
-                                                                                                       null,
-                                                                                                       now,
-                                                                                                       OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON())).
-
-                                                                                                       //ToDo: For some use cases returning an error to a charging station might be useless!
-
-                                                                                                       //OCPPResponse?.ToJSON()?.ToString(JSONFormatting));
-                                                     ToArray();
-
                             try
                             {
-                                await Task.WhenAll(loggerTasks);
+
+                                await Task.WhenAll(onJSONMessageResponseSent.GetInvocationList().
+                                                       OfType <OnWebSocketJSONMessageResponseDelegate>().
+                                                       Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                      now,
+                                                                                      this,
+                                                                                      Connection,
+                                                                                      EventTrackingId,
+                                                                                      RequestTimestamp,
+                                                                                      jsonArray,
+                                                                                      [],
+                                                                                      now,
+                                                                                      //ToDo: For some use cases returning an error to a charging station might be useless!
+                                                                                      OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? []
+                                                                                  )).
+                                                       ToArray());
+
                             }
                             catch (Exception e)
                             {
                                 DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnJSONMessageResponseSent));
                             }
-
                         }
 
                     }
@@ -922,25 +911,34 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         sendRequestState.ResponseTimestamp  = Timestamp.Now;
                         sendRequestState.JSONResponse       = jsonResponse;
 
-                        #region OnTextMessageResponseReceived
+                        #region OnJSONMessageResponseReceived
 
-                        try
+                        var onJSONMessageResponseReceived = OnJSONMessageResponseReceived;
+                        if (onJSONMessageResponseReceived is not null)
                         {
+                            try
+                            {
 
-                            OnJSONMessageResponseReceived?.Invoke(Timestamp.Now,
-                                                                  this,
-                                                                  Connection,
-                                                                  EventTrackingId,
-                                                                  sendRequestState.RequestTimestamp,
-                                                                  sendRequestState.JSONRequest?.  ToJSON()      ?? [],
-                                                                  sendRequestState.BinaryRequest?.ToByteArray() ?? [],
-                                                                  Timestamp.Now,
-                                                                  sendRequestState.JSONResponse.  ToJSON());
+                                await Task.WhenAll(onJSONMessageResponseReceived.GetInvocationList().
+                                                       OfType <OnWebSocketJSONMessageResponseDelegate>().
+                                                       Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                      Timestamp.Now,
+                                                                                      this,
+                                                                                      Connection,
+                                                                                      EventTrackingId,
+                                                                                      sendRequestState.RequestTimestamp,
+                                                                                      sendRequestState.JSONRequest?.  ToJSON()      ?? [],
+                                                                                      sendRequestState.BinaryRequest?.ToByteArray() ?? [],
+                                                                                      Timestamp.Now,
+                                                                                      sendRequestState.JSONResponse.  ToJSON()
+                                                                                  )).
+                                                       ToArray());
 
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnJSONMessageResponseReceived));
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnJSONMessageResponseReceived));
+                            }
                         }
 
                         #endregion
@@ -964,29 +962,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         else
                             sendRequestState.ErrorCode = ResultCode.GenericError;
 
-                        sendRequestState.JSONResponse          = null;
+                        sendRequestState.JSONResponse      = null;
                         sendRequestState.ErrorDescription  = jsonArray[3]?.Value<String>();
                         sendRequestState.ErrorDetails      = jsonArray[4] as JObject;
 
-                        #region OnTextErrorResponseReceived
+                        #region OnJSONErrorResponseReceived
 
-                        try
+                        var onJSONErrorResponseReceived = OnJSONErrorResponseReceived;
+                        if (onJSONErrorResponseReceived is not null)
                         {
+                            try
+                            {
 
-                            OnJSONErrorResponseReceived?.Invoke(Timestamp.Now,
-                                                                this,
-                                                                Connection,
-                                                                EventTrackingId,
-                                                                sendRequestState.RequestTimestamp,
-                                                                sendRequestState.JSONRequest?.  ToJSON().ToString(JSONFormatting) ?? "",
-                                                                sendRequestState.BinaryRequest?.ToByteArray()                     ?? [],
-                                                                Timestamp.Now,
-                                                                sendRequestState.JSONResponse?. ToString());
+                                await Task.WhenAll(onJSONErrorResponseReceived.GetInvocationList().
+                                                       OfType <OnWebSocketTextErrorResponseDelegate>().
+                                                       Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                      Timestamp.Now,
+                                                                                      this,
+                                                                                      Connection,
+                                                                                      EventTrackingId,
+                                                                                      sendRequestState.RequestTimestamp,
+                                                                                      sendRequestState.JSONRequest?.  ToJSON().ToString(JSONFormatting) ?? "",
+                                                                                      sendRequestState.BinaryRequest?.ToByteArray()                     ?? [],
+                                                                                      Timestamp.Now,
+                                                                                      sendRequestState.JSONResponse?. ToString() ?? ""
+                                                                                  )).
+                                                       ToArray());
 
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnJSONErrorResponseReceived));
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnJSONErrorResponseReceived));
+                            }
                         }
 
                         #endregion
@@ -1020,38 +1027,39 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
 
 
-            #region OnTextErrorResponseSent
+            #region OnJSONErrorResponseSent
 
             if (OCPPErrorResponse is not null)
             {
 
-                var now    = Timestamp.Now;
-                var logger = OnJSONErrorResponseSent;
-                if (logger is not null)
+                var now = Timestamp.Now;
+
+                var onJSONErrorResponseSent = OnJSONErrorResponseSent;
+                if (onJSONErrorResponseSent is not null)
                 {
-
-                    var loggerTasks = logger.GetInvocationList().
-                                             OfType <OnWebSocketTextErrorResponseDelegate>().
-                                             Select (loggingDelegate => loggingDelegate.Invoke(now,
-                                                                                               this,
-                                                                                               Connection,
-                                                                                               EventTrackingId,
-                                                                                               RequestTimestamp,
-                                                                                               TextMessage,
-                                                                                               null,
-                                                                                               now,
-                                                                                               (OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON())?.ToString(JSONFormatting))).
-                                             ToArray();
-
                     try
                     {
-                        await Task.WhenAll(loggerTasks);
+
+                        await Task.WhenAll(onJSONErrorResponseSent.GetInvocationList().
+                                               OfType <OnWebSocketTextErrorResponseDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              now,
+                                                                              this,
+                                                                              Connection,
+                                                                              EventTrackingId,
+                                                                              RequestTimestamp,
+                                                                              TextMessage,
+                                                                              [],
+                                                                              now,
+                                                                              (OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON())?.ToString(JSONFormatting) ?? ""
+                                                                          )).
+                                               ToArray());
+
                     }
                     catch (Exception e)
                     {
                         DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnJSONErrorResponseSent));
                     }
-
                 }
 
             }
@@ -1095,54 +1103,42 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             try
             {
 
+                var networkingNodeId = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey) ?? NetworkingNode_Id.Zero;
+
                      if (OCPP_BinaryRequestMessage. TryParse(BinaryMessage, out var binaryRequest,  out var requestParsingError)  && binaryRequest  is not null)
                 {
 
                     #region OnBinaryMessageRequestReceived
 
-                    var requestLogger = OnBinaryMessageRequestReceived;
-                    if (requestLogger is not null)
+                    var onBinaryMessageRequestReceived = OnBinaryMessageRequestReceived;
+                    if (onBinaryMessageRequestReceived is not null)
                     {
-
-                        var loggerTasks = requestLogger.GetInvocationList().
-                                                        OfType <OnWebSocketBinaryMessageRequestDelegate>().
-                                                        Select (loggingDelegate => loggingDelegate.Invoke(Timestamp.Now,
-                                                                                                          this,
-                                                                                                          Connection,
-                                                                                                          EventTrackingId,
-                                                                                                          Timestamp.Now,
-                                                                                                          BinaryMessage,
-                                                                                                          CancellationToken)).
-                                                        ToArray();
-
                         try
                         {
-                            await Task.WhenAll(loggerTasks);
+
+                            await Task.WhenAll(onBinaryMessageRequestReceived.GetInvocationList().
+                                                   OfType <OnWebSocketBinaryMessageRequestDelegate>().
+                                                   Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                  Timestamp.Now,
+                                                                                  this,
+                                                                                  Connection,
+                                                                                  networkingNodeId,
+                                                                                  EventTrackingId,
+                                                                                  Timestamp.Now,
+                                                                                  BinaryMessage,
+                                                                                  CancellationToken
+                                                                              )).
+                                                   ToArray());
+
                         }
                         catch (Exception e)
                         {
                             DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBinaryMessageRequestReceived));
                         }
-
                     }
 
                     #endregion
 
-                    #region Initial checks
-
-                    var networkingNodeId   = Connection.TryGetCustomDataAs<NetworkingNode_Id>(networkingNodeId_WebSocketKey);
-
-                    if (!networkingNodeId.HasValue)
-                        OCPPErrorResponse  = new OCPP_JSONErrorMessage(
-                                                 binaryRequest.RequestId,
-                                                 ResultCode.ProtocolError,
-                                                 "The given 'charging station identity' must not be null or empty!",
-                                                 new JObject(
-                                                     new JProperty("request", BinaryMessage.ToBase64())
-                                                 )
-                                             );
-
-                    #endregion
 
                     #region Try to call the matching 'incoming message processor'
 
@@ -1153,7 +1149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         var result = methodInfo.Invoke(this,
                                                        [ RequestTimestamp,
                                                          Connection,
-                                                         networkingNodeId.Value,
+                                                         networkingNodeId,
                                                          NetworkPath.Empty,
                                                          EventTrackingId,
                                                          binaryRequest.RequestId,
@@ -1202,23 +1198,32 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         #region OnBinaryMessageResponseReceived
 
-                        try
+                        var onBinaryMessageResponseReceived = OnBinaryMessageResponseReceived;
+                        if (onBinaryMessageResponseReceived is not null)
                         {
+                            try
+                            {
 
-                            OnBinaryMessageResponseReceived?.Invoke(Timestamp.Now,
-                                                                    this,
-                                                                    Connection,
-                                                                    EventTrackingId,
-                                                                    sendRequestState.RequestTimestamp,
-                                                                    sendRequestState.JSONRequest?.  ToJSON()      ?? [],
-                                                                    sendRequestState.BinaryRequest?.ToByteArray() ?? [],
-                                                                    sendRequestState.ResponseTimestamp.Value,
-                                                                    sendRequestState.BinaryResponse.ToByteArray());
+                                await Task.WhenAll(onBinaryMessageResponseReceived.GetInvocationList().
+                                                       OfType <OnWebSocketBinaryMessageResponseDelegate>().
+                                                       Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                      Timestamp.Now,
+                                                                                      this,
+                                                                                      Connection,
+                                                                                      EventTrackingId,
+                                                                                      sendRequestState.RequestTimestamp,
+                                                                                      sendRequestState.JSONRequest?.  ToJSON()      ?? [],
+                                                                                      sendRequestState.BinaryRequest?.ToByteArray() ?? [],
+                                                                                      sendRequestState.ResponseTimestamp.Value,
+                                                                                      sendRequestState.BinaryResponse.ToByteArray()
+                                                                                  )).
+                                                       ToArray());
 
-                        }
-                        catch (Exception e)
-                        {
-                            DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBinaryMessageResponseReceived));
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnBinaryMessageResponseReceived));
+                            }
                         }
 
                         #endregion

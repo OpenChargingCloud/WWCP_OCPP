@@ -48,7 +48,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The default HTTP user agent string.
         /// </summary>
-        public new const           String  DefaultHTTPUserAgent  = "GraphDefined OCPP " + Version.Number + " Central System SOAP Client";
+        public new const           String  DefaultHTTPUserAgent  = "GraphDefined OCPP " + Version.String + " Central System SOAP Client";
 
         /// <summary>
         /// The default remote TCP port to connect to.

@@ -590,6 +590,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.OnJSONMessageRequestReceived += async (timestamp,
                                                         webSocketServer,
                                                         webSocketConnection,
+                                                        networkingNodeId,
                                                         eventTrackingId,
                                                         requestTimestamp,
                                                         requestMessage,
@@ -652,6 +653,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.OnJSONMessageRequestSent += async (timestamp,
                                                     webSocketServer,
                                                     webSocketConnection,
+                                                    networkingNodeId,
                                                     eventTrackingId,
                                                     requestTimestamp,
                                                     requestMessage,
@@ -717,6 +719,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.OnBinaryMessageRequestReceived += async (timestamp,
                                                           webSocketServer,
                                                           webSocketConnection,
+                                                          networkingNodeId,
                                                           eventTrackingId,
                                                           requestTimestamp,
                                                           requestMessage,
@@ -779,6 +782,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.OnBinaryMessageRequestSent += async (timestamp,
                                                       webSocketServer,
                                                       webSocketConnection,
+                                                      networkingNodeId,
                                                       eventTrackingId,
                                                       requestTimestamp,
                                                       requestMessage,
@@ -2763,11 +2767,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                      eventTrackingId,
                                                      cancellationToken) =>
 
-                await this.EventLog.SubmitEvent("OnNewTCPConnection",
-                                                JSONObject.Create(
-                                                    new JProperty("timestamp",    logTimestamp.ToIso8601()),
-                                                    new JProperty("connection",   connection.  ToJSON())
-                                                ));
+                await EventLog.SubmitEvent(
+                          "OnNewTCPConnection",
+                          JSONObject.Create(
+                              new JProperty("timestamp",        logTimestamp.   ToIso8601()),
+                              new JProperty("connection",       connection.     ToJSON()),
+                              new JProperty("eventTrackingId",  eventTrackingId.ToString())
+                          )
+                      );
 
             #endregion
 
@@ -2777,13 +2784,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            sender,
                                                            connection,
                                                            eventTrackingId,
+                                                           sharedSubprotocols,
                                                            cancellationToken) =>
 
-                await this.EventLog.SubmitEvent("OnNewWebSocketConnection",
-                                                JSONObject.Create(
-                                                    new JProperty("timestamp",    logTimestamp.ToIso8601()),
-                                                    new JProperty("connection",   connection.  ToJSON())
-                                                ));
+                await EventLog.SubmitEvent(
+                          "OnNewWebSocketConnection",
+                          JSONObject.Create(
+                              new JProperty("timestamp",           logTimestamp.   ToIso8601()),
+                              new JProperty("connection",          connection.     ToJSON()),
+                              new JProperty("eventTrackingId",     eventTrackingId.ToString()),
+                              new JProperty("sharedSubprotocols",  new JArray(sharedSubprotocols))
+                          )
+                      );
 
             #endregion
 
@@ -2797,13 +2809,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                          reason,
                                                          cancellationToken) =>
 
-                await this.EventLog.SubmitEvent("OnCloseMessageReceived",
-                                                JSONObject.Create(
-                                                    new JProperty("timestamp",    logTimestamp.ToIso8601()),
-                                                    new JProperty("connection",   connection.  ToJSON()),
-                                                    new JProperty("statusCode",   statusCode.  ToString()),
-                                                    new JProperty("reason",       reason)
-                                                ));
+                await EventLog.SubmitEvent(
+                          "OnCloseMessageReceived",
+                          JSONObject.Create(
+                              new JProperty("timestamp",        logTimestamp.   ToIso8601()),
+                              new JProperty("connection",       connection.     ToJSON()),
+                              new JProperty("eventTrackingId",  eventTrackingId.ToString()),
+                              new JProperty("statusCode",       statusCode.     ToString()),
+                              new JProperty("reason",           reason)
+                          )
+                      );
 
             #endregion
 
@@ -2812,16 +2827,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMSChannel.OnTCPConnectionClosed += async (logTimestamp,
                                                         sender,
                                                         connection,
-                                                        reason,
                                                         eventTrackingId,
+                                                        reason,
                                                         cancellationToken) =>
 
-                await this.EventLog.SubmitEvent("OnTCPConnectionClosed",
-                                                JSONObject.Create(
-                                                    new JProperty("timestamp",    logTimestamp.ToIso8601()),
-                                                    new JProperty("connection",   connection.  ToJSON()),
-                                                    new JProperty("reason",       reason)
-                                                ));
+                await EventLog.SubmitEvent(
+                          "OnTCPConnectionClosed",
+                          JSONObject.Create(
+                              new JProperty("timestamp",        logTimestamp.   ToIso8601()),
+                              new JProperty("connection",       connection.     ToJSON()),
+                              new JProperty("eventTrackingId",  eventTrackingId.ToString()),
+                              new JProperty("reason",           reason)
+                          )
+                      );
 
             #endregion
 

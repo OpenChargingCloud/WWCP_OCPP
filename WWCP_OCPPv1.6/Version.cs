@@ -25,14 +25,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     {
 
         /// <summary>
-        /// The current OCPP version.
+        /// This OCPP version 1.6 as text "v1.6".
         /// </summary>
-        public const String Number                  = "v1.6";
+        public const            String      String                   = "v1.6";
+
+        /// <summary>
+        /// This OCPP version "1.6" as version identification.
+        /// </summary>
+        public readonly static  Version_Id  Id                       = Version_Id.Parse(String[1..]);
 
         /// <summary>
         /// The current OCPP version identification for the HTTP Websocket connection setup.
         /// </summary>
-        public const String WebSocketSubProtocolId  = "ocpp1.6";
+        public const            String      WebSocketSubProtocolId   = "ocpp1.6";
 
     }
 

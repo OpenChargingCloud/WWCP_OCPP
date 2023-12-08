@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
@@ -42,14 +43,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// A boot notification.
     /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Timestamp">The timestamp of the boot notification request.</param>
+    /// <param name="Sender">The sender of the boot notification request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The boot notification request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<BootNotificationResponse>
 
         OnBootNotificationDelegate(DateTime                    Timestamp,
                                    IEventSender                Sender,
+                                   WebSocketServerConnection   Connection,
                                    CP.BootNotificationRequest  Request,
                                    CancellationToken           CancellationToken);
 
@@ -92,14 +95,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The heartbeat request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<HeartbeatResponse>
 
-        OnHeartbeatDelegate(DateTime             Timestamp,
-                            IEventSender         Sender,
-                            CP.HeartbeatRequest  Request,
-                            CancellationToken    CancellationToken);
+        OnHeartbeatDelegate(DateTime                    Timestamp,
+                            IEventSender                Sender,
+                            WebSocketServerConnection   Connection,
+                            CP.HeartbeatRequest         Request,
+                            CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -141,14 +146,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The authorize request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<AuthorizeResponse>
 
-        OnAuthorizeDelegate(DateTime             Timestamp,
-                            IEventSender         Sender,
-                            CP.AuthorizeRequest  Request,
-                            CancellationToken    CancellationToken);
+        OnAuthorizeDelegate(DateTime                    Timestamp,
+                            IEventSender                Sender,
+                            WebSocketServerConnection   Connection,
+                            CP.AuthorizeRequest         Request,
+                            CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -189,12 +196,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The start transaction request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<StartTransactionResponse>
 
         OnStartTransactionDelegate(DateTime                    Timestamp,
                                    IEventSender                Sender,
+                                   WebSocketServerConnection   Connection,
                                    CP.StartTransactionRequest  Request,
                                    CancellationToken           CancellationToken);
 
@@ -237,12 +246,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The status notification request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<StatusNotificationResponse>
 
         OnStatusNotificationDelegate(DateTime                      Timestamp,
                                      IEventSender                  Sender,
+                                     WebSocketServerConnection     Connection,
                                      CP.StatusNotificationRequest  Request,
                                      CancellationToken             CancellationToken);
 
@@ -285,14 +296,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The meter values request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<MeterValuesResponse>
 
-        OnMeterValuesDelegate(DateTime               Timestamp,
-                              IEventSender           Sender,
-                              CP.MeterValuesRequest  Request,
-                              CancellationToken      CancellationToken);
+        OnMeterValuesDelegate(DateTime                    Timestamp,
+                              IEventSender                Sender,
+                              WebSocketServerConnection   Connection,
+                              CP.MeterValuesRequest       Request,
+                              CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -323,9 +336,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Request">The stop transaction request.</param>
     public delegate Task
 
-        OnStopTransactionRequestDelegate(DateTime                   Timestamp,
-                                         IEventSender               Sender,
-                                         CP.StopTransactionRequest  Request);
+        OnStopTransactionRequestDelegate(DateTime                    Timestamp,
+                                         IEventSender                Sender,
+                                         CP.StopTransactionRequest   Request);
 
 
     /// <summary>
@@ -333,14 +346,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The stop transaction request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<StopTransactionResponse>
 
-        OnStopTransactionDelegate(DateTime                   Timestamp,
-                                  IEventSender               Sender,
-                                  CP.StopTransactionRequest  Request,
-                                  CancellationToken          CancellationToken);
+        OnStopTransactionDelegate(DateTime                    Timestamp,
+                                  IEventSender                Sender,
+                                  WebSocketServerConnection   Connection,
+                                  CP.StopTransactionRequest   Request,
+                                  CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -353,11 +368,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnStopTransactionResponseDelegate(DateTime                    Timestamp,
-                                          IEventSender                Sender,
-                                          CP.StopTransactionRequest   Request,
-                                          CS.StopTransactionResponse  Response,
-                                          TimeSpan                    Runtime);
+        OnStopTransactionResponseDelegate(DateTime                     Timestamp,
+                                          IEventSender                 Sender,
+                                          CP.StopTransactionRequest    Request,
+                                          CS.StopTransactionResponse   Response,
+                                          TimeSpan                     Runtime);
 
     #endregion
 
@@ -372,9 +387,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Request">The data transfer request.</param>
     public delegate Task
 
-        OnIncomingDataTransferRequestDelegate(DateTime                Timestamp,
-                                              IEventSender            Sender,
-                                              CP.DataTransferRequest  Request);
+        OnIncomingDataTransferRequestDelegate(DateTime                 Timestamp,
+                                              IEventSender             Sender,
+                                              CP.DataTransferRequest   Request);
 
 
     /// <summary>
@@ -382,14 +397,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The data transfer request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<DataTransferResponse>
 
-        OnIncomingDataTransferDelegate(DateTime                Timestamp,
-                                       IEventSender            Sender,
-                                       CP.DataTransferRequest  Request,
-                                       CancellationToken       CancellationToken);
+        OnIncomingDataTransferDelegate(DateTime                    Timestamp,
+                                       IEventSender                Sender,
+                                       WebSocketServerConnection   Connection,
+                                       CP.DataTransferRequest      Request,
+                                       CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -402,11 +419,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnIncomingDataTransferResponseDelegate(DateTime                 Timestamp,
-                                               IEventSender             Sender,
-                                               CP.DataTransferRequest   Request,
-                                               CS.DataTransferResponse  Response,
-                                               TimeSpan                 Runtime);
+        OnIncomingDataTransferResponseDelegate(DateTime                  Timestamp,
+                                               IEventSender              Sender,
+                                               CP.DataTransferRequest    Request,
+                                               CS.DataTransferResponse   Response,
+                                               TimeSpan                  Runtime);
 
     #endregion
 
@@ -420,9 +437,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Request">The diagnostics status notification request.</param>
     public delegate Task
 
-        OnDiagnosticsStatusNotificationRequestDelegate(DateTime                                 Timestamp,
-                                                       IEventSender                             Sender,
-                                                       CP.DiagnosticsStatusNotificationRequest  Request);
+        OnDiagnosticsStatusNotificationRequestDelegate(DateTime                                  Timestamp,
+                                                       IEventSender                              Sender,
+                                                       CP.DiagnosticsStatusNotificationRequest   Request);
 
 
     /// <summary>
@@ -430,14 +447,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="Request">The diagnostics status notification request.</param>
     public delegate Task<DiagnosticsStatusNotificationResponse>
 
-        OnDiagnosticsStatusNotificationDelegate(DateTime                                 Timestamp,
-                                                IEventSender                             Sender,
-                                                CP.DiagnosticsStatusNotificationRequest  Request,
-                                                CancellationToken                        CancellationToken);
+        OnDiagnosticsStatusNotificationDelegate(DateTime                                  Timestamp,
+                                                IEventSender                              Sender,
+                                                WebSocketServerConnection                 Connection,
+                                                CP.DiagnosticsStatusNotificationRequest   Request,
+                                                CancellationToken                         CancellationToken);
 
 
     /// <summary>
@@ -450,11 +469,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnDiagnosticsStatusNotificationResponseDelegate(DateTime                                  Timestamp,
-                                                        IEventSender                              Sender,
-                                                        CP.DiagnosticsStatusNotificationRequest   Request,
-                                                        CS.DiagnosticsStatusNotificationResponse  Response,
-                                                        TimeSpan                                  Runtime);
+        OnDiagnosticsStatusNotificationResponseDelegate(DateTime                                   Timestamp,
+                                                        IEventSender                               Sender,
+                                                        CP.DiagnosticsStatusNotificationRequest    Request,
+                                                        CS.DiagnosticsStatusNotificationResponse   Response,
+                                                        TimeSpan                                   Runtime);
 
     #endregion
 
@@ -469,9 +488,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
     public delegate Task
 
-        OnFirmwareStatusNotificationRequestDelegate(DateTime                              Timestamp,
-                                                    IEventSender                          Sender,
-                                                    CP.FirmwareStatusNotificationRequest  Request);
+        OnFirmwareStatusNotificationRequestDelegate(DateTime                               Timestamp,
+                                                    IEventSender                           Sender,
+                                                    CP.FirmwareStatusNotificationRequest   Request);
 
 
     /// <summary>
@@ -479,14 +498,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The firmware status notification request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<FirmwareStatusNotificationResponse>
 
-        OnFirmwareStatusNotificationDelegate(DateTime                              Timestamp,
-                                             IEventSender                          Sender,
-                                             CP.FirmwareStatusNotificationRequest  Request,
-                                             CancellationToken                     CancellationToken);
+        OnFirmwareStatusNotificationDelegate(DateTime                               Timestamp,
+                                             IEventSender                           Sender,
+                                             WebSocketServerConnection              Connection,
+                                             CP.FirmwareStatusNotificationRequest   Request,
+                                             CancellationToken                      CancellationToken);
 
 
     /// <summary>
@@ -499,11 +520,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnFirmwareStatusNotificationResponseDelegate(DateTime                               Timestamp,
-                                                     IEventSender                           Sender,
-                                                     CP.FirmwareStatusNotificationRequest   Request,
-                                                     CS.FirmwareStatusNotificationResponse  Response,
-                                                     TimeSpan                               Runtime);
+        OnFirmwareStatusNotificationResponseDelegate(DateTime                                Timestamp,
+                                                     IEventSender                            Sender,
+                                                     CP.FirmwareStatusNotificationRequest    Request,
+                                                     CS.FirmwareStatusNotificationResponse   Response,
+                                                     TimeSpan                                Runtime);
 
     #endregion
 
@@ -530,12 +551,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The stop transaction request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<LogStatusNotificationResponse>
 
         OnLogStatusNotificationDelegate(DateTime                          Timestamp,
                                         IEventSender                      Sender,
+                                        WebSocketServerConnection         Connection,
                                         CP.LogStatusNotificationRequest   Request,
                                         CancellationToken                 CancellationToken);
 
@@ -578,12 +601,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The stop transaction request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SecurityEventNotificationResponse>
 
         OnSecurityEventNotificationDelegate(DateTime                              Timestamp,
                                             IEventSender                          Sender,
+                                            WebSocketServerConnection             Connection,
                                             CP.SecurityEventNotificationRequest   Request,
                                             CancellationToken                     CancellationToken);
 
@@ -626,12 +651,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The stop transaction request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SignCertificateResponse>
 
         OnSignCertificateDelegate(DateTime                    Timestamp,
                                   IEventSender                Sender,
+                                  WebSocketServerConnection   Connection,
                                   CP.SignCertificateRequest   Request,
                                   CancellationToken           CancellationToken);
 
@@ -664,9 +691,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Request">The stop transaction request.</param>
     public delegate Task
 
-        OnSignedFirmwareStatusNotificationRequestDelegate(DateTime                   Timestamp,
-                                         IEventSender               Sender,
-                                         CP.SignedFirmwareStatusNotificationRequest  Request);
+        OnSignedFirmwareStatusNotificationRequestDelegate(DateTime                                     Timestamp,
+                                                          IEventSender                                 Sender,
+                                                          CP.SignedFirmwareStatusNotificationRequest   Request);
 
 
     /// <summary>
@@ -674,14 +701,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The stop transaction request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SignedFirmwareStatusNotificationResponse>
 
-        OnSignedFirmwareStatusNotificationDelegate(DateTime                   Timestamp,
-                                  IEventSender               Sender,
-                                  CP.SignedFirmwareStatusNotificationRequest  Request,
-                                  CancellationToken          CancellationToken);
+        OnSignedFirmwareStatusNotificationDelegate(DateTime                                     Timestamp,
+                                                   IEventSender                                 Sender,
+                                                   WebSocketServerConnection                    Connection,
+                                                   CP.SignedFirmwareStatusNotificationRequest   Request,
+                                                   CancellationToken                            CancellationToken);
 
 
     /// <summary>
@@ -694,11 +723,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnSignedFirmwareStatusNotificationResponseDelegate(DateTime                    Timestamp,
-                                          IEventSender                Sender,
-                                          CP.SignedFirmwareStatusNotificationRequest   Request,
-                                          CS.SignedFirmwareStatusNotificationResponse  Response,
-                                          TimeSpan                    Runtime);
+        OnSignedFirmwareStatusNotificationResponseDelegate(DateTime                                      Timestamp,
+                                                           IEventSender                                  Sender,
+                                                           CP.SignedFirmwareStatusNotificationRequest    Request,
+                                                           CS.SignedFirmwareStatusNotificationResponse   Response,
+                                                           TimeSpan                                      Runtime);
 
     #endregion
 

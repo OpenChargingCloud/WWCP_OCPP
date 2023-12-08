@@ -58,12 +58,98 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
         #region Data
 
-        private const           String         debugLogFile     = "debug.log";
-        private const           String         ocppVersion1_6   = "v1.6";
-        private const           String         ocppVersion2_1   = "v2.1";
-        private static readonly SemaphoreSlim  loggingLock      = new (1, 1);
+        private const           String         debugLogFile         = "debug.log";
+        private const           String         ocppVersion1_6       = "v1.6";
+        private const           String         ocppVersion2_1       = "v2.1";
+
+        private static readonly SemaphoreSlim  loggingLock          = new (1, 1);
+        private static readonly SemaphoreSlim  loggingLockCLI       = new (1, 1);
+        private static readonly SemaphoreSlim  loggingLock1_6       = new (1, 1);
+        private static readonly SemaphoreSlim  loggingLock2_6       = new (1, 1);
+
+        private readonly static String         loggingFileNameV1_6  = Path.Combine(AppContext.BaseDirectory, "OCPPv1.6_Messages.log");
+        private readonly static String         loggingFileNameV2_1  = Path.Combine(AppContext.BaseDirectory, "OCPPv2.1_Messages.log");
 
         #endregion
+
+
+        private static async Task DebugLog(String             Message,
+                                           CancellationToken  CancellationToken)
+        {
+
+            try
+            {
+                await loggingLockCLI.WaitAsync(CancellationToken);
+                DebugX.Log(Message);
+            }
+            catch (Exception e)
+            {
+                //DebugX.LogException(e, $"{nameof(testCSMSv2_1)}.{nameof(testCSMSv2_1.OnNewTCPConnection)}");
+                DebugX.LogException(e, $"{nameof(DebugLog)}");
+            }
+            finally
+            {
+                loggingLock.Release();
+            }
+
+        }
+
+
+        private static async Task Log(String             FileName,
+                                      String             Message,
+                                      SemaphoreSlim      LoggingLock,
+                                      CancellationToken  CancellationToken)
+        {
+
+            var retry = 0;
+
+            do
+            {
+                try
+                {
+
+                    retry++;
+
+                    await LoggingLock.WaitAsync(CancellationToken);
+
+                    await File.AppendAllTextAsync(
+                             FileName,
+                             Message + Environment.NewLine,
+                             CancellationToken
+                         );
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogException(e, $"{nameof(WriteToLogfileV2_1)}");
+                }
+                finally
+                {
+                    LoggingLock.Release();
+                }
+
+
+            }
+            while (retry > 3);
+
+        }
+
+        private static Task WriteToLogfileV1_6(String             Message,
+                                               CancellationToken  CancellationToken)
+
+            => Log(loggingFileNameV1_6,
+                   Message,
+                   loggingLock1_6,
+                   CancellationToken);
+
+
+        private static Task WriteToLogfileV2_1(String             Message,
+                                               CancellationToken  CancellationToken)
+
+            => Log(loggingFileNameV2_1,
+                   Message,
+                   loggingLock2_6,
+                   CancellationToken);
 
 
         /// <summary>
@@ -105,7 +191,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                  DNSClient:                   dnsClient
                                              );
 
-            var testBackendWebSocketsV1_6  = testCentralSystemV1_6.CreateWebSocketService(
+            var testBackendWebSocketsV1_6  = testCentralSystemV1_6.AttachWebSocketService(
                                                   TCPPort:                     IPPort.Parse(9900),
                                                   DisableWebSocketPings:       false,
                                                   //SlowNetworkSimulationDelay:  TimeSpan.FromMilliseconds(10),
@@ -120,89 +206,125 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
 
             //testCentralSystemV1_6.AddHTTPBasicAuth(OCPPv1_6.ChargeBox_Id.Parse("CP001"), "test1234test1234");
 
-            testCentralSystemV1_6.OnNewTCPConnection       += async (timestamp, server, connection,              eventTrackingId,                     cancellationToken) => {
-                try
-                {
-                    await loggingLock.WaitAsync(cancellationToken);
-                    DebugX.Log($"New TCP connection from {connection.RemoteSocket}");
-                    await File.AppendAllTextAsync(
-                        loggingFileNameV1_6,
-                        $"{timestamp.ToIso8601()}\tNEW TCP\t-\t{connection.RemoteSocket}{Environment.NewLine}",
-                        cancellationToken
-                    );
-                }
-                catch (Exception e)
-                {
-                    DebugX.LogException(e, $"{nameof(testCentralSystemV1_6)}.{nameof(testCentralSystemV1_6.OnNewTCPConnection)}");
-                }
-                finally
-                {
-                    loggingLock.Release();
-                }
+            testCentralSystemV1_6.OnNewTCPConnection             += async (timestamp, server, connection,              eventTrackingId,                     cancellationToken) => {
+
+                await DebugLog(
+                    $"New TCP connection from {connection.RemoteSocket}",
+                    cancellationToken
+                );
+
+                await WriteToLogfileV1_6(
+                    $"{timestamp.ToIso8601()}\tNEW TCP\t-\t{connection.RemoteSocket}",
+                    cancellationToken
+                );
+
             };
 
-            testCentralSystemV1_6.OnNewWebSocketConnection += async (timestamp, server, connection, chargeBoxId, eventTrackingId,                     cancellationToken) => {
-                try
-                {
-                    await loggingLock.WaitAsync(cancellationToken);
-                    DebugX.Log($"New HTTP web socket connection from charge box '{chargeBoxId}' ({connection.RemoteSocket})");
-                    await File.AppendAllTextAsync(
-                        loggingFileNameV1_6,
-                        $"{timestamp.ToIso8601()}\tNEW WS\t{chargeBoxId}\t{connection.RemoteSocket}{Environment.NewLine}",
-                        cancellationToken
-                    );
-                }
-                catch (Exception e)
-                {
-                    DebugX.LogException(e, $"{nameof(testCentralSystemV1_6)}.{nameof(testCentralSystemV1_6.OnNewWebSocketConnection)}");
-                }
-                finally
-                {
-                    loggingLock.Release();
-                }
+            testCentralSystemV1_6.OnNewWebSocketConnection       += async (timestamp, server, connection, chargeBoxId, eventTrackingId, sharedSubprotocols, cancellationToken) => {
+
+                await DebugLog(
+                    $"[{chargeBoxId}] New '{sharedSubprotocols.AggregateWith(", ")}' HTTP web socket connection from {connection.RemoteSocket}",
+                    cancellationToken
+                );
+
+                await WriteToLogfileV1_6(
+                    $"{timestamp.ToIso8601()}\tNEW WS\t{chargeBoxId}\t{connection.RemoteSocket}",
+                    cancellationToken
+                );
+
             };
 
-            testCentralSystemV1_6.OnCloseMessageReceived   += async (timestamp, server, connection, chargeBoxId, eventTrackingId, statusCode, reason, cancellationToken) => {
-                try
-                {
-                    await loggingLock.WaitAsync(cancellationToken);
-                    DebugX.Log($"Charge box '{chargeBoxId}' ({connection.RemoteSocket}) closed its HTTP web socket connection");
-                    await File.AppendAllTextAsync(
-                        loggingFileNameV1_6,
-                        $"{timestamp.ToIso8601()}\tCLOSE\t{chargeBoxId}\t{connection.RemoteSocket}{Environment.NewLine}",
-                        cancellationToken
-                    );
-                }
-                catch (Exception e)
-                {
-                    DebugX.LogException(e, $"{nameof(testCentralSystemV1_6)}.{nameof(testCentralSystemV1_6.OnCloseMessageReceived)}");
-                }
-                finally
-                {
-                    loggingLock.Release();
-                }
+            testCentralSystemV1_6.OnCloseMessageReceived         += async (timestamp, server, connection, chargeBoxId, eventTrackingId, statusCode, reason, cancellationToken) => {
+
+                await DebugLog(
+                    $"[{chargeBoxId}] Wants to close its HTTP web socket connection ({connection.RemoteSocket}): {statusCode}{(reason is not null ? $", '{reason}'" : "")}",
+                    cancellationToken
+                );
+
+                await WriteToLogfileV1_6(
+                    $"{timestamp.ToIso8601()}\tCLOSE\t{chargeBoxId}\t{connection.RemoteSocket}",
+                    cancellationToken
+                );
+
             };
 
-            testCentralSystemV1_6.OnTCPConnectionClosed    += async (timestamp, server, connection, chargeBoxId, eventTrackingId, reason,             cancellationToken) => {
-                try
-                {
-                    await loggingLock.WaitAsync(cancellationToken);
-                    DebugX.Log($"Charge box '{chargeBoxId}' ({connection.RemoteSocket}) closed its HTTP web socket connection{(reason is not null ? $", reason: '{reason}'" : "")}");
-                    await File.AppendAllTextAsync(
-                        loggingFileNameV1_6,
-                        $"{timestamp.ToIso8601()}\tCLOSE\t{chargeBoxId}\t{connection.RemoteSocket}{Environment.NewLine}",
-                        cancellationToken
-                    );
-                }
-                catch (Exception e)
-                {
-                    DebugX.LogException(e, $"{nameof(testCentralSystemV1_6)}.{nameof(testCentralSystemV1_6.OnTCPConnectionClosed)}");
-                }
-                finally
-                {
-                    loggingLock.Release();
-                }
+            testCentralSystemV1_6.OnTCPConnectionClosed          += async (timestamp, server, connection, chargeBoxId, eventTrackingId, reason,             cancellationToken) => {
+
+                await DebugLog(
+                    $"[{chargeBoxId}] Closed its HTTP web socket connection ({connection.RemoteSocket}){(reason is not null ? $": '{reason}'" : "")}",
+                    cancellationToken
+                );
+
+                await WriteToLogfileV1_6(
+                    $"{timestamp.ToIso8601()}\tCLOSE\t{chargeBoxId}\t{connection.RemoteSocket}",
+                    cancellationToken
+                );
+
             };
+
+
+            //testCentralSystemV1_6.OnJSONMessageRequestReceived   += async (timestamp, server, connection, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
+
+            //    await DebugLog(
+            //        $"Received a JSON web socket request: '{requestMessage.ToString(Formatting.None)}'!",
+            //        cancellationToken
+            //    );
+
+            //    await WriteToLogfileV1_6(
+            //        $"{requestTimestamp.ToIso8601()}\tREQ IN\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{requestMessage.ToString(Formatting.None)}",
+            //        cancellationToken
+            //    );
+
+            //};
+
+            //testCentralSystemV1_6.OnJSONMessageResponseSent      += async (timestamp, server, connection, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, jsonResponseMessage)   => {
+
+            //    var cancellationToken = CancellationToken.None;
+
+            //    await DebugLog(
+            //        $"Sent a JSON web socket response: '{jsonResponseMessage.ToString(Formatting.None)}'!",
+            //        cancellationToken
+            //    );
+
+            //    await WriteToLogfileV1_6(
+            //        $"{responseTimestamp.ToIso8601()}\tRES OUT\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{jsonResponseMessage.ToString(Formatting.None)}",
+            //        cancellationToken
+            //    );
+
+            //};
+
+
+            //testCentralSystemV1_6.OnJSONMessageRequestSent       += async (timestamp, server, connection, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
+
+            //    await DebugLog(
+            //        $"Sent a JSON web socket request: '{requestMessage.ToString(Formatting.None)}'!",
+            //        cancellationToken
+            //    );
+
+            //    await WriteToLogfileV1_6(
+            //        $"{requestTimestamp.ToIso8601()}\tREQ OUT\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{requestMessage.ToString(Formatting.None)}",
+            //        cancellationToken
+            //    );
+
+            //};
+
+            //testCentralSystemV1_6.OnJSONMessageResponseReceived  += async (timestamp, server, connection, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, jsonResponseMessage)   => {
+
+            //    var cancellationToken = CancellationToken.None;
+
+            //    await DebugLog(
+            //        $"Received a JSON web socket response: '{jsonResponseMessage.ToString(Formatting.None)}'!",
+            //        cancellationToken
+            //    );
+
+            //    await WriteToLogfileV1_6(
+            //        $"{responseTimestamp.ToIso8601()}\tRES IN\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{jsonResponseMessage.ToString(Formatting.None)}",
+            //        cancellationToken
+            //    );
+
+            //};
+
+
 
             #endregion
 
@@ -215,7 +337,7 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
                                                  DNSClient:                   dnsClient
                                              );
 
-            var testBackendWebSocketsV2_1  = testCSMSv2_1.CreateWebSocketService(
+            var testBackendWebSocketsV2_1  = testCSMSv2_1.AttachWebSocketService(
                                                  TCPPort:                     IPPort.Parse(9920),
                                                  DisableWebSocketPings:       false,
                                                  //SlowNetworkSimulationDelay:  TimeSpan.FromMilliseconds(10),
@@ -227,169 +349,183 @@ namespace org.GraphDefined.WWCP.OCPP.Tests
             //testCSMSv2_1.AddOrUpdateHTTPBasicAuth(OCPPv2_1.NetworkingNode_Id.Parse("CP001"), "dummy-dev-password");
 
 
-            testCSMSv2_1.OnNewTCPConnection       += async (timestamp, server, connection,                   eventTrackingId,                     cancellationToken) => {
-                try
-                {
-                    await loggingLock.WaitAsync(cancellationToken);
-                    DebugX.Log($"New TCP connection from {connection.RemoteSocket}");
-                    await File.AppendAllTextAsync(
-                        loggingFileNameV2_1,
-                        $"{timestamp.ToIso8601()}\tNEW TCP\t-\t{connection.RemoteSocket}{Environment.NewLine}",
-                        cancellationToken
-                    );
-                }
-                catch (Exception e)
-                {
-                    DebugX.LogException(e, $"{nameof(testCSMSv2_1)}.{nameof(testCSMSv2_1.OnNewTCPConnection)}");
-                }
-                finally
-                {
-                    loggingLock.Release();
-                }
-            };
+            testCSMSv2_1.OnNewTCPConnection               += async (timestamp, server, connection,                   eventTrackingId,                     cancellationToken) => {
 
-            testCSMSv2_1.OnNewWebSocketConnection += async (timestamp, server, connection, networkingNodeId, eventTrackingId,                     cancellationToken) => {
-                try
-                {
-                    await loggingLock.WaitAsync(cancellationToken);
-                    DebugX.Log($"New HTTP web socket connection from networking node '{networkingNodeId}' ({connection.RemoteSocket})");
-                    await File.AppendAllTextAsync(
-                        loggingFileNameV2_1,
-                        $"{timestamp.ToIso8601()}\tNEW WS\t{networkingNodeId}\t{connection.RemoteSocket}{Environment.NewLine}",
-                        cancellationToken
-                    );
-                }
-                catch (Exception e)
-                {
-                    DebugX.LogException(e, $"{nameof(testCSMSv2_1)}.{nameof(testCSMSv2_1.OnNewWebSocketConnection)}");
-                }
-                finally
-                {
-                    loggingLock.Release();
-                }
-            };
-
-            testCSMSv2_1.OnCloseMessageReceived   += async (timestamp, server, connection, networkingNodeId, eventTrackingId, statusCode, reason, cancellationToken) => {
-                try
-                {
-                    await loggingLock.WaitAsync(cancellationToken);
-                    DebugX.Log($"Networking node '{networkingNodeId}' ({connection.RemoteSocket}) closed its HTTP web socket connection");
-                    await File.AppendAllTextAsync(
-                        loggingFileNameV2_1,
-                        $"{timestamp.ToIso8601()}\tCLOSE\t{networkingNodeId}\t{connection.RemoteSocket}{Environment.NewLine}",
-                        cancellationToken
-                    );
-                }
-                catch (Exception e)
-                {
-                    DebugX.LogException(e, $"{nameof(testCSMSv2_1)}.{nameof(testCSMSv2_1.OnCloseMessageReceived)}");
-                }
-                finally
-                {
-                    loggingLock.Release();
-                }
-            };
-
-            testCSMSv2_1.OnTCPConnectionClosed    += async (timestamp, server, connection, networkingNodeId, eventTrackingId, reason,             cancellationToken) => {
-                try
-                {
-                    await loggingLock.WaitAsync(cancellationToken);
-                    DebugX.Log($"Networking node '{networkingNodeId}' ({connection.RemoteSocket}) closed its HTTP web socket connection{(reason is not null ? $", reason: '{reason}'" : "")}");
-                    await File.AppendAllTextAsync(
-                        loggingFileNameV2_1,
-                        $"{timestamp.ToIso8601()}\tCLOSE\t{networkingNodeId}\t{connection.RemoteSocket}{Environment.NewLine}",
-                        cancellationToken
-                    );
-                }
-                catch (Exception e)
-                {
-                    DebugX.LogException(e, $"{nameof(testCSMSv2_1)}.{nameof(testCSMSv2_1.OnCloseMessageReceived)}");
-                }
-                finally
-                {
-                    loggingLock.Release();
-                }
-            };
-
-
-
-
-
-
-
-
-
-            testCSMSv2_1.OnJSONMessageRequestReceived   += async (timestamp, server, connection, eventTrackingId, requestTimestamp, requestMessage, cancellationToken) => {
-                await loggingLock.WaitAsync();
-                DebugX.Log($"Received a JSON web socket request: '{requestMessage.ToString(Formatting.None)}'!");
-                await File.AppendAllTextAsync(
-                    loggingFileNameV2_1,
-                    $"{requestTimestamp.ToIso8601()}\tIN\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{requestMessage.ToString(Formatting.None)}{Environment.NewLine}"
+                await DebugLog(
+                    $"New TCP connection from {connection.RemoteSocket}",
+                    cancellationToken
                 );
-            };
 
-            testCSMSv2_1.OnBinaryMessageRequestReceived += async (timestamp, server, connection, eventTrackingId, requestTimestamp, requestMessage, cancellationToken) => {
-                await loggingLock.WaitAsync();
-                DebugX.Log($"Received a binary web socket request: '{requestMessage.ToBase64()}'!");
-                await File.AppendAllTextAsync(
-                    loggingFileNameV2_1,
-                    $"{requestTimestamp.ToIso8601()}\tIN\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{requestMessage.ToBase64()}{Environment.NewLine}"
+                await WriteToLogfileV2_1(
+                    $"{timestamp.ToIso8601()}\tNEW TCP\t-\t{connection.RemoteSocket}",
+                    cancellationToken
                 );
+
             };
 
-            testCSMSv2_1.OnJSONMessageResponseSent += async (timestamp, server, connection, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, jsonResponseMessage) => {
-                await loggingLock.WaitAsync();
-                DebugX.Log($"Sent a JSON web socket response: '{jsonResponseMessage.ToString(Formatting.None)}'!");
-                await File.AppendAllTextAsync(
-                    loggingFileNameV2_1,
-                    $"{responseTimestamp.ToIso8601()}\tOUT\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{jsonResponseMessage.ToString(Formatting.None)}{Environment.NewLine}"
+            testCSMSv2_1.OnNewWebSocketConnection         += async (timestamp, server, connection, networkingNodeId, eventTrackingId, sharedSubprotocols, cancellationToken) => {
+
+                await DebugLog(
+                    $"[{networkingNodeId}] New '{sharedSubprotocols.AggregateWith(", ")}' HTTP web socket connection from {connection.RemoteSocket}",
+                    cancellationToken
                 );
+
+                await WriteToLogfileV2_1(
+                    $"{timestamp.ToIso8601()}\tNEW WS\t{networkingNodeId}\t{connection.RemoteSocket}",
+                    cancellationToken
+                );
+
+            };
+
+            testCSMSv2_1.OnCloseMessageReceived           += async (timestamp, server, connection, networkingNodeId, eventTrackingId, statusCode, reason, cancellationToken) => {
+
+                await DebugLog(
+                    $"[{networkingNodeId}] Wants to close its HTTP web socket connection ({connection.RemoteSocket}): {statusCode}{(reason is not null ? $", '{reason}'" : "")}",
+                    cancellationToken
+                );
+
+                await WriteToLogfileV2_1(
+                    $"{timestamp.ToIso8601()}\tCLOSE\t{networkingNodeId}\t{connection.RemoteSocket}",
+                    cancellationToken
+                );
+
+            };
+
+            testCSMSv2_1.OnTCPConnectionClosed            += async (timestamp, server, connection, networkingNodeId, eventTrackingId, reason,             cancellationToken) => {
+
+                await DebugLog(
+                    $"[{networkingNodeId}] Closed its HTTP web socket connection ({connection.RemoteSocket}){(reason is not null ? $": '{reason}'" : "")}",
+                    cancellationToken
+                );
+
+                await WriteToLogfileV2_1(
+                    $"{timestamp.ToIso8601()}\tCLOSE\t{networkingNodeId}\t{connection.RemoteSocket}",
+                    cancellationToken
+                );
+
             };
 
 
+            testCSMSv2_1.OnJSONMessageRequestReceived     += async (timestamp, server, connection, networkingNodeId, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
+
+                await DebugLog(
+                    $"[{networkingNodeId}] sent a JSON web socket request: '{requestMessage.ToString(Formatting.None)}'!",
+                    cancellationToken
+                );
+
+                await WriteToLogfileV2_1(
+                    $"{requestTimestamp.ToIso8601()}\tREQ IN\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{requestMessage.ToString(Formatting.None)}",
+                    cancellationToken
+                );
+
+            };
+
+            testCSMSv2_1.OnBinaryMessageRequestReceived   += async (timestamp, server, connection, networkingNodeId, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
+
+                await DebugLog(
+                    $"[{networkingNodeId}] sent a binary web socket request: '{requestMessage.ToBase64()}'!",
+                    cancellationToken
+                );
+
+                await WriteToLogfileV2_1(
+                    $"{requestTimestamp.ToIso8601()}\tREQ IN\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{requestMessage.ToBase64()}",
+                    cancellationToken
+                );
+
+            };
+
+            testCSMSv2_1.OnJSONMessageResponseSent        += async (timestamp, server, connection, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, jsonResponseMessage)   => {
+
+                var cancellationToken = CancellationToken.None;
+
+                await DebugLog(
+                    $"Sent a JSON web socket response: '{jsonResponseMessage.ToString(Formatting.None)}'!",
+                    cancellationToken
+                );
+
+                await WriteToLogfileV2_1(
+                    $"{responseTimestamp.ToIso8601()}\tRES OUT\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{jsonResponseMessage.ToString(Formatting.None)}",
+                    cancellationToken
+                );
+
+            };
+
+            testCSMSv2_1.OnBinaryMessageResponseSent      += async (timestamp, server, connection, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, binaryResponseMessage) => {
+
+                var cancellationToken = CancellationToken.None;
+
+                await DebugLog(
+                    $"Sent a JSON web socket response: '{binaryResponseMessage.ToBase64()}'!",
+                    cancellationToken
+                );
+
+                await WriteToLogfileV2_1(
+                    $"{responseTimestamp.ToIso8601()}\tRES OUT\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{binaryResponseMessage.ToBase64()}",
+                    cancellationToken
+                );
+
+            };
 
 
+            testCSMSv2_1.OnJSONMessageRequestSent         += async (timestamp, server, connection, networkingNodeId, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
 
+                await DebugLog(
+                    $"[{networkingNodeId}] received a JSON web socket request: '{requestMessage.ToString(Formatting.None)}'!",
+                    cancellationToken
+                );
 
-            //testBackendWebSocketsv2_1.OnTextMessageReceived   += async (timestamp, server, connection, eventTrackingId, requestMessage) => {
-            //    await textMessagesLock.WaitAsync();
-            //    DebugX.Log($"Received a web socket TEXT message: '{requestMessage}'!");
-            //    await File.AppendAllTextAsync(
-            //        textMessagesFileName,
-            //        $"{timestamp.ToIso8601()}\tIN\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{requestMessage}{Environment.NewLine}"
-            //    );
-            //};
+                await WriteToLogfileV2_1(
+                    $"{requestTimestamp.ToIso8601()}\tREQ OUT\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{requestMessage.ToString(Formatting.None)}",
+                    cancellationToken
+                );
 
-            //testBackendWebSocketsv2_1.OnTextMessageSent       += async (timestamp, server, connection, eventTrackingId, requestMessage) => {
-            //    await textMessagesLock.WaitAsync();
-            //    DebugX.Log($"Sent a web socket TEXT message: '{requestMessage}'!");
-            //    await File.AppendAllTextAsync(
-            //        textMessagesFileName,
-            //        $"{timestamp.ToIso8601()}\tOUT\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{requestMessage}{Environment.NewLine}"
-            //    );
-            //};
+            };
 
-            //testBackendWebSocketsv2_1.OnBinaryMessageReceived += async (timestamp, server, connection, eventTrackingId, requestMessage) => {
-            //    await textMessagesLock.WaitAsync();
-            //    DebugX.Log($"Received a binary web socket message: '{requestMessage.ToBase64()}'!");
-            //    await File.AppendAllTextAsync(
-            //        textMessagesFileName,
-            //        $"{timestamp.ToIso8601()}\tIN\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{requestMessage}{Environment.NewLine}"
-            //    );
-            //};
+            testCSMSv2_1.OnBinaryMessageRequestSent       += async (timestamp, server, connection, networkingNodeId, eventTrackingId, requestTimestamp, requestMessage,     cancellationToken) => {
 
-            //testBackendWebSocketsv2_1.OnBinaryMessageSent     += async (timestamp, server, connection, eventTrackingId, requestMessage) => {
-            //    await textMessagesLock.WaitAsync();
-            //    DebugX.Log($"Sent a binary web socket message: '{requestMessage.ToBase64()}'!");
-            //    await File.AppendAllTextAsync(
-            //        textMessagesFileName,
-            //        $"{timestamp.ToIso8601()}\tOUT\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{requestMessage}{Environment.NewLine}"
-            //    );
-            //};
+                await DebugLog(
+                    $"[{networkingNodeId}] received a binary web socket request: '{requestMessage.ToBase64()}'!",
+                    cancellationToken
+                );
 
+                await WriteToLogfileV2_1(
+                    $"{requestTimestamp.ToIso8601()}\tREQ OUT\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{requestMessage.ToBase64()}",
+                    cancellationToken
+                );
 
+            };
 
+            testCSMSv2_1.OnJSONMessageResponseReceived    += async (timestamp, server, connection, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, jsonResponseMessage)   => {
 
+                var cancellationToken = CancellationToken.None;
+
+                await DebugLog(
+                    $"Received a JSON web socket response: '{jsonResponseMessage.ToString(Formatting.None)}'!",
+                    cancellationToken
+                );
+
+                await WriteToLogfileV2_1(
+                    $"{responseTimestamp.ToIso8601()}\tRES IN\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{jsonResponseMessage.ToString(Formatting.None)}",
+                    cancellationToken
+                );
+
+            };
+
+            testCSMSv2_1.OnBinaryMessageResponseReceived  += async (timestamp, server, connection, eventTrackingId, requestTimestamp, jsonRequestMessage, binaryRequestMessage, responseTimestamp, binaryResponseMessage) => {
+
+                var cancellationToken = CancellationToken.None;
+
+                await DebugLog(
+                    $"Received a JSON web socket response: '{binaryResponseMessage.ToBase64()}'!",
+                    cancellationToken
+                );
+
+                await WriteToLogfileV2_1(
+                    $"{responseTimestamp.ToIso8601()}\tRES IN\t{connection.TryGetCustomData("chargingStationId")}\t{connection.RemoteSocket}\t{binaryResponseMessage.ToBase64()}",
+                    cancellationToken
+                );
+
+            };
 
 
 
