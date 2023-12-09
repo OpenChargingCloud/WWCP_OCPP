@@ -22,8 +22,9 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -33,7 +34,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
-    public partial class CSMSWSServer : WebSocketServer,
+    public partial class CSMSWSServer : ACSMSWSServer,
                                         ICSMSChannel
     {
 

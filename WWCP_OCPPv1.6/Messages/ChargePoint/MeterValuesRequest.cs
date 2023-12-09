@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6.CP
@@ -588,7 +590,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<MeterValuesRequest>?  CustomMeterValuesRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<MeterValue>?          CustomMeterValueSerializer           = null,
-                              CustomJObjectSerializerDelegate<SampledValue>?        CustomSampledValueSerializer         = null)
+                              CustomJObjectSerializerDelegate<SampledValue>?        CustomSampledValueSerializer         = null,
+                              CustomJObjectSerializerDelegate<OCPP.Signature>?      CustomSignatureSerializer            = null,
+                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
         {
 
             var json = JSONObject.Create(

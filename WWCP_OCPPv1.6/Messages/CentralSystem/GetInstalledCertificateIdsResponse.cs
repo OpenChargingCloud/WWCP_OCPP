@@ -21,6 +21,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6.CP
@@ -282,7 +284,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CustomGetInstalledCertificateIdsResponseSerializer">A delegate to serialize custom get installed certificate ids responses.</param>
         /// <param name="CustomCertificateHashDataSerializer">A delegate to serialize custom certificate hash data.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetInstalledCertificateIdsResponse>?  CustomGetInstalledCertificateIdsResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<CertificateHashData>?                 CustomCertificateHashDataSerializer                  = null)
+                              CustomJObjectSerializerDelegate<CertificateHashData>?                 CustomCertificateHashDataSerializer                  = null,
+                              CustomJObjectSerializerDelegate<OCPP.Signature>?                      CustomSignatureSerializer                            = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                          CustomCustomDataSerializer                           = null)
         {
 
             var json = JSONObject.Create(

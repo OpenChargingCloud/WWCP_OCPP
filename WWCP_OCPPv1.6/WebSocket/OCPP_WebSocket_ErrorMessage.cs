@@ -18,9 +18,10 @@
 #region Usings
 
 using System.Text;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -43,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// <summary>
         /// The OCPP error code.
         /// </summary>
-        public ResultCodes  ErrorCode           { get; }
+        public ResultCode                 ErrorCode           { get; }
 
         /// <summary>
         /// The optional error description.
@@ -66,10 +67,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
         /// <param name="ErrorCode">An OCPP error code.</param>
         /// <param name="ErrorDescription">An optional error description.</param>
         /// <param name="ErrorDetails">Optional error details.</param>
-        public OCPP_WebSocket_ErrorMessage(Request_Id                 RequestId,
-                                           ResultCodes  ErrorCode,
-                                           String?                    ErrorDescription   = null,
-                                           JObject?                   ErrorDetails       = null)
+        public OCPP_WebSocket_ErrorMessage(Request_Id  RequestId,
+                                           ResultCode  ErrorCode,
+                                           String?     ErrorDescription   = null,
+                                           JObject?    ErrorDetails       = null)
 
         {
 
@@ -91,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
                                                                 String?     ErrorResponse)
 
             => new (RequestId,
-                    ResultCodes.FormationViolation,
+                    ResultCode.FormationViolation,
                     "Processing the given '" + Action + "' request could not be parsed!",
                     new JObject(
                         new JProperty("request",  JSONPayload)
@@ -106,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
                                                                 JArray?     JSONPayload)
 
             => new (RequestId,
-                    ResultCodes.FormationViolation,
+                    ResultCode.FormationViolation,
                     "Processing the given '" + Action + "' request could not be parsed!",
                     new JObject(
                         new JProperty("request",  JSONPayload)
@@ -122,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
                                                                      Exception   Exception)
 
             => new (RequestId,
-                    ResultCodes.FormationViolation,
+                    ResultCode.FormationViolation,
                     "Processing the given '" + Action + "' request led to an exception!",
                     new JObject(
                         new JProperty("request",    JSONPayload),
@@ -231,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.WebSockets
                 if (!Request_Id.TryParse(JSON[1]?.Value<String>() ?? "", out var requestId))
                     return false;
 
-                if (!ResultCodes.TryParse(JSON[2]?.Value<String>() ?? "", out var wsErrorCode))
+                if (!ResultCode.TryParse(JSON[2]?.Value<String>() ?? "", out var wsErrorCode))
                     return false;
 
                 var description = JSON[3]?.Value<String>();

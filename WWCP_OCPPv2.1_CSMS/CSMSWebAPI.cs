@@ -439,9 +439,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #region Data Structures
 
         public CustomJObjectSerializerDelegate<ChargingStation>?                                     CustomChargingStationSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
-        public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                                    { get; set; }
-        public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.StatusInfo>?                                     CustomStatusInfoSerializer                                   { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CustomData>?                                     CustomCustomDataSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<EventData>?                                           CustomEventDataSerializer                                    { get; set; }
         public CustomJObjectSerializerDelegate<Component>?                                           CustomComponentSerializer                                    { get; set; }
         public CustomJObjectSerializerDelegate<EVSE>?                                                CustomEVSESerializer                                         { get; set; }
@@ -610,12 +610,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.OnJSONMessageResponseSent += async (timestamp,
                                                      webSocketServer,
                                                      webSocketConnection,
+                                                     networkingNodeId,
                                                      eventTrackingId,
                                                      requestTimestamp,
                                                      jsonRequestMessage,
                                                      binaryRequestMessage,
                                                      responseTimestamp,
-                                                     responseMessage) =>
+                                                     responseMessage,
+                                                     cancellationToken) =>
 
                 await this.EventLog.SubmitEvent("OnTextMessageResponseSent",
                                                 JSONObject.Create(
@@ -636,7 +638,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                    jsonRequestMessage,
                                                    binaryRequestMessage,
                                                    responseTimestamp,
-                                                   responseMessage) =>
+                                                   responseMessage,
+                                                   cancellationToken) =>
 
                 await this.EventLog.SubmitEvent("OnTextErrorResponseSent",
                                                 JSONObject.Create(
@@ -673,12 +676,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.OnJSONMessageResponseReceived += async (timestamp,
                                                          webSocketServer,
                                                          webSocketConnection,
+                                                         networkingNodeId,
                                                          eventTrackingId,
                                                          requestTimestamp,
                                                          jsonRequestMessage,
                                                          binaryRequestMessage,
                                                          responseTimestamp,
-                                                         responseMessage) =>
+                                                         responseMessage,
+                                                         cancellationToken) =>
 
                 await this.EventLog.SubmitEvent("OnTextMessageResponseReceived",
                                                 JSONObject.Create(
@@ -699,7 +704,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                        jsonRequestMessage,
                                                        binaryRequestMessage,
                                                        responseTimestamp,
-                                                       responseMessage) =>
+                                                       responseMessage,
+                                                       cancellationToken) =>
 
                 await this.EventLog.SubmitEvent("OnTextErrorResponseReceived",
                                                 JSONObject.Create(
@@ -739,12 +745,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.OnBinaryMessageResponseSent += async (timestamp,
                                                        webSocketServer,
                                                        webSocketConnection,
+                                                       networkingNodeId,
                                                        eventTrackingId,
                                                        requestTimestamp,
                                                        jsonRequestMessage,
                                                        binaryRequestMessage,
                                                        responseTimestamp,
-                                                       responseMessage) =>
+                                                       responseMessage,
+                                                       cancellationToken) =>
 
                 await this.EventLog.SubmitEvent("OnBinaryMessageResponseSent",
                                                 JSONObject.Create(
@@ -802,12 +810,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMS.OnBinaryMessageResponseReceived += async (timestamp,
                                                            webSocketServer,
                                                            webSocketConnection,
+                                                           networkingNodeId,
                                                            eventTrackingId,
                                                            requestTimestamp,
                                                            jsonRequestMessage,
                                                            binaryRequestMessage,
                                                            responseTimestamp,
-                                                           responseMessage) =>
+                                                           responseMessage,
+                                                           cancellationToken) =>
 
                 await this.EventLog.SubmitEvent("OnBinaryMessageResponseReceived",
                                                 JSONObject.Create(

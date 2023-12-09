@@ -20,6 +20,9 @@
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.CSMS;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
@@ -37,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnSendFileRequestDelegate(DateTime              Timestamp,
                                   IEventSender          Sender,
-                                  CSMS.SendFileRequest   Request);
+                                  SendFileRequest   Request);
 
 
     /// <summary>
@@ -52,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         OnSendFileDelegate(DateTime                    Timestamp,
                            IEventSender                Sender,
                            WebSocketClientConnection   Connection,
-                           CSMS.SendFileRequest         Request,
+                           SendFileRequest         Request,
                            CancellationToken           CancellationToken);
 
 
@@ -68,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnSendFileResponseDelegate(DateTime              Timestamp,
                                    IEventSender          Sender,
-                                   CSMS.SendFileRequest   Request,
+                                   SendFileRequest   Request,
                                    SendFileResponse       Response,
                                    TimeSpan              Runtime);
 

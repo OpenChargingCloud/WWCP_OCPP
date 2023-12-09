@@ -21,6 +21,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.CSMS;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
@@ -29,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
-    public partial class CSMSWSServer : WebSocketServer,
+    public partial class CSMSWSServer : ACSMSWSServer,
                                         ICSMSChannel
     {
 
@@ -37,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<DeleteFileRequest>?  CustomDeleteFileRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<CS.DeleteFileResponse>?  CustomDeleteFileResponseParser       { get; set; }
+        public CustomJObjectParserDelegate<DeleteFileResponse>?  CustomDeleteFileResponseParser       { get; set; }
 
         #endregion
 
@@ -58,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region DeleteFile(Request)
 
-        public async Task<CS.DeleteFileResponse> DeleteFile(DeleteFileRequest Request)
+        public async Task<DeleteFileResponse> DeleteFile(DeleteFileRequest Request)
         {
 
             #region Send OnDeleteFileRequest event
@@ -80,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            CS.DeleteFileResponse? response = null;
+            DeleteFileResponse? response = null;
 
             try
             {
@@ -103,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (CS.DeleteFileResponse.TryParse(Request,
+                    if (DeleteFileResponse.TryParse(Request,
                                                        sendRequestState.JSONResponse.Payload,
                                                        out var deleteFileResponse,
                                                        out var errorResponse,
@@ -113,14 +117,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         response = deleteFileResponse;
                     }
 
-                    response ??= new CS.DeleteFileResponse(
+                    response ??= new DeleteFileResponse(
                                          Request,
                                          Result.Format(errorResponse)
                                      );
 
                 }
 
-                response ??= new CS.DeleteFileResponse(
+                response ??= new DeleteFileResponse(
                                  Request,
                                  Request.FileName,
                                  DeleteFileStatus.Rejected
@@ -130,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
 
-                response = new CS.DeleteFileResponse(
+                response = new DeleteFileResponse(
                                Request,
                                Result.FromException(e)
                            );

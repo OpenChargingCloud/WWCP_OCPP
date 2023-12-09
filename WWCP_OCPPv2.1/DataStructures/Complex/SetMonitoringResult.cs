@@ -22,6 +22,8 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1
@@ -324,7 +326,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalJSON("statusInfo",
                                            "detailed status info",
-                                           OCPPv2_1.StatusInfo.TryParse,
+                                           OCPP.StatusInfo.TryParse,
                                            out StatusInfo? StatusInfo,
                                            out ErrorResponse))
                 {
@@ -338,7 +340,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPPv2_1.CustomData.TryParse,
+                                           OCPP.CustomData.TryParse,
                                            out CustomData CustomData,
                                            out ErrorResponse))
                 {

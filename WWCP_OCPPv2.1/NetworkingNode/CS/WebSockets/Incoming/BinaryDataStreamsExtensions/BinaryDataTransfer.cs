@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         OnIncomingBinaryDataTransferRequestDelegate(DateTime                                  Timestamp,
                                                     IEventSender                              Sender,
-                                                    OCPPv2_1.CSMS.BinaryDataTransferRequest   Request);
+                                                    OCPP.CSMS.BinaryDataTransferRequest   Request);
 
 
     /// <summary>
@@ -47,12 +47,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The BinaryDataTransfer request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<OCPPv2_1.CS.BinaryDataTransferResponse>
+    public delegate Task<OCPP.CS.BinaryDataTransferResponse>
 
         OnIncomingBinaryDataTransferDelegate(DateTime                                  Timestamp,
                                              IEventSender                              Sender,
                                              WebSocketClientConnection                 Connection,
-                                             OCPPv2_1.CSMS.BinaryDataTransferRequest   Request,
+                                             OCPP.CSMS.BinaryDataTransferRequest   Request,
                                              CancellationToken                         CancellationToken);
 
 
@@ -68,8 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         OnIncomingBinaryDataTransferResponseDelegate(DateTime                                  Timestamp,
                                                      IEventSender                              Sender,
-                                                     OCPPv2_1.CSMS.BinaryDataTransferRequest   Request,
-                                                     OCPPv2_1.CS.BinaryDataTransferResponse    Response,
+                                                     OCPP.CSMS.BinaryDataTransferRequest   Request,
+                                                     OCPP.CS.BinaryDataTransferResponse    Response,
                                                      TimeSpan                                  Runtime);
 
     #endregion

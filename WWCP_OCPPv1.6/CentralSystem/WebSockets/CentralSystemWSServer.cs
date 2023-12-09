@@ -31,6 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
 
@@ -38,67 +39,6 @@ using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
 
 namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
-
-    #region Connection Management
-
-    /// <summary>
-    /// A delegate for logging new HTTP web socket connections.
-    /// </summary>
-    /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="CentralSystem">The OCPP central system.</param>
-    /// <param name="NewConnection">The new HTTP web socket connection.</param>
-    /// <param name="ChargeBoxId">The sending charge box identification.</param>
-    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
-    /// <param name="SharedSubprotocols">An enumeration of shared HTTP Web Sockets subprotocols.</param>
-    /// <param name="CancellationToken">A token to cancel the processing.</param>
-    public delegate Task OnCentralSystemNewWebSocketConnectionDelegate(DateTime                           Timestamp,
-                                                                       ICentralSystem                     CentralSystem,
-                                                                       WebSocketServerConnection          NewConnection,
-                                                                       ChargeBox_Id                       ChargeBoxId,
-                                                                       EventTracking_Id                   EventTrackingId,
-                                                                       IEnumerable<String>                SharedSubprotocols,
-                                                                       CancellationToken                  CancellationToken);
-
-    /// <summary>
-    /// A delegate for logging a HTTP Web Socket CLOSE message.
-    /// </summary>
-    /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="CentralSystem">The OCPP central system.</param>
-    /// <param name="Connection">The HTTP Web Socket connection to be closed.</param>
-    /// <param name="ChargeBoxId">The sending charge box identification.</param>
-    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
-    /// <param name="StatusCode">The HTTP Web Socket Closing Status Code.</param>
-    /// <param name="Reason">An optional HTTP Web Socket closing reason.</param>
-    /// <param name="CancellationToken">A token to cancel the processing.</param>
-    public delegate Task OnCentralSystemCloseMessageReceivedDelegate  (DateTime                           Timestamp,
-                                                                       ICentralSystem                     CentralSystem,
-                                                                       WebSocketServerConnection          Connection,
-                                                                       ChargeBox_Id                       ChargeBoxId,
-                                                                       EventTracking_Id                   EventTrackingId,
-                                                                       WebSocketFrame.ClosingStatusCode   StatusCode,
-                                                                       String?                            Reason,
-                                                                       CancellationToken                  CancellationToken);
-
-    /// <summary>
-    /// A delegate for logging a closed TCP connection.
-    /// </summary>
-    /// <param name="Timestamp">The logging timestamp.</param>
-    /// <param name="CentralSystem">The OCPP central system.</param>
-    /// <param name="Connection">The HTTP Web Socket connection to be closed.</param>
-    /// <param name="ChargeBoxId">The sending charge box identification.</param>
-    /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
-    /// <param name="Reason">An optional closing reason.</param>
-    /// <param name="CancellationToken">A token to cancel the processing.</param>
-    public delegate Task OnCentralSystemTCPConnectionClosedDelegate   (DateTime                           Timestamp,
-                                                                       ICentralSystem                     CentralSystem,
-                                                                       WebSocketServerConnection          Connection,
-                                                                       ChargeBox_Id                       ChargeBoxId,
-                                                                       EventTracking_Id                   EventTrackingId,
-                                                                       String?                            Reason,
-                                                                       CancellationToken                  CancellationToken);
-
-    #endregion
-
 
     /// <summary>
     /// The delegate for the HTTP web socket request log.
@@ -132,15 +72,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                                   DateTime                    ResponseTimestamp,
                                                                   String?                     ResponseMessage);
 
-    public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTime                    Timestamp,
-                                                                  CentralSystemWSServer       Server,
-                                                                  WebSocketServerConnection   Connection,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
-                                                                  Byte[]                      RequestMessage,
-                                                                  DateTime                    ResponseTimestamp,
-                                                                  Byte[]?                     ResponseMessage);
-
 
     /// <summary>
     /// The central system HTTP/WebSocket/JSON server.
@@ -162,57 +93,57 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region (class) SendRequestState
 
-        public class SendRequestState
-        {
+        //public class SendRequestState
+        //{
 
-            public DateTime                       Timestamp            { get; }
-            public ChargeBox_Id                   ChargeBoxId          { get; }
-            public OCPP_WebSocket_RequestMessage  WSRequestMessage     { get; }
-            public DateTime                       Timeout              { get; }
+        //    public DateTime                       Timestamp            { get; }
+        //    public ChargeBox_Id                   ChargeBoxId          { get; }
+        //    public OCPP_WebSocket_RequestMessage  WSRequestMessage     { get; }
+        //    public DateTime                       Timeout              { get; }
 
-            public DateTime?                      ResponseTimestamp    { get; set; }
-            public JObject?                       Response             { get; set; }
+        //    public DateTime?                      ResponseTimestamp    { get; set; }
+        //    public JObject?                       Response             { get; set; }
 
-            public ResultCodes?                   ErrorCode            { get; set; }
-            public String?                        ErrorDescription     { get; set; }
-            public JObject?                       ErrorDetails         { get; set; }
-
-
-            public Boolean                        NoErrors
-                 => !ErrorCode.HasValue;
-
-            public Boolean                        HasErrors
-                 =>  ErrorCode.HasValue;
+        //    public ResultCode?                    ErrorCode            { get; set; }
+        //    public String?                        ErrorDescription     { get; set; }
+        //    public JObject?                       ErrorDetails         { get; set; }
 
 
-            public SendRequestState(DateTime                       Timestamp,
-                                    ChargeBox_Id                   ChargeBoxId,
-                                    OCPP_WebSocket_RequestMessage  WSRequestMessage,
-                                    DateTime                       Timeout,
+        //    public Boolean                        NoErrors
+        //         => !ErrorCode.HasValue;
 
-                                    DateTime?                      ResponseTimestamp   = null,
-                                    JObject?                       Response            = null,
+        //    public Boolean                        HasErrors
+        //         =>  ErrorCode.HasValue;
 
-                                    ResultCodes?                   ErrorCode           = null,
-                                    String?                        ErrorDescription    = null,
-                                    JObject?                       ErrorDetails        = null)
-            {
 
-                this.Timestamp          = Timestamp;
-                this.ChargeBoxId        = ChargeBoxId;
-                this.WSRequestMessage   = WSRequestMessage;
-                this.Timeout            = Timeout;
+        //    public SendRequestState(DateTime                       Timestamp,
+        //                            ChargeBox_Id                   ChargeBoxId,
+        //                            OCPP_WebSocket_RequestMessage  WSRequestMessage,
+        //                            DateTime                       Timeout,
 
-                this.ResponseTimestamp  = ResponseTimestamp;
-                this.Response           = Response;
+        //                            DateTime?                      ResponseTimestamp   = null,
+        //                            JObject?                       Response            = null,
 
-                this.ErrorCode          = ErrorCode;
-                this.ErrorDescription   = ErrorDescription;
-                this.ErrorDetails       = ErrorDetails;
+        //                            ResultCode?                    ErrorCode           = null,
+        //                            String?                        ErrorDescription    = null,
+        //                            JObject?                       ErrorDetails        = null)
+        //    {
 
-            }
+        //        this.Timestamp          = Timestamp;
+        //        this.ChargeBoxId        = ChargeBoxId;
+        //        this.WSRequestMessage   = WSRequestMessage;
+        //        this.Timeout            = Timeout;
 
-        }
+        //        this.ResponseTimestamp  = ResponseTimestamp;
+        //        this.Response           = Response;
+
+        //        this.ErrorCode          = ErrorCode;
+        //        this.ErrorDescription   = ErrorDescription;
+        //        this.ErrorDetails       = ErrorDetails;
+
+        //    }
+
+        //}
 
         #endregion
 
@@ -222,31 +153,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public const            String                                                                          DefaultHTTPServiceName     = $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON Central System API";
+        public const            String                                                                          DefaultHTTPServiceName        = $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON Central System API";
 
         /// <summary>
         /// The default HTTP server TCP port.
         /// </summary>
-        public static readonly  IPPort                                                                          DefaultHTTPServerPort      = IPPort.Parse(2010);
+        public static readonly  IPPort                                                                          DefaultHTTPServerPort         = IPPort.Parse(2010);
 
         /// <summary>
         /// The default HTTP server URI prefix.
         /// </summary>
-        public static readonly  HTTPPath                                                                        DefaultURLPrefix           = HTTPPath.Parse("/" + Version.String);
+        public static readonly  HTTPPath                                                                        DefaultURLPrefix              = HTTPPath.Parse("/" + Version.String);
 
         /// <summary>
         /// The default request timeout.
         /// </summary>
-        public static readonly  TimeSpan                                                                        DefaultRequestTimeout      = TimeSpan.FromMinutes(1);
+        public static readonly  TimeSpan                                                                        DefaultRequestTimeout         = TimeSpan.FromMinutes(1);
 
 
-        private readonly        ConcurrentDictionary<ChargeBox_Id, Tuple<WebSocketServerConnection, DateTime>>  connectedChargeBoxes       = [];
+        private readonly        ConcurrentDictionary<ChargeBox_Id, Tuple<WebSocketServerConnection, DateTime>>  connectedChargeBoxes          = [];
 
-        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                              requests                   = [];
+        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                              requests                      = [];
 
-        private const           String                                                                          LogfileName                = "CentralSystemWSServer.log";
+        private const           String                                                                          LogfileName                   = "CentralSystemWSServer.log";
 
-        public  const           String                                                                          chargeBoxId_WebSocketKey   = "chargeBoxId";
+        public  const           String                                                                          chargeBoxId_WebSocketKey      = "chargeBoxId";
+        public  const           String                                                                          networkingMode_WebSocketKey   = "networkingMode";
 
         #endregion
 
@@ -261,16 +193,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public IEnumerable<ChargeBox_Id> ChargeBoxIds
             => connectedChargeBoxes.Keys;
 
-        /// <summary>
-        /// Require a HTTP Basic Authentication of all charging boxes.
-        /// </summary>
-        public Boolean                                      RequireAuthentication    { get; }
-
-        /// <summary>
-        /// Logins and passwords for HTTP Basic Authentication.
-        /// </summary>
-        public ConcurrentDictionary<ChargeBox_Id, String?>  ChargingBoxLogins        { get; } = [];
-
         public ChargeBox_Id ChargeBoxIdentity
             => throw new NotImplementedException();
 
@@ -281,9 +203,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             => "";
 
         /// <summary>
+        /// Require a HTTP Basic Authentication of all networking nodes.
+        /// </summary>
+        public Boolean                                            RequireAuthentication    { get; }
+
+        /// <summary>
+        /// Logins and passwords for HTTP Basic Authentication.
+        /// </summary>
+        public ConcurrentDictionary<ChargeBox_Id, String?>   ChargingBoxLogins        { get; }
+            = new();
+
+        /// <summary>
         /// The JSON formatting to use.
         /// </summary>
-        public Formatting                         JSONFormatting           { get; set; } = Formatting.None;
+        public Formatting                                         JSONFormatting           { get; set; }
+            = Formatting.None;
+
+        /// <summary>
+        /// The request timeout for messages sent by this HTTP WebSocket server.
+        /// </summary>
+        public TimeSpan?                                          RequestTimeout           { get; set; }
 
         public CentralSystemSOAPClient.CSClientLogger Logger
             => throw new NotImplementedException();
@@ -292,9 +231,96 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Events
 
-        public event OnCentralSystemNewWebSocketConnectionDelegate?   OnCentralSystemNewWebSocketConnection;
+        #region Connection Management
 
-        public event OnCentralSystemCloseMessageReceivedDelegate?     OnCentralSystemCloseMessageReceived;
+        /// <summary>
+        /// An event sent whenever the HTTP connection switched successfully to web socket.
+        /// </summary>
+        public event OnCentralSystemNewWebSocketConnectionDelegate?    OnCentralSystemNewWebSocketConnection;
+
+        /// <summary>
+        /// An event sent whenever a web socket close frame was received.
+        /// </summary>
+        public event OnCentralSystemCloseMessageReceivedDelegate?      OnCentralSystemCloseMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a TCP connection was closed.
+        /// </summary>
+        public event OnCentralSystemTCPConnectionClosedDelegate?       OnCentralSystemTCPConnectionClosed;
+
+        #endregion
+
+        #region Generic JSON Messages
+
+        /// <summary>
+        /// An event sent whenever a text message request was received.
+        /// </summary>
+        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever the response to a text message was sent.
+        /// </summary>
+        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
+
+        /// <summary>
+        /// An event sent whenever the error response to a text message was sent.
+        /// </summary>
+        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
+
+
+        /// <summary>
+        /// An event sent whenever a text message request was sent.
+        /// </summary>
+        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a text message request was received.
+        /// </summary>
+        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
+
+        /// <summary>
+        /// An event sent whenever an error response to a text message request was received.
+        /// </summary>
+        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
+
+        #endregion
+
+        #region Generic Binary Messages
+
+        /// <summary>
+        /// An event sent whenever a binary message request was received.
+        /// </summary>
+        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever the response to a binary message was sent.
+        /// </summary>
+        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
+
+        /// <summary>
+        /// An event sent whenever the error response to a binary message was sent.
+        /// </summary>
+        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
+
+
+        /// <summary>
+        /// An event sent whenever a binary message request was sent.
+        /// </summary>
+        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a binary message request was received.
+        /// </summary>
+        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
+
+        /// <summary>
+        /// An event sent whenever the error response to a binary message request was sent.
+        /// </summary>
+        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
+
+        #endregion
+
+
 
 
         /// <summary>
@@ -306,18 +332,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// An event sent whenever the response to a text message was received.
         /// </summary>
         public event OnWebSocketTextMessageResponseDelegate?          OnTextMessageResponseReceived;
-
-
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?        OnBinaryMessageResponseSent;
-
-        /// <summary>
-        /// An event sent whenever the response to a binary message was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?        OnBinaryMessageResponseReceived;
 
 
         #region CSMS -> Charging Station
@@ -1471,14 +1485,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                             DebugX.Log($"{nameof(CentralSystemWSServer)} Duplicate networking node '{chargeBoxId}' detected!");
 
-                            var oldNetworkingNode_WebSocketConnection = value.Item1;
+                            var oldChargeBox_WebSocketConnection = value.Item1;
 
                             connectedChargeBoxes.TryRemove(chargeBoxId, out _);
                             connectedChargeBoxes.TryAdd   (chargeBoxId, new Tuple<WebSocketServerConnection, DateTime>(Connection, Timestamp.Now));
 
                             try
                             {
-                                oldNetworkingNode_WebSocketConnection.Close();
+                                oldChargeBox_WebSocketConnection.Close();
                             }
                             catch (Exception e)
                             {
@@ -1705,7 +1719,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     if (!chargeBoxId.HasValue)
                         OCPPErrorResponse  = new OCPP_WebSocket_ErrorMessage(
                                                  requestId ?? Request_Id.Parse("0"),
-                                                 ResultCodes.ProtocolError,
+                                                 ResultCode.ProtocolError,
                                                  "The given 'charge box identity' must not be null or empty!",
                                                  new JObject(
                                                      new JProperty("request", OCPPTextMessage)
@@ -1715,7 +1729,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     else if (!requestId.HasValue)
                         OCPPErrorResponse  = new OCPP_WebSocket_ErrorMessage(
                                                  Request_Id.Parse("0"),
-                                                 ResultCodes.ProtocolError,
+                                                 ResultCode.ProtocolError,
                                                  "The given 'request identification' must not be null or empty!",
                                                  new JObject(
                                                      new JProperty("request", OCPPTextMessage)
@@ -1725,7 +1739,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     else if (action is null || action.IsNullOrEmpty())
                         OCPPErrorResponse  = new OCPP_WebSocket_ErrorMessage(
                                                  requestId.Value,
-                                                 ResultCodes.ProtocolError,
+                                                 ResultCode.ProtocolError,
                                                  "The given 'action' must not be null or empty!",
                                                  new JObject(
                                                      new JProperty("request", OCPPTextMessage)
@@ -1735,7 +1749,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     else if (requestData is null)
                         OCPPErrorResponse  = new OCPP_WebSocket_ErrorMessage(
                                                  requestId.Value,
-                                                 ResultCodes.ProtocolError,
+                                                 ResultCode.ProtocolError,
                                                  "The given request JSON payload must not be null!",
                                                  new JObject(
                                                      new JProperty("request", OCPPTextMessage)
@@ -1851,7 +1865,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    ResultCodes.FormationViolation,
+                                                                    ResultCode.FormationViolation,
                                                                     "The given 'BootNotification' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -1865,7 +1879,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                ResultCodes.FormationViolation,
+                                                                ResultCode.FormationViolation,
                                                                 "Processing the given 'BootNotification' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -2000,7 +2014,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    ResultCodes.FormationViolation,
+                                                                    ResultCode.FormationViolation,
                                                                     "The given 'Heartbeat' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -2014,7 +2028,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                ResultCodes.FormationViolation,
+                                                                ResultCode.FormationViolation,
                                                                 "Processing the given 'Heartbeat' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -2150,7 +2164,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    ResultCodes.FormationViolation,
+                                                                    ResultCode.FormationViolation,
                                                                     "The given 'Authorize' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -2164,7 +2178,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                ResultCodes.FormationViolation,
+                                                                ResultCode.FormationViolation,
                                                                 "Processing the given 'Authorize' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -2299,7 +2313,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    ResultCodes.FormationViolation,
+                                                                    ResultCode.FormationViolation,
                                                                     "The given 'StartTransaction' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -2313,7 +2327,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                ResultCodes.FormationViolation,
+                                                                ResultCode.FormationViolation,
                                                                 "Processing the given 'StartTransaction' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -2447,7 +2461,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    ResultCodes.FormationViolation,
+                                                                    ResultCode.FormationViolation,
                                                                     "The given 'StatusNotification' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -2461,7 +2475,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                ResultCodes.FormationViolation,
+                                                                ResultCode.FormationViolation,
                                                                 "Processing the given 'StatusNotification' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -2596,7 +2610,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    ResultCodes.FormationViolation,
+                                                                    ResultCode.FormationViolation,
                                                                     "The given 'MeterValues' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -2610,7 +2624,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                ResultCodes.FormationViolation,
+                                                                ResultCode.FormationViolation,
                                                                 "Processing the given 'MeterValues' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",     OCPPTextMessage),
@@ -2745,7 +2759,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    ResultCodes.FormationViolation,
+                                                                    ResultCode.FormationViolation,
                                                                     "The given 'StopTransaction' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -2759,7 +2773,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                ResultCodes.FormationViolation,
+                                                                ResultCode.FormationViolation,
                                                                 "Processing the given 'StopTransaction' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -2895,7 +2909,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    ResultCodes.FormationViolation,
+                                                                    ResultCode.FormationViolation,
                                                                     "The given 'IncomingDataTransfer' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -2909,7 +2923,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                ResultCodes.FormationViolation,
+                                                                ResultCode.FormationViolation,
                                                                 "Processing the given 'IncomingDataTransfer' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -3044,7 +3058,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    ResultCodes.FormationViolation,
+                                                                    ResultCode.FormationViolation,
                                                                     "The given 'DiagnosticsStatusNotification' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -3058,7 +3072,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                ResultCodes.FormationViolation,
+                                                                ResultCode.FormationViolation,
                                                                 "Processing the given 'DiagnosticsStatusNotification' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -3193,7 +3207,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    ResultCodes.FormationViolation,
+                                                                    ResultCode.FormationViolation,
                                                                     "The given 'FirmwareStatusNotification' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -3207,7 +3221,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                ResultCodes.FormationViolation,
+                                                                ResultCode.FormationViolation,
                                                                 "Processing the given 'FirmwareStatusNotification' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -3345,7 +3359,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    ResultCodes.FormationViolation,
+                                                                    ResultCode.FormationViolation,
                                                                     "The given 'LogStatusNotification' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -3359,7 +3373,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                ResultCodes.FormationViolation,
+                                                                ResultCode.FormationViolation,
                                                                 "Processing the given 'LogStatusNotification' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -3494,7 +3508,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    ResultCodes.FormationViolation,
+                                                                    ResultCode.FormationViolation,
                                                                     "The given 'SecurityEventNotification' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -3508,7 +3522,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                ResultCodes.FormationViolation,
+                                                                ResultCode.FormationViolation,
                                                                 "Processing the given 'SecurityEventNotification' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -3643,7 +3657,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    ResultCodes.FormationViolation,
+                                                                    ResultCode.FormationViolation,
                                                                     "The given 'SignCertificate' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -3657,7 +3671,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                ResultCodes.FormationViolation,
+                                                                ResultCode.FormationViolation,
                                                                 "Processing the given 'SignCertificate' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -3792,7 +3806,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                         else
                                             OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                     requestId.Value,
-                                                                    ResultCodes.FormationViolation,
+                                                                    ResultCode.FormationViolation,
                                                                     "The given 'SignedFirmwareStatusNotification' request could not be parsed!",
                                                                     new JObject(
                                                                         new JProperty("request",       OCPPTextMessage),
@@ -3806,7 +3820,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                         OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                                 requestId.Value,
-                                                                ResultCodes.FormationViolation,
+                                                                ResultCode.FormationViolation,
                                                                 "Processing the given 'SignedFirmwareStatusNotification' request led to an exception!",
                                                                 JSONObject.Create(
                                                                     new JProperty("request",    OCPPTextMessage),
@@ -3847,7 +3861,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                                 OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                          requestId.Value,
-                                                         ResultCodes.ProtocolError,
+                                                         ResultCode.ProtocolError,
                                                          $"The OCPP message '{action}' is unkown!",
                                                          new JObject(
                                                              new JProperty("request", OCPPTextMessage)
@@ -3986,10 +4000,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         {
 
                             // ToDo: Refactor 
-                            if (ResultCodes.TryParse(json[2]?.Value<String>() ?? "", out var errorCode))
+                            if (ResultCode.TryParse(json[2]?.Value<String>() ?? "", out var errorCode))
                                 request.ErrorCode = errorCode;
                             else
-                                request.ErrorCode = ResultCodes.GenericError;
+                                request.ErrorCode = ResultCode.GenericError;
 
                             request.Response          = null;
                             request.ErrorDescription  = json[3]?.Value<String>();
@@ -4082,182 +4096,182 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region SendRequest(RequestId, ChargeBoxId, OCPPAction, JSONPayload, Timeout = null)
 
-        public async Task<SendRequestState> SendRequest(Request_Id         RequestId,
-                                                        ChargeBox_Id       ChargeBoxId,
-                                                        String             OCPPAction,
-                                                        JObject            JSONPayload,
-                                                        TimeSpan?          Timeout,
-                                                        CancellationToken  CancellationToken   = default)
-        {
+        //public async Task<SendRequestState> SendRequest(Request_Id         RequestId,
+        //                                                ChargeBox_Id       ChargeBoxId,
+        //                                                String             OCPPAction,
+        //                                                JObject            JSONPayload,
+        //                                                TimeSpan?          Timeout,
+        //                                                CancellationToken  CancellationToken   = default)
+        //{
 
-            var endTime         = Timestamp.Now + (Timeout ?? TimeSpan.FromSeconds(30));
+        //    var endTime         = Timestamp.Now + (Timeout ?? TimeSpan.FromSeconds(30));
 
-            var sendJSONResult  = await SendJSON(
-                                      RequestId,
-                                      ChargeBoxId,
-                                      OCPPAction,
-                                      JSONPayload,
-                                      endTime,
-                                      CancellationToken
-                                  );
+        //    var sendJSONResult  = await SendJSON(
+        //                                    RequestId,
+        //                                    ChargeBoxId,
+        //                                    OCPPAction,
+        //                                    JSONPayload,
+        //                                    endTime,
+        //                                    CancellationToken
+        //                                );
 
-            if (sendJSONResult == SendJSONResults.Success) {
+        //    if (sendJSONResult == SendJSONResults.Success) {
 
-                #region Wait for a response... till timeout
+        //        #region Wait for a response... till timeout
 
-                do
-                {
+        //        do
+        //        {
 
-                    try
-                    {
+        //            try
+        //            {
 
-                        await Task.Delay(25, CancellationToken);
+        //                await Task.Delay(25, CancellationToken);
 
-                        if (requests.TryGetValue(RequestId, out var sendRequestState1) &&
-                            sendRequestState1?.Response is not null ||
-                            sendRequestState1?.ErrorCode.HasValue == true)
-                        {
+        //                if (requests.TryGetValue(RequestId, out var sendRequestState1) &&
+        //                    sendRequestState1?.Response is not null ||
+        //                    sendRequestState1?.ErrorCode.HasValue == true)
+        //                {
 
-                            requests.TryRemove(RequestId, out _);
+        //                    requests.TryRemove(RequestId, out _);
 
-                            return sendRequestState1;
+        //                    return sendRequestState1;
 
-                        }
+        //                }
 
-                    }
-                    catch (Exception e)
-                    {
-                        DebugX.Log(String.Concat(nameof(CentralSystemWSServer), ".", nameof(SendRequest), " exception occured: ", e.Message));
-                    }
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                DebugX.Log(String.Concat(nameof(CentralSystemWSServer), ".", nameof(SendRequest), " exception occured: ", e.Message));
+        //            }
 
-                }
-                while (Timestamp.Now < endTime);
+        //        }
+        //        while (Timestamp.Now < endTime);
 
-                #endregion
+        //        #endregion
 
-                #region When timeout...
+        //        #region When timeout...
 
-                if (requests.TryGetValue(RequestId, out var sendRequestState2) && sendRequestState2 is not null)
-                {
-                    sendRequestState2.ErrorCode = ResultCodes.Timeout;
-                    requests.TryRemove(RequestId, out _);
-                    return sendRequestState2;
-                }
+        //        if (requests.TryGetValue(RequestId, out var sendRequestState2) && sendRequestState2 is not null)
+        //        {
+        //            sendRequestState2.ErrorCode = ResultCode.Timeout;
+        //            requests.TryRemove(RequestId, out _);
+        //            return sendRequestState2;
+        //        }
 
-                #endregion
+        //        #endregion
 
-            }
+        //    }
 
-            #region ..., or client/network error(s)
+        //    #region ..., or client/network error(s)
 
-            else
-            {
-                if (requests.TryGetValue(RequestId, out var sendRequestState) && sendRequestState is not null)
-                {
-                    sendRequestState.ErrorCode = ResultCodes.Timeout;
-                    requests.TryRemove(RequestId, out _);
-                    return sendRequestState;
-                }
-            }
+        //    else
+        //    {
+        //        if (requests.TryGetValue(RequestId, out var sendRequestState) && sendRequestState is not null)
+        //        {
+        //            sendRequestState.ErrorCode = ResultCode.Timeout;
+        //            requests.TryRemove(RequestId, out _);
+        //            return sendRequestState;
+        //        }
+        //    }
 
-            #endregion
+        //    #endregion
 
 
-            // Just in case...
-            var now = Timestamp.Now;
+        //    // Just in case...
+        //    var now = Timestamp.Now;
 
-            return new SendRequestState(
-                       Timestamp:           now,
-                       ChargeBoxId:         ChargeBoxId,
-                       WSRequestMessage:    new OCPP_WebSocket_RequestMessage(
-                                                RequestId,
-                                                OCPPAction,
-                                                JSONPayload
-                                            ),
-                       Timeout:             now,
-                       ResponseTimestamp:   now,
-                       Response:            new JObject(),
-                       ErrorCode:           ResultCodes.InternalError,
-                       ErrorDescription:    null,
-                       ErrorDetails:        null
-                   );
+        //    return new SendRequestState(
+        //               Timestamp:           now,
+        //               ChargeBoxId:         ChargeBoxId,
+        //               WSRequestMessage:    new OCPP_WebSocket_RequestMessage(
+        //                                        RequestId,
+        //                                        OCPPAction,
+        //                                        JSONPayload
+        //                                    ),
+        //               Timeout:             now,
+        //               ResponseTimestamp:   now,
+        //               Response:            new JObject(),
+        //               ErrorCode:           ResultCode.InternalError,
+        //               ErrorDescription:    null,
+        //               ErrorDetails:        null
+        //           );
 
-        }
+        //}
 
         #endregion
 
         #region SendJSON   (RequestId, ChargeBoxId, Action, JSON, RequestTimeout)
 
-        /// <summary>
-        /// Send (and forget) the given JSON.
-        /// </summary>
-        /// <param name="RequestId">A unique request identification.</param>
-        /// <param name="ChargeBoxId">A charge box identification.</param>
-        /// <param name="Action">An OCPP action.</param>
-        /// <param name="JSON">The JSON payload.</param>
-        /// <param name="RequestTimeout">A request timeout.</param>
-        public async Task<SendJSONResults> SendJSON(Request_Id         RequestId,
-                                                    ChargeBox_Id       ChargeBoxId,
-                                                    String             Action,
-                                                    JObject            JSON,
-                                                    DateTime           RequestTimeout,
-                                                    CancellationToken  CancellationToken   = default)
-        {
+        ///// <summary>
+        ///// Send (and forget) the given JSON.
+        ///// </summary>
+        ///// <param name="RequestId">A unique request identification.</param>
+        ///// <param name="ChargeBoxId">A charge box identification.</param>
+        ///// <param name="Action">An OCPP action.</param>
+        ///// <param name="JSON">The JSON payload.</param>
+        ///// <param name="RequestTimeout">A request timeout.</param>
+        //public async Task<SendJSONResults> SendJSON(Request_Id         RequestId,
+        //                                            ChargeBox_Id       ChargeBoxId,
+        //                                            String             Action,
+        //                                            JObject            JSON,
+        //                                            DateTime           RequestTimeout,
+        //                                            CancellationToken  CancellationToken   = default)
+        //{
 
-            var wsRequestMessage = new OCPP_WebSocket_RequestMessage(
-                                       RequestId,
-                                       Action,
-                                       JSON
-                                   );
+        //    var wsRequestMessage = new OCPP_WebSocket_RequestMessage(
+        //                               RequestId,
+        //                               Action,
+        //                               JSON
+        //                           );
 
-            try
-            {
+        //    try
+        //    {
 
-                var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<ChargeBox_Id>(chargeBoxId_WebSocketKey) == ChargeBoxId).
-                                                                 ToArray();
+        //        var webSocketConnections  = WebSocketConnections.Where  (ws => ws.TryGetCustomDataAs<ChargeBox_Id>(chargeBoxId_WebSocketKey) == ChargeBoxId).
+        //                                                         ToArray();
 
-                if (webSocketConnections.Length != 0)
-                {
+        //        if (webSocketConnections.Length != 0)
+        //        {
 
-                    requests.TryAdd(RequestId,
-                                    new SendRequestState(
-                                        Timestamp.Now,
-                                        ChargeBoxId,
-                                        wsRequestMessage,
-                                        RequestTimeout
-                                    ));
+        //            requests.TryAdd(RequestId,
+        //                            new SendRequestState(
+        //                                Timestamp.Now,
+        //                                ChargeBoxId,
+        //                                wsRequestMessage,
+        //                                RequestTimeout
+        //                            ));
 
-                    foreach (var webSocketConnection in webSocketConnections)
-                    {
+        //            foreach (var webSocketConnection in webSocketConnections)
+        //            {
 
-                        var success = await SendTextMessage(
-                                                webSocketConnection,
-                                                wsRequestMessage.ToJSON().ToString(Formatting.None),
-                                                EventTracking_Id.New,
-                                                CancellationToken
-                                            );
+        //                var success = await SendTextMessage(
+        //                                        webSocketConnection,
+        //                                        wsRequestMessage.ToJSON().ToString(Formatting.None),
+        //                                        EventTracking_Id.New,
+        //                                        CancellationToken
+        //                                    );
 
-                        if (success == SendStatus.Success)
-                            break;
+        //                if (success == SendStatus.Success)
+        //                    break;
 
-                        else
-                            RemoveConnection(webSocketConnection);
+        //                else
+        //                    RemoveConnection(webSocketConnection);
 
-                    }
+        //            }
 
-                    return SendJSONResults.Success;
+        //            return SendJSONResults.Success;
 
-                }
-                else
-                    return SendJSONResults.UnknownClient;
+        //        }
+        //        else
+        //            return SendJSONResults.UnknownClient;
 
-            }
-            catch (Exception)
-            {
-                return SendJSONResults.TransmissionFailed;
-            }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return SendJSONResults.TransmissionFailed;
+        //    }
 
-        }
+        //}
 
         #endregion
 
@@ -4295,11 +4309,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (ResetResponse.TryParse(Request,
-                                           sendRequestState.Response,
+                                           sendRequestState.JSONResponse.Payload,
                                            out var resetResponse,
                                            out var errorResponse) &&
                     resetResponse is not null)
@@ -4378,11 +4392,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                          );
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (ChangeAvailabilityResponse.TryParse(Request,
-                                                        sendRequestState.Response,
+                                                        sendRequestState.JSONResponse.Payload,
                                                         out var changeAvailabilityResponse,
                                                         out var errorResponse) &&
                     changeAvailabilityResponse is not null)
@@ -4461,11 +4475,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                          );
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (GetConfigurationResponse.TryParse(Request,
-                                                      sendRequestState.Response,
+                                                      sendRequestState.JSONResponse.Payload,
                                                       out var getConfigurationResponse,
                                                       out var errorResponse) &&
                     getConfigurationResponse is not null)
@@ -4544,11 +4558,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                          );
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (ChangeConfigurationResponse.TryParse(Request,
-                                                         sendRequestState.Response,
+                                                         sendRequestState.JSONResponse.Payload,
                                                          out var changeConfigurationResponse,
                                                          out var errorResponse) &&
                     changeConfigurationResponse is not null)
@@ -4625,11 +4639,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (CP.DataTransferResponse.TryParse(Request,
-                                                     sendRequestState.Response,
+                                                     sendRequestState.JSONResponse.Payload,
                                                      out var dataTransferResponse,
                                                      out var errorResponse) &&
                     dataTransferResponse is not null)
@@ -4706,11 +4720,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (GetDiagnosticsResponse.TryParse(Request,
-                                                    sendRequestState.Response,
+                                                    sendRequestState.JSONResponse.Payload,
                                                     out var getDiagnosticsResponse,
                                                     out var errorResponse) &&
                     getDiagnosticsResponse is not null)
@@ -4787,11 +4801,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (TriggerMessageResponse.TryParse(Request,
-                                                    sendRequestState.Response,
+                                                    sendRequestState.JSONResponse.Payload,
                                                     out var triggerMessageResponse,
                                                     out var errorResponse) &&
                     triggerMessageResponse is not null)
@@ -4868,11 +4882,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (UpdateFirmwareResponse.TryParse(Request,
-                                                    sendRequestState.Response,
+                                                    sendRequestState.JSONResponse.Payload,
                                                     out var updateFirmwareResponse,
                                                     out var errorResponse) &&
                     updateFirmwareResponse is not null)
@@ -4950,11 +4964,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (ReserveNowResponse.TryParse(Request,
-                                                    sendRequestState.Response,
+                                                    sendRequestState.JSONResponse.Payload,
                                                     out var reserveNowResponse,
                                                     out var errorResponse) &&
                     reserveNowResponse is not null)
@@ -5031,11 +5045,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (CancelReservationResponse.TryParse(Request,
-                                                       sendRequestState.Response,
+                                                       sendRequestState.JSONResponse.Payload,
                                                        out var cancelReservationResponse,
                                                        out var errorResponse) &&
                     cancelReservationResponse is not null)
@@ -5117,11 +5131,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (RemoteStartTransactionResponse.TryParse(Request,
-                                                            sendRequestState.Response,
+                                                            sendRequestState.JSONResponse.Payload,
                                                             out var remoteStartTransactionResponse,
                                                             out var errorResponse) &&
                     remoteStartTransactionResponse is not null)
@@ -5198,11 +5212,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (RemoteStopTransactionResponse.TryParse(Request,
-                                                           sendRequestState.Response,
+                                                           sendRequestState.JSONResponse.Payload,
                                                            out var remoteStopTransactionResponse,
                                                            out var errorResponse) &&
                     remoteStopTransactionResponse is not null)
@@ -5279,11 +5293,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (SetChargingProfileResponse.TryParse(Request,
-                                                        sendRequestState.Response,
+                                                        sendRequestState.JSONResponse.Payload,
                                                         out var setChargingProfileResponse,
                                                         out var errorResponse) &&
                     setChargingProfileResponse is not null)
@@ -5360,11 +5374,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (ClearChargingProfileResponse.TryParse(Request,
-                                                          sendRequestState.Response,
+                                                          sendRequestState.JSONResponse.Payload,
                                                           out var clearChargingProfileResponse,
                                                           out var errorResponse) &&
                     clearChargingProfileResponse is not null)
@@ -5442,11 +5456,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (GetCompositeScheduleResponse.TryParse(Request,
-                                                          sendRequestState.Response,
+                                                          sendRequestState.JSONResponse.Payload,
                                                           out var getCompositeScheduleResponse,
                                                           out var errorResponse) &&
                     getCompositeScheduleResponse is not null)
@@ -5523,11 +5537,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (UnlockConnectorResponse.TryParse(Request,
-                                                     sendRequestState.Response,
+                                                     sendRequestState.JSONResponse.Payload,
                                                      out var unlockConnectorResponse,
                                                      out var errorResponse) &&
                     unlockConnectorResponse is not null)
@@ -5605,11 +5619,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (GetLocalListVersionResponse.TryParse(Request,
-                                                         sendRequestState.Response,
+                                                         sendRequestState.JSONResponse.Payload,
                                                          out var getLocalListVersionResponse,
                                                          out var errorResponse) &&
                     getLocalListVersionResponse is not null)
@@ -5686,11 +5700,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (SendLocalListResponse.TryParse(Request,
-                                                   sendRequestState.Response,
+                                                   sendRequestState.JSONResponse.Payload,
                                                    out var sendLocalListResponse,
                                                    out var errorResponse) &&
                     sendLocalListResponse is not null)
@@ -5767,11 +5781,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (ClearCacheResponse.TryParse(Request,
-                                                sendRequestState.Response,
+                                                sendRequestState.JSONResponse.Payload,
                                                 out var clearCacheResponse,
                                                 out var errorResponse) &&
                     clearCacheResponse is not null)
@@ -5856,11 +5870,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (CertificateSignedResponse.TryParse(Request,
-                                                       sendRequestState.Response,
+                                                       sendRequestState.JSONResponse.Payload,
                                                        out var certificateSignedResponse,
                                                        out var errorResponse) &&
                     certificateSignedResponse is not null)
@@ -5941,11 +5955,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (DeleteCertificateResponse.TryParse(Request,
-                                                       sendRequestState.Response,
+                                                       sendRequestState.JSONResponse.Payload,
                                                        out var deleteCertificateResponse,
                                                        out var errorResponse) &&
                     deleteCertificateResponse is not null)
@@ -6026,11 +6040,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (ExtendedTriggerMessageResponse.TryParse(Request,
-                                                            sendRequestState.Response,
+                                                            sendRequestState.JSONResponse.Payload,
                                                             out var extendedTriggerMessageResponse,
                                                             out var errorResponse) &&
                     extendedTriggerMessageResponse is not null)
@@ -6111,11 +6125,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (GetInstalledCertificateIdsResponse.TryParse(Request,
-                                                                sendRequestState.Response,
+                                                                sendRequestState.JSONResponse.Payload,
                                                                 out var getInstalledCertificateIdsResponse,
                                                                 out var errorResponse) &&
                     getInstalledCertificateIdsResponse is not null)
@@ -6196,11 +6210,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (GetLogResponse.TryParse(Request,
-                                            sendRequestState.Response,
+                                            sendRequestState.JSONResponse.Payload,
                                             out var getLogResponse,
                                             out var errorResponse) &&
                     getLogResponse is not null)
@@ -6281,11 +6295,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (InstallCertificateResponse.TryParse(Request,
-                                                        sendRequestState.Response,
+                                                        sendRequestState.JSONResponse.Payload,
                                                         out var installCertificateResponse,
                                                         out var errorResponse) &&
                     installCertificateResponse is not null)
@@ -6366,11 +6380,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                      Request.RequestTimeout);
 
             if (sendRequestState.NoErrors &&
-                sendRequestState.Response is not null)
+                sendRequestState.JSONResponse is not null)
             {
 
                 if (SignedUpdateFirmwareResponse.TryParse(Request,
-                                                          sendRequestState.Response,
+                                                          sendRequestState.JSONResponse.Payload,
                                                           out var signedUpdateFirmwareResponse,
                                                           out var errorResponse) &&
                     signedUpdateFirmwareResponse is not null)
@@ -6413,6 +6427,246 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         }
 
         #endregion
+
+
+
+
+
+
+        #region SendJSONData     (EventTrackingId, ChargeBoxId, NetworkPath, RequestId, Action, JSONData,   RequestTimeout, ...)
+
+        /// <summary>
+        /// Send (and forget) the given JSON.
+        /// </summary>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargeBoxId">The networking node identification of the message destination.</param>
+        /// <param name="NetworkPath">The network path.</param>
+        /// <param name="RequestId">A unique request identification.</param>
+        /// <param name="Action">An OCPP action.</param>
+        /// <param name="JSONData">The JSON payload.</param>
+        /// <param name="RequestTimeout">A request timeout.</param>
+        public async Task<SendOCPPMessageResults> SendJSONData(EventTracking_Id   EventTrackingId,
+                                                               ChargeBox_Id       ChargeBoxId,
+                                                               NetworkPath        NetworkPath,
+                                                               Request_Id         RequestId,
+                                                               String             Action,
+                                                               JObject            JSONData,
+                                                               DateTime           RequestTimeout,
+                                                               CancellationToken  CancellationToken   = default)
+        {
+
+            try
+            {
+
+                var webSocketConnections  = WebSocketConnections.Where  (connection => connection.TryGetCustomDataAs<ChargeBox_Id>(chargeBoxId_WebSocketKey) == ChargeBoxId).
+                                                                 ToArray();
+
+                if (webSocketConnections.Length != 0)
+                {
+
+                    var jsonRequestMessage  = new OCPP_JSONRequestMessage(
+                                                  ChargeBoxId,
+                                                  NetworkPath,
+                                                  RequestId,
+                                                  Action,
+                                                  JSONData
+                                              );
+
+                    requests.TryAdd(RequestId,
+                                    SendRequestState.FromJSONRequest(
+                                        Timestamp.Now,
+                                        ChargeBoxId,
+                                        RequestTimeout,
+                                        jsonRequestMessage
+                                    ));
+
+                    foreach (var webSocketConnection in webSocketConnections)
+                    {
+
+                        var networkingMode   = webSocketConnection.TryGetCustomDataAs<Boolean>(networkingMode_WebSocketKey);
+                        var ocppJSONMessage  = jsonRequestMessage. ToJSON(networkingMode ?? false);
+
+                        #region OnTextMessageRequestSent
+
+                        var onJSONMessageRequestSent = OnJSONMessageRequestSent;
+                        if (onJSONMessageRequestSent is not null)
+                        {
+                            try
+                            {
+
+                                await Task.WhenAll(onJSONMessageRequestSent.GetInvocationList().
+                                                       OfType <OnWebSocketTextMessageDelegate>().
+                                                       Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                                      Timestamp.Now,
+                                                                                      this,
+                                                                                      webSocketConnection,
+                                                                                      EventTrackingId,
+                                                                                      ocppJSONMessage.ToString(),
+                                                                                      CancellationToken
+                                                                                  )).
+                                                       ToArray());
+
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnJSONMessageRequestSent));
+                            }
+                        }
+
+                        #endregion
+
+                        var success = await SendTextMessage(
+                                                webSocketConnection,
+                                                ocppJSONMessage.ToString(),
+                                                EventTrackingId,
+                                                CancellationToken
+                                            );
+
+                        if (success == SendStatus.Success)
+                            break;
+
+                        else
+                            RemoveConnection(webSocketConnection);
+
+                    }
+
+                    return SendOCPPMessageResults.Success;
+
+                }
+                else
+                    return SendOCPPMessageResults.UnknownClient;
+
+            }
+            catch (Exception)
+            {
+                return SendOCPPMessageResults.TransmissionFailed;
+            }
+
+        }
+
+        #endregion
+
+
+        #region SendJSONAndWait  (EventTrackingId, NetworkingNodeId, NetworkPath, RequestId, OCPPAction, JSONPayload,   RequestTimeout = null)
+
+        public async Task<SendRequestState> SendJSONAndWait(EventTracking_Id   EventTrackingId,
+                                                            ChargeBox_Id       ChargeBoxId,
+                                                            NetworkPath        NetworkPath,
+                                                            Request_Id         RequestId,
+                                                            String             OCPPAction,
+                                                            JObject            JSONPayload,
+                                                            TimeSpan?          RequestTimeout,
+                                                            CancellationToken  CancellationToken   = default)
+        {
+
+            var endTime         = Timestamp.Now + (RequestTimeout ?? this.RequestTimeout ?? DefaultRequestTimeout);
+
+            var sendJSONResult  = await SendJSONData(
+                                      EventTrackingId,
+                                      ChargeBoxId,
+                                      NetworkPath,
+                                      RequestId,
+                                      OCPPAction,
+                                      JSONPayload,
+                                      endTime,
+                                      CancellationToken
+                                  );
+
+            if (sendJSONResult == SendOCPPMessageResults.Success) {
+
+                #region Wait for a response... till timeout
+
+                do
+                {
+
+                    try
+                    {
+
+                        await Task.Delay(25, CancellationToken);
+
+                        if (requests.TryGetValue(RequestId, out var sendRequestState) &&
+                           (sendRequestState?.JSONResponse   is not null ||
+                            sendRequestState?.BinaryResponse is not null ||
+                            sendRequestState?.ErrorCode.HasValue == true))
+                        {
+
+                            requests.TryRemove(RequestId, out _);
+
+                            return sendRequestState;
+
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        DebugX.Log(String.Concat(nameof(CentralSystemWSServer), ".", nameof(SendJSONAndWait), " exception occured: ", e.Message));
+                    }
+
+                }
+                while (Timestamp.Now < endTime);
+
+                #endregion
+
+                #region When timeout...
+
+                if (requests.TryGetValue(RequestId, out var sendRequestState2) &&
+                    sendRequestState2 is not null)
+                {
+                    sendRequestState2.ErrorCode = ResultCode.Timeout;
+                    requests.TryRemove(RequestId, out _);
+                    return sendRequestState2;
+                }
+
+                #endregion
+
+            }
+
+            #region ..., or client/network error(s)
+
+            else
+            {
+                if (requests.TryGetValue(RequestId, out var sendRequestState3) &&
+                    sendRequestState3 is not null)
+                {
+                    sendRequestState3.ErrorCode = ResultCode.Timeout;
+                    requests.TryRemove(RequestId, out _);
+                    return sendRequestState3;
+                }
+            }
+
+            #endregion
+
+
+            // Just in case...
+            var now = Timestamp.Now;
+
+            return SendRequestState.FromJSONRequest(
+
+                       now,
+                       ChargeBoxId,
+                       now,
+                       new OCPP_JSONRequestMessage(
+                           ChargeBoxId,
+                           NetworkPath,
+                           RequestId,
+                           OCPPAction,
+                           JSONPayload
+                       ),
+                       now,
+
+                       ErrorCode:  ResultCode.InternalError
+
+                   );
+
+        }
+
+        #endregion
+
+
+
+
+
+
 
 
         private Task HandleErrors(String     Module,

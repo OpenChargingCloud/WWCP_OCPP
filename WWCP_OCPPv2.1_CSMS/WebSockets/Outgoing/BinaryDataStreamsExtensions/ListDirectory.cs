@@ -21,6 +21,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.CSMS;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
@@ -29,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
-    public partial class CSMSWSServer : WebSocketServer,
+    public partial class CSMSWSServer : ACSMSWSServer,
                                         ICSMSChannel
     {
 
@@ -37,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<ListDirectoryRequest>?  CustomListDirectoryRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<CS.ListDirectoryResponse>?  CustomListDirectoryResponseParser       { get; set; }
+        public CustomJObjectParserDelegate<ListDirectoryResponse>?  CustomListDirectoryResponseParser       { get; set; }
 
         #endregion
 
@@ -58,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region ListDirectory(Request)
 
-        public async Task<CS.ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request)
+        public async Task<ListDirectoryResponse> ListDirectory(ListDirectoryRequest Request)
         {
 
             #region Send OnListDirectoryRequest event
@@ -80,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            CS.ListDirectoryResponse? response = null;
+            ListDirectoryResponse? response = null;
 
             try
             {
@@ -103,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (CS.ListDirectoryResponse.TryParse(Request,
+                    if (ListDirectoryResponse.TryParse(Request,
                                                           sendRequestState.JSONResponse.Payload,
                                                           out var deleteFileResponse,
                                                           out var errorResponse,
@@ -113,14 +117,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         response = deleteFileResponse;
                     }
 
-                    response ??= new CS.ListDirectoryResponse(
+                    response ??= new ListDirectoryResponse(
                                          Request,
                                          Result.Format(errorResponse)
                                      );
 
                 }
 
-                response ??= new CS.ListDirectoryResponse(
+                response ??= new ListDirectoryResponse(
                                  Request,
                                  Request.DirectoryPath,
                                  ListDirectoryStatus.Rejected
@@ -130,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
 
-                response = new CS.ListDirectoryResponse(
+                response = new ListDirectoryResponse(
                                Request,
                                Result.FromException(e)
                            );

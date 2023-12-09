@@ -37,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnDeleteFileRequestDelegate(DateTime                 Timestamp,
                                     IEventSender             Sender,
-                                    CSMS.DeleteFileRequest   Request);
+                                    OCPP.CSMS.DeleteFileRequest   Request);
 
 
     /// <summary>
@@ -47,12 +47,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The DeleteFile request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<DeleteFileResponse>
+    public delegate Task<OCPP.CS.DeleteFileResponse>
 
         OnDeleteFileDelegate(DateTime                    Timestamp,
                              IEventSender                Sender,
                              WebSocketClientConnection   Connection,
-                             CSMS.DeleteFileRequest      Request,
+                             OCPP.CSMS.DeleteFileRequest      Request,
                              CancellationToken           CancellationToken);
 
 
@@ -68,8 +68,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnDeleteFileResponseDelegate(DateTime                 Timestamp,
                                      IEventSender             Sender,
-                                     CSMS.DeleteFileRequest   Request,
-                                     DeleteFileResponse       Response,
+                                     OCPP.CSMS.DeleteFileRequest   Request,
+                                     OCPP.CS.DeleteFileResponse       Response,
                                      TimeSpan                 Runtime);
 
     #endregion

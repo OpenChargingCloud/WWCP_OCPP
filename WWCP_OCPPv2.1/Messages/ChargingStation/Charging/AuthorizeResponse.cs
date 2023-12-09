@@ -21,6 +21,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
@@ -106,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                  IEnumerable<KeyPair>?        SignKeys                = null,
                                  IEnumerable<SignInfo>?       SignInfos               = null,
-                                 IEnumerable<Signature>?      Signatures              = null,
+                                 IEnumerable<OCPP.Signature>? Signatures              = null,
 
                                  CustomData?                  CustomData              = null)
 
@@ -523,8 +525,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptionalHashSet("signatures",
                                               "cryptographic signatures",
-                                              Signature.TryParse,
-                                              out HashSet<Signature> Signatures,
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
                                               out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -537,7 +539,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                 if (JSON.ParseOptionalJSON("customData",
                                            "custom data",
-                                           OCPPv2_1.CustomData.TryParse,
+                                           OCPP.CustomData.TryParse,
                                            out CustomData CustomData,
                                            out ErrorResponse))
                 {
@@ -602,7 +604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                               CustomJObjectSerializerDelegate<AdditionalInfo>?     CustomAdditionalInfoSerializer      = null,
                               CustomJObjectSerializerDelegate<MessageContent>?     CustomMessageContentSerializer      = null,
                               CustomJObjectSerializerDelegate<TransactionLimits>?  CustomTransactionLimitsSerializer   = null,
-                              CustomJObjectSerializerDelegate<Signature>?          CustomSignatureSerializer           = null,
+                              CustomJObjectSerializerDelegate<OCPP.Signature>?     CustomSignatureSerializer           = null,
                               CustomJObjectSerializerDelegate<CustomData>?         CustomCustomDataSerializer          = null)
         {
 

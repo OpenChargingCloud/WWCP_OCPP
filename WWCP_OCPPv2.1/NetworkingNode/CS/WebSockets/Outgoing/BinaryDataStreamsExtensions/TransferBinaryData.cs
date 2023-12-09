@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="Request">The request.</param>
     public delegate Task OnBinaryDataTransferRequestDelegate(DateTime                                Timestamp,
                                                              IEventSender                            Sender,
-                                                             OCPPv2_1.CS.BinaryDataTransferRequest   Request);
+                                                             OCPP.CS.BinaryDataTransferRequest   Request);
 
     /// <summary>
     /// A delegate called whenever a response to a binary data transfer request was received.
@@ -52,8 +52,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task OnBinaryDataTransferResponseDelegate(DateTime                                   Timestamp,
                                                               IEventSender                               Sender,
-                                                              OCPPv2_1.CS.BinaryDataTransferRequest      Request,
-                                                              OCPPv2_1.CSMS.BinaryDataTransferResponse   Response,
+                                                              OCPP.CS.BinaryDataTransferRequest      Request,
+                                                              OCPP.CSMS.BinaryDataTransferResponse   Response,
                                                               TimeSpan                                   Runtime);
 
     #endregion

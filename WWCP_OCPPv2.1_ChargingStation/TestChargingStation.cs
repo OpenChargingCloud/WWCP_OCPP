@@ -32,6 +32,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
+using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
@@ -442,19 +443,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <CSMS.BinaryDataTransferRequest>?                      CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
-        public CustomJObjectSerializerDelegate<CSMS.GetFileRequest>?                                 CustomGetFileRequestSerializer                               { get; set; }
-        public CustomBinarySerializerDelegate <CSMS.SendFileRequest>?                                CustomSendFileRequestSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<CSMS.DeleteFileRequest>?                              CustomDeleteFileRequestSerializer                            { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CSMS.BinaryDataTransferRequest>?                 CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.GetFileRequest>?                            CustomGetFileRequestSerializer                               { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CSMS.SendFileRequest>?                           CustomSendFileRequestSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteFileRequest>?                         CustomDeleteFileRequestSerializer                            { get; set; }
 
 
         // E2E Security Extensions
-        public CustomJObjectSerializerDelegate<CSMS.AddSignaturePolicyRequest>?                      CustomAddSignaturePolicyRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<CSMS.UpdateSignaturePolicyRequest>?                   CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CSMS.DeleteSignaturePolicyRequest>?                   CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CSMS.AddUserRoleRequest>?                             CustomAddUserRoleRequestSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<CSMS.UpdateUserRoleRequest>?                          CustomUpdateUserRoleRequestSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<CSMS.DeleteUserRoleRequest>?                          CustomDeleteUserRoleRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.AddSignaturePolicyRequest>?                 CustomAddSignaturePolicyRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.UpdateSignaturePolicyRequest>?              CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteSignaturePolicyRequest>?              CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.AddUserRoleRequest>?                        CustomAddUserRoleRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.UpdateUserRoleRequest>?                     CustomUpdateUserRoleRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteUserRoleRequest>?                     CustomDeleteUserRoleRequestSerializer                        { get; set; }
 
 
         // E2E Charging Tariffs Extensions
@@ -499,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<CSMS.BinaryDataTransferResponse>?                      CustomBinaryDataTransferResponseSerializer                   { get; set; }
+        public CustomBinarySerializerDelegate<OCPP.CSMS.BinaryDataTransferResponse>?                 CustomBinaryDataTransferResponseSerializer                   { get; set; }
 
         #endregion
 
@@ -539,7 +540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<BinaryDataTransferRequest>?                            CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        public CustomBinarySerializerDelegate<OCPP.CS.BinaryDataTransferRequest>?                    CustomBinaryDataTransferRequestSerializer                    { get; set; }
 
         #endregion
 
@@ -597,19 +598,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <BinaryDataTransferResponse>?                          CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
-        public CustomBinarySerializerDelegate <GetFileResponse>?                                     CustomGetFileResponseSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<SendFileResponse>?                                    CustomSendFileResponseSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteFileResponse>?                                  CustomDeleteFileResponseSerializer                           { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferResponse>?                  CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CS.GetFileResponse>?                             CustomGetFileResponseSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?                            CustomSendFileResponseSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?                          CustomDeleteFileResponseSerializer                           { get; set; }
 
 
         // E2E Security Extensions
-        public CustomJObjectSerializerDelegate<AddSignaturePolicyResponse>?                          CustomAddSignaturePolicyResponseSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<UpdateSignaturePolicyResponse>?                       CustomUpdateSignaturePolicyResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteSignaturePolicyResponse>?                       CustomDeleteSignaturePolicyResponseSerializer                { get; set; }
-        public CustomJObjectSerializerDelegate<AddUserRoleResponse>?                                 CustomAddUserRoleResponseSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<UpdateUserRoleResponse>?                              CustomUpdateUserRoleResponseSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteUserRoleResponse>?                              CustomDeleteUserRoleResponseSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.AddSignaturePolicyResponse>?                  CustomAddSignaturePolicyResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.UpdateSignaturePolicyResponse>?               CustomUpdateSignaturePolicyResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.DeleteSignaturePolicyResponse>?               CustomDeleteSignaturePolicyResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.AddUserRoleResponse>?                         CustomAddUserRoleResponseSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.UpdateUserRoleResponse>?                      CustomUpdateUserRoleResponseSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.DeleteUserRoleResponse>?                      CustomDeleteUserRoleResponseSerializer                       { get; set; }
 
 
         // E2E Charging Tariff Extensions
@@ -625,7 +626,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<EVSEStatusInfo<SetDefaultChargingTariffStatus>>?      CustomEVSEStatusInfoSerializer                               { get; set; }
         public CustomJObjectSerializerDelegate<EVSEStatusInfo<RemoveDefaultChargingTariffStatus>>?   CustomEVSEStatusInfoSerializer2                              { get; set; }
-        public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
         public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                                     { get; set; }
         public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                            { get; set; }
@@ -711,7 +712,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<Signature>?                                            CustomBinarySignatureSerializer                              { get; set; }
+        public CustomBinarySerializerDelegate<OCPP.Signature>?                                            CustomBinarySignatureSerializer                              { get; set; }
 
 
         // E2E Security Extensions
@@ -10173,11 +10174,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Check charging station identification
 
-                BinaryDataTransferResponse? response = null;
+                OCPP.CS.BinaryDataTransferResponse? response = null;
 
                 if (request.NetworkingNodeId != Id)
                 {
-                    response = new BinaryDataTransferResponse(
+                    response = new OCPP.CS.BinaryDataTransferResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
                                                  $"Charging station '{Id}': Invalid BinaryDataTransfer request for charging station '{request.NetworkingNodeId}'!"
@@ -10203,7 +10204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          ))
                     {
 
-                        response = new BinaryDataTransferResponse(
+                        response = new OCPP.CS.BinaryDataTransferResponse(
                                        Request:  request,
                                        Result:   Result.SignatureError(
                                                      $"Invalid signature: {errorResponse}"
@@ -10230,19 +10231,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         response = request.VendorId == Vendor_Id.GraphDefined
 
-                                       ? new BinaryDataTransferResponse(
-                                           Request:                request,
-                                           Status:                 BinaryDataTransferStatus.Accepted,
-                                           AdditionalStatusInfo:   null,
-                                           Data:                   responseBinaryData
-                                       )
+                                       ? new OCPP.CS.BinaryDataTransferResponse(
+                                             Request:                request,
+                                             Status:                 BinaryDataTransferStatus.Accepted,
+                                             AdditionalStatusInfo:   null,
+                                             Data:                   responseBinaryData
+                                         )
 
-                                     : new BinaryDataTransferResponse(
-                                           Request:                request,
-                                           Status:                 BinaryDataTransferStatus.Rejected,
-                                           AdditionalStatusInfo:   null,
-                                           Data:                   responseBinaryData
-                                       );
+                                       : new OCPP.CS.BinaryDataTransferResponse(
+                                             Request:                request,
+                                             Status:                 BinaryDataTransferStatus.Rejected,
+                                             AdditionalStatusInfo:   null,
+                                             Data:                   responseBinaryData
+                                         );
 
                     }
 
@@ -10346,11 +10347,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Check charging station identification
 
-                GetFileResponse? response = null;
+                OCPP.CS.GetFileResponse? response = null;
 
                 if (request.NetworkingNodeId != Id)
                 {
-                    response = new GetFileResponse(
+                    response = new OCPP.CS.GetFileResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
                                                  $"Charging station '{Id}': Invalid GetFile request for charging station '{request.NetworkingNodeId}'!"
@@ -10376,7 +10377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          ))
                     {
 
-                        response = new GetFileResponse(
+                        response = new OCPP.CS.GetFileResponse(
                                        Request:  request,
                                        Result:   Result.SignatureError(
                                                      $"Invalid signature: {errorResponse}"
@@ -10394,7 +10395,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         response = request.FileName.ToString() == "/hello/world.txt"
 
-                                       ? new GetFileResponse(
+                                       ? new OCPP.CS.GetFileResponse(
                                              Request:           request,
                                              FileName:          request.FileName,
                                              Status:            GetFileStatus.Success,
@@ -10404,7 +10405,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                              FileSHA512:        SHA512.HashData("Hello world!".ToUTF8Bytes())
                                          )
 
-                                       : new GetFileResponse(
+                                       : new OCPP.CS.GetFileResponse(
                                              Request:           request,
                                              FileName:          request.FileName,
                                              Status:            GetFileStatus.NotFound
@@ -10512,11 +10513,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Check charging station identification
 
-                SendFileResponse? response = null;
+                OCPP.CS.SendFileResponse? response = null;
 
                 if (request.NetworkingNodeId != Id)
                 {
-                    response = new SendFileResponse(
+                    response = new OCPP.CS.SendFileResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
                                                  $"Charging station '{Id}': Invalid SendFile request for charging station '{request.NetworkingNodeId}'!"
@@ -10542,7 +10543,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          ))
                     {
 
-                        response = new SendFileResponse(
+                        response = new OCPP.CS.SendFileResponse(
                                        Request:  request,
                                        Result:   Result.SignatureError(
                                                      $"Invalid signature: {errorResponse}"
@@ -10560,13 +10561,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         response = request.FileName.ToString() == "/hello/world.txt"
 
-                                       ? new SendFileResponse(
+                                       ? new OCPP.CS.SendFileResponse(
                                              Request:   request,
                                              FileName:  request.FileName,
                                              Status:    SendFileStatus.Success
                                          )
 
-                                       : new SendFileResponse(
+                                       : new OCPP.CS.SendFileResponse(
                                              Request:   request,
                                              FileName:  request.FileName,
                                              Status:    SendFileStatus.NotFound
@@ -10674,11 +10675,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Check charging station identification
 
-                DeleteFileResponse? response = null;
+                OCPP.CS.DeleteFileResponse? response = null;
 
                 if (request.NetworkingNodeId != Id)
                 {
-                    response = new DeleteFileResponse(
+                    response = new OCPP.CS.DeleteFileResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
                                                  $"Charging station '{Id}': Invalid DeleteFile request for charging station '{request.NetworkingNodeId}'!"
@@ -10704,7 +10705,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          ))
                     {
 
-                        response = new DeleteFileResponse(
+                        response = new OCPP.CS.DeleteFileResponse(
                                        Request:  request,
                                        Result:   Result.SignatureError(
                                                      $"Invalid signature: {errorResponse}"
@@ -10722,13 +10723,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         response = request.FileName.ToString() == "/hello/world.txt"
 
-                                       ? new DeleteFileResponse(
+                                       ? new OCPP.CS.DeleteFileResponse(
                                              Request:   request,
                                              FileName:  request.FileName,
                                              Status:    DeleteFileStatus.Success
                                          )
 
-                                       : new DeleteFileResponse(
+                                       : new OCPP.CS.DeleteFileResponse(
                                              Request:   request,
                                              FileName:  request.FileName,
                                              Status:    DeleteFileStatus.NotFound
@@ -10839,11 +10840,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Check charging station identification
 
-                AddSignaturePolicyResponse? response = null;
+                OCPP.CS.AddSignaturePolicyResponse? response = null;
 
                 if (request.NetworkingNodeId != Id)
                 {
-                    response = new AddSignaturePolicyResponse(
+                    response = new OCPP.CS.AddSignaturePolicyResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
                                                  $"Charging station '{Id}': Invalid AddSignaturePolicy request for charging station '{request.NetworkingNodeId}'!"
@@ -10873,7 +10874,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          ))
                     {
 
-                        response = new AddSignaturePolicyResponse(
+                        response = new OCPP.CS.AddSignaturePolicyResponse(
                                        Request:  request,
                                        Result:   Result.SignatureError(
                                                      $"Invalid signature: {errorResponse}"
@@ -10892,7 +10893,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                         // Message
 
 
-                            response = new AddSignaturePolicyResponse(
+                            response = new OCPP.CS.AddSignaturePolicyResponse(
                                            Request:      request,
                                            Status:       GenericStatus.Accepted,
                                            StatusInfo:   null,
@@ -11002,11 +11003,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Check charging station identification
 
-                UpdateSignaturePolicyResponse? response = null;
+                OCPP.CS.UpdateSignaturePolicyResponse? response = null;
 
                 if (request.NetworkingNodeId != Id)
                 {
-                    response = new UpdateSignaturePolicyResponse(
+                    response = new OCPP.CS.UpdateSignaturePolicyResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
                                                  $"Charging station '{Id}': Invalid UpdateSignaturePolicy request for charging station '{request.NetworkingNodeId}'!"
@@ -11036,7 +11037,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          ))
                     {
 
-                        response = new UpdateSignaturePolicyResponse(
+                        response = new OCPP.CS.UpdateSignaturePolicyResponse(
                                        Request:  request,
                                        Result:   Result.SignatureError(
                                                      $"Invalid signature: {errorResponse}"
@@ -11054,7 +11055,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         // Message
 
-                        response = new UpdateSignaturePolicyResponse(
+                        response = new OCPP.CS.UpdateSignaturePolicyResponse(
                                        Request:      request,
                                        Status:       GenericStatus.Accepted,
                                        StatusInfo:   null,
@@ -11163,11 +11164,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Check charging station identification
 
-                DeleteSignaturePolicyResponse? response = null;
+                OCPP.CS.DeleteSignaturePolicyResponse? response = null;
 
                 if (request.NetworkingNodeId != Id)
                 {
-                    response = new DeleteSignaturePolicyResponse(
+                    response = new OCPP.CS.DeleteSignaturePolicyResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
                                                  $"Charging station '{Id}': Invalid DeleteSignaturePolicy request for charging station '{request.NetworkingNodeId}'!"
@@ -11197,7 +11198,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          ))
                     {
 
-                        response = new DeleteSignaturePolicyResponse(
+                        response = new OCPP.CS.DeleteSignaturePolicyResponse(
                                        Request:  request,
                                        Result:   Result.SignatureError(
                                                      $"Invalid signature: {errorResponse}"
@@ -11215,7 +11216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         // Message
 
-                        response = new DeleteSignaturePolicyResponse(
+                        response = new OCPP.CS.DeleteSignaturePolicyResponse(
                                        Request:      request,
                                        Status:       GenericStatus.Accepted,
                                        StatusInfo:   null,
@@ -11324,11 +11325,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Check charging station identification
 
-                AddUserRoleResponse? response = null;
+                OCPP.CS.AddUserRoleResponse? response = null;
 
                 if (request.NetworkingNodeId != Id)
                 {
-                    response = new AddUserRoleResponse(
+                    response = new OCPP.CS.AddUserRoleResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
                                                  $"Charging station '{Id}': Invalid AddUserRole request for charging station '{request.NetworkingNodeId}'!"
@@ -11358,7 +11359,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          ))
                     {
 
-                        response = new AddUserRoleResponse(
+                        response = new OCPP.CS.AddUserRoleResponse(
                                        Request:  request,
                                        Result:   Result.SignatureError(
                                                      $"Invalid signature: {errorResponse}"
@@ -11376,7 +11377,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         // Message
 
-                        response = new AddUserRoleResponse(
+                        response = new OCPP.CS.AddUserRoleResponse(
                                        Request:      request,
                                        Status:       GenericStatus.Accepted,
                                        StatusInfo:   null,
@@ -11485,11 +11486,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Check charging station identification
 
-                UpdateUserRoleResponse? response = null;
+                OCPP.CS.UpdateUserRoleResponse? response = null;
 
                 if (request.NetworkingNodeId != Id)
                 {
-                    response = new UpdateUserRoleResponse(
+                    response = new OCPP.CS.UpdateUserRoleResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
                                                  $"Charging station '{Id}': Invalid UpdateUserRole request for charging station '{request.NetworkingNodeId}'!"
@@ -11519,7 +11520,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          ))
                     {
 
-                        response = new UpdateUserRoleResponse(
+                        response = new OCPP.CS.UpdateUserRoleResponse(
                                        Request:  request,
                                        Result:   Result.SignatureError(
                                                      $"Invalid signature: {errorResponse}"
@@ -11537,7 +11538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         // Message
 
-                        response = new UpdateUserRoleResponse(
+                        response = new OCPP.CS.UpdateUserRoleResponse(
                                        Request:      request,
                                        Status:       GenericStatus.Accepted,
                                        StatusInfo:   null,
@@ -11646,11 +11647,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Check charging station identification
 
-                DeleteUserRoleResponse? response = null;
+                OCPP.CS.DeleteUserRoleResponse? response = null;
 
                 if (request.NetworkingNodeId != Id)
                 {
-                    response = new DeleteUserRoleResponse(
+                    response = new OCPP.CS.DeleteUserRoleResponse(
                                    Request:  request,
                                    Result:   Result.GenericError(
                                                  $"Charging station '{Id}': Invalid DeleteUserRole request for charging station '{request.NetworkingNodeId}'!"
@@ -11680,7 +11681,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                          ))
                     {
 
-                        response = new DeleteUserRoleResponse(
+                        response = new OCPP.CS.DeleteUserRoleResponse(
                                        Request:  request,
                                        Result:   Result.SignatureError(
                                                      $"Invalid signature: {errorResponse}"
@@ -11698,7 +11699,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         // Message
 
-                        response = new DeleteUserRoleResponse(
+                        response = new OCPP.CS.DeleteUserRoleResponse(
                                        Request:      request,
                                        Status:       GenericStatus.Accepted,
                                        StatusInfo:   null,
@@ -15600,8 +15601,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CSMS.BinaryDataTransferResponse>
-            TransferBinaryData(BinaryDataTransferRequest Request)
+        public async Task<OCPP.CSMS.BinaryDataTransferResponse>
+            TransferBinaryData(OCPP.CS.BinaryDataTransferRequest Request)
 
         {
 
@@ -15639,12 +15640,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                      ? await CSClient.TransferBinaryData(Request)
 
-                                     : new CSMS.BinaryDataTransferResponse(
+                                     : new OCPP.CSMS.BinaryDataTransferResponse(
                                            Request,
                                            Result.SignatureError(errorResponse)
                                        )
 
-                               : new CSMS.BinaryDataTransferResponse(
+                               : new OCPP.CSMS.BinaryDataTransferResponse(
                                      Request,
                                      Result.Server("Unknown or unreachable charging station!")
                                  );

@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using cloud.charging.open.protocols.OCPP;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
@@ -26,9 +32,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region WebSocket connection
 
+        /// <summary>
+        /// An event sent whenever the HTTP connection switched successfully to web socket.
+        /// </summary>
         event OnCSMSNewWebSocketConnectionDelegate?  OnCSMSNewWebSocketConnection;
 
+        /// <summary>
+        /// An event sent whenever a web socket close frame was received.
+        /// </summary>
         event OnCSMSCloseMessageReceivedDelegate?    OnCSMSCloseMessageReceived;
+
+        /// <summary>
+        /// An event sent whenever a TCP connection was closed.
+        /// </summary>
+        event OnCSMSTCPConnectionClosedDelegate?     OnCSMSTCPConnectionClosed;
 
         #endregion
 

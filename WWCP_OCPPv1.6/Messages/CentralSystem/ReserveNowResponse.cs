@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6.CP
@@ -301,7 +303,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomReserveNowResponseSerializer">A delegate to serialize custom reserve now responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowResponse>?  CustomReserveNowResponseSerializer   = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<ReserveNowResponse>?  CustomReserveNowResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<OCPP.Signature>?      CustomSignatureSerializer            = null,
+                              CustomJObjectSerializerDelegate<CustomData>?          CustomCustomDataSerializer           = null)
         {
 
             var json = JSONObject.Create(

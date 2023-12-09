@@ -22,6 +22,9 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
@@ -50,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     public delegate Task OnBinaryDataTransferResponseDelegate(DateTime                          Timestamp,
                                                               IEventSender                      Sender,
                                                               BinaryDataTransferRequest         Request,
-                                                              CSMS.BinaryDataTransferResponse   Response,
+                                                              OCPP.CSMS.BinaryDataTransferResponse   Response,
                                                               TimeSpan                          Runtime);
 
     #endregion

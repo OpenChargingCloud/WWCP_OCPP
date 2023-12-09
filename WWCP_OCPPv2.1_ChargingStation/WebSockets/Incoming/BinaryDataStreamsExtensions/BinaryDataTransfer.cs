@@ -21,7 +21,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -40,9 +41,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomBinaryParserDelegate<CSMS.BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestParser         { get; set; }
+        public CustomBinaryParserDelegate<OCPP.CSMS.BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestParser         { get; set; }
 
-        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer    { get; set; }
+        public CustomBinarySerializerDelegate<OCPP.CS.BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer    { get; set; }
 
         #endregion
 
@@ -120,13 +121,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                if (CSMS.BinaryDataTransferRequest.TryParse(RequestBinary,
-                                                            RequestId,
-                                                            NetworkingNodeId,
-                                                            NetworkPath,
-                                                            out var request,
-                                                            out var errorResponse,
-                                                            CustomBinaryDataTransferRequestParser) &&
+                if (OCPP.CSMS.BinaryDataTransferRequest.TryParse(RequestBinary,
+                                                                 RequestId,
+                                                                 NetworkingNodeId,
+                                                                 NetworkPath,
+                                                                 out var request,
+                                                                 out var errorResponse,
+                                                                 CustomBinaryDataTransferRequestParser) &&
                     request is not null) {
 
                     #region Send OnBinaryDataTransferRequest event
@@ -148,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     #region Call async subscribers
 
-                    BinaryDataTransferResponse? response = null;
+                    OCPP.CS.BinaryDataTransferResponse? response = null;
 
                     var results = OnIncomingBinaryDataTransfer?.
                                       GetInvocationList()?.
@@ -168,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     }
 
-                    response ??= BinaryDataTransferResponse.Failed(request);
+                    response ??= OCPP.CS.BinaryDataTransferResponse.Failed(request);
 
                     #endregion
 

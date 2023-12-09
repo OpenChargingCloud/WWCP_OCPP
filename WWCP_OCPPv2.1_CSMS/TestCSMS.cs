@@ -30,8 +30,8 @@ using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using System.Threading;
 
 #endregion
 
@@ -49,9 +49,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         private          readonly  HashSet<SignaturePolicy>                                                 signaturePolicies           = new();
 
-        private          readonly  HashSet<ICSMSChannel>                                                    centralSystemServers        = new();
+        private          readonly  HashSet<OCPPv2_1.CSMS.ICSMSChannel>                                                    centralSystemServers        = new();
 
-        private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<ICSMSChannel, DateTime>>   reachableChargingStations   = new();
+        private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<OCPPv2_1.CSMS.ICSMSChannel, DateTime>>   reachableChargingStations   = new();
 
         private          readonly  HTTPExtAPI                                                               TestAPI;
 
@@ -107,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             => centralSystemServers;
 
 
-        public IEnumerable<ICSMSChannel> CSMSChannels
+        public IEnumerable<OCPPv2_1.CSMS.ICSMSChannel> CSMSChannels
             => centralSystemServers;
 
         /// <summary>
@@ -191,36 +191,36 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region Generic Text Messages
+        #region Generic JSON Messages
 
         /// <summary>
-        /// An event sent whenever a text message request was received.
+        /// An event sent whenever a JSON message request was received.
         /// </summary>
         public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
 
         /// <summary>
-        /// An event sent whenever the response to a text message was sent.
+        /// An event sent whenever the response to a JSON message was sent.
         /// </summary>
         public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
 
         /// <summary>
-        /// An event sent whenever the error response to a text message was sent.
+        /// An event sent whenever the error response to a JSON message was sent.
         /// </summary>
         public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
 
 
         /// <summary>
-        /// An event sent whenever a text message request was sent.
+        /// An event sent whenever a JSON message request was sent.
         /// </summary>
         public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
 
         /// <summary>
-        /// An event sent whenever the response to a text message request was received.
+        /// An event sent whenever the response to a JSON message request was received.
         /// </summary>
         public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
 
         /// <summary>
-        /// An event sent whenever an error response to a text message request was received.
+        /// An event sent whenever an error response to a JSON message request was received.
         /// </summary>
         public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
 
@@ -1613,20 +1613,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // Binary Data Streams Extensions
 
-        public CustomBinarySerializerDelegate <BinaryDataTransferRequest>?                           CustomBinaryDataTransferRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<GetFileRequest>?                                      CustomGetFileRequestSerializer                               { get; set; }
-        public CustomBinarySerializerDelegate <SendFileRequest>?                                     CustomSendFileRequestSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteFileRequest>?                                   CustomDeleteFileRequestSerializer                            { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CSMS.BinaryDataTransferRequest>?                 CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.GetFileRequest>?                            CustomGetFileRequestSerializer                               { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CSMS.SendFileRequest>?                           CustomSendFileRequestSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteFileRequest>?                         CustomDeleteFileRequestSerializer                            { get; set; }
 
 
         // E2E Security Extensions
 
-        public CustomJObjectSerializerDelegate<AddSignaturePolicyRequest>?                           CustomAddSignaturePolicyRequestSerializer                    { get; set; }
-        public CustomJObjectSerializerDelegate<UpdateSignaturePolicyRequest>?                        CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteSignaturePolicyRequest>?                        CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<AddUserRoleRequest>?                                  CustomAddUserRoleRequestSerializer                           { get; set; }
-        public CustomJObjectSerializerDelegate<UpdateUserRoleRequest>?                               CustomUpdateUserRoleRequestSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteUserRoleRequest>?                               CustomDeleteUserRoleRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.AddSignaturePolicyRequest>?                 CustomAddSignaturePolicyRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.UpdateSignaturePolicyRequest>?              CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteSignaturePolicyRequest>?              CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.AddUserRoleRequest>?                        CustomAddUserRoleRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.UpdateUserRoleRequest>?                     CustomUpdateUserRoleRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteUserRoleRequest>?                     CustomDeleteUserRoleRequestSerializer                        { get; set; }
 
 
         // E2E Charging Tariffs
@@ -1672,7 +1672,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<BinaryDataTransferResponse>?                           CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
+        public CustomBinarySerializerDelegate<OCPP.CSMS.BinaryDataTransferResponse>?                 CustomIncomingBinaryDataTransferResponseSerializer           { get; set; }
 
         #endregion
 
@@ -1713,7 +1713,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <CS.BinaryDataTransferRequest>?                        CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferRequest>?                   CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
 
         #endregion
 
@@ -1773,10 +1773,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <CS.BinaryDataTransferResponse>?                       CustomBinaryDataTransferResponseSerializer                   { get; set; }
-        public CustomBinarySerializerDelegate <CS.GetFileResponse>?                                  CustomGetFileResponseSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<CS.SendFileResponse>?                                 CustomSendFileResponseSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<CS.DeleteFileResponse>?                               CustomDeleteFileResponseSerializer                           { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferResponse>?                       CustomBinaryDataTransferResponseSerializer                   { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CS.GetFileResponse>?                                  CustomGetFileResponseSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?                                 CustomSendFileResponseSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?                               CustomDeleteFileResponseSerializer                           { get; set; }
 
 
         // E2E Charging Tariff Extensions
@@ -1789,7 +1789,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data Structures
 
-        public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                             { get; set; }
         public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                               { get; set; }
         public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                      { get; set; }
@@ -1876,7 +1876,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<Signature>?                                            CustomBinarySignatureSerializer                        { get; set; }
+        public CustomBinarySerializerDelegate<OCPP.Signature>?                                       CustomBinarySignatureSerializer                        { get; set; }
 
 
         // E2E Charging Tariffs Extensions
@@ -2069,7 +2069,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (private) AttachCSMSChannel(CSMSChannel)
 
-        private void AttachCSMSChannel(ICSMSChannel CSMSChannel)
+        private void AttachCSMSChannel(OCPPv2_1.CSMS.ICSMSChannel CSMSChannel)
         {
 
             centralSystemServers.Add(CSMSChannel);
@@ -2168,8 +2168,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                cancellationToken) => {
 
                 // A new connection from the same networking node/charging station will replace the older one!
-                if (!reachableChargingStations.TryAdd(networkingNodeId, new Tuple<ICSMSChannel, DateTime>(csmsChannel, timestamp)))
-                    reachableChargingStations[networkingNodeId]       = new Tuple<ICSMSChannel, DateTime>(csmsChannel, timestamp);
+                if (!reachableChargingStations.TryAdd(networkingNodeId, new Tuple<OCPPv2_1.CSMS.ICSMSChannel, DateTime>(csmsChannel as OCPPv2_1.CSMS.ICSMSChannel, timestamp)))
+                    reachableChargingStations[networkingNodeId]       = new Tuple<OCPPv2_1.CSMS.ICSMSChannel, DateTime>(csmsChannel as OCPPv2_1.CSMS.ICSMSChannel, timestamp);
 
 
                 var onNewWebSocketConnection = OnNewWebSocketConnection;
@@ -2225,7 +2225,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                         await Task.WhenAll(onCloseMessageReceived.GetInvocationList().
                                                OfType <OnCSMSCloseMessageReceivedDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
                                                                               server,
                                                                               connection,
                                                                               networkingNodeId,
@@ -2253,12 +2254,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTCPConnectionClosed
 
-            CSMSChannel.OnTCPConnectionClosed += async (timestamp,
-                                                        server,
-                                                        connection,
-                                                        eventTrackingId,
-                                                        reason,
-                                                        cancellationToken) => {
+            CSMSChannel.OnCSMSTCPConnectionClosed += async (timestamp,
+                                                            server,
+                                                            connection,
+                                                            networkingNodeId,
+                                                            eventTrackingId,
+                                                            reason,
+                                                            cancellationToken) => {
 
                 var onTCPConnectionClosed = OnTCPConnectionClosed;
                 if (onTCPConnectionClosed is not null)
@@ -2267,11 +2269,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                     {
 
                         await Task.WhenAll(onTCPConnectionClosed.GetInvocationList().
-                                               OfType <OnTCPConnectionClosedDelegate>().
+                                               OfType <OnCSMSTCPConnectionClosedDelegate>().
                                                Select (loggingDelegate => loggingDelegate.Invoke(
                                                                               timestamp,
                                                                               server,
                                                                               connection,
+                                                                              networkingNodeId,
                                                                               eventTrackingId,
                                                                               reason,
                                                                               cancellationToken
@@ -2389,12 +2392,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMSChannel.OnJSONMessageResponseSent += async (timestamp,
                                                             webSocketServer,
                                                             webSocketConnection,
+                                                            networkingNodeId,
                                                             eventTrackingId,
                                                             requestTimestamp,
                                                             jsonRequestMessage,
                                                             binaryRequestMessage,
                                                             responseTimestamp,
-                                                            responseMessage) => {
+                                                            responseMessage,
+                                                            cancellationToken) => {
 
                 var onJSONMessageResponseSent = OnJSONMessageResponseSent;
                 if (onJSONMessageResponseSent is not null)
@@ -2408,12 +2413,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                               timestamp,
                                                                               webSocketServer,
                                                                               webSocketConnection,
+                                                                              networkingNodeId,
                                                                               eventTrackingId,
                                                                               requestTimestamp,
                                                                               jsonRequestMessage,
                                                                               binaryRequestMessage,
                                                                               responseTimestamp,
-                                                                              responseMessage
+                                                                              responseMessage,
+                                                                              cancellationToken
                                                                           )).
                                                ToArray());
 
@@ -2442,7 +2449,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                           jsonRequestMessage,
                                                           binaryRequestMessage,
                                                           responseTimestamp,
-                                                          responseMessage) => {
+                                                          responseMessage,
+                                                          cancellationToken) => {
 
                 var onJSONErrorResponseSent = OnJSONErrorResponseSent;
                 if (onJSONErrorResponseSent is not null)
@@ -2461,7 +2469,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                               jsonRequestMessage,
                                                                               binaryRequestMessage,
                                                                               responseTimestamp,
-                                                                              responseMessage
+                                                                              responseMessage,
+                                                                              cancellationToken
                                                                           )).
                                                ToArray());
 
@@ -2532,12 +2541,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             CSMSChannel.OnJSONMessageResponseReceived += async (timestamp,
                                                                 webSocketServer,
                                                                 webSocketConnection,
+                                                                networkingNodeId,
                                                                 eventTrackingId,
                                                                 requestTimestamp,
                                                                 jsonRequestMessage,
                                                                 binaryRequestMessage,
                                                                 responseTimestamp,
-                                                                responseMessage) => {
+                                                                responseMessage,
+                                                                cancellationToken) => {
 
                 var onJSONMessageResponseReceived = OnJSONMessageResponseReceived;
                 if (onJSONMessageResponseReceived is not null)
@@ -2551,12 +2562,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                               timestamp,
                                                                               webSocketServer,
                                                                               webSocketConnection,
+                                                                              networkingNodeId,
                                                                               eventTrackingId,
                                                                               requestTimestamp,
                                                                               jsonRequestMessage,
                                                                               binaryRequestMessage,
                                                                               responseTimestamp,
-                                                                              responseMessage
+                                                                              responseMessage,
+                                                                              cancellationToken
                                                                           )).
                                                ToArray());
 
@@ -2585,7 +2598,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               jsonRequestMessage,
                                                               binaryRequestMessage,
                                                               responseTimestamp,
-                                                              responseMessage) => {
+                                                              responseMessage,
+                                                              cancellationToken) => {
 
                 var onJSONErrorResponseReceived = OnJSONErrorResponseReceived;
                 if (onJSONErrorResponseReceived is not null)
@@ -2604,7 +2618,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                               jsonRequestMessage,
                                                                               binaryRequestMessage,
                                                                               responseTimestamp,
-                                                                              responseMessage
+                                                                              responseMessage,
+                                                                              cancellationToken
                                                                           )).
                                                ToArray());
 
@@ -6237,22 +6252,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                 #region Send OnIncomingBinaryDataTransferRequest event
 
-                var startTime      = Timestamp.Now;
+                var startTime = Timestamp.Now;
 
-                var requestLogger  = OnIncomingBinaryDataTransferRequest;
-                if (requestLogger is not null)
+                var onIncomingBinaryDataTransferRequest = OnIncomingBinaryDataTransferRequest;
+                if (onIncomingBinaryDataTransferRequest is not null)
                 {
-
-                    var requestLoggerTasks = requestLogger.GetInvocationList().
-                                                           OfType <OnIncomingBinaryDataTransferRequestDelegate>().
-                                                           Select (loggingDelegate => loggingDelegate.Invoke(startTime,
-                                                                                                             this,
-                                                                                                             request)).
-                                                           ToArray();
-
                     try
                     {
-                        await Task.WhenAll(requestLoggerTasks);
+
+                        await Task.WhenAll(onIncomingBinaryDataTransferRequest.GetInvocationList().
+                                               OfType <OnIncomingBinaryDataTransferRequestDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                 this,
+                                                                                                 request)).
+                                               ToArray());
+
                     }
                     catch (Exception e)
                     {
@@ -6262,7 +6276,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                   e
                               );
                     }
-
                 }
 
                 #endregion
@@ -6294,7 +6307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                    out var errorResponse
                                )
 
-                                   ? new BinaryDataTransferResponse(
+                                   ? new OCPP.CSMS.BinaryDataTransferResponse(
                                          Request:      request,
                                          Result:       Result.SignatureError(
                                                            $"Invalid signature(s): {errorResponse}"
@@ -6310,7 +6323,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                Data:                   responseBinaryData
                                            )
 
-                                         : new BinaryDataTransferResponse(
+                                         : new OCPP.CSMS.BinaryDataTransferResponse(
                                                Request:                request,
                                                Status:                 BinaryDataTransferStatus.Rejected,
                                                AdditionalStatusInfo:   null,
@@ -10799,8 +10812,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Transfer the given data to the given charging station.
         /// </summary>
         /// <param name="Request">A BinaryDataTransfer request.</param>
-        public async Task<CS.BinaryDataTransferResponse>
-            TransferBinaryData(BinaryDataTransferRequest Request)
+        public async Task<OCPP.CS.BinaryDataTransferResponse>
+            TransferBinaryData(OCPP.CSMS.BinaryDataTransferRequest Request)
 
         {
 
@@ -10838,12 +10851,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                       ? await centralSystem.Item1.TransferBinaryData(Request)
 
-                                      : new CS.BinaryDataTransferResponse(
+                                      : new OCPP.CS.BinaryDataTransferResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.BinaryDataTransferResponse(
+                                : new OCPP.CS.BinaryDataTransferResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -10894,8 +10907,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Request the given file from the charging station.
         /// </summary>
         /// <param name="Request">A GetFile request.</param>
-        public async Task<CS.GetFileResponse>
-            GetFile(GetFileRequest Request)
+        public async Task<OCPP.CS.GetFileResponse>
+            GetFile(OCPP.CSMS.GetFileRequest Request)
 
         {
 
@@ -10933,12 +10946,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                       ? await centralSystem.Item1.GetFile(Request)
 
-                                      : new CS.GetFileResponse(
+                                      : new OCPP.CS.GetFileResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.GetFileResponse(
+                                : new OCPP.CS.GetFileResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -10989,8 +11002,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Request the given file from the charging station.
         /// </summary>
         /// <param name="Request">A SendFile request.</param>
-        public async Task<CS.SendFileResponse>
-            SendFile(SendFileRequest Request)
+        public async Task<OCPP.CS.SendFileResponse>
+            SendFile(OCPP.CSMS.SendFileRequest Request)
 
         {
 
@@ -11028,12 +11041,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                       ? await centralSystem.Item1.SendFile(Request)
 
-                                      : new CS.SendFileResponse(
+                                      : new OCPP.CS.SendFileResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.SendFileResponse(
+                                : new OCPP.CS.SendFileResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11083,8 +11096,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Delete the given file from the charging station.
         /// </summary>
         /// <param name="Request">A DeleteFile request.</param>
-        public async Task<CS.DeleteFileResponse>
-            DeleteFile(DeleteFileRequest Request)
+        public async Task<OCPP.CS.DeleteFileResponse>
+            DeleteFile(OCPP.CSMS.DeleteFileRequest Request)
 
         {
 
@@ -11122,12 +11135,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                       ? await centralSystem.Item1.DeleteFile(Request)
 
-                                      : new CS.DeleteFileResponse(
+                                      : new OCPP.CS.DeleteFileResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.DeleteFileResponse(
+                                : new OCPP.CS.DeleteFileResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11180,8 +11193,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Add a signature policy.
         /// </summary>
         /// <param name="Request">An AddSignaturePolicy request.</param>
-        public async Task<CS.AddSignaturePolicyResponse>
-            AddSignaturePolicy(AddSignaturePolicyRequest Request)
+        public async Task<OCPP.CS.AddSignaturePolicyResponse>
+            AddSignaturePolicy(OCPP.CSMS.AddSignaturePolicyRequest Request)
 
         {
 
@@ -11223,12 +11236,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                       ? await centralSystem.Item1.AddSignaturePolicy(Request)
 
-                                      : new CS.AddSignaturePolicyResponse(
+                                      : new OCPP.CS.AddSignaturePolicyResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.AddSignaturePolicyResponse(
+                                : new OCPP.CS.AddSignaturePolicyResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11279,8 +11292,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A UpdateSignaturePolicy request.</param>
-        public async Task<CS.UpdateSignaturePolicyResponse>
-            UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request)
+        public async Task<OCPP.CS.UpdateSignaturePolicyResponse>
+            UpdateSignaturePolicy(OCPP.CSMS.UpdateSignaturePolicyRequest Request)
 
         {
 
@@ -11322,12 +11335,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                       ? await centralSystem.Item1.UpdateSignaturePolicy(Request)
 
-                                      : new CS.UpdateSignaturePolicyResponse(
+                                      : new OCPP.CS.UpdateSignaturePolicyResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.UpdateSignaturePolicyResponse(
+                                : new OCPP.CS.UpdateSignaturePolicyResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11378,8 +11391,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A DeleteSignaturePolicy request.</param>
-        public async Task<CS.DeleteSignaturePolicyResponse>
-            DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request)
+        public async Task<OCPP.CS.DeleteSignaturePolicyResponse>
+            DeleteSignaturePolicy(OCPP.CSMS.DeleteSignaturePolicyRequest Request)
 
         {
 
@@ -11421,12 +11434,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                       ? await centralSystem.Item1.DeleteSignaturePolicy(Request)
 
-                                      : new CS.DeleteSignaturePolicyResponse(
+                                      : new OCPP.CS.DeleteSignaturePolicyResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.DeleteSignaturePolicyResponse(
+                                : new OCPP.CS.DeleteSignaturePolicyResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11477,8 +11490,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A AddUserRole request.</param>
-        public async Task<CS.AddUserRoleResponse>
-            AddUserRole(AddUserRoleRequest Request)
+        public async Task<OCPP.CS.AddUserRoleResponse>
+            AddUserRole(OCPP.CSMS.AddUserRoleRequest Request)
 
         {
 
@@ -11520,12 +11533,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                       ? await centralSystem.Item1.AddUserRole(Request)
 
-                                      : new CS.AddUserRoleResponse(
+                                      : new OCPP.CS.AddUserRoleResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.AddUserRoleResponse(
+                                : new OCPP.CS.AddUserRoleResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11576,8 +11589,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A UpdateUserRole request.</param>
-        public async Task<CS.UpdateUserRoleResponse>
-            UpdateUserRole(UpdateUserRoleRequest Request)
+        public async Task<OCPP.CS.UpdateUserRoleResponse>
+            UpdateUserRole(OCPP.CSMS.UpdateUserRoleRequest Request)
 
         {
 
@@ -11619,12 +11632,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                       ? await centralSystem.Item1.UpdateUserRole(Request)
 
-                                      : new CS.UpdateUserRoleResponse(
+                                      : new OCPP.CS.UpdateUserRoleResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.UpdateUserRoleResponse(
+                                : new OCPP.CS.UpdateUserRoleResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -11675,8 +11688,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Set a display message.
         /// </summary>
         /// <param name="Request">A DeleteUserRole request.</param>
-        public async Task<CS.DeleteUserRoleResponse>
-            DeleteUserRole(DeleteUserRoleRequest Request)
+        public async Task<OCPP.CS.DeleteUserRoleResponse>
+            DeleteUserRole(OCPP.CSMS.DeleteUserRoleRequest Request)
 
         {
 
@@ -11718,12 +11731,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                       ? await centralSystem.Item1.DeleteUserRole(Request)
 
-                                      : new CS.DeleteUserRoleResponse(
+                                      : new OCPP.CS.DeleteUserRoleResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.DeleteUserRoleResponse(
+                                : new OCPP.CS.DeleteUserRoleResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );
@@ -14072,6 +14085,45 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
+
+        #region Shutdown(Message, Wait = true)
+
+        /// <summary>
+        /// Shutdown the HTTP web socket listener thread.
+        /// </summary>
+        /// <param name="Message">An optional shutdown message.</param>
+        /// <param name="Wait">Wait until the server finally shutted down.</param>
+        public async Task Shutdown(String?  Message   = null,
+                                   Boolean  Wait      = true)
+        {
+
+            var centralSystemServersCopy = centralSystemServers.ToArray();
+            if (centralSystemServersCopy.Length > 0)
+            {
+                try
+                {
+
+                    await Task.WhenAll(centralSystemServers.
+                                           Select(csmsChannel => csmsChannel.Shutdown(
+                                                                     Message,
+                                                                     Wait
+                                                                 )).
+                                           ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(TestCSMS),
+                              nameof(Shutdown),
+                              e
+                          );
+                }
+            }
+
+        }
+
+        #endregion
 
         private Task HandleErrors(String     Module,
                                   String     Caller,

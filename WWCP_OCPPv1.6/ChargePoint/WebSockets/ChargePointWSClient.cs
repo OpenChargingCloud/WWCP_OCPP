@@ -30,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
+using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
 
@@ -100,7 +101,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             public DateTime?                      ResponseTimestamp    { get; set; }
             public JObject?                       Response             { get; set; }
 
-            public ResultCodes?                   ErrorCode            { get; set; }
+            public ResultCode?                    ErrorCode            { get; set; }
             public String?                        ErrorDescription     { get; set; }
             public JObject?                       ErrorDetails         { get; set; }
 
@@ -119,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                      DateTime?                      ResponseTimestamp   = null,
                                      JObject?                       Response            = null,
 
-                                     ResultCodes?                   ErrorCode           = null,
+                                     ResultCode?                    ErrorCode           = null,
                                      String?                        ErrorDescription    = null,
                                      JObject?                       ErrorDetails        = null)
             {
@@ -4089,7 +4090,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                        Timeout:            endTime,
 
                        Response:           null,
-                       ErrorCode:          ResultCodes.Timeout,
+                       ErrorCode:          ResultCode.Timeout,
                        ErrorDescription:   null,
                        ErrorDetails:       null
                    );

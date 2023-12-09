@@ -18,9 +18,10 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -31,16 +32,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// A charging station HTTP Web Socket client.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom binary serializer delegates
 
-        public CustomBinarySerializerDelegate<OCPPv2_1.CS.BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer    { get; set; }
+        public CustomBinarySerializerDelegate<OCPP.CS.BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer    { get; set; }
 
-        public CustomBinaryParserDelegate<OCPPv2_1.CSMS.BinaryDataTransferResponse>?   CustomBinaryDataTransferResponseParser       { get; set; }
+        public CustomBinaryParserDelegate<OCPP.CSMS.BinaryDataTransferResponse>?   CustomBinaryDataTransferResponseParser       { get; set; }
 
         #endregion
 
@@ -49,7 +50,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a binary data transfer request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a binary data transfer request will be sent to the CSMS.
@@ -64,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a response to a binary data transfer request was received.
         /// </summary>
-        public event CS.OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
 
         #endregion
 
@@ -75,9 +76,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// Send vendor-specific binary data.
         /// </summary>
         /// <param name="Request">A BinaryDataTransfer request.</param>
-        public async Task<OCPPv2_1.CSMS.BinaryDataTransferResponse>
+        public async Task<OCPP.CSMS.BinaryDataTransferResponse>
 
-            TransferBinaryData(OCPPv2_1.CS.BinaryDataTransferRequest Request)
+            TransferBinaryData(OCPP.CS.BinaryDataTransferRequest Request)
 
         {
 
@@ -101,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             #endregion
 
 
-            OCPPv2_1.CSMS.BinaryDataTransferResponse? response = null;
+            OCPP.CSMS.BinaryDataTransferResponse? response = null;
 
             try
             {
@@ -126,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                         sendRequestState.BinaryResponse is not null)
                     {
 
-                        if (OCPPv2_1.CSMS.BinaryDataTransferResponse.TryParse(Request,
+                        if (OCPP.CSMS.BinaryDataTransferResponse.TryParse(Request,
                                                                               sendRequestState.BinaryResponse.Payload,
                                                                               out var binaryDataTransferResponse,
                                                                               out var errorResponse,
@@ -136,21 +137,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                             response = binaryDataTransferResponse;
                         }
 
-                        response ??= new OCPPv2_1.CSMS.BinaryDataTransferResponse(
+                        response ??= new OCPP.CSMS.BinaryDataTransferResponse(
                                          Request,
                                          Result.Format(errorResponse)
                                      );
 
                     }
 
-                    response ??= new OCPPv2_1.CSMS.BinaryDataTransferResponse(
+                    response ??= new OCPP.CSMS.BinaryDataTransferResponse(
                                      Request,
                                      Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }
 
-                response ??= new OCPPv2_1.CSMS.BinaryDataTransferResponse(
+                response ??= new OCPP.CSMS.BinaryDataTransferResponse(
                                  Request,
                                  Result.GenericError(requestMessage.ErrorMessage)
                              );
@@ -159,7 +160,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             catch (Exception e)
             {
 
-                response = new OCPPv2_1.CSMS.BinaryDataTransferResponse(
+                response = new OCPP.CSMS.BinaryDataTransferResponse(
                                Request,
                                Result.FromException(e)
                            );

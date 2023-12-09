@@ -21,6 +21,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.CSMS;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
@@ -29,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
-    public partial class CSMSWSServer : WebSocketServer,
+    public partial class CSMSWSServer : ACSMSWSServer,
                                         ICSMSChannel
     {
 
@@ -37,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<GetFileRequest>?  CustomGetFileRequestSerializer    { get; set; }
 
-        public CustomBinaryParserDelegate<CS.GetFileResponse>?   CustomGetFileResponseParser       { get; set; }
+        public CustomBinaryParserDelegate<GetFileResponse>?   CustomGetFileResponseParser       { get; set; }
 
         #endregion
 
@@ -58,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region GetFile(Request)
 
-        public async Task<CS.GetFileResponse> GetFile(GetFileRequest Request)
+        public async Task<GetFileResponse> GetFile(GetFileRequest Request)
         {
 
             #region Send OnGetFileRequest event
@@ -80,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            CS.GetFileResponse? response = null;
+            GetFileResponse? response = null;
 
             try
             {
@@ -103,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     sendRequestState.BinaryResponse is not null)
                 {
 
-                    if (CS.GetFileResponse.TryParse(Request,
+                    if (GetFileResponse.TryParse(Request,
                                                     sendRequestState.BinaryResponse.Payload,
                                                     out var getFileResponse,
                                                     out var errorResponse,
@@ -113,14 +117,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         response = getFileResponse;
                     }
 
-                    response ??= new CS.GetFileResponse(
+                    response ??= new GetFileResponse(
                                          Request,
                                          Result.Format(errorResponse)
                                      );
 
                 }
 
-                response ??= new CS.GetFileResponse(
+                response ??= new GetFileResponse(
                                  Request,
                                  Request.FileName,
                                  GetFileStatus.Rejected
@@ -130,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
 
-                response = new CS.GetFileResponse(
+                response = new GetFileResponse(
                                Request,
                                Result.FromException(e)
                            );

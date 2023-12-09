@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6.CP
@@ -364,7 +366,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CustomGetConfigurationResponseSerializer">A delegate to serialize custom get configuration responses.</param>
         /// <param name="CustomConfigurationKeySerializer">A delegate to serialize custom configuration keys.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetConfigurationResponse>?  CustomGetConfigurationResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<ConfigurationKey>?          CustomConfigurationKeySerializer           = null)
+                              CustomJObjectSerializerDelegate<ConfigurationKey>?          CustomConfigurationKeySerializer           = null,
+                              CustomJObjectSerializerDelegate<OCPP.Signature>?            CustomSignatureSerializer                  = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
 
             var json = JSONObject.Create(

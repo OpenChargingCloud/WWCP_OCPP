@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// A general OCPP result.
     /// </summary>
-    public readonly struct Result : IEquatable<Result>
+    public class Result : IEquatable<Result>
     {
 
         #region Properties
@@ -37,22 +37,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The machine-readable result code.
         /// </summary>
-        public ResultCodes  ResultCode     { get; }
+        public ResultCode  ResultCode        { get; }
 
         /// <summary>
         /// The optional human-readable error description.
         /// </summary>
-        public String?      Description    { get; }
+        public String?      Description       { get; }
 
         /// <summary>
         /// Optional error details.
         /// </summary>
-        public JObject?     Details        { get; }
+        public JObject?     Details           { get; }
 
         /// <summary>
         /// The optional response message.
         /// </summary>
-        public JObject?     Response       { get; }
+        public JObject?     Response          { get; }
+
+        /// <summary>
+        /// The optional binary response message.
+        /// </summary>
+        public Byte[]?      BinaryResponse    { get; }
 
         #endregion
 
@@ -65,38 +70,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Description">An optional human-readable error description.</param>
         /// <param name="Details">Optional error details.</param>
         /// <param name="Response">An optional response message.</param>
-        public Result(ResultCodes  ResultCode,
-                      String?      Description   = null,
-                      JObject?     Details       = null,
-                      JObject?     Response      = null)
+        /// <param name="BinaryResponse">An optional binary response message.</param>
+        private Result(ResultCode  ResultCode,
+                       String?     Description      = null,
+                       JObject?    Details          = null,
+                       JObject?    Response         = null,
+                       Byte[]?     BinaryResponse   = null)
         {
 
-            this.ResultCode   = ResultCode;
-            this.Description  = Description?.Trim();
-            this.Details      = Details;
-            this.Response     = Response;
+            this.ResultCode      = ResultCode;
+            this.Description     = Description?.Trim();
+            this.Details         = Details;
+            this.Response        = Response;
+            this.BinaryResponse  = BinaryResponse;
 
         }
 
         #endregion
 
 
-        public static Result FromSendRequestState(CS.CentralSystemWSServer.SendRequestState SendRequestState)
+        public static Result FromSendRequestState(SendRequestState SendRequestState)
 
             => new (
-                   SendRequestState.ErrorCode ?? ResultCodes.GenericError,
+                   SendRequestState.ErrorCode ?? ResultCode.GenericError,
                    SendRequestState.ErrorDescription,
                    SendRequestState.ErrorDetails,
-                   SendRequestState.Response
-               );
-
-        public static Result FromSendRequestState(CP.ChargePointWSClient.SendRequestState2 SendRequestState)
-
-            => new (
-                   SendRequestState.ErrorCode ?? ResultCodes.GenericError,
-                   SendRequestState.ErrorDescription,
-                   SendRequestState.ErrorDetails,
-                   SendRequestState.Response
+                   SendRequestState.JSONResponse?.  Payload,
+                   SendRequestState.BinaryResponse?.Payload
                );
 
 
@@ -109,9 +109,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public static Result GenericError(String?  Description   = null,
                                           JObject? Details       = null)
 
-            => new (ResultCodes.GenericError,
+            => new (ResultCode.GenericError,
                     Description,
                     Details);
+
+
+        /// <summary>
+        /// An exception occured.
+        /// </summary>
+        /// <param name="Exception">An exception.</param>
+        public static Result FromException(Exception Exception)
+
+            => new (
+                   ResultCode.GenericError,
+                   Exception.Message,
+                   JSONObject.Create(
+                       new JProperty("message",     Exception.Message),
+                       new JProperty("stackTrace",  Exception.StackTrace)
+                   )
+               );
 
 
         /// <summary>
@@ -120,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Description">A human-readable error description.</param>
         public static Result OK(String? Description = null)
 
-            => new (ResultCodes.OK,
+            => new (ResultCode.OK,
                     Description);
 
 
@@ -160,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Description">A human-readable error description.</param>
         public static Result Server(String? Description = null)
 
-            => new (ResultCodes.NetworkError,
+            => new (ResultCode.NetworkError,
                     Description);
 
 
@@ -170,7 +186,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Description">A human-readable error description.</param>
         public static Result Format(String? Description = null)
 
-            => new (ResultCodes.FormationViolation,
+            => new (ResultCode.FormationViolation,
+                    Description);
+
+
+        /// <summary>
+        /// The message could not be signed cryptographically.
+        /// </summary>
+        /// <param name="Description">A human-readable error description.</param>
+        public static Result SignatureError(String? Description = null)
+
+            => new (ResultCode.SecurityError,
                     Description);
 
         #endregion
@@ -186,10 +212,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Result1">A result.</param>
         /// <param name="Result2">Another result.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (Result Result1,
-                                           Result Result2)
+        public static Boolean operator == (Result? Result1,
+                                           Result? Result2)
+        {
 
-            => Result1.Equals(Result2);
+            // If both are null, or both are same instance, return true.
+            if (ReferenceEquals(Result1, Result2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (Result1 is null || Result2 is null)
+                return false;
+
+            return Result1.Equals(Result2);
+
+        }
 
         #endregion
 
@@ -201,10 +238,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="Result1">A result.</param>
         /// <param name="Result2">Another result.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (Result Result1,
-                                           Result Result2)
+        public static Boolean operator != (Result? Result1,
+                                           Result? Result2)
 
-            => !Result1.Equals(Result2);
+            => !(Result1 == Result2);
 
         #endregion
 
@@ -231,12 +268,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// Compares two results for equality.
         /// </summary>
         /// <param name="Result">A result to compare with.</param>
-        public Boolean Equals(Result Result)
+        public Boolean Equals(Result? Result)
 
-            => ResultCode.Equals(Result.ResultCode) &&
+            => Result is not null &&
+
+               ResultCode. Equals(Result.ResultCode) &&
 
              ((Description is     null && Result.Description is     null) ||
-              (Description is not null && Result.Description is not null && Description.Equals(Result.Description)));
+              (Description is not null && Result.Description is not null && String.Equals(Description, Result.Description, StringComparison.OrdinalIgnoreCase)));
 
         #endregion
 
@@ -253,8 +292,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             unchecked
             {
 
-                return ResultCode.  GetHashCode() * 3 ^
-                       Description?.GetHashCode() ?? 0;
+                return ResultCode.            GetHashCode() * 3 ^
+
+                       Description?.ToLower().GetHashCode() ?? 0;
 
             }
         }
@@ -269,10 +309,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public override String ToString()
 
             => ResultCode +
-
-              (Description.IsNotNullOrEmpty()
-                  ? " - " + Description
-                  : "");
+              (Description.IsNotNullOrEmpty() ? " - " + Description : "");
 
         #endregion
 

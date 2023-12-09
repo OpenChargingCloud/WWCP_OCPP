@@ -19,7 +19,10 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 
@@ -136,7 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Data Structures
 
         CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
-        CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                                    { get; set; }
+        CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
         CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
         CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                                     { get; set; }
         CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                            { get; set; }
@@ -654,7 +657,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Send the given vendor-specific binary data.
         /// </summary>
         /// <param name="Request">A binary data transfer request.</param>
-        Task<CS.BinaryDataTransferResponse> TransferBinaryData(BinaryDataTransferRequest Request);
+        Task<OCPP.CS.BinaryDataTransferResponse> TransferBinaryData(OCPP.CSMS.BinaryDataTransferRequest Request);
 
         #endregion
 
@@ -664,7 +667,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Request to download the specified file.
         /// </summary>
         /// <param name="Request">A GetFile request.</param>
-        Task<CS.GetFileResponse> GetFile(GetFileRequest Request);
+        Task<OCPP.CS.GetFileResponse> GetFile(GetFileRequest Request);
 
         #endregion
 
@@ -674,7 +677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Send the given file to the charging station.
         /// </summary>
         /// <param name="Request">A SendFile request.</param>
-        Task<CS.SendFileResponse> SendFile(SendFileRequest Request);
+        Task<OCPP.CS.SendFileResponse> SendFile(SendFileRequest Request);
 
         #endregion
 
@@ -684,7 +687,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// Delete the given file from the charging station.
         /// </summary>
         /// <param name="Request">A DeleteFile request.</param>
-        Task<CS.DeleteFileResponse> DeleteFile(DeleteFileRequest Request);
+        Task<OCPP.CS.DeleteFileResponse> DeleteFile(DeleteFileRequest Request);
 
         #endregion
 

@@ -27,6 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.SMTP;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
@@ -103,10 +104,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The unique identifications of all connected or reachable charge boxes.
         /// </summary>
         public IEnumerable<ChargeBox_Id> ChargeBoxIds
-            => reachableChargingBoxes.Values.SelectMany(box => box.Item1.ChargeBoxIds);
+            => reachableChargingBoxes.Values.SelectMany(tuple => tuple.Item1.ChargeBoxIds);
 
 
-        public Dictionary<String, Transaction_Id> TransactionIds = new ();
+        public Dictionary<String, Transaction_Id> TransactionIds = [];
 
         #endregion
 
@@ -168,6 +169,78 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
+        #region Generic JSON Messages
+
+        /// <summary>
+        /// An event sent whenever a JSON message request was received.
+        /// </summary>
+        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever the response to a JSON message was sent.
+        /// </summary>
+        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
+
+        /// <summary>
+        /// An event sent whenever the error response to a JSON message was sent.
+        /// </summary>
+        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
+
+
+        /// <summary>
+        /// An event sent whenever a JSON message request was sent.
+        /// </summary>
+        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a JSON message request was received.
+        /// </summary>
+        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
+
+        /// <summary>
+        /// An event sent whenever an error response to a JSON message request was received.
+        /// </summary>
+        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
+
+        #endregion
+
+        #region Generic Binary Messages
+
+        /// <summary>
+        /// An event sent whenever a binary message request was received.
+        /// </summary>
+        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
+
+        /// <summary>
+        /// An event sent whenever the response to a binary message was sent.
+        /// </summary>
+        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
+
+        /// <summary>
+        /// An event sent whenever the error response to a binary message was sent.
+        /// </summary>
+        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
+
+
+        /// <summary>
+        /// An event sent whenever a binary message request was sent.
+        /// </summary>
+        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
+
+        /// <summary>
+        /// An event sent whenever the response to a binary message request was received.
+        /// </summary>
+        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
+
+        /// <summary>
+        /// An event sent whenever the error response to a binary message request was sent.
+        /// </summary>
+        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
+
+        #endregion
+
+
+
         #region OnTextMessage  (Request/Response)
 
         public event OnWebSocketTextMessageDelegate?                  OnTextMessageRequest;
@@ -175,16 +248,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         //public event OnWebSocketTextMessageDelegate                   OnTextMessage;
 
         public event OnWebSocketTextMessageResponseDelegate?          OnTextMessageResponse;
-
-        #endregion
-
-        #region OnBinaryMessage(Request/Response)
-
-        public event OnWebSocketBinaryMessageDelegate?           OnBinaryMessageRequest;
-
-        //public event OnWebSocketBinaryMessageDelegate           OnBinaryMessage;
-
-        public event OnWebSocketBinaryMessageResponseDelegate?   OnBinaryMessageResponse;
 
         #endregion
 
@@ -1020,7 +1083,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                         await Task.WhenAll(onCloseMessageReceived.GetInvocationList().
                                                OfType <OnCentralSystemCloseMessageReceivedDelegate>().
-                                               Select (loggingDelegate => loggingDelegate.Invoke(timestamp,
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
                                                                               server,
                                                                               connection,
                                                                               networkingNodeId,
@@ -1131,6 +1195,307 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             // (Generic) Error Handling
 
             #endregion
+
+
+            #region OnJSONMessageRequestReceived
+
+            centralSystemServer.OnJSONMessageRequestReceived += async (timestamp,
+                                                                       webSocketServer,
+                                                                       webSocketConnection,
+                                                                       networkingNodeId,
+                                                                       eventTrackingId,
+                                                                       requestTimestamp,
+                                                                       requestMessage,
+                                                                       cancellationToken) => {
+
+                var onJSONMessageRequestReceived = OnJSONMessageRequestReceived;
+                if (onJSONMessageRequestReceived is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onJSONMessageRequestReceived.GetInvocationList().
+                                               OfType <OnWebSocketJSONMessageRequestDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              webSocketServer,
+                                                                              webSocketConnection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              requestTimestamp,
+                                                                              requestMessage,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCentralSystem),
+                                  nameof(OnJSONMessageRequestReceived),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+            #region OnJSONMessageResponseSent
+
+            centralSystemServer.OnJSONMessageResponseSent += async (timestamp,
+                                                                    webSocketServer,
+                                                                    webSocketConnection,
+                                                                    networkingNodeId,
+                                                                    eventTrackingId,
+                                                                    requestTimestamp,
+                                                                    jsonRequestMessage,
+                                                                    binaryRequestMessage,
+                                                                    responseTimestamp,
+                                                                    responseMessage,
+                                                                    cancellationToken) => {
+
+                var onJSONMessageResponseSent = OnJSONMessageResponseSent;
+                if (onJSONMessageResponseSent is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onJSONMessageResponseSent.GetInvocationList().
+                                               OfType <OnWebSocketJSONMessageResponseDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              webSocketServer,
+                                                                              webSocketConnection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              requestTimestamp,
+                                                                              jsonRequestMessage,
+                                                                              binaryRequestMessage,
+                                                                              responseTimestamp,
+                                                                              responseMessage,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCentralSystem),
+                                  nameof(OnJSONMessageResponseSent),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+            #region OnJSONErrorResponseSent
+
+            centralSystemServer.OnJSONErrorResponseSent += async (timestamp,
+                                                                  webSocketServer,
+                                                                  webSocketConnection,
+                                                                  eventTrackingId,
+                                                                  requestTimestamp,
+                                                                  jsonRequestMessage,
+                                                                  binaryRequestMessage,
+                                                                  responseTimestamp,
+                                                                  responseMessage,
+                                                                  cancellationToken) => {
+
+                var onJSONErrorResponseSent = OnJSONErrorResponseSent;
+                if (onJSONErrorResponseSent is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onJSONErrorResponseSent.GetInvocationList().
+                                               OfType <OnWebSocketTextErrorResponseDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              webSocketServer,
+                                                                              webSocketConnection,
+                                                                              eventTrackingId,
+                                                                              requestTimestamp,
+                                                                              jsonRequestMessage,
+                                                                              binaryRequestMessage,
+                                                                              responseTimestamp,
+                                                                              responseMessage,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCentralSystem),
+                                  nameof(OnJSONErrorResponseSent),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+
+            #region OnJSONMessageRequestSent
+
+            centralSystemServer.OnJSONMessageRequestSent += async (timestamp,
+                                                                   webSocketServer,
+                                                                   webSocketConnection,
+                                                                   networkingNodeId,
+                                                                   eventTrackingId,
+                                                                   requestTimestamp,
+                                                                   requestMessage,
+                                                                   cancellationToken) => {
+
+                var onJSONMessageRequestSent = OnJSONMessageRequestSent;
+                if (onJSONMessageRequestSent is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onJSONMessageRequestSent.GetInvocationList().
+                                               OfType <OnWebSocketJSONMessageRequestDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              webSocketServer,
+                                                                              webSocketConnection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              requestTimestamp,
+                                                                              requestMessage,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCentralSystem),
+                                  nameof(OnJSONMessageRequestSent),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+            #region OnJSONMessageResponseReceived
+
+            centralSystemServer.OnJSONMessageResponseReceived += async (timestamp,
+                                                                        webSocketServer,
+                                                                        webSocketConnection,
+                                                                        networkingNodeId,
+                                                                        eventTrackingId,
+                                                                        requestTimestamp,
+                                                                        jsonRequestMessage,
+                                                                        binaryRequestMessage,
+                                                                        responseTimestamp,
+                                                                        responseMessage,
+                                                                        cancellationToken) => {
+
+                var onJSONMessageResponseReceived = OnJSONMessageResponseReceived;
+                if (onJSONMessageResponseReceived is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onJSONMessageResponseReceived.GetInvocationList().
+                                               OfType <OnWebSocketJSONMessageResponseDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              webSocketServer,
+                                                                              webSocketConnection,
+                                                                              networkingNodeId,
+                                                                              eventTrackingId,
+                                                                              requestTimestamp,
+                                                                              jsonRequestMessage,
+                                                                              binaryRequestMessage,
+                                                                              responseTimestamp,
+                                                                              responseMessage,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCentralSystem),
+                                  nameof(OnJSONMessageResponseReceived),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+            #region OnJSONErrorResponseReceived
+
+            centralSystemServer.OnJSONErrorResponseReceived += async (timestamp,
+                                                                      webSocketServer,
+                                                                      webSocketConnection,
+                                                                      eventTrackingId,
+                                                                      requestTimestamp,
+                                                                      jsonRequestMessage,
+                                                                      binaryRequestMessage,
+                                                                      responseTimestamp,
+                                                                      responseMessage,
+                                                                      cancellationToken) => {
+
+                var onJSONErrorResponseReceived = OnJSONErrorResponseReceived;
+                if (onJSONErrorResponseReceived is not null)
+                {
+                    try
+                    {
+
+                        await Task.WhenAll(onJSONErrorResponseReceived.GetInvocationList().
+                                               OfType <OnWebSocketTextErrorResponseDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(
+                                                                              timestamp,
+                                                                              webSocketServer,
+                                                                              webSocketConnection,
+                                                                              eventTrackingId,
+                                                                              requestTimestamp,
+                                                                              jsonRequestMessage,
+                                                                              binaryRequestMessage,
+                                                                              responseTimestamp,
+                                                                              responseMessage,
+                                                                              cancellationToken
+                                                                          )).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestCentralSystem),
+                                  nameof(OnJSONErrorResponseReceived),
+                                  e
+                              );
+                    }
+                }
+
+            };
+
+            #endregion
+
+
+
 
 
             #region OnTextMessageRequest
@@ -6596,6 +6961,45 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         // SignedUpdateFirmware
 
 
+
+        #region Shutdown(Message, Wait = true)
+
+        /// <summary>
+        /// Shutdown the HTTP web socket listener thread.
+        /// </summary>
+        /// <param name="Message">An optional shutdown message.</param>
+        /// <param name="Wait">Wait until the server finally shutted down.</param>
+        public async Task Shutdown(String?  Message   = null,
+                                   Boolean  Wait      = true)
+        {
+
+            var centralSystemServersCopy = centralSystemServers.ToArray();
+            if (centralSystemServersCopy.Length > 0)
+            {
+                try
+                {
+
+                    await Task.WhenAll(centralSystemServers.
+                                           Select(centralSystemServer => centralSystemServer.Shutdown(
+                                                                             Message,
+                                                                             Wait
+                                                                         )).
+                                           ToArray());
+
+                }
+                catch (Exception e)
+                {
+                    await HandleErrors(
+                              nameof(TestCentralSystem),
+                              nameof(Shutdown),
+                              e
+                          );
+                }
+            }
+
+        }
+
+        #endregion
 
         private Task HandleErrors(String     Module,
                                   String     Caller,

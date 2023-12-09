@@ -29,13 +29,13 @@
 //        public static ResultCodes Parse(String Text)
 
 //            => Text.Trim() switch {
-//                   "OK"             => ResultCodes.OK,
-//                   "Partly"         => ResultCodes.Partly,
-//                   "NotAuthorized"  => ResultCodes.NotAuthorized,
-//                   "InvalidId"      => ResultCodes.InvalidId,
-//                   "Server"         => ResultCodes.Server,
-//                   "Format"         => ResultCodes.Format,
-//                   _                => ResultCodes.Unknown
+//                   "OK"             => ResultCode.OK,
+//                   "Partly"         => ResultCode.Partly,
+//                   "NotAuthorized"  => ResultCode.NotAuthorized,
+//                   "InvalidId"      => ResultCode.InvalidId,
+//                   "Server"         => ResultCode.Server,
+//                   "Format"         => ResultCode.Format,
+//                   _                => ResultCode.Unknown
 //               };
 
 //        #endregion
@@ -45,12 +45,12 @@
 //        public static String AsText(this ResultCodes ResultCodes)
 
 //            => ResultCodes switch {
-//                   ResultCodes.OK             => "OK",
-//                   ResultCodes.Partly         => "Partly",
-//                   ResultCodes.NotAuthorized  => "NotAuthorized",
-//                   ResultCodes.InvalidId      => "InvalidId",
-//                   ResultCodes.Server         => "Server",
-//                   ResultCodes.Format         => "Format",
+//                   ResultCode.OK             => "OK",
+//                   ResultCode.Partly         => "Partly",
+//                   ResultCode.NotAuthorized  => "NotAuthorized",
+//                   ResultCode.InvalidId      => "InvalidId",
+//                   ResultCode.Server         => "Server",
+//                   ResultCode.Format         => "Format",
 //                   _                          => "Unknown"
 //               };
 

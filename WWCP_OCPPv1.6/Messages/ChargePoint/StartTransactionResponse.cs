@@ -23,6 +23,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6.CS
@@ -381,7 +383,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="CustomStartTransactionResponseSerializer">A delegate to serialize custom start transaction responses.</param>
         /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<StartTransactionResponse>?  CustomStartTransactionResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<IdTagInfo>?                 CustomIdTagInfoResponseSerializer          = null)
+                              CustomJObjectSerializerDelegate<IdTagInfo>?                 CustomIdTagInfoResponseSerializer          = null,
+                              CustomJObjectSerializerDelegate<OCPP.Signature>?            CustomSignatureSerializer                  = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
 
             var json = JSONObject.Create(

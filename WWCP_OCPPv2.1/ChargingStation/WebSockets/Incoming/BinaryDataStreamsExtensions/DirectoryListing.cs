@@ -20,6 +20,9 @@
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.CSMS;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
@@ -37,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnListDirectoryRequestDelegate(DateTime                    Timestamp,
                                        IEventSender                Sender,
-                                       CSMS.ListDirectoryRequest   Request);
+                                       ListDirectoryRequest   Request);
 
 
     /// <summary>
@@ -52,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         OnListDirectoryDelegate(DateTime                    Timestamp,
                                 IEventSender                Sender,
                                 WebSocketClientConnection   Connection,
-                                CSMS.ListDirectoryRequest   Request,
+                                ListDirectoryRequest   Request,
                                 CancellationToken           CancellationToken);
 
 
@@ -68,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         OnListDirectoryResponseDelegate(DateTime                    Timestamp,
                                         IEventSender                Sender,
-                                        CSMS.ListDirectoryRequest   Request,
+                                        ListDirectoryRequest   Request,
                                         ListDirectoryResponse       Response,
                                         TimeSpan                    Runtime);
 

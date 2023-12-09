@@ -61,7 +61,7 @@
 //                                                IEnumerable<KeyPair>?    SignKeys            = null,
 //                                                IEnumerable<SignInfo>?   SignInfos           = null,
 //                                                SignaturePolicy?         SignaturePolicy     = null,
-//                                                IEnumerable<Signature>?  Signatures          = null,
+//                                                IEnumerable<OCPP.Signature>?  Signatures          = null,
 
 //                                                CustomData?              CustomData          = null,
 
@@ -123,7 +123,7 @@
 //                                                                  IEnumerable<KeyPair>?    SignKeys            = null,
 //                                                                  IEnumerable<SignInfo>?   SignInfos           = null,
 //                                                                  SignaturePolicy?         SignaturePolicy     = null,
-//                                                                  IEnumerable<Signature>?  Signatures          = null,
+//                                                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
 
 //                                                                  CustomData?              CustomData          = null,
 
@@ -189,7 +189,7 @@
 //                                                                    IEnumerable<KeyPair>?    SignKeys            = null,
 //                                                                    IEnumerable<SignInfo>?   SignInfos           = null,
 //                                                                    SignaturePolicy?         SignaturePolicy     = null,
-//                                                                    IEnumerable<Signature>?  Signatures          = null,
+//                                                                    IEnumerable<OCPP.Signature>?  Signatures          = null,
 
 //                                                                    CustomData?              CustomData          = null,
 
@@ -248,7 +248,7 @@
 //                                                                        IEnumerable<KeyPair>?    SignKeys            = null,
 //                                                                        IEnumerable<SignInfo>?   SignInfos           = null,
 //                                                                        SignaturePolicy?         SignaturePolicy     = null,
-//                                                                        IEnumerable<Signature>?  Signatures          = null,
+//                                                                        IEnumerable<OCPP.Signature>?  Signatures          = null,
 
 //                                                                        CustomData?              CustomData          = null,
 
@@ -305,7 +305,7 @@
 //                                                                IEnumerable<KeyPair>?    SignKeys            = null,
 //                                                                IEnumerable<SignInfo>?   SignInfos           = null,
 //                                                                SignaturePolicy?         SignaturePolicy     = null,
-//                                                                IEnumerable<Signature>?  Signatures          = null,
+//                                                                IEnumerable<OCPP.Signature>?  Signatures          = null,
 
 //                                                                CustomData?              CustomData          = null,
 
@@ -362,7 +362,7 @@
 //                                                        IEnumerable<ComponentCriteria>  ComponentCriteria,
 //                                                        IEnumerable<ComponentVariable>  ComponentVariables,
 
-//                                                        IEnumerable<Signature>?         Signatures          = null,
+//                                                        IEnumerable<OCPP.Signature>?    Signatures          = null,
 //                                                        CustomData?                     CustomData          = null,
 
 //                                                        Request_Id?                     RequestId           = null,
@@ -419,7 +419,7 @@
 //                                                  Byte?                    Retries             = null,
 //                                                  TimeSpan?                RetryInterval       = null,
 
-//                                                  IEnumerable<Signature>?  Signatures          = null,
+//                                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                  CustomData?              CustomData          = null,
 
 //                                                  Request_Id?              RequestId           = null,
@@ -470,7 +470,7 @@
 //                                                              ChargeBox_Id                  ChargingStationId,
 //                                                              IEnumerable<SetVariableData>  VariableData,
 
-//                                                              IEnumerable<Signature>?       Signatures          = null,
+//                                                              IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                              CustomData?                   CustomData          = null,
 
 //                                                              Request_Id?                   RequestId           = null,
@@ -517,7 +517,7 @@
 //                                                              ChargeBox_Id                  ChargingStationId,
 //                                                              IEnumerable<GetVariableData>  VariableData,
 
-//                                                              IEnumerable<Signature>?       Signatures          = null,
+//                                                              IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                              CustomData?                   CustomData          = null,
 
 //                                                              Request_Id?                   RequestId           = null,
@@ -564,7 +564,7 @@
 //                                                                        ChargeBox_Id             ChargingStationId,
 //                                                                        MonitoringBases          MonitoringBase,
 
-//                                                                        IEnumerable<Signature>?  Signatures          = null,
+//                                                                        IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                        CustomData?              CustomData          = null,
 
 //                                                                        Request_Id?              RequestId           = null,
@@ -615,7 +615,7 @@
 //                                                                            IEnumerable<MonitoringCriteria>  MonitoringCriteria,
 //                                                                            IEnumerable<ComponentVariable>   ComponentVariables,
 
-//                                                                            IEnumerable<Signature>?          Signatures          = null,
+//                                                                            IEnumerable<OCPP.Signature>?     Signatures          = null,
 //                                                                            CustomData?                      CustomData          = null,
 
 //                                                                            Request_Id?                      RequestId           = null,
@@ -664,7 +664,7 @@
 //                                                                          ChargeBox_Id             ChargingStationId,
 //                                                                          Severities               Severity,
 
-//                                                                          IEnumerable<Signature>?  Signatures          = null,
+//                                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                          CustomData?              CustomData          = null,
 
 //                                                                          Request_Id?              RequestId           = null,
@@ -711,7 +711,7 @@
 //                                                                                ChargeBox_Id                    ChargingStationId,
 //                                                                                IEnumerable<SetMonitoringData>  MonitoringData,
 
-//                                                                                IEnumerable<Signature>?         Signatures          = null,
+//                                                                                IEnumerable<OCPP.Signature>?    Signatures          = null,
 //                                                                                CustomData?                     CustomData          = null,
 
 //                                                                                Request_Id?                     RequestId           = null,
@@ -758,7 +758,7 @@
 //                                                                                    ChargeBox_Id                        ChargingStationId,
 //                                                                                    IEnumerable<VariableMonitoring_Id>  VariableMonitoringIds,
 
-//                                                                                    IEnumerable<Signature>?             Signatures          = null,
+//                                                                                    IEnumerable<OCPP.Signature>?        Signatures          = null,
 //                                                                                    CustomData?                         CustomData          = null,
 
 //                                                                                    Request_Id?                         RequestId           = null,
@@ -807,7 +807,7 @@
 //                                                                        Int32                     ConfigurationSlot,
 //                                                                        NetworkConnectionProfile  NetworkConnectionProfile,
 
-//                                                                        IEnumerable<Signature>?   Signatures          = null,
+//                                                                        IEnumerable<OCPP.Signature>?   Signatures          = null,
 //                                                                        CustomData?               CustomData          = null,
 
 //                                                                        Request_Id?               RequestId           = null,
@@ -857,7 +857,7 @@
 //                                                                          OperationalStatus        OperationalStatus,
 //                                                                          EVSE?                    EVSE                = null,
 
-//                                                                          IEnumerable<Signature>?  Signatures          = null,
+//                                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                          CustomData?              CustomData          = null,
 
 //                                                                          Request_Id?              RequestId           = null,
@@ -908,7 +908,7 @@
 //                                                                  MessageTriggers          RequestedMessage,
 //                                                                  EVSE?                    EVSE                = null,
 
-//                                                                  IEnumerable<Signature>?  Signatures          = null,
+//                                                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                  CustomData?              CustomData          = null,
 
 //                                                                  Request_Id?              RequestId           = null,
@@ -961,7 +961,7 @@
 //                                                                 String?                  MessageId           = null,
 //                                                                 JToken?                  Data                = null,
 
-//                                                                 IEnumerable<Signature>?  Signatures          = null,
+//                                                                 IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                 CustomData?              CustomData          = null,
 
 //                                                                 Request_Id?              RequestId           = null,
@@ -1013,7 +1013,7 @@
 //                                                                            CertificateChain         CertificateChain,
 //                                                                            CertificateSigningUse?   CertificateType     = null,
 
-//                                                                            IEnumerable<Signature>?  Signatures          = null,
+//                                                                            IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                            CustomData?              CustomData          = null,
                                                                                                     
 //                                                                            Request_Id?              RequestId           = null,
@@ -1063,7 +1063,7 @@
 //                                                                          ChargeBox_Id             ChargingStationId,
 //                                                                          CertificateUse           CertificateType,
 //                                                                          Certificate              Certificate,
-//                                                                          IEnumerable<Signature>?  Signatures          = null,
+//                                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                          CustomData?              CustomData          = null,
 
 //                                                                          Request_Id?              RequestId           = null,
@@ -1112,7 +1112,7 @@
 //                                                                                          ChargeBox_Id                  ChargingStationId,
 //                                                                                          IEnumerable<CertificateUse>?  CertificateTypes    = null,
 
-//                                                                                          IEnumerable<Signature>?       Signatures          = null,
+//                                                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                                          CustomData?                   CustomData          = null,
 
 //                                                                                          Request_Id?                   RequestId           = null,
@@ -1160,7 +1160,7 @@
 //                                                                        ChargeBox_Id             ChargingStationId,
 //                                                                        CertificateHashData      CertificateHashData,
 
-//                                                                        IEnumerable<Signature>?  Signatures          = null,
+//                                                                        IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                        CustomData?              CustomData          = null,
 
 //                                                                        Request_Id?              RequestId           = null,
@@ -1212,7 +1212,7 @@
 //                                                                    NotifyCRLStatus          Availability,
 //                                                                    URL?                     Location,
 
-//                                                                    IEnumerable<Signature>?  Signatures          = null,
+//                                                                    IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                    CustomData?              CustomData          = null,
 
 //                                                                    Request_Id?              RequestId           = null,
@@ -1261,7 +1261,7 @@
 //        public static Task<GetLocalListVersionResponse> GetLocalListVersion(this ICSMSClient         ICSMSClient,
 //                                                                            ChargeBox_Id             ChargingStationId,
 
-//                                                                            IEnumerable<Signature>?  Signatures          = null,
+//                                                                            IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                            CustomData?              CustomData          = null,
 
 //                                                                            Request_Id?              RequestId           = null,
@@ -1311,7 +1311,7 @@
 //                                                                UpdateTypes                      UpdateType,
 //                                                                IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
 
-//                                                                IEnumerable<Signature>?          Signatures               = null,
+//                                                                IEnumerable<OCPP.Signature>?     Signatures               = null,
 //                                                                CustomData?                      CustomData               = null,
 
 //                                                                Request_Id?                      RequestId                = null,
@@ -1359,7 +1359,7 @@
 //        public static Task<ClearCacheResponse> ClearCache(this ICSMSClient         ICSMSClient,
 //                                                          ChargeBox_Id             ChargingStationId,
 
-//                                                          IEnumerable<Signature>?  Signatures          = null,
+//                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                          CustomData?              CustomData          = null,
 
 //                                                          Request_Id?              RequestId           = null,
@@ -1416,7 +1416,7 @@
 //                                                          EVSE_Id?                 EVSEId              = null,
 //                                                          IdToken?                 GroupIdToken        = null,
 
-//                                                          IEnumerable<Signature>?  Signatures          = null,
+//                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                          CustomData?              CustomData          = null,
 
 //                                                          Request_Id?              RequestId           = null,
@@ -1468,7 +1468,7 @@
 //                                                                        ChargeBox_Id             ChargingStationId,
 //                                                                        Reservation_Id           ReservationId,
 
-//                                                                        IEnumerable<Signature>?  Signatures          = null,
+//                                                                        IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                        CustomData?              CustomData          = null,
 
 //                                                                        Request_Id?              RequestId           = null,
@@ -1523,7 +1523,7 @@
 //                                                                          ChargingProfile?         ChargingProfile     = null,
 //                                                                          IdToken?                 GroupIdToken        = null,
 
-//                                                                          IEnumerable<Signature>?  Signatures          = null,
+//                                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                          CustomData?              CustomData          = null,
 
 //                                                                          Request_Id?              RequestId           = null,
@@ -1574,7 +1574,7 @@
 //                                                                        ChargeBox_Id             ChargingStationId,
 //                                                                        Transaction_Id           TransactionId,
 
-//                                                                        IEnumerable<Signature>?  Signatures          = null,
+//                                                                        IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                        CustomData?              CustomData          = null,
 
 //                                                                        Request_Id?              RequestId           = null,
@@ -1621,7 +1621,7 @@
 //                                                                              ChargeBox_Id             ChargingStationId,
 //                                                                              Transaction_Id?          TransactionId,
 
-//                                                                              IEnumerable<Signature>?  Signatures          = null,
+//                                                                              IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                              CustomData?              CustomData          = null,
 
 //                                                                              Request_Id?              RequestId           = null,
@@ -1670,7 +1670,7 @@
 //                                                                          EVSE_Id                  EVSEId,
 //                                                                          ChargingProfile          ChargingProfile,
 
-//                                                                          IEnumerable<Signature>?  Signatures          = null,
+//                                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                          CustomData?              CustomData          = null,
 
 //                                                                          Request_Id?              RequestId           = null,
@@ -1722,7 +1722,7 @@
 //                                                                            ChargingProfileCriterion  ChargingProfile,
 //                                                                            EVSE_Id?                  EVSEId              = null,
 
-//                                                                            IEnumerable<Signature>?   Signatures          = null,
+//                                                                            IEnumerable<OCPP.Signature>?   Signatures          = null,
 //                                                                            CustomData?               CustomData          = null,
 
 //                                                                            Request_Id?               RequestId           = null,
@@ -1774,7 +1774,7 @@
 //                                                                              ChargingProfile_Id?      ChargingProfileId         = null,
 //                                                                              ClearChargingProfile?    ChargingProfileCriteria   = null,
 
-//                                                                              IEnumerable<Signature>?  Signatures                = null,
+//                                                                              IEnumerable<OCPP.Signature>?  Signatures                = null,
 //                                                                              CustomData?              CustomData                = null,
 
 //                                                                              Request_Id?              RequestId                 = null,
@@ -1827,7 +1827,7 @@
 //                                                                              EVSE_Id                  EVSEId,
 //                                                                              ChargingRateUnits?       ChargingRateUnit    = null,
 
-//                                                                              IEnumerable<Signature>?  Signatures          = null,
+//                                                                              IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                              CustomData?              CustomData          = null,
 
 //                                                                              Request_Id?              RequestId           = null,
@@ -1911,7 +1911,7 @@
 //                                  ChargingRateValue?       SetpointReactive_L2   = null,
 //                                  ChargingRateValue?       SetpointReactive_L3   = null,
 
-//                                  IEnumerable<Signature>?  Signatures            = null,
+//                                  IEnumerable<OCPP.Signature>?  Signatures            = null,
 //                                  CustomData?              CustomData            = null,
 
 //                                  Request_Id?              RequestId             = null,
@@ -1978,7 +1978,7 @@
 //                                                                                            ChargeBox_Id                      ChargingStationId,
 //                                                                                            IEnumerable<EnergyTransferModes>  AllowedEnergyTransferModes,
 
-//                                                                                            IEnumerable<Signature>?           Signatures          = null,
+//                                                                                            IEnumerable<OCPP.Signature>?      Signatures          = null,
 //                                                                                            CustomData?                       CustomData          = null,
 
 //                                                                                            Request_Id?                       RequestId           = null,
@@ -2028,7 +2028,7 @@
 //                                                                            Transaction_Id           TransactionId,
 //                                                                            Boolean                  Activate,
 
-//                                                                            IEnumerable<Signature>?  Signatures          = null,
+//                                                                            IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                            CustomData?              CustomData          = null,
 
 //                                                                            Request_Id?              RequestId           = null,
@@ -2079,7 +2079,7 @@
 //                                                                    EVSE_Id                  EVSEId,
 //                                                                    Connector_Id             ConnectorId,
 
-//                                                                    IEnumerable<Signature>?  Signatures          = null,
+//                                                                    IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                    CustomData?              CustomData          = null,
 
 //                                                                    Request_Id?              RequestId           = null,
@@ -2131,7 +2131,7 @@
 //                                                              DateTime                 ActivationTimestamp,
 //                                                              AFRR_Signal              Signal,
 
-//                                                              IEnumerable<Signature>?  Signatures          = null,
+//                                                              IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                              CustomData?              CustomData          = null,
 
 //                                                              Request_Id?              RequestId           = null,
@@ -2181,7 +2181,7 @@
 //                                                                        ChargeBox_Id             ChargingStationId,
 //                                                                        MessageInfo              Message,
 
-//                                                                        IEnumerable<Signature>?  Signatures          = null,
+//                                                                        IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                        CustomData?              CustomData          = null,
 
 //                                                                        Request_Id?              RequestId           = null,
@@ -2235,7 +2235,7 @@
 //                                                                          MessagePriorities?               Priority            = null,
 //                                                                          MessageStates?                   State               = null,
 
-//                                                                          IEnumerable<Signature>?          Signatures          = null,
+//                                                                          IEnumerable<OCPP.Signature>?     Signatures          = null,
 //                                                                          CustomData?                      CustomData          = null,
 
 //                                                                          Request_Id?                      RequestId           = null,
@@ -2286,7 +2286,7 @@
 //                                                                            ChargeBox_Id             ChargingStationId,
 //                                                                            DisplayMessage_Id        DisplayMessageId,
 
-//                                                                            IEnumerable<Signature>?  Signatures          = null,
+//                                                                            IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                            CustomData?              CustomData          = null,
 
 //                                                                            Request_Id?              RequestId           = null,
@@ -2336,7 +2336,7 @@
 //                                                                Decimal                  TotalCost,
 //                                                                Transaction_Id           TransactionId,
 
-//                                                                IEnumerable<Signature>?  Signatures          = null,
+//                                                                IEnumerable<OCPP.Signature>?  Signatures          = null,
 //                                                                CustomData?              CustomData          = null,
 
 //                                                                Request_Id?              RequestId           = null,
@@ -2395,7 +2395,7 @@
 //                                                                                   IdToken?                 IdToken               = null,
 //                                                                                   CertificateHashData?     CustomerCertificate   = null,
 
-//                                                                                   IEnumerable<Signature>?  Signatures            = null,
+//                                                                                   IEnumerable<OCPP.Signature>?  Signatures            = null,
 //                                                                                   CustomData?              CustomData            = null,
 
 //                                                                                   Request_Id?              RequestId             = null,

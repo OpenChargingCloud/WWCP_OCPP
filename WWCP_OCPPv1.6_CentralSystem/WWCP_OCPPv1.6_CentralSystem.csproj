@@ -51,4 +51,8 @@
     <ProjectReference Include="..\WWCP_OCPPv1.6\WWCP_OCPPv1.6.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CSMS\WebSockets\Incoming\Monitoring\" />
+  </ItemGroup>
+
 </Project>

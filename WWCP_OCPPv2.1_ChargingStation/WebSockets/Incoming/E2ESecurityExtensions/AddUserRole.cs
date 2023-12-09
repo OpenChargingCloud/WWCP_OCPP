@@ -23,8 +23,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<AddUserRoleRequest>?  CustomAddUserRoleRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<OCPP.CSMS.AddUserRoleRequest>?  CustomAddUserRoleRequestParser    { get; set; }
 
         #endregion
 
@@ -121,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                if (AddUserRoleRequest.TryParse(RequestJSON,
+                if (OCPP.CSMS.AddUserRoleRequest.TryParse(RequestJSON,
                                                 RequestId,
                                                 NetworkingNodeId,
                                                 NetworkPath,
@@ -148,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     #region Call async subscribers
 
-                    AddUserRoleResponse? response = null;
+                    OCPP.CS.AddUserRoleResponse? response = null;
 
                     var results = OnAddUserRole?.
                                       GetInvocationList()?.
@@ -168,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     }
 
-                    response ??= AddUserRoleResponse.Failed(request);
+                    response ??= OCPP.CS.AddUserRoleResponse.Failed(request);
 
                     #endregion
 

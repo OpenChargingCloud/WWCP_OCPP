@@ -17,7 +17,7 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 

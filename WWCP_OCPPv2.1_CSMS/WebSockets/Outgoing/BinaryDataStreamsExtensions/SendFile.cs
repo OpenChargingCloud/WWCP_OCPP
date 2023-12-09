@@ -21,6 +21,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.CSMS;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
@@ -29,7 +33,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
-    public partial class CSMSWSServer : WebSocketServer,
+    public partial class CSMSWSServer : ACSMSWSServer,
                                         ICSMSChannel
     {
 
@@ -37,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomBinarySerializerDelegate<SendFileRequest>?   CustomSendFileRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<CS.SendFileResponse>?  CustomSendFileResponseParser       { get; set; }
+        public CustomJObjectParserDelegate<SendFileResponse>?  CustomSendFileResponseParser       { get; set; }
 
         #endregion
 
@@ -58,7 +62,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region SendFile(Request)
 
-        public async Task<CS.SendFileResponse> SendFile(SendFileRequest Request)
+        public async Task<SendFileResponse> SendFile(SendFileRequest Request)
         {
 
             #region Send OnSendFileRequest event
@@ -80,7 +84,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            CS.SendFileResponse? response = null;
+            SendFileResponse? response = null;
 
             try
             {
@@ -103,7 +107,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (CS.SendFileResponse.TryParse(Request,
+                    if (SendFileResponse.TryParse(Request,
                                                      sendRequestState.JSONResponse.Payload,
                                                      out var getFileResponse,
                                                      out var errorResponse,
@@ -113,14 +117,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                         response = getFileResponse;
                     }
 
-                    response ??= new CS.SendFileResponse(
+                    response ??= new SendFileResponse(
                                          Request,
                                          Result.Format(errorResponse)
                                      );
 
                 }
 
-                response ??= new CS.SendFileResponse(
+                response ??= new SendFileResponse(
                                  Request,
                                  Request.FileName,
                                  SendFileStatus.Rejected
@@ -130,7 +134,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
 
-                response = new CS.SendFileResponse(
+                response = new SendFileResponse(
                                Request,
                                Result.FromException(e)
                            );

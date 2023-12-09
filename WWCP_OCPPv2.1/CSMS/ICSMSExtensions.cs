@@ -22,6 +22,8 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
@@ -57,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                   ResetType                ResetType,
                   EVSE_Id?                 EVSEId              = null,
 
-                  IEnumerable<Signature>?  Signatures          = null,
+                  IEnumerable<OCPP.Signature>?  Signatures          = null,
                   CustomData?              CustomData          = null,
 
                   Request_Id?              RequestId           = null,
@@ -122,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            IEnumerable<KeyPair>?    SignKeys            = null,
                            IEnumerable<SignInfo>?   SignInfos           = null,
-                           IEnumerable<Signature>?  Signatures          = null,
+                           IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                            CustomData?              CustomData          = null,
 
@@ -190,7 +192,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                             IEnumerable<KeyPair>?    SignKeys            = null,
                             IEnumerable<SignInfo>?   SignInfos           = null,
-                            IEnumerable<Signature>?  Signatures          = null,
+                            IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                             CustomData?              CustomData          = null,
 
@@ -251,7 +253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
                               IEnumerable<SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?  Signatures          = null,
+                              IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                               CustomData?              CustomData          = null,
 
@@ -310,7 +312,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                           IEnumerable<KeyPair>?    SignKeys            = null,
                           IEnumerable<SignInfo>?   SignInfos           = null,
-                          IEnumerable<Signature>?  Signatures          = null,
+                          IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                           CustomData?              CustomData          = null,
 
@@ -372,7 +374,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                       IEnumerable<KeyPair>?           SignKeys            = null,
                       IEnumerable<SignInfo>?          SignInfos           = null,
-                      IEnumerable<Signature>?         Signatures          = null,
+                      IEnumerable<OCPP.Signature>?    Signatures          = null,
 
                       CustomData?                     CustomData          = null,
 
@@ -439,7 +441,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                    IEnumerable<KeyPair>?    SignKeys            = null,
                    IEnumerable<SignInfo>?   SignInfos           = null,
-                   IEnumerable<Signature>?  Signatures          = null,
+                   IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                    CustomData?              CustomData          = null,
 
@@ -501,7 +503,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                          IEnumerable<KeyPair>?         SignKeys            = null,
                          IEnumerable<SignInfo>?        SignInfos           = null,
-                         IEnumerable<Signature>?       Signatures          = null,
+                         IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                          CustomData?                   CustomData          = null,
 
@@ -558,7 +560,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                          IEnumerable<KeyPair>?         SignKeys            = null,
                          IEnumerable<SignInfo>?        SignInfos           = null,
-                         IEnumerable<Signature>?       Signatures          = null,
+                         IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                          CustomData?                   CustomData          = null,
 
@@ -615,7 +617,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
                               IEnumerable<SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?  Signatures          = null,
+                              IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                               CustomData?              CustomData          = null,
 
@@ -676,7 +678,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                 IEnumerable<KeyPair>?             SignKeys            = null,
                                 IEnumerable<SignInfo>?            SignInfos           = null,
-                                IEnumerable<Signature>?           Signatures          = null,
+                                IEnumerable<OCPP.Signature>?      Signatures          = null,
 
                                 CustomData?                       CustomData          = null,
 
@@ -735,7 +737,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                IEnumerable<KeyPair>?    SignKeys            = null,
                                IEnumerable<SignInfo>?   SignInfos           = null,
-                               IEnumerable<Signature>?  Signatures          = null,
+                               IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                CustomData?              CustomData          = null,
 
@@ -792,7 +794,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                   IEnumerable<KeyPair>?           SignKeys            = null,
                                   IEnumerable<SignInfo>?          SignInfos           = null,
-                                  IEnumerable<Signature>?         Signatures          = null,
+                                  IEnumerable<OCPP.Signature>?    Signatures          = null,
 
                                   CustomData?                     CustomData          = null,
 
@@ -849,7 +851,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                     IEnumerable<KeyPair>?               SignKeys            = null,
                                     IEnumerable<SignInfo>?              SignInfos           = null,
-                                    IEnumerable<Signature>?             Signatures          = null,
+                                    IEnumerable<OCPP.Signature>?        Signatures          = null,
 
                                     CustomData?                         CustomData          = null,
 
@@ -908,7 +910,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                               IEnumerable<KeyPair>?     SignKeys            = null,
                               IEnumerable<SignInfo>?    SignInfos           = null,
-                              IEnumerable<Signature>?   Signatures          = null,
+                              IEnumerable<OCPP.Signature>?   Signatures          = null,
 
                               CustomData?               CustomData          = null,
 
@@ -970,7 +972,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                IEnumerable<KeyPair>?    SignKeys            = null,
                                IEnumerable<SignInfo>?   SignInfos           = null,
-                               IEnumerable<Signature>?  Signatures          = null,
+                               IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                CustomData?              CustomData          = null,
 
@@ -1032,7 +1034,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            IEnumerable<KeyPair>?    SignKeys            = null,
                            IEnumerable<SignInfo>?   SignInfos           = null,
-                           IEnumerable<Signature>?  Signatures          = null,
+                           IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                            CustomData?              CustomData          = null,
 
@@ -1095,7 +1097,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                          IEnumerable<KeyPair>?    SignKeys            = null,
                          IEnumerable<SignInfo>?   SignInfos           = null,
-                         IEnumerable<Signature>?  Signatures          = null,
+                         IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                          CustomData?              CustomData          = null,
 
@@ -1156,7 +1158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                   IEnumerable<KeyPair>?    SignKeys            = null,
                                   IEnumerable<SignInfo>?   SignInfos           = null,
-                                  IEnumerable<Signature>?  Signatures          = null,
+                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                   CustomData?              CustomData          = null,
 
@@ -1216,7 +1218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                IEnumerable<KeyPair>?    SignKeys            = null,
                                IEnumerable<SignInfo>?   SignInfos           = null,
-                               IEnumerable<Signature>?  Signatures          = null,
+                               IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                CustomData?              CustomData          = null,
 
@@ -1274,7 +1276,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                        IEnumerable<KeyPair>?              SignKeys            = null,
                                        IEnumerable<SignInfo>?             SignInfos           = null,
-                                       IEnumerable<Signature>?            Signatures          = null,
+                                       IEnumerable<OCPP.Signature>?       Signatures          = null,
 
                                        CustomData?                        CustomData          = null,
 
@@ -1331,7 +1333,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
                               IEnumerable<SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?  Signatures          = null,
+                              IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                               CustomData?              CustomData          = null,
 
@@ -1392,7 +1394,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                   IEnumerable<KeyPair>?    SignKeys            = null,
                                   IEnumerable<SignInfo>?   SignInfos           = null,
-                                  IEnumerable<Signature>?  Signatures          = null,
+                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                   CustomData?              CustomData          = null,
 
@@ -1450,7 +1452,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                 IEnumerable<KeyPair>?    SignKeys            = null,
                                 IEnumerable<SignInfo>?   SignInfos           = null,
-                                IEnumerable<Signature>?  Signatures          = null,
+                                IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                 CustomData?              CustomData          = null,
 
@@ -1510,7 +1512,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                           IEnumerable<KeyPair>?            SignKeys                 = null,
                           IEnumerable<SignInfo>?           SignInfos                = null,
-                          IEnumerable<Signature>?          Signatures               = null,
+                          IEnumerable<OCPP.Signature>?     Signatures               = null,
 
                           CustomData?                      CustomData               = null,
 
@@ -1567,7 +1569,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                        IEnumerable<KeyPair>?    SignKeys            = null,
                        IEnumerable<SignInfo>?   SignInfos           = null,
-                       IEnumerable<Signature>?  Signatures          = null,
+                       IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                        CustomData?              CustomData          = null,
 
@@ -1634,7 +1636,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                        IEnumerable<KeyPair>?    SignKeys            = null,
                        IEnumerable<SignInfo>?   SignInfos           = null,
-                       IEnumerable<Signature>?  Signatures          = null,
+                       IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                        CustomData?              CustomData          = null,
 
@@ -1696,7 +1698,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
                               IEnumerable<SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?  Signatures          = null,
+                              IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                               CustomData?              CustomData          = null,
 
@@ -1763,7 +1765,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                           IEnumerable<KeyPair>?    SignKeys            = null,
                           IEnumerable<SignInfo>?   SignInfos           = null,
-                          IEnumerable<Signature>?  Signatures          = null,
+                          IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                           CustomData?              CustomData          = null,
 
@@ -1825,7 +1827,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                          IEnumerable<KeyPair>?    SignKeys            = null,
                          IEnumerable<SignInfo>?   SignInfos           = null,
-                         IEnumerable<Signature>?  Signatures          = null,
+                         IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                          CustomData?              CustomData          = null,
 
@@ -1882,7 +1884,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                  IEnumerable<KeyPair>?    SignKeys            = null,
                                  IEnumerable<SignInfo>?   SignInfos           = null,
-                                 IEnumerable<Signature>?  Signatures          = null,
+                                 IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                  CustomData?              CustomData          = null,
 
@@ -1941,7 +1943,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                IEnumerable<KeyPair>?    SignKeys            = null,
                                IEnumerable<SignInfo>?   SignInfos           = null,
-                               IEnumerable<Signature>?  Signatures          = null,
+                               IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                CustomData?              CustomData          = null,
 
@@ -2002,7 +2004,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                 IEnumerable<KeyPair>?     SignKeys            = null,
                                 IEnumerable<SignInfo>?    SignInfos           = null,
-                                IEnumerable<Signature>?   Signatures          = null,
+                                IEnumerable<OCPP.Signature>?   Signatures          = null,
 
                                 CustomData?               CustomData          = null,
 
@@ -2063,7 +2065,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                  IEnumerable<KeyPair>?    SignKeys                  = null,
                                  IEnumerable<SignInfo>?   SignInfos                 = null,
-                                 IEnumerable<Signature>?  Signatures                = null,
+                                 IEnumerable<OCPP.Signature>?  Signatures                = null,
 
                                  CustomData?              CustomData                = null,
 
@@ -2125,7 +2127,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                  IEnumerable<KeyPair>?    SignKeys            = null,
                                  IEnumerable<SignInfo>?   SignInfos           = null,
-                                 IEnumerable<Signature>?  Signatures          = null,
+                                 IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                  CustomData?              CustomData          = null,
 
@@ -2216,7 +2218,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                   IEnumerable<KeyPair>?    SignKeys              = null,
                                   IEnumerable<SignInfo>?   SignInfos             = null,
-                                  IEnumerable<Signature>?  Signatures            = null,
+                                  IEnumerable<OCPP.Signature>?  Signatures            = null,
 
                                   CustomData?              CustomData            = null,
 
@@ -2291,7 +2293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         IEnumerable<KeyPair>?            SignKeys            = null,
                                         IEnumerable<SignInfo>?           SignInfos           = null,
-                                        IEnumerable<Signature>?          Signatures          = null,
+                                        IEnumerable<OCPP.Signature>?     Signatures          = null,
 
                                         CustomData?                      CustomData          = null,
 
@@ -2350,7 +2352,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                 IEnumerable<KeyPair>?    SignKeys            = null,
                                 IEnumerable<SignInfo>?   SignInfos           = null,
-                                IEnumerable<Signature>?  Signatures          = null,
+                                IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                 CustomData?              CustomData          = null,
 
@@ -2409,7 +2411,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                             IEnumerable<KeyPair>?    SignKeys            = null,
                             IEnumerable<SignInfo>?   SignInfos           = null,
-                            IEnumerable<Signature>?  Signatures          = null,
+                            IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                             CustomData?              CustomData          = null,
 
@@ -2472,7 +2474,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                            IEnumerable<KeyPair>?    SignKeys            = null,
                            IEnumerable<SignInfo>?   SignInfos           = null,
-                           IEnumerable<Signature>?  Signatures          = null,
+                           IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                            CustomData?              CustomData          = null,
 
@@ -2530,7 +2532,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                               IEnumerable<KeyPair>?    SignKeys            = null,
                               IEnumerable<SignInfo>?   SignInfos           = null,
-                              IEnumerable<Signature>?  Signatures          = null,
+                              IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                               CustomData?              CustomData          = null,
 
@@ -2592,7 +2594,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                IEnumerable<KeyPair>?            SignKeys            = null,
                                IEnumerable<SignInfo>?           SignInfos           = null,
-                               IEnumerable<Signature>?          Signatures          = null,
+                               IEnumerable<OCPP.Signature>?     Signatures          = null,
 
                                CustomData?                      CustomData          = null,
 
@@ -2651,7 +2653,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                 IEnumerable<KeyPair>?    SignKeys            = null,
                                 IEnumerable<SignInfo>?   SignInfos           = null,
-                                IEnumerable<Signature>?  Signatures          = null,
+                                IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                 CustomData?              CustomData          = null,
 
@@ -2709,7 +2711,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                             IEnumerable<KeyPair>?    SignKeys            = null,
                             IEnumerable<SignInfo>?   SignInfos           = null,
-                            IEnumerable<Signature>?  Signatures          = null,
+                            IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                             CustomData?              CustomData          = null,
 
@@ -2776,7 +2778,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                        IEnumerable<KeyPair>?    SignKeys              = null,
                                        IEnumerable<SignInfo>?   SignInfos             = null,
-                                       IEnumerable<Signature>?  Signatures            = null,
+                                       IEnumerable<OCPP.Signature>?  Signatures            = null,
 
                                        CustomData?              CustomData            = null,
 
@@ -2834,7 +2836,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.BinaryDataTransferResponse>
+        public static Task<OCPP.CS.BinaryDataTransferResponse>
 
             TransferBinaryData(this ICSMS               CSMS,
                                NetworkingNode_Id        NetworkingNodeId,
@@ -2845,7 +2847,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                IEnumerable<KeyPair>?    SignKeys            = null,
                                IEnumerable<SignInfo>?   SignInfos           = null,
-                               IEnumerable<Signature>?  Signatures          = null,
+                               IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                Request_Id?              RequestId           = null,
                                DateTime?                RequestTimestamp    = null,
@@ -2855,7 +2857,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.TransferBinaryData(
-                       new BinaryDataTransferRequest(
+                       new OCPP.CSMS.BinaryDataTransferRequest(
                            NetworkingNodeId,
                            VendorId,
                            MessageId,
@@ -2893,7 +2895,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.GetFileResponse>
+        public static Task<OCPP.CS.GetFileResponse>
 
             GetFile(this ICSMS               CSMS,
                     NetworkingNode_Id        NetworkingNodeId,
@@ -2902,7 +2904,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                     IEnumerable<KeyPair>?    SignKeys            = null,
                     IEnumerable<SignInfo>?   SignInfos           = null,
-                    IEnumerable<Signature>?  Signatures          = null,
+                    IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                     CustomData?              CustomData          = null,
 
@@ -2914,7 +2916,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.GetFile(
-                       new GetFileRequest(
+                       new OCPP.CSMS.GetFileRequest(
                            NetworkingNodeId,
                            Filename,
                            Priority,
@@ -2957,7 +2959,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.SendFileResponse>
+        public static Task<OCPP.CS.SendFileResponse>
 
             SendFile(this ICSMS               CSMS,
                      NetworkingNode_Id        NetworkingNodeId,
@@ -2966,12 +2968,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                      ContentType?             FileContentType     = null,
                      Byte[]?                  FileSHA256          = null,
                      Byte[]?                  FileSHA512          = null,
-                     IEnumerable<Signature>?  FileSignatures      = null,
+                     IEnumerable<OCPP.Signature>?  FileSignatures      = null,
                      Byte?                    Priority            = null,
 
                      IEnumerable<KeyPair>?    SignKeys            = null,
                      IEnumerable<SignInfo>?   SignInfos           = null,
-                     IEnumerable<Signature>?  Signatures          = null,
+                     IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                      CustomData?              CustomData          = null,
 
@@ -2983,7 +2985,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.SendFile(
-                       new SendFileRequest(
+                       new OCPP.CSMS.SendFileRequest(
                            NetworkingNodeId,
                            FileName,
                            FileContent,
@@ -3028,7 +3030,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.DeleteFileResponse>
+        public static Task<OCPP.CS.DeleteFileResponse>
 
             DeleteFile(this ICSMS               CSMS,
                        NetworkingNode_Id        NetworkingNodeId,
@@ -3038,7 +3040,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                        IEnumerable<KeyPair>?    SignKeys            = null,
                        IEnumerable<SignInfo>?   SignInfos           = null,
-                       IEnumerable<Signature>?  Signatures          = null,
+                       IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                        CustomData?              CustomData          = null,
 
@@ -3050,7 +3052,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
 
                 => CSMS.DeleteFile(
-                       new DeleteFileRequest(
+                       new OCPP.CSMS.DeleteFileRequest(
                            NetworkingNodeId,
                            FileName,
                            FileSHA256,
@@ -3109,7 +3111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                      IEnumerable<KeyPair>?    SignKeys            = null,
                                      IEnumerable<SignInfo>?   SignInfos           = null,
-                                     IEnumerable<Signature>?  Signatures          = null,
+                                     IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                      CustomData?              CustomData          = null,
 
@@ -3166,7 +3168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                      IEnumerable<KeyPair>?    SignKeys            = null,
                                      IEnumerable<SignInfo>?   SignInfos           = null,
-                                     IEnumerable<Signature>?  Signatures          = null,
+                                     IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                      CustomData?              CustomData          = null,
 
@@ -3225,7 +3227,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                                         IEnumerable<KeyPair>?    SignKeys            = null,
                                         IEnumerable<SignInfo>?   SignInfos           = null,
-                                        IEnumerable<Signature>?  Signatures          = null,
+                                        IEnumerable<OCPP.Signature>?  Signatures          = null,
 
                                         CustomData?              CustomData          = null,
 

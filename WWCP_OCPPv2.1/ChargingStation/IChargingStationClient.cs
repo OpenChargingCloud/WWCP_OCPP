@@ -21,6 +21,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
@@ -51,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Data Structures
 
         CustomJObjectSerializerDelegate<ChargingStation>?          CustomChargingStationSerializer            { get; set; }
-        CustomJObjectSerializerDelegate<Signature>?                CustomSignatureSerializer                  { get; set; }
+        CustomJObjectSerializerDelegate<OCPP.Signature>?           CustomSignatureSerializer                  { get; set; }
         CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                 { get; set; }
 
         #endregion
@@ -351,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send the given vendor-specific binary data.
         /// </summary>
         /// <param name="Request">A binary data transfer request.</param>
-        public Task<CSMS.BinaryDataTransferResponse> TransferBinaryData(BinaryDataTransferRequest Request);
+        public Task<OCPP.CSMS.BinaryDataTransferResponse> TransferBinaryData(BinaryDataTransferRequest Request);
 
         #endregion
 

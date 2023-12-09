@@ -23,7 +23,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -42,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<CSMS.ListDirectoryRequest>?  CustomListDirectoryRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<ListDirectoryRequest>?  CustomListDirectoryRequestParser         { get; set; }
 
         public CustomJObjectSerializerDelegate<ListDirectoryResponse>?  CustomListDirectoryResponseSerializer    { get; set; }
 
@@ -122,13 +125,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                if (CSMS.ListDirectoryRequest.TryParse(RequestJSON,
-                                                       RequestId,
-                                                       NetworkingNodeId,
-                                                       NetworkPath,
-                                                       out var request,
-                                                       out var errorResponse,
-                                                       CustomListDirectoryRequestParser) &&
+                if (ListDirectoryRequest.TryParse(RequestJSON,
+                                                  RequestId,
+                                                  NetworkingNodeId,
+                                                  NetworkPath,
+                                                  out var request,
+                                                  out var errorResponse,
+                                                  CustomListDirectoryRequestParser) &&
                     request is not null) {
 
                     #region Send OnListDirectoryRequest event

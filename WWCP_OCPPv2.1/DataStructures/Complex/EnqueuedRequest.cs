@@ -19,6 +19,8 @@
 
 using Newtonsoft.Json.Linq;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1

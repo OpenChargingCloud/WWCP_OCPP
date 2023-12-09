@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+
 
 #endregion
 
@@ -43,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnIncomingBinaryDataTransferRequestDelegate(DateTime                       Timestamp,
                                                     IEventSender                   Sender,
-                                                    CS.BinaryDataTransferRequest   Request);
+                                                    OCPP.CS.BinaryDataTransferRequest   Request);
 
 
     /// <summary>
@@ -53,11 +53,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The binary data transfer request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<BinaryDataTransferResponse>
+    public delegate Task<OCPP.CSMS.BinaryDataTransferResponse>
 
         OnIncomingBinaryDataTransferDelegate(DateTime                       Timestamp,
                                              IEventSender                   Sender,
-                                             CS.BinaryDataTransferRequest   Request,
+                                             OCPP.CS.BinaryDataTransferRequest   Request,
                                              CancellationToken              CancellationToken);
 
 
@@ -73,8 +73,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnIncomingBinaryDataTransferResponseDelegate(DateTime                          Timestamp,
                                                      IEventSender                      Sender,
-                                                     CS.BinaryDataTransferRequest      Request,
-                                                     CSMS.BinaryDataTransferResponse   Response,
+                                                     OCPP.CS.BinaryDataTransferRequest      Request,
+                                                     OCPP.CSMS.BinaryDataTransferResponse   Response,
                                                      TimeSpan                          Runtime);
 
     #endregion

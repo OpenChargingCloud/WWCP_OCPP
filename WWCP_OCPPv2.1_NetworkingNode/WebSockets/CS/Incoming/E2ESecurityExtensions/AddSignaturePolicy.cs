@@ -20,12 +20,12 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
     /// and connects to a CSMS to invoke methods.
     /// </summary>
     public partial class NetworkingNodeWSClient : WebSocketClient,
-                                                   INetworkingNodeWebSocketClient,
-                                                   INetworkingNodeServer,
-                                                   INetworkingNodeClientEvents
+                                                  INetworkingNodeWebSocketClient,
+                                                  INetworkingNodeServer,
+                                                  INetworkingNodeClientEvents
     {
 
         #region Custom JSON parser delegates
@@ -58,22 +58,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an AddSignaturePolicy request was received.
         /// </summary>
-        public event CS.OnAddSignaturePolicyRequestDelegate?     OnAddSignaturePolicyRequest;
+        public event CS.OnAddSignaturePolicyRequestDelegate?       OnAddSignaturePolicyRequest;
 
         /// <summary>
         /// An event sent whenever an AddSignaturePolicy request was received.
         /// </summary>
-        public event CS.OnAddSignaturePolicyDelegate?            OnAddSignaturePolicy;
+        public event CS.OnAddSignaturePolicyDelegate?              OnAddSignaturePolicy;
 
         /// <summary>
         /// An event sent whenever a response to an AddSignaturePolicy request was sent.
         /// </summary>
-        public event CS.OnAddSignaturePolicyResponseDelegate?    OnAddSignaturePolicyResponse;
+        public event CS.OnAddSignaturePolicyResponseDelegate?      OnAddSignaturePolicyResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an AddSignaturePolicy request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?              OnAddSignaturePolicyWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnAddSignaturePolicyWSResponse;
 
         #endregion
 

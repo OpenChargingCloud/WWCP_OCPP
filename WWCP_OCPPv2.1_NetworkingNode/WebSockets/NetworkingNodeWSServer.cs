@@ -32,9 +32,8 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
-using System;
-using Org.BouncyCastle.Asn1.Ocsp;
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -44,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
     /// <summary>
     /// The NetworkingNode HTTP/WebSocket/JSON server.
     /// </summary>
-    public partial class NetworkingNodeWSServer : WebSocketServer,
+    public partial class NetworkingNodeWSServer : ACSMSWSServer,
                                                   INetworkingNodeChannel
     {
 
@@ -202,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
         #region Custom JSON serializer delegates
         public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
-        public CustomJObjectSerializerDelegate<Signature>?                                           CustomSignatureSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
         public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<Firmware>?                                            CustomFirmwareSerializer                                     { get; set; }
         public CustomJObjectSerializerDelegate<ComponentVariable>?                                   CustomComponentVariableSerializer                            { get; set; }
@@ -250,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<Signature>?                                            CustomBinarySignatureSerializer                              { get; set; }
+        public CustomBinarySerializerDelegate<OCPP.Signature>?                                       CustomBinarySignatureSerializer                              { get; set; }
 
 
         // E2E Security Extensions
@@ -309,14 +308,40 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                       DNSClient?                           DNSClient                    = null,
                                       Boolean                              AutoStart                    = false)
 
-            : base(IPAddress,
-                   TCPPort ?? IPPort.Parse(8000),
-                   HTTPServiceName,
+            //: base(IPAddress,
+            //       TCPPort ?? IPPort.Parse(8000),
+            //       HTTPServiceName,
 
-                   new[] {
-                      "ocpp2.0.1",
-                       Version.WebSocketSubProtocolId
-                   },
+            //       new[] {
+            //          "ocpp2.0.1",
+            //           Version.WebSocketSubProtocolId
+            //       },
+            //       DisableWebSocketPings,
+            //       WebSocketPingEvery,
+            //       SlowNetworkSimulationDelay,
+
+            //       ServerCertificateSelector,
+            //       ClientCertificateValidator,
+            //       ClientCertificateSelector,
+            //       AllowedTLSProtocols,
+            //       ClientCertificateRequired,
+            //       CheckCertificateRevocation,
+
+            //       ServerThreadNameCreator,
+            //       ServerThreadPrioritySetter,
+            //       ServerThreadIsBackground,
+            //       ConnectionIdBuilder,
+            //       ConnectionTimeout,
+            //       MaxClientConnections,
+
+            //       DNSClient,
+            //       false)
+
+           : base(HTTPServiceName,
+                   IPAddress,
+                   TCPPort,
+
+                   RequireAuthentication,
                    DisableWebSocketPings,
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,
@@ -336,7 +361,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                    MaxClientConnections,
 
                    DNSClient,
-                   false)
+                   AutoStart)
+
+
 
         {
 

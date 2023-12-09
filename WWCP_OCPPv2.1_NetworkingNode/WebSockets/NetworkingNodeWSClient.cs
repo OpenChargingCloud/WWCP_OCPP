@@ -32,7 +32,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.ISO15118_20.CommonMessages;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 
@@ -108,7 +109,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         public CustomJObjectSerializerDelegate<StatusInfo>?                                CustomStatusInfoSerializer                                  { get; set; }
         public CustomJObjectSerializerDelegate<ClearMonitoringResult>?                     CustomClearMonitoringResultSerializer                       { get; set; }
         public CustomJObjectSerializerDelegate<ChargingStation>?                           CustomChargingStationSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<Signature>?                                 CustomSignatureSerializer                                   { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.Signature>?                            CustomSignatureSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<CustomData>?                                CustomCustomDataSerializer                                  { get; set; }
         public CustomJObjectSerializerDelegate<EventData>?                                 CustomEventDataSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<Component>?                                 CustomComponentSerializer                                   { get; set; }
@@ -170,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<Signature>?                                  CustomBinarySignatureSerializer                             { get; set; }
+        public CustomBinarySerializerDelegate<OCPP.Signature>?                             CustomBinarySignatureSerializer                             { get; set; }
 
         #endregion
 

@@ -23,7 +23,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -42,7 +45,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<CSMS.DeleteFileRequest>?  CustomDeleteFileRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<DeleteFileRequest>?  CustomDeleteFileRequestParser         { get; set; }
 
         public CustomJObjectSerializerDelegate<DeleteFileResponse>?  CustomDeleteFileResponseSerializer    { get; set; }
 
@@ -122,7 +125,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                if (CSMS.DeleteFileRequest.TryParse(RequestJSON,
+                if (DeleteFileRequest.TryParse(RequestJSON,
                                                     RequestId,
                                                     NetworkingNodeId,
                                                     NetworkPath,

@@ -21,7 +21,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -40,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomBinaryParserDelegate<CSMS.SendFileRequest>?   CustomSendFileRequestParser         { get; set; }
+        public CustomBinaryParserDelegate<SendFileRequest>?   CustomSendFileRequestParser         { get; set; }
 
         public CustomJObjectSerializerDelegate<SendFileResponse>?  CustomSendFileResponseSerializer    { get; set; }
 
@@ -120,13 +123,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                if (CSMS.SendFileRequest.TryParse(RequestBinary,
-                                                  RequestId,
-                                                  NetworkingNodeId,
-                                                  NetworkPath,
-                                                  out var request,
-                                                  out var errorResponse,
-                                                  CustomSendFileRequestParser) &&
+                if (SendFileRequest.TryParse(RequestBinary,
+                                             RequestId,
+                                             NetworkingNodeId,
+                                             NetworkPath,
+                                             out var request,
+                                             out var errorResponse,
+                                             CustomSendFileRequestParser) &&
                     request is not null) {
 
                     #region Send OnSendFileRequest event

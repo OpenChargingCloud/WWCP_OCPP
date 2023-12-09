@@ -21,6 +21,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CSMS;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
@@ -49,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     public delegate Task OnDeleteFileResponseDelegate(DateTime                Timestamp,
                                                       IEventSender            Sender,
                                                       DeleteFileRequest       Request,
-                                                      CS.DeleteFileResponse   Response,
+                                                      OCPP.CS.DeleteFileResponse   Response,
                                                       TimeSpan                Runtime);
 
     #endregion

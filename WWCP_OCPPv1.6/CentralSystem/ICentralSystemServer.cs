@@ -235,6 +235,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+
+
+        Task Shutdown(String?  Message   = null,
+                      Boolean  Wait      = true);
+
     }
 
 }

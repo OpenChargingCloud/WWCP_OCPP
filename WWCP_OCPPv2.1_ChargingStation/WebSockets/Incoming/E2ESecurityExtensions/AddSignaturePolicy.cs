@@ -23,8 +23,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
+using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.WebSockets;
+using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
 
@@ -43,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<AddSignaturePolicyRequest>?  CustomAddSignaturePolicyRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<OCPP.CSMS.AddSignaturePolicyRequest>?  CustomAddSignaturePolicyRequestParser    { get; set; }
 
         #endregion
 
@@ -121,7 +122,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                if (AddSignaturePolicyRequest.TryParse(RequestJSON,
+                if (OCPP.CSMS.AddSignaturePolicyRequest.TryParse(RequestJSON,
                                                        RequestId,
                                                        NetworkingNodeId,
                                                        NetworkPath,
@@ -148,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     #region Call async subscribers
 
-                    AddSignaturePolicyResponse? response = null;
+                    OCPP.CS.AddSignaturePolicyResponse? response = null;
 
                     var results = OnAddSignaturePolicy?.
                                       GetInvocationList()?.
@@ -168,7 +169,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     }
 
-                    response ??= AddSignaturePolicyResponse.Failed(request);
+                    response ??= OCPP.CS.AddSignaturePolicyResponse.Failed(request);
 
                     #endregion
 

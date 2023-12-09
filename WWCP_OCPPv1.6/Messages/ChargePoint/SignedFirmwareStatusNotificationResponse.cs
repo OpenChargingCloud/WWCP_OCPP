@@ -21,6 +21,8 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6.CS
@@ -158,7 +160,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomSignedFirmwareStatusNotificationResponseSerializer">A delegate to serialize custom signed firmware status notification responses.</param>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<SignedFirmwareStatusNotificationResponse>? CustomSignedFirmwareStatusNotificationResponseSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<SignedFirmwareStatusNotificationResponse>?  CustomSignedFirmwareStatusNotificationResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<OCPP.Signature>?                            CustomSignatureSerializer                                  = null,
+                              CustomJObjectSerializerDelegate<CustomData>?                                CustomCustomDataSerializer                                 = null)
         {
 
             var json = JSONObject.Create();

@@ -19,12 +19,9 @@
 
 using NUnit.Framework;
 
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Styx;
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
+using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
 
@@ -62,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 chargingStation3        is not null)
             {
 
-                var binaryDataTransferRequests= new ConcurrentList<CS.BinaryDataTransferRequest>();
+                var binaryDataTransferRequests= new ConcurrentList<OCPP.CS.BinaryDataTransferRequest>();
 
                 testCSMS01.OnIncomingBinaryDataTransferRequest += (timestamp, sender, binaryDataTransferRequest) => {
                     binaryDataTransferRequests.TryAdd(binaryDataTransferRequest);
