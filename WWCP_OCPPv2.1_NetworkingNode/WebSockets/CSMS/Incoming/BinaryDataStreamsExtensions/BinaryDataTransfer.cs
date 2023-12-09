@@ -18,12 +18,9 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
@@ -51,27 +48,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer WebSocket request was received.
         /// </summary>
-        public event CSMS.WebSocketBinaryRequestLogHandler?                 OnIncomingBinaryDataTransferWSRequest;
+        public event WebSocketBinaryRequestLogHandler?                          OnIncomingBinaryDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event CSMS.OnIncomingBinaryDataTransferRequestDelegate?      OnIncomingBinaryDataTransferRequest;
+        public event OCPP.NetworkingNode.CSMS.OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event CSMS.OnIncomingBinaryDataTransferDelegate?             OnIncomingBinaryDataTransfer;
+        public event OCPP.NetworkingNode.CSMS.OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event CSMS.OnIncomingBinaryDataTransferResponseDelegate?     OnIncomingBinaryDataTransferResponse;
+        public event OCPP.NetworkingNode.CSMS.OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event CSMS.WebSocketBinaryRequestBinaryResponseLogHandler?   OnIncomingBinaryDataTransferWSResponse;
+        public event WebSocketBinaryRequestBinaryResponseLogHandler?            OnIncomingBinaryDataTransferWSResponse;
 
         #endregion
 
@@ -153,10 +150,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 
                     var responseTasks = OnIncomingBinaryDataTransfer?.
                                             GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as CSMS.OnIncomingBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                       this,
-                                                                                                                                       request,
-                                                                                                                                       CancellationToken)).
+                                            SafeSelect(subscriber => (subscriber as OCPP.CSMS.OnIncomingBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                            this,
+                                                                                                                                            request,
+                                                                                                                                            CancellationToken)).
                                             ToArray();
 
                     if (responseTasks?.Length > 0)

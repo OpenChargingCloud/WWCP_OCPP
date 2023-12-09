@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -45,9 +44,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<GetFileRequest>?  CustomGetFileRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<GetFileRequest>?      CustomGetFileRequestParser         { get; set; }
 
-        public CustomBinarySerializerDelegate<GetFileResponse>?   CustomGetFileResponseSerializer    { get; set; }
+        public CustomBinarySerializerDelegate<GetFileResponse>?  CustomGetFileResponseSerializer    { get; set; }
 
         #endregion
 
@@ -61,17 +60,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a GetFile request was received.
         /// </summary>
-        public event OnGetFileRequestDelegate?                      OnGetFileRequest;
+        public event OCPP.CS.OnGetFileRequestDelegate?              OnGetFileRequest;
 
         /// <summary>
         /// An event sent whenever a GetFile request was received.
         /// </summary>
-        public event OnGetFileDelegate?                             OnGetFile;
+        public event OCPP.CS.OnGetFileDelegate?                     OnGetFile;
 
         /// <summary>
         /// An event sent whenever a response to a GetFile request was sent.
         /// </summary>
-        public event OnGetFileResponseDelegate?                     OnGetFileResponse;
+        public event OCPP.CS.OnGetFileResponseDelegate?             OnGetFileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetFile request was sent.

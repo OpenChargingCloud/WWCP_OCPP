@@ -40,9 +40,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom binary serializer delegates
 
-        public CustomBinarySerializerDelegate<OCPP.CS.BinaryDataTransferRequest>?    CustomBinaryDataTransferRequestSerializer    { get; set; }
+        public CustomBinarySerializerDelegate<OCPP.CS.BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer    { get; set; }
 
-        public CustomBinaryParserDelegate<OCPP.CSMS.BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser       { get; set; }
+        public CustomBinaryParserDelegate<OCPP.CSMS.BinaryDataTransferResponse>?   CustomBinaryDataTransferResponseParser       { get; set; }
 
         #endregion
 
@@ -51,22 +51,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a binary data transfer request will be sent to the CSMS.
         /// </summary>
-        public event OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
+        public event OCPP.CS.OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a binary data transfer request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                 OnBinaryDataTransferWSRequest;
+        public event ClientRequestLogHandler?                         OnBinaryDataTransferWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a binary data transfer request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                OnBinaryDataTransferWSResponse;
+        public event ClientResponseLogHandler?                        OnBinaryDataTransferWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a binary data transfer request was received.
         /// </summary>
-        public event OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
+        public event OCPP.CS.OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
 
         #endregion
 

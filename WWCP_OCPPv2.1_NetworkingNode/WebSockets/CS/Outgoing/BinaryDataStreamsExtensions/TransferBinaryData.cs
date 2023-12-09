@@ -50,22 +50,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a binary data transfer request will be sent to the CSMS.
         /// </summary>
-        public event OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
+        public event OCPP.CS.OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a binary data transfer request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?                 OnBinaryDataTransferWSRequest;
+        public event ClientRequestLogHandler?                         OnBinaryDataTransferWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a binary data transfer request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                OnBinaryDataTransferWSResponse;
+        public event ClientResponseLogHandler?                        OnBinaryDataTransferWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a binary data transfer request was received.
         /// </summary>
-        public event OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
+        public event OCPP.CS.OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
 
         #endregion
 
@@ -128,10 +128,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     {
 
                         if (OCPP.CSMS.BinaryDataTransferResponse.TryParse(Request,
-                                                                              sendRequestState.BinaryResponse.Payload,
-                                                                              out var binaryDataTransferResponse,
-                                                                              out var errorResponse,
-                                                                              CustomBinaryDataTransferResponseParser) &&
+                                                                          sendRequestState.BinaryResponse.Payload,
+                                                                          out var binaryDataTransferResponse,
+                                                                          out var errorResponse,
+                                                                          CustomBinaryDataTransferResponseParser) &&
                             binaryDataTransferResponse is not null)
                         {
                             response = binaryDataTransferResponse;

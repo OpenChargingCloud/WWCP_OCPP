@@ -31,6 +31,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
@@ -924,12 +925,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever a DataTransfer request will be sent to the charging station.
         /// </summary>
-        public event CSMS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
+        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a DataTransfer request was received.
         /// </summary>
-        public event CSMS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
+        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 
@@ -1324,12 +1325,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request will be sent to the charging station.
         /// </summary>
-        public event CSMS.OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was received.
         /// </summary>
-        public event CSMS.OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
+        public event OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
 
         #endregion
 
@@ -1338,12 +1339,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever a GetFile request will be sent to the charging station.
         /// </summary>
-        public event CSMS.OnGetFileRequestDelegate?   OnGetFileRequest;
+        public event OnGetFileRequestDelegate?   OnGetFileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetFile request was received.
         /// </summary>
-        public event CSMS.OnGetFileResponseDelegate?  OnGetFileResponse;
+        public event OnGetFileResponseDelegate?  OnGetFileResponse;
 
         #endregion
 
@@ -1352,12 +1353,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever a SendFile request will be sent to the charging station.
         /// </summary>
-        public event CSMS.OnSendFileRequestDelegate?   OnSendFileRequest;
+        public event OnSendFileRequestDelegate?   OnSendFileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a SendFile request was received.
         /// </summary>
-        public event CSMS.OnSendFileResponseDelegate?  OnSendFileResponse;
+        public event OnSendFileResponseDelegate?  OnSendFileResponse;
 
         #endregion
 
@@ -1366,12 +1367,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An event sent whenever a DeleteFile request will be sent to the charging station.
         /// </summary>
-        public event CSMS.OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
+        public event OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteFile request was received.
         /// </summary>
-        public event CSMS.OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
+        public event OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
 
         #endregion
 
@@ -1688,7 +1689,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CS.NotifyReportRequest>?                              CustomNotifyReportRequestSerializer                          { get; set; }
         public CustomJObjectSerializerDelegate<CS.NotifyMonitoringReportRequest>?                    CustomNotifyMonitoringReportRequestSerializer                { get; set; }
         public CustomJObjectSerializerDelegate<CS.LogStatusNotificationRequest>?                     CustomLogStatusNotificationRequestSerializer                 { get; set; }
-        public CustomJObjectSerializerDelegate<CS.DataTransferRequest>?                              CustomIncomingDataTransferRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.DataTransferRequest>?                         CustomIncomingDataTransferRequestSerializer                  { get; set; }
 
         public CustomJObjectSerializerDelegate<CS.SignCertificateRequest>?                           CustomSignCertificateRequestSerializer                       { get; set; }
         public CustomJObjectSerializerDelegate<CS.Get15118EVCertificateRequest>?                     CustomGet15118EVCertificateRequestSerializer                 { get; set; }
@@ -1737,7 +1738,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public CustomJObjectSerializerDelegate<CS.SetNetworkProfileResponse>?                        CustomSetNetworkProfileResponseSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<CS.ChangeAvailabilityResponse>?                       CustomChangeAvailabilityResponseSerializer                   { get; set; }
         public CustomJObjectSerializerDelegate<CS.TriggerMessageResponse>?                           CustomTriggerMessageResponseSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<CS.DataTransferResponse>?                             CustomDataTransferResponseSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.DataTransferResponse>?                        CustomDataTransferResponseSerializer                         { get; set; }
 
         public CustomJObjectSerializerDelegate<CS.CertificateSignedResponse>?                        CustomCertificateSignedResponseSerializer                    { get; set; }
         public CustomJObjectSerializerDelegate<CS.InstallCertificateResponse>?                       CustomInstallCertificateResponseSerializer                   { get; set; }
@@ -8074,7 +8075,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// Transfer the given data to the given charging station.
         /// </summary>
         /// <param name="Request">A DataTransfer request.</param>
-        public async Task<CS.DataTransferResponse>
+        public async Task<OCPP.CS.DataTransferResponse>
             TransferData(DataTransferRequest Request)
 
         {
@@ -8113,12 +8114,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
                                       ? await centralSystem.Item1.TransferData(Request)
 
-                                      : new CS.DataTransferResponse(
+                                      : new OCPP.CS.DataTransferResponse(
                                             Request,
                                             Result.SignatureError(errorResponse)
                                         )
 
-                                : new CS.DataTransferResponse(
+                                : new OCPP.CS.DataTransferResponse(
                                       Request,
                                       Result.Server("Unknown or unreachable charging station!")
                                   );

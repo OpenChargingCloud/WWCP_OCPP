@@ -1087,29 +1087,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CS.DataTransferResponse>
+        public static Task<OCPP.CS.DataTransferResponse>
 
-            TransferData(this ICSMS               CSMS,
-                         NetworkingNode_Id        NetworkingNodeId,
-                         Vendor_Id                VendorId,
-                         Message_Id?              MessageId           = null,
-                         JToken?                  Data                = null,
+            TransferData(this ICSMS                    CSMS,
+                         NetworkingNode_Id             NetworkingNodeId,
+                         Vendor_Id                     VendorId,
+                         Message_Id?                   MessageId           = null,
+                         JToken?                       Data                = null,
 
-                         IEnumerable<KeyPair>?    SignKeys            = null,
-                         IEnumerable<SignInfo>?   SignInfos           = null,
+                         IEnumerable<KeyPair>?         SignKeys            = null,
+                         IEnumerable<SignInfo>?        SignInfos           = null,
                          IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                         CustomData?              CustomData          = null,
+                         CustomData?                   CustomData          = null,
 
-                         Request_Id?              RequestId           = null,
-                         DateTime?                RequestTimestamp    = null,
-                         TimeSpan?                RequestTimeout      = null,
-                         EventTracking_Id?        EventTrackingId     = null,
-                         CancellationToken        CancellationToken   = default)
+                         Request_Id?                   RequestId           = null,
+                         DateTime?                     RequestTimestamp    = null,
+                         TimeSpan?                     RequestTimeout      = null,
+                         EventTracking_Id?             EventTrackingId     = null,
+                         CancellationToken             CancellationToken   = default)
 
 
                 => CSMS.TransferData(
-                       new DataTransferRequest(
+                       new OCPP.CSMS.DataTransferRequest(
                            NetworkingNodeId,
                            VendorId,
                            MessageId,

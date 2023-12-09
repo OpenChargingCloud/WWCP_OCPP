@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -45,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<ListDirectoryRequest>?  CustomListDirectoryRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<ListDirectoryRequest>?       CustomListDirectoryRequestParser         { get; set; }
 
         public CustomJObjectSerializerDelegate<ListDirectoryResponse>?  CustomListDirectoryResponseSerializer    { get; set; }
 
@@ -61,17 +60,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a ListDirectory request was received.
         /// </summary>
-        public event OnListDirectoryRequestDelegate?              OnListDirectoryRequest;
+        public event OCPP.CS.OnListDirectoryRequestDelegate?      OnListDirectoryRequest;
 
         /// <summary>
         /// An event sent whenever a ListDirectory request was received.
         /// </summary>
-        public event OnListDirectoryDelegate?                     OnListDirectory;
+        public event OCPP.CS.OnListDirectoryDelegate?             OnListDirectory;
 
         /// <summary>
         /// An event sent whenever a response to a ListDirectory request was sent.
         /// </summary>
-        public event OnListDirectoryResponseDelegate?             OnListDirectoryResponse;
+        public event OCPP.CS.OnListDirectoryResponseDelegate?     OnListDirectoryResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a ListDirectory request was sent.

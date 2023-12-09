@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
@@ -41,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<GetFileRequest>?  CustomGetFileRequestSerializer    { get; set; }
 
-        public CustomBinaryParserDelegate<GetFileResponse>?   CustomGetFileResponseParser       { get; set; }
+        public CustomBinaryParserDelegate<GetFileResponse>?      CustomGetFileResponseParser       { get; set; }
 
         #endregion
 
@@ -50,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetFile request was sent.
         /// </summary>
-        public event OnGetFileRequestDelegate?     OnGetFileRequest;
+        public event OCPP.CSMS.OnGetFileRequestDelegate?     OnGetFileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetFile request was sent.
         /// </summary>
-        public event OnGetFileResponseDelegate?    OnGetFileResponse;
+        public event OCPP.CSMS.OnGetFileResponseDelegate?    OnGetFileResponse;
 
         #endregion
 
@@ -108,10 +106,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 {
 
                     if (GetFileResponse.TryParse(Request,
-                                                    sendRequestState.BinaryResponse.Payload,
-                                                    out var getFileResponse,
-                                                    out var errorResponse,
-                                                    CustomGetFileResponseParser) &&
+                                                 sendRequestState.BinaryResponse.Payload,
+                                                 out var getFileResponse,
+                                                 out var errorResponse,
+                                                 CustomGetFileResponseParser) &&
                         getFileResponse is not null)
                     {
                         response = getFileResponse;

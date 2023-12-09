@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -54,27 +53,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a DeleteUserRole websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?           OnDeleteUserRoleWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnDeleteUserRoleWSRequest;
 
         /// <summary>
         /// An event sent whenever a DeleteUserRole request was received.
         /// </summary>
-        public event CS.OnDeleteUserRoleRequestDelegate?     OnDeleteUserRoleRequest;
+        public event OCPP.NetworkingNode.CS.OnDeleteUserRoleRequestDelegate?      OnDeleteUserRoleRequest;
 
         /// <summary>
         /// An event sent whenever a DeleteUserRole request was received.
         /// </summary>
-        public event CS.OnDeleteUserRoleDelegate?            OnDeleteUserRole;
+        public event OCPP.NetworkingNode.CS.OnDeleteUserRoleDelegate?             OnDeleteUserRole;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteUserRole request was sent.
         /// </summary>
-        public event CS.OnDeleteUserRoleResponseDelegate?    OnDeleteUserRoleResponse;
+        public event OCPP.NetworkingNode.CS.OnDeleteUserRoleResponseDelegate?     OnDeleteUserRoleResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a DeleteUserRole request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?          OnDeleteUserRoleWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnDeleteUserRoleWSResponse;
 
         #endregion
 

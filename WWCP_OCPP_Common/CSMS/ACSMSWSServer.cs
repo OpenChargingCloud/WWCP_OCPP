@@ -215,6 +215,16 @@ namespace cloud.charging.open.protocols.OCPP
 
         #endregion
 
+        public CustomJObjectSerializerDelegate<StatusInfo>?                                          CustomStatusInfoSerializer                                   { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
+
+
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate<OCPP.Signature>?                                       CustomBinarySignatureSerializer                              { get; set; }
+
+
+
         #region Constructor(s)
 
         /// <summary>

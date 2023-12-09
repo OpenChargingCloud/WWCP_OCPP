@@ -18,10 +18,9 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+//using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 
@@ -37,9 +36,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<DataTransferRequest>?  CustomDataTransferRequestSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.DataTransferRequest>?  CustomDataTransferRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<CS.DataTransferResponse>?  CustomDataTransferResponseParser       { get; set; }
+        public CustomJObjectParserDelegate<OCPP.CS.DataTransferResponse>?       CustomDataTransferResponseParser       { get; set; }
 
         #endregion
 
@@ -48,19 +47,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a DataTransfer request was sent.
         /// </summary>
-        public event OnDataTransferRequestDelegate?     OnDataTransferRequest;
+        public event OCPP.CSMS.OnDataTransferRequestDelegate?     OnDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a DataTransfer request was sent.
         /// </summary>
-        public event OnDataTransferResponseDelegate?    OnDataTransferResponse;
+        public event OCPP.CSMS.OnDataTransferResponseDelegate?    OnDataTransferResponse;
 
         #endregion
 
 
         #region TransferData(Request)
 
-        public async Task<CS.DataTransferResponse> TransferData(DataTransferRequest Request)
+        public async Task<OCPP.CS.DataTransferResponse> TransferData(OCPP.CSMS.DataTransferRequest Request)
         {
 
             #region Send OnDataTransferRequest event
@@ -82,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             #endregion
 
 
-            CS.DataTransferResponse? response = null;
+            OCPP.CS.DataTransferResponse? response = null;
 
             try
             {
@@ -105,24 +104,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     sendRequestState.JSONResponse is not null)
                 {
 
-                    if (CS.DataTransferResponse.TryParse(Request,
-                                                         sendRequestState.JSONResponse.Payload,
-                                                         out var dataTransferResponse,
-                                                         out var errorResponse,
-                                                         CustomDataTransferResponseParser) &&
+                    if (OCPP.CS.DataTransferResponse.TryParse(Request,
+                                                              sendRequestState.JSONResponse.Payload,
+                                                              out var dataTransferResponse,
+                                                              out var errorResponse,
+                                                              CustomDataTransferResponseParser) &&
                         dataTransferResponse is not null)
                     {
                         response = dataTransferResponse;
                     }
 
-                    response ??= new CS.DataTransferResponse(
+                    response ??= new OCPP.CS.DataTransferResponse(
                                          Request,
                                          Result.Format(errorResponse)
                                      );
 
                 }
 
-                response ??= new CS.DataTransferResponse(
+                response ??= new OCPP.CS.DataTransferResponse(
                                      Request,
                                      Result.FromSendRequestState(sendRequestState)
                                  );
@@ -131,7 +130,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             catch (Exception e)
             {
 
-                response = new CS.DataTransferResponse(
+                response = new OCPP.CS.DataTransferResponse(
                                Request,
                                Result.FromException(e)
                            );

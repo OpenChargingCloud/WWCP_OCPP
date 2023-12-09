@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -45,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<DeleteFileRequest>?  CustomDeleteFileRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<DeleteFileRequest>?       CustomDeleteFileRequestParser         { get; set; }
 
         public CustomJObjectSerializerDelegate<DeleteFileResponse>?  CustomDeleteFileResponseSerializer    { get; set; }
 
@@ -61,17 +60,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a DeleteFile request was received.
         /// </summary>
-        public event OnDeleteFileRequestDelegate?                 OnDeleteFileRequest;
+        public event OCPP.CS.OnDeleteFileRequestDelegate?         OnDeleteFileRequest;
 
         /// <summary>
         /// An event sent whenever a DeleteFile request was received.
         /// </summary>
-        public event OnDeleteFileDelegate?                        OnDeleteFile;
+        public event OCPP.CS.OnDeleteFileDelegate?                OnDeleteFile;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteFile request was sent.
         /// </summary>
-        public event OnDeleteFileResponseDelegate?                OnDeleteFileResponse;
+        public event OCPP.CS.OnDeleteFileResponseDelegate?        OnDeleteFileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a DeleteFile request was sent.

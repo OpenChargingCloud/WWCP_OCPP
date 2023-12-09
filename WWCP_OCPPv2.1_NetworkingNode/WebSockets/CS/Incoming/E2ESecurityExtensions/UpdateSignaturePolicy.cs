@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -54,27 +53,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an UpdateSignaturePolicy websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                  OnUpdateSignaturePolicyWSRequest;
+        public event WSClientJSONRequestLogHandler?                      OnUpdateSignaturePolicyWSRequest;
 
         /// <summary>
         /// An event sent whenever an UpdateSignaturePolicy request was received.
         /// </summary>
-        public event CS.OnUpdateSignaturePolicyRequestDelegate?     OnUpdateSignaturePolicyRequest;
+        public event OCPP.NetworkingNode.CS.OnUpdateSignaturePolicyRequestDelegate?     OnUpdateSignaturePolicyRequest;
 
         /// <summary>
         /// An event sent whenever an UpdateSignaturePolicy request was received.
         /// </summary>
-        public event CS.OnUpdateSignaturePolicyDelegate?            OnUpdateSignaturePolicy;
+        public event OCPP.NetworkingNode.CS.OnUpdateSignaturePolicyDelegate?            OnUpdateSignaturePolicy;
 
         /// <summary>
         /// An event sent whenever a response to an UpdateSignaturePolicy request was sent.
         /// </summary>
-        public event CS.OnUpdateSignaturePolicyResponseDelegate?    OnUpdateSignaturePolicyResponse;
+        public event OCPP.NetworkingNode.CS.OnUpdateSignaturePolicyResponseDelegate?    OnUpdateSignaturePolicyResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UpdateSignaturePolicy request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                 OnUpdateSignaturePolicyWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?          OnUpdateSignaturePolicyWSResponse;
 
         #endregion
 

@@ -86,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public GetDiagnosticsRequest(ChargeBox_Id       ChargeBoxId,
+        public GetDiagnosticsRequest(NetworkingNode_Id  NetworkingNodeId,
                                      String             Location,
                                      DateTime?          StartTime           = null,
                                      DateTime?          StopTime            = null,
@@ -99,7 +99,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                      EventTracking_Id?  EventTrackingId     = null,
                                      CancellationToken  CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(NetworkingNodeId,
                    "GetDiagnostics",
                    RequestId,
                    RequestTimestamp,

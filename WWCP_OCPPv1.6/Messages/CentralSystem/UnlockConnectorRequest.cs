@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public UnlockConnectorRequest(ChargeBox_Id       ChargeBoxId,
+        public UnlockConnectorRequest(NetworkingNode_Id  NetworkingNodeId,
                                       Connector_Id       ConnectorId,
 
                                       Request_Id?        RequestId           = null,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                       EventTracking_Id?  EventTrackingId     = null,
                                       CancellationToken  CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(NetworkingNodeId,
                    "UnlockConnector",
                    RequestId,
                    RequestTimestamp,

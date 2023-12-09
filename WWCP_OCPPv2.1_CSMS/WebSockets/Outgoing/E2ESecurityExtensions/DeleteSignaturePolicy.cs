@@ -50,12 +50,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a DeleteSignaturePolicy request was sent.
         /// </summary>
-        public event OnDeleteSignaturePolicyRequestDelegate?     OnDeleteSignaturePolicyRequest;
+        public event OCPP.CSMS.OnDeleteSignaturePolicyRequestDelegate?     OnDeleteSignaturePolicyRequest;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteSignaturePolicy request was sent.
         /// </summary>
-        public event OnDeleteSignaturePolicyResponseDelegate?    OnDeleteSignaturePolicyResponse;
+        public event OCPP.CSMS.OnDeleteSignaturePolicyResponseDelegate?    OnDeleteSignaturePolicyResponse;
 
         #endregion
 

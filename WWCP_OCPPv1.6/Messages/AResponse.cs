@@ -1,320 +1,322 @@
-﻿/*
- * Copyright (c) 2014-2023 GraphDefined GmbH
- * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+﻿///*
+// * Copyright (c) 2014-2023 GraphDefined GmbH
+// * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *     http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// */
 
-#region Usings
+//#region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
+//using org.GraphDefined.Vanaheimr.Illias;
 
-#endregion
+//using cloud.charging.open.protocols.OCPP;
 
-namespace cloud.charging.open.protocols.OCPPv1_6
-{
+//#endregion
 
-    /// <summary>
-    /// An abstract generic response.
-    /// </summary>
-    public abstract class AResponse<TRequest, TResponse> : AResponse<TResponse>
+//namespace cloud.charging.open.protocols.OCPPv1_6
+//{
 
-        where TRequest  : class, IRequest
-        where TResponse : class, IResponse
+//    /// <summary>
+//    /// An abstract generic response.
+//    /// </summary>
+//    public abstract class AResponse<TRequest, TResponse> : AResponse<TResponse>
 
-    {
+//        where TRequest  : class, IRequest
+//        where TResponse : class, IResponse
 
-        #region Properties
+//    {
 
-        /// <summary>
-        /// The request leading to this response.
-        /// </summary>
-        public TRequest  Request    { get; }
+//        #region Properties
 
-        #endregion
+//        /// <summary>
+//        /// The request leading to this response.
+//        /// </summary>
+//        public TRequest  Request    { get; }
 
-        #region Constructor(s)
+//        #endregion
 
-        /// <summary>
-        /// Create a new abstract generic response.
-        /// </summary>
-        /// <param name="Request">The request leading to this result.</param>
-        /// <param name="Result">A generic result.</param>
-        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
-        public AResponse(TRequest   Request,
-                         Result     Result,
-                         DateTime?  ResponseTimestamp   = null)
+//        #region Constructor(s)
 
-            : this(Request,
-                   Result,
-                   ResponseTimestamp ?? Timestamp.Now,
-                   null)
+//        /// <summary>
+//        /// Create a new abstract generic response.
+//        /// </summary>
+//        /// <param name="Request">The request leading to this result.</param>
+//        /// <param name="Result">A generic result.</param>
+//        /// <param name="ResponseTimestamp">An optional response timestamp.</param>
+//        public AResponse(TRequest   Request,
+//                         Result     Result,
+//                         DateTime?  ResponseTimestamp   = null)
 
-        { }
+//            : this(Request,
+//                   Result,
+//                   ResponseTimestamp ?? Timestamp.Now,
+//                   null)
 
+//        { }
 
-        /// <summary>
-        /// Create a new abstract generic response.
-        /// </summary>
-        /// <param name="Request">The request leading to this result.</param>
-        /// <param name="Result">A generic result.</param>
-        /// <param name="ResponseTimestamp">The response timestamp.</param>
-        public AResponse(TRequest   Request,
-                         Result     Result,
-                         DateTime   ResponseTimestamp,
-                         TimeSpan?  Runtime   = null)
 
-            : base(Result,
-                   ResponseTimestamp,
-                   Runtime ?? ResponseTimestamp - Request.RequestTimestamp)
+//        /// <summary>
+//        /// Create a new abstract generic response.
+//        /// </summary>
+//        /// <param name="Request">The request leading to this result.</param>
+//        /// <param name="Result">A generic result.</param>
+//        /// <param name="ResponseTimestamp">The response timestamp.</param>
+//        public AResponse(TRequest   Request,
+//                         Result     Result,
+//                         DateTime   ResponseTimestamp,
+//                         TimeSpan?  Runtime   = null)
 
-        {
+//            : base(Result,
+//                   ResponseTimestamp,
+//                   Runtime ?? ResponseTimestamp - Request.RequestTimestamp)
 
-            this.Request = Request;
+//        {
 
-            unchecked
-            {
-                hashCode = this.Request.GetHashCode() * 3 ^
-                           base.        GetHashCode();
-            }
+//            this.Request = Request;
 
-        }
+//            unchecked
+//            {
+//                hashCode = this.Request.GetHashCode() * 3 ^
+//                           base.        GetHashCode();
+//            }
 
-        #endregion
+//        }
 
+//        #endregion
 
-        #region IEquatable<AResponse> Members
 
-        #region Equals(Object)
+//        #region IEquatable<AResponse> Members
 
-        /// <summary>
-        /// Compares two abstract generic responses for equality.
-        /// </summary>
-        /// <param name="Object">An abstract generic response to compare with.</param>
-        public override Boolean Equals(Object? Object)
+//        #region Equals(Object)
 
-            => Object is AResponse<TRequest, TResponse> aResponse &&
-                   Equals(aResponse);
+//        /// <summary>
+//        /// Compares two abstract generic responses for equality.
+//        /// </summary>
+//        /// <param name="Object">An abstract generic response to compare with.</param>
+//        public override Boolean Equals(Object? Object)
 
-        #endregion
+//            => Object is AResponse<TRequest, TResponse> aResponse &&
+//                   Equals(aResponse);
 
-        #region Equals(AResponse)
+//        #endregion
 
-        /// <summary>
-        /// Compares two abstract generic responses for equality.
-        /// </summary>
-        /// <param name="AResponse">An abstract generic response to compare with.</param>
-        public Boolean Equals(AResponse<TRequest, TResponse>? AResponse)
+//        #region Equals(AResponse)
 
-            => AResponse is not null &&
+//        /// <summary>
+//        /// Compares two abstract generic responses for equality.
+//        /// </summary>
+//        /// <param name="AResponse">An abstract generic response to compare with.</param>
+//        public Boolean Equals(AResponse<TRequest, TResponse>? AResponse)
 
-               Request.Equals(AResponse.Request) &&
-               Runtime.Equals(AResponse.Runtime) &&
+//            => AResponse is not null &&
 
-               base.   Equals(AResponse);
+//               Request.Equals(AResponse.Request) &&
+//               Runtime.Equals(AResponse.Runtime) &&
 
-        #endregion
+//               base.   Equals(AResponse);
 
-        #endregion
+//        #endregion
 
-        #region (override) GetHashCode()
+//        #endregion
 
-        private readonly Int32 hashCode;
+//        #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the hash code of this object.
-        /// </summary>
-        public override Int32 GetHashCode()
-            => hashCode;
+//        private readonly Int32 hashCode;
 
-        #endregion
+//        /// <summary>
+//        /// Return the hash code of this object.
+//        /// </summary>
+//        public override Int32 GetHashCode()
+//            => hashCode;
 
-    }
+//        #endregion
 
+//    }
 
-    /// <summary>
-    /// An abstract generic response.
-    /// </summary>
-    public abstract class AResponse<TResponse> : IResponse,
-                                                 IEquatable<TResponse>
 
-        where TResponse : class, IResponse
+//    /// <summary>
+//    /// An abstract generic response.
+//    /// </summary>
+//    public abstract class AResponse<TResponse> : IResponse,
+//                                                 IEquatable<TResponse>
 
-    {
+//        where TResponse : class, IResponse
 
-        #region Properties
+//    {
 
-        /// <summary>
-        /// The machine-readable result code.
-        /// </summary>
-        [Mandatory]
-        public Result    Result               { get; }
+//        #region Properties
 
-        /// <summary>
-        /// The timestamp of the response.
-        /// </summary>
-        [Mandatory]
-        public DateTime  ResponseTimestamp    { get; }
+//        /// <summary>
+//        /// The machine-readable result code.
+//        /// </summary>
+//        [Mandatory]
+//        public Result    Result               { get; }
 
-        /// <summary>
-        /// The runtime of the request.
-        /// </summary>
-        [Mandatory]
-        public TimeSpan  Runtime              { get; }
+//        /// <summary>
+//        /// The timestamp of the response.
+//        /// </summary>
+//        [Mandatory]
+//        public DateTime  ResponseTimestamp    { get; }
 
-        #endregion
+//        /// <summary>
+//        /// The runtime of the request.
+//        /// </summary>
+//        [Mandatory]
+//        public TimeSpan  Runtime              { get; }
 
-        #region Constructor(s)
+//        #endregion
 
-        /// <summary>
-        /// Create a new abstract generic response.
-        /// </summary>
-        /// <param name="Result">A generic result.</param>
-        /// <param name="ResponseTimestamp">The timestamp of the response.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public AResponse(Result    Result,
-                         DateTime  ResponseTimestamp,
-                         TimeSpan  Runtime)
-        {
+//        #region Constructor(s)
 
-            this.Result             = Result;
-            this.ResponseTimestamp  = ResponseTimestamp;
-            this.Runtime            = Runtime;
+//        /// <summary>
+//        /// Create a new abstract generic response.
+//        /// </summary>
+//        /// <param name="Result">A generic result.</param>
+//        /// <param name="ResponseTimestamp">The timestamp of the response.</param>
+//        /// <param name="Runtime">The runtime of the request.</param>
+//        public AResponse(Result    Result,
+//                         DateTime  ResponseTimestamp,
+//                         TimeSpan  Runtime)
+//        {
 
-            unchecked
-            {
+//            this.Result             = Result;
+//            this.ResponseTimestamp  = ResponseTimestamp;
+//            this.Runtime            = Runtime;
 
-                hashCode = this.Result.           GetHashCode() * 5 ^
-                           this.ResponseTimestamp.GetHashCode() * 3 ^
-                           this.Runtime.          GetHashCode();
+//            unchecked
+//            {
 
-            }
+//                hashCode = this.Result.           GetHashCode() * 5 ^
+//                           this.ResponseTimestamp.GetHashCode() * 3 ^
+//                           this.Runtime.          GetHashCode();
 
-        }
+//            }
 
-        #endregion
+//        }
 
+//        #endregion
 
-        #region Operator overloading
 
-        #region Operator == (AResponse1, AResponse2)
+//        #region Operator overloading
 
-        /// <summary>
-        /// Compares two responses for equality.
-        /// </summary>
-        /// <param name="AResponse1">A response.</param>
-        /// <param name="AResponse2">Another response.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (AResponse<TResponse>? AResponse1,
-                                           AResponse<TResponse>? AResponse2)
-        {
+//        #region Operator == (AResponse1, AResponse2)
 
-            // If both are null, or both are same instance, return true.
-            if (ReferenceEquals(AResponse1, AResponse2))
-                return true;
+//        /// <summary>
+//        /// Compares two responses for equality.
+//        /// </summary>
+//        /// <param name="AResponse1">A response.</param>
+//        /// <param name="AResponse2">Another response.</param>
+//        /// <returns>True if both match; False otherwise.</returns>
+//        public static Boolean operator == (AResponse<TResponse>? AResponse1,
+//                                           AResponse<TResponse>? AResponse2)
+//        {
 
-            // If one is null, but not both, return false.
-            if (AResponse1 is null || AResponse2 is null)
-                return false;
+//            // If both are null, or both are same instance, return true.
+//            if (ReferenceEquals(AResponse1, AResponse2))
+//                return true;
 
-            return AResponse1.Equals(AResponse2);
+//            // If one is null, but not both, return false.
+//            if (AResponse1 is null || AResponse2 is null)
+//                return false;
 
-        }
+//            return AResponse1.Equals(AResponse2);
 
-        #endregion
+//        }
 
-        #region Operator != (AResponse1, AResponse2)
+//        #endregion
 
-        /// <summary>
-        /// Compares two responses for inequality.
-        /// </summary>
-        /// <param name="AResponse1">A response.</param>
-        /// <param name="AResponse2">Another response.</param>
-        /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (AResponse<TResponse>? AResponse1,
-                                           AResponse<TResponse>? AResponse2)
+//        #region Operator != (AResponse1, AResponse2)
 
-            => !(AResponse1 == AResponse2);
+//        /// <summary>
+//        /// Compares two responses for inequality.
+//        /// </summary>
+//        /// <param name="AResponse1">A response.</param>
+//        /// <param name="AResponse2">Another response.</param>
+//        /// <returns>False if both match; True otherwise.</returns>
+//        public static Boolean operator != (AResponse<TResponse>? AResponse1,
+//                                           AResponse<TResponse>? AResponse2)
 
-        #endregion
+//            => !(AResponse1 == AResponse2);
 
-        #endregion
+//        #endregion
 
-        #region IEquatable<AResponse> Members
+//        #endregion
 
-        #region Equals(Object)
+//        #region IEquatable<AResponse> Members
 
-        /// <summary>
-        /// Compares two abstract generic responses for equality.
-        /// </summary>
-        /// <param name="Object">An abstract generic response to compare with.</param>
-        public override Boolean Equals(Object? Object)
+//        #region Equals(Object)
 
-            => Object is AResponse<TResponse> aResponse &&
-                   Equals(aResponse);
+//        /// <summary>
+//        /// Compares two abstract generic responses for equality.
+//        /// </summary>
+//        /// <param name="Object">An abstract generic response to compare with.</param>
+//        public override Boolean Equals(Object? Object)
 
-        #endregion
+//            => Object is AResponse<TResponse> aResponse &&
+//                   Equals(aResponse);
 
-        #region Equals(AResponse)
+//        #endregion
 
-        /// <summary>
-        /// Compares two abstract generic responses for equality.
-        /// </summary>
-        /// <param name="AResponse">An abstract generic response to compare with.</param>
-        public virtual Boolean Equals(AResponse<TResponse>? AResponse)
+//        #region Equals(AResponse)
 
-            => AResponse is not null &&
+//        /// <summary>
+//        /// Compares two abstract generic responses for equality.
+//        /// </summary>
+//        /// <param name="AResponse">An abstract generic response to compare with.</param>
+//        public virtual Boolean Equals(AResponse<TResponse>? AResponse)
 
-               Result.           Equals(AResponse.Result) &&
-               ResponseTimestamp.Equals(AResponse.ResponseTimestamp);
+//            => AResponse is not null &&
 
-        #endregion
+//               Result.           Equals(AResponse.Result) &&
+//               ResponseTimestamp.Equals(AResponse.ResponseTimestamp);
 
-        #region IEquatable<AResponse> Members
+//        #endregion
 
-        /// <summary>
-        /// Compares two abstract generic responses for equality.
-        /// </summary>
-        /// <param name="AResponse">An abstract generic response to compare with.</param>
-        public abstract Boolean Equals(TResponse? AResponse);
+//        #region IEquatable<AResponse> Members
 
-        #endregion
+//        /// <summary>
+//        /// Compares two abstract generic responses for equality.
+//        /// </summary>
+//        /// <param name="AResponse">An abstract generic response to compare with.</param>
+//        public abstract Boolean Equals(TResponse? AResponse);
 
-        #endregion
+//        #endregion
 
-        #region (override) GetHashCode()
+//        #endregion
 
-        private readonly Int32 hashCode;
+//        #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the hash code of this object.
-        /// </summary>
-        public override Int32 GetHashCode()
-            => hashCode;
+//        private readonly Int32 hashCode;
 
-        #endregion
+//        /// <summary>
+//        /// Return the hash code of this object.
+//        /// </summary>
+//        public override Int32 GetHashCode()
+//            => hashCode;
 
-        #region (override) ToString()
+//        #endregion
 
-        /// <summary>
-        /// Return a text representation of this object.
-        /// </summary>
-        public override String ToString()
+//        #region (override) ToString()
 
-            => Result.ToString();
+//        /// <summary>
+//        /// Return a text representation of this object.
+//        /// </summary>
+//        public override String ToString()
 
-        #endregion
+//            => Result.ToString();
 
-    }
+//        #endregion
 
-}
+//    }
+
+//}

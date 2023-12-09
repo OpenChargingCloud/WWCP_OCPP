@@ -20,6 +20,7 @@
 using org.GraphDefined.Vanaheimr.Hermod;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 
@@ -40,9 +41,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         IEnumerable<NetworkingNode_Id>  NetworkingNodeIds    { get; }
 
         #endregion
-
-
-        
 
 
         #region OnJSONMessage   (-Received/-ResponseSent/-ErrorResponseSent)

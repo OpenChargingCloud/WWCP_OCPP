@@ -79,5 +79,4 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     #endregion
 
-
 }

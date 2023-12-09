@@ -63,7 +63,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public SetChargingProfileRequest(ChargeBox_Id       ChargeBoxId,
+        public SetChargingProfileRequest(NetworkingNode_Id  NetworkingNodeId,
                                          Connector_Id       ConnectorId,
                                          ChargingProfile    ChargingProfile,
 
@@ -73,7 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                          EventTracking_Id?  EventTrackingId     = null,
                                          CancellationToken  CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(NetworkingNodeId,
                    "SetChargingProfile",
                    RequestId,
                    RequestTimestamp,

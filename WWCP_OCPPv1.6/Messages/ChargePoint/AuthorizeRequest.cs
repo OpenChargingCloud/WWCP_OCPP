@@ -51,27 +51,63 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new authorize request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="IdTag">The identifier that needs to be authorized.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public AuthorizeRequest(ChargeBox_Id       ChargeBoxId,
-                                IdToken            IdTag,
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public AuthorizeRequest(NetworkingNode_Id             NetworkingNodeId,
+                                IdToken                       IdTag,
 
-                                Request_Id?        RequestId           = null,
-                                DateTime?          RequestTimestamp    = null,
-                                TimeSpan?          RequestTimeout      = null,
-                                EventTracking_Id?  EventTrackingId     = null,
-                                CancellationToken  CancellationToken   = default)
+                                IEnumerable<KeyPair>?         SignKeys            = null,
+                                IEnumerable<SignInfo>?        SignInfos           = null,
+                                IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-            : base(ChargeBoxId,
-                   "Authorize",
+                                CustomData?                   CustomData          = null,
+
+                                Request_Id?                   RequestId           = null,
+                                DateTime?                     RequestTimestamp    = null,
+                                TimeSpan?                     RequestTimeout      = null,
+                                EventTracking_Id?             EventTrackingId     = null,
+                                NetworkPath?                  NetworkPath         = null,
+                                CancellationToken             CancellationToken   = default)
+
+                                //Request_Id?        RequestId           = null,
+                                //DateTime?          RequestTimestamp    = null,
+                                //TimeSpan?          RequestTimeout      = null,
+                                //EventTracking_Id?  EventTrackingId     = null,
+                                //CancellationToken  CancellationToken   = default)
+
+            : base(NetworkingNodeId,
+                   nameof(AuthorizeRequest)[..^7],
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
+
+                   //null,
+                   //null,
+                   //RequestId,
+                   //RequestTimestamp,
+                   //RequestTimeout,
+                   //EventTrackingId,
+                   //CancellationToken)
 
         {
 

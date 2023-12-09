@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -43,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomBinaryParserDelegate<SendFileRequest>?   CustomSendFileRequestParser         { get; set; }
+        public CustomBinaryParserDelegate<SendFileRequest>?        CustomSendFileRequestParser         { get; set; }
 
         public CustomJObjectSerializerDelegate<SendFileResponse>?  CustomSendFileResponseSerializer    { get; set; }
 
@@ -59,17 +58,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a SendFile request was received.
         /// </summary>
-        public event OnSendFileRequestDelegate?                     OnSendFileRequest;
+        public event OCPP.CS.OnSendFileRequestDelegate?             OnSendFileRequest;
 
         /// <summary>
         /// An event sent whenever a SendFile request was received.
         /// </summary>
-        public event OnSendFileDelegate?                            OnSendFile;
+        public event OCPP.CS.OnSendFileDelegate?                    OnSendFile;
 
         /// <summary>
         /// An event sent whenever a response to a SendFile request was sent.
         /// </summary>
-        public event OnSendFileResponseDelegate?                    OnSendFileResponse;
+        public event OCPP.CS.OnSendFileResponseDelegate?            OnSendFileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a SendFile request was sent.

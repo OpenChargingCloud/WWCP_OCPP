@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using org.GraphDefined.Vanaheimr.Hermod.HTTP.Notifications;
 
-using cloud.charging.open.protocols.OCPPv2_1.CS;
+using cloud.charging.open.protocols.OCPP.CS;
 
 #endregion
 
@@ -35,10 +35,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
     public delegate Boolean ChargingStationProviderDelegate(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation);
 
-    public delegate JObject ChargingStationToJSONDelegate(ChargingStation     ChargingStation,
-                                                    Boolean       Embedded                 = false,
-                                                    InfoStatus    ExpandTags               = InfoStatus.ShowIdOnly,
-                                                    Boolean       IncludeCryptoHash        = true);
+    public delegate JObject ChargingStationToJSONDelegate(ChargingStation  ChargingStation,
+                                                          Boolean          Embedded            = false,
+                                                          InfoStatus       ExpandTags          = InfoStatus.ShowIdOnly,
+                                                          Boolean          IncludeCryptoHash   = true);
 
     /// <summary>
     /// Extension methods for chargeBoxs.
@@ -92,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// A charging station.
     /// </summary>
     public class ChargingStation : AEntity<ChargingStation_Id,
-                                     ChargingStation>
+                                           ChargingStation>
     {
 
         /// <summary>

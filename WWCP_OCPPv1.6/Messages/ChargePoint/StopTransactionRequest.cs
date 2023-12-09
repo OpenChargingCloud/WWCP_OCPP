@@ -103,7 +103,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                       EventTracking_Id?         EventTrackingId     = null,
                                       CancellationToken         CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(NetworkingNodeId,
                    "StopTransaction",
                    RequestId,
                    RequestTimestamp,

@@ -39,9 +39,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<OCPPv2_1.CS.DataTransferRequest>?  CustomDataTransferRequestSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.DataTransferRequest>?  CustomDataTransferRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<OCPPv2_1.CSMS.DataTransferResponse>?   CustomDataTransferResponseParser       { get; set; }
+        public CustomJObjectParserDelegate<OCPP.CSMS.DataTransferResponse>?   CustomDataTransferResponseParser       { get; set; }
 
         #endregion
 
@@ -50,22 +50,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the CSMS.
         /// </summary>
-        public event CS.OnDataTransferRequestDelegate?     OnDataTransferRequest;
+        public event OCPP.CS.OnDataTransferRequestDelegate?     OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?           OnDataTransferWSRequest;
+        public event ClientRequestLogHandler?                   OnDataTransferWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        public event ClientResponseLogHandler?          OnDataTransferWSResponse;
+        public event ClientResponseLogHandler?                  OnDataTransferWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        public event CS.OnDataTransferResponseDelegate?    OnDataTransferResponse;
+        public event OCPP.CS.OnDataTransferResponseDelegate?    OnDataTransferResponse;
 
         #endregion
 
@@ -76,9 +76,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// Send vendor-specific data.
         /// </summary>
         /// <param name="Request">A DataTransfer request.</param>
-        public async Task<OCPPv2_1.CSMS.DataTransferResponse>
+        public async Task<OCPP.CSMS.DataTransferResponse>
 
-            TransferData(OCPPv2_1.CS.DataTransferRequest  Request)
+            TransferData(OCPP.CS.DataTransferRequest  Request)
 
         {
 
@@ -102,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             #endregion
 
 
-            OCPPv2_1.CSMS.DataTransferResponse? response = null;
+            OCPP.CSMS.DataTransferResponse? response = null;
 
             try
             {
@@ -128,31 +128,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                         sendRequestState.JSONResponse is not null)
                     {
 
-                        if (OCPPv2_1.CSMS.DataTransferResponse.TryParse(Request,
-                                                                        sendRequestState.JSONResponse.Payload,
-                                                                        out var dataTransferResponse,
-                                                                        out var errorResponse,
-                                                                        CustomDataTransferResponseParser) &&
+                        if (OCPP.CSMS.DataTransferResponse.TryParse(Request,
+                                                                    sendRequestState.JSONResponse.Payload,
+                                                                    out var dataTransferResponse,
+                                                                    out var errorResponse,
+                                                                    CustomDataTransferResponseParser) &&
                             dataTransferResponse is not null)
                         {
                             response = dataTransferResponse;
                         }
 
-                        response ??= new OCPPv2_1.CSMS.DataTransferResponse(
+                        response ??= new OCPP.CSMS.DataTransferResponse(
                                          Request,
                                          Result.Format(errorResponse)
                                      );
 
                     }
 
-                    response ??= new OCPPv2_1.CSMS.DataTransferResponse(
+                    response ??= new OCPP.CSMS.DataTransferResponse(
                                      Request,
                                      Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }
 
-                response ??= new OCPPv2_1.CSMS.DataTransferResponse(
+                response ??= new OCPP.CSMS.DataTransferResponse(
                                  Request,
                                  Result.GenericError(requestMessage.ErrorMessage)
                              );
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
             catch (Exception e)
             {
 
-                response = new OCPPv2_1.CSMS.DataTransferResponse(
+                response = new OCPP.CSMS.DataTransferResponse(
                                Request,
                                Result.FromException(e)
                            );

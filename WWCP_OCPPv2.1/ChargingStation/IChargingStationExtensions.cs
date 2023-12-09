@@ -648,29 +648,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public static Task<CSMS.DataTransferResponse>
+        public static Task<OCPP.CSMS.DataTransferResponse>
 
-            TransferData(this IChargingStation    ChargingStation,
+            TransferData(this IChargingStation         ChargingStation,
 
-                         Vendor_Id                VendorId,
-                         Message_Id?              MessageId           = null,
-                         JToken?                  Data                = null,
+                         Vendor_Id                     VendorId,
+                         Message_Id?                   MessageId           = null,
+                         JToken?                       Data                = null,
 
-                         IEnumerable<KeyPair>?    SignKeys            = null,
-                         IEnumerable<SignInfo>?   SignInfos           = null,
+                         IEnumerable<KeyPair>?         SignKeys            = null,
+                         IEnumerable<SignInfo>?        SignInfos           = null,
                          IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                         CustomData?              CustomData          = null,
+                         CustomData?                   CustomData          = null,
 
-                         Request_Id?              RequestId           = null,
-                         DateTime?                RequestTimestamp    = null,
-                         TimeSpan?                RequestTimeout      = null,
-                         EventTracking_Id?        EventTrackingId     = null,
-                         CancellationToken        CancellationToken   = default)
+                         Request_Id?                   RequestId           = null,
+                         DateTime?                     RequestTimestamp    = null,
+                         TimeSpan?                     RequestTimeout      = null,
+                         EventTracking_Id?             EventTrackingId     = null,
+                         CancellationToken             CancellationToken   = default)
 
 
                 => ChargingStation.TransferData(
-                       new DataTransferRequest(
+                       new OCPP.CS.DataTransferRequest(
                            ChargingStation.Id,
                            VendorId,
                            MessageId,
@@ -1839,22 +1839,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public static Task<OCPP.CSMS.BinaryDataTransferResponse>
 
-            TransferBinaryData(this IChargingStation    ChargingStation,
+            TransferBinaryData(this IChargingStation         ChargingStation,
 
-                               Vendor_Id                VendorId,
-                               Message_Id?              MessageId           = null,
-                               Byte[]?                  Data                = null,
-                               BinaryFormats?           Format              = null,
+                               Vendor_Id                     VendorId,
+                               Message_Id?                   MessageId           = null,
+                               Byte[]?                       Data                = null,
+                               BinaryFormats?                Format              = null,
 
-                               IEnumerable<KeyPair>?    SignKeys            = null,
-                               IEnumerable<SignInfo>?   SignInfos           = null,
+                               IEnumerable<KeyPair>?         SignKeys            = null,
+                               IEnumerable<SignInfo>?        SignInfos           = null,
                                IEnumerable<OCPP.Signature>?  Signatures          = null,
 
-                               Request_Id?              RequestId           = null,
-                               DateTime?                RequestTimestamp    = null,
-                               TimeSpan?                RequestTimeout      = null,
-                               EventTracking_Id?        EventTrackingId     = null,
-                               CancellationToken        CancellationToken   = default)
+                               Request_Id?                   RequestId           = null,
+                               DateTime?                     RequestTimestamp    = null,
+                               TimeSpan?                     RequestTimeout      = null,
+                               EventTracking_Id?             EventTrackingId     = null,
+                               CancellationToken             CancellationToken   = default)
 
 
                 => ChargingStation.TransferBinaryData(

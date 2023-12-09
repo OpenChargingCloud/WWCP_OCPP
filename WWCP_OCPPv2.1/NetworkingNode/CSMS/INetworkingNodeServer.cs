@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using cloud.charging.open.protocols.OCPP.NetworkingNode.CSMS;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
 {
 
@@ -110,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        event OnIncomingDataTransferDelegate           OnIncomingDataTransfer;
+        event OCPP.NetworkingNode.CSMS.OnIncomingDataTransferDelegate           OnIncomingDataTransfer;
 
         #endregion
 

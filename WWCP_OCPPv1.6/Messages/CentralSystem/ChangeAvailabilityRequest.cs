@@ -66,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ChangeAvailabilityRequest(ChargeBox_Id       ChargeBoxId,
+        public ChangeAvailabilityRequest(NetworkingNode_Id  NetworkingNodeId,
                                          Connector_Id       ConnectorId,
                                          Availabilities     Availability,
 
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                          EventTracking_Id?  EventTrackingId     = null,
                                          CancellationToken  CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(NetworkingNodeId,
                    "ChangeAvailability",
                    RequestId,
                    RequestTimestamp,

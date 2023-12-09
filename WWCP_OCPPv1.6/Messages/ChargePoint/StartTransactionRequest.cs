@@ -81,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public StartTransactionRequest(ChargeBox_Id       ChargeBoxId,
+        public StartTransactionRequest(NetworkingNode_Id  NetworkingNodeId,
                                        Connector_Id       ConnectorId,
                                        IdToken            IdTag,
                                        DateTime           StartTimestamp,
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        EventTracking_Id?  EventTrackingId     = null,
                                        CancellationToken  CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(NetworkingNodeId,
                    "StartTransaction",
                    RequestId,
                    RequestTimestamp,

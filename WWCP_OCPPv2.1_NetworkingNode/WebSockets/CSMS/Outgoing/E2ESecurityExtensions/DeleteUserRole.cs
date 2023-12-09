@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
@@ -50,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a DeleteUserRole request was sent.
         /// </summary>
-        public event CSMS.OnDeleteUserRoleRequestDelegate?     OnDeleteUserRoleRequest;
+        public event OCPP.CSMS.OnDeleteUserRoleRequestDelegate?     OnDeleteUserRoleRequest;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteUserRole request was sent.
         /// </summary>
-        public event CSMS.OnDeleteUserRoleResponseDelegate?    OnDeleteUserRoleResponse;
+        public event OCPP.CSMS.OnDeleteUserRoleResponseDelegate?    OnDeleteUserRoleResponse;
 
         #endregion
 

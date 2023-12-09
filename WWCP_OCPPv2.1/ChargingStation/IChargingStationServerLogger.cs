@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using cloud.charging.open.protocols.OCPP.CS;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 

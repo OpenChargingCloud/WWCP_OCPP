@@ -53,27 +53,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an AddSignaturePolicy websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?               OnAddSignaturePolicyWSRequest;
+        public event WSClientJSONRequestLogHandler?                   OnAddSignaturePolicyWSRequest;
 
         /// <summary>
         /// An event sent whenever an AddSignaturePolicy request was received.
         /// </summary>
-        public event CS.OnAddSignaturePolicyRequestDelegate?       OnAddSignaturePolicyRequest;
+        public event OCPP.NetworkingNode.CS.OnAddSignaturePolicyRequestDelegate?     OnAddSignaturePolicyRequest;
 
         /// <summary>
         /// An event sent whenever an AddSignaturePolicy request was received.
         /// </summary>
-        public event CS.OnAddSignaturePolicyDelegate?              OnAddSignaturePolicy;
+        public event OCPP.NetworkingNode.CS.OnAddSignaturePolicyDelegate?            OnAddSignaturePolicy;
 
         /// <summary>
         /// An event sent whenever a response to an AddSignaturePolicy request was sent.
         /// </summary>
-        public event CS.OnAddSignaturePolicyResponseDelegate?      OnAddSignaturePolicyResponse;
+        public event OCPP.NetworkingNode.CS.OnAddSignaturePolicyResponseDelegate?    OnAddSignaturePolicyResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an AddSignaturePolicy request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?    OnAddSignaturePolicyWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?       OnAddSignaturePolicyWSResponse;
 
         #endregion
 

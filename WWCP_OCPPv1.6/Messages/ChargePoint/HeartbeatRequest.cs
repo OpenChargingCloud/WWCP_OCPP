@@ -46,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        public HeartbeatRequest(ChargeBox_Id       ChargeBoxId,
+        public HeartbeatRequest(NetworkingNode_Id  NetworkingNodeId,
 
                                 Request_Id?        RequestId           = null,
                                 DateTime?          RequestTimestamp    = null,
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                 EventTracking_Id?  EventTrackingId     = null,
                                 CancellationToken  CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(NetworkingNodeId,
                    "Heartbeat",
                    RequestId,
                    RequestTimestamp,

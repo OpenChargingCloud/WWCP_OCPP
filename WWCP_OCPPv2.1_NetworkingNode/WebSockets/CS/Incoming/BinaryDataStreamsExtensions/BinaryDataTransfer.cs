@@ -51,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer websocket request was received.
         /// </summary>
-        public event WSClientBinaryRequestLogHandler?                    OnIncomingBinaryDataTransferWSRequest;
+        public event WSClientBinaryRequestLogHandler?                         OnIncomingBinaryDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event CS.OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
+        public event OCPP.NetworkingNode.CS.OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event CS.OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
+        public event OCPP.NetworkingNode.CS.OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event CS.OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
+        public event OCPP.NetworkingNode.CS.OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event WSClientBinaryRequestBinaryResponseLogHandler?      OnIncomingBinaryDataTransferWSResponse;
+        public event WSClientBinaryRequestBinaryResponseLogHandler?           OnIncomingBinaryDataTransferWSResponse;
 
         #endregion
 
@@ -152,11 +152,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 
                     var results = OnIncomingBinaryDataTransfer?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as CS.OnIncomingBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                               this,
-                                                                                                                               WebSocketConnection,
-                                                                                                                               request,
-                                                                                                                               CancellationToken)).
+                                      SafeSelect(subscriber => (subscriber as OCPP.CS.OnIncomingBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                    this,
+                                                                                                                                    WebSocketConnection,
+                                                                                                                                    request,
+                                                                                                                                    CancellationToken)).
                                       ToArray();
 
                     if (results?.Length > 0)

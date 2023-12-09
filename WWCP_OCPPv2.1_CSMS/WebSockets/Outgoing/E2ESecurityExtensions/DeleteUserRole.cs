@@ -50,12 +50,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a DeleteUserRole request was sent.
         /// </summary>
-        public event OnDeleteUserRoleRequestDelegate?     OnDeleteUserRoleRequest;
+        public event OCPP.CSMS.OnDeleteUserRoleRequestDelegate?     OnDeleteUserRoleRequest;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteUserRole request was sent.
         /// </summary>
-        public event OnDeleteUserRoleResponseDelegate?    OnDeleteUserRoleResponse;
+        public event OCPP.CSMS.OnDeleteUserRoleResponseDelegate?    OnDeleteUserRoleResponse;
 
         #endregion
 

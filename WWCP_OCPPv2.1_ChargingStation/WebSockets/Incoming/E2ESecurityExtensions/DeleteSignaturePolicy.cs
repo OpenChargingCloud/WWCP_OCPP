@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -54,27 +53,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a DeleteSignaturePolicy websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                  OnDeleteSignaturePolicyWSRequest;
+        public event WSClientJSONRequestLogHandler?                      OnDeleteSignaturePolicyWSRequest;
 
         /// <summary>
         /// An event sent whenever a DeleteSignaturePolicy request was received.
         /// </summary>
-        public event OnDeleteSignaturePolicyRequestDelegate?     OnDeleteSignaturePolicyRequest;
+        public event OCPP.CS.OnDeleteSignaturePolicyRequestDelegate?     OnDeleteSignaturePolicyRequest;
 
         /// <summary>
         /// An event sent whenever a DeleteSignaturePolicy request was received.
         /// </summary>
-        public event OnDeleteSignaturePolicyDelegate?            OnDeleteSignaturePolicy;
+        public event OCPP.CS.OnDeleteSignaturePolicyDelegate?            OnDeleteSignaturePolicy;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteSignaturePolicy request was sent.
         /// </summary>
-        public event OnDeleteSignaturePolicyResponseDelegate?    OnDeleteSignaturePolicyResponse;
+        public event OCPP.CS.OnDeleteSignaturePolicyResponseDelegate?    OnDeleteSignaturePolicyResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a DeleteSignaturePolicy request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                 OnDeleteSignaturePolicyWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?          OnDeleteSignaturePolicyWSResponse;
 
         #endregion
 

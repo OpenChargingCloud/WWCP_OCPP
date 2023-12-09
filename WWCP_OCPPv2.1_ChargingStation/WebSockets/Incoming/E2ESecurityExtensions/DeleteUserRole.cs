@@ -54,27 +54,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a DeleteUserRole websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?           OnDeleteUserRoleWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnDeleteUserRoleWSRequest;
 
         /// <summary>
         /// An event sent whenever a DeleteUserRole request was received.
         /// </summary>
-        public event OnDeleteUserRoleRequestDelegate?     OnDeleteUserRoleRequest;
+        public event OCPP.CS.OnDeleteUserRoleRequestDelegate?      OnDeleteUserRoleRequest;
 
         /// <summary>
         /// An event sent whenever a DeleteUserRole request was received.
         /// </summary>
-        public event OnDeleteUserRoleDelegate?            OnDeleteUserRole;
+        public event OCPP.CS.OnDeleteUserRoleDelegate?             OnDeleteUserRole;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteUserRole request was sent.
         /// </summary>
-        public event OnDeleteUserRoleResponseDelegate?    OnDeleteUserRoleResponse;
+        public event OCPP.CS.OnDeleteUserRoleResponseDelegate?     OnDeleteUserRoleResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a DeleteUserRole request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?          OnDeleteUserRoleWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnDeleteUserRoleWSResponse;
 
         #endregion
 

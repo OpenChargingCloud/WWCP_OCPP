@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -54,27 +53,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an UpdateUserRole websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?           OnUpdateUserRoleWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnUpdateUserRoleWSRequest;
 
         /// <summary>
         /// An event sent whenever an UpdateUserRole request was received.
         /// </summary>
-        public event OnUpdateUserRoleRequestDelegate?     OnUpdateUserRoleRequest;
+        public event OCPP.CS.OnUpdateUserRoleRequestDelegate?      OnUpdateUserRoleRequest;
 
         /// <summary>
         /// An event sent whenever an UpdateUserRole request was received.
         /// </summary>
-        public event OnUpdateUserRoleDelegate?            OnUpdateUserRole;
+        public event OCPP.CS.OnUpdateUserRoleDelegate?             OnUpdateUserRole;
 
         /// <summary>
         /// An event sent whenever a response to an UpdateUserRole request was sent.
         /// </summary>
-        public event OnUpdateUserRoleResponseDelegate?    OnUpdateUserRoleResponse;
+        public event OCPP.CS.OnUpdateUserRoleResponseDelegate?     OnUpdateUserRoleResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UpdateUserRole request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?          OnUpdateUserRoleWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnUpdateUserRoleWSResponse;
 
         #endregion
 

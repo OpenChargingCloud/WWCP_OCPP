@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
@@ -41,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<DeleteFileRequest>?  CustomDeleteFileRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<DeleteFileResponse>?  CustomDeleteFileResponseParser       { get; set; }
+        public CustomJObjectParserDelegate<DeleteFileResponse>?     CustomDeleteFileResponseParser       { get; set; }
 
         #endregion
 
@@ -50,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a DeleteFile request was sent.
         /// </summary>
-        public event OnDeleteFileRequestDelegate?     OnDeleteFileRequest;
+        public event OCPP.CSMS.OnDeleteFileRequestDelegate?     OnDeleteFileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteFile request was sent.
         /// </summary>
-        public event OnDeleteFileResponseDelegate?    OnDeleteFileResponse;
+        public event OCPP.CSMS.OnDeleteFileResponseDelegate?    OnDeleteFileResponse;
 
         #endregion
 
@@ -108,10 +106,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 {
 
                     if (DeleteFileResponse.TryParse(Request,
-                                                       sendRequestState.JSONResponse.Payload,
-                                                       out var deleteFileResponse,
-                                                       out var errorResponse,
-                                                       CustomDeleteFileResponseParser) &&
+                                                    sendRequestState.JSONResponse.Payload,
+                                                    out var deleteFileResponse,
+                                                    out var errorResponse,
+                                                    CustomDeleteFileResponseParser) &&
                         deleteFileResponse is not null)
                     {
                         response = deleteFileResponse;

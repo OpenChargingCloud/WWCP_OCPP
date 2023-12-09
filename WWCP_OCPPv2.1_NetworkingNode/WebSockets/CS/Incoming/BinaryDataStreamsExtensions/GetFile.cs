@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -62,17 +61,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a GetFile request was received.
         /// </summary>
-        public event CS.OnGetFileRequestDelegate?                      OnGetFileRequest;
+        public event OCPP.NetworkingNode.CS.OnGetFileRequestDelegate?              OnGetFileRequest;
 
         /// <summary>
         /// An event sent whenever a GetFile request was received.
         /// </summary>
-        public event CS.OnGetFileDelegate?                             OnGetFile;
+        public event OCPP.NetworkingNode.CS.OnGetFileDelegate?                     OnGetFile;
 
         /// <summary>
         /// An event sent whenever a response to a GetFile request was sent.
         /// </summary>
-        public event CS.OnGetFileResponseDelegate?                     OnGetFileResponse;
+        public event OCPP.NetworkingNode.CS.OnGetFileResponseDelegate?             OnGetFileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetFile request was sent.

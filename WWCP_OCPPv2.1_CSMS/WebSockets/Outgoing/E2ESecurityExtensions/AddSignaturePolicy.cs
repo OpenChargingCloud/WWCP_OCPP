@@ -50,12 +50,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a AddSignaturePolicy request was sent.
         /// </summary>
-        public event OnAddSignaturePolicyRequestDelegate?     OnAddSignaturePolicyRequest;
+        public event OCPP.CSMS.OnAddSignaturePolicyRequestDelegate?     OnAddSignaturePolicyRequest;
 
         /// <summary>
         /// An event sent whenever a response to a AddSignaturePolicy request was sent.
         /// </summary>
-        public event OnAddSignaturePolicyResponseDelegate?    OnAddSignaturePolicyResponse;
+        public event OCPP.CSMS.OnAddSignaturePolicyResponseDelegate?    OnAddSignaturePolicyResponse;
 
         #endregion
 

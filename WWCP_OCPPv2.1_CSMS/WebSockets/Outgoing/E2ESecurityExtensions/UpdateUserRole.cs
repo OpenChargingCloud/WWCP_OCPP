@@ -50,12 +50,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a UpdateUserRole request was sent.
         /// </summary>
-        public event OnUpdateUserRoleRequestDelegate?     OnUpdateUserRoleRequest;
+        public event OCPP.CSMS.OnUpdateUserRoleRequestDelegate?     OnUpdateUserRoleRequest;
 
         /// <summary>
         /// An event sent whenever a response to a UpdateUserRole request was sent.
         /// </summary>
-        public event OnUpdateUserRoleResponseDelegate?    OnUpdateUserRoleResponse;
+        public event OCPP.CSMS.OnUpdateUserRoleResponseDelegate?    OnUpdateUserRoleResponse;
 
         #endregion
 

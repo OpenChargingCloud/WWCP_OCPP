@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimeout">The timeout of this request.</param>
         /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public ResetRequest(ChargeBox_Id       ChargeBoxId,
+        public ResetRequest(NetworkingNode_Id  NetworkingNodeId,
                             ResetTypes         ResetType,
 
                             Request_Id?        RequestId           = null,
@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                             CancellationToken  CancellationToken   = default)
 
 
-            : base(ChargeBoxId,
+            : base(NetworkingNodeId,
                    "Reset",
                    RequestId,
                    RequestTimestamp,

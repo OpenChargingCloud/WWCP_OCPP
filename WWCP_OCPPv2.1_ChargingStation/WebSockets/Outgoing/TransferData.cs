@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -40,9 +39,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<DataTransferRequest>?    CustomDataTransferRequestSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.DataTransferRequest>?  CustomDataTransferRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<CSMS.DataTransferResponse>?  CustomDataTransferResponseParser       { get; set; }
+        public CustomJObjectParserDelegate<OCPP.CSMS.DataTransferResponse>?   CustomDataTransferResponseParser       { get; set; }
 
         #endregion
 
@@ -51,22 +50,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the CSMS.
         /// </summary>
-        public event OnDataTransferRequestDelegate?     OnDataTransferRequest;
+        public event OCPP.CS.OnDataTransferRequestDelegate?     OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the CSMS.
         /// </summary>
-        public event ClientRequestLogHandler?           OnDataTransferWSRequest;
+        public event ClientRequestLogHandler?                   OnDataTransferWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        public event ClientResponseLogHandler?          OnDataTransferWSResponse;
+        public event ClientResponseLogHandler?                  OnDataTransferWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        public event OnDataTransferResponseDelegate?    OnDataTransferResponse;
+        public event OCPP.CS.OnDataTransferResponseDelegate?    OnDataTransferResponse;
 
         #endregion
 
@@ -77,9 +76,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send vendor-specific data.
         /// </summary>
         /// <param name="Request">A DataTransfer request.</param>
-        public async Task<CSMS.DataTransferResponse>
+        public async Task<OCPP.CSMS.DataTransferResponse>
 
-            TransferData(DataTransferRequest  Request)
+            TransferData(OCPP.CS.DataTransferRequest  Request)
 
         {
 
@@ -103,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             #endregion
 
 
-            CSMS.DataTransferResponse? response = null;
+            OCPP.CSMS.DataTransferResponse? response = null;
 
             try
             {
@@ -129,31 +128,31 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                         sendRequestState.JSONResponse is not null)
                     {
 
-                        if (CSMS.DataTransferResponse.TryParse(Request,
-                                                               sendRequestState.JSONResponse.Payload,
-                                                               out var dataTransferResponse,
-                                                               out var errorResponse,
-                                                               CustomDataTransferResponseParser) &&
+                        if (OCPP.CSMS.DataTransferResponse.TryParse(Request,
+                                                                    sendRequestState.JSONResponse.Payload,
+                                                                    out var dataTransferResponse,
+                                                                    out var errorResponse,
+                                                                    CustomDataTransferResponseParser) &&
                             dataTransferResponse is not null)
                         {
                             response = dataTransferResponse;
                         }
 
-                        response ??= new CSMS.DataTransferResponse(
+                        response ??= new OCPP.CSMS.DataTransferResponse(
                                          Request,
                                          Result.Format(errorResponse)
                                      );
 
                     }
 
-                    response ??= new CSMS.DataTransferResponse(
+                    response ??= new OCPP.CSMS.DataTransferResponse(
                                      Request,
                                      Result.FromSendRequestState(sendRequestState)
                                  );
 
                 }
 
-                response ??= new CSMS.DataTransferResponse(
+                response ??= new OCPP.CSMS.DataTransferResponse(
                                  Request,
                                  Result.GenericError(requestMessage.ErrorMessage)
                              );
@@ -162,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             catch (Exception e)
             {
 
-                response = new CSMS.DataTransferResponse(
+                response = new OCPP.CSMS.DataTransferResponse(
                                Request,
                                Result.FromException(e)
                            );

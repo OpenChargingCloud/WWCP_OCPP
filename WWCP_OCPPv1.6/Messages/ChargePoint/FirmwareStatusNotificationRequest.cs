@@ -55,7 +55,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public FirmwareStatusNotificationRequest(ChargeBox_Id       ChargeBoxId,
+        public FirmwareStatusNotificationRequest(NetworkingNode_Id  NetworkingNodeId,
                                                  FirmwareStatus     Status,
 
                                                  Request_Id?        RequestId           = null,
@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                  EventTracking_Id?  EventTrackingId     = null,
                                                  CancellationToken  CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(NetworkingNodeId,
                    "FirmwareStatusNotification",
                    RequestId,
                    RequestTimestamp,

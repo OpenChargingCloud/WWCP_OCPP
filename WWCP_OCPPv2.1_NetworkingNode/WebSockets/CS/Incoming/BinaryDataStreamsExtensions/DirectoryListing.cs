@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -56,27 +55,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a ListDirectory websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?               OnListDirectoryWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnListDirectoryWSRequest;
 
         /// <summary>
         /// An event sent whenever a ListDirectory request was received.
         /// </summary>
-        public event CS.OnListDirectoryRequestDelegate?              OnListDirectoryRequest;
+        public event OCPP.NetworkingNode.CS.OnListDirectoryRequestDelegate?       OnListDirectoryRequest;
 
         /// <summary>
         /// An event sent whenever a ListDirectory request was received.
         /// </summary>
-        public event CS.OnListDirectoryDelegate?                     OnListDirectory;
+        public event OCPP.NetworkingNode.CS.OnListDirectoryDelegate?              OnListDirectory;
 
         /// <summary>
         /// An event sent whenever a response to a ListDirectory request was sent.
         /// </summary>
-        public event CS.OnListDirectoryResponseDelegate?             OnListDirectoryResponse;
+        public event OCPP.NetworkingNode.CS.OnListDirectoryResponseDelegate?      OnListDirectoryResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a ListDirectory request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?   OnListDirectoryWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnListDirectoryWSResponse;
 
         #endregion
 

@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -57,27 +56,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a DeleteFile websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?               OnDeleteFileWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnDeleteFileWSRequest;
 
         /// <summary>
         /// An event sent whenever a DeleteFile request was received.
         /// </summary>
-        public event CS.OnDeleteFileRequestDelegate?                 OnDeleteFileRequest;
+        public event OCPP.NetworkingNode.CS.OnDeleteFileRequestDelegate?          OnDeleteFileRequest;
 
         /// <summary>
         /// An event sent whenever a DeleteFile request was received.
         /// </summary>
-        public event CS.OnDeleteFileDelegate?                        OnDeleteFile;
+        public event OCPP.NetworkingNode.CS.OnDeleteFileDelegate?                 OnDeleteFile;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteFile request was sent.
         /// </summary>
-        public event CS.OnDeleteFileResponseDelegate?                OnDeleteFileResponse;
+        public event OCPP.NetworkingNode.CS.OnDeleteFileResponseDelegate?         OnDeleteFileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a DeleteFile request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?   OnDeleteFileWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnDeleteFileWSResponse;
 
         #endregion
 
@@ -184,10 +183,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
                     {
 
                         OnDeleteFileResponse?.Invoke(Timestamp.Now,
-                                                  this,
-                                                  request,
-                                                  response,
-                                                  response.Runtime);
+                                                     this,
+                                                     request,
+                                                     response,
+                                                     response.Runtime);
 
                     }
                     catch (Exception e)

@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 
@@ -39,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomBinarySerializerDelegate<OCPP.CSMS.BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestSerializer    { get; set; }
 
-        public CustomBinaryParserDelegate<OCPP.CS.BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseParser       { get; set; }
+        public CustomBinaryParserDelegate<OCPP.CS.BinaryDataTransferResponse>?       CustomBinaryDataTransferResponseParser       { get; set; }
 
         #endregion
 
@@ -48,12 +46,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
+        public event OCPP.CSMS.OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
+        public event OCPP.CSMS.OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
 
         #endregion
 
@@ -105,13 +103,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 {
 
                     if (OCPP.CS.BinaryDataTransferResponse.TryParse(Request,
-                                                               sendRequestState.BinaryResponse.Payload,
-                                                               out var dataTransferResponse,
-                                                               out var errorResponse,
-                                                               CustomBinaryDataTransferResponseParser) &&
-                        dataTransferResponse is not null)
+                                                                    sendRequestState.BinaryResponse.Payload,
+                                                                    out var binaryDataTransferResponse,
+                                                                    out var errorResponse,
+                                                                    CustomBinaryDataTransferResponseParser) &&
+                        binaryDataTransferResponse is not null)
                     {
-                        response = dataTransferResponse;
+                        response = binaryDataTransferResponse;
                     }
 
                     response ??= new OCPP.CS.BinaryDataTransferResponse(

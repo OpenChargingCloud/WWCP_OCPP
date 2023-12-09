@@ -56,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public RemoteStopTransactionRequest(ChargeBox_Id       ChargeBoxId,
+        public RemoteStopTransactionRequest(NetworkingNode_Id  NetworkingNodeId,
                                             Transaction_Id     TransactionId,
 
                                             Request_Id?        RequestId           = null,
@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             EventTracking_Id?  EventTrackingId     = null,
                                             CancellationToken  CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(NetworkingNodeId,
                    "RemoteStopTransaction",
                    RequestId,
                    RequestTimestamp,

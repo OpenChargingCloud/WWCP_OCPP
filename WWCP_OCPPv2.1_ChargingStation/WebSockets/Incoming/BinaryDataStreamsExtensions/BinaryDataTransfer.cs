@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -41,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomBinaryParserDelegate<OCPP.CSMS.BinaryDataTransferRequest>?  CustomBinaryDataTransferRequestParser         { get; set; }
+        public CustomBinaryParserDelegate<OCPP.CSMS.BinaryDataTransferRequest>?     CustomBinaryDataTransferRequestParser         { get; set; }
 
         public CustomBinarySerializerDelegate<OCPP.CS.BinaryDataTransferResponse>?  CustomBinaryDataTransferResponseSerializer    { get; set; }
 
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer websocket request was received.
         /// </summary>
-        public event WSClientBinaryRequestLogHandler?                 OnIncomingBinaryDataTransferWSRequest;
+        public event WSClientBinaryRequestLogHandler?                         OnIncomingBinaryDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
+        public event OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate?     OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was received.
         /// </summary>
-        public event OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
+        public event OCPP.CS.OnIncomingBinaryDataTransferDelegate?            OnIncomingBinaryDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
+        public event OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate?    OnIncomingBinaryDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event WSClientBinaryRequestBinaryResponseLogHandler?   OnIncomingBinaryDataTransferWSResponse;
+        public event WSClientBinaryRequestBinaryResponseLogHandler?           OnIncomingBinaryDataTransferWSResponse;
 
         #endregion
 
@@ -153,11 +152,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     var results = OnIncomingBinaryDataTransfer?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnIncomingBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                            this,
-                                                                                                                            WebSocketConnection,
-                                                                                                                            request,
-                                                                                                                            CancellationToken)).
+                                      SafeSelect(subscriber => (subscriber as OCPP.CS.OnIncomingBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                    this,
+                                                                                                                                    WebSocketConnection,
+                                                                                                                                    request,
+                                                                                                                                    CancellationToken)).
                                       ToArray();
 
                     if (results?.Length > 0)

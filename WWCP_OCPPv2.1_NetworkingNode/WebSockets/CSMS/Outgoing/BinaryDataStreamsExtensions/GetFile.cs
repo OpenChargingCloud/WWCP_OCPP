@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
@@ -50,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
         /// <summary>
         /// An event sent whenever a GetFile request was sent.
         /// </summary>
-        public event CSMS.OnGetFileRequestDelegate?     OnGetFileRequest;
+        public event OCPP.CSMS.OnGetFileRequestDelegate?     OnGetFileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetFile request was sent.
         /// </summary>
-        public event CSMS.OnGetFileResponseDelegate?    OnGetFileResponse;
+        public event OCPP.CSMS.OnGetFileResponseDelegate?    OnGetFileResponse;
 
         #endregion
 

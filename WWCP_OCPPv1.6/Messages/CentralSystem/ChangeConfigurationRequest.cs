@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public ChangeConfigurationRequest(ChargeBox_Id       ChargeBoxId,
+        public ChangeConfigurationRequest(NetworkingNode_Id  NetworkingNodeId,
                                           String             Key,
                                           String             Value,
 
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           EventTracking_Id?  EventTrackingId     = null,
                                           CancellationToken  CancellationToken   = default)
 
-            : base(ChargeBoxId,
+            : base(NetworkingNodeId,
                    "ChangeConfiguration",
                    RequestId,
                    RequestTimestamp,

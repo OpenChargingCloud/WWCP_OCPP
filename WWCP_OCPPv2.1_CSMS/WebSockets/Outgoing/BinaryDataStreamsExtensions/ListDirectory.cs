@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
@@ -41,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         public CustomJObjectSerializerDelegate<ListDirectoryRequest>?  CustomListDirectoryRequestSerializer    { get; set; }
 
-        public CustomJObjectParserDelegate<ListDirectoryResponse>?  CustomListDirectoryResponseParser       { get; set; }
+        public CustomJObjectParserDelegate<ListDirectoryResponse>?     CustomListDirectoryResponseParser       { get; set; }
 
         #endregion
 
@@ -50,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ListDirectory request was sent.
         /// </summary>
-        public event OnListDirectoryRequestDelegate?     OnListDirectoryRequest;
+        public event OCPP.CSMS.OnListDirectoryRequestDelegate?     OnListDirectoryRequest;
 
         /// <summary>
         /// An event sent whenever a response to a ListDirectory request was sent.
         /// </summary>
-        public event OnListDirectoryResponseDelegate?    OnListDirectoryResponse;
+        public event OCPP.CSMS.OnListDirectoryResponseDelegate?    OnListDirectoryResponse;
 
         #endregion
 
@@ -108,13 +106,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                 {
 
                     if (ListDirectoryResponse.TryParse(Request,
-                                                          sendRequestState.JSONResponse.Payload,
-                                                          out var deleteFileResponse,
-                                                          out var errorResponse,
-                                                          CustomListDirectoryResponseParser) &&
-                        deleteFileResponse is not null)
+                                                       sendRequestState.JSONResponse.Payload,
+                                                       out var listDirectoryResponse,
+                                                       out var errorResponse,
+                                                       CustomListDirectoryResponseParser) &&
+                        listDirectoryResponse is not null)
                     {
-                        response = deleteFileResponse;
+                        response = listDirectoryResponse;
                     }
 
                     response ??= new ListDirectoryResponse(

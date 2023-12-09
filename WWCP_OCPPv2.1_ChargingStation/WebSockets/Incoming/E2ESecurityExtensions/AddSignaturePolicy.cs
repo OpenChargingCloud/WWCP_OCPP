@@ -20,11 +20,9 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
@@ -53,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an AddSignaturePolicy websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?               OnAddSignaturePolicyWSRequest;
+        public event WSClientJSONRequestLogHandler?                   OnAddSignaturePolicyWSRequest;
 
         /// <summary>
         /// An event sent whenever an AddSignaturePolicy request was received.
         /// </summary>
-        public event OnAddSignaturePolicyRequestDelegate?     OnAddSignaturePolicyRequest;
+        public event OCPP.CS.OnAddSignaturePolicyRequestDelegate?     OnAddSignaturePolicyRequest;
 
         /// <summary>
         /// An event sent whenever an AddSignaturePolicy request was received.
         /// </summary>
-        public event OnAddSignaturePolicyDelegate?            OnAddSignaturePolicy;
+        public event OCPP.CS.OnAddSignaturePolicyDelegate?            OnAddSignaturePolicy;
 
         /// <summary>
         /// An event sent whenever a response to an AddSignaturePolicy request was sent.
         /// </summary>
-        public event OnAddSignaturePolicyResponseDelegate?    OnAddSignaturePolicyResponse;
+        public event OCPP.CS.OnAddSignaturePolicyResponseDelegate?    OnAddSignaturePolicyResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an AddSignaturePolicy request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?              OnAddSignaturePolicyWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?       OnAddSignaturePolicyWSResponse;
 
         #endregion
 
@@ -153,11 +151,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     var results = OnAddSignaturePolicy?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnAddSignaturePolicyDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                    this,
-                                                                                                                    WebSocketConnection,
-                                                                                                                    request,
-                                                                                                                    CancellationToken)).
+                                      SafeSelect(subscriber => (subscriber as OCPP.CS.OnAddSignaturePolicyDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                            this,
+                                                                                                                            WebSocketConnection,
+                                                                                                                            request,
+                                                                                                                            CancellationToken)).
                                       ToArray();
 
                     if (results?.Length > 0)

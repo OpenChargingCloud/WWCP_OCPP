@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using cloud.charging.open.protocols.OCPP.NetworkingNode.CS;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
 {
 
@@ -182,7 +188,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        event OnIncomingDataTransferDelegate           OnIncomingDataTransfer;
+        event OCPP.NetworkingNode.CS.OnIncomingDataTransferDelegate           OnIncomingDataTransfer;
 
         #endregion
 
@@ -481,7 +487,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever an AddSignaturePolicy request was received.
         /// </summary>
-        event OnAddSignaturePolicyDelegate            OnAddSignaturePolicy;
+        event OCPP.NetworkingNode.CS.OnAddSignaturePolicyDelegate            OnAddSignaturePolicy;
 
         #endregion
 

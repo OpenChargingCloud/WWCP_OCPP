@@ -118,7 +118,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        public BootNotificationRequest(ChargeBox_Id       ChargeBoxId,
+        public BootNotificationRequest(NetworkingNode_Id  NetworkingNodeId,
                                        String             ChargePointVendor,
                                        String             ChargePointModel,
 
@@ -136,7 +136,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                        EventTracking_Id?  EventTrackingId           = null,
                                        CancellationToken  CancellationToken         = default)
 
-            : base(ChargeBoxId,
+            : base(NetworkingNodeId,
                    "BootNotification",
                    RequestId,
                    RequestTimestamp,

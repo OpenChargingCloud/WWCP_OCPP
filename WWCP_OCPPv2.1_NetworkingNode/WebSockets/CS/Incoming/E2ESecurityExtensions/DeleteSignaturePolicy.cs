@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -54,27 +53,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CS
         /// <summary>
         /// An event sent whenever a DeleteSignaturePolicy websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                  OnDeleteSignaturePolicyWSRequest;
+        public event WSClientJSONRequestLogHandler?                      OnDeleteSignaturePolicyWSRequest;
 
         /// <summary>
         /// An event sent whenever a DeleteSignaturePolicy request was received.
         /// </summary>
-        public event CS.OnDeleteSignaturePolicyRequestDelegate?     OnDeleteSignaturePolicyRequest;
+        public event OCPP.NetworkingNode.CS.OnDeleteSignaturePolicyRequestDelegate?     OnDeleteSignaturePolicyRequest;
 
         /// <summary>
         /// An event sent whenever a DeleteSignaturePolicy request was received.
         /// </summary>
-        public event CS.OnDeleteSignaturePolicyDelegate?            OnDeleteSignaturePolicy;
+        public event OCPP.NetworkingNode.CS.OnDeleteSignaturePolicyDelegate?            OnDeleteSignaturePolicy;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteSignaturePolicy request was sent.
         /// </summary>
-        public event CS.OnDeleteSignaturePolicyResponseDelegate?    OnDeleteSignaturePolicyResponse;
+        public event OCPP.NetworkingNode.CS.OnDeleteSignaturePolicyResponseDelegate?    OnDeleteSignaturePolicyResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a DeleteSignaturePolicy request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                 OnDeleteSignaturePolicyWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?          OnDeleteSignaturePolicyWSResponse;
 
         #endregion
 

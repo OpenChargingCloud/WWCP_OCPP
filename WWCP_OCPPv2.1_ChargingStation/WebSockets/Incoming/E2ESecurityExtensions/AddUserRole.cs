@@ -20,11 +20,9 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
@@ -53,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an AddUserRole websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?        OnAddUserRoleWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnAddUserRoleWSRequest;
 
         /// <summary>
         /// An event sent whenever an AddUserRole request was received.
         /// </summary>
-        public event OnAddUserRoleRequestDelegate?     OnAddUserRoleRequest;
+        public event OCPP.CS.OnAddUserRoleRequestDelegate?         OnAddUserRoleRequest;
 
         /// <summary>
         /// An event sent whenever an AddUserRole request was received.
         /// </summary>
-        public event OnAddUserRoleDelegate?            OnAddUserRole;
+        public event OCPP.CS.OnAddUserRoleDelegate?                OnAddUserRole;
 
         /// <summary>
         /// An event sent whenever a response to an AddUserRole request was sent.
         /// </summary>
-        public event OnAddUserRoleResponseDelegate?    OnAddUserRoleResponse;
+        public event OCPP.CS.OnAddUserRoleResponseDelegate?        OnAddUserRoleResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an AddUserRole request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?       OnAddUserRoleWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnAddUserRoleWSResponse;
 
         #endregion
 
@@ -153,11 +151,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     var results = OnAddUserRole?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OnAddUserRoleDelegate)?.Invoke(Timestamp.Now,
-                                                                                                             this,
-                                                                                                             WebSocketConnection,
-                                                                                                             request,
-                                                                                                             CancellationToken)).
+                                      SafeSelect(subscriber => (subscriber as OCPP.CS.OnAddUserRoleDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                     this,
+                                                                                                                     WebSocketConnection,
+                                                                                                                     request,
+                                                                                                                     CancellationToken)).
                                       ToArray();
 
                     if (results?.Length > 0)
