@@ -18,7 +18,6 @@
 #region Usings
 
 using System.Reflection;
-using System.Collections.Concurrent;
 using System.Security.Authentication;
 
 using Newtonsoft.Json;
@@ -30,7 +29,6 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
@@ -52,19 +50,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// The default HTTP server name.
         /// </summary>
-        public const            String                                                                                DefaultHTTPServiceName            = $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API";
+        public new const            String                 DefaultHTTPServiceName  = $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API";
 
         /// <summary>
         /// The default HTTP server TCP port.
         /// </summary>
-        public static readonly  IPPort                                                                                DefaultHTTPServerPort             = IPPort.Parse(2010);
+        public new static readonly  IPPort                 DefaultHTTPServerPort   = IPPort.Parse(2010);
 
         /// <summary>
         /// The default HTTP server URI prefix.
         /// </summary>
-        public static readonly  HTTPPath                                                                              DefaultURLPrefix                  = HTTPPath.Parse("/" + Version.String);
+        public new static readonly  HTTPPath               DefaultURLPrefix        = HTTPPath.Parse("/" + Version.String);
 
-        private readonly        Dictionary<String, MethodInfo>                                                        incomingMessageProcessorsLookup   = [];
+        private readonly        Dictionary<String, MethodInfo>  incomingMessageProcessorsLookup   = [];
 
         #endregion
 

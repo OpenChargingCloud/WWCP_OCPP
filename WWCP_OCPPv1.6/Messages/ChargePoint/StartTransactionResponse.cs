@@ -34,10 +34,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// A start transaction response.
     /// </summary>
     public class StartTransactionResponse : AResponse<CP.StartTransactionRequest,
-                                                         StartTransactionResponse>
+                                                         StartTransactionResponse>,
+                                            IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/startTransactionResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext   Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The transaction identification assigned by the central system.
@@ -61,12 +77,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Request">The start transaction request leading to this response.</param>
         /// <param name="TransactionId">The transaction identification assigned by the central system.</param>
         /// <param name="IdTagInfo">Information about authorization status, expiry and parent id.</param>
-        public StartTransactionResponse(CP.StartTransactionRequest  Request,
-                                        Transaction_Id              TransactionId,
-                                        IdTagInfo                   IdTagInfo)
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public StartTransactionResponse(CP.StartTransactionRequest    Request,
+                                        Transaction_Id                TransactionId,
+                                        IdTagInfo                     IdTagInfo,
+
+                                        DateTime?                     ResponseTimestamp   = null,
+
+                                        IEnumerable<KeyPair>?         SignKeys            = null,
+                                        IEnumerable<SignInfo>?        SignInfos           = null,
+                                        IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                        CustomData?                   CustomData          = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   ResponseTimestamp,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -307,7 +344,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 StartTransactionResponse = null;
 
-                #region TransactionId
+                #region TransactionId    [mandatory]
 
                 if (!JSON.ParseMandatory("transactionId",
                                          "transaction identification",
@@ -320,24 +357,61 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region IdTagInfo
+                #region IdTagInfo        [mandatory]
 
-                if (!JSON.ParseMandatoryJSONStruct("idTagInfo",
-                                                   "identification tag information",
-                                                   OCPPv1_6.IdTagInfo.TryParse,
-                                                   out IdTagInfo IdTagInfo,
-                                                   out ErrorResponse))
+                if (!JSON.ParseMandatoryJSON("idTagInfo",
+                                             "identification tag information",
+                                             OCPPv1_6.IdTagInfo.TryParse,
+                                             out IdTagInfo IdTagInfo,
+                                             out ErrorResponse))
                 {
                     return false;
                 }
 
                 #endregion
 
+                #region Signatures       [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData       [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 StartTransactionResponse = new StartTransactionResponse(
+
                                                Request,
                                                TransactionId,
-                                               IdTagInfo
+                                               IdTagInfo,
+                                               null,
+
+                                               null,
+                                               null,
+                                               Signatures,
+
+                                               CustomData
+
                                            );
 
                 if (CustomStartTransactionResponseParser is not null)
@@ -375,22 +449,35 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToJSON(CustomStartTransactionResponseSerializer = null, CustomIdTagInfoResponseSerializer = null)
+        #region ToJSON(CustomStartTransactionResponseSerializer = null, CustomIdTagInfoSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomStartTransactionResponseSerializer">A delegate to serialize custom start transaction responses.</param>
-        /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
+        /// <param name="CustomIdTagInfoSerializer">A delegate to serialize custom IdTagInfos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<StartTransactionResponse>?  CustomStartTransactionResponseSerializer   = null,
-                              CustomJObjectSerializerDelegate<IdTagInfo>?                 CustomIdTagInfoResponseSerializer          = null,
+                              CustomJObjectSerializerDelegate<IdTagInfo>?                 CustomIdTagInfoSerializer                  = null,
                               CustomJObjectSerializerDelegate<OCPP.Signature>?            CustomSignatureSerializer                  = null,
                               CustomJObjectSerializerDelegate<CustomData>?                CustomCustomDataSerializer                 = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("transactionId",   TransactionId.Value),
-                           new JProperty("idTagInfo",       IdTagInfo.    ToJSON(CustomIdTagInfoResponseSerializer))
+
+                                 new JProperty("transactionId",   TransactionId.Value),
+                                 new JProperty("idTagInfo",       IdTagInfo.    ToJSON(CustomIdTagInfoSerializer)),
+
+                           Signatures.Any()
+                               ? new JProperty("signatures",      new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                             CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",      CustomData.   ToJSON(CustomCustomDataSerializer))
+                               : null
+
                        );
 
             return CustomStartTransactionResponseSerializer is not null

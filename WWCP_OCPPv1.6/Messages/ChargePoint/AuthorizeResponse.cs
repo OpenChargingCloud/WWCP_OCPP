@@ -34,15 +34,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// An authorize response.
     /// </summary>
     public class AuthorizeResponse : AResponse<CP.AuthorizeRequest,
-                                                  AuthorizeResponse>
+                                                  AuthorizeResponse>,
+                                     IResponse
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/authorizeResponse");
+
+        #endregion
 
         #region Properties
 
         /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
+
+        /// <summary>
         /// The identification tag info.
         /// </summary>
-        public IdTagInfo  IdTagInfo    { get; }
+        public IdTagInfo      IdTagInfo    { get; }
 
         #endregion
 
@@ -55,11 +71,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
         /// <param name="IdTagInfo">The identification tag info.</param>
-        public AuthorizeResponse(CP.AuthorizeRequest  Request,
-                                 IdTagInfo            IdTagInfo)
+        public AuthorizeResponse(CP.AuthorizeRequest           Request,
+                                 IdTagInfo                     IdTagInfo,
+
+                                 DateTime?                     ResponseTimestamp   = null,
+
+                                 IEnumerable<KeyPair>?         SignKeys            = null,
+                                 IEnumerable<SignInfo>?        SignInfos           = null,
+                                 IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                 CustomData?                   CustomData          = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   ResponseTimestamp,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -186,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) Parse   (Request, JSON, CustomAuthorizeRequestParser = null)
+        #region (static) Parse   (Request, JSON, CustomAuthorizeResponseParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an authorize response.
@@ -204,9 +235,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON,
                          out var authorizeResponse,
                          out var errorResponse,
-                         CustomAuthorizeResponseParser))
+                         CustomAuthorizeResponseParser) &&
+                authorizeResponse is not null)
             {
-                return authorizeResponse!;
+                return authorizeResponse;
             }
 
             throw new ArgumentException("The given JSON representation of an authorize response is invalid: " + errorResponse,
@@ -263,7 +295,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region (static) TryParse(Request, JSON, out AuthorizeResponse, out ErrorResponse)
+        #region (static) TryParse(Request, JSON, out AuthorizeResponse, out ErrorResponse, out ErrorResponse, CustomAuthorizeResponseParser = null)
 
         /// <summary>
         /// Try to parse the given JSON representation of an authorize response.
@@ -285,7 +317,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 AuthorizeResponse = null;
 
-                #region IdTagInfo
+                #region IdTagInfo     [mandatory]
 
                 if (!JSON.ParseMandatoryJSONStruct("idTagInfo",
                                                    "identification tag information",
@@ -298,10 +330,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 AuthorizeResponse = new AuthorizeResponse(
+
                                         Request,
-                                        IdTagInfo
+                                        IdTagInfo,
+                                        null,
+
+                                        null,
+                                        null,
+                                        Signatures,
+
+                                        CustomData
+
                                     );
 
                 if (CustomAuthorizeResponseParser is not null)
@@ -349,7 +418,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         {
 
             var json = JSONObject.Create(
-                           new JProperty("idTagInfo",   IdTagInfo.ToJSON(CustomIdTagInfoResponseSerializer))
+
+                                 new JProperty("idTagInfo",   IdTagInfo.  ToJSON(CustomIdTagInfoResponseSerializer)),
+
+
+                           Signatures.Any()
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               : null
+
                        );
 
             return CustomAuthorizeResponseSerializer is not null

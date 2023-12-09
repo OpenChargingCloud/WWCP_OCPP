@@ -18,14 +18,15 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
-    #region OnAuthorize
+    #region OnStartTransaction
 
     /// <summary>
     /// A start transaction request.
@@ -35,9 +36,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Request">The start transaction request.</param>
     public delegate Task
 
-        OnStartTransactionRequestDelegate(DateTime                    Timestamp,
-                                          IEventSender                Sender,
-                                          CP.StartTransactionRequest  Request);
+        OnStartTransactionRequestDelegate(DateTime                  Timestamp,
+                                          IEventSender              Sender,
+                                          StartTransactionRequest   Request);
 
 
     /// <summary>
@@ -45,16 +46,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The start transaction request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<StartTransactionResponse>
 
-        OnStartTransactionDelegate(DateTime                    Timestamp,
-                                   IEventSender                Sender,
-                                   WebSocketServerConnection   Connection,
-                                   CP.StartTransactionRequest  Request,
-                                   CancellationToken           CancellationToken);
+        OnStartTransactionDelegate(DateTime                  Timestamp,
+                                   IEventSender              Sender,
+                                   StartTransactionRequest   Request,
+                                   CancellationToken         CancellationToken);
 
 
     /// <summary>
@@ -67,11 +66,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnStartTransactionResponseDelegate(DateTime                     Timestamp,
-                                           IEventSender                 Sender,
-                                           CP.StartTransactionRequest   Request,
-                                           CS.StartTransactionResponse  Response,
-                                           TimeSpan                     Runtime);
+        OnStartTransactionResponseDelegate(DateTime                   Timestamp,
+                                           IEventSender               Sender,
+                                           StartTransactionRequest    Request,
+                                           StartTransactionResponse   Response,
+                                           TimeSpan                   Runtime);
 
     #endregion
 

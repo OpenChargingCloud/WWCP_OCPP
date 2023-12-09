@@ -34,34 +34,71 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// A stop transaction response.
     /// </summary>
     public class StopTransactionResponse : AResponse<CP.StopTransactionRequest,
-                                                        StopTransactionResponse>
+                                                        StopTransactionResponse>,
+                                           IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/stopTransactionResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// Information about authorization status, expiry and parent id.
         /// It is optional, because a transaction may have been stopped
         /// without an identifier.
         /// </summary>
-        public IdTagInfo?  IdTagInfo   { get; }
+        public IdTagInfo?     IdTagInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region StopTransactionResponse(Request, IdTagInfo = null)
+        #region StopTransactionResponse(Request, IdTagInfo = null, ...)
 
         /// <summary>
         /// Create a new stop transaction response.
         /// </summary>
         /// <param name="Request">The stop transaction request leading to this response.</param>
         /// <param name="IdTagInfo">Information about authorization status, expiry and parent id.</param>
-        public StopTransactionResponse(CP.StopTransactionRequest  Request,
-                                       IdTagInfo?                 IdTagInfo = null)
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public StopTransactionResponse(CP.StopTransactionRequest     Request,
+                                       IdTagInfo?                    IdTagInfo           = null,
+
+                                       DateTime?                     ResponseTimestamp   = null,
+
+                                       IEnumerable<KeyPair>?         SignKeys            = null,
+                                       IEnumerable<SignInfo>?        SignInfos           = null,
+                                       IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                       CustomData?                   CustomData          = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   ResponseTimestamp,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -281,7 +318,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 StopTransactionResponse = null;
 
-                #region IdTagInfo
+                #region IdTagInfo     [mandatory]
 
                 if (!JSON.ParseMandatoryJSONStruct("idTagInfo",
                                                    "identification tag information",
@@ -294,10 +331,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 StopTransactionResponse = new StopTransactionResponse(
+
                                               Request,
-                                              IdTagInfo
+                                              IdTagInfo,
+                                              null,
+
+                                              null,
+                                              null,
+                                              Signatures,
+
+                                              CustomData
+
                                           );
 
                 if (CustomStopTransactionResponseParser is not null)
@@ -335,13 +409,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToJSON(CustomStopTransactionResponseSerializer = null, CustomIdTagInfoResponseSerializer = null)
+        #region ToJSON(CustomStopTransactionResponseSerializer = null, CustomIdTagInfoResponseSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomStopTransactionResponseSerializer">A delegate to serialize custom start transaction responses.</param>
         /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<StopTransactionResponse>?  CustomStopTransactionResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<IdTagInfo>?                CustomIdTagInfoResponseSerializer         = null,
                               CustomJObjectSerializerDelegate<OCPP.Signature>?           CustomSignatureSerializer                 = null,
@@ -352,6 +428,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                            IdTagInfo.HasValue
                                ? new JProperty("idTagInfo",   IdTagInfo.Value.ToJSON(CustomIdTagInfoResponseSerializer))
+                               : null,
+
+                           Signatures.Any()
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.    ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -482,11 +567,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public override String ToString()
 
-            => String.Concat("StopTransactionResponse",
-
-                             IdTagInfo.HasValue
-                                 ? ", " + IdTagInfo.ToString()
-                                 : "");
+            => IdTagInfo.HasValue
+                   ? IdTagInfo.Value.ToString()
+                   : "-";
 
         #endregion
 

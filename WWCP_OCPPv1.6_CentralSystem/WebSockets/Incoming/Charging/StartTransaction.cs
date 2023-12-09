@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -41,38 +40,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<MeterValuesRequest>?       CustomMeterValuesRequestParser         { get; set; }
+        public CustomJObjectParserDelegate<StartTransactionRequest>?       CustomStartTransactionRequestParser         { get; set; }
 
-        public CustomJObjectSerializerDelegate<MeterValuesResponse>?  CustomMeterValuesResponseSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<StartTransactionResponse>?  CustomStartTransactionResponseSerializer    { get; set; }
 
         #endregion
 
         #region Events
 
         /// <summary>
-        /// An event sent whenever a MeterValues WebSocket request was received.
+        /// An event sent whenever a StartTransaction WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                   OnMeterValuesWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                OnStartTransactionWSRequest;
 
         /// <summary>
-        /// An event sent whenever a MeterValues request was received.
+        /// An event sent whenever a StartTransaction request was received.
         /// </summary>
-        public event OnMeterValuesRequestDelegate?                 OnMeterValuesRequest;
+        public event OnStartTransactionRequestDelegate?           OnStartTransactionRequest;
 
         /// <summary>
-        /// An event sent whenever a MeterValues request was received.
+        /// An event sent whenever a StartTransaction request was received.
         /// </summary>
-        public event OnMeterValuesDelegate?                        OnMeterValues;
+        public event OnStartTransactionDelegate?                  OnStartTransaction;
 
         /// <summary>
-        /// An event sent whenever a response to a MeterValues request was sent.
+        /// An event sent whenever a response to a StartTransaction request was sent.
         /// </summary>
-        public event OnMeterValuesResponseDelegate?                OnMeterValuesResponse;
+        public event OnStartTransactionResponseDelegate?          OnStartTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a WebSocket response to a MeterValues request was sent.
+        /// An event sent whenever a WebSocket response to a StartTransaction request was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnMeterValuesWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnStartTransactionWSResponse;
 
         #endregion
 
@@ -82,25 +81,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         public async Task<Tuple<OCPP_JSONResponseMessage?,
                                 OCPP_JSONErrorMessage?>>
 
-            Receive_MeterValues(DateTime                   RequestTimestamp,
-                                WebSocketServerConnection  Connection,
-                                NetworkingNode_Id          NetworkingNodeId,
-                                NetworkPath                NetworkPath,
-                                EventTracking_Id           EventTrackingId,
-                                Request_Id                 RequestId,
-                                JObject                    JSONRequest,
-                                CancellationToken          CancellationToken)
+            Receive_StartTransaction(DateTime                   RequestTimestamp,
+                                     WebSocketServerConnection  Connection,
+                                     NetworkingNode_Id          NetworkingNodeId,
+                                     NetworkPath                NetworkPath,
+                                     EventTracking_Id           EventTrackingId,
+                                     Request_Id                 RequestId,
+                                     JObject                    JSONRequest,
+                                     CancellationToken          CancellationToken)
 
         {
 
-            #region Send OnMeterValuesWSRequest event
+            #region Send OnStartTransactionWSRequest event
 
             var startTime = Timestamp.Now;
 
             try
             {
 
-                OnMeterValuesWSRequest?.Invoke(startTime,
+                OnStartTransactionWSRequest?.Invoke(startTime,
                                                this,
                                                Connection,
                                                NetworkingNodeId,
@@ -112,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesWSRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionWSRequest));
             }
 
             #endregion
@@ -124,41 +123,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                if (MeterValuesRequest.TryParse(JSONRequest,
-                                                RequestId,
-                                                NetworkingNodeId,
-                                                NetworkPath,
-                                                out var request,
-                                                out var errorResponse,
-                                                CustomMeterValuesRequestParser) && request is not null) {
+                if (StartTransactionRequest.TryParse(JSONRequest,
+                                                     RequestId,
+                                                     NetworkingNodeId,
+                                                     NetworkPath,
+                                                     out var request,
+                                                     out var errorResponse,
+                                                     CustomStartTransactionRequestParser) && request is not null) {
 
-                    #region Send OnMeterValuesRequest event
+                    #region Send OnStartTransactionRequest event
 
                     try
                     {
 
-                        OnMeterValuesRequest?.Invoke(Timestamp.Now,
+                        OnStartTransactionRequest?.Invoke(Timestamp.Now,
                                                      this,
                                                      request);
 
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesRequest));
+                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionRequest));
                     }
 
                     #endregion
 
                     #region Call async subscribers
 
-                    MeterValuesResponse? response = null;
+                    StartTransactionResponse? response = null;
 
-                    var responseTasks = OnMeterValues?.
+                    var responseTasks = OnStartTransaction?.
                                             GetInvocationList()?.
-                                            SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                   this,
-                                                                                                                   request,
-                                                                                                                   CancellationToken)).
+                                            SafeSelect(subscriber => (subscriber as OnStartTransactionDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                        this,
+                                                                                                                        request,
+                                                                                                                        CancellationToken)).
                                             ToArray();
 
                     if (responseTasks?.Length > 0)
@@ -167,16 +166,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         response = responseTasks.FirstOrDefault()?.Result;
                     }
 
-                    response ??= MeterValuesResponse.Failed(request);
+                    response ??= StartTransactionResponse.Failed(request);
 
                     #endregion
 
-                    #region Send OnMeterValuesResponse event
+                    #region Send OnStartTransactionResponse event
 
                     try
                     {
 
-                        OnMeterValuesResponse?.Invoke(Timestamp.Now,
+                        OnStartTransactionResponse?.Invoke(Timestamp.Now,
                                                       this,
                                                       request,
                                                       response,
@@ -185,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesResponse));
+                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionResponse));
                     }
 
                     #endregion
@@ -193,7 +192,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     OCPPResponse = new OCPP_JSONResponseMessage(
                                        RequestId,
                                        response.ToJSON(
-                                           CustomMeterValuesResponseSerializer,
+                                           CustomStartTransactionResponseSerializer,
+                                           CustomIdTagInfoSerializer,
                                            CustomSignatureSerializer,
                                            CustomCustomDataSerializer
                                        )
@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 else
                     OCPPErrorResponse = OCPP_JSONErrorMessage.CouldNotParse(
                                             RequestId,
-                                            nameof(Receive_MeterValues)[8..],
+                                            nameof(Receive_StartTransaction)[8..],
                                             JSONRequest,
                                             errorResponse
                                         );
@@ -215,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 OCPPErrorResponse = OCPP_JSONErrorMessage.FormationViolation(
                                         RequestId,
-                                        nameof(Receive_MeterValues)[8..],
+                                        nameof(Receive_StartTransaction)[8..],
                                         JSONRequest,
                                         e
                                     );
@@ -223,14 +223,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
 
 
-            #region Send OnMeterValuesWSResponse event
+            #region Send OnStartTransactionWSResponse event
 
             try
             {
 
                 var endTime = Timestamp.Now;
 
-                OnMeterValuesWSResponse?.Invoke(endTime,
+                OnStartTransactionWSResponse?.Invoke(endTime,
                                                 this,
                                                 Connection,
                                                 NetworkingNodeId,
@@ -245,7 +245,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesWSResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionWSResponse));
             }
 
             #endregion

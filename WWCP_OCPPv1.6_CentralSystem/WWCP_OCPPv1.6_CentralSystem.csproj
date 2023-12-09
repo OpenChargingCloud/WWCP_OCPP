@@ -52,7 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CSMS\WebSockets\Incoming\Monitoring\" />
+    <Folder Include="WebSockets\Incoming\Monitoring\" />
   </ItemGroup>
 
 </Project>

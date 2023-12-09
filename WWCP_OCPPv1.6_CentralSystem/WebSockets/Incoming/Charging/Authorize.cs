@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever an Authorize WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                   OnAuthorizeWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                OnAuthorizeWSRequest;
 
         /// <summary>
         /// An event sent whenever an Authorize request was received.
         /// </summary>
-        public event OnAuthorizeRequestDelegate?                   OnAuthorizeRequest;
+        public event OnAuthorizeRequestDelegate?                  OnAuthorizeRequest;
 
         /// <summary>
         /// An event sent whenever an Authorize request was received.
         /// </summary>
-        public event OnAuthorizeDelegate?                          OnAuthorize;
+        public event OnAuthorizeDelegate?                         OnAuthorize;
 
         /// <summary>
         /// An event sent whenever an Authorize response was sent.
         /// </summary>
-        public event OnAuthorizeResponseDelegate?                  OnAuthorizeResponse;
+        public event OnAuthorizeResponseDelegate?                 OnAuthorizeResponse;
 
         /// <summary>
         /// An event sent whenever an Authorize WebSocket response was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnAuthorizeWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnAuthorizeWSResponse;
 
         #endregion
 
@@ -126,8 +125,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 if (AuthorizeRequest.TryParse(JSONRequest,
                                               RequestId,
-                                            //  NetworkingNodeId,
-                                            //  NetworkPath,
+                                              NetworkingNodeId,
+                                              NetworkPath,
                                               out var request,
                                               out var errorResponse,
                                               CustomAuthorizeRequestParser) && request is not null) {
@@ -194,11 +193,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        RequestId,
                                        response.ToJSON(
                                            CustomAuthorizeResponseSerializer,
-                                           CustomIdTokenInfoSerializer,
-                                           CustomIdTokenSerializer,
-                                           CustomAdditionalInfoSerializer,
-                                           CustomMessageContentSerializer,
-                                           CustomTransactionLimitsSerializer,
+                                           CustomIdTagInfoSerializer,
                                            CustomSignatureSerializer,
                                            CustomCustomDataSerializer
                                        )

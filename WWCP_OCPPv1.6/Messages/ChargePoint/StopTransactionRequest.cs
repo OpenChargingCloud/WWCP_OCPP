@@ -33,10 +33,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// The stop transaction request.
     /// </summary>
-    public class StopTransactionRequest : ARequest<StopTransactionRequest>
+    public class StopTransactionRequest : ARequest<StopTransactionRequest>,
+                                          IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cp/stopTransactionRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext            Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The transaction identification copied from the start transaction response.
@@ -79,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new stop transaction request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="TransactionId">The transaction identification copied from the start transaction response.</param>
         /// <param name="StopTimestamp">The timestamp of the end of the charging transaction.</param>
         /// <param name="MeterStop">The energy meter value in Wh for the connector at end of the charging transaction.</param>
@@ -87,28 +103,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Reason">An optional reason why the transaction had been stopped.</param>
         /// <param name="TransactionData">Optional transaction usage details relevant for billing purposes.</param>
         /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public StopTransactionRequest(ChargeBox_Id              ChargeBoxId,
-                                      Transaction_Id            TransactionId,
-                                      DateTime                  StopTimestamp,
-                                      UInt64                    MeterStop,
-                                      IdToken?                  IdTag               = null,
-                                      Reasons?                  Reason              = null,
-                                      IEnumerable<MeterValue>?  TransactionData     = null,
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public StopTransactionRequest(NetworkingNode_Id              NetworkingNodeId,
+                                      Transaction_Id                 TransactionId,
+                                      DateTime                       StopTimestamp,
+                                      UInt64                         MeterStop,
+                                      IdToken?                       IdTag               = null,
+                                      Reasons?                       Reason              = null,
+                                      IEnumerable<MeterValue>?       TransactionData     = null,
 
-                                      Request_Id?               RequestId           = null,
-                                      DateTime?                 RequestTimestamp    = null,
-                                      TimeSpan?                 RequestTimeout      = null,
-                                      EventTracking_Id?         EventTrackingId     = null,
-                                      CancellationToken         CancellationToken   = default)
+                                      IEnumerable<KeyPair>?          SignKeys            = null,
+                                      IEnumerable<SignInfo>?         SignInfos           = null,
+                                      IEnumerable<OCPP.Signature>?   Signatures          = null,
+
+                                      CustomData?                    CustomData          = null,
+
+                                      Request_Id?                    RequestId           = null,
+                                      DateTime?                      RequestTimestamp    = null,
+                                      TimeSpan?                      RequestTimeout      = null,
+                                      EventTracking_Id?              EventTrackingId     = null,
+                                      NetworkPath?                   NetworkPath         = null,
+                                      CancellationToken              CancellationToken   = default)
 
             : base(NetworkingNodeId,
-                   "StopTransaction",
+                   nameof(StopTransactionRequest)[..^7],
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -116,9 +154,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.TransactionId    = TransactionId;
             this.StopTimestamp    = StopTimestamp;
             this.MeterStop        = MeterStop;
-            this.IdTag            = IdTag           ?? new IdToken?();
-            this.Reason           = Reason          ?? new Reasons?();
-            this.TransactionData  = TransactionData ?? Array.Empty<MeterValue>();
+            this.IdTag            = IdTag;
+            this.Reason           = Reason;
+            this.TransactionData  = TransactionData?.Distinct() ?? Array.Empty<MeterValue>();
+
+
+            unchecked
+            {
+
+                hashCode = this.TransactionId.  GetHashCode()       * 17 ^
+                           this.StopTimestamp.  GetHashCode()       * 13 ^
+                           this.MeterStop.      GetHashCode()       * 11 ^
+                          (this.IdTag?.         GetHashCode() ?? 0) * 7 ^
+                          (this.Reason?.        GetHashCode() ?? 0) * 5 ^
+                           this.TransactionData.GetHashCode()       * 3 ^
+                           base.                GetHashCode();
+
+            }
 
         }
 
@@ -365,22 +417,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
+        #region (static) Parse   (XML,  RequestId, NetworkingNodeId)
 
         /// <summary>
         /// Parse the given XML representation of a stop transaction request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        public static StopTransactionRequest Parse(XElement      XML,
-                                                   Request_Id    RequestId,
-                                                   ChargeBox_Id  ChargeBoxId)
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        public static StopTransactionRequest Parse(XElement           XML,
+                                                   Request_Id         RequestId,
+                                                   NetworkingNode_Id  NetworkingNodeId)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         ChargeBoxId,
+                         NetworkingNodeId,
                          out var stopTransactionRequest,
                          out var errorResponse))
             {
@@ -394,29 +446,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomStopTransactionRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomStopTransactionRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a stop transaction request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomStopTransactionRequestParser">A delegate to parse custom stop transaction requests.</param>
         public static StopTransactionRequest Parse(JObject                                               JSON,
                                                    Request_Id                                            RequestId,
-                                                   ChargeBox_Id                                          ChargeBoxId,
+                                                   NetworkingNode_Id                                     NetworkingNodeId,
+                                                   NetworkPath                                           NetworkPath,
                                                    CustomJObjectParserDelegate<StopTransactionRequest>?  CustomStopTransactionRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var stopTransactionRequest,
                          out var errorResponse,
-                         CustomStopTransactionRequestParser))
+                         CustomStopTransactionRequestParser) &&
+                stopTransactionRequest is not null)
             {
-                return stopTransactionRequest!;
+                return stopTransactionRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a stop transaction request is invalid: " + errorResponse,
@@ -426,19 +482,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out StopTransactionRequest, out ErrorResponse)
+        #region (static) TryParse(XML,  RequestId, NetworkingNodeId, out StopTransactionRequest, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a stop transaction request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="StopTransactionRequest">The parsed StopTransaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(XElement                     XML,
                                        Request_Id                   RequestId,
-                                       ChargeBox_Id                 ChargeBoxId,
+                                       NetworkingNode_Id            NetworkingNodeId,
                                        out StopTransactionRequest?  StopTransactionRequest,
                                        out String?                  ErrorResponse)
         {
@@ -448,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 StopTransactionRequest = new StopTransactionRequest(
 
-                                             ChargeBoxId,
+                                             NetworkingNodeId,
 
                                              XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "transactionId",
                                                                     Transaction_Id.Parse),
@@ -468,7 +524,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                              XML.MapElements       (OCPPNS.OCPPv1_6_CS + "transactionData",
                                                                     MeterValue.Parse),
 
-                                             RequestId
+                                             RequestId: RequestId
 
                                          );
 
@@ -487,7 +543,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out StopTransactionRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out StopTransactionRequest, OnException = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -496,18 +552,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="StopTransactionRequest">The parsed StopTransaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                      JSON,
                                        Request_Id                   RequestId,
-                                       ChargeBox_Id                 ChargeBoxId,
+                                       NetworkingNode_Id            NetworkingNodeId,
+                                       NetworkPath                  NetworkPath,
                                        out StopTransactionRequest?  StopTransactionRequest,
                                        out String?                  ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out StopTransactionRequest,
                         out ErrorResponse,
                         null);
@@ -518,13 +577,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="StopTransactionRequest">The parsed StopTransaction request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomStopTransactionRequestParser">A delegate to parse custom stop transaction requests.</param>
         public static Boolean TryParse(JObject                                               JSON,
                                        Request_Id                                            RequestId,
-                                       ChargeBox_Id                                          ChargeBoxId,
+                                       NetworkingNode_Id                                     NetworkingNodeId,
+                                       NetworkPath                                           NetworkPath,
                                        out StopTransactionRequest?                           StopTransactionRequest,
                                        out String?                                           ErrorResponse,
                                        CustomJObjectParserDelegate<StopTransactionRequest>?  CustomStopTransactionRequestParser)
@@ -614,35 +675,57 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                #region ChargeBoxId        [optional, OCPP_CSE]
+                #region Signatures         [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
-                                       out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
+                }
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                #endregion
 
+                #region CustomData         [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
 
                 StopTransactionRequest = new StopTransactionRequest(
-                                             ChargeBoxId,
+
+                                             NetworkingNodeId,
                                              TransactionId,
                                              Timestamp,
                                              MeterStop,
                                              IdTag,
                                              Reason,
                                              TransactionData,
-                                             RequestId
+
+                                             null,
+                                             null,
+                                             Signatures,
+
+                                             CustomData,
+
+                                             RequestId,
+                                             null,
+                                             null,
+                                             null,
+                                             NetworkPath
+
                                          );
 
                 if (CustomStopTransactionRequestParser is not null)
@@ -693,7 +776,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToJSON(CustomStopTransactionRequestRequestSerializer = null, CustomMeterValueSerializer = null, CustomSampledValueSerializer = null)
+        #region ToJSON(CustomStopTransactionRequestRequestSerializer = null, CustomMeterValueSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
@@ -701,6 +784,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="CustomStopTransactionRequestRequestSerializer">A delegate to serialize custom StopTransaction requests.</param>
         /// <param name="CustomMeterValueSerializer">A delegate to serialize custom meter values.</param>
         /// <param name="CustomSampledValueSerializer">A delegate to serialize custom sampled values.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<StopTransactionRequest>?  CustomStopTransactionRequestRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<MeterValue>?              CustomMeterValueSerializer                      = null,
                               CustomJObjectSerializerDelegate<SampledValue>?            CustomSampledValueSerializer                    = null,
@@ -725,6 +810,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                            TransactionData.SafeAny()
                                ? new JProperty("transactionData",   new JArray(TransactionData.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
                                                                                                                                       CustomSampledValueSerializer))))
+                               : null,
+
+                           Signatures.Any()
+                               ? new JProperty("signatures",        new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                               CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",        CustomData.   ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -829,26 +923,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return TransactionId.  GetHashCode()       * 17 ^
-                       StopTimestamp.  GetHashCode()       * 13 ^
-                       MeterStop.      GetHashCode()       * 11 ^
-                       TransactionData.CalcHashCode()      *  7 ^
-                      (IdTag?.         GetHashCode() ?? 0) *  5 ^
-                      (Reason?.        GetHashCode() ?? 0) *  3 ^
-
-                       base.           GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 

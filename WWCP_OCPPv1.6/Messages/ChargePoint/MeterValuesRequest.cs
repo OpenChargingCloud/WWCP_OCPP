@@ -33,10 +33,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// The meter values request.
     /// </summary>
-    public class MeterValuesRequest : ARequest<MeterValuesRequest>
+    public class MeterValuesRequest : ARequest<MeterValuesRequest>,
+                                      IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cp/meterValuesRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext            Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The connector identification at the charge point.
@@ -60,30 +76,52 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new meter values request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="ConnectorId">The connector identification at the charge point.</param>
         /// <param name="MeterValues">The sampled meter values with timestamps.</param>
         /// <param name="TransactionId">The charging transaction to which the given meter value samples are related to.</param>
         /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public MeterValuesRequest(ChargeBox_Id             ChargeBoxId,
-                                  Connector_Id             ConnectorId,
-                                  IEnumerable<MeterValue>  MeterValues,
-                                  Transaction_Id?          TransactionId       = null,
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public MeterValuesRequest(NetworkingNode_Id             NetworkingNodeId,
+                                  Connector_Id                  ConnectorId,
+                                  IEnumerable<MeterValue>       MeterValues,
+                                  Transaction_Id?               TransactionId       = null,
 
-                                  Request_Id?              RequestId           = null,
-                                  DateTime?                RequestTimestamp    = null,
-                                  TimeSpan?                RequestTimeout      = null,
-                                  EventTracking_Id?        EventTrackingId     = null,
-                                  CancellationToken        CancellationToken   = default)
+                                  IEnumerable<KeyPair>?         SignKeys            = null,
+                                  IEnumerable<SignInfo>?        SignInfos           = null,
+                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                  CustomData?                   CustomData          = null,
+
+                                  Request_Id?                   RequestId           = null,
+                                  DateTime?                     RequestTimestamp    = null,
+                                  TimeSpan?                     RequestTimeout      = null,
+                                  EventTracking_Id?             EventTrackingId     = null,
+                                  NetworkPath?                  NetworkPath         = null,
+                                  CancellationToken             CancellationToken   = default)
 
             : base(NetworkingNodeId,
-                   "MeterValues",
+                   nameof(MeterValuesRequest)[..^7],
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -94,6 +132,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             this.ConnectorId    = ConnectorId;
             this.TransactionId  = TransactionId;
             this.MeterValues    = MeterValues;
+
+
+            unchecked
+            {
+
+                hashCode = this.ConnectorId.  GetHashCode() * 7 ^
+                           this.TransactionId.GetHashCode() * 5 ^
+                           this.MeterValues.  GetHashCode() * 3 ^
+                           base.              GetHashCode();
+
+            }
 
         }
 
@@ -308,22 +357,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
+        #region (static) Parse   (XML,  RequestId, NetworkingNodeId)
 
         /// <summary>
         /// Parse the given XML representation of a meter values request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        public static MeterValuesRequest Parse(XElement      XML,
-                                               Request_Id    RequestId,
-                                               ChargeBox_Id  ChargeBoxId)
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        public static MeterValuesRequest Parse(XElement           XML,
+                                               Request_Id         RequestId,
+                                               NetworkingNode_Id  NetworkingNodeId)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         ChargeBoxId,
+                         NetworkingNodeId,
                          out var meterValuesRequest,
                          out var errorResponse))
             {
@@ -337,29 +386,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomMeterValuesRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomMeterValuesRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a meter values request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomMeterValuesRequestParser">A delegate to parse custom MeterValues requests.</param>
         public static MeterValuesRequest Parse(JObject                                           JSON,
                                                Request_Id                                        RequestId,
-                                               ChargeBox_Id                                      ChargeBoxId,
+                                               NetworkingNode_Id                                 NetworkingNodeId,
+                                               NetworkPath                                       NetworkPath,
                                                CustomJObjectParserDelegate<MeterValuesRequest>?  CustomMeterValuesRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var meterValuesRequest,
                          out var errorResponse,
-                         CustomMeterValuesRequestParser))
+                         CustomMeterValuesRequestParser) &&
+                meterValuesRequest is not null)
             {
-                return meterValuesRequest!;
+                return meterValuesRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a meter values request is invalid: " + errorResponse,
@@ -369,19 +422,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out MeterValuesRequest, out ErrorResponse)
+        #region (static) TryParse(XML,  RequestId, NetworkingNodeId, out MeterValuesRequest, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a meter values request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="MeterValuesRequest">The parsed meter values request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(XElement                 XML,
                                        Request_Id               RequestId,
-                                       ChargeBox_Id             ChargeBoxId,
+                                       NetworkingNode_Id        NetworkingNodeId,
                                        out MeterValuesRequest?  MeterValuesRequest,
                                        out String?              ErrorResponse)
         {
@@ -391,7 +444,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 MeterValuesRequest = new MeterValuesRequest(
 
-                                         ChargeBoxId,
+                                         NetworkingNodeId,
 
                                          XML.MapValueOrFail    (OCPPNS.OCPPv1_6_CS + "connectorId",
                                                                 Connector_Id.Parse),
@@ -402,7 +455,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                          XML.MapValueOrNullable(OCPPNS.OCPPv1_6_CS + "transactionId",
                                                                 Transaction_Id.Parse),
 
-                                         RequestId
+                                         RequestId: RequestId
 
                                      );
 
@@ -421,7 +474,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out MeterValuesRequest, out ErrorResponse, CustomMeterValuesRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out MeterValuesRequest, out ErrorResponse, CustomMeterValuesRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -430,18 +483,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="MeterValuesRequest">The parsed meter values request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                  JSON,
                                        Request_Id               RequestId,
-                                       ChargeBox_Id             ChargeBoxId,
+                                       NetworkingNode_Id        NetworkingNodeId,
+                                       NetworkPath              NetworkPath,
                                        out MeterValuesRequest?  MeterValuesRequest,
                                        out String?              ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out MeterValuesRequest,
                         out ErrorResponse,
                         null);
@@ -452,13 +508,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="MeterValuesRequest">The parsed MeterValues request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomMeterValuesRequestParser">A delegate to parse custom BootNotification requests.</param>
         public static Boolean TryParse(JObject                                           JSON,
                                        Request_Id                                        RequestId,
-                                       ChargeBox_Id                                      ChargeBoxId,
+                                       NetworkingNode_Id                                 NetworkingNodeId,
+                                       NetworkPath                                       NetworkPath,
                                        out MeterValuesRequest?                           MeterValuesRequest,
                                        out String?                                       ErrorResponse,
                                        CustomJObjectParserDelegate<MeterValuesRequest>?  CustomMeterValuesRequestParser)
@@ -511,32 +569,54 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                #region ChargeBoxId      [optional, OCPP_CSE]
+                #region Signatures       [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
-                                       out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
+                }
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                #endregion
 
+                #region CustomData       [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
 
                 MeterValuesRequest = new MeterValuesRequest(
-                                         ChargeBoxId,
+
+                                         NetworkingNodeId,
                                          ConnectorId,
                                          MeterValues,
                                          TransactionId,
-                                         RequestId
+
+                                         null,
+                                         null,
+                                         Signatures,
+
+                                         CustomData,
+
+                                         RequestId,
+                                         null,
+                                         null,
+                                         null,
+                                         NetworkPath
+
                                      );
 
                 if (CustomMeterValuesRequestParser is not null)
@@ -606,6 +686,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                            MeterValues.SafeAny()
                                ? new JProperty("meterValue",      new JArray(MeterValues.Select(meterValue => meterValue.ToJSON(CustomMeterValueSerializer,
                                                                                                                                 CustomSampledValueSerializer))))
+                               : null,
+
+                           Signatures.Any()
+                               ? new JProperty("signatures",      new JArray(Signatures. Select(signature  => signature. ToJSON(CustomSignatureSerializer,
+                                                                                                                                CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",      CustomData.         ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );
@@ -705,23 +794,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return ConnectorId.   GetHashCode()       * 7 ^
-                       MeterValues.   CalcHashCode()      * 5 ^
-                      (TransactionId?.GetHashCode() ?? 0) * 3 ^
-
-                       base.          GetHashCode();
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -732,13 +811,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(ConnectorId,
+            => String.Concat(
 
-                             TransactionId.HasValue
-                                 ? " / " + TransactionId.Value
-                                 : "",
+                   $"{MeterValues.Count()} meter value(s) from connector {ConnectorId}",
 
-                             ", ", MeterValues.Count(), " meter value(s)");
+                   TransactionId.HasValue
+                       ? $", {TransactionId.Value}"
+                       : ""
+
+               );
 
         #endregion
 

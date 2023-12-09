@@ -17,14 +17,10 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv1_6.CP;
-using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
 
 #endregion
 
@@ -39,9 +35,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Request">The stop transaction request.</param>
     public delegate Task
 
-        OnSignedFirmwareStatusNotificationRequestDelegate(DateTime                                     Timestamp,
-                                                          IEventSender                                 Sender,
-                                                          CP.SignedFirmwareStatusNotificationRequest   Request);
+        OnSignedFirmwareStatusNotificationRequestDelegate(DateTime                                  Timestamp,
+                                                          IEventSender                              Sender,
+                                                          SignedFirmwareStatusNotificationRequest   Request);
 
 
     /// <summary>
@@ -54,11 +50,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SignedFirmwareStatusNotificationResponse>
 
-        OnSignedFirmwareStatusNotificationDelegate(DateTime                                     Timestamp,
-                                                   IEventSender                                 Sender,
-                                                   WebSocketServerConnection                    Connection,
-                                                   CP.SignedFirmwareStatusNotificationRequest   Request,
-                                                   CancellationToken                            CancellationToken);
+        OnSignedFirmwareStatusNotificationDelegate(DateTime                                  Timestamp,
+                                                   IEventSender                              Sender,
+                                                   WebSocketServerConnection                 Connection,
+                                                   SignedFirmwareStatusNotificationRequest   Request,
+                                                   CancellationToken                         CancellationToken);
 
 
     /// <summary>
@@ -71,10 +67,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnSignedFirmwareStatusNotificationResponseDelegate(DateTime                                      Timestamp,
-                                                           IEventSender                                  Sender,
-                                                           CP.SignedFirmwareStatusNotificationRequest    Request,
-                                                           CS.SignedFirmwareStatusNotificationResponse   Response,
-                                                           TimeSpan                                      Runtime);
+        OnSignedFirmwareStatusNotificationResponseDelegate(DateTime                                   Timestamp,
+                                                           IEventSender                               Sender,
+                                                           SignedFirmwareStatusNotificationRequest    Request,
+                                                           SignedFirmwareStatusNotificationResponse   Response,
+                                                           TimeSpan                                   Runtime);
 
 }

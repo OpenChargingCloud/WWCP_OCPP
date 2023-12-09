@@ -475,15 +475,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Status,
+            => String.Concat(
 
-                             ParentIdTag.HasValue
-                                 ? " (" + ParentIdTag.Value + ")"
-                                 : "",
+                   Status,
 
-                             ExpiryDate.HasValue
-                                 ? " valid till " + ExpiryDate.Value.ToIso8601()
-                                 : "");
+                   ParentIdTag.HasValue
+                       ? $" ({ParentIdTag.Value})"
+                       : "",
+
+                   ExpiryDate.HasValue
+                       ? " valid till " + ExpiryDate.Value.ToIso8601()
+                       : ""
+
+               );
 
         #endregion
 

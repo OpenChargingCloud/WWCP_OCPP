@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a StatusNotification WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                   OnStatusNotificationWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                OnStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a StatusNotification request was received.
         /// </summary>
-        public event OnStatusNotificationRequestDelegate?          OnStatusNotificationRequest;
+        public event OnStatusNotificationRequestDelegate?         OnStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a StatusNotification request was received.
         /// </summary>
-        public event OnStatusNotificationDelegate?                 OnStatusNotification;
+        public event OnStatusNotificationDelegate?                OnStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a StatusNotification request was sent.
         /// </summary>
-        public event OnStatusNotificationResponseDelegate?         OnStatusNotificationResponse;
+        public event OnStatusNotificationResponseDelegate?        OnStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a StatusNotification request was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnStatusNotificationWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnStatusNotificationWSResponse;
 
         #endregion
 

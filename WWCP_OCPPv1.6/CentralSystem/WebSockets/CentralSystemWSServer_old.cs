@@ -64,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
     public delegate Task OnWebSocketTextMessageResponseDelegate  (DateTime                    Timestamp,
-                                                                  CentralSystemWSServer       Server,
+                                                                  CentralSystemWSServer_old       Server,
                                                                   WebSocketServerConnection   Connection,
                                                                   EventTracking_Id            EventTrackingId,
                                                                   DateTime                    RequestTimestamp,
@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// The central system HTTP/WebSocket/JSON server.
     /// </summary>
-    public class CentralSystemWSServer : WebSocketServer,
+    public class CentralSystemWSServer_old : WebSocketServer,
                                          ICentralSystem
     {
 
@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                              requests                      = [];
 
-        private const           String                                                                          LogfileName                   = "CentralSystemWSServer.log";
+        private const           String                                                                          LogfileName                   = "CentralSystemWSServer_old.log";
 
         public  const           String                                                                          chargeBoxId_WebSocketKey      = "chargeBoxId";
         public  const           String                                                                          networkingMode_WebSocketKey   = "networkingMode";
@@ -1270,7 +1270,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public CentralSystemWSServer(String                               HTTPServiceName              = DefaultHTTPServiceName,
+        public CentralSystemWSServer_old(String                               HTTPServiceName              = DefaultHTTPServiceName,
                                      IIPAddress?                          IPAddress                    = null,
                                      IPPort?                              TCPPort                      = null,
 
@@ -1420,15 +1420,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     if (ChargingBoxLogins.TryGetValue(ChargeBox_Id.Parse(basicAuthentication.Username), out var password) &&
                         basicAuthentication.Password == password)
                     {
-                        DebugX.Log(nameof(CentralSystemWSServer), " connection from " + Connection.RemoteSocket + " using authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
+                        DebugX.Log(nameof(CentralSystemWSServer_old), " connection from " + Connection.RemoteSocket + " using authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
                         return Task.FromResult<HTTPResponse?>(null);
                     }
                     else
-                        DebugX.Log(nameof(CentralSystemWSServer), " connection from " + Connection.RemoteSocket + " invalid authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
+                        DebugX.Log(nameof(CentralSystemWSServer_old), " connection from " + Connection.RemoteSocket + " invalid authorization: " + basicAuthentication.Username + "/" + basicAuthentication.Password);
 
                 }
                 else
-                    DebugX.Log(nameof(CentralSystemWSServer), " connection from " + Connection.RemoteSocket + " missing authorization!");
+                    DebugX.Log(nameof(CentralSystemWSServer_old), " connection from " + Connection.RemoteSocket + " missing authorization!");
 
                 return Task.FromResult<HTTPResponse?>(
                            new HTTPResponse.Builder() {
@@ -1483,7 +1483,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         else
                         {
 
-                            DebugX.Log($"{nameof(CentralSystemWSServer)} Duplicate networking node '{chargeBoxId}' detected!");
+                            DebugX.Log($"{nameof(CentralSystemWSServer_old)} Duplicate networking node '{chargeBoxId}' detected!");
 
                             var oldChargeBox_WebSocketConnection = value.Item1;
 
@@ -1497,7 +1497,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                             catch (Exception e)
                             {
                                 await HandleErrors(
-                                          nameof(CentralSystemWSServer),
+                                          nameof(CentralSystemWSServer_old),
                                           nameof(ProcessNewWebSocketConnection),
                                           e,
                                           "Closing old HTTP WebSocket connection failed!"
@@ -1526,7 +1526,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     else
                     {
 
-                        DebugX.Log($"{nameof(CentralSystemWSServer)} Duplicate charging station '{chargeBoxId}' detected!");
+                        DebugX.Log($"{nameof(CentralSystemWSServer_old)} Duplicate charging station '{chargeBoxId}' detected!");
 
                         var oldChargingStation_WebSocketConnection = value.Item1;
 
@@ -1539,7 +1539,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log($"{nameof(CentralSystemWSServer)} Closing old HTTP WebSocket connection failed: {e.Message}");
+                            DebugX.Log($"{nameof(CentralSystemWSServer_old)} Closing old HTTP WebSocket connection failed: {e.Message}");
                         }
 
                     }
@@ -1576,7 +1576,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 catch (Exception e)
                 {
                     await HandleErrors(
-                              nameof(CentralSystemWSServer),
+                              nameof(CentralSystemWSServer_old),
                               nameof(OnCentralSystemNewWebSocketConnection),
                               e
                           );
@@ -1631,7 +1631,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     catch (Exception e)
                     {
                         await HandleErrors(
-                                  nameof(CentralSystemWSServer),
+                                  nameof(CentralSystemWSServer_old),
                                   nameof(OnCentralSystemCloseMessageReceived),
                                   e
                               );
@@ -1668,7 +1668,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (OCPPTextMessage.Trim().IsNullOrEmpty())
             {
 
-                DebugX.Log(nameof(CentralSystemWSServer) + " The given OCPP message must not be null or empty!");
+                DebugX.Log(nameof(CentralSystemWSServer_old) + " The given OCPP message must not be null or empty!");
 
                 // "No response" to the charge point!
                 return new WebSocketTextMessageResponse(
@@ -1781,7 +1781,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnBootNotificationWSRequest));
                                     }
 
                                     #endregion
@@ -1808,7 +1808,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnBootNotificationRequest));
                                             }
 
                                             #endregion
@@ -1850,7 +1850,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnBootNotificationResponse));
                                             }
 
                                             #endregion
@@ -1903,7 +1903,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnBootNotificationWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnBootNotificationWSResponse));
                                     }
 
                                     #endregion
@@ -1930,7 +1930,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnHeartbeatWSRequest));
                                     }
 
                                     #endregion
@@ -1957,7 +1957,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnHeartbeatRequest));
                                             }
 
                                             #endregion
@@ -1999,7 +1999,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnHeartbeatResponse));
                                             }
 
                                             #endregion
@@ -2052,752 +2052,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnHeartbeatWSResponse));
-                                    }
-
-                                    #endregion
-
-                                }
-                                break;
-
-                            #endregion
-
-
-                            #region Authorize
-
-                            case "Authorize":
-                                {
-
-                                    #region Send OnAuthorizeWSRequest event
-
-                                    try
-                                    {
-
-                                        OnAuthorizeWSRequest?.Invoke(Timestamp.Now,
-                                                                     this,
-                                                                     json);
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeWSRequest));
-                                    }
-
-                                    #endregion
-
-                                    try
-                                    {
-
-                                        if (AuthorizeRequest.TryParse(requestData,
-                                                                      requestId.Value,
-                                                                      chargeBoxId.Value,
-                                                                      out var request,
-                                                                      out var errorResponse,
-                                                                      CustomAuthorizeRequestParser) && request is not null) {
-
-                                            #region Send OnAuthorizeRequest event
-
-                                            try
-                                            {
-
-                                                OnAuthorizeRequest?.Invoke(Timestamp.Now,
-                                                                           this,
-                                                                           request);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeRequest));
-                                            }
-
-                                            #endregion
-
-                                            #region Call async subscribers
-
-                                            AuthorizeResponse? response = null;
-
-                                            var responseTasks = OnAuthorize?.
-                                                                    GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                         this,
-                                                                                                                                         Connection,
-                                                                                                                                         request,
-                                                                                                                                         CancellationToken)).
-                                                                    ToArray();
-
-                                            if (responseTasks?.Length > 0)
-                                            {
-                                                await Task.WhenAll(responseTasks!);
-                                                response = responseTasks.FirstOrDefault()?.Result;
-                                            }
-
-                                            response ??= AuthorizeResponse.Failed(request);
-
-                                            #endregion
-
-                                            #region Send OnAuthorizeResponse event
-
-                                            try
-                                            {
-
-                                                OnAuthorizeResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            request,
-                                                                            response,
-                                                                            response.Runtime);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeResponse));
-                                            }
-
-                                            #endregion
-
-                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
-                                                               requestId.Value,
-                                                               response.ToJSON()
-                                                           );
-
-                                        }
-
-                                        else
-                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                    requestId.Value,
-                                                                    ResultCode.FormationViolation,
-                                                                    "The given 'Authorize' request could not be parsed!",
-                                                                    new JObject(
-                                                                        new JProperty("request",       OCPPTextMessage),
-                                                                        new JProperty("errorResponse", errorResponse)
-                                                                    )
-                                                                );
-
-                                    }
-                                    catch (Exception e)
-                                    {
-
-                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                requestId.Value,
-                                                                ResultCode.FormationViolation,
-                                                                "Processing the given 'Authorize' request led to an exception!",
-                                                                JSONObject.Create(
-                                                                    new JProperty("request",    OCPPTextMessage),
-                                                                    new JProperty("exception",  e.Message),
-                                                                    new JProperty("stacktrace", e.StackTrace)
-                                                                )
-                                                            );
-
-                                    }
-
-                                    #region Send OnAuthorizeWSResponse event
-
-                                    try
-                                    {
-
-                                        OnAuthorizeWSResponse?.Invoke(Timestamp.Now,
-                                                                      this,
-                                                                      json,
-                                                                      OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnAuthorizeWSResponse));
-                                    }
-
-                                    #endregion
-
-                                }
-                                break;
-
-                            #endregion
-
-                            #region StartTransaction
-
-                            case "StartTransaction":
-                                {
-
-                                    #region Send OnStartTransactionWSRequest event
-
-                                    try
-                                    {
-
-                                        OnStartTransactionWSRequest?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            json);
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionWSRequest));
-                                    }
-
-                                    #endregion
-
-                                    try
-                                    {
-
-                                        if (StartTransactionRequest.TryParse(requestData,
-                                                                             requestId.Value,
-                                                                             chargeBoxId.Value,
-                                                                             out var request,
-                                                                             out var errorResponse,
-                                                                             CustomStartTransactionRequestParser) && request is not null) {
-
-                                            #region Send OnStartTransactionRequest event
-
-                                            try
-                                            {
-
-                                                OnStartTransactionRequest?.Invoke(Timestamp.Now,
-                                                                                  this,
-                                                                                  request);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionRequest));
-                                            }
-
-                                            #endregion
-
-                                            #region Call async subscribers
-
-                                            StartTransactionResponse? response = null;
-
-                                            var responseTasks = OnStartTransaction?.
-                                                                    GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnStartTransactionDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                                this,
-                                                                                                                                                Connection,
-                                                                                                                                                request,
-                                                                                                                                                CancellationToken)).
-                                                                    ToArray();
-
-                                            if (responseTasks?.Length > 0)
-                                            {
-                                                await Task.WhenAll(responseTasks!);
-                                                response = responseTasks.FirstOrDefault()?.Result;
-                                            }
-
-                                            response ??= StartTransactionResponse.Failed(request);
-
-                                            #endregion
-
-                                            #region Send OnStartTransactionResponse event
-
-                                            try
-                                            {
-
-                                                OnStartTransactionResponse?.Invoke(Timestamp.Now,
-                                                                                   this,
-                                                                                   request,
-                                                                                   response,
-                                                                                   response.Runtime);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionResponse));
-                                            }
-
-                                            #endregion
-
-                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
-                                                               requestId.Value,
-                                                               response.ToJSON()
-                                                           );
-
-                                        }
-
-                                        else
-                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                    requestId.Value,
-                                                                    ResultCode.FormationViolation,
-                                                                    "The given 'StartTransaction' request could not be parsed!",
-                                                                    new JObject(
-                                                                        new JProperty("request",       OCPPTextMessage),
-                                                                        new JProperty("errorResponse", errorResponse)
-                                                                    )
-                                                                );
-
-                                    }
-                                    catch (Exception e)
-                                    {
-
-                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                requestId.Value,
-                                                                ResultCode.FormationViolation,
-                                                                "Processing the given 'StartTransaction' request led to an exception!",
-                                                                JSONObject.Create(
-                                                                    new JProperty("request",    OCPPTextMessage),
-                                                                    new JProperty("exception",  e.Message),
-                                                                    new JProperty("stacktrace", e.StackTrace)
-                                                                ));
-
-                                    }
-
-                                    #region Send OnStartTransactionWSResponse event
-
-                                    try
-                                    {
-
-                                        OnStartTransactionWSResponse?.Invoke(Timestamp.Now,
-                                                                             this,
-                                                                             json,
-                                                                             OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStartTransactionWSResponse));
-                                    }
-
-                                    #endregion
-
-                                }
-                                break;
-
-                            #endregion
-
-                            #region StatusNotification
-
-                            case "StatusNotification":
-                                {
-
-                                    #region Send OnStatusNotificationWSRequest event
-
-                                    try
-                                    {
-
-                                        OnStatusNotificationWSRequest?.Invoke(Timestamp.Now,
-                                                                              this,
-                                                                              json);
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationWSRequest));
-                                    }
-
-                                    #endregion
-
-                                    try
-                                    {
-
-                                        if (StatusNotificationRequest.TryParse(requestData,
-                                                                               requestId.Value,
-                                                                               chargeBoxId.Value,
-                                                                               out var request,
-                                                                               out var errorResponse,
-                                                                               CustomStatusNotificationRequestParser) && request is not null) {
-
-                                            #region Send OnStatusNotificationRequest event
-
-                                            try
-                                            {
-
-                                                OnStatusNotificationRequest?.Invoke(Timestamp.Now,
-                                                                                    this,
-                                                                                    request);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationRequest));
-                                            }
-
-                                            #endregion
-
-                                            #region Call async subscribers
-
-                                            StatusNotificationResponse? response = null;
-
-                                            var responseTasks = OnStatusNotification?.
-                                                                    GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                                  this,
-                                                                                                                                                  Connection,
-                                                                                                                                                  request,
-                                                                                                                                                  CancellationToken)).
-                                                                    ToArray();
-
-                                            if (responseTasks?.Length > 0)
-                                            {
-                                                await Task.WhenAll(responseTasks!);
-                                                response = responseTasks.FirstOrDefault()?.Result;
-                                            }
-
-                                            response ??= StatusNotificationResponse.Failed(request);
-
-                                            #endregion
-
-                                            #region Send OnStatusNotificationResponse event
-
-                                            try
-                                            {
-
-                                                OnStatusNotificationResponse?.Invoke(Timestamp.Now,
-                                                                                     this,
-                                                                                     request,
-                                                                                     response,
-                                                                                     response.Runtime);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationResponse));
-                                            }
-
-                                            #endregion
-
-                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
-                                                               requestId.Value,
-                                                               response.ToJSON()
-                                                           );
-
-                                        }
-
-                                        else
-                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                    requestId.Value,
-                                                                    ResultCode.FormationViolation,
-                                                                    "The given 'StatusNotification' request could not be parsed!",
-                                                                    new JObject(
-                                                                        new JProperty("request",       OCPPTextMessage),
-                                                                        new JProperty("errorResponse", errorResponse)
-                                                                    )
-                                                                );
-
-                                    }
-                                    catch (Exception e)
-                                    {
-
-                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                requestId.Value,
-                                                                ResultCode.FormationViolation,
-                                                                "Processing the given 'StatusNotification' request led to an exception!",
-                                                                JSONObject.Create(
-                                                                    new JProperty("request",    OCPPTextMessage),
-                                                                    new JProperty("exception",  e.Message),
-                                                                    new JProperty("stacktrace", e.StackTrace)
-                                                                )
-                                                            );
-
-                                    }
-
-                                    #region Send OnStatusNotificationWSResponse event
-
-                                    try
-                                    {
-
-                                        OnStatusNotificationWSResponse?.Invoke(Timestamp.Now,
-                                                                               this,
-                                                                               json,
-                                                                               OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStatusNotificationWSResponse));
-                                    }
-
-                                    #endregion
-
-                                }
-                                break;
-
-                            #endregion
-
-                            #region MeterValues
-
-                            case "MeterValues":
-                                {
-
-                                    #region Send OnMeterValuesWSRequest event
-
-                                    try
-                                    {
-
-                                        OnMeterValuesWSRequest?.Invoke(Timestamp.Now,
-                                                                       this,
-                                                                       json);
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesWSRequest));
-                                    }
-
-                                    #endregion
-
-                                    try
-                                    {
-
-                                        if (MeterValuesRequest.TryParse(requestData,
-                                                                        requestId.Value,
-                                                                        chargeBoxId.Value,
-                                                                        out var request,
-                                                                        out var errorResponse,
-                                                                        CustomMeterValuesRequestParser) && request is not null) {
-
-                                            #region Send OnMeterValuesRequest event
-
-                                            try
-                                            {
-
-                                                OnMeterValuesRequest?.Invoke(Timestamp.Now,
-                                                                             this,
-                                                                             request);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesRequest));
-                                            }
-
-                                            #endregion
-
-                                            #region Call async subscribers
-
-                                            MeterValuesResponse? response = null;
-
-                                            var responseTasks = OnMeterValues?.
-                                                                    GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                           this,
-                                                                                                                                           Connection,
-                                                                                                                                           request,
-                                                                                                                                           CancellationToken)).
-                                                                    ToArray();
-
-                                            if (responseTasks?.Length > 0)
-                                            {
-                                                await Task.WhenAll(responseTasks!);
-                                                response = responseTasks.FirstOrDefault()?.Result;
-                                            }
-
-                                            response ??= MeterValuesResponse.Failed(request);
-
-                                            #endregion
-
-                                            #region Send OnMeterValuesResponse event
-
-                                            try
-                                            {
-
-                                                OnMeterValuesResponse?.Invoke(Timestamp.Now,
-                                                                              this,
-                                                                              request,
-                                                                              response,
-                                                                              response.Runtime);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesResponse));
-                                            }
-
-                                            #endregion
-
-                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
-                                                               requestId.Value,
-                                                               response.ToJSON()
-                                                           );
-
-                                        }
-
-                                        else
-                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                    requestId.Value,
-                                                                    ResultCode.FormationViolation,
-                                                                    "The given 'MeterValues' request could not be parsed!",
-                                                                    new JObject(
-                                                                        new JProperty("request",       OCPPTextMessage),
-                                                                        new JProperty("errorResponse", errorResponse)
-                                                                    )
-                                                                );
-
-                                    }
-                                    catch (Exception e)
-                                    {
-
-                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                requestId.Value,
-                                                                ResultCode.FormationViolation,
-                                                                "Processing the given 'MeterValues' request led to an exception!",
-                                                                JSONObject.Create(
-                                                                    new JProperty("request",     OCPPTextMessage),
-                                                                    new JProperty("exception",   e.Message),
-                                                                    new JProperty("stacktrace",  e.StackTrace)
-                                                                )
-                                                            );
-
-                                    }
-
-                                    #region Send OnMeterValuesWSResponse event
-
-                                    try
-                                    {
-
-                                        OnMeterValuesWSResponse?.Invoke(Timestamp.Now,
-                                                                        this,
-                                                                        json,
-                                                                        OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesWSResponse));
-                                    }
-
-                                    #endregion
-
-                                }
-                                break;
-
-                            #endregion
-
-                            #region StopTransaction
-
-                            case "StopTransaction":
-                                {
-
-                                    #region Send OnStopTransactionWSRequest event
-
-                                    try
-                                    {
-
-                                        OnStopTransactionWSRequest?.Invoke(Timestamp.Now,
-                                                                           this,
-                                                                           json);
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionWSRequest));
-                                    }
-
-                                    #endregion
-
-                                    try
-                                    {
-
-                                        if (StopTransactionRequest.TryParse(requestData,
-                                                                             requestId.Value,
-                                                                             chargeBoxId.Value,
-                                                                             out var request,
-                                                                             out var errorResponse,
-                                                                             CustomStopTransactionRequestParser) && request is not null) {
-
-                                            #region Send OnStopTransactionRequest event
-
-                                            try
-                                            {
-
-                                                OnStopTransactionRequest?.Invoke(Timestamp.Now,
-                                                                                 this,
-                                                                                 request);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionRequest));
-                                            }
-
-                                            #endregion
-
-                                            #region Call async subscribers
-
-                                            StopTransactionResponse? response = null;
-
-                                            var responseTasks = OnStopTransaction?.
-                                                                    GetInvocationList()?.
-                                                                    SafeSelect(subscriber => (subscriber as OnStopTransactionDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                               this,
-                                                                                                                                               Connection,
-                                                                                                                                               request,
-                                                                                                                                               CancellationToken)).
-                                                                    ToArray();
-
-                                            if (responseTasks?.Length > 0)
-                                            {
-                                                await Task.WhenAll(responseTasks!);
-                                                response = responseTasks.FirstOrDefault()?.Result;
-                                            }
-
-                                            response ??= StopTransactionResponse.Failed(request);
-
-                                            #endregion
-
-                                            #region Send OnStopTransactionResponse event
-
-                                            try
-                                            {
-
-                                                OnStopTransactionResponse?.Invoke(Timestamp.Now,
-                                                                                  this,
-                                                                                  request,
-                                                                                  response,
-                                                                                  response.Runtime);
-
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionResponse));
-                                            }
-
-                                            #endregion
-
-                                            OCPPResponse = new OCPP_WebSocket_ResponseMessage(
-                                                               requestId.Value,
-                                                               response.ToJSON()
-                                                           );
-
-                                        }
-
-                                        else
-                                            OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                    requestId.Value,
-                                                                    ResultCode.FormationViolation,
-                                                                    "The given 'StopTransaction' request could not be parsed!",
-                                                                    new JObject(
-                                                                        new JProperty("request",       OCPPTextMessage),
-                                                                        new JProperty("errorResponse", errorResponse)
-                                                                    )
-                                                                );
-
-                                    }
-                                    catch (Exception e)
-                                    {
-
-                                        OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
-                                                                requestId.Value,
-                                                                ResultCode.FormationViolation,
-                                                                "Processing the given 'StopTransaction' request led to an exception!",
-                                                                JSONObject.Create(
-                                                                    new JProperty("request",    OCPPTextMessage),
-                                                                    new JProperty("exception",  e.Message),
-                                                                    new JProperty("stacktrace", e.StackTrace)
-                                                                )
-                                                            );
-
-                                    }
-
-                                    #region Send OnStopTransactionWSResponse event
-
-                                    try
-                                    {
-
-                                        OnStopTransactionWSResponse?.Invoke(Timestamp.Now,
-                                                                            this,
-                                                                            json,
-                                                                            OCPPResponse?.ToJSON() ?? OCPPErrorResponse?.ToJSON() ?? new JArray());
-
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnStopTransactionWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnHeartbeatWSResponse));
                                     }
 
                                     #endregion
@@ -2825,7 +2080,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnIncomingDataTransferWSRequest));
                                     }
 
                                     #endregion
@@ -2852,7 +2107,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnIncomingDataTransferRequest));
                                             }
 
                                             #endregion
@@ -2894,7 +2149,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnIncomingDataTransferResponse));
                                             }
 
                                             #endregion
@@ -2947,7 +2202,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnIncomingDataTransferWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnIncomingDataTransferWSResponse));
                                     }
 
                                     #endregion
@@ -2974,7 +2229,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDiagnosticsStatusNotificationWSRequest));
                                     }
 
                                     #endregion
@@ -3001,7 +2256,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDiagnosticsStatusNotificationRequest));
                                             }
 
                                             #endregion
@@ -3043,7 +2298,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDiagnosticsStatusNotificationResponse));
                                             }
 
                                             #endregion
@@ -3096,7 +2351,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDiagnosticsStatusNotificationWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDiagnosticsStatusNotificationWSResponse));
                                     }
 
                                     #endregion
@@ -3123,7 +2378,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnFirmwareStatusNotificationWSRequest));
                                     }
 
                                     #endregion
@@ -3150,7 +2405,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnFirmwareStatusNotificationRequest));
                                             }
 
                                             #endregion
@@ -3192,7 +2447,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnFirmwareStatusNotificationResponse));
                                             }
 
                                             #endregion
@@ -3245,7 +2500,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnFirmwareStatusNotificationWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnFirmwareStatusNotificationWSResponse));
                                     }
 
                                     #endregion
@@ -3275,7 +2530,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnLogStatusNotificationWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnLogStatusNotificationWSRequest));
                                     }
 
                                     #endregion
@@ -3302,7 +2557,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnLogStatusNotificationRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnLogStatusNotificationRequest));
                                             }
 
                                             #endregion
@@ -3344,7 +2599,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnLogStatusNotificationResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnLogStatusNotificationResponse));
                                             }
 
                                             #endregion
@@ -3397,7 +2652,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnLogStatusNotificationWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnLogStatusNotificationWSResponse));
                                     }
 
                                     #endregion
@@ -3424,7 +2679,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSecurityEventNotificationWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSecurityEventNotificationWSRequest));
                                     }
 
                                     #endregion
@@ -3451,7 +2706,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSecurityEventNotificationRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSecurityEventNotificationRequest));
                                             }
 
                                             #endregion
@@ -3493,7 +2748,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSecurityEventNotificationResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSecurityEventNotificationResponse));
                                             }
 
                                             #endregion
@@ -3546,7 +2801,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSecurityEventNotificationWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSecurityEventNotificationWSResponse));
                                     }
 
                                     #endregion
@@ -3573,7 +2828,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignCertificateWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignCertificateWSRequest));
                                     }
 
                                     #endregion
@@ -3600,7 +2855,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignCertificateRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignCertificateRequest));
                                             }
 
                                             #endregion
@@ -3642,7 +2897,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignCertificateResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignCertificateResponse));
                                             }
 
                                             #endregion
@@ -3695,7 +2950,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignCertificateWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignCertificateWSResponse));
                                     }
 
                                     #endregion
@@ -3722,7 +2977,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignedFirmwareStatusNotificationWSRequest));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignedFirmwareStatusNotificationWSRequest));
                                     }
 
                                     #endregion
@@ -3749,7 +3004,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignedFirmwareStatusNotificationRequest));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignedFirmwareStatusNotificationRequest));
                                             }
 
                                             #endregion
@@ -3791,7 +3046,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             }
                                             catch (Exception e)
                                             {
-                                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignedFirmwareStatusNotificationResponse));
+                                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignedFirmwareStatusNotificationResponse));
                                             }
 
                                             #endregion
@@ -3844,7 +3099,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     }
                                     catch (Exception e)
                                     {
-                                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignedFirmwareStatusNotificationWSResponse));
+                                        DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignedFirmwareStatusNotificationWSResponse));
                                     }
 
                                     #endregion
@@ -3857,7 +3112,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                             default:
 
-                                DebugX.Log($"{nameof(CentralSystemWSServer)}: The OCPP message '{action}' is unkown!");
+                                DebugX.Log($"{nameof(CentralSystemWSServer_old)}: The OCPP message '{action}' is unkown!");
 
                                 OCPPErrorResponse = new OCPP_WebSocket_ErrorMessage(
                                                          requestId.Value,
@@ -3889,7 +3144,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         }
                         catch (Exception e)
                         {
-                            DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnTextMessageResponseSent));
+                            DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnTextMessageResponseSent));
                         }
 
                         #endregion
@@ -3945,7 +3200,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnTextMessageResponseReceived));
+                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnTextMessageResponseReceived));
                             }
 
                             #endregion
@@ -4022,7 +3277,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     // It does not make much sense to send this error to a charging station as no one will read it there!
-                    DebugX.Log(nameof(CentralSystemWSServer) + " The OCPP message '" + OCPPTextMessage + "' is invalid!");
+                    DebugX.Log(nameof(CentralSystemWSServer_old) + " The OCPP message '" + OCPPTextMessage + "' is invalid!");
 
                     //new WSErrorMessage(Request_Id.Parse(JSON.Count >= 2 ? JSON[1]?.Value<String>()?.Trim() : "unknown"),
                     //                                  WSErrorCodes.FormationViolation,
@@ -4041,7 +3296,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 // It does not make much sense to send this error to a charging station as no one will read it there!
-                DebugX.LogException(e, "The OCPP message '" + OCPPTextMessage + "' received in " + nameof(CentralSystemWSServer) + " led to an exception!");
+                DebugX.LogException(e, "The OCPP message '" + OCPPTextMessage + "' received in " + nameof(CentralSystemWSServer_old) + " led to an exception!");
 
                 //ErrorMessage = new WSErrorMessage(Request_Id.Parse(JSON != null && JSON.Count >= 2
                 //                                                       ? JSON?[1].Value<String>()?.Trim()
@@ -4141,7 +3396,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         //            }
         //            catch (Exception e)
         //            {
-        //                DebugX.Log(String.Concat(nameof(CentralSystemWSServer), ".", nameof(SendRequest), " exception occured: ", e.Message));
+        //                DebugX.Log(String.Concat(nameof(CentralSystemWSServer_old), ".", nameof(SendRequest), " exception occured: ", e.Message));
         //            }
 
         //        }
@@ -4294,7 +3549,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnResetRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnResetRequest));
             }
 
             #endregion
@@ -4346,7 +3601,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnResetResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnResetResponse));
             }
 
             #endregion
@@ -4375,7 +3630,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnChangeAvailabilityRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeAvailabilityRequest));
             }
 
             #endregion
@@ -4429,7 +3684,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnChangeAvailabilityResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeAvailabilityResponse));
             }
 
             #endregion
@@ -4458,7 +3713,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetConfigurationRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetConfigurationRequest));
             }
 
             #endregion
@@ -4512,7 +3767,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetConfigurationResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetConfigurationResponse));
             }
 
             #endregion
@@ -4541,7 +3796,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnChangeConfigurationRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeConfigurationRequest));
             }
 
             #endregion
@@ -4595,7 +3850,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnChangeConfigurationResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeConfigurationResponse));
             }
 
             #endregion
@@ -4624,7 +3879,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDataTransferRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDataTransferRequest));
             }
 
             #endregion
@@ -4676,7 +3931,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDataTransferResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDataTransferResponse));
             }
 
             #endregion
@@ -4705,7 +3960,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetDiagnosticsRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetDiagnosticsRequest));
             }
 
             #endregion
@@ -4757,7 +4012,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetDiagnosticsResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetDiagnosticsResponse));
             }
 
             #endregion
@@ -4786,7 +4041,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnTriggerMessageRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnTriggerMessageRequest));
             }
 
             #endregion
@@ -4838,7 +4093,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnTriggerMessageResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnTriggerMessageResponse));
             }
 
             #endregion
@@ -4867,7 +4122,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnUpdateFirmwareRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUpdateFirmwareRequest));
             }
 
             #endregion
@@ -4919,7 +4174,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnUpdateFirmwareResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUpdateFirmwareResponse));
             }
 
             #endregion
@@ -4949,7 +4204,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnReserveNowRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnReserveNowRequest));
             }
 
             #endregion
@@ -5001,7 +4256,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnReserveNowResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnReserveNowResponse));
             }
 
             #endregion
@@ -5030,7 +4285,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnCancelReservationRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCancelReservationRequest));
             }
 
             #endregion
@@ -5082,7 +4337,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnCancelReservationResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCancelReservationResponse));
             }
 
             #endregion
@@ -5111,7 +4366,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnRemoteStartTransactionRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStartTransactionRequest));
             }
 
             #endregion
@@ -5168,7 +4423,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnRemoteStartTransactionResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStartTransactionResponse));
             }
 
             #endregion
@@ -5197,7 +4452,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnRemoteStopTransactionRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStopTransactionRequest));
             }
 
             #endregion
@@ -5249,7 +4504,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnRemoteStopTransactionResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStopTransactionResponse));
             }
 
             #endregion
@@ -5278,7 +4533,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSetChargingProfileRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSetChargingProfileRequest));
             }
 
             #endregion
@@ -5330,7 +4585,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSetChargingProfileResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSetChargingProfileResponse));
             }
 
             #endregion
@@ -5359,7 +4614,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnClearChargingProfileRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearChargingProfileRequest));
             }
 
             #endregion
@@ -5411,7 +4666,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnClearChargingProfileResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearChargingProfileResponse));
             }
 
             #endregion
@@ -5441,7 +4696,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetCompositeScheduleRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetCompositeScheduleRequest));
             }
 
             #endregion
@@ -5493,7 +4748,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetCompositeScheduleResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetCompositeScheduleResponse));
             }
 
             #endregion
@@ -5522,7 +4777,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnUnlockConnectorRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUnlockConnectorRequest));
             }
 
             #endregion
@@ -5574,7 +4829,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnUnlockConnectorResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUnlockConnectorResponse));
             }
 
             #endregion
@@ -5604,7 +4859,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetLocalListVersionRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLocalListVersionRequest));
             }
 
             #endregion
@@ -5656,7 +4911,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetLocalListVersionResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLocalListVersionResponse));
             }
 
             #endregion
@@ -5685,7 +4940,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSendLocalListRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSendLocalListRequest));
             }
 
             #endregion
@@ -5737,7 +4992,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSendLocalListResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSendLocalListResponse));
             }
 
             #endregion
@@ -5766,7 +5021,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnClearCacheRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearCacheRequest));
             }
 
             #endregion
@@ -5818,7 +5073,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnClearCacheResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearCacheResponse));
             }
 
             #endregion
@@ -5855,7 +5110,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnCertificateSignedRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCertificateSignedRequest));
             }
 
             #endregion
@@ -5907,7 +5162,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnCertificateSignedResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCertificateSignedResponse));
             }
 
             #endregion
@@ -5940,7 +5195,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDeleteCertificateRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDeleteCertificateRequest));
             }
 
             #endregion
@@ -5992,7 +5247,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDeleteCertificateResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDeleteCertificateResponse));
             }
 
             #endregion
@@ -6025,7 +5280,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnExtendedTriggerMessageRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnExtendedTriggerMessageRequest));
             }
 
             #endregion
@@ -6077,7 +5332,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnExtendedTriggerMessageResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnExtendedTriggerMessageResponse));
             }
 
             #endregion
@@ -6110,7 +5365,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetInstalledCertificateIdsRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetInstalledCertificateIdsRequest));
             }
 
             #endregion
@@ -6162,7 +5417,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetInstalledCertificateIdsResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetInstalledCertificateIdsResponse));
             }
 
             #endregion
@@ -6195,7 +5450,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetLogRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLogRequest));
             }
 
             #endregion
@@ -6247,7 +5502,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetLogResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLogResponse));
             }
 
             #endregion
@@ -6280,7 +5535,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnInstallCertificateRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnInstallCertificateRequest));
             }
 
             #endregion
@@ -6332,7 +5587,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnInstallCertificateResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnInstallCertificateResponse));
             }
 
             #endregion
@@ -6365,7 +5620,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignedUpdateFirmwareRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignedUpdateFirmwareRequest));
             }
 
             #endregion
@@ -6417,7 +5672,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignedUpdateFirmwareResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignedUpdateFirmwareResponse));
             }
 
             #endregion
@@ -6509,7 +5764,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                             }
                             catch (Exception e)
                             {
-                                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnJSONMessageRequestSent));
+                                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnJSONMessageRequestSent));
                             }
                         }
 
@@ -6599,7 +5854,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(String.Concat(nameof(CentralSystemWSServer), ".", nameof(SendJSONAndWait), " exception occured: ", e.Message));
+                        DebugX.Log(String.Concat(nameof(CentralSystemWSServer_old), ".", nameof(SendJSONAndWait), " exception occured: ", e.Message));
                     }
 
                 }

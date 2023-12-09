@@ -20,23 +20,22 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
+using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
+namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
-    public partial class CSMSWSServer : ACSMSWSServer,
-                                        ICSMSChannel
+    public partial class CentralSystemWSServer : ACSMSWSServer,
+                                                 ICSMSChannel
     {
 
         #region Custom JSON parser delegates
@@ -112,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnMeterValuesWSRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesWSRequest));
             }
 
             #endregion
@@ -144,7 +143,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnMeterValuesRequest));
+                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesRequest));
                     }
 
                     #endregion
@@ -185,7 +184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnMeterValuesResponse));
+                        DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesResponse));
                     }
 
                     #endregion
@@ -245,7 +244,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CSMSWSServer) + "." + nameof(OnMeterValuesWSResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnMeterValuesWSResponse));
             }
 
             #endregion
