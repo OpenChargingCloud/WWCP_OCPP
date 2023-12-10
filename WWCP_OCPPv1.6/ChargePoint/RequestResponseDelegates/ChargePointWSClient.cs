@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The unique identification of this charge box.
         /// </summary>
-        public ChargeBox_Id                         ChargeBoxIdentity               { get; }
+        public NetworkingNode_Id                     ChargeBoxIdentity               { get; }
 
         /// <summary>
         /// The sender identification.
@@ -197,7 +197,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public CustomJObjectParserDelegate<ChangeAvailabilityRequest>?      CustomChangeAvailabilityRequestParser        { get; set; }
         public CustomJObjectParserDelegate<GetConfigurationRequest>?        CustomGetConfigurationRequestParser          { get; set; }
         public CustomJObjectParserDelegate<ChangeConfigurationRequest>?     CustomChangeConfigurationRequestParser       { get; set; }
-        public CustomJObjectParserDelegate<CS.DataTransferRequest>?         CustomIncomingDataTransferRequestParser      { get; set; }
+        public CustomJObjectParserDelegate<OCPP.CSMS.DataTransferRequest>?  CustomIncomingDataTransferRequestParser      { get; set; }
         public CustomJObjectParserDelegate<GetDiagnosticsRequest>?          CustomGetDiagnosticsRequestParser            { get; set; }
         public CustomJObjectParserDelegate<TriggerMessageRequest>?          CustomTriggerMessageRequestParser            { get; set; }
         public CustomJObjectParserDelegate<UpdateFirmwareRequest>?          CustomUpdateFirmwareRequestParser            { get; set; }
@@ -236,7 +236,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public CustomJObjectSerializerDelegate<StopTransactionRequest>?                    CustomStopTransactionRequestSerializer                      { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<DataTransferRequest>?                       CustomDataTransferRequestSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.DataTransferRequest>?               CustomDataTransferRequestSerializer                         { get; set; }
 
         public CustomJObjectSerializerDelegate<DiagnosticsStatusNotificationRequest>?      CustomDiagnosticsStatusNotificationRequestSerializer        { get; set; }
 
@@ -279,22 +279,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the central system.
         /// </summary>
-        public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+        public event OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a boot notification request will be sent to the central system.
         /// </summary>
-        public event ClientRequestLogHandler?             OnBootNotificationWSRequest;
+        public event ClientRequestLogHandler?               OnBootNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
-        public event ClientResponseLogHandler?            OnBootNotificationWSResponse;
+        public event ClientResponseLogHandler?              OnBootNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a boot notification request was received.
         /// </summary>
-        public event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+        public event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
 
         #endregion
 
@@ -303,22 +303,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a heartbeat request will be sent to the central system.
         /// </summary>
-        public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
+        public event OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
 
         /// <summary>
         /// An event fired whenever a heartbeat request will be sent to the central system.
         /// </summary>
-        public event ClientRequestLogHandler?      OnHeartbeatWSRequest;
+        public event ClientRequestLogHandler?        OnHeartbeatWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
-        public event ClientResponseLogHandler?     OnHeartbeatWSResponse;
+        public event ClientResponseLogHandler?       OnHeartbeatWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a heartbeat request was received.
         /// </summary>
-        public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
+        public event OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
 
         #endregion
 
@@ -328,22 +328,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever an authorize request will be sent to the central system.
         /// </summary>
-        public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
+        public event OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
 
         /// <summary>
         /// An event fired whenever an authorize request will be sent to the central system.
         /// </summary>
-        public event ClientRequestLogHandler?      OnAuthorizeWSRequest;
+        public event ClientRequestLogHandler?        OnAuthorizeWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to an authorize request was received.
         /// </summary>
-        public event ClientResponseLogHandler?     OnAuthorizeWSResponse;
+        public event ClientResponseLogHandler?       OnAuthorizeWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to an authorize request was received.
         /// </summary>
-        public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
+        public event OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
 
         #endregion
 
@@ -352,22 +352,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a start transaction request will be sent to the central system.
         /// </summary>
-        public event OnStartTransactionRequestDelegate?   OnStartTransactionRequest;
+        public event OnStartTransactionRequestDelegate?     OnStartTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a start transaction request will be sent to the central system.
         /// </summary>
-        public event ClientRequestLogHandler?             OnStartTransactionWSRequest;
+        public event ClientRequestLogHandler?               OnStartTransactionWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a start transaction request was received.
         /// </summary>
-        public event ClientResponseLogHandler?            OnStartTransactionWSResponse;
+        public event ClientResponseLogHandler?              OnStartTransactionWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a start transaction request was received.
         /// </summary>
-        public event OnStartTransactionResponseDelegate?  OnStartTransactionResponse;
+        public event OnStartTransactionResponseDelegate?    OnStartTransactionResponse;
 
         #endregion
 
@@ -376,22 +376,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a status notification request will be sent to the central system.
         /// </summary>
-        public event OnStatusNotificationRequestDelegate?   OnStatusNotificationRequest;
+        public event OnStatusNotificationRequestDelegate?     OnStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a status notification request will be sent to the central system.
         /// </summary>
-        public event ClientRequestLogHandler?               OnStatusNotificationWSRequest;
+        public event ClientRequestLogHandler?                 OnStatusNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a status notification request was received.
         /// </summary>
-        public event ClientResponseLogHandler?              OnStatusNotificationWSResponse;
+        public event ClientResponseLogHandler?                OnStatusNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a status notification request was received.
         /// </summary>
-        public event OnStatusNotificationResponseDelegate?  OnStatusNotificationResponse;
+        public event OnStatusNotificationResponseDelegate?    OnStatusNotificationResponse;
 
         #endregion
 
@@ -400,22 +400,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a meter values request will be sent to the central system.
         /// </summary>
-        public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
+        public event OnMeterValuesRequestDelegate?     OnMeterValuesRequest;
 
         /// <summary>
         /// An event fired whenever a meter values request will be sent to the central system.
         /// </summary>
-        public event ClientRequestLogHandler?        OnMeterValuesWSRequest;
+        public event ClientRequestLogHandler?          OnMeterValuesWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a meter values request was received.
         /// </summary>
-        public event ClientResponseLogHandler?       OnMeterValuesWSResponse;
+        public event ClientResponseLogHandler?         OnMeterValuesWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a meter values request was received.
         /// </summary>
-        public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
+        public event OnMeterValuesResponseDelegate?    OnMeterValuesResponse;
 
         #endregion
 
@@ -424,22 +424,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a stop transaction request will be sent to the central system.
         /// </summary>
-        public event OnStopTransactionRequestDelegate?   OnStopTransactionRequest;
+        public event OnStopTransactionRequestDelegate?     OnStopTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a stop transaction request will be sent to the central system.
         /// </summary>
-        public event ClientRequestLogHandler?            OnStopTransactionWSRequest;
+        public event ClientRequestLogHandler?              OnStopTransactionWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a stop transaction request was received.
         /// </summary>
-        public event ClientResponseLogHandler?           OnStopTransactionWSResponse;
+        public event ClientResponseLogHandler?             OnStopTransactionWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a stop transaction request was received.
         /// </summary>
-        public event OnStopTransactionResponseDelegate?  OnStopTransactionResponse;
+        public event OnStopTransactionResponseDelegate?    OnStopTransactionResponse;
 
         #endregion
 
@@ -449,22 +449,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the central system.
         /// </summary>
-        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
+        public event OCPP.CS.OnDataTransferRequestDelegate?     OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the central system.
         /// </summary>
-        public event ClientRequestLogHandler?         OnDataTransferWSRequest;
+        public event ClientRequestLogHandler?                   OnDataTransferWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        public event ClientResponseLogHandler?        OnDataTransferWSResponse;
+        public event ClientResponseLogHandler?                  OnDataTransferWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
+        public event OCPP.CS.OnDataTransferResponseDelegate?    OnDataTransferResponse;
 
         #endregion
 
@@ -473,22 +473,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a diagnostics status notification request will be sent to the central system.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
+        public event OnDiagnosticsStatusNotificationRequestDelegate?     OnDiagnosticsStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a diagnostics status notification request will be sent to the central system.
         /// </summary>
-        public event ClientRequestLogHandler?                          OnDiagnosticsStatusNotificationWSRequest;
+        public event ClientRequestLogHandler?                            OnDiagnosticsStatusNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a diagnostics status notification request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                         OnDiagnosticsStatusNotificationWSResponse;
+        public event ClientResponseLogHandler?                           OnDiagnosticsStatusNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a diagnostics status notification request was received.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationResponseDelegate?  OnDiagnosticsStatusNotificationResponse;
+        public event OnDiagnosticsStatusNotificationResponseDelegate?    OnDiagnosticsStatusNotificationResponse;
 
         #endregion
 
@@ -497,22 +497,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a firmware status notification request will be sent to the central system.
         /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
+        public event OnFirmwareStatusNotificationRequestDelegate?     OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a firmware status notification request will be sent to the central system.
         /// </summary>
-        public event ClientRequestLogHandler?                       OnFirmwareStatusNotificationWSRequest;
+        public event ClientRequestLogHandler?                         OnFirmwareStatusNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a firmware status notification request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                      OnFirmwareStatusNotificationWSResponse;
+        public event ClientResponseLogHandler?                        OnFirmwareStatusNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a firmware status notification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
+        public event OnFirmwareStatusNotificationResponseDelegate?    OnFirmwareStatusNotificationResponse;
 
         #endregion
 
@@ -524,22 +524,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a log status notification request will be sent to the central system.
         /// </summary>
-        public event OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
+        public event OnLogStatusNotificationRequestDelegate?     OnLogStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a log status notification request will be sent to the central system.
         /// </summary>
-        public event ClientRequestLogHandler?                  OnLogStatusNotificationWSRequest;
+        public event ClientRequestLogHandler?                    OnLogStatusNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a log status notification request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                 OnLogStatusNotificationWSResponse;
+        public event ClientResponseLogHandler?                   OnLogStatusNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a log status notification request was received.
         /// </summary>
-        public event OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
+        public event OnLogStatusNotificationResponseDelegate?    OnLogStatusNotificationResponse;
 
         #endregion
 
@@ -548,22 +548,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a security event notification request will be sent to the central system.
         /// </summary>
-        public event OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
+        public event OnSecurityEventNotificationRequestDelegate?     OnSecurityEventNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a security event notification request will be sent to the central system.
         /// </summary>
-        public event ClientRequestLogHandler?                      OnSecurityEventNotificationWSRequest;
+        public event ClientRequestLogHandler?                        OnSecurityEventNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a security event notification request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                     OnSecurityEventNotificationWSResponse;
+        public event ClientResponseLogHandler?                       OnSecurityEventNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a security event notification request was received.
         /// </summary>
-        public event OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
+        public event OnSecurityEventNotificationResponseDelegate?    OnSecurityEventNotificationResponse;
 
         #endregion
 
@@ -572,22 +572,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a sign certificate request will be sent to the central system.
         /// </summary>
-        public event OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
+        public event OnSignCertificateRequestDelegate?     OnSignCertificateRequest;
 
         /// <summary>
         /// An event fired whenever a sign certificate request will be sent to the central system.
         /// </summary>
-        public event ClientRequestLogHandler?            OnSignCertificateWSRequest;
+        public event ClientRequestLogHandler?              OnSignCertificateWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a sign certificate request was received.
         /// </summary>
-        public event ClientResponseLogHandler?           OnSignCertificateWSResponse;
+        public event ClientResponseLogHandler?             OnSignCertificateWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a sign certificate request was received.
         /// </summary>
-        public event OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
+        public event OnSignCertificateResponseDelegate?    OnSignCertificateResponse;
 
         #endregion
 
@@ -596,22 +596,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a signed firmware status notification request will be sent to the central system.
         /// </summary>
-        public event OnSignedFirmwareStatusNotificationRequestDelegate?   OnSignedFirmwareStatusNotificationRequest;
+        public event OnSignedFirmwareStatusNotificationRequestDelegate?     OnSignedFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event fired whenever a signed firmware status notification request will be sent to the central system.
         /// </summary>
-        public event ClientRequestLogHandler?                             OnSignedFirmwareStatusNotificationWSRequest;
+        public event ClientRequestLogHandler?                               OnSignedFirmwareStatusNotificationWSRequest;
 
         /// <summary>
         /// An event fired whenever a response to a signed firmware status notification request was received.
         /// </summary>
-        public event ClientResponseLogHandler?                            OnSignedFirmwareStatusNotificationWSResponse;
+        public event ClientResponseLogHandler?                              OnSignedFirmwareStatusNotificationWSResponse;
 
         /// <summary>
         /// An event fired whenever a response to a signed firmware status notification request was received.
         /// </summary>
-        public event OnSignedFirmwareStatusNotificationResponseDelegate?  OnSignedFirmwareStatusNotificationResponse;
+        public event OnSignedFirmwareStatusNotificationResponseDelegate?    OnSignedFirmwareStatusNotificationResponse;
 
         #endregion
 
@@ -740,27 +740,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event sent whenever a data transfer websocket request was received.
         /// </summary>
-        public event WSClientRequestLogHandler?                 OnIncomingDataTransferWSRequest;
+        public event WSClientRequestLogHandler?                         OnIncomingDataTransferWSRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
+        public event OCPP.CS.OnIncomingDataTransferRequestDelegate?     OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferDelegate?            OnIncomingDataTransfer;
+        public event OCPP.CS.OnIncomingDataTransferDelegate?            OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
+        public event OCPP.CS.OnIncomingDataTransferResponseDelegate?    OnIncomingDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a data transfer request was sent.
         /// </summary>
-        public event WSClientResponseLogHandler?                OnIncomingDataTransferWSResponse;
+        public event WSClientResponseLogHandler?                        OnIncomingDataTransferWSResponse;
 
         #endregion
 
@@ -1883,12 +1883,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                             try
                             {
 
-                                if (CS.DataTransferRequest.TryParse(requestMessage.Message,
-                                                                    requestMessage.RequestId,
-                                                                    ChargeBoxIdentity,
-                                                                    out var request,
-                                                                    out var errorResponse,
-                                                                    CustomIncomingDataTransferRequestParser) && request is not null) {
+                                if (OCPP.CSMS.DataTransferRequest.TryParse(requestMessage.Message,
+                                                                           requestMessage.RequestId,
+                                                                           ChargeBoxIdentity,
+                                                                           NetworkPath.Empty,
+                                                                           out var request,
+                                                                           out var errorResponse,
+                                                                           CustomIncomingDataTransferRequestParser) && request is not null) {
 
                                     #region Send OnIncomingDataTransferRequest event
 
@@ -1909,14 +1910,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                     #region Call async subscribers
 
-                                    DataTransferResponse? response = null;
+                                    OCPP.CS.DataTransferResponse? response = null;
 
                                     var results = OnIncomingDataTransfer?.
                                                       GetInvocationList()?.
-                                                      SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                                      this,
-                                                                                                                                      request,
-                                                                                                                                      cancellationTokenSource.Token)).
+                                                      SafeSelect(subscriber => (subscriber as OCPP.CS.OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                              this,
+                                                                                                                                              Connection,
+                                                                                                                                              request,
+                                                                                                                                              cancellationTokenSource.Token)).
                                                       ToArray();
 
                                     if (results?.Length > 0)
@@ -3842,19 +3844,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                         }
                         break;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
                 }
 
                 if (OCPPResponseJSON is not null)
@@ -4792,9 +4781,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Send the given vendor-specific data to the central system.
         /// </summary>
         /// <param name="Request">A DataTransfer request.</param>
-        public async Task<CS.DataTransferResponse>
+        public async Task<OCPP.CSMS.DataTransferResponse>
 
-            TransferData(DataTransferRequest  Request)
+            TransferData(OCPP.CS.DataTransferRequest Request)
 
         {
 
@@ -4818,7 +4807,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             #endregion
 
 
-            CS.DataTransferResponse? response = null;
+            OCPP.CSMS.DataTransferResponse? response = null;
 
             var requestMessage = await SendRequest(Request.Action,
                                                    Request.RequestId,
@@ -4833,27 +4822,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                     sendRequestState.Response is not null)
                 {
 
-                    if (CS.DataTransferResponse.TryParse(Request,
-                                                         sendRequestState.Response,
-                                                         out var dataTransferResponse,
-                                                         out var errorResponse) &&
+                    if (OCPP.CSMS.DataTransferResponse.TryParse(Request,
+                                                                sendRequestState.Response,
+                                                                out var dataTransferResponse,
+                                                                out var errorResponse) &&
                         dataTransferResponse is not null)
                     {
                         response = dataTransferResponse;
                     }
 
-                    response ??= new CS.DataTransferResponse(Request,
-                                                             Result.Format(errorResponse));
+                    response ??= new OCPP.CSMS.DataTransferResponse(Request,
+                                                                    Result.Format(errorResponse));
 
                 }
 
-                response ??= new CS.DataTransferResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+                response ??= new OCPP.CSMS.DataTransferResponse(Request,
+                                                                Result.FromSendRequestState(sendRequestState));
 
             }
 
-            response ??= new CS.DataTransferResponse(Request,
-                                                     Result.GenericError(requestMessage.ErrorMessage));
+            response ??= new OCPP.CSMS.DataTransferResponse(Request,
+                                                            Result.GenericError(requestMessage.ErrorMessage));
 
 
             #region Send OnDataTransferResponse event

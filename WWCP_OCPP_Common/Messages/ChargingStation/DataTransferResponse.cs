@@ -243,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         #endregion
 
-        #region (static) Parse   (Request, DataTransferResponseXML)
+        #region (static) Parse   (Request, XML)
 
         /// <summary>
         /// Parse the given XML representation of a data transfer response.
@@ -259,9 +259,10 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
                          XML,
                          XMLNamespace,
                          out var dataTransferResponse,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                dataTransferResponse is not null)
             {
-                return dataTransferResponse!;
+                return dataTransferResponse;
             }
 
             throw new ArgumentException("The given XML representation of a data transfer response is invalid: " + errorResponse,
@@ -457,6 +458,26 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             }
 
         }
+
+        #endregion
+
+        #region ToXML (XMLNamespace)
+
+        /// <summary>
+        /// Return a XML representation of this object.
+        /// </summary>
+        /// <param name="XMLNamespace">The XML namespace to use.</param>
+        public XElement ToXML(XNamespace XMLNamespace) // OCPPNS.OCPPv1_6_CS
+
+            => new(XMLNamespace + "dataTransferResponse",
+
+                         new XElement(XMLNamespace + "status",   Status.AsText()),
+
+                   Data is not null && Data.Type == JTokenType.String
+                       ? new XElement(XMLNamespace + "data",     Data.  Value<String>())
+                       : null
+
+               );
 
         #endregion
 

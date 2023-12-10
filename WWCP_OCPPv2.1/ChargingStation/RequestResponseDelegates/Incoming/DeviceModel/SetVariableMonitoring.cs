@@ -17,24 +17,18 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    #region OnSetVariableMonitoring
-
     /// <summary>
-    /// A set variable monitoring request.
+    /// A SetVariableMonitoring request.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -47,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A set variable monitoring request.
+    /// A SetVariableMonitoring request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -63,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A set variable monitoring response.
+    /// A SetVariableMonitoring response.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
@@ -77,7 +71,5 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                 SetVariableMonitoringRequest    Request,
                                                 SetVariableMonitoringResponse   Response,
                                                 TimeSpan                        Runtime);
-
-    #endregion
 
 }

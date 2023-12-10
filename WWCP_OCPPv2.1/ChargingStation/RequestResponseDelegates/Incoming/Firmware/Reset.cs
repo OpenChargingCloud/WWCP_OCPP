@@ -17,24 +17,18 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    #region OnReset
-
     /// <summary>
-    /// A reset request.
+    /// A Reset request.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -47,7 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A reset request.
+    /// A Reset request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -63,7 +57,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     /// <summary>
-    /// A reset response.
+    /// A Reset response.
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
@@ -77,7 +71,5 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                 ResetRequest    Request,
                                 ResetResponse   Response,
                                 TimeSpan        Runtime);
-
-    #endregion
 
 }

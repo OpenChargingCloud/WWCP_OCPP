@@ -17,21 +17,15 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
-
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
-
-    #region OnNotifyAllowedEnergyTransfer
 
     /// <summary>
     /// A NotifyAllowedEnergyTransfer request.
@@ -77,7 +71,5 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                       NotifyAllowedEnergyTransferRequest    Request,
                                                       NotifyAllowedEnergyTransferResponse   Response,
                                                       TimeSpan                              Runtime);
-
-    #endregion
 
 }

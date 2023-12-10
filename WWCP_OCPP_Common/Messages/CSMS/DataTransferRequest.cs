@@ -148,6 +148,30 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         #region Documentation
 
+        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
+        //                xmlns:wsa  = "http://www.w3.org/2005/08/addressing"
+        //                xmlns:ns   = "urn://Ocpp/Cp/2015/10/">
+        //
+        //    <soap:Header>
+        //       ...
+        //    </soap:Header>
+        //
+        //    <soap:Body>
+        //       <ns:dataTransferRequest>
+        //
+        //          <ns:vendorId>?</ns:vendorId>
+        //
+        //          <!--Optional:-->
+        //          <ns:messageId>?</ns:messageId>
+        //
+        //          <!--Optional:-->
+        //          <ns:data>?</ns:data>
+        //
+        //       </ns:dataTransferRequest>
+        //    </soap:Body>
+        //
+        // </soap:Envelope>
+
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
         //   "$id": "urn:OCPP:Cp:2:2020:3:DataTransferRequest",

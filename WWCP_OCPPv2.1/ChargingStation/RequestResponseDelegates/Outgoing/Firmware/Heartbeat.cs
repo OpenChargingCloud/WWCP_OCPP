@@ -17,10 +17,7 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
@@ -29,32 +26,28 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    #region OnLogStatusNotification (-Request/-Response) Delegate
-
     /// <summary>
-    /// A delegate called whenever a log status notification request will be sent to the CSMS.
+    /// A delegate called whenever a Heartbeat request will be sent to the CSMS.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The request.</param>
-    public delegate Task OnLogStatusNotificationRequestDelegate(DateTime                       Timestamp,
-                                                                IEventSender                   Sender,
-                                                                LogStatusNotificationRequest   Request);
+    /// <param name="Request">The reserve now request.</param>
+    public delegate Task OnHeartbeatRequestDelegate(DateTime           Timestamp,
+                                                    IEventSender       Sender,
+                                                    HeartbeatRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a log status notification request was received.
+    /// A delegate called whenever a response to a Heartbeat request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnLogStatusNotificationResponseDelegate(DateTime                        Timestamp,
-                                                                 IEventSender                    Sender,
-                                                                 LogStatusNotificationRequest    Request,
-                                                                 LogStatusNotificationResponse   Response,
-                                                                 TimeSpan                        Runtime);
-
-    #endregion
+    public delegate Task OnHeartbeatResponseDelegate(DateTime            Timestamp,
+                                                     IEventSender        Sender,
+                                                     HeartbeatRequest    Request,
+                                                     HeartbeatResponse   Response,
+                                                     TimeSpan            Runtime);
 
 }

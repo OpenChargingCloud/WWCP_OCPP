@@ -17,22 +17,17 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CS
+namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
-    #region OnStatusNotification (-Request/-Response) Delegate
-
     /// <summary>
-    /// A delegate called whenever a status notification request will be sent to the CSMS.
+    /// A delegate called whenever a StatusNotification request will be sent to the CSMS.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -42,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                              StatusNotificationRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a status notification request was received.
+    /// A delegate called whenever a response to a StatusNotification request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -54,7 +49,5 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                               StatusNotificationRequest    Request,
                                                               StatusNotificationResponse   Response,
                                                               TimeSpan                     Runtime);
-
-    #endregion
 
 }

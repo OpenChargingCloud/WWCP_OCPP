@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="To">The destination URI of the SOAP message.</param>
         /// <param name="SOAPBody">The internal XML for the SOAP body.</param>
         /// <param name="XMLNamespaces">An optional delegate to process the XML namespaces.</param>
-        public static XElement Encapsulation(ChargeBox_Id            ChargeBoxIdentity,
+        public static XElement Encapsulation(OCPP.NetworkingNode_Id  ChargeBoxIdentity,
                                              String                  Action,
                                              String                  MessageId,
                                              String                  From,
@@ -94,7 +94,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="To">The destination URI of the SOAP message.</param>
         /// <param name="SOAPBody">The internal XML for the SOAP body.</param>
         /// <param name="XMLNamespaces">An optional delegate to process the XML namespaces.</param>
-        public static XElement Encapsulation(ChargeBox_Id            ChargeBoxIdentity,
+        public static XElement Encapsulation(OCPP.NetworkingNode_Id  ChargeBoxIdentity,
                                              String                  Action,
                                              String                  MessageId,
                                              String?                 RelatesTo,

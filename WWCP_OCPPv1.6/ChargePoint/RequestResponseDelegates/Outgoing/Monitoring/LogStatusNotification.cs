@@ -17,44 +17,37 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CS
+namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
-    #region OnSignCertificate (-Request/-Response) Delegate
-
     /// <summary>
-    /// A delegate called whenever a sign certificate request will be sent to the CSMS.
+    /// A delegate called whenever a LogStatusNotification request will be sent to the CSMS.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnSignCertificateRequestDelegate(DateTime                 Timestamp,
-                                                          IEventSender             Sender,
-                                                          SignCertificateRequest   Request);
+    public delegate Task OnLogStatusNotificationRequestDelegate(DateTime                       Timestamp,
+                                                                IEventSender                   Sender,
+                                                                LogStatusNotificationRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a sign certificate request was received.
+    /// A delegate called whenever a response to a LogStatusNotification request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnSignCertificateResponseDelegate(DateTime                  Timestamp,
-                                                           IEventSender              Sender,
-                                                           SignCertificateRequest    Request,
-                                                           SignCertificateResponse   Response,
-                                                           TimeSpan                  Runtime);
-
-    #endregion
+    public delegate Task OnLogStatusNotificationResponseDelegate(DateTime                        Timestamp,
+                                                                 IEventSender                    Sender,
+                                                                 LogStatusNotificationRequest    Request,
+                                                                 LogStatusNotificationResponse   Response,
+                                                                 TimeSpan                        Runtime);
 
 }

@@ -17,10 +17,7 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
@@ -29,10 +26,8 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    #region OnSecurityEventNotification (-Request/-Response) Delegate
-
     /// <summary>
-    /// A delegate called whenever a security event notification request will be sent to the CSMS.
+    /// A delegate called whenever a SecurityEventNotification request will be sent to the CSMS.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -42,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                     SecurityEventNotificationRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a security event notification request was received.
+    /// A delegate called whenever a response to a SecurityEventNotification request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
@@ -54,7 +49,5 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                      SecurityEventNotificationRequest    Request,
                                                                      SecurityEventNotificationResponse   Response,
                                                                      TimeSpan                            Runtime);
-
-    #endregion
 
 }

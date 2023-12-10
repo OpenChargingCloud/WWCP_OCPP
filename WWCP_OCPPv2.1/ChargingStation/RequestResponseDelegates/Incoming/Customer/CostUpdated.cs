@@ -17,21 +17,15 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
-
 #endregion
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
-
-    #region OnCostUpdated
 
     /// <summary>
     /// A CostUpdated request.
@@ -77,7 +71,5 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                       CostUpdatedRequest    Request,
                                       CostUpdatedResponse   Response,
                                       TimeSpan              Runtime);
-
-    #endregion
 
 }

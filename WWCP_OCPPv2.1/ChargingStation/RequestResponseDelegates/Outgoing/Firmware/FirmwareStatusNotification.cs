@@ -17,10 +17,7 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
@@ -29,32 +26,28 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    #region OnReservationStatusUpdate (-Request/-Response) Delegate
-
     /// <summary>
-    /// A delegate called whenever a reservation status update request will be sent to the CSMS.
+    /// A delegate called whenever a FirmwareStatusNotification request will be sent to the CSMS.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnReservationStatusUpdateRequestDelegate(DateTime                         Timestamp,
-                                                                  IEventSender                     Sender,
-                                                                  ReservationStatusUpdateRequest   Request);
+    public delegate Task OnFirmwareStatusNotificationRequestDelegate(DateTime                            Timestamp,
+                                                                     IEventSender                        Sender,
+                                                                     FirmwareStatusNotificationRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a reservation status update request was received.
+    /// A delegate called whenever a response to a FirmwareStatusNotification request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnReservationStatusUpdateResponseDelegate(DateTime                          Timestamp,
-                                                                   IEventSender                      Sender,
-                                                                   ReservationStatusUpdateRequest    Request,
-                                                                   ReservationStatusUpdateResponse   Response,
-                                                                   TimeSpan                          Runtime);
-
-    #endregion
+    public delegate Task OnFirmwareStatusNotificationResponseDelegate(DateTime                             Timestamp,
+                                                                      IEventSender                         Sender,
+                                                                      FirmwareStatusNotificationRequest    Request,
+                                                                      FirmwareStatusNotificationResponse   Response,
+                                                                      TimeSpan                             Runtime);
 
 }

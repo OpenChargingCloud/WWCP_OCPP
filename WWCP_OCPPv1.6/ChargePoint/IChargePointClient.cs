@@ -142,12 +142,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the central system.
         /// </summary>
-        event OnDataTransferRequestDelegate   OnDataTransferRequest;
+        event OCPP.CS.OnDataTransferRequestDelegate   OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        event OnDataTransferResponseDelegate  OnDataTransferResponse;
+        event OCPP.CS.OnDataTransferResponseDelegate  OnDataTransferResponse;
 
         #endregion
 
@@ -261,7 +261,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Send the given vendor-specific data to the central system.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        public Task<CS.DataTransferResponse> TransferData(DataTransferRequest Request);
+        public Task<OCPP.CSMS.DataTransferResponse> TransferData(OCPP.CS.DataTransferRequest Request);
 
         #endregion
 

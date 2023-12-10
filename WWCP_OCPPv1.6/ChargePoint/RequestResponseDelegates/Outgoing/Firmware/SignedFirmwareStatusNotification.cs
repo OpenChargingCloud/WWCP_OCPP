@@ -17,44 +17,37 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CS
+namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
-    #region OnMeterValues (-Request/-Response) Delegate
-
     /// <summary>
-    /// A delegate called whenever a meter values request will be sent to the CSMS.
+    /// A delegate called whenever a SignedFirmwareStatusNotification request will be sent to the CSMS.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
-    public delegate Task OnMeterValuesRequestDelegate(DateTime             Timestamp,
-                                                      IEventSender         Sender,
-                                                      MeterValuesRequest   Request);
+    public delegate Task OnSignedFirmwareStatusNotificationRequestDelegate(DateTime                                  Timestamp,
+                                                                           IEventSender                              Sender,
+                                                                           SignedFirmwareStatusNotificationRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a meter values request was received.
+    /// A delegate called whenever a response to a SignedFirmwareStatusNotification request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnMeterValuesResponseDelegate(DateTime              Timestamp,
-                                                       IEventSender          Sender,
-                                                       MeterValuesRequest    Request,
-                                                       MeterValuesResponse   Response,
-                                                       TimeSpan              Runtime);
-
-    #endregion
+    public delegate Task OnSignedFirmwareStatusNotificationResponseDelegate(DateTime                                   Timestamp,
+                                                                            IEventSender                               Sender,
+                                                                            SignedFirmwareStatusNotificationRequest    Request,
+                                                                            SignedFirmwareStatusNotificationResponse   Response,
+                                                                            TimeSpan                                   Runtime);
 
 }

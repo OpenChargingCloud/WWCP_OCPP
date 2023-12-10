@@ -17,10 +17,7 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
@@ -28,8 +25,6 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
-
-    #region OnPullDynamicScheduleUpdate (-Request/-Response) Delegate
 
     /// <summary>
     /// A delegate called whenever a PullDynamicScheduleUpdate request will be sent to the CSMS.
@@ -54,7 +49,5 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                      PullDynamicScheduleUpdateRequest    Request,
                                                                      PullDynamicScheduleUpdateResponse   Response,
                                                                      TimeSpan                            Runtime);
-
-    #endregion
 
 }

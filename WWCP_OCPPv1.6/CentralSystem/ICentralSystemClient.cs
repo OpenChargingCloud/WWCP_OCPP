@@ -814,7 +814,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     public interface ICentralSystemClient
     {
 
-        ChargeBox_Id                            ChargeBoxIdentity    { get; }
+        NetworkingNode_Id                       ChargeBoxIdentity    { get; }
         String                                  From                 { get; }
         String                                  To                   { get; }
 
@@ -839,8 +839,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         event OnClearChargingProfileRequestDelegate? OnClearChargingProfileRequest;
         event OnClearChargingProfileResponseDelegate? OnClearChargingProfileResponse;
 
-        event OnDataTransferRequestDelegate? OnDataTransferRequest;
-        event OnDataTransferResponseDelegate? OnDataTransferResponse;
+        event OCPP.CSMS.OnDataTransferRequestDelegate? OnDataTransferRequest;
+        event OCPP.CSMS.OnDataTransferResponseDelegate? OnDataTransferResponse;
 
         event OnGetCompositeScheduleRequestDelegate? OnGetCompositeScheduleRequest;
         event OnGetCompositeScheduleResponseDelegate? OnGetCompositeScheduleResponse;
@@ -932,7 +932,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Transfer the given data to the given charge box.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        Task<CP.DataTransferResponse> DataTransfer(DataTransferRequest Request);
+        Task<OCPP.CS.DataTransferResponse> DataTransfer(OCPP.CSMS.DataTransferRequest Request);
 
         #endregion
 

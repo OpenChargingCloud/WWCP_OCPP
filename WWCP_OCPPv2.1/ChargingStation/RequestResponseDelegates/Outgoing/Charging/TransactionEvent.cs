@@ -17,10 +17,7 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
@@ -29,10 +26,8 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    #region OnTransactionEvent (-Request/-Response) Delegate
-
     /// <summary>
-    /// A delegate called whenever a transaction event request will be sent to the CSMS.
+    /// A delegate called whenever a TransactionEvent request will be sent to the CSMS.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the transaction event request.</param>
     /// <param name="Sender">The sender of the transaction event request.</param>
@@ -42,7 +37,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                            TransactionEventRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a transaction event request was received.
+    /// A delegate called whenever a response to a TransactionEvent request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the transaction event request.</param>
     /// <param name="Sender">The sender of the transaction event request.</param>
@@ -54,7 +49,5 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                             TransactionEventRequest    Request,
                                                             TransactionEventResponse   Response,
                                                             TimeSpan                   Runtime);
-
-    #endregion
 
 }

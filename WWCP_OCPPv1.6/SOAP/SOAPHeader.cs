@@ -39,32 +39,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The unique identification of a charge box.
         /// </summary>
-        public ChargeBox_Id  ChargeBoxIdentity   { get; }
+        public OCPP.NetworkingNode_Id  ChargeBoxIdentity   { get; }
 
         /// <summary>
         /// The SOAP action.
         /// </summary>
-        public String        Action              { get; }
+        public String                  Action              { get; }
 
         /// <summary>
         /// An unique SOAP message identification.
         /// </summary>
-        public String        MessageId           { get; }
+        public String                  MessageId           { get; }
 
         /// <summary>
         /// The unique message identification of the related SOAP request.
         /// </summary>
-        public String        RelatesTo           { get; }
+        public String                  RelatesTo           { get; }
 
         /// <summary>
         /// The source URI of the SOAP message.
         /// </summary>
-        public String        From                { get; }
+        public String                  From                { get; }
 
         /// <summary>
         /// The destination URI of the SOAP message.
         /// </summary>
-        public String        To                  { get; }
+        public String                  To                  { get; }
 
         #endregion
 
@@ -108,12 +108,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="RelatesTo">The unique message identification of the related SOAP request.</param>
         /// <param name="From">The source URI of the SOAP message.</param>
         /// <param name="To">The destination URI of the SOAP message.</param>
-        public SOAPHeader(ChargeBox_Id  ChargeBoxIdentity,
-                          String        Action,
-                          String        MessageId,
-                          String?       RelatesTo,
-                          String        From,
-                          String        To)
+        public SOAPHeader(OCPP.NetworkingNode_Id  ChargeBoxIdentity,
+                          String                  Action,
+                          String                  MessageId,
+                          String?                 RelatesTo,
+                          String                  From,
+                          String                  To)
         {
 
             #region Initial checks

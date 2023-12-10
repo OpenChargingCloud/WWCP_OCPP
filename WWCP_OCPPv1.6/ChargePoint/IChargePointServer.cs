@@ -37,9 +37,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         event OnChangeConfigurationDelegate             OnChangeConfiguration;
         event OnChangeConfigurationResponseDelegate     OnChangeConfigurationResponse;
 
-        event OnIncomingDataTransferRequestDelegate     OnIncomingDataTransferRequest;
-        event OnIncomingDataTransferDelegate            OnIncomingDataTransfer;
-        event OnIncomingDataTransferResponseDelegate    OnIncomingDataTransferResponse;
+        event OCPP.CS.OnIncomingDataTransferRequestDelegate     OnIncomingDataTransferRequest;
+        event OCPP.CS.OnIncomingDataTransferDelegate            OnIncomingDataTransfer;
+        event OCPP.CS.OnIncomingDataTransferResponseDelegate    OnIncomingDataTransferResponse;
 
         event OnGetDiagnosticsRequestDelegate           OnGetDiagnosticsRequest;
         event OnGetDiagnosticsDelegate                  OnGetDiagnostics;

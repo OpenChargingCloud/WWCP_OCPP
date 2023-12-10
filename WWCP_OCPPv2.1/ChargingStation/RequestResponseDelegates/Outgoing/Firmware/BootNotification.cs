@@ -17,10 +17,7 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
@@ -29,32 +26,28 @@ using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
-    #region OnClearedChargingLimit (-Request/-Response) Delegate
-
     /// <summary>
-    /// A delegate called whenever a cleared charging limit request will be sent to the CSMS.
+    /// A delegate called whenever a BootNotification request will be sent to the CSMS.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The request.</param>
-    public delegate Task OnClearedChargingLimitRequestDelegate(DateTime                      Timestamp,
-                                                               IEventSender                  Sender,
-                                                               ClearedChargingLimitRequest   Request);
+    /// <param name="Request">The reserve now request.</param>
+    public delegate Task OnBootNotificationRequestDelegate(DateTime                  Timestamp,
+                                                           IEventSender              Sender,
+                                                           BootNotificationRequest   Request);
 
     /// <summary>
-    /// A delegate called whenever a response to a cleared charging limit request was received.
+    /// A delegate called whenever a response to a BootNotification request was received.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the log request.</param>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnClearedChargingLimitResponseDelegate(DateTime                       Timestamp,
-                                                                IEventSender                   Sender,
-                                                                ClearedChargingLimitRequest    Request,
-                                                                ClearedChargingLimitResponse   Response,
-                                                                TimeSpan                       Runtime);
-
-    #endregion
+    public delegate Task OnBootNotificationResponseDelegate(DateTime                   Timestamp,
+                                                            IEventSender               Sender,
+                                                            BootNotificationRequest    Request,
+                                                            BootNotificationResponse   Response,
+                                                            TimeSpan                   Runtime);
 
 }
