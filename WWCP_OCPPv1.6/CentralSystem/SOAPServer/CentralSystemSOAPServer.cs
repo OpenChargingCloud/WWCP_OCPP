@@ -1637,11 +1637,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 {
 
                     var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
-                    var request     = OCPP.CSMS.DataTransferRequest.Parse(DataTransferXML,
-                                                                          OCPPNS.OCPPv1_6_CS,
-                                                                          Request_Id.Parse(OCPPHeader.MessageId),
-                                                                          NetworkPath.Empty,
-                                                                          NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
+                    var request     = OCPP.CS.DataTransferRequest.Parse(DataTransferXML,
+                                                                        OCPPNS.OCPPv1_6_CS,
+                                                                        Request_Id.Parse(OCPPHeader.MessageId),
+                                                                        NetworkPath.Empty,
+                                                                        NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
 
                     #region Send OnIncomingDataTransferRequest event
 
@@ -1667,11 +1667,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         var results = OnIncomingDataTransfer?.
                                           GetInvocationList()?.
-                                          SafeSelect(subscriber => (subscriber as OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                          this,
-                                                                                                                          null,
-                                                                                                                          request,
-                                                                                                                          Request.CancellationToken)).
+                                          SafeSelect(subscriber => (subscriber as OCPP.CSMS.OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                                    this,
+                                                                                                                                    request,
+                                                                                                                                    Request.CancellationToken)).
                                           ToArray();
 
                         if (results?.Length > 0)
@@ -1684,7 +1683,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                         }
 
                         if (results?.Length == 0 || response == null)
-                            response = DataTransferResponse.Failed(request);
+                            response = OCPP.CSMS.DataTransferResponse.Failed(request);
 
                     }
 
@@ -1725,7 +1724,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                                              OCPPHeader.MessageId,  // MessageId from the request as RelatesTo Id!
                                                              OCPPHeader.From,
                                                              OCPPHeader.To,
-                                                             response.ToXML()).ToUTF8Bytes()
+                                                             response.ToXML(OCPPNS.OCPPv1_6_CS)).ToUTF8Bytes()
                     };
 
                     #endregion
@@ -1833,7 +1832,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                    this,
-                                                                                                                                   null,
                                                                                                                                    request,
                                                                                                                                    Request.CancellationToken)).
                                           ToArray();
@@ -1997,7 +1995,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                 this,
-                                                                                                                                null,
                                                                                                                                 request,
                                                                                                                                 Request.CancellationToken)).
                                           ToArray();

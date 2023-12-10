@@ -1208,7 +1208,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
+                var dataTransferRequests = new ConcurrentList<OCPP.CSMS.DataTransferRequest>();
 
                 chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
@@ -1265,7 +1265,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
+                var dataTransferRequests = new ConcurrentList<OCPP.CSMS.DataTransferRequest>();
 
                 chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
@@ -1329,7 +1329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
+                var dataTransferRequests = new ConcurrentList<OCPP.CSMS.DataTransferRequest>();
 
                 chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
@@ -1390,7 +1390,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new ConcurrentList<DataTransferRequest>();
+                var dataTransferRequests = new ConcurrentList<OCPP.CSMS.DataTransferRequest>();
 
                 chargingStation1.OnIncomingDataTransferRequest += (timestamp, sender, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);

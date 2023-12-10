@@ -20,8 +20,9 @@
 using System.Xml.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-
 using SOAPNS = org.GraphDefined.Vanaheimr.Hermod.SOAP;
+
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -39,32 +40,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The unique identification of a charge box.
         /// </summary>
-        public OCPP.NetworkingNode_Id  ChargeBoxIdentity   { get; }
+        public NetworkingNode_Id  ChargeBoxIdentity   { get; }
 
         /// <summary>
         /// The SOAP action.
         /// </summary>
-        public String                  Action              { get; }
+        public String             Action              { get; }
 
         /// <summary>
         /// An unique SOAP message identification.
         /// </summary>
-        public String                  MessageId           { get; }
+        public String             MessageId           { get; }
 
         /// <summary>
         /// The unique message identification of the related SOAP request.
         /// </summary>
-        public String                  RelatesTo           { get; }
+        public String             RelatesTo           { get; }
 
         /// <summary>
         /// The source URI of the SOAP message.
         /// </summary>
-        public String                  From                { get; }
+        public String             From                { get; }
 
         /// <summary>
         /// The destination URI of the SOAP message.
         /// </summary>
-        public String                  To                  { get; }
+        public String             To                  { get; }
 
         #endregion
 
@@ -80,7 +81,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="MessageId">An unique message identification.</param>
         /// <param name="From">The source URI of the SOAP message.</param>
         /// <param name="To">The destination URI of the SOAP message.</param>
-        public SOAPHeader(ChargeBox_Id  ChargeBoxIdentity,
+        public SOAPHeader(NetworkingNode_Id  ChargeBoxIdentity,
                           String        Action,
                           String        MessageId,
                           String        From,
@@ -108,12 +109,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="RelatesTo">The unique message identification of the related SOAP request.</param>
         /// <param name="From">The source URI of the SOAP message.</param>
         /// <param name="To">The destination URI of the SOAP message.</param>
-        public SOAPHeader(OCPP.NetworkingNode_Id  ChargeBoxIdentity,
-                          String                  Action,
-                          String                  MessageId,
-                          String?                 RelatesTo,
-                          String                  From,
-                          String                  To)
+        public SOAPHeader(NetworkingNode_Id  ChargeBoxIdentity,
+                          String             Action,
+                          String             MessageId,
+                          String?            RelatesTo,
+                          String             From,
+                          String             To)
         {
 
             #region Initial checks
@@ -238,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 SOAPHeader = new SOAPHeader(
 
                                  SOAPHeaderXML.MapValueOrFail       (OCPPNS.OCPPv1_6_CS + "chargeBoxIdentity",
-                                                                     ChargeBox_Id.Parse),
+                                                                     NetworkingNode_Id.Parse),
 
                                  SOAPHeaderXML.ElementValueOrFail   (SOAPNS.v1_2.NS.SOAPAdressing + "Action"),
                                  SOAPHeaderXML.ElementValueOrFail   (SOAPNS.v1_2.NS.SOAPAdressing + "MessageID"),

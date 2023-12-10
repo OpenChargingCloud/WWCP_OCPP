@@ -35,7 +35,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     public static class ICentralSystemClientExtensions
     {
 
-        #region Reset                 (ChargeBoxId, ResetType, ...)
+        #region Reset                 (NetworkingNodeId, ResetType, ...)
 
         /// <summary>
         /// Reset the given charge box.
@@ -47,32 +47,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<ResetResponse> Reset(this ICentralSystemClient  ICentralSystemClient,
-                                                ChargeBox_Id               ChargeBoxId,
-                                                ResetTypes                 ResetType,
+        public static Task<ResetResponse> Reset(this ICentralSystemClient     ICentralSystemClient,
+                                                NetworkingNode_Id             NetworkingNodeId,
+                                                ResetTypes                    ResetType,
 
-                                                Request_Id?                RequestId           = null,
-                                                DateTime?                  RequestTimestamp    = null,
-                                                TimeSpan?                  RequestTimeout      = null,
-                                                EventTracking_Id?          EventTrackingId     = null,
-                                                CancellationToken          CancellationToken   = default)
+                                                IEnumerable<KeyPair>?         SignKeys            = null,
+                                                IEnumerable<SignInfo>?        SignInfos           = null,
+                                                IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                CustomData?                   CustomData          = null,
+
+                                                Request_Id?                   RequestId           = null,
+                                                DateTime?                     RequestTimestamp    = null,
+                                                TimeSpan?                     RequestTimeout      = null,
+                                                EventTracking_Id?             EventTrackingId     = null,
+                                                NetworkPath?                  NetworkPath         = null,
+                                                CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.Reset(
                    new ResetRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        ResetType,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region ChangeAvailability    (ChargeBoxId, ConnectorId, Availability, ...)
+        #region ChangeAvailability    (NetworkingNodeId, ConnectorId, Availability, ...)
 
         /// <summary>
         /// Change the availability of the given charge box.
@@ -85,34 +99,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<ChangeAvailabilityResponse> ChangeAvailability(this ICentralSystemClient  ICentralSystemClient,
-                                                                          ChargeBox_Id               ChargeBoxId,
-                                                                          Connector_Id               ConnectorId,
-                                                                          Availabilities             Availability,
+        public static Task<ChangeAvailabilityResponse> ChangeAvailability(this ICentralSystemClient     ICentralSystemClient,
+                                                                          NetworkingNode_Id             NetworkingNodeId,
+                                                                          Connector_Id                  ConnectorId,
+                                                                          Availabilities                Availability,
 
-                                                                          Request_Id?                RequestId           = null,
-                                                                          DateTime?                  RequestTimestamp    = null,
-                                                                          TimeSpan?                  RequestTimeout      = null,
-                                                                          EventTracking_Id?          EventTrackingId     = null,
-                                                                          CancellationToken          CancellationToken   = default)
+                                                                          IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                          IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                                          CustomData?                   CustomData          = null,
+
+                                                                          Request_Id?                   RequestId           = null,
+                                                                          DateTime?                     RequestTimestamp    = null,
+                                                                          TimeSpan?                     RequestTimeout      = null,
+                                                                          EventTracking_Id?             EventTrackingId     = null,
+                                                                          NetworkPath?                  NetworkPath         = null,
+                                                                          CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.ChangeAvailability(
                    new ChangeAvailabilityRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        ConnectorId,
                        Availability,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region GetConfiguration      (ChargeBoxId, Keys = null, ...)
+        #region GetConfiguration      (NetworkingNodeId, Keys = null, ...)
 
         /// <summary>
         /// Get the configuration of the given charge box.
@@ -124,32 +152,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<GetConfigurationResponse> GetConfiguration(this ICentralSystemClient  ICentralSystemClient,
-                                                                      ChargeBox_Id               ChargeBoxId,
-                                                                      IEnumerable<String>?       Keys                = null,
+        public static Task<GetConfigurationResponse> GetConfiguration(this ICentralSystemClient     ICentralSystemClient,
+                                                                      NetworkingNode_Id             NetworkingNodeId,
+                                                                      IEnumerable<String>?          Keys                = null,
 
-                                                                      Request_Id?                RequestId           = null,
-                                                                      DateTime?                  RequestTimestamp    = null,
-                                                                      TimeSpan?                  RequestTimeout      = null,
-                                                                      EventTracking_Id?          EventTrackingId     = null,
-                                                                      CancellationToken          CancellationToken   = default)
+                                                                      IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                      IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                      IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                                      CustomData?                   CustomData          = null,
+
+                                                                      Request_Id?                   RequestId           = null,
+                                                                      DateTime?                     RequestTimestamp    = null,
+                                                                      TimeSpan?                     RequestTimeout      = null,
+                                                                      EventTracking_Id?             EventTrackingId     = null,
+                                                                      NetworkPath?                  NetworkPath         = null,
+                                                                      CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.GetConfiguration(
                    new GetConfigurationRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        Keys,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region ChangeConfiguration   (ChargeBoxId, Key, Value, ...)
+        #region ChangeConfiguration   (NetworkingNodeId, Key, Value, ...)
 
         /// <summary>
         /// Change the configuration of the given charge box.
@@ -162,34 +204,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<ChangeConfigurationResponse> ChangeConfiguration(this ICentralSystemClient  ICentralSystemClient,
-                                                                            ChargeBox_Id               ChargeBoxId,
-                                                                            String                     Key,
-                                                                            String                     Value,
+        public static Task<ChangeConfigurationResponse> ChangeConfiguration(this ICentralSystemClient     ICentralSystemClient,
+                                                                            NetworkingNode_Id             NetworkingNodeId,
+                                                                            String                        Key,
+                                                                            String                        Value,
 
-                                                                            Request_Id?                RequestId           = null,
-                                                                            DateTime?                  RequestTimestamp    = null,
-                                                                            TimeSpan?                  RequestTimeout      = null,
-                                                                            EventTracking_Id?          EventTrackingId     = null,
-                                                                            CancellationToken          CancellationToken   = default)
+                                                                            IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                            IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                            IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                                            CustomData?                   CustomData          = null,
+
+                                                                            Request_Id?                   RequestId           = null,
+                                                                            DateTime?                     RequestTimestamp    = null,
+                                                                            TimeSpan?                     RequestTimeout      = null,
+                                                                            EventTracking_Id?             EventTrackingId     = null,
+                                                                            NetworkPath?                  NetworkPath         = null,
+                                                                            CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.ChangeConfiguration(
                    new ChangeConfigurationRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        Key,
                        Value,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region DataTransfer          (ChargeBoxId, VendorId, MessageId, Data, ...)
+        #region DataTransfer          (NetworkingNodeId, VendorId, MessageId, Data, ...)
 
         /// <summary>
         /// Transfer the given data to the given charge box.
@@ -203,36 +259,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<CP.DataTransferResponse> DataTransfer(this ICentralSystemClient  ICentralSystemClient,
-                                                                 ChargeBox_Id               ChargeBoxId,
-                                                                 String                     VendorId,
-                                                                 String                     MessageId,
-                                                                 String                     Data,
+        public static Task<OCPP.CS.DataTransferResponse> DataTransfer(this ICentralSystemClient     ICentralSystemClient,
+                                                                      NetworkingNode_Id             NetworkingNodeId,
+                                                                      Vendor_Id                     VendorId,
+                                                                      Message_Id                    MessageId,
+                                                                      String                        Data,
 
-                                                                 Request_Id?                RequestId           = null,
-                                                                 DateTime?                  RequestTimestamp    = null,
-                                                                 TimeSpan?                  RequestTimeout      = null,
-                                                                 EventTracking_Id?          EventTrackingId     = null,
-                                                                 CancellationToken          CancellationToken   = default)
+                                                                      IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                      IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                      IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                                      CustomData?                   CustomData          = null,
+
+                                                                      Request_Id?                   RequestId           = null,
+                                                                      DateTime?                     RequestTimestamp    = null,
+                                                                      TimeSpan?                     RequestTimeout      = null,
+                                                                      EventTracking_Id?             EventTrackingId     = null,
+                                                                      NetworkPath?                  NetworkPath         = null,
+                                                                      CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.DataTransfer(
-                   new DataTransferRequest(
-                       ChargeBoxId,
+                   new OCPP.CSMS.DataTransferRequest(
+                       NetworkingNodeId,
                        VendorId,
                        MessageId,
                        Data,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region GetDiagnostics        (ChargeBoxId, Location, StartTime = null, StopTime = null, Retries = null, RetryInterval = null, ...)
+        #region GetDiagnostics        (NetworkingNodeId, Location, StartTime = null, StopTime = null, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Upload diagnostics data of the given charge box to the given file location.
@@ -248,40 +318,54 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<GetDiagnosticsResponse> GetDiagnostics(this ICentralSystemClient  ICentralSystemClient,
-                                                                  ChargeBox_Id               ChargeBoxId,
-                                                                  String                     Location,
-                                                                  DateTime?                  StartTime           = null,
-                                                                  DateTime?                  StopTime            = null,
-                                                                  Byte?                      Retries             = null,
-                                                                  TimeSpan?                  RetryInterval       = null,
+        public static Task<GetDiagnosticsResponse> GetDiagnostics(this ICentralSystemClient     ICentralSystemClient,
+                                                                  NetworkingNode_Id             NetworkingNodeId,
+                                                                  String                        Location,
+                                                                  DateTime?                     StartTime           = null,
+                                                                  DateTime?                     StopTime            = null,
+                                                                  Byte?                         Retries             = null,
+                                                                  TimeSpan?                     RetryInterval       = null,
 
-                                                                  Request_Id?                RequestId           = null,
-                                                                  DateTime?                  RequestTimestamp    = null,
-                                                                  TimeSpan?                  RequestTimeout      = null,
-                                                                  EventTracking_Id?          EventTrackingId     = null,
-                                                                  CancellationToken          CancellationToken   = default)
+                                                                  IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                  IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                                  CustomData?                   CustomData          = null,
+
+                                                                  Request_Id?                   RequestId           = null,
+                                                                  DateTime?                     RequestTimestamp    = null,
+                                                                  TimeSpan?                     RequestTimeout      = null,
+                                                                  EventTracking_Id?             EventTrackingId     = null,
+                                                                  NetworkPath?                  NetworkPath         = null,
+                                                                  CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.GetDiagnostics(
                    new GetDiagnosticsRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        Location,
                        StartTime,
                        StopTime,
                        Retries,
                        RetryInterval,
 
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
+
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region TriggerMessage        (ChargeBoxId, RequestedMessage, ConnectorId = null, ...)
+        #region TriggerMessage        (NetworkingNodeId, RequestedMessage, ConnectorId = null, ...)
 
         /// <summary>
         /// Create a trigger for the given message at the given charge box connector.
@@ -294,34 +378,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<TriggerMessageResponse> TriggerMessage(this ICentralSystemClient  ICentralSystemClient,
-                                                                  ChargeBox_Id               ChargeBoxId,
-                                                                  MessageTriggers            RequestedMessage,
-                                                                  Connector_Id?              ConnectorId         = null,
+        public static Task<TriggerMessageResponse> TriggerMessage(this ICentralSystemClient     ICentralSystemClient,
+                                                                  NetworkingNode_Id             NetworkingNodeId,
+                                                                  MessageTriggers               RequestedMessage,
+                                                                  Connector_Id?                 ConnectorId         = null,
 
-                                                                  Request_Id?                RequestId           = null,
-                                                                  DateTime?                  RequestTimestamp    = null,
-                                                                  TimeSpan?                  RequestTimeout      = null,
-                                                                  EventTracking_Id?          EventTrackingId     = null,
-                                                                  CancellationToken          CancellationToken   = default)
+                                                                  IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                  IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                                  CustomData?                   CustomData          = null,
+
+                                                                  Request_Id?                   RequestId           = null,
+                                                                  DateTime?                     RequestTimestamp    = null,
+                                                                  TimeSpan?                     RequestTimeout      = null,
+                                                                  EventTracking_Id?             EventTrackingId     = null,
+                                                                  NetworkPath?                  NetworkPath         = null,
+                                                                  CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.TriggerMessage(
                    new TriggerMessageRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        RequestedMessage,
                        ConnectorId,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region UpdateFirmware        (ChargeBoxId, FirmwareURL, RetrieveDate, Retries = null, RetryInterval = null, ...)
+        #region UpdateFirmware        (NetworkingNodeId, FirmwareURL, RetrieveDate, Retries = null, RetryInterval = null, ...)
 
         /// <summary>
         /// Initiate a firmware download from the given location at the given charge box.
@@ -335,31 +433,45 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<UpdateFirmwareResponse> UpdateFirmware(this ICentralSystemClient  ICentralSystemClient,
-                                                                  ChargeBox_Id               ChargeBoxId,
-                                                                  URL                        FirmwareURL,
-                                                                  DateTime                   RetrieveTimestamp,
-                                                                  Byte?                      Retries             = null,
-                                                                  TimeSpan?                  RetryInterval       = null,
+        public static Task<UpdateFirmwareResponse> UpdateFirmware(this ICentralSystemClient     ICentralSystemClient,
+                                                                  NetworkingNode_Id             NetworkingNodeId,
+                                                                  URL                           FirmwareURL,
+                                                                  DateTime                      RetrieveTimestamp,
+                                                                  Byte?                         Retries             = null,
+                                                                  TimeSpan?                     RetryInterval       = null,
 
-                                                                  Request_Id?                RequestId           = null,
-                                                                  DateTime?                  RequestTimestamp    = null,
-                                                                  TimeSpan?                  RequestTimeout      = null,
-                                                                  EventTracking_Id?          EventTrackingId     = null,
-                                                                  CancellationToken          CancellationToken   = default)
+                                                                  IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                  IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                                  CustomData?                   CustomData          = null,
+
+                                                                  Request_Id?                   RequestId           = null,
+                                                                  DateTime?                     RequestTimestamp    = null,
+                                                                  TimeSpan?                     RequestTimeout      = null,
+                                                                  EventTracking_Id?             EventTrackingId     = null,
+                                                                  NetworkPath?                  NetworkPath         = null,
+                                                                  CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.UpdateFirmware(
                    new UpdateFirmwareRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        FirmwareURL,
                        RetrieveTimestamp,
                        Retries,
                        RetryInterval,
 
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
+
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
@@ -367,7 +479,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region ReserveNow            (ChargeBoxId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
+        #region ReserveNow            (NetworkingNodeId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
 
         /// <summary>
         /// Create a charging reservation of the given charge box connector.
@@ -382,40 +494,54 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<ReserveNowResponse> ReserveNow(this ICentralSystemClient  ICentralSystemClient,
-                                                          ChargeBox_Id               ChargeBoxId,
-                                                          Connector_Id               ConnectorId,
-                                                          Reservation_Id             ReservationId,
-                                                          DateTime                   ExpiryDate,
-                                                          IdToken                    IdTag,
-                                                          IdToken?                   ParentIdTag         = null,
+        public static Task<ReserveNowResponse> ReserveNow(this ICentralSystemClient     ICentralSystemClient,
+                                                          NetworkingNode_Id             NetworkingNodeId,
+                                                          Connector_Id                  ConnectorId,
+                                                          Reservation_Id                ReservationId,
+                                                          DateTime                      ExpiryDate,
+                                                          IdToken                       IdTag,
+                                                          IdToken?                      ParentIdTag         = null,
 
-                                                          Request_Id?                RequestId           = null,
-                                                          DateTime?                  RequestTimestamp    = null,
-                                                          TimeSpan?                  RequestTimeout      = null,
-                                                          EventTracking_Id?          EventTrackingId     = null,
-                                                          CancellationToken          CancellationToken   = default)
+                                                          IEnumerable<KeyPair>?         SignKeys            = null,
+                                                          IEnumerable<SignInfo>?        SignInfos           = null,
+                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                          CustomData?                   CustomData          = null,
+
+                                                          Request_Id?                   RequestId           = null,
+                                                          DateTime?                     RequestTimestamp    = null,
+                                                          TimeSpan?                     RequestTimeout      = null,
+                                                          EventTracking_Id?             EventTrackingId     = null,
+                                                          NetworkPath?                  NetworkPath         = null,
+                                                          CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.ReserveNow(
                    new ReserveNowRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        ConnectorId,
                        ReservationId,
                        ExpiryDate,
                        IdTag,
                        ParentIdTag,
 
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
+
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region CancelReservation     (ChargeBoxId, ReservationId, ...)
+        #region CancelReservation     (NetworkingNodeId, ReservationId, ...)
 
         /// <summary>
         /// Cancel the given charging reservation at the given charge box.
@@ -426,32 +552,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<CancelReservationResponse> CancelReservation(this ICentralSystemClient  ICentralSystemClient,
-                                                                        ChargeBox_Id               ChargeBoxId,
-                                                                        Reservation_Id             ReservationId,
+        public static Task<CancelReservationResponse> CancelReservation(this ICentralSystemClient     ICentralSystemClient,
+                                                                        NetworkingNode_Id             NetworkingNodeId,
+                                                                        Reservation_Id                ReservationId,
 
-                                                                        Request_Id?                RequestId           = null,
-                                                                        DateTime?                  RequestTimestamp    = null,
-                                                                        TimeSpan?                  RequestTimeout      = null,
-                                                                        EventTracking_Id?          EventTrackingId     = null,
-                                                                        CancellationToken          CancellationToken   = default)
+                                                                        IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                        IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                        IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                                        CustomData?                   CustomData          = null,
+
+                                                                        Request_Id?                   RequestId           = null,
+                                                                        DateTime?                     RequestTimestamp    = null,
+                                                                        TimeSpan?                     RequestTimeout      = null,
+                                                                        EventTracking_Id?             EventTrackingId     = null,
+                                                                        NetworkPath?                  NetworkPath         = null,
+                                                                        CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.CancelReservation(
                    new CancelReservationRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        ReservationId,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region RemoteStartTransaction(ChargeBoxId, IdTag, ConnectorId = null, ChargingProfile = null, ...)
+        #region RemoteStartTransaction(NetworkingNodeId, IdTag, ConnectorId = null, ChargingProfile = null, ...)
 
         /// <summary>
         /// Start a charging session at the given charge box connector using the given charging profile.
@@ -464,36 +604,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<RemoteStartTransactionResponse> RemoteStartTransaction(this ICentralSystemClient  ICentralSystemClient,
-                                                                                  ChargeBox_Id               ChargeBoxId,
-                                                                                  IdToken                    IdTag,
-                                                                                  Connector_Id?              ConnectorId         = null,
-                                                                                  ChargingProfile?           ChargingProfile     = null,
+        public static Task<RemoteStartTransactionResponse> RemoteStartTransaction(this ICentralSystemClient     ICentralSystemClient,
+                                                                                  NetworkingNode_Id             NetworkingNodeId,
+                                                                                  IdToken                       IdTag,
+                                                                                  Connector_Id?                 ConnectorId         = null,
+                                                                                  ChargingProfile?              ChargingProfile     = null,
 
-                                                                                  Request_Id?                RequestId           = null,
-                                                                                  DateTime?                  RequestTimestamp    = null,
-                                                                                  TimeSpan?                  RequestTimeout      = null,
-                                                                                  EventTracking_Id?          EventTrackingId     = null,
-                                                                                  CancellationToken          CancellationToken   = default)
+                                                                                  IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                                  IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                                  IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                                                  CustomData?                   CustomData          = null,
+
+                                                                                  Request_Id?                   RequestId           = null,
+                                                                                  DateTime?                     RequestTimestamp    = null,
+                                                                                  TimeSpan?                     RequestTimeout      = null,
+                                                                                  EventTracking_Id?             EventTrackingId     = null,
+                                                                                  NetworkPath?                  NetworkPath         = null,
+                                                                                  CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.RemoteStartTransaction(
                    new RemoteStartTransactionRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        IdTag,
                        ConnectorId,
                        ChargingProfile,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region RemoteStopTransaction (ChargeBoxId, TransactionId, ...)
+        #region RemoteStopTransaction (NetworkingNodeId, TransactionId, ...)
 
         /// <summary>
         /// Stop a charging session at the given charge box.
@@ -504,32 +658,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<RemoteStopTransactionResponse> RemoteStopTransaction(this ICentralSystemClient  ICentralSystemClient,
-                                                                                ChargeBox_Id               ChargeBoxId,
-                                                                                Transaction_Id             TransactionId,
+        public static Task<RemoteStopTransactionResponse> RemoteStopTransaction(this ICentralSystemClient     ICentralSystemClient,
+                                                                                NetworkingNode_Id             NetworkingNodeId,
+                                                                                Transaction_Id                TransactionId,
 
-                                                                                Request_Id?                RequestId           = null,
-                                                                                DateTime?                  RequestTimestamp    = null,
-                                                                                TimeSpan?                  RequestTimeout      = null,
-                                                                                EventTracking_Id?          EventTrackingId     = null,
-                                                                                CancellationToken          CancellationToken   = default)
+                                                                                IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                                IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                                IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                                                CustomData?                   CustomData          = null,
+
+                                                                                Request_Id?                   RequestId           = null,
+                                                                                DateTime?                     RequestTimestamp    = null,
+                                                                                TimeSpan?                     RequestTimeout      = null,
+                                                                                EventTracking_Id?             EventTrackingId     = null,
+                                                                                NetworkPath?                  NetworkPath         = null,
+                                                                                CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.RemoteStopTransaction(
                    new RemoteStopTransactionRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        TransactionId,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region SetChargingProfile    (ChargeBoxId, ConnectorId, ChargingProfile, ...)
+        #region SetChargingProfile    (NetworkingNodeId, ConnectorId, ChargingProfile, ...)
 
         /// <summary>
         /// Set the charging profile of the given charge box connector.
@@ -541,34 +709,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<SetChargingProfileResponse> SetChargingProfile(this ICentralSystemClient  ICentralSystemClient,
-                                                                          ChargeBox_Id               ChargeBoxId,
-                                                                          Connector_Id               ConnectorId,
-                                                                          ChargingProfile            ChargingProfile,
+        public static Task<SetChargingProfileResponse> SetChargingProfile(this ICentralSystemClient     ICentralSystemClient,
+                                                                          NetworkingNode_Id             NetworkingNodeId,
+                                                                          Connector_Id                  ConnectorId,
+                                                                          ChargingProfile               ChargingProfile,
 
-                                                                          Request_Id?                RequestId           = null,
-                                                                          DateTime?                  RequestTimestamp    = null,
-                                                                          TimeSpan?                  RequestTimeout      = null,
-                                                                          EventTracking_Id?          EventTrackingId     = null,
-                                                                          CancellationToken          CancellationToken   = default)
+                                                                          IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                          IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                                          CustomData?                   CustomData          = null,
+
+                                                                          Request_Id?                   RequestId           = null,
+                                                                          DateTime?                     RequestTimestamp    = null,
+                                                                          TimeSpan?                     RequestTimeout      = null,
+                                                                          EventTracking_Id?             EventTrackingId     = null,
+                                                                          NetworkPath?                  NetworkPath         = null,
+                                                                          CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.SetChargingProfile(
                    new SetChargingProfileRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        ConnectorId,
                        ChargingProfile,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region ClearChargingProfile  (ChargeBoxId, ChargingProfileId, ConnectorId, ChargingProfilePurpose, StackLevel, ...)
+        #region ClearChargingProfile  (NetworkingNodeId, ChargingProfileId, ConnectorId, ChargingProfilePurpose, StackLevel, ...)
 
         /// <summary>
         /// Remove the charging profile at the given charge box connector.
@@ -583,38 +765,52 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<ClearChargingProfileResponse> ClearChargingProfile(this ICentralSystemClient  ICentralSystemClient,
-                                                                              ChargeBox_Id               ChargeBoxId,
-                                                                              ChargingProfile_Id?        ChargingProfileId        = null,
-                                                                              Connector_Id?              ConnectorId              = null,
-                                                                              ChargingProfilePurposes?   ChargingProfilePurpose   = null,
-                                                                              UInt32?                    StackLevel               = null,
+        public static Task<ClearChargingProfileResponse> ClearChargingProfile(this ICentralSystemClient     ICentralSystemClient,
+                                                                              NetworkingNode_Id             NetworkingNodeId,
+                                                                              ChargingProfile_Id?           ChargingProfileId        = null,
+                                                                              Connector_Id?                 ConnectorId              = null,
+                                                                              ChargingProfilePurposes?      ChargingProfilePurpose   = null,
+                                                                              UInt32?                       StackLevel               = null,
 
-                                                                              Request_Id?                RequestId                = null,
-                                                                              DateTime?                  RequestTimestamp         = null,
-                                                                              TimeSpan?                  RequestTimeout           = null,
-                                                                              EventTracking_Id?          EventTrackingId          = null,
-                                                                              CancellationToken          CancellationToken        = default)
+                                                                              IEnumerable<KeyPair>?         SignKeys                 = null,
+                                                                              IEnumerable<SignInfo>?        SignInfos                = null,
+                                                                              IEnumerable<OCPP.Signature>?  Signatures               = null,
+
+                                                                              CustomData?                   CustomData               = null,
+
+                                                                              Request_Id?                   RequestId                = null,
+                                                                              DateTime?                     RequestTimestamp         = null,
+                                                                              TimeSpan?                     RequestTimeout           = null,
+                                                                              EventTracking_Id?             EventTrackingId          = null,
+                                                                              NetworkPath?                  NetworkPath              = null,
+                                                                              CancellationToken             CancellationToken        = default)
 
             => ICentralSystemClient.ClearChargingProfile(
                    new ClearChargingProfileRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        ChargingProfileId,
                        ConnectorId,
                        ChargingProfilePurpose,
                        StackLevel,
 
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
+
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region GetCompositeSchedule  (ChargeBoxId, ConnectorId, Duration, ChargingRateUnit = null, ...)
+        #region GetCompositeSchedule  (NetworkingNodeId, ConnectorId, Duration, ChargingRateUnit = null, ...)
 
         /// <summary>
         /// Return the charging schedule of the given charge box connector.
@@ -628,36 +824,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<GetCompositeScheduleResponse> GetCompositeSchedule(this ICentralSystemClient  ICentralSystemClient,
-                                                                              ChargeBox_Id               ChargeBoxId,
-                                                                              Connector_Id               ConnectorId,
-                                                                              TimeSpan                   Duration,
-                                                                              ChargingRateUnits?         ChargingRateUnit    = null,
+        public static Task<GetCompositeScheduleResponse> GetCompositeSchedule(this ICentralSystemClient     ICentralSystemClient,
+                                                                              NetworkingNode_Id             NetworkingNodeId,
+                                                                              Connector_Id                  ConnectorId,
+                                                                              TimeSpan                      Duration,
+                                                                              ChargingRateUnits?            ChargingRateUnit    = null,
 
-                                                                              Request_Id?                RequestId           = null,
-                                                                              DateTime?                  RequestTimestamp    = null,
-                                                                              TimeSpan?                  RequestTimeout      = null,
-                                                                              EventTracking_Id?          EventTrackingId     = null,
-                                                                              CancellationToken          CancellationToken   = default)
+                                                                              IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                              IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                              IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                                              CustomData?                   CustomData          = null,
+
+                                                                              Request_Id?                   RequestId           = null,
+                                                                              DateTime?                     RequestTimestamp    = null,
+                                                                              TimeSpan?                     RequestTimeout      = null,
+                                                                              EventTracking_Id?             EventTrackingId     = null,
+                                                                              NetworkPath?                  NetworkPath         = null,
+                                                                              CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.GetCompositeSchedule(
                    new GetCompositeScheduleRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        ConnectorId,
                        Duration,
                        ChargingRateUnit,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region UnlockConnector       (ChargeBoxId, ConnectorId, ...)
+        #region UnlockConnector       (NetworkingNodeId, ConnectorId, ...)
 
         /// <summary>
         /// Unlock the given charge box connector.
@@ -669,25 +879,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<UnlockConnectorResponse> UnlockConnector(this ICentralSystemClient  ICentralSystemClient,
-                                                                    ChargeBox_Id               ChargeBoxId,
-                                                                    Connector_Id               ConnectorId,
+        public static Task<UnlockConnectorResponse> UnlockConnector(this ICentralSystemClient     ICentralSystemClient,
+                                                                    NetworkingNode_Id             NetworkingNodeId,
+                                                                    Connector_Id                  ConnectorId,
 
-                                                                    Request_Id?                RequestId           = null,
-                                                                    DateTime?                  RequestTimestamp    = null,
-                                                                    TimeSpan?                  RequestTimeout      = null,
-                                                                    EventTracking_Id?          EventTrackingId     = null,
-                                                                    CancellationToken          CancellationToken   = default)
+                                                                    IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                    IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                    IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                                    CustomData?                   CustomData          = null,
+
+                                                                    Request_Id?                   RequestId           = null,
+                                                                    DateTime?                     RequestTimestamp    = null,
+                                                                    TimeSpan?                     RequestTimeout      = null,
+                                                                    EventTracking_Id?             EventTrackingId     = null,
+                                                                    NetworkPath?                  NetworkPath         = null,
+                                                                    CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.UnlockConnector(
                    new UnlockConnectorRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        ConnectorId,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
@@ -695,7 +919,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region GetLocalListVersion   (ChargeBoxId, ...)
+        #region GetLocalListVersion   (NetworkingNodeId, ...)
 
         /// <summary>
         /// Return the local white list of the given charge box.
@@ -706,30 +930,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<GetLocalListVersionResponse> GetLocalListVersion(this ICentralSystemClient  ICentralSystemClient,
-                                                                            ChargeBox_Id               ChargeBoxId,
+        public static Task<GetLocalListVersionResponse> GetLocalListVersion(this ICentralSystemClient     ICentralSystemClient,
+                                                                            NetworkingNode_Id             NetworkingNodeId,
 
-                                                                            Request_Id?                RequestId           = null,
-                                                                            DateTime?                  RequestTimestamp    = null,
-                                                                            TimeSpan?                  RequestTimeout      = null,
-                                                                            EventTracking_Id?          EventTrackingId     = null,
-                                                                            CancellationToken          CancellationToken   = default)
+                                                                            IEnumerable<KeyPair>?         SignKeys            = null,
+                                                                            IEnumerable<SignInfo>?        SignInfos           = null,
+                                                                            IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                                            CustomData?                   CustomData          = null,
+
+                                                                            Request_Id?                   RequestId           = null,
+                                                                            DateTime?                     RequestTimestamp    = null,
+                                                                            TimeSpan?                     RequestTimeout      = null,
+                                                                            EventTracking_Id?             EventTrackingId     = null,
+                                                                            NetworkPath?                  NetworkPath         = null,
+                                                                            CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.GetLocalListVersion(
                    new GetLocalListVersionRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region SendLocalList         (ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
+        #region SendLocalList         (NetworkingNodeId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
 
         /// <summary>
         /// Set the local white liste at the given charge box.
@@ -743,35 +981,49 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
         public static Task<SendLocalListResponse> SendLocalList(this ICentralSystemClient        ICentralSystemClient,
-                                                                ChargeBox_Id                     ChargeBoxId,
+                                                                NetworkingNode_Id                NetworkingNodeId,
                                                                 UInt64                           ListVersion,
                                                                 UpdateTypes                      UpdateType,
                                                                 IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
+
+                                                                IEnumerable<KeyPair>?            SignKeys                 = null,
+                                                                IEnumerable<SignInfo>?           SignInfos                = null,
+                                                                IEnumerable<OCPP.Signature>?     Signatures               = null,
+
+                                                                CustomData?                      CustomData               = null,
 
                                                                 Request_Id?                      RequestId                = null,
                                                                 DateTime?                        RequestTimestamp         = null,
                                                                 TimeSpan?                        RequestTimeout           = null,
                                                                 EventTracking_Id?                EventTrackingId          = null,
+                                                                NetworkPath?                     NetworkPath              = null,
                                                                 CancellationToken                CancellationToken        = default)
 
             => ICentralSystemClient.SendLocalList(
                    new SendLocalListRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
                        ListVersion,
                        UpdateType,
                        LocalAuthorizationList,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );
 
         #endregion
 
-        #region ClearCache            (ChargeBoxId, ...)
+        #region ClearCache            (NetworkingNodeId, ...)
 
         /// <summary>
         /// Clear the local white liste cache of the given charge box.
@@ -782,23 +1034,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<ClearCacheResponse> ClearCache(this ICentralSystemClient  ICentralSystemClient,
-                                                          ChargeBox_Id               ChargeBoxId,
+        public static Task<ClearCacheResponse> ClearCache(this ICentralSystemClient     ICentralSystemClient,
+                                                          NetworkingNode_Id             NetworkingNodeId,
 
-                                                          Request_Id?                RequestId           = null,
-                                                          DateTime?                  RequestTimestamp    = null,
-                                                          TimeSpan?                  RequestTimeout      = null,
-                                                          EventTracking_Id?          EventTrackingId     = null,
-                                                          CancellationToken          CancellationToken   = default)
+                                                          IEnumerable<KeyPair>?         SignKeys            = null,
+                                                          IEnumerable<SignInfo>?        SignInfos           = null,
+                                                          IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                                          CustomData?                   CustomData          = null,
+
+                                                          Request_Id?                   RequestId           = null,
+                                                          DateTime?                     RequestTimestamp    = null,
+                                                          TimeSpan?                     RequestTimeout      = null,
+                                                          EventTracking_Id?             EventTrackingId     = null,
+                                                          NetworkPath?                  NetworkPath         = null,
+                                                          CancellationToken             CancellationToken   = default)
 
             => ICentralSystemClient.ClearCache(
                    new ClearCacheRequest(
-                       ChargeBoxId,
+                       NetworkingNodeId,
+
+                       SignKeys,
+                       SignInfos,
+                       Signatures,
+
+                       CustomData,
 
                        RequestId,
                        RequestTimestamp,
                        RequestTimeout,
                        EventTrackingId,
+                       NetworkPath,
                        CancellationToken
                    )
                );

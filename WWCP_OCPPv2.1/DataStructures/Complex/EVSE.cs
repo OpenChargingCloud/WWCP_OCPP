@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                    Id,
 
                    ConnectorId.HasValue
-                       ? " (" + ConnectorId.Value + ")"
+                       ? $" ({ConnectorId.Value})"
                        : ""
 
                );

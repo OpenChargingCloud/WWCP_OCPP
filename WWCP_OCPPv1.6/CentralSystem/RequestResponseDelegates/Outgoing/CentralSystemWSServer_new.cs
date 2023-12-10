@@ -47,6 +47,940 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                          ICSMSChannel
     {
 
+
+
+        #region Events
+
+        #region CSMS -> Charging Station
+
+        #region OnReset
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OnResetRequestDelegate?   OnResetRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OnResetResponseDelegate?  OnResetResponse;
+
+        #endregion
+
+        #region OnChangeAvailability
+
+        /// <summary>
+        /// An event sent whenever a change availability request was sent.
+        /// </summary>
+        public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a change availability request was sent.
+        /// </summary>
+        public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+
+        #endregion
+
+        #region OnGetConfiguration
+
+        /// <summary>
+        /// An event sent whenever a get configuration request was sent.
+        /// </summary>
+        public event OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a get configuration request was sent.
+        /// </summary>
+        public event OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
+
+        #endregion
+
+        #region OnChangeConfiguration
+
+        /// <summary>
+        /// An event sent whenever a change configuration request was sent.
+        /// </summary>
+        public event OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a change configuration request was sent.
+        /// </summary>
+        public event OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
+
+        #endregion
+
+        #region OnDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a data transfer request was sent.
+        /// </summary>
+        public event OCPP.CSMS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a data transfer request was sent.
+        /// </summary>
+        public event OCPP.CSMS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
+
+        #endregion
+
+        #region OnGetDiagnostics
+
+        /// <summary>
+        /// An event sent whenever a get diagnostics request was sent.
+        /// </summary>
+        public event OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a get diagnostics request was sent.
+        /// </summary>
+        public event OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
+
+        #endregion
+
+        #region OnTriggerMessage
+
+        /// <summary>
+        /// An event sent whenever a trigger message request was sent.
+        /// </summary>
+        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a trigger message request was sent.
+        /// </summary>
+        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+
+        #endregion
+
+        #region OnUpdateFirmware
+
+        /// <summary>
+        /// An event sent whenever an update firmware request was sent.
+        /// </summary>
+        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an update firmware request was sent.
+        /// </summary>
+        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+
+        #endregion
+
+
+        #region OnReserveNow
+
+        /// <summary>
+        /// An event sent whenever a reserve now request was sent.
+        /// </summary>
+        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reserve now request was sent.
+        /// </summary>
+        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
+
+        #endregion
+
+        #region OnCancelReservation
+
+        /// <summary>
+        /// An event sent whenever a cancel reservation request was sent.
+        /// </summary>
+        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a cancel reservation request was sent.
+        /// </summary>
+        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+
+        #endregion
+
+        #region OnRemoteStartTransaction
+
+        /// <summary>
+        /// An event sent whenever a remote start transaction request was sent.
+        /// </summary>
+        public event OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a remote start transaction request was sent.
+        /// </summary>
+        public event OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
+
+        #endregion
+
+        #region OnRemoteStopTransaction
+
+        /// <summary>
+        /// An event sent whenever a remote stop transaction request was sent.
+        /// </summary>
+        public event OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a remote stop transaction request was sent.
+        /// </summary>
+        public event OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
+
+        #endregion
+
+        #region OnSetChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a set charging profile request was sent.
+        /// </summary>
+        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a set charging profile request was sent.
+        /// </summary>
+        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+
+        #endregion
+
+        #region OnClearChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a clear charging profile request was sent.
+        /// </summary>
+        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a clear charging profile request was sent.
+        /// </summary>
+        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+
+        #endregion
+
+        #region OnGetCompositeSchedule
+
+        /// <summary>
+        /// An event sent whenever a get composite schedule request was sent.
+        /// </summary>
+        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a get composite schedule request was sent.
+        /// </summary>
+        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+
+        #endregion
+
+        #region OnUnlockConnector
+
+        /// <summary>
+        /// An event sent whenever an unlock connector request was sent.
+        /// </summary>
+        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an unlock connector request was sent.
+        /// </summary>
+        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+
+        #endregion
+
+
+        #region OnGetLocalListVersion
+
+        /// <summary>
+        /// An event sent whenever a get local list version request was sent.
+        /// </summary>
+        public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a get local list version request was sent.
+        /// </summary>
+        public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+
+        #endregion
+
+        #region OnSendLocalList
+
+        /// <summary>
+        /// An event sent whenever a send local list request was sent.
+        /// </summary>
+        public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a send local list request was sent.
+        /// </summary>
+        public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+
+        #endregion
+
+        #region OnClearCache
+
+        /// <summary>
+        /// An event sent whenever a clear cache request was sent.
+        /// </summary>
+        public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a clear cache request was sent.
+        /// </summary>
+        public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
+
+        #endregion
+
+
+        // Security extensions
+
+        #region OnCertificateSigned
+
+        /// <summary>
+        /// An event sent whenever a certificate signed request was sent.
+        /// </summary>
+        public event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a certificate signed request was sent.
+        /// </summary>
+        public event OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+
+        #endregion
+
+        #region OnDeleteCertificate
+
+        /// <summary>
+        /// An event sent whenever a delete certificate request was sent.
+        /// </summary>
+        public event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a delete certificate request was sent.
+        /// </summary>
+        public event OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+
+        #endregion
+
+        #region OnExtendedTriggerMessage
+
+        /// <summary>
+        /// An event sent whenever an extended trigger message request was sent.
+        /// </summary>
+        public event OnExtendedTriggerMessageRequestDelegate?   OnExtendedTriggerMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an extended trigger message request was sent.
+        /// </summary>
+        public event OnExtendedTriggerMessageResponseDelegate?  OnExtendedTriggerMessageResponse;
+
+        #endregion
+
+        #region OnGetInstalledCertificateIds
+
+        /// <summary>
+        /// An event sent whenever a get installed certificate ids request was sent.
+        /// </summary>
+        public event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a get installed certificate ids request was sent.
+        /// </summary>
+        public event OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+
+        #endregion
+
+        #region OnGetLog
+
+        /// <summary>
+        /// An event sent whenever a get log request was sent.
+        /// </summary>
+        public event OnGetLogRequestDelegate?   OnGetLogRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a get log request was sent.
+        /// </summary>
+        public event OnGetLogResponseDelegate?  OnGetLogResponse;
+
+        #endregion
+
+        #region OnInstallCertificate
+
+        /// <summary>
+        /// An event sent whenever an install certificate request was sent.
+        /// </summary>
+        public event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an install certificate request was sent.
+        /// </summary>
+        public event OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+
+        #endregion
+
+        #region OnSignedUpdateFirmware
+
+        /// <summary>
+        /// An event sent whenever a signed update firmware request was sent.
+        /// </summary>
+        public event OnSignedUpdateFirmwareRequestDelegate?   OnSignedUpdateFirmwareRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a signed update firmware request was sent.
+        /// </summary>
+        public event OnSignedUpdateFirmwareResponseDelegate?  OnSignedUpdateFirmwareResponse;
+
+        #endregion
+
+        #endregion
+
+        #region CSMS <- Charging Station
+
+        #region OnBootNotification
+
+        /// <summary>
+        /// An event sent whenever a boot notification web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?            OnBootNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a boot notification request was received.
+        /// </summary>
+        public event OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a boot notification was received.
+        /// </summary>
+        public event OnBootNotificationDelegate?            OnBootNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a boot notification was sent.
+        /// </summary>
+        public event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a boot notification was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?           OnBootNotificationWSResponse;
+
+        #endregion
+
+        #region OnHeartbeat
+
+        /// <summary>
+        /// An event sent whenever a heartbeat web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?     OnHeartbeatWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a heartbeat request was received.
+        /// </summary>
+        public event OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
+
+        /// <summary>
+        /// An event sent whenever a heartbeat was received.
+        /// </summary>
+        public event OnHeartbeatDelegate?            OnHeartbeat;
+
+        /// <summary>
+        /// An event sent whenever a response to a heartbeat was sent.
+        /// </summary>
+        public event OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a heartbeat was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?    OnHeartbeatWSResponse;
+
+        #endregion
+
+
+        #region OnAuthorize
+
+        /// <summary>
+        /// An event sent whenever an authorize web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?     OnAuthorizeWSRequest;
+
+        /// <summary>
+        /// An event sent whenever an authorize request was received.
+        /// </summary>
+        public event OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
+
+        /// <summary>
+        /// An event sent whenever an authorize request was received.
+        /// </summary>
+        public event OnAuthorizeDelegate?            OnAuthorize;
+
+        /// <summary>
+        /// An event sent whenever an authorize response was sent.
+        /// </summary>
+        public event OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
+
+        /// <summary>
+        /// An event sent whenever an authorize web socket response was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?    OnAuthorizeWSResponse;
+
+        #endregion
+
+        #region OnStartTransaction
+
+        /// <summary>
+        /// An event sent whenever a start transaction web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?           OnStartTransactionWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a start transaction request was received.
+        /// </summary>
+        public event OnStartTransactionRequestDelegate?    OnStartTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a start transaction request was received.
+        /// </summary>
+        public event OnStartTransactionDelegate?           OnStartTransaction;
+
+        /// <summary>
+        /// An event sent whenever a response to a start transaction request was sent.
+        /// </summary>
+        public event OnStartTransactionResponseDelegate?   OnStartTransactionResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a start transaction request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?          OnStartTransactionWSResponse;
+
+        #endregion
+
+        #region OnStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a status notification web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?             OnStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a status notification request was received.
+        /// </summary>
+        public event OnStatusNotificationRequestDelegate?    OnStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a status notification request was received.
+        /// </summary>
+        public event OnStatusNotificationDelegate?           OnStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a status notification request was sent.
+        /// </summary>
+        public event OnStatusNotificationResponseDelegate?   OnStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a status notification request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?            OnStatusNotificationWSResponse;
+
+        #endregion
+
+        #region OnMeterValues
+
+        /// <summary>
+        /// An event sent whenever a meter values web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?      OnMeterValuesWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a meter values request was received.
+        /// </summary>
+        public event OnMeterValuesRequestDelegate?    OnMeterValuesRequest;
+
+        /// <summary>
+        /// An event sent whenever a meter values request was received.
+        /// </summary>
+        public event OnMeterValuesDelegate?           OnMeterValues;
+
+        /// <summary>
+        /// An event sent whenever a response to a meter values request was sent.
+        /// </summary>
+        public event OnMeterValuesResponseDelegate?   OnMeterValuesResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a meter values request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?     OnMeterValuesWSResponse;
+
+        #endregion
+
+        #region OnStopTransaction
+
+        /// <summary>
+        /// An event sent whenever a stop transaction web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?          OnStopTransactionWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a stop transaction request was received.
+        /// </summary>
+        public event OnStopTransactionRequestDelegate?    OnStopTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a stop transaction request was received.
+        /// </summary>
+        public event OnStopTransactionDelegate?           OnStopTransaction;
+
+        /// <summary>
+        /// An event sent whenever a response to a stop transaction request was sent.
+        /// </summary>
+        public event OnStopTransactionResponseDelegate?   OnStopTransactionResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a stop transaction request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?         OnStopTransactionWSResponse;
+
+        #endregion
+
+
+        #region OnDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a data transfer web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?               OnIncomingDataTransferWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a data transfer request was received.
+        /// </summary>
+        public event OCPP.CSMS.OnIncomingDataTransferRequestDelegate?    OnIncomingDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a data transfer request was received.
+        /// </summary>
+        public event OCPP.CSMS.OnIncomingDataTransferDelegate?           OnIncomingDataTransfer;
+
+        /// <summary>
+        /// An event sent whenever a response to a data transfer request was sent.
+        /// </summary>
+        public event OCPP.CSMS.OnIncomingDataTransferResponseDelegate?   OnIncomingDataTransferResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a data transfer request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?              OnIncomingDataTransferWSResponse;
+
+        #endregion
+
+        #region OnDiagnosticsStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a diagnostics status notification web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                        OnDiagnosticsStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a diagnostics status notification request was received.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationRequestDelegate?    OnDiagnosticsStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a diagnostics status notification request was received.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationDelegate?           OnDiagnosticsStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a diagnostics status notification request was sent.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationResponseDelegate?   OnDiagnosticsStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a diagnostics status notification request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                       OnDiagnosticsStatusNotificationWSResponse;
+
+        #endregion
+
+        #region OnFirmwareStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                     OnFirmwareStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        public event OnFirmwareStatusNotificationRequestDelegate?    OnFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        public event OnFirmwareStatusNotificationDelegate?           OnFirmwareStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a firmware status notification request was sent.
+        /// </summary>
+        public event OnFirmwareStatusNotificationResponseDelegate?   OnFirmwareStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a firmware status notification request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                    OnFirmwareStatusNotificationWSResponse;
+
+        #endregion
+
+
+        // Security extensions
+
+        #region OnLogStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a log status notification web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                OnLogStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a log status notification request was received.
+        /// </summary>
+        public event OnLogStatusNotificationRequestDelegate?    OnLogStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a log status notification request was received.
+        /// </summary>
+        public event OnLogStatusNotificationDelegate?           OnLogStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a log status notification request was sent.
+        /// </summary>
+        public event OnLogStatusNotificationResponseDelegate?   OnLogStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a log status notification request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?               OnLogStatusNotificationWSResponse;
+
+        #endregion
+
+        #region OnSecurityEventNotification
+
+        /// <summary>
+        /// An event sent whenever a security event notification web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                    OnSecurityEventNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a security event notification request was received.
+        /// </summary>
+        public event OnSecurityEventNotificationRequestDelegate?    OnSecurityEventNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a security event notification request was received.
+        /// </summary>
+        public event OnSecurityEventNotificationDelegate?           OnSecurityEventNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a security event notification request was sent.
+        /// </summary>
+        public event OnSecurityEventNotificationResponseDelegate?   OnSecurityEventNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a security event notification request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                   OnSecurityEventNotificationWSResponse;
+
+        #endregion
+
+        #region OnSignCertificate
+
+        /// <summary>
+        /// An event sent whenever a sign certificate web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?          OnSignCertificateWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a sign certificate request was received.
+        /// </summary>
+        public event OnSignCertificateRequestDelegate?    OnSignCertificateRequest;
+
+        /// <summary>
+        /// An event sent whenever a sign certificate request was received.
+        /// </summary>
+        public event OnSignCertificateDelegate?           OnSignCertificate;
+
+        /// <summary>
+        /// An event sent whenever a response to a sign certificate request was sent.
+        /// </summary>
+        public event OnSignCertificateResponseDelegate?   OnSignCertificateResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a sign certificate request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?         OnSignCertificateWSResponse;
+
+        #endregion
+
+        #region OnSignedFirmwareStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification web socket request was received.
+        /// </summary>
+        public event WebSocketRequestLogHandler?                           OnSignedFirmwareStatusNotificationWSRequest;
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        public event OnSignedFirmwareStatusNotificationRequestDelegate?    OnSignedFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        public event OnSignedFirmwareStatusNotificationDelegate?           OnSignedFirmwareStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a firmware status notification request was sent.
+        /// </summary>
+        public event OnSignedFirmwareStatusNotificationResponseDelegate?   OnSignedFirmwareStatusNotificationResponse;
+
+        /// <summary>
+        /// An event sent whenever a web socket response to a firmware status notification request was sent.
+        /// </summary>
+        public event WebSocketResponseLogHandler?                          OnSignedFirmwareStatusNotificationWSResponse;
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #region Custom JSON parser/serializer delegates
+
+        /// <summary>
+        /// A delegate to parse custom BootNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<BootNotificationRequest>?                  CustomBootNotificationRequestParser                    { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom Heartbeat requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<HeartbeatRequest>?                         CustomHeartbeatRequestParser                           { get; set; }
+
+
+        /// <summary>
+        /// A delegate to parse custom Authorize requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<AuthorizeRequest>?                         CustomAuthorizeRequestParser                           { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom StartTransaction requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<StartTransactionRequest>?                  CustomStartTransactionRequestParser                    { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom StatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<StatusNotificationRequest>?                CustomStatusNotificationRequestParser                  { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom MeterValues requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<MeterValuesRequest>?                       CustomMeterValuesRequestParser                         { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom StopTransaction requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<StopTransactionRequest>?                   CustomStopTransactionRequestParser                     { get; set; }
+
+
+        /// <summary>
+        /// A delegate to parse custom DiagnosticsStatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>?     CustomDiagnosticsStatusNotificationRequestParser       { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom FirmwareStatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>?        CustomFirmwareStatusNotificationRequestParser          { get; set; }
+
+
+        // Security extensions
+
+        /// <summary>
+        /// A delegate to parse custom LogStatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<LogStatusNotificationRequest>?             CustomLogStatusNotificationRequestParser               { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom SecurityEventNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<SecurityEventNotificationRequest>?         CustomSecurityEventNotificationRequestParser           { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom SignCertificate requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<SignCertificateRequest>?                   CustomSignCertificateRequestParser                     { get; set; }
+
+        /// <summary>
+        /// A delegate to parse custom SignedFirmwareStatusNotification requests.
+        /// </summary>
+        public CustomJObjectParserDelegate<SignedFirmwareStatusNotificationRequest>?  CustomSignedFirmwareStatusNotificationRequestParser    { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<ResetRequest>?                         CustomResetRequestSerializer                           { get; set; }
+
+        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?            CustomChangeAvailabilityRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetConfigurationRequest>?              CustomGetConfigurationRequestSerializer                { get; set; }
+
+        public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>?           CustomChangeConfigurationRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.DataTransferRequest>?        CustomDataTransferRequestSerializer                    { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetDiagnosticsRequest>?                CustomGetDiagnosticsRequestSerializer                  { get; set; }
+
+        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                CustomTriggerMessageRequestSerializer                  { get; set; }
+
+        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?                CustomUpdateFirmwareRequestSerializer                  { get; set; }
+
+
+
+        public CustomJObjectSerializerDelegate<ReserveNowRequest>?                    CustomReserveNowRequestSerializer                      { get; set; }
+
+        public CustomJObjectSerializerDelegate<CancelReservationRequest>?             CustomCancelReservationRequestSerializer               { get; set; }
+
+        public CustomJObjectSerializerDelegate<RemoteStartTransactionRequest>?        CustomRemoteStartTransactionRequestSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfile>?                      CustomChargingProfileSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedule>?                     CustomChargingScheduleSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?               CustomChargingSchedulePeriodSerializer                 { get; set; }
+
+        public CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>?         CustomRemoteStopTransactionRequestSerializer           { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?            CustomSetChargingProfileRequestSerializer              { get; set; }
+
+        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?          CustomClearChargingProfileRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?          CustomGetCompositeScheduleRequestSerializer            { get; set; }
+
+        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?               CustomUnlockConnectorRequestSerializer                 { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?           CustomGetLocalListVersionRequestSerializer             { get; set; }
+
+        public CustomJObjectSerializerDelegate<SendLocalListRequest>?                 CustomSendLocalListRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizationData>?                    CustomAuthorizationDataSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<IdTagInfo>?                            CustomIdTagInfoResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                    CustomClearCacheRequestSerializer                      { get; set; }
+
+
+        // Security extensions
+        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?             CustomCertificateSignedRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?             CustomDeleteCertificateRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<ExtendedTriggerMessageRequest>?        CustomExtendedTriggerMessageRequestSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?    CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
+        public CustomJObjectSerializerDelegate<GetLogRequest>?                        CustomGetLogRequestSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?            CustomInstallCertificateRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<SignedUpdateFirmwareRequest>?          CustomSignedUpdateFirmwareRequestSerializer            { get; set; }
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
         #region Reset                 (Request)
 
         public async Task<ResetResponse> Reset(ResetRequest Request)
@@ -65,7 +999,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnResetRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnResetRequest));
             }
 
             #endregion
@@ -74,7 +1008,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             ResetResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomResetRequestSerializer),
                                                      Request.RequestTimeout);
@@ -117,7 +1051,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnResetResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnResetResponse));
             }
 
             #endregion
@@ -146,7 +1080,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeAvailabilityRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnChangeAvailabilityRequest));
             }
 
             #endregion
@@ -156,7 +1090,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var sendRequestState = await SendRequest(
                                              Request.RequestId,
-                                             Request.ChargeBoxId,
+                                             Request.NetworkingNodeId,
                                              Request.Action,
                                              Request.ToJSON(CustomChangeAvailabilityRequestSerializer),
                                              Request.RequestTimeout
@@ -200,7 +1134,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeAvailabilityResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnChangeAvailabilityResponse));
             }
 
             #endregion
@@ -229,7 +1163,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetConfigurationRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetConfigurationRequest));
             }
 
             #endregion
@@ -239,7 +1173,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var sendRequestState = await SendRequest(
                                              Request.RequestId,
-                                             Request.ChargeBoxId,
+                                             Request.NetworkingNodeId,
                                              Request.Action,
                                              Request.ToJSON(CustomGetConfigurationRequestSerializer),
                                              Request.RequestTimeout
@@ -283,7 +1217,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetConfigurationResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetConfigurationResponse));
             }
 
             #endregion
@@ -312,7 +1246,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeConfigurationRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnChangeConfigurationRequest));
             }
 
             #endregion
@@ -322,7 +1256,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
             var sendRequestState = await SendRequest(
                                              Request.RequestId,
-                                             Request.ChargeBoxId,
+                                             Request.NetworkingNodeId,
                                              Request.Action,
                                              Request.ToJSON(CustomChangeConfigurationRequestSerializer),
                                              Request.RequestTimeout
@@ -366,7 +1300,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeConfigurationResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnChangeConfigurationResponse));
             }
 
             #endregion
@@ -379,7 +1313,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region DataTransfer          (Request)
 
-        public async Task<CP.DataTransferResponse> DataTransfer(DataTransferRequest Request)
+        public async Task<OCPP.CS.DataTransferResponse> DataTransfer(OCPP.CSMS.DataTransferRequest Request)
         {
 
             #region Send OnDataTransferRequest event
@@ -395,16 +1329,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDataTransferRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDataTransferRequest));
             }
 
             #endregion
 
 
-            CP.DataTransferResponse? response = null;
+            OCPP.CS.DataTransferResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomDataTransferRequestSerializer),
                                                      Request.RequestTimeout);
@@ -413,22 +1347,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 sendRequestState.JSONResponse is not null)
             {
 
-                if (CP.DataTransferResponse.TryParse(Request,
-                                                     sendRequestState.JSONResponse.Payload,
-                                                     out var dataTransferResponse,
-                                                     out var errorResponse) &&
+                if (OCPP.CS.DataTransferResponse.TryParse(Request,
+                                                          sendRequestState.JSONResponse.Payload,
+                                                          out var dataTransferResponse,
+                                                          out var errorResponse) &&
                     dataTransferResponse is not null)
                 {
                     response = dataTransferResponse;
                 }
 
-                response ??= new CP.DataTransferResponse(Request,
-                                                         Result.Format(errorResponse));
+                response ??= new OCPP.CS.DataTransferResponse(Request,
+                                                              Result.Format(errorResponse));
 
             }
 
-            response ??= new CP.DataTransferResponse(Request,
-                                                     Result.FromSendRequestState(sendRequestState));
+            response ??= new OCPP.CS.DataTransferResponse(Request,
+                                                          Result.FromSendRequestState(sendRequestState));
 
 
             #region Send OnDataTransferResponse event
@@ -447,7 +1381,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDataTransferResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDataTransferResponse));
             }
 
             #endregion
@@ -476,7 +1410,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetDiagnosticsRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetDiagnosticsRequest));
             }
 
             #endregion
@@ -485,7 +1419,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             GetDiagnosticsResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomGetDiagnosticsRequestSerializer),
                                                      Request.RequestTimeout);
@@ -528,7 +1462,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetDiagnosticsResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetDiagnosticsResponse));
             }
 
             #endregion
@@ -557,7 +1491,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnTriggerMessageRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnTriggerMessageRequest));
             }
 
             #endregion
@@ -566,7 +1500,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             TriggerMessageResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomTriggerMessageRequestSerializer),
                                                      Request.RequestTimeout);
@@ -609,7 +1543,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnTriggerMessageResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnTriggerMessageResponse));
             }
 
             #endregion
@@ -638,7 +1572,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUpdateFirmwareRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnUpdateFirmwareRequest));
             }
 
             #endregion
@@ -647,7 +1581,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             UpdateFirmwareResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomUpdateFirmwareRequestSerializer),
                                                      Request.RequestTimeout);
@@ -690,7 +1624,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUpdateFirmwareResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnUpdateFirmwareResponse));
             }
 
             #endregion
@@ -720,7 +1654,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnReserveNowRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnReserveNowRequest));
             }
 
             #endregion
@@ -729,7 +1663,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             ReserveNowResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomReserveNowRequestSerializer),
                                                      Request.RequestTimeout);
@@ -772,7 +1706,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnReserveNowResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnReserveNowResponse));
             }
 
             #endregion
@@ -801,7 +1735,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCancelReservationRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnCancelReservationRequest));
             }
 
             #endregion
@@ -810,7 +1744,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             CancelReservationResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomCancelReservationRequestSerializer),
                                                      Request.RequestTimeout);
@@ -853,7 +1787,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCancelReservationResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnCancelReservationResponse));
             }
 
             #endregion
@@ -882,7 +1816,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStartTransactionRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnRemoteStartTransactionRequest));
             }
 
             #endregion
@@ -891,7 +1825,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             RemoteStartTransactionResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(
                                                          CustomRemoteStartTransactionRequestSerializer,
@@ -939,7 +1873,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStartTransactionResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnRemoteStartTransactionResponse));
             }
 
             #endregion
@@ -968,7 +1902,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStopTransactionRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnRemoteStopTransactionRequest));
             }
 
             #endregion
@@ -977,7 +1911,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             RemoteStopTransactionResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomRemoteStopTransactionRequestSerializer),
                                                      Request.RequestTimeout);
@@ -1020,7 +1954,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStopTransactionResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnRemoteStopTransactionResponse));
             }
 
             #endregion
@@ -1049,7 +1983,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSetChargingProfileRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSetChargingProfileRequest));
             }
 
             #endregion
@@ -1058,7 +1992,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             SetChargingProfileResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomSetChargingProfileRequestSerializer),
                                                      Request.RequestTimeout);
@@ -1101,7 +2035,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSetChargingProfileResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSetChargingProfileResponse));
             }
 
             #endregion
@@ -1130,7 +2064,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearChargingProfileRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnClearChargingProfileRequest));
             }
 
             #endregion
@@ -1139,7 +2073,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             ClearChargingProfileResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomClearChargingProfileRequestSerializer),
                                                      Request.RequestTimeout);
@@ -1182,7 +2116,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearChargingProfileResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnClearChargingProfileResponse));
             }
 
             #endregion
@@ -1212,7 +2146,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetCompositeScheduleRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetCompositeScheduleRequest));
             }
 
             #endregion
@@ -1221,7 +2155,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             GetCompositeScheduleResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomGetCompositeScheduleRequestSerializer),
                                                      Request.RequestTimeout);
@@ -1264,7 +2198,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetCompositeScheduleResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetCompositeScheduleResponse));
             }
 
             #endregion
@@ -1293,7 +2227,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUnlockConnectorRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnUnlockConnectorRequest));
             }
 
             #endregion
@@ -1302,7 +2236,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             UnlockConnectorResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomUnlockConnectorRequestSerializer),
                                                      Request.RequestTimeout);
@@ -1345,7 +2279,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUnlockConnectorResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnUnlockConnectorResponse));
             }
 
             #endregion
@@ -1375,7 +2309,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLocalListVersionRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetLocalListVersionRequest));
             }
 
             #endregion
@@ -1384,7 +2318,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             GetLocalListVersionResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomGetLocalListVersionRequestSerializer),
                                                      Request.RequestTimeout);
@@ -1427,7 +2361,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLocalListVersionResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetLocalListVersionResponse));
             }
 
             #endregion
@@ -1456,7 +2390,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSendLocalListRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSendLocalListRequest));
             }
 
             #endregion
@@ -1465,7 +2399,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             SendLocalListResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomSendLocalListRequestSerializer),
                                                      Request.RequestTimeout);
@@ -1508,7 +2442,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSendLocalListResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSendLocalListResponse));
             }
 
             #endregion
@@ -1537,7 +2471,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearCacheRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnClearCacheRequest));
             }
 
             #endregion
@@ -1546,7 +2480,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             ClearCacheResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomClearCacheRequestSerializer),
                                                      Request.RequestTimeout);
@@ -1589,7 +2523,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearCacheResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnClearCacheResponse));
             }
 
             #endregion
@@ -1626,7 +2560,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCertificateSignedRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnCertificateSignedRequest));
             }
 
             #endregion
@@ -1635,7 +2569,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             CertificateSignedResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomCertificateSignedRequestSerializer),
                                                      Request.RequestTimeout);
@@ -1678,7 +2612,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCertificateSignedResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnCertificateSignedResponse));
             }
 
             #endregion
@@ -1711,7 +2645,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDeleteCertificateRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDeleteCertificateRequest));
             }
 
             #endregion
@@ -1720,7 +2654,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             DeleteCertificateResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomDeleteCertificateRequestSerializer),
                                                      Request.RequestTimeout);
@@ -1763,7 +2697,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDeleteCertificateResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnDeleteCertificateResponse));
             }
 
             #endregion
@@ -1796,7 +2730,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnExtendedTriggerMessageRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnExtendedTriggerMessageRequest));
             }
 
             #endregion
@@ -1805,7 +2739,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             ExtendedTriggerMessageResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomExtendedTriggerMessageRequestSerializer),
                                                      Request.RequestTimeout);
@@ -1848,7 +2782,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnExtendedTriggerMessageResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnExtendedTriggerMessageResponse));
             }
 
             #endregion
@@ -1881,7 +2815,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetInstalledCertificateIdsRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetInstalledCertificateIdsRequest));
             }
 
             #endregion
@@ -1890,7 +2824,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             GetInstalledCertificateIdsResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomGetInstalledCertificateIdsRequestSerializer),
                                                      Request.RequestTimeout);
@@ -1933,7 +2867,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetInstalledCertificateIdsResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetInstalledCertificateIdsResponse));
             }
 
             #endregion
@@ -1966,7 +2900,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLogRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetLogRequest));
             }
 
             #endregion
@@ -1975,7 +2909,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             GetLogResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomGetLogRequestSerializer),
                                                      Request.RequestTimeout);
@@ -2018,7 +2952,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLogResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnGetLogResponse));
             }
 
             #endregion
@@ -2051,7 +2985,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnInstallCertificateRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnInstallCertificateRequest));
             }
 
             #endregion
@@ -2060,7 +2994,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             InstallCertificateResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomInstallCertificateRequestSerializer),
                                                      Request.RequestTimeout);
@@ -2103,7 +3037,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnInstallCertificateResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnInstallCertificateResponse));
             }
 
             #endregion
@@ -2136,7 +3070,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignedUpdateFirmwareRequest));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignedUpdateFirmwareRequest));
             }
 
             #endregion
@@ -2145,7 +3079,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             SignedUpdateFirmwareResponse? response = null;
 
             var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
+                                                     Request.NetworkingNodeId,
                                                      Request.Action,
                                                      Request.ToJSON(CustomSignedUpdateFirmwareRequestSerializer),
                                                      Request.RequestTimeout);
@@ -2188,7 +3122,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             }
             catch (Exception e)
             {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignedUpdateFirmwareResponse));
+                DebugX.Log(e, nameof(CentralSystemWSServer) + "." + nameof(OnSignedUpdateFirmwareResponse));
             }
 
             #endregion

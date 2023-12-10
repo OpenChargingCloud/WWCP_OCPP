@@ -656,7 +656,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests= new ConcurrentList<CS.DataTransferRequest>();
+                var dataTransferRequests= new ConcurrentList<OCPP.CS.DataTransferRequest>();
 
                 testCSMS01.OnIncomingDataTransferRequest += (timestamp, sender, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
@@ -712,7 +712,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests= new ConcurrentList<CS.DataTransferRequest>();
+                var dataTransferRequests= new ConcurrentList<OCPP.CS.DataTransferRequest>();
 
                 testCSMS01.OnIncomingDataTransferRequest += (timestamp, sender, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);
@@ -775,7 +775,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests= new ConcurrentList<CS.DataTransferRequest>();
+                var dataTransferRequests= new ConcurrentList<OCPP.CS.DataTransferRequest>();
 
                 testCSMS01.OnIncomingDataTransferRequest += (timestamp, sender, dataTransferRequest) => {
                     dataTransferRequests.TryAdd(dataTransferRequest);

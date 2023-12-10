@@ -29,6 +29,7 @@
     <ProjectReference Include="..\WWCP_OCPPv1.6_Adapter\WWCP_OCPPv1.6_Adapter.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv1.6_CentralSystem\WWCP_OCPPv1.6_CentralSystem.csproj" />
     <ProjectReference Include="..\WWCP_OCPPv1.6_ChargePoint\WWCP_OCPPv1.6_ChargePoint.csproj" />
+    <ProjectReference Include="..\WWCP_OCPP_Common\WWCP_OCPP_Common.csproj" />
   </ItemGroup>
 
 </Project>
