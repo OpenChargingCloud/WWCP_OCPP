@@ -31,9 +31,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// A security event notification response.
     /// </summary>
+    [SecurityExtensions]
     public class SecurityEventNotificationResponse : AResponse<CP.SecurityEventNotificationRequest,
-                                                                  SecurityEventNotificationResponse>
+                                                                  SecurityEventNotificationResponse>,
+                                                     IResponse
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/securityEventNotificationResponse");
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext Context
+            => DefaultJSONLDContext;
+
+        #endregion
 
         #region Constructor(s)
 
@@ -43,10 +64,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a new security event notification response.
         /// </summary>
         /// <param name="Request">The security event notification request leading to this response.</param>
-        public SecurityEventNotificationResponse(CP.SecurityEventNotificationRequest Request)
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public SecurityEventNotificationResponse(CP.SecurityEventNotificationRequest  Request,
+
+                                                 DateTime?                            ResponseTimestamp   = null,
+
+                                                 IEnumerable<KeyPair>?                SignKeys            = null,
+                                                 IEnumerable<SignInfo>?               SignInfos           = null,
+                                                 IEnumerable<OCPP.Signature>?         Signatures          = null,
+
+                                                 CustomData?                          CustomData          = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   ResponseTimestamp,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -100,9 +142,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON,
                          out var securityEventNotificationResponse,
                          out var errorResponse,
-                         CustomSecurityEventNotificationResponseParser))
+                         CustomSecurityEventNotificationResponseParser) &&
+                securityEventNotificationResponse is not null)
             {
-                return securityEventNotificationResponse!;
+                return securityEventNotificationResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a security event notification response is invalid: " + errorResponse,
@@ -132,8 +175,49 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                SecurityEventNotificationResponse  = new SecurityEventNotificationResponse(Request);
-                ErrorResponse                      = null;
+                SecurityEventNotificationResponse = null;
+
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                SecurityEventNotificationResponse = new SecurityEventNotificationResponse(
+
+                                                        Request,
+                                                        null,
+
+                                                        null,
+                                                        null,
+                                                        Signatures,
+
+                                                        CustomData
+
+                                                    );
 
                 if (CustomSecurityEventNotificationResponseParser is not null)
                     SecurityEventNotificationResponse = CustomSecurityEventNotificationResponseParser(JSON,
@@ -153,18 +237,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToJSON(CustomSecurityEventNotificationResponseSerializer = null)
+        #region ToJSON(CustomSecurityEventNotificationResponseSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomSecurityEventNotificationResponseSerializer">A delegate to serialize custom security event notification responses.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SecurityEventNotificationResponse>?  CustomSecurityEventNotificationResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<OCPP.Signature>?                     CustomSignatureSerializer                           = null,
                               CustomJObjectSerializerDelegate<CustomData>?                         CustomCustomDataSerializer                          = null)
         {
 
-            var json = JSONObject.Create();
+            var json = JSONObject.Create(
+
+                           Signatures.Any()
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               : null
+
+                       );
 
             return CustomSecurityEventNotificationResponseSerializer is not null
                        ? CustomSecurityEventNotificationResponseSerializer(this, json)

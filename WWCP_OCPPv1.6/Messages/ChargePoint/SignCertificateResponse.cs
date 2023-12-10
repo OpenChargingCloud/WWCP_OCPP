@@ -31,11 +31,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// A sign certificate response.
     /// </summary>
+    [SecurityExtensions]
     public class SignCertificateResponse : AResponse<CP.SignCertificateRequest,
-                                                        SignCertificateResponse>
+                                                        SignCertificateResponse>,
+                                           IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/signCertificateResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The success or failure status of the sign certificate request.
@@ -53,11 +70,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The sign certificate request leading to this response.</param>
         /// <param name="Status">The success or failure status of the certificate signing request.</param>
-        public SignCertificateResponse(CP.SignCertificateRequest  Request,
-                                       GenericStatus              Status)
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public SignCertificateResponse(CP.SignCertificateRequest     Request,
+                                       GenericStatus                 Status,
+
+                                       DateTime?                     ResponseTimestamp   = null,
+
+                                       IEnumerable<KeyPair>?         SignKeys            = null,
+                                       IEnumerable<SignInfo>?        SignInfos           = null,
+                                       IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                       CustomData?                   CustomData          = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   ResponseTimestamp,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -138,7 +176,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON,
                          out var signCertificateResponse,
                          out var errorResponse,
-                         CustomSignCertificateResponseParser))
+                         CustomSignCertificateResponseParser) &&
+                signCertificateResponse is not null)
             {
                 return signCertificateResponse!;
             }
@@ -171,7 +210,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 SignCertificateResponse = null;
 
-                #region Status
+                #region Status        [mandatory]
 
                 if (!JSON.MapMandatory("status",
                                        "identification tag information",
@@ -184,10 +223,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 SignCertificateResponse = new SignCertificateResponse(
+
                                               Request,
-                                              Status
+                                              Status,
+                                              null,
+
+                                              null,
+                                              null,
+                                              Signatures,
+
+                                              CustomData
+
                                           );
 
                 if (CustomSignCertificateResponseParser is not null)
@@ -208,19 +284,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToJSON(CustomSignCertificateResponseSerializer = null)
+        #region ToJSON(CustomSignCertificateResponseSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomSignCertificateResponseSerializer">A delegate to serialize custom sign certificate responses.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SignCertificateResponse>?  CustomSignCertificateResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<OCPP.Signature>?           CustomSignatureSerializer                 = null,
                               CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
         {
 
             var json = JSONObject.Create(
-                           new JProperty("status",   Status.AsText())
+
+                                 new JProperty("status",       Status.    AsText()),
+
+                           Signatures.Any()
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               : null
+
                        );
 
             return CustomSignCertificateResponseSerializer is not null
