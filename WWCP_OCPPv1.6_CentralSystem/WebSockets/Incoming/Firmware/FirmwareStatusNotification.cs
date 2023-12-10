@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                   OnFirmwareStatusNotificationWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                    OnFirmwareStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?    OnFirmwareStatusNotificationRequest;
+        public event OnFirmwareStatusNotificationRequestDelegate?     OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationDelegate?           OnFirmwareStatusNotification;
+        public event OnFirmwareStatusNotificationDelegate?            OnFirmwareStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
         /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?   OnFirmwareStatusNotificationResponse;
+        public event OnFirmwareStatusNotificationResponseDelegate?    OnFirmwareStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a FirmwareStatusNotification request was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?       OnFirmwareStatusNotificationWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?        OnFirmwareStatusNotificationWSResponse;
 
         #endregion
 

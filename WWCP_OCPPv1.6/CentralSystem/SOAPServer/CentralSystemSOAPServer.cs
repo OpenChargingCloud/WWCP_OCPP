@@ -301,27 +301,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a data transfer SOAP request was received.
         /// </summary>
-        public event RequestLogHandler?                        OnIncomingDataTransferSOAPRequest;
+        public event RequestLogHandler?                                  OnIncomingDataTransferSOAPRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate?    OnIncomingDataTransferRequest;
+        public event OCPP.CSMS.OnIncomingDataTransferRequestDelegate?    OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferDelegate?           OnIncomingDataTransfer;
+        public event OCPP.CSMS.OnIncomingDataTransferDelegate?           OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate?   OnIncomingDataTransferResponse;
+        public event OCPP.CSMS.OnIncomingDataTransferResponseDelegate?   OnIncomingDataTransferResponse;
 
         /// <summary>
         /// An event sent whenever a SOAP response to a data transfer request was sent.
         /// </summary>
-        public event AccessLogHandler?                         OnIncomingDataTransferSOAPResponse;
+        public event AccessLogHandler?                                   OnIncomingDataTransferSOAPResponse;
 
         #endregion
 
@@ -500,7 +500,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
                     var request     = BootNotificationRequest.Parse(BootNotificationXML,
                                                                     Request_Id.Parse(OCPPHeader.MessageId),
-                                                                    OCPPHeader.ChargeBoxIdentity);
+                                                                    NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
 
                     #region Send OnBootNotificationRequest event
 
@@ -509,6 +509,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnBootNotificationRequest?.Invoke(request.RequestTimestamp,
                                                           this,
+                                                          null,
                                                           request);
 
                     }
@@ -521,14 +522,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #region Call async subscribers
 
-                    if (response == null)
+                    if (response is null)
                     {
 
                         var results = OnBootNotification?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                       this,
-                                                                                                                      null,
                                                                                                                       request,
                                                                                                                       Request.CancellationToken)).
                                           ToArray();
@@ -558,6 +558,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnBootNotificationResponse?.Invoke(responseTimestamp,
                                                            this,
+                                                           null,
                                                            request,
                                                            response,
                                                            responseTimestamp - requestTimestamp);
@@ -663,7 +664,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
                     var request     = HeartbeatRequest.Parse(HeartbeatXML,
                                                              Request_Id.Parse(OCPPHeader.MessageId),
-                                                             OCPPHeader.ChargeBoxIdentity);
+                                                             NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
 
                     #region Send OnHeartbeatRequest event
 
@@ -684,14 +685,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #region Call async subscribers
 
-                    if (response == null)
+                    if (response is null)
                     {
 
                         var results = OnHeartbeat?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)?.Invoke(Timestamp.Now,
                                                                                                                this,
-                                                                                                               null,
                                                                                                                request,
                                                                                                                Request.CancellationToken)).
                                           ToArray();
@@ -827,7 +827,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
                     var request     = AuthorizeRequest.Parse(AuthorizeXML,
                                                              Request_Id.Parse(OCPPHeader.MessageId),
-                                                             OCPPHeader.ChargeBoxIdentity);
+                                                             NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
 
                     #region Send OnAuthorizeRequest event
 
@@ -848,14 +848,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #region Call async subscribers
 
-                    if (response == null)
+                    if (response is null)
                     {
 
                         var results = OnAuthorize?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)?.Invoke(Timestamp.Now,
                                                                                                                this,
-                                                                                                               null,
                                                                                                                request,
                                                                                                                Request.CancellationToken)).
                                           ToArray();
@@ -990,7 +989,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
                     var request     = StartTransactionRequest.Parse(StartTransactionXML,
                                                                     Request_Id.Parse(OCPPHeader.MessageId),
-                                                                    OCPPHeader.ChargeBoxIdentity);
+                                                                    NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
 
                     #region Send OnStartTransactionRequest event
 
@@ -1011,14 +1010,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #region Call async subscribers
 
-                    if (response == null)
+                    if (response is null)
                     {
 
                         var results = OnStartTransaction?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStartTransactionDelegate)?.Invoke(Timestamp.Now,
                                                                                                                       this,
-                                                                                                                      null,
                                                                                                                       request,
                                                                                                                       Request.CancellationToken)).
                                           ToArray();
@@ -1153,7 +1151,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
                     var request     = StatusNotificationRequest.Parse(StatusNotificationXML,
                                                                       Request_Id.Parse(OCPPHeader.MessageId),
-                                                                      OCPPHeader.ChargeBoxIdentity);
+                                                                      NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
 
                     #region Send OnStatusNotificationRequest event
 
@@ -1174,14 +1172,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #region Call async subscribers
 
-                    if (response == null)
+                    if (response is null)
                     {
 
                         var results = OnStatusNotification?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                         this,
-                                                                                                                        null,
                                                                                                                         request,
                                                                                                                         Request.CancellationToken)).
                                           ToArray();
@@ -1316,7 +1313,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
                     var request     = MeterValuesRequest.Parse(MeterValuesXML,
                                                                Request_Id.Parse(OCPPHeader.MessageId),
-                                                               OCPPHeader.ChargeBoxIdentity);
+                                                               NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
 
                     #region Send OnMeterValuesRequest event
 
@@ -1337,14 +1334,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #region Call async subscribers
 
-                    if (response == null)
+                    if (response is null)
                     {
 
                         var results = OnMeterValues?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)?.Invoke(Timestamp.Now,
                                                                                                                  this,
-                                                                                                                 null,
                                                                                                                  request,
                                                                                                                  Request.CancellationToken)).
                                           ToArray();
@@ -1479,7 +1475,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
                     var request     = StopTransactionRequest.Parse(StopTransactionXML,
                                                                    Request_Id.Parse(OCPPHeader.MessageId),
-                                                                   OCPPHeader.ChargeBoxIdentity);
+                                                                   NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
 
                     #region Send OnStopTransactionRequest event
 
@@ -1500,14 +1496,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #region Call async subscribers
 
-                    if (response == null)
+                    if (response is null)
                     {
 
                         var results = OnStopTransaction?.
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStopTransactionDelegate)?.Invoke(Timestamp.Now,
                                                                                                                      this,
-                                                                                                                     null,
                                                                                                                      request,
                                                                                                                      Request.CancellationToken)).
                                           ToArray();
@@ -1635,16 +1630,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 #endregion
 
 
-                DataTransferResponse? response      = null;
-                HTTPResponse?         HTTPResponse  = null;
+                OCPP.CSMS.DataTransferResponse? response      = null;
+                HTTPResponse?                   HTTPResponse  = null;
 
                 try
                 {
 
                     var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
-                    var request     = CP.DataTransferRequest.Parse(DataTransferXML,
-                                                                   Request_Id.Parse(OCPPHeader.MessageId),
-                                                                   OCPPHeader.ChargeBoxIdentity);
+                    var request     = OCPP.CSMS.DataTransferRequest.Parse(DataTransferXML,
+                                                                          OCPPNS.OCPPv1_6_CS,
+                                                                          Request_Id.Parse(OCPPHeader.MessageId),
+                                                                          NetworkPath.Empty,
+                                                                          NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
 
                     #region Send OnIncomingDataTransferRequest event
 
@@ -1665,7 +1662,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #region Call async subscribers
 
-                    if (response == null)
+                    if (response is null)
                     {
 
                         var results = OnIncomingDataTransfer?.
@@ -1808,7 +1805,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
                     var request     = DiagnosticsStatusNotificationRequest.Parse(DiagnosticsStatusNotificationXML,
                                                                                  Request_Id.Parse(OCPPHeader.MessageId),
-                                                                                 OCPPHeader.ChargeBoxIdentity);
+                                                                                 NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
 
                     #region Send OnDiagnosticsStatusNotificationRequest event
 
@@ -1829,7 +1826,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #region Call async subscribers
 
-                    if (response == null)
+                    if (response is null)
                     {
 
                         var results = OnDiagnosticsStatusNotification?.
@@ -1972,7 +1969,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                     var OCPPHeader  = SOAPHeader.Parse(HeaderXML);
                     var request     = FirmwareStatusNotificationRequest.Parse(FirmwareStatusNotificationXML,
                                                                               Request_Id.Parse(OCPPHeader.MessageId),
-                                                                              OCPPHeader.ChargeBoxIdentity);
+                                                                              NetworkingNode_Id.Parse(OCPPHeader.ChargeBoxIdentity.ToString()));
 
                     #region Send OnFirmwareStatusNotificationRequest event
 
@@ -1993,7 +1990,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                     #region Call async subscribers
 
-                    if (response == null)
+                    if (response is null)
                     {
 
                         var results = OnFirmwareStatusNotification?.

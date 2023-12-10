@@ -218,49 +218,49 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
     #region OnIncomingDataTransfer
 
-    /// <summary>
-    /// An incoming data transfer request.
-    /// </summary>
-    /// <param name="Timestamp">The log timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The data transfer request.</param>
-    public delegate Task
+    ///// <summary>
+    ///// An incoming data transfer request.
+    ///// </summary>
+    ///// <param name="Timestamp">The log timestamp of the request.</param>
+    ///// <param name="Sender">The sender of the request.</param>
+    ///// <param name="Request">The data transfer request.</param>
+    //public delegate Task
 
-        OnIncomingDataTransferRequestDelegate(DateTime                 Timestamp,
-                                              IEventSender             Sender,
-                                              CS.DataTransferRequest   Request);
-
-
-    /// <summary>
-    /// An incoming data transfer request.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Request">The data transfer request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    public delegate Task<DataTransferResponse>
-
-        OnIncomingDataTransferDelegate(DateTime                 Timestamp,
-                                       IEventSender             Sender,
-                                       CS.DataTransferRequest   Request,
-                                       CancellationToken        CancellationToken);
+    //    OnIncomingDataTransferRequestDelegate(DateTime                 Timestamp,
+    //                                          IEventSender             Sender,
+    //                                          CS.DataTransferRequest   Request);
 
 
-    /// <summary>
-    /// An incoming data transfer response.
-    /// </summary>
-    /// <param name="Timestamp">The log timestamp of the response.</param>
-    /// <param name="Sender">The sender of the response.</param>
-    /// <param name="Request">The data transfer request.</param>
-    /// <param name="Response">The data transfer response.</param>
-    /// <param name="Runtime">The runtime of this request.</param>
-    public delegate Task
+    ///// <summary>
+    ///// An incoming data transfer request.
+    ///// </summary>
+    ///// <param name="Timestamp">The timestamp of the request.</param>
+    ///// <param name="Sender">The sender of the request.</param>
+    ///// <param name="Request">The data transfer request.</param>
+    ///// <param name="CancellationToken">A token to cancel this request.</param>
+    //public delegate Task<DataTransferResponse>
 
-        OnIncomingDataTransferResponseDelegate(DateTime                  Timestamp,
-                                               IEventSender              Sender,
-                                               CS.DataTransferRequest    Request,
-                                               CP.DataTransferResponse   Response,
-                                               TimeSpan                  Runtime);
+    //    OnIncomingDataTransferDelegate(DateTime                 Timestamp,
+    //                                   IEventSender             Sender,
+    //                                   CS.DataTransferRequest   Request,
+    //                                   CancellationToken        CancellationToken);
+
+
+    ///// <summary>
+    ///// An incoming data transfer response.
+    ///// </summary>
+    ///// <param name="Timestamp">The log timestamp of the response.</param>
+    ///// <param name="Sender">The sender of the response.</param>
+    ///// <param name="Request">The data transfer request.</param>
+    ///// <param name="Response">The data transfer response.</param>
+    ///// <param name="Runtime">The runtime of this request.</param>
+    //public delegate Task
+
+    //    OnIncomingDataTransferResponseDelegate(DateTime                  Timestamp,
+    //                                           IEventSender              Sender,
+    //                                           CS.DataTransferRequest    Request,
+    //                                           CP.DataTransferResponse   Response,
+    //                                           TimeSpan                  Runtime);
 
     #endregion
 

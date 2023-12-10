@@ -34,8 +34,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// A diagnostics status notification response.
     /// </summary>
     public class DiagnosticsStatusNotificationResponse : AResponse<CP.DiagnosticsStatusNotificationRequest,
-                                                                   DiagnosticsStatusNotificationResponse>
+                                                                   DiagnosticsStatusNotificationResponse>,
+                                                         IResponse
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/diagnosticsStatusNotificationResponse");
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
+
+        #endregion
 
         #region Constructor(s)
 
@@ -45,10 +65,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a new diagnostics status notification response.
         /// </summary>
         /// <param name="Request">The authorize request leading to this response.</param>
-        public DiagnosticsStatusNotificationResponse(CP.DiagnosticsStatusNotificationRequest  Request)
+        public DiagnosticsStatusNotificationResponse(CP.DiagnosticsStatusNotificationRequest  Request,
+
+                                                     DateTime?                                ResponseTimestamp   = null,
+
+                                                     IEnumerable<KeyPair>?                    SignKeys            = null,
+                                                     IEnumerable<SignInfo>?                   SignInfos           = null,
+                                                     IEnumerable<OCPP.Signature>?             Signatures          = null,
+
+                                                     CustomData?                              CustomData          = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   ResponseTimestamp,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -205,8 +240,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                ErrorResponse                          = null;
-                DiagnosticsStatusNotificationResponse  = new DiagnosticsStatusNotificationResponse(Request);
+                DiagnosticsStatusNotificationResponse  = null;
+
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                DiagnosticsStatusNotificationResponse = new DiagnosticsStatusNotificationResponse(
+
+                                                            Request,
+                                                            null,
+
+                                                            null,
+                                                            null,
+                                                            Signatures,
+
+                                                            CustomData
+                                                        );
 
                 if (CustomBootNotificationResponseParser is not null)
                     DiagnosticsStatusNotificationResponse = CustomBootNotificationResponseParser(JSON,
@@ -237,18 +312,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToJSON(CustomDiagnosticsStatusNotificationResponseSerializer = null)
+        #region ToJSON(CustomDiagnosticsStatusNotificationResponseSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomDiagnosticsStatusNotificationResponseSerializer">A delegate to serialize custom DiagnosticsStatusNotification responses.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<DiagnosticsStatusNotificationResponse>?  CustomDiagnosticsStatusNotificationResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<OCPP.Signature>?                         CustomSignatureSerializer                               = null,
                               CustomJObjectSerializerDelegate<CustomData>?                             CustomCustomDataSerializer                              = null)
         {
 
-            var json = JSONObject.Create();
+            var json = JSONObject.Create(
+
+                           Signatures.Any()
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.                 ToJSON(CustomCustomDataSerializer))
+                               : null
+
+                       );
 
             return CustomDiagnosticsStatusNotificationResponseSerializer is not null
                        ? CustomDiagnosticsStatusNotificationResponseSerializer(this, json)

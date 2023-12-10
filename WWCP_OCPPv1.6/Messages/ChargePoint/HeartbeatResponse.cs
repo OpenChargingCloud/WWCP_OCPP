@@ -34,15 +34,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// A heartbeat response.
     /// </summary>
     public class HeartbeatResponse : AResponse<CP.HeartbeatRequest,
-                                                  HeartbeatResponse>
+                                                  HeartbeatResponse>,
+                                     IResponse
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/heartbeatResponse");
+
+        #endregion
 
         #region Properties
 
         /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
+
+        /// <summary>
         /// The current time at the central system.
         /// </summary>
-        public DateTime  CurrentTime    { get; }
+        public DateTime       CurrentTime    { get; }
 
         #endregion
 
@@ -55,11 +71,32 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="Request">The heartbeat request leading to this response.</param>
         /// <param name="CurrentTime">The current time at the central system.</param>
-        public HeartbeatResponse(CP.HeartbeatRequest  Request,
-                                 DateTime             CurrentTime)
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public HeartbeatResponse(CP.HeartbeatRequest           Request,
+                                 DateTime                      CurrentTime,
+
+                                 DateTime?                     ResponseTimestamp   = null,
+
+                                 IEnumerable<KeyPair>?         SignKeys            = null,
+                                 IEnumerable<SignInfo>?        SignInfos           = null,
+                                 IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                 CustomData?                   CustomData          = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   ResponseTimestamp,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -244,7 +281,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 HeartbeatResponse = null;
 
-                #region CurrentTime
+                #region CurrentTime    [mandatory]
 
                 if (!JSON.ParseMandatory("currentTime",
                                                           "current time",
@@ -256,10 +293,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
+                #region Signatures     [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData     [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 HeartbeatResponse = new HeartbeatResponse(
+
                                         Request,
-                                        CurrentTime
+                                        CurrentTime,
+                                        null,
+
+                                        null,
+                                        null,
+                                        Signatures,
+
+                                        CustomData
+
                                     );
 
                 if (CustomHeartbeatResponseParser is not null)

@@ -18,7 +18,8 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
@@ -33,9 +34,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Request">The diagnostics status notification request.</param>
     public delegate Task
 
-        OnDiagnosticsStatusNotificationRequestDelegate(DateTime                                  Timestamp,
-                                                       IEventSender                              Sender,
-                                                       CP.DiagnosticsStatusNotificationRequest   Request);
+        OnDiagnosticsStatusNotificationRequestDelegate(DateTime                               Timestamp,
+                                                       IEventSender                           Sender,
+                                                       DiagnosticsStatusNotificationRequest   Request);
 
 
     /// <summary>
@@ -43,16 +44,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="Request">The diagnostics status notification request.</param>
     public delegate Task<DiagnosticsStatusNotificationResponse>
 
-        OnDiagnosticsStatusNotificationDelegate(DateTime                                  Timestamp,
-                                                IEventSender                              Sender,
-                                                WebSocketServerConnection                 Connection,
-                                                CP.DiagnosticsStatusNotificationRequest   Request,
-                                                CancellationToken                         CancellationToken);
+        OnDiagnosticsStatusNotificationDelegate(DateTime                               Timestamp,
+                                                IEventSender                           Sender,
+                                                DiagnosticsStatusNotificationRequest   Request,
+                                                CancellationToken                      CancellationToken);
 
 
     /// <summary>
@@ -65,10 +64,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnDiagnosticsStatusNotificationResponseDelegate(DateTime                                   Timestamp,
-                                                        IEventSender                               Sender,
-                                                        CP.DiagnosticsStatusNotificationRequest    Request,
-                                                        CS.DiagnosticsStatusNotificationResponse   Response,
-                                                        TimeSpan                                   Runtime);
+        OnDiagnosticsStatusNotificationResponseDelegate(DateTime                                Timestamp,
+                                                        IEventSender                            Sender,
+                                                        DiagnosticsStatusNotificationRequest    Request,
+                                                        DiagnosticsStatusNotificationResponse   Response,
+                                                        TimeSpan                                Runtime);
 
 }

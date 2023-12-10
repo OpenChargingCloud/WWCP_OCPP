@@ -54,11 +54,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<BootNotificationResponse>
 
-        OnBootNotificationDelegate(DateTime                    Timestamp,
-                                   IEventSender                Sender,
-                                   WebSocketServerConnection   Connection,
-                                   BootNotificationRequest     Request,
-                                   CancellationToken           CancellationToken);
+        OnBootNotificationDelegate(DateTime                  Timestamp,
+                                   IEventSender              Sender,
+                                   BootNotificationRequest   Request,
+                                   CancellationToken         CancellationToken);
 
 
     /// <summary>
@@ -80,6 +79,5 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                            TimeSpan                    Runtime);
 
     #endregion
-
 
 }

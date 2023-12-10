@@ -31,10 +31,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// The log status notification request.
     /// </summary>
-    public class LogStatusNotificationRequest : ARequest<LogStatusNotificationRequest>
+    [SecurityExtensions]
+    public class LogStatusNotificationRequest : ARequest<LogStatusNotificationRequest>,
+                                                IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cp/logStatusNotificationRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext    Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The status of the log upload.
@@ -55,35 +72,57 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new log status notification request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charge point/networking node identification.</param>
         /// 
         /// <param name="Status">The status of the log upload.</param>
         /// <param name="LogRquestId">The request id that was provided in the GetLog.req that started this log upload.</param>
         /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        public LogStatusNotificationRequest(NetworkingNode_Id  NetworkingNodeId,
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public LogStatusNotificationRequest(NetworkingNode_Id             NetworkingNodeId,
 
-                                            UploadLogStatus    Status,
-                                            Int32?             LogRquestId         = null,
+                                            UploadLogStatus               Status,
+                                            Int32?                        LogRquestId         = null,
 
-                                            Request_Id?        RequestId           = null,
-                                            DateTime?          RequestTimestamp    = null,
-                                            TimeSpan?          RequestTimeout      = null,
-                                            EventTracking_Id?  EventTrackingId     = null,
-                                            CancellationToken  CancellationToken   = default)
+                                            IEnumerable<KeyPair>?         SignKeys            = null,
+                                            IEnumerable<SignInfo>?        SignInfos           = null,
+                                            IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                            CustomData?                   CustomData          = null,
+
+                                            Request_Id?                   RequestId           = null,
+                                            DateTime?                     RequestTimestamp    = null,
+                                            TimeSpan?                     RequestTimeout      = null,
+                                            EventTracking_Id?             EventTrackingId     = null,
+                                            NetworkPath?                  NetworkPath         = null,
+                                            CancellationToken             CancellationToken   = default)
 
             : base(NetworkingNodeId,
-                   "LogStatusNotification",
+                   nameof(LogStatusNotificationRequest)[..^7],
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
 
-            this.Status       = Status;
+            this.Status        = Status;
             this.LogRequestId  = LogRquestId;
 
         }
@@ -128,29 +167,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomLogStatusNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomLogStatusNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a log status notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charge point/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomLogStatusNotificationRequestParser">A delegate to parse custom log status notification requests.</param>
         public static LogStatusNotificationRequest Parse(JObject                                                     JSON,
                                                          Request_Id                                                  RequestId,
-                                                         ChargeBox_Id                                                ChargeBoxId,
+                                                         NetworkingNode_Id                                           NetworkingNodeId,
+                                                         NetworkPath                                                 NetworkPath,
                                                          CustomJObjectParserDelegate<LogStatusNotificationRequest>?  CustomLogStatusNotificationRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var logStatusNotificationRequest,
                          out var errorResponse,
-                         CustomLogStatusNotificationRequestParser))
+                         CustomLogStatusNotificationRequestParser) &&
+                logStatusNotificationRequest is not null)
             {
-                return logStatusNotificationRequest!;
+                return logStatusNotificationRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a log status notification request is invalid: " + errorResponse,
@@ -160,7 +203,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out LogStatusNotificationRequest, OnException = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, out LogStatusNotificationRequest, OnException = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -169,18 +212,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charge point/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="LogStatusNotificationRequest">The parsed log status notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                            JSON,
                                        Request_Id                         RequestId,
-                                       ChargeBox_Id                       ChargeBoxId,
+                                       NetworkingNode_Id                  NetworkingNodeId,
+                                       NetworkPath                        NetworkPath,
                                        out LogStatusNotificationRequest?  LogStatusNotificationRequest,
                                        out String?                        ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out LogStatusNotificationRequest,
                         out ErrorResponse,
                         null);
@@ -191,13 +237,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charge point/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="LogStatusNotificationRequest">The parsed log status notification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomLogStatusNotificationRequestParser">A delegate to parse custom log status notification requests.</param>
         public static Boolean TryParse(JObject                                                     JSON,
                                        Request_Id                                                  RequestId,
-                                       ChargeBox_Id                                                ChargeBoxId,
+                                       NetworkingNode_Id                                           NetworkingNodeId,
+                                       NetworkPath                                                 NetworkPath,
                                        out LogStatusNotificationRequest?                           LogStatusNotificationRequest,
                                        out String?                                                 ErrorResponse,
                                        CustomJObjectParserDelegate<LogStatusNotificationRequest>?  CustomLogStatusNotificationRequestParser)
@@ -233,31 +281,53 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                #region ChargeBoxId     [optional, OCPP_CSE]
+                #region Signatures      [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
-                                       out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
+                }
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                #endregion
 
+                #region CustomData      [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
 
                 LogStatusNotificationRequest = new LogStatusNotificationRequest(
-                                                   ChargeBoxId,
+
+                                                   NetworkingNodeId,
                                                    Status,
                                                    LogRequestId,
-                                                   RequestId
+
+                                                   null,
+                                                   null,
+                                                   Signatures,
+
+                                                   CustomData,
+
+                                                   RequestId,
+                                                   null,
+                                                   null,
+                                                   null,
+                                                   NetworkPath
+
                                                );
 
                 if (CustomLogStatusNotificationRequestParser is not null)
@@ -278,12 +348,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToJSON(CustomLogStatusNotificationSerializer = null)
+        #region ToJSON(CustomLogStatusNotificationSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomLogStatusNotificationSerializer">A delegate to serialize custom log status notification requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<LogStatusNotificationRequest>?  CustomLogStatusNotificationSerializer   = null,
                               CustomJObjectSerializerDelegate<OCPP.Signature>?                CustomSignatureSerializer               = null,
                               CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer              = null)
@@ -291,10 +363,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             var json = JSONObject.Create(
 
-                                 new JProperty("status",      Status.AsText()),
+                                 new JProperty("status",       Status.    AsText()),
 
                            LogRequestId.HasValue
-                               ? new JProperty("requestId",   LogRequestId.Value)
+                               ? new JProperty("requestId",    LogRequestId.Value)
+                               : null,
+
+                           Signatures.Any()
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -34,8 +34,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// A firmware status notification response.
     /// </summary>
     public class FirmwareStatusNotificationResponse : AResponse<CP.FirmwareStatusNotificationRequest,
-                                                                   FirmwareStatusNotificationResponse>
+                                                                   FirmwareStatusNotificationResponse>,
+                                                      IResponse
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/firmwareStatusNotificationResponse");
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext Context
+            => DefaultJSONLDContext;
+
+        #endregion
 
         #region Constructor(s)
 
@@ -45,10 +65,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a new firmware status notification response.
         /// </summary>
         /// <param name="Request">The firmware status notification request leading to this response.</param>
-        public FirmwareStatusNotificationResponse(CP.FirmwareStatusNotificationRequest Request)
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public FirmwareStatusNotificationResponse(CP.FirmwareStatusNotificationRequest  Request,
+
+                                                  DateTime?                             ResponseTimestamp   = null,
+
+                                                  IEnumerable<KeyPair>?                 SignKeys            = null,
+                                                  IEnumerable<SignInfo>?                SignInfos           = null,
+                                                  IEnumerable<OCPP.Signature>?          Signatures          = null,
+
+                                                  CustomData?                           CustomData          = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   ResponseTimestamp,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -109,9 +150,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (TryParse(Request,
                          XML,
                          out var firmwareStatusNotificationResponse,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                firmwareStatusNotificationResponse is not null)
             {
-                return firmwareStatusNotificationResponse!;
+                return firmwareStatusNotificationResponse;
             }
 
             throw new ArgumentException("The given XML representation of a firmware status response is invalid: " + errorResponse,
@@ -138,7 +180,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON,
                          out var firmwareStatusNotificationResponse,
                          out var errorResponse,
-                         CustomFirmwareStatusNotificationResponseResponseParser))
+                         CustomFirmwareStatusNotificationResponseResponseParser) &&
+                firmwareStatusNotificationResponse is not null)
             {
                 return firmwareStatusNotificationResponse!;
             }
@@ -202,12 +245,52 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        CustomJObjectParserDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseResponseParser   = null)
         {
 
-            ErrorResponse = null;
-
             try
             {
 
-                FirmwareStatusNotificationResponse = new FirmwareStatusNotificationResponse(Request);
+                FirmwareStatusNotificationResponse = null;
+
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                FirmwareStatusNotificationResponse = new FirmwareStatusNotificationResponse(
+
+                                                         Request,
+                                                         null,
+
+                                                         null,
+                                                         null,
+                                                         Signatures,
+
+                                                         CustomData
+
+                                                     );
 
                 if (CustomFirmwareStatusNotificationResponseResponseParser is not null)
                     FirmwareStatusNotificationResponse = CustomFirmwareStatusNotificationResponseResponseParser(JSON,
@@ -238,18 +321,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToJSON(CustomFirmwareStatusNotificationResponseSerializer = null)
+        #region ToJSON(CustomFirmwareStatusNotificationResponseSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomFirmwareStatusNotificationResponseSerializer">A delegate to serialize custom firmware status notification responses.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<FirmwareStatusNotificationResponse>?  CustomFirmwareStatusNotificationResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<OCPP.Signature>?                      CustomSignatureSerializer                            = null,
                               CustomJObjectSerializerDelegate<CustomData>?                          CustomCustomDataSerializer                           = null)
         {
 
-            var json = JSONObject.Create();
+            var json = JSONObject.Create(
+
+                           Signatures.Any()
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.                 ToJSON(CustomCustomDataSerializer))
+                               : null
+
+                       );
 
             return CustomFirmwareStatusNotificationResponseSerializer is not null
                        ? CustomFirmwareStatusNotificationResponseSerializer(this, json)

@@ -33,33 +33,74 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// The Heartbeat request.
     /// </summary>
-    public class HeartbeatRequest : ARequest<HeartbeatRequest>
+    public class HeartbeatRequest : ARequest<HeartbeatRequest>,
+                                    IRequest
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cp/heartbeatRequest");
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
+
+        #endregion
 
         #region Constructor(s)
 
         /// <summary>
         /// Create a new Heartbeat request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        public HeartbeatRequest(NetworkingNode_Id  NetworkingNodeId,
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public HeartbeatRequest(NetworkingNode_Id             NetworkingNodeId,
 
-                                Request_Id?        RequestId           = null,
-                                DateTime?          RequestTimestamp    = null,
-                                TimeSpan?          RequestTimeout      = null,
-                                EventTracking_Id?  EventTrackingId     = null,
-                                CancellationToken  CancellationToken   = default)
+                                IEnumerable<KeyPair>?         SignKeys            = null,
+                                IEnumerable<SignInfo>?        SignInfos           = null,
+                                IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                CustomData?                   CustomData          = null,
+
+                                Request_Id?                   RequestId           = null,
+                                DateTime?                     RequestTimestamp    = null,
+                                TimeSpan?                     RequestTimeout      = null,
+                                EventTracking_Id?             EventTrackingId     = null,
+                                NetworkPath?                  NetworkPath         = null,
+                                CancellationToken             CancellationToken   = default)
 
             : base(NetworkingNodeId,
-                   "Heartbeat",
+                   nameof(HeartbeatRequest)[..^7],
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         { }
@@ -94,22 +135,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
+        #region (static) Parse   (XML,  RequestId, NetworkingNodeId)
 
         /// <summary>
         /// Parse the given XML representation of a heartbeat request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        public static HeartbeatRequest Parse(XElement      XML,
-                                             Request_Id    RequestId,
-                                             ChargeBox_Id  ChargeBoxId)
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        public static HeartbeatRequest Parse(XElement           XML,
+                                             Request_Id         RequestId,
+                                             NetworkingNode_Id  NetworkingNodeId)
         {
 
             if (TryParse(XML,
                          RequestId,
-                         ChargeBoxId,
+                         NetworkingNodeId,
                          out var heartbeatRequest,
                          out var errorResponse))
             {
@@ -123,29 +164,33 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomHeartbeatRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomHeartbeatRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a heartbeat request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomHeartbeatRequestParser">A delegate to parse custom Heartbeat requests.</param>
         public static HeartbeatRequest Parse(JObject                                         JSON,
                                              Request_Id                                      RequestId,
-                                             ChargeBox_Id                                    ChargeBoxId,
+                                             NetworkingNode_Id                               NetworkingNodeId,
+                                             NetworkPath                                     NetworkPath,
                                              CustomJObjectParserDelegate<HeartbeatRequest>?  CustomHeartbeatRequestParser   = null)
         {
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var heartbeatRequest,
                          out var errorResponse,
-                         CustomHeartbeatRequestParser))
+                         CustomHeartbeatRequestParser) &&
+                heartbeatRequest is not null)
             {
-                return heartbeatRequest!;
+                return heartbeatRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a heartbeat request is invalid: " + errorResponse,
@@ -155,19 +200,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out HeartbeatRequest, out ErrorResponse)
+        #region (static) TryParse(XML,  RequestId, NetworkingNodeId, out HeartbeatRequest, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a heartbeat request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
         /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(XElement               XML,
                                        Request_Id             RequestId,
-                                       ChargeBox_Id           ChargeBoxId,
+                                       NetworkingNode_Id      NetworkingNodeId,
                                        out HeartbeatRequest?  HeartbeatRequest,
                                        out String?            ErrorResponse)
         {
@@ -175,8 +220,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             try
             {
 
-                HeartbeatRequest = new HeartbeatRequest(ChargeBoxId,
-                                                        RequestId);
+                HeartbeatRequest = new HeartbeatRequest(
+
+                                       NetworkingNodeId,
+
+                                       RequestId: RequestId
+
+                                   );
 
                 ErrorResponse = null;
                 return true;
@@ -193,7 +243,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out HeartbeatRequest, out ErrorResponse, CustomHeartbeatRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out HeartbeatRequest, out ErrorResponse, CustomHeartbeatRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -202,18 +252,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                JSON,
                                        Request_Id             RequestId,
-                                       ChargeBox_Id           ChargeBoxId,
+                                       NetworkingNode_Id      NetworkingNodeId,
+                                       NetworkPath            NetworkPath,
                                        out HeartbeatRequest?  HeartbeatRequest,
                                        out String?            ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out HeartbeatRequest,
                         out ErrorResponse,
                         null);
@@ -224,13 +277,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="HeartbeatRequest">The parsed heartbeat request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomHeartbeatRequestParser">A delegate to parse custom BootNotification requests.</param>
         public static Boolean TryParse(JObject                                         JSON,
                                        Request_Id                                      RequestId,
-                                       ChargeBox_Id                                    ChargeBoxId,
+                                       NetworkingNode_Id                               NetworkingNodeId,
+                                       NetworkPath                                     NetworkPath,
                                        out HeartbeatRequest?                           HeartbeatRequest,
                                        out String?                                     ErrorResponse,
                                        CustomJObjectParserDelegate<HeartbeatRequest>?  CustomHeartbeatRequestParser)
@@ -241,29 +296,51 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 HeartbeatRequest  = null;
 
-                #region ChargeBoxId    [optional, OCPP_CSE]
+                #region Signatures    [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
-                                       out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
+                }
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                #endregion
 
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
 
                 HeartbeatRequest  = new HeartbeatRequest(
-                                        ChargeBoxId,
-                                        RequestId
+
+                                        NetworkingNodeId,
+
+                                        null,
+                                        null,
+                                        Signatures,
+
+                                        CustomData,
+
+                                        RequestId,
+                                        null,
+                                        null,
+                                        null,
+                                        NetworkPath
+
                                     );
 
                 if (CustomHeartbeatRequestParser is not null)
@@ -295,18 +372,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToJSON(CustomHeartbeatRequestSerializer = null)
+        #region ToJSON(CustomHeartbeatRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomHeartbeatRequestSerializer">A delegate to serialize custom heartbeat requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<HeartbeatRequest>?  CustomHeartbeatRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<OCPP.Signature>?    CustomSignatureSerializer          = null,
                               CustomJObjectSerializerDelegate<CustomData>?        CustomCustomDataSerializer         = null)
         {
 
-            var json = JSONObject.Create();
+            var json = JSONObject.Create(
+
+                           Signatures.Any()
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData. ToJSON(CustomCustomDataSerializer))
+                               : null
+
+                       );
 
             return CustomHeartbeatRequestSerializer is not null
                        ? CustomHeartbeatRequestSerializer(this, json)

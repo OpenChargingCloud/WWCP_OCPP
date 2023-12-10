@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a BootNotification WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                   OnBootNotificationWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                OnBootNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a BootNotification request was received.
         /// </summary>
-        public event OnBootNotificationRequestDelegate?            OnBootNotificationRequest;
+        public event OnBootNotificationRequestDelegate?           OnBootNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a BootNotification was received.
         /// </summary>
-        public event OnBootNotificationDelegate?                   OnBootNotification;
+        public event OnBootNotificationDelegate?                  OnBootNotification;
 
         /// <summary>
         /// An event sent whenever a response to a BootNotification was sent.
         /// </summary>
-        public event OnBootNotificationResponseDelegate?           OnBootNotificationResponse;
+        public event OnBootNotificationResponseDelegate?          OnBootNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a BootNotification was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnBootNotificationWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnBootNotificationWSResponse;
 
         #endregion
 
@@ -127,7 +126,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                 if (BootNotificationRequest.TryParse(JSONRequest,
                                                      RequestId,
                                                      NetworkingNodeId,
-                                            //         NetworkPath,
+                                                     NetworkPath,
                                                      out var request,
                                                      out var errorResponse,
                                                      CustomBootNotificationRequestParser) && request is not null) {
@@ -158,7 +157,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                         this,
-                                                                                                                        Connection,
                                                                                                                         request,
                                                                                                                         CancellationToken)).
                                             ToArray();
@@ -197,7 +195,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                        RequestId,
                                        response.ToJSON(
                                            CustomBootNotificationResponseSerializer,
-                                           CustomStatusInfoSerializer,
                                            CustomSignatureSerializer,
                                            CustomCustomDataSerializer
                                        )

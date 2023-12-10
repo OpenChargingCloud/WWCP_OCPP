@@ -181,17 +181,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        event OnIncomingDataTransferRequestDelegate    OnIncomingDataTransferRequest;
+        event OCPP.CSMS.OnIncomingDataTransferRequestDelegate    OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        event OnIncomingDataTransferDelegate           OnIncomingDataTransfer;
+        event OCPP.CSMS.OnIncomingDataTransferDelegate           OnIncomingDataTransfer;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        event OnIncomingDataTransferResponseDelegate   OnIncomingDataTransferResponse;
+        event OCPP.CSMS.OnIncomingDataTransferResponseDelegate   OnIncomingDataTransferResponse;
 
         #endregion
 

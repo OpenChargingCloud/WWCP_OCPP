@@ -34,10 +34,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// A boot notification response.
     /// </summary>
     public class BootNotificationResponse : AResponse<CP.BootNotificationRequest,
-                                                         BootNotificationResponse>
+                                                         BootNotificationResponse>,
+                                            IResponse
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/bootNotificationResponse");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext       Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The registration status.
@@ -72,13 +88,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="Status">The registration status.</param>
         /// <param name="CurrentTime">The current time at the central system. Should be UTC!</param>
         /// <param name="HeartbeatInterval">When the registration status is 'accepted', the interval defines the heartbeat interval in seconds. In all other cases, the value of the interval field indicates the minimum wait time before sending a next BootNotification request.</param>
-        public BootNotificationResponse(CP.BootNotificationRequest  Request,
-                                        RegistrationStatus          Status,
-                                        DateTime                    CurrentTime,
-                                        TimeSpan                    HeartbeatInterval)
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public BootNotificationResponse(CP.BootNotificationRequest    Request,
+                                        RegistrationStatus            Status,
+                                        DateTime                      CurrentTime,
+                                        TimeSpan                      HeartbeatInterval,
+
+                                        DateTime?                     ResponseTimestamp   = null,
+
+                                        IEnumerable<KeyPair>?         SignKeys            = null,
+                                        IEnumerable<SignInfo>?        SignInfos           = null,
+                                        IEnumerable<OCPP.Signature>?  Signatures          = null,
+
+                                        CustomData?                   CustomData          = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   ResponseTimestamp,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         {
 
@@ -290,7 +327,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 BootNotificationResponse = null;
 
-                #region Status
+                #region Status         [mandatory]
 
                 if (!JSON.MapMandatory("status",
                                        "registration status",
@@ -309,7 +346,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region CurrentTime
+                #region CurrentTime    [mandatory]
 
                 if (!JSON.ParseMandatory("currentTime",
                                          "current time",
@@ -321,7 +358,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
-                #region Interval
+                #region Interval       [mandatory]
 
                 if (!JSON.ParseMandatory("interval",
                                          "heartbeat interval",
@@ -333,12 +370,49 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                 #endregion
 
+                #region Signatures     [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData     [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
 
                 BootNotificationResponse = new BootNotificationResponse(
+
                                                Request,
                                                RegistrationStatus,
                                                CurrentTime,
-                                               Interval
+                                               Interval,
+                                               null,
+
+                                               null,
+                                               null,
+                                               Signatures,
+
+                                               CustomData
+
                                            );
 
                 if (CustomBootNotificationResponseParser is not null)

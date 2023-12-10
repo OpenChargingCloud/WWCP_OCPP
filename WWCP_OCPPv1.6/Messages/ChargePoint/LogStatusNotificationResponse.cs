@@ -31,9 +31,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// A log status notification response.
     /// </summary>
+    [SecurityExtensions]
     public class LogStatusNotificationResponse : AResponse<CP.LogStatusNotificationRequest,
-                                                              LogStatusNotificationResponse>
+                                                              LogStatusNotificationResponse>,
+                                                 IResponse
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cs/logStatusNotificationResponse");
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext Context
+            => DefaultJSONLDContext;
+
+        #endregion
 
         #region Constructor(s)
 
@@ -43,10 +64,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a new log status notification response.
         /// </summary>
         /// <param name="Request">The log status notification request leading to this response.</param>
-        public LogStatusNotificationResponse(CP.LogStatusNotificationRequest Request)
+        /// 
+        /// <param name="SignKeys">An optional enumeration of keys to be used for signing this response.</param>
+        /// <param name="SignInfos">An optional enumeration of information to be used for signing this response.</param>
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures.</param>
+        /// 
+        /// <param name="CustomData">An optional custom data object to allow to store any kind of customer specific data.</param>
+        public LogStatusNotificationResponse(CP.LogStatusNotificationRequest  Request,
+
+                                             DateTime?                        ResponseTimestamp   = null,
+
+                                             IEnumerable<KeyPair>?            SignKeys            = null,
+                                             IEnumerable<SignInfo>?           SignInfos           = null,
+                                             IEnumerable<OCPP.Signature>?     Signatures          = null,
+
+                                             CustomData?                      CustomData          = null)
 
             : base(Request,
-                   Result.OK())
+                   Result.OK(),
+                   ResponseTimestamp,
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData)
 
         { }
 
@@ -132,8 +174,49 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             try
             {
 
-                LogStatusNotificationResponse  = new LogStatusNotificationResponse(Request);
-                ErrorResponse                  = null;
+                LogStatusNotificationResponse  = null;
+
+                #region Signatures    [optional, OCPP_CSE]
+
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region CustomData    [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+
+                LogStatusNotificationResponse = new LogStatusNotificationResponse(
+
+                                                    Request,
+                                                    null,
+
+                                                    null,
+                                                    null,
+                                                    Signatures,
+
+                                                    CustomData
+
+                                                );
 
                 if (CustomLogStatusNotificationResponseParser is not null)
                     LogStatusNotificationResponse = CustomLogStatusNotificationResponseParser(JSON,
@@ -153,18 +236,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region ToJSON(CustomLogStatusNotificationResponseSerializer = null)
+        #region ToJSON(CustomLogStatusNotificationResponseSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomLogStatusNotificationResponseSerializer">A delegate to serialize custom log status notification responses.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<LogStatusNotificationResponse>?  CustomLogStatusNotificationResponseSerializer   = null,
                               CustomJObjectSerializerDelegate<OCPP.Signature>?                 CustomSignatureSerializer                       = null,
                               CustomJObjectSerializerDelegate<CustomData>?                     CustomCustomDataSerializer                      = null)
         {
 
-            var json = JSONObject.Create();
+            var json = JSONObject.Create(
+
+                           Signatures.Any()
+                               ? new JProperty("signatures",   new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                          CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",   CustomData.ToJSON(CustomCustomDataSerializer))
+                               : null
+
+                       );
 
             return CustomLogStatusNotificationResponseSerializer is not null
                        ? CustomLogStatusNotificationResponseSerializer(this, json)

@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Xml.Linq;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -147,6 +149,21 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         #region Documentation
 
+        // <soap:Envelope xmlns:soap = "http://www.w3.org/2003/05/soap-envelope"
+        //                xmlns:ns   = "urn://Ocpp/Cs/2015/10/">
+        //    <soap:Header/>
+        //    <soap:Body>
+        //       <ns:dataTransferResponse>
+        //
+        //          <ns:status>?</ns:status>
+        //
+        //          <!--Optional:-->
+        //          <ns:data>?</ns:data>
+        //
+        //       </ns:dataTransferResponse>
+        //    </soap:Body>
+        // </soap:Envelope>
+
         // {
         //   "$schema": "http://json-schema.org/draft-06/schema#",
         //   "$id": "urn:OCPP:Cp:2:2020:3:DataTransferResponse",
@@ -226,6 +243,34 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         #endregion
 
+        #region (static) Parse   (Request, DataTransferResponseXML)
+
+        /// <summary>
+        /// Parse the given XML representation of a data transfer response.
+        /// </summary>
+        /// <param name="Request">The incoming data transfer request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        public static DataTransferResponse Parse(CS.DataTransferRequest  Request,
+                                                 XElement                XML,
+                                                 XNamespace              XMLNamespace)
+        {
+
+            if (TryParse(Request,
+                         XML,
+                         XMLNamespace,
+                         out var dataTransferResponse,
+                         out var errorResponse))
+            {
+                return dataTransferResponse!;
+            }
+
+            throw new ArgumentException("The given XML representation of a data transfer response is invalid: " + errorResponse,
+                                        nameof(XML));
+
+        }
+
+        #endregion
+
         #region (static) Parse   (Request, JSON, CustomDataTransferResponseSerializer = null)
 
         /// <summary>
@@ -251,6 +296,51 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
             throw new ArgumentException("The given JSON representation of a data transfer response is invalid: " + errorResponse,
                                         nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Request, XML,  out DataTransferResponse, out ErrorResponse)
+
+        /// <summary>
+        /// Try to parse the given XML representation of a data transfer response.
+        /// </summary
+        /// <param name="Request">The incoming data transfer request leading to this response.</param>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="DataTransferResponse">The parsed data transfer response.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CS.DataTransferRequest     Request,
+                                       XElement                   XML,
+                                       XNamespace                 XMLNamespace,
+                                       out DataTransferResponse?  DataTransferResponse,
+                                       out String?                ErrorResponse)
+        {
+
+            try
+            {
+
+                DataTransferResponse = new DataTransferResponse(
+
+                                           Request,
+
+                                           XML.MapEnumValuesOrFail  (XMLNamespace + "status",
+                                                                     DataTransferStatusExtensions.Parse),
+
+                                           XML.ElementValueOrDefault(XMLNamespace + "data")
+
+                                       );
+
+                ErrorResponse = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                DataTransferResponse  = null;
+                ErrorResponse         = "The given XML representation of a data transfer response is invalid: " + e.Message;
+                return false;
+            }
 
         }
 

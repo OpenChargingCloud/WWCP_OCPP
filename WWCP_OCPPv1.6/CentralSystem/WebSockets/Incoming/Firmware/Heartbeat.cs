@@ -17,14 +17,9 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv1_6.CP;
-using cloud.charging.open.protocols.OCPPv1_6.WebSockets;
 
 #endregion
 
@@ -78,6 +73,5 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                     TimeSpan            Runtime);
 
     #endregion
-
 
 }

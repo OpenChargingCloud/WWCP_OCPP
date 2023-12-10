@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Xml.Linq;
+
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -193,6 +195,43 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         #endregion
 
+        #region (static) Parse   (XML,  RequestId, NetworkingNodeId, NetworkPath, OnException = null)
+
+        /// <summary>
+        /// Parse the given XML representation of a data transfer request.
+        /// </summary>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static DataTransferRequest Parse(XElement              XML,
+                                                XNamespace            XMLNamespace,
+                                                Request_Id            RequestId,
+                                                NetworkPath           NetworkPath,
+                                                NetworkingNode_Id     NetworkingNodeId,
+                                                OnExceptionDelegate?  OnException   = null)
+        {
+
+            if (TryParse(XML,
+                         XMLNamespace,
+                         RequestId,
+                         NetworkingNodeId,
+                         NetworkPath,
+                         out var dataTransferRequest,
+                         OnException) &&
+                dataTransferRequest is not null)
+            {
+                return dataTransferRequest;
+            }
+
+            throw new ArgumentException("The given XML representation of a data transfer request is invalid: ", // + errorResponse,
+                                        nameof(XML));
+
+        }
+
+        #endregion
+
         #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomDataTransferRequestParser = null)
 
         /// <summary>
@@ -224,6 +263,56 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
             throw new ArgumentException("The given JSON representation of a data transfer request is invalid: " + errorResponse,
                                         nameof(JSON));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(XML,  RequestId, NetworkingNodeId, NetworkPath, out DataTransferRequest, OnException = null)
+
+        /// <summary>
+        /// Try to parse the given XML representation of a data transfer request.
+        /// </summary>
+        /// <param name="XML">The XML to be parsed.</param>
+        /// <param name="XMLNamespace">The XML namespace to use.</param>
+        /// <param name="RequestId">The request identification.</param>
+        /// <param name="NetworkingNodeId">The sending charging station/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="DataTransferRequest">The parsed DataTransfer request.</param>
+        /// <param name="OnException">An optional delegate called whenever an exception occured.</param>
+        public static Boolean TryParse(XElement                  XML,
+                                       XNamespace                XMLNamespace,
+                                       Request_Id                RequestId,
+                                       NetworkingNode_Id         NetworkingNodeId,
+                                       NetworkPath               NetworkPath,
+                                       out DataTransferRequest?  DataTransferRequest,
+                                       OnExceptionDelegate?      OnException   = null)
+        {
+
+            try
+            {
+
+                DataTransferRequest = new DataTransferRequest(
+                                          NetworkingNodeId,
+                                          Vendor_Id. Parse(XML.ElementValueOrFail   (XMLNamespace + "vendorId")),
+                                          Message_Id.Parse(XML.ElementValueOrDefault(XMLNamespace + "messageId")),
+                                          XML.ElementValueOrDefault(XMLNamespace + "data"),
+                                          RequestId:    RequestId,
+                                          NetworkPath:  NetworkPath
+                                      );
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(Timestamp.Now, XML, e);
+
+                DataTransferRequest = null;
+                return false;
+
+            }
 
         }
 
@@ -380,6 +469,30 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
             }
 
         }
+
+        #endregion
+
+        #region ToXML (XMLNamespace)
+
+        /// <summary>
+        /// Return a XML representation of this object.
+        /// </summary>
+        /// <param name="XMLNamespace">The XML namespace to use.</param>
+        public XElement ToXML(XNamespace XMLNamespace) // OCPPNS.OCPPv1_6_CS
+
+            => new (XMLNamespace + "dataTransferRequest",
+
+                         new XElement(XMLNamespace + "vendorId",    VendorId),
+
+                   MessageId.IsNotNullOrEmpty()
+                       ? new XElement(XMLNamespace + "messageId",   MessageId)
+                       : null,
+
+                   Data is not null && Data.Type == JTokenType.String
+                       ? new XElement(XMLNamespace + "data",        Data.Value<String>())
+                       : null
+
+               );
 
         #endregion
 

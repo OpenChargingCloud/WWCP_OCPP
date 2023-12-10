@@ -37,64 +37,80 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// The boot notification request.
     /// </summary>
-    public class BootNotificationRequest : ARequest<BootNotificationRequest>
+    public class BootNotificationRequest : ARequest<BootNotificationRequest>,
+                                           IRequest
     {
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public readonly static JSONLDContext DefaultJSONLDContext = JSONLDContext.Parse("https://open.charging.cloud/context/ocpp/v1.6/cp/bootNotificationRequest");
+
+        #endregion
+
         #region Properties
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public JSONLDContext  Context
+            => DefaultJSONLDContext;
 
         /// <summary>
         /// The charge point vendor identification.
         /// </summary>
         [Mandatory]
-        public String   ChargePointVendor         { get; }
+        public String         ChargePointVendor         { get; }
 
         /// <summary>
         /// The charge point model identification.
         /// </summary>
         [Mandatory]
-        public String   ChargePointModel          { get; }
+        public String         ChargePointModel          { get; }
 
         /// <summary>
         /// The serial number of the charge point.
         /// </summary>
         [Optional]
-        public String?  ChargePointSerialNumber   { get; }
+        public String?        ChargePointSerialNumber   { get; }
 
         /// <summary>
         /// The serial number of the charge box.
         /// </summary>
         [Optional]
-        public String?  ChargeBoxSerialNumber     { get; }
+        public String?        ChargeBoxSerialNumber     { get; }
 
         /// <summary>
         /// The firmware version of the charge point.
         /// </summary>
         [Optional]
-        public String?  FirmwareVersion           { get; }
+        public String?        FirmwareVersion           { get; }
 
         /// <summary>
         /// The ICCID of the charge point's SIM card.
         /// </summary>
         [Optional]
-        public String?  Iccid                     { get; }
+        public String?        Iccid                     { get; }
 
         /// <summary>
         /// The IMSI of the charge point’s SIM card.
         /// </summary>
         [Optional]
-        public String?  IMSI                      { get; }
+        public String?        IMSI                      { get; }
 
         /// <summary>
         /// The meter type of the main power meter of the charge point.
         /// </summary>
         [Optional]
-        public String?  MeterType                 { get; }
+        public String?        MeterType                 { get; }
 
         /// <summary>
         /// The serial number of the main power meter of the charge point.
         /// </summary>
         [Optional]
-        public String?  MeterSerialNumber         { get; }
+        public String?        MeterSerialNumber         { get; }
 
         #endregion
 
@@ -103,7 +119,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// Create a new boot notification request.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charge point/networking node identification.</param>
         /// <param name="ChargePointVendor">The charge point vendor identification.</param>
         /// <param name="ChargePointModel">The charge point model identification.</param>
         /// 
@@ -118,30 +134,55 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        public BootNotificationRequest(NetworkingNode_Id  NetworkingNodeId,
-                                       String             ChargePointVendor,
-                                       String             ChargePointModel,
+        /// 
+        /// <param name="Signatures">An optional enumeration of cryptographic signatures for this message.</param>
+        /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
+        /// 
+        /// <param name="RequestId">An optional request identification.</param>
+        /// <param name="RequestTimestamp">An optional request timestamp.</param>
+        /// <param name="RequestTimeout">The timeout of this request.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        public BootNotificationRequest(NetworkingNode_Id             NetworkingNodeId,
+                                       String                        ChargePointVendor,
+                                       String                        ChargePointModel,
 
-                                       String?            ChargePointSerialNumber   = null,
-                                       String?            ChargeBoxSerialNumber     = null,
-                                       String?            FirmwareVersion           = null,
-                                       String?            Iccid                     = null,
-                                       String?            IMSI                      = null,
-                                       String?            MeterType                 = null,
-                                       String?            MeterSerialNumber         = null,
+                                       String?                       ChargePointSerialNumber   = null,
+                                       String?                       ChargeBoxSerialNumber     = null,
+                                       String?                       FirmwareVersion           = null,
+                                       String?                       Iccid                     = null,
+                                       String?                       IMSI                      = null,
+                                       String?                       MeterType                 = null,
+                                       String?                       MeterSerialNumber         = null,
 
-                                       Request_Id?        RequestId                 = null,
-                                       DateTime?          RequestTimestamp          = null,
-                                       TimeSpan?          RequestTimeout            = null,
-                                       EventTracking_Id?  EventTrackingId           = null,
-                                       CancellationToken  CancellationToken         = default)
+                                       IEnumerable<KeyPair>?         SignKeys                  = null,
+                                       IEnumerable<SignInfo>?        SignInfos                 = null,
+                                       IEnumerable<OCPP.Signature>?  Signatures                = null,
+
+                                       CustomData?                   CustomData                = null,
+
+                                       Request_Id?                   RequestId                 = null,
+                                       DateTime?                     RequestTimestamp          = null,
+                                       TimeSpan?                     RequestTimeout            = null,
+                                       EventTracking_Id?             EventTrackingId           = null,
+                                       NetworkPath?                  NetworkPath               = null,
+                                       CancellationToken             CancellationToken         = default)
 
             : base(NetworkingNodeId,
-                   "BootNotification",
+                   nameof(BootNotificationRequest)[..^7],
+
+                   SignKeys,
+                   SignInfos,
+                   Signatures,
+
+                   CustomData,
+
                    RequestId,
                    RequestTimestamp,
                    RequestTimeout,
                    EventTrackingId,
+                   NetworkPath,
                    CancellationToken)
 
         {
@@ -311,23 +352,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (XML,  RequestId, ChargeBoxId)
+        #region (static) Parse   (XML,  RequestId, NetworkingNodeId)
 
         /// <summary>
         /// Parse the given XML representation of a boot notification request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        public static BootNotificationRequest Parse(XElement      XML,
-                                                    Request_Id    RequestId,
-                                                    ChargeBox_Id  ChargeBoxId)
+        /// <param name="NetworkingNodeId">The sending charge point/networking node identification.</param>
+        public static BootNotificationRequest Parse(XElement           XML,
+                                                    Request_Id         RequestId,
+                                                    NetworkingNode_Id  NetworkingNodeId)
         {
 
 
             if (TryParse(XML,
                          RequestId,
-                         ChargeBoxId,
+                         NetworkingNodeId,
                          out var bootNotificationRequest,
                          out var errorResponse))
             {
@@ -341,30 +382,34 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) Parse   (JSON, RequestId, ChargeBoxId, CustomBootNotificationRequestParser = null)
+        #region (static) Parse   (JSON, RequestId, NetworkingNodeId, NetworkPath, CustomBootNotificationRequestParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of a boot notification request.
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charge point/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom BootNotification requests.</param>
         public static BootNotificationRequest Parse(JObject                                                JSON,
                                                     Request_Id                                             RequestId,
-                                                    ChargeBox_Id                                           ChargeBoxId,
+                                                    NetworkingNode_Id                                      NetworkingNodeId,
+                                                    NetworkPath                                            NetworkPath,
                                                     CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser   = null)
         {
 
 
             if (TryParse(JSON,
                          RequestId,
-                         ChargeBoxId,
+                         NetworkingNodeId,
+                         NetworkPath,
                          out var bootNotificationRequest,
                          out var errorResponse,
-                         CustomBootNotificationRequestParser))
+                         CustomBootNotificationRequestParser) &&
+                bootNotificationRequest is not null)
             {
-                return bootNotificationRequest!;
+                return bootNotificationRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a boot notification request is invalid: " + errorResponse,
@@ -374,19 +419,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(XML,  RequestId, ChargeBoxId, out BootNotificationRequest, out ErrorResponse)
+        #region (static) TryParse(XML,  RequestId, NetworkingNodeId, out BootNotificationRequest, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given XML representation of a boot notification request.
         /// </summary>
         /// <param name="XML">The XML to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charge point/networking node identification.</param>
         /// <param name="BootNotificationRequest">The parsed BootNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(XElement                      XML,
                                        Request_Id                    RequestId,
-                                       ChargeBox_Id                  ChargeBoxId,
+                                       NetworkingNode_Id             NetworkingNodeId,
                                        out BootNotificationRequest?  BootNotificationRequest,
                                        out String?                   ErrorResponse)
         {
@@ -395,7 +440,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 BootNotificationRequest = new BootNotificationRequest(
-                                              ChargeBoxId,
+                                              NetworkingNodeId,
                                               XML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargePointVendor"),
                                               XML.ElementValueOrFail   (OCPPNS.OCPPv1_6_CS + "chargePointModel"),
                                               XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "chargePointSerialNumber"),
@@ -405,7 +450,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                               XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "imsi"),
                                               XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterType"),
                                               XML.ElementValueOrDefault(OCPPNS.OCPPv1_6_CS + "meterSerialNumber"),
-                                              RequestId
+                                              RequestId: RequestId
                                           );
 
                 ErrorResponse = null;
@@ -423,7 +468,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region (static) TryParse(JSON, RequestId, ChargeBoxId, out BootNotificationRequest, out ErrorResponse, CustomBootNotificationRequestParser = null)
+        #region (static) TryParse(JSON, RequestId, NetworkingNodeId, NetworkPath, out BootNotificationRequest, out ErrorResponse, CustomBootNotificationRequestParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -432,18 +477,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charge point/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="BootNotificationRequest">The parsed BootNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         public static Boolean TryParse(JObject                       JSON,
                                        Request_Id                    RequestId,
-                                       ChargeBox_Id                  ChargeBoxId,
+                                       NetworkingNode_Id             NetworkingNodeId,
+                                       NetworkPath                   NetworkPath,
                                        out BootNotificationRequest?  BootNotificationRequest,
                                        out String?                   ErrorResponse)
 
             => TryParse(JSON,
                         RequestId,
-                        ChargeBoxId,
+                        NetworkingNodeId,
+                        NetworkPath,
                         out BootNotificationRequest,
                         out ErrorResponse,
                         null);
@@ -454,13 +502,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// </summary>
         /// <param name="JSON">The JSON to be parsed.</param>
         /// <param name="RequestId">The request identification.</param>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
+        /// <param name="NetworkingNodeId">The sending charge point/networking node identification.</param>
+        /// <param name="NetworkPath">The network path of the request.</param>
         /// <param name="BootNotificationRequest">The parsed BootNotification request.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomBootNotificationRequestParser">A delegate to parse custom BootNotification requests.</param>
         public static Boolean TryParse(JObject                                                JSON,
                                        Request_Id                                             RequestId,
-                                       ChargeBox_Id                                           ChargeBoxId,
+                                       NetworkingNode_Id                                      NetworkingNodeId,
+                                       NetworkPath                                            NetworkPath,
                                        out BootNotificationRequest?                           BootNotificationRequest,
                                        out String?                                            ErrorResponse,
                                        CustomJObjectParserDelegate<BootNotificationRequest>?  CustomBootNotificationRequestParser)
@@ -495,28 +545,38 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                 #endregion
 
-                #region ChargeBoxId          [optional, OCPP_CSE]
+                #region Signatures           [optional, OCPP_CSE]
 
-                if (JSON.ParseOptional("chargeBoxId",
-                                       "charge box identification",
-                                       ChargeBox_Id.TryParse,
-                                       out ChargeBox_Id? chargeBoxId_PayLoad,
-                                       out ErrorResponse))
+                if (JSON.ParseOptionalHashSet("signatures",
+                                              "cryptographic signatures",
+                                              OCPP.Signature.TryParse,
+                                              out HashSet<OCPP.Signature> Signatures,
+                                              out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
+                }
 
-                    if (chargeBoxId_PayLoad.HasValue)
-                        ChargeBoxId = chargeBoxId_PayLoad.Value;
+                #endregion
 
+                #region CustomData           [optional]
+
+                if (JSON.ParseOptionalJSON("customData",
+                                           "custom data",
+                                           OCPP.CustomData.TryParse,
+                                           out CustomData CustomData,
+                                           out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion
 
 
                 BootNotificationRequest = new BootNotificationRequest(
-                                              ChargeBoxId,
+
+                                              NetworkingNodeId,
                                               ChargePointVendor,
                                               ChargePointModel,
                                               JSON["chargePointSerialNumber"]?.Value<String>(),
@@ -526,7 +586,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                               JSON["imsi"]?.                   Value<String>(),
                                               JSON["meterType"]?.              Value<String>(),
                                               JSON["meterSerialNumber"]?.      Value<String>(),
-                                              RequestId
+
+                                              null,
+                                              null,
+                                              Signatures,
+
+                                              CustomData,
+
+                                              RequestId,
+                                              null,
+                                              null,
+                                              null,
+                                              NetworkPath
+
                                           );
 
                 if (CustomBootNotificationRequestParser is not null)
@@ -591,12 +663,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToJSON(CustomBootNotificationRequestSerializer = null)
+        #region ToJSON(CustomBootNotificationRequestSerializer = null, CustomSignatureSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomBootNotificationRequestSerializer">A delegate to serialize custom BootNotification requests.</param>
+        /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
+        /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<BootNotificationRequest>?  CustomBootNotificationRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<OCPP.Signature>?           CustomSignatureSerializer                 = null,
                               CustomJObjectSerializerDelegate<CustomData>?               CustomCustomDataSerializer                = null)
@@ -633,6 +707,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                            MeterSerialNumber.      IsNotNullOrEmpty()
                                ? new JProperty("meterSerialNumber",         MeterSerialNumber)
+                               : null,
+
+                           Signatures.Any()
+                               ? new JProperty("signatures",                new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                       CustomCustomDataSerializer))))
+                               : null,
+
+                           CustomData is not null
+                               ? new JProperty("customData",                CustomData.ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event sent whenever a Heartbeat WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                   OnHeartbeatWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                OnHeartbeatWSRequest;
 
         /// <summary>
         /// An event sent whenever a Heartbeat request was received.
         /// </summary>
-        public event OnHeartbeatRequestDelegate?                   OnHeartbeatRequest;
+        public event OnHeartbeatRequestDelegate?                  OnHeartbeatRequest;
 
         /// <summary>
         /// An event sent whenever a Heartbeat was received.
         /// </summary>
-        public event OnHeartbeatDelegate?                          OnHeartbeat;
+        public event OnHeartbeatDelegate?                         OnHeartbeat;
 
         /// <summary>
         /// An event sent whenever a response to a Heartbeat was sent.
         /// </summary>
-        public event OnHeartbeatResponseDelegate?                  OnHeartbeatResponse;
+        public event OnHeartbeatResponseDelegate?                 OnHeartbeatResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a Heartbeat was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnHeartbeatWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnHeartbeatWSResponse;
 
         #endregion
 
