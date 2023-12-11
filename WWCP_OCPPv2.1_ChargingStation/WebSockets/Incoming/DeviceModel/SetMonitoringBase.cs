@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a set monitoring base websocket request was received.
+        /// An event sent whenever a SetMonitoringBase websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?              OnSetMonitoringBaseWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnSetMonitoringBaseWSRequest;
 
         /// <summary>
-        /// An event sent whenever a set monitoring base request was received.
+        /// An event sent whenever a SetMonitoringBase request was received.
         /// </summary>
-        public event OnSetMonitoringBaseRequestDelegate?     OnSetMonitoringBaseRequest;
+        public event OnSetMonitoringBaseRequestDelegate?           OnSetMonitoringBaseRequest;
 
         /// <summary>
-        /// An event sent whenever a set monitoring base request was received.
+        /// An event sent whenever a SetMonitoringBase request was received.
         /// </summary>
-        public event OnSetMonitoringBaseDelegate?            OnSetMonitoringBase;
+        public event OnSetMonitoringBaseDelegate?                  OnSetMonitoringBase;
 
         /// <summary>
-        /// An event sent whenever a response to a set monitoring base request was sent.
+        /// An event sent whenever a response to a SetMonitoringBase request was sent.
         /// </summary>
-        public event OnSetMonitoringBaseResponseDelegate?    OnSetMonitoringBaseResponse;
+        public event OnSetMonitoringBaseResponseDelegate?          OnSetMonitoringBaseResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a set monitoring base request was sent.
+        /// An event sent whenever a websocket response to a SetMonitoringBase request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?             OnSetMonitoringBaseWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnSetMonitoringBaseWSResponse;
 
         #endregion
 

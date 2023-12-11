@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a heartbeat request will be sent to the CSMS.
+        /// An event fired whenever a Heartbeat request will be sent to the CSMS.
         /// </summary>
         public event OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
 
         /// <summary>
-        /// An event fired whenever a heartbeat request will be sent to the CSMS.
+        /// An event fired whenever a Heartbeat request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?        OnHeartbeatWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a heartbeat request was received.
+        /// An event fired whenever a response to a Heartbeat request was received.
         /// </summary>
         public event ClientResponseLogHandler?       OnHeartbeatWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a heartbeat request was received.
+        /// An event fired whenever a response to a Heartbeat request was received.
         /// </summary>
         public event OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
 
@@ -110,16 +109,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomHeartbeatRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomHeartbeatRequestSerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

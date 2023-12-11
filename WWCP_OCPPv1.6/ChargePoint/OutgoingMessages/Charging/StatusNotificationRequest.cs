@@ -310,7 +310,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                          RequestId,
                          NetworkingNodeId,
                          out var statusNotificationRequest,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                statusNotificationRequest is not null)
             {
                 return statusNotificationRequest!;
             }

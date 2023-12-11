@@ -217,9 +217,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (TryParse(Request,
                          XML,
                          out var bootNotificationResponse,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                bootNotificationResponse is not null)
             {
-                return bootNotificationResponse!;
+                return bootNotificationResponse;
             }
 
             throw new ArgumentException("The given XML representation of a boot notification response is invalid: " + errorResponse,
@@ -247,9 +248,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON,
                          out var bootNotificationResponse,
                          out var errorResponse,
-                         CustomBootNotificationResponseParser))
+                         CustomBootNotificationResponseParser) &&
+                bootNotificationResponse is not null)
             {
-                return bootNotificationResponse!;
+                return bootNotificationResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a boot notification response is invalid: " + errorResponse,

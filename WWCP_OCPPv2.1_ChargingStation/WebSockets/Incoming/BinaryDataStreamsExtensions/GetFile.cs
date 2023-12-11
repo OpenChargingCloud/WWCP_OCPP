@@ -55,27 +55,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a GetFile websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                 OnGetFileWSRequest;
+        public event WSClientJSONRequestLogHandler?                  OnGetFileWSRequest;
 
         /// <summary>
         /// An event sent whenever a GetFile request was received.
         /// </summary>
-        public event OCPP.CS.OnGetFileRequestDelegate?              OnGetFileRequest;
+        public event OCPP.CS.OnGetFileRequestDelegate?               OnGetFileRequest;
 
         /// <summary>
         /// An event sent whenever a GetFile request was received.
         /// </summary>
-        public event OCPP.CS.OnGetFileDelegate?                     OnGetFile;
+        public event OCPP.CS.OnGetFileDelegate?                      OnGetFile;
 
         /// <summary>
         /// An event sent whenever a response to a GetFile request was sent.
         /// </summary>
-        public event OCPP.CS.OnGetFileResponseDelegate?             OnGetFileResponse;
+        public event OCPP.CS.OnGetFileResponseDelegate?              OnGetFileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a GetFile request was sent.
         /// </summary>
-        public event WSClientJSONRequestBinaryResponseLogHandler?   OnGetFileWSResponse;
+        public event WSClientJSONRequestBinaryResponseLogHandler?    OnGetFileWSResponse;
 
         #endregion
 

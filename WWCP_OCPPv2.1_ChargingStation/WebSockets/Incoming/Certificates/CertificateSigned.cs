@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a certificate signed websocket request was received.
+        /// An event sent whenever a CertificateSigned websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?              OnCertificateSignedWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnCertificateSignedWSRequest;
 
         /// <summary>
-        /// An event sent whenever a certificate signed request was received.
+        /// An event sent whenever a CertificateSigned request was received.
         /// </summary>
-        public event OnCertificateSignedRequestDelegate?     OnCertificateSignedRequest;
+        public event OnCertificateSignedRequestDelegate?           OnCertificateSignedRequest;
 
         /// <summary>
-        /// An event sent whenever a certificate signed request was received.
+        /// An event sent whenever a CertificateSigned request was received.
         /// </summary>
-        public event OnCertificateSignedDelegate?            OnCertificateSigned;
+        public event OnCertificateSignedDelegate?                  OnCertificateSigned;
 
         /// <summary>
-        /// An event sent whenever a response to a certificate signed request was sent.
+        /// An event sent whenever a response to a CertificateSigned request was sent.
         /// </summary>
-        public event OnCertificateSignedResponseDelegate?    OnCertificateSignedResponse;
+        public event OnCertificateSignedResponseDelegate?          OnCertificateSignedResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a certificate signed request was sent.
+        /// An event sent whenever a websocket response to a CertificateSigned request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?             OnCertificateSignedWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnCertificateSignedWSResponse;
 
         #endregion
 

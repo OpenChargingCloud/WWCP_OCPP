@@ -218,9 +218,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                          NetworkPath,
                          out var diagnosticsStatusNotificationRequest,
                          out var errorResponse,
-                         CustomDiagnosticsStatusNotificationRequestParser))
+                         CustomDiagnosticsStatusNotificationRequestParser) &&
+                diagnosticsStatusNotificationRequest is not null)
             {
-                return diagnosticsStatusNotificationRequest!;
+                return diagnosticsStatusNotificationRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a diagnostics status notification request is invalid: " + errorResponse,

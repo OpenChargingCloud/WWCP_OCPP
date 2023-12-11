@@ -129,9 +129,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (TryParse(Request,
                          XML,
                          out var statusNotificationResponse,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                statusNotificationResponse is not null)
             {
-                return statusNotificationResponse!;
+                return statusNotificationResponse;
             }
 
             throw new ArgumentException("The given XML representation of a status notification response is invalid: " + errorResponse,
@@ -158,9 +159,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON,
                          out var statusNotificationResponse,
                          out var errorResponse,
-                         CustomStatusNotificationResponseParser))
+                         CustomStatusNotificationResponseParser) &&
+                statusNotificationResponse is not null)
             {
-                return statusNotificationResponse!;
+                return statusNotificationResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a status notification response is invalid: " + errorResponse,

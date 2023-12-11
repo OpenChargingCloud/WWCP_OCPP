@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a log status notification request will be sent to the CSMS.
+        /// An event fired whenever a LogStatusNotification request will be sent to the CSMS.
         /// </summary>
         public event OnLogStatusNotificationRequestDelegate?     OnLogStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a log status notification request will be sent to the CSMS.
+        /// An event fired whenever a LogStatusNotification request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                    OnLogStatusNotificationWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a log status notification request was received.
+        /// An event fired whenever a response to a LogStatusNotification request was received.
         /// </summary>
         public event ClientResponseLogHandler?                   OnLogStatusNotificationWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a log status notification request was received.
+        /// An event fired whenever a response to a LogStatusNotification request was received.
         /// </summary>
         public event OnLogStatusNotificationResponseDelegate?    OnLogStatusNotificationResponse;
 
@@ -110,16 +109,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomLogStatusNotificationSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomLogStatusNotificationSerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

@@ -211,9 +211,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (TryParse(Request,
                          XML,
                          out var authorizeResponse,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                authorizeResponse is not null)
             {
-                return authorizeResponse!;
+                return authorizeResponse;
             }
 
             throw new ArgumentException("The given XML representation of an authorize request is invalid: " + errorResponse,

@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever an update firmware websocket request was received.
+        /// An event sent whenever an UpdateFirmware websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?           OnUpdateFirmwareWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnUpdateFirmwareWSRequest;
 
         /// <summary>
-        /// An event sent whenever an update firmware request was received.
+        /// An event sent whenever an UpdateFirmware request was received.
         /// </summary>
-        public event OnUpdateFirmwareRequestDelegate?     OnUpdateFirmwareRequest;
+        public event OnUpdateFirmwareRequestDelegate?              OnUpdateFirmwareRequest;
 
         /// <summary>
-        /// An event sent whenever an update firmware request was received.
+        /// An event sent whenever an UpdateFirmware request was received.
         /// </summary>
-        public event OnUpdateFirmwareDelegate?            OnUpdateFirmware;
+        public event OnUpdateFirmwareDelegate?                     OnUpdateFirmware;
 
         /// <summary>
-        /// An event sent whenever a response to an update firmware request was sent.
+        /// An event sent whenever a response to an UpdateFirmware request was sent.
         /// </summary>
-        public event OnUpdateFirmwareResponseDelegate?    OnUpdateFirmwareResponse;
+        public event OnUpdateFirmwareResponseDelegate?             OnUpdateFirmwareResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to an update firmware request was sent.
+        /// An event sent whenever a websocket response to an UpdateFirmware request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?          OnUpdateFirmwareWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnUpdateFirmwareWSResponse;
 
         #endregion
 

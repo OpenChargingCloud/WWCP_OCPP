@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a notify display messages request will be sent to the CSMS.
+        /// An event fired whenever a NotifyDisplayMessages request will be sent to the CSMS.
         /// </summary>
         public event OnNotifyDisplayMessagesRequestDelegate?     OnNotifyDisplayMessagesRequest;
 
         /// <summary>
-        /// An event fired whenever a notify display messages request will be sent to the CSMS.
+        /// An event fired whenever a NotifyDisplayMessages request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                    OnNotifyDisplayMessagesWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a notify display messages request was received.
+        /// An event fired whenever a response to a NotifyDisplayMessages request was received.
         /// </summary>
         public event ClientResponseLogHandler?                   OnNotifyDisplayMessagesWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a notify display messages request was received.
+        /// An event fired whenever a response to a NotifyDisplayMessages request was received.
         /// </summary>
         public event OnNotifyDisplayMessagesResponseDelegate?    OnNotifyDisplayMessagesResponse;
 
@@ -110,20 +109,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomNotifyDisplayMessagesRequestSerializer,
-                                             CustomMessageInfoSerializer,
-                                             CustomMessageContentSerializer,
-                                             CustomComponentSerializer,
-                                             CustomEVSESerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomNotifyDisplayMessagesRequestSerializer,
+                                                   CustomMessageInfoSerializer,
+                                                   CustomMessageContentSerializer,
+                                                   CustomComponentSerializer,
+                                                   CustomEVSESerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a get installed certificate ids websocket request was received.
+        /// An event sent whenever a GetInstalledCertificateIds websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                       OnGetInstalledCertificateIdsWSRequest;
+        public event WSClientJSONRequestLogHandler?                   OnGetInstalledCertificateIdsWSRequest;
 
         /// <summary>
-        /// An event sent whenever a get installed certificate ids request was received.
+        /// An event sent whenever a GetInstalledCertificateIds request was received.
         /// </summary>
         public event OnGetInstalledCertificateIdsRequestDelegate?     OnGetInstalledCertificateIdsRequest;
 
         /// <summary>
-        /// An event sent whenever a get installed certificate ids request was received.
+        /// An event sent whenever a GetInstalledCertificateIds request was received.
         /// </summary>
         public event OnGetInstalledCertificateIdsDelegate?            OnGetInstalledCertificateIds;
 
         /// <summary>
-        /// An event sent whenever a response to a get installed certificate ids request was sent.
+        /// An event sent whenever a response to a GetInstalledCertificateIds request was sent.
         /// </summary>
         public event OnGetInstalledCertificateIdsResponseDelegate?    OnGetInstalledCertificateIdsResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a get installed certificate ids request was sent.
+        /// An event sent whenever a websocket response to a GetInstalledCertificateIds request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                      OnGetInstalledCertificateIdsWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?       OnGetInstalledCertificateIdsWSResponse;
 
         #endregion
 

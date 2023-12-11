@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -55,27 +54,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a NotifyCRL websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?      OnNotifyCRLWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnNotifyCRLWSRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyCRL request was received.
         /// </summary>
-        public event OnNotifyCRLRequestDelegate?     OnNotifyCRLRequest;
+        public event OnNotifyCRLRequestDelegate?                   OnNotifyCRLRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyCRL request was received.
         /// </summary>
-        public event OnNotifyCRLDelegate?            OnNotifyCRL;
+        public event OnNotifyCRLDelegate?                          OnNotifyCRL;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyCRL request was sent.
         /// </summary>
-        public event OnNotifyCRLResponseDelegate?    OnNotifyCRLResponse;
+        public event OnNotifyCRLResponseDelegate?                  OnNotifyCRLResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a NotifyCRL request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?     OnNotifyCRLWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnNotifyCRLWSResponse;
 
         #endregion
 

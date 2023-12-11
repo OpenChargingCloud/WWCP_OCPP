@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,27 +52,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a reset websocket request was received.
+        /// An event sent whenever a Reset websocket request was received.
         /// </summary>
         public event WSClientJSONRequestLogHandler?                OnResetWSRequest;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a Reset request was received.
         /// </summary>
         public event OnResetRequestDelegate?                       OnResetRequest;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a Reset request was received.
         /// </summary>
         public event OnResetDelegate?                              OnReset;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event sent whenever a response to a Reset request was sent.
         /// </summary>
         public event OnResetResponseDelegate?                      OnResetResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a reset request was sent.
+        /// An event sent whenever a websocket response to a Reset request was sent.
         /// </summary>
         public event WSClientJSONRequestJSONResponseLogHandler?    OnResetWSResponse;
 

@@ -179,9 +179,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (TryParse(Request,
                          XML,
                          out var changeConfigurationResponse,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                changeConfigurationResponse is not null)
             {
-                return changeConfigurationResponse!;
+                return changeConfigurationResponse;
             }
 
             throw new ArgumentException("The given XML representation of a change configuration response is invalid: " + errorResponse,

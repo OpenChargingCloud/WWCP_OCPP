@@ -232,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                          CustomGetInstalledCertificateIdsResponseParser) &&
                 getInstalledCertificateIdsResponse is not null)
             {
-                return getInstalledCertificateIdsResponse!;
+                return getInstalledCertificateIdsResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a get installed certificate ids response is invalid: " + errorResponse,

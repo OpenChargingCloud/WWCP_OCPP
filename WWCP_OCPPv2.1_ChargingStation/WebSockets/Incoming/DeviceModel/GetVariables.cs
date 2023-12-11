@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a get variables websocket request was received.
+        /// An event sent whenever a GetVariables websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?         OnGetVariablesWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnGetVariablesWSRequest;
 
         /// <summary>
-        /// An event sent whenever a get variables request was received.
+        /// An event sent whenever a GetVariables request was received.
         /// </summary>
-        public event OnGetVariablesRequestDelegate?     OnGetVariablesRequest;
+        public event OnGetVariablesRequestDelegate?                OnGetVariablesRequest;
 
         /// <summary>
-        /// An event sent whenever a get variables request was received.
+        /// An event sent whenever a GetVariables request was received.
         /// </summary>
-        public event OnGetVariablesDelegate?            OnGetVariables;
+        public event OnGetVariablesDelegate?                       OnGetVariables;
 
         /// <summary>
-        /// An event sent whenever a response to a get variables request was sent.
+        /// An event sent whenever a response to a GetVariables request was sent.
         /// </summary>
-        public event OnGetVariablesResponseDelegate?    OnGetVariablesResponse;
+        public event OnGetVariablesResponseDelegate?               OnGetVariablesResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a get variables request was sent.
+        /// An event sent whenever a websocket response to a GetVariables request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?        OnGetVariablesWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnGetVariablesWSResponse;
 
         #endregion
 

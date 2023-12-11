@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a cleared charging limit request will be sent to the CSMS.
+        /// An event fired whenever a ClearedChargingLimit request will be sent to the CSMS.
         /// </summary>
         public event OnClearedChargingLimitRequestDelegate?     OnClearedChargingLimitRequest;
 
         /// <summary>
-        /// An event fired whenever a cleared charging limit request will be sent to the CSMS.
+        /// An event fired whenever a ClearedChargingLimit request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                   OnClearedChargingLimitWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a cleared charging limit request was received.
+        /// An event fired whenever a response to a ClearedChargingLimit request was received.
         /// </summary>
         public event ClientResponseLogHandler?                  OnClearedChargingLimitWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a cleared charging limit request was received.
+        /// An event fired whenever a response to a ClearedChargingLimit request was received.
         /// </summary>
         public event OnClearedChargingLimitResponseDelegate?    OnClearedChargingLimitResponse;
 
@@ -110,16 +109,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomClearedChargingLimitRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomClearedChargingLimitRequestSerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever an unpublish firmware websocket request was received.
+        /// An event sent whenever an UnpublishFirmware websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?              OnUnpublishFirmwareWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnUnpublishFirmwareWSRequest;
 
         /// <summary>
-        /// An event sent whenever an unpublish firmware request was received.
+        /// An event sent whenever an UnpublishFirmware request was received.
         /// </summary>
-        public event OnUnpublishFirmwareRequestDelegate?     OnUnpublishFirmwareRequest;
+        public event OnUnpublishFirmwareRequestDelegate?           OnUnpublishFirmwareRequest;
 
         /// <summary>
-        /// An event sent whenever an unpublish firmware request was received.
+        /// An event sent whenever an UnpublishFirmware request was received.
         /// </summary>
-        public event OnUnpublishFirmwareDelegate?            OnUnpublishFirmware;
+        public event OnUnpublishFirmwareDelegate?                  OnUnpublishFirmware;
 
         /// <summary>
-        /// An event sent whenever a response to an unpublish firmware request was sent.
+        /// An event sent whenever a response to an UnpublishFirmware request was sent.
         /// </summary>
-        public event OnUnpublishFirmwareResponseDelegate?    OnUnpublishFirmwareResponse;
+        public event OnUnpublishFirmwareResponseDelegate?          OnUnpublishFirmwareResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to an unpublish firmware request was sent.
+        /// An event sent whenever a websocket response to an UnpublishFirmware request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?             OnUnpublishFirmwareWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnUnpublishFirmwareWSResponse;
 
         #endregion
 

@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -55,27 +54,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a set monitoring level websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?               OnSetMonitoringLevelWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnSetMonitoringLevelWSRequest;
 
         /// <summary>
         /// An event sent whenever a set monitoring level request was received.
         /// </summary>
-        public event OnSetMonitoringLevelRequestDelegate?     OnSetMonitoringLevelRequest;
+        public event OnSetMonitoringLevelRequestDelegate?          OnSetMonitoringLevelRequest;
 
         /// <summary>
         /// An event sent whenever a set monitoring level request was received.
         /// </summary>
-        public event OnSetMonitoringLevelDelegate?            OnSetMonitoringLevel;
+        public event OnSetMonitoringLevelDelegate?                 OnSetMonitoringLevel;
 
         /// <summary>
         /// An event sent whenever a response to a set monitoring level request was sent.
         /// </summary>
-        public event OnSetMonitoringLevelResponseDelegate?    OnSetMonitoringLevelResponse;
+        public event OnSetMonitoringLevelResponseDelegate?         OnSetMonitoringLevelResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a set monitoring level request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?              OnSetMonitoringLevelWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnSetMonitoringLevelWSResponse;
 
         #endregion
 

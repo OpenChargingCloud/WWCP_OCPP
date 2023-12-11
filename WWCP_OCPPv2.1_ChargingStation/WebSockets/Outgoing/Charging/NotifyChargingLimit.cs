@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a notify charging limit request will be sent to the CSMS.
+        /// An event fired whenever a NotifyChargingLimit request will be sent to the CSMS.
         /// </summary>
         public event OnNotifyChargingLimitRequestDelegate?     OnNotifyChargingLimitRequest;
 
         /// <summary>
-        /// An event fired whenever a notify charging limit request will be sent to the CSMS.
+        /// An event fired whenever a NotifyChargingLimit request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                  OnNotifyChargingLimitWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a notify charging limit request was received.
+        /// An event fired whenever a response to a NotifyChargingLimit request was received.
         /// </summary>
         public event ClientResponseLogHandler?                 OnNotifyChargingLimitWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a notify charging limit request was received.
+        /// An event fired whenever a response to a NotifyChargingLimit request was received.
         /// </summary>
         public event OnNotifyChargingLimitResponseDelegate?    OnNotifyChargingLimitResponse;
 
@@ -110,38 +109,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomNotifyChargingLimitRequestSerializer,
-                                             CustomChargingScheduleSerializer,
-                                             CustomLimitBeyondSoCSerializer,
-                                             CustomChargingSchedulePeriodSerializer,
-                                             CustomV2XFreqWattEntrySerializer,
-                                             CustomV2XSignalWattEntrySerializer,
-                                             CustomSalesTariffSerializer,
-                                             CustomSalesTariffEntrySerializer,
-                                             CustomRelativeTimeIntervalSerializer,
-                                             CustomConsumptionCostSerializer,
-                                             CustomCostSerializer,
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomNotifyChargingLimitRequestSerializer,
+                                                   CustomChargingScheduleSerializer,
+                                                   CustomLimitBeyondSoCSerializer,
+                                                   CustomChargingSchedulePeriodSerializer,
+                                                   CustomV2XFreqWattEntrySerializer,
+                                                   CustomV2XSignalWattEntrySerializer,
+                                                   CustomSalesTariffSerializer,
+                                                   CustomSalesTariffEntrySerializer,
+                                                   CustomRelativeTimeIntervalSerializer,
+                                                   CustomConsumptionCostSerializer,
+                                                   CustomCostSerializer,
 
-                                             CustomAbsolutePriceScheduleSerializer,
-                                             CustomPriceRuleStackSerializer,
-                                             CustomPriceRuleSerializer,
-                                             CustomTaxRuleSerializer,
-                                             CustomOverstayRuleListSerializer,
-                                             CustomOverstayRuleSerializer,
-                                             CustomAdditionalServiceSerializer,
+                                                   CustomAbsolutePriceScheduleSerializer,
+                                                   CustomPriceRuleStackSerializer,
+                                                   CustomPriceRuleSerializer,
+                                                   CustomTaxRuleSerializer,
+                                                   CustomOverstayRuleListSerializer,
+                                                   CustomOverstayRuleSerializer,
+                                                   CustomAdditionalServiceSerializer,
 
-                                             CustomPriceLevelScheduleSerializer,
-                                             CustomPriceLevelScheduleEntrySerializer,
+                                                   CustomPriceLevelScheduleSerializer,
+                                                   CustomPriceLevelScheduleEntrySerializer,
 
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

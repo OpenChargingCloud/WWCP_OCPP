@@ -211,9 +211,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (TryParse(Request,
                          XML,
                          out var stopTransactionResponse,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                stopTransactionResponse is not null)
             {
-                return stopTransactionResponse!;
+                return stopTransactionResponse;
             }
 
             throw new ArgumentException("The given XML representation of a stop transaction response is invalid: " + errorResponse,
@@ -240,9 +241,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON,
                          out var stopTransactionResponse,
                          out var errorResponse,
-                         CustomStopTransactionResponseParser))
+                         CustomStopTransactionResponseParser) &&
+                stopTransactionResponse is not null)
             {
-                return stopTransactionResponse!;
+                return stopTransactionResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a stop transaction response is invalid: " + errorResponse,

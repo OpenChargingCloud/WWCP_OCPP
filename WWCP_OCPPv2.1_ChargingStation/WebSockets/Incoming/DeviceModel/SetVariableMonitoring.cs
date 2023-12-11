@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a set variable monitoring websocket request was received.
+        /// An event sent whenever a SetVariableMonitoring websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                  OnSetVariableMonitoringWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnSetVariableMonitoringWSRequest;
 
         /// <summary>
-        /// An event sent whenever a set variable monitoring request was received.
+        /// An event sent whenever a SetVariableMonitoring request was received.
         /// </summary>
-        public event OnSetVariableMonitoringRequestDelegate?     OnSetVariableMonitoringRequest;
+        public event OnSetVariableMonitoringRequestDelegate?       OnSetVariableMonitoringRequest;
 
         /// <summary>
-        /// An event sent whenever a set variable monitoring request was received.
+        /// An event sent whenever a SetVariableMonitoring request was received.
         /// </summary>
-        public event OnSetVariableMonitoringDelegate?            OnSetVariableMonitoring;
+        public event OnSetVariableMonitoringDelegate?              OnSetVariableMonitoring;
 
         /// <summary>
-        /// An event sent whenever a response to a set variable monitoring request was sent.
+        /// An event sent whenever a response to a SetVariableMonitoring request was sent.
         /// </summary>
-        public event OnSetVariableMonitoringResponseDelegate?    OnSetVariableMonitoringResponse;
+        public event OnSetVariableMonitoringResponseDelegate?      OnSetVariableMonitoringResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a set variable monitoring request was sent.
+        /// An event sent whenever a websocket response to a SetVariableMonitoring request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                 OnSetVariableMonitoringWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnSetVariableMonitoringWSResponse;
 
         #endregion
 

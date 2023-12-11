@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a get certificate status request will be sent to the CSMS.
+        /// An event fired whenever a GetCertificateStatus request will be sent to the CSMS.
         /// </summary>
         public event OnGetCertificateStatusRequestDelegate?     OnGetCertificateStatusRequest;
 
         /// <summary>
-        /// An event fired whenever a get certificate status request will be sent to the CSMS.
+        /// An event fired whenever a GetCertificateStatus request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                   OnGetCertificateStatusWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a get certificate status request was received.
+        /// An event fired whenever a response to a GetCertificateStatus request was received.
         /// </summary>
         public event ClientResponseLogHandler?                  OnGetCertificateStatusWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a get certificate status request was received.
+        /// An event fired whenever a response to a GetCertificateStatus request was received.
         /// </summary>
         public event OnGetCertificateStatusResponseDelegate?    OnGetCertificateStatusResponse;
 
@@ -75,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetCertificateStatus(Request)
 
         /// <summary>
-        /// Send a get certificate status request.
+        /// Send a GetCertificateStatus request.
         /// </summary>
         /// <param name="Request">A GetCertificateStatus request.</param>
         public async Task<GetCertificateStatusResponse>
@@ -110,17 +109,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomGetCertificateStatusSerializer,
-                                             CustomOCSPRequestDataSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomGetCertificateStatusSerializer,
+                                                   CustomOCSPRequestDataSerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

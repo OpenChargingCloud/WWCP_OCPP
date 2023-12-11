@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -45,7 +44,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<DeleteUserRoleRequest>?  CustomDeleteUserRoleRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<DeleteUserRoleRequest>?       CustomDeleteUserRoleRequestParser         { get; set; }
+
+        public CustomJObjectSerializerDelegate<DeleteUserRoleResponse>?  CustomDeleteUserRoleResponseSerializer    { get; set; }
 
         #endregion
 

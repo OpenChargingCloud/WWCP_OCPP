@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a get monitoring report websocket request was received.
+        /// An event sent whenever a GetMonitoringReport websocket request was received.
         /// </summary>
         public event WSClientJSONRequestLogHandler?                OnGetMonitoringReportWSRequest;
 
         /// <summary>
-        /// An event sent whenever a get monitoring report request was received.
+        /// An event sent whenever a GetMonitoringReport request was received.
         /// </summary>
-        public event OnGetMonitoringReportRequestDelegate?     OnGetMonitoringReportRequest;
+        public event OnGetMonitoringReportRequestDelegate?         OnGetMonitoringReportRequest;
 
         /// <summary>
-        /// An event sent whenever a get monitoring report request was received.
+        /// An event sent whenever a GetMonitoringReport request was received.
         /// </summary>
-        public event OnGetMonitoringReportDelegate?            OnGetMonitoringReport;
+        public event OnGetMonitoringReportDelegate?                OnGetMonitoringReport;
 
         /// <summary>
-        /// An event sent whenever a response to a get monitoring report request was sent.
+        /// An event sent whenever a response to a GetMonitoringReport request was sent.
         /// </summary>
-        public event OnGetMonitoringReportResponseDelegate?    OnGetMonitoringReportResponse;
+        public event OnGetMonitoringReportResponseDelegate?        OnGetMonitoringReportResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a get monitoring report request was sent.
+        /// An event sent whenever a websocket response to a GetMonitoringReport request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?               OnGetMonitoringReportWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnGetMonitoringReportWSResponse;
 
         #endregion
 

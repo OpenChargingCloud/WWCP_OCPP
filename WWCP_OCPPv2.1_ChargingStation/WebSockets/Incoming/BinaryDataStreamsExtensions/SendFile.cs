@@ -53,27 +53,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a SendFile websocket request was received.
         /// </summary>
-        public event WSClientBinaryRequestLogHandler?               OnSendFileWSRequest;
+        public event WSClientBinaryRequestLogHandler?                OnSendFileWSRequest;
 
         /// <summary>
         /// An event sent whenever a SendFile request was received.
         /// </summary>
-        public event OCPP.CS.OnSendFileRequestDelegate?             OnSendFileRequest;
+        public event OCPP.CS.OnSendFileRequestDelegate?              OnSendFileRequest;
 
         /// <summary>
         /// An event sent whenever a SendFile request was received.
         /// </summary>
-        public event OCPP.CS.OnSendFileDelegate?                    OnSendFile;
+        public event OCPP.CS.OnSendFileDelegate?                     OnSendFile;
 
         /// <summary>
         /// An event sent whenever a response to a SendFile request was sent.
         /// </summary>
-        public event OCPP.CS.OnSendFileResponseDelegate?            OnSendFileResponse;
+        public event OCPP.CS.OnSendFileResponseDelegate?             OnSendFileResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to a SendFile request was sent.
         /// </summary>
-        public event WSClientBinaryRequestJSONResponseLogHandler?   OnSendFileWSResponse;
+        public event WSClientBinaryRequestJSONResponseLogHandler?    OnSendFileWSResponse;
 
         #endregion
 

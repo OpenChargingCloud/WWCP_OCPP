@@ -1084,7 +1084,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         String                                  From                 { get; }
         String                                  To                   { get; }
 
-        CentralSystemSOAPClient.CSClientLogger  Logger               { get; }
+        //CentralSystemSOAPClient.CSClientLogger  Logger               { get; }
 
 
         #region Events

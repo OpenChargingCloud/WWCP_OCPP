@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CSMS
         /// <summary>
         /// An event sent whenever a DeleteFile request was sent.
         /// </summary>
-        public event OnDeleteFileRequestDelegate?     OnDeleteFileRequest;
+        public event OCPP.CSMS.OnDeleteFileRequestDelegate?     OnDeleteFileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteFile request was sent.
         /// </summary>
-        public event OnDeleteFileResponseDelegate?    OnDeleteFileResponse;
+        public event OCPP.CSMS.OnDeleteFileResponseDelegate?    OnDeleteFileResponse;
 
         #endregion
 

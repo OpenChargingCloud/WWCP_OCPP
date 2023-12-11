@@ -174,9 +174,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                          RequestId,
                          NetworkingNodeId,
                          out var authorizeRequest,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                authorizeRequest is not null)
             {
-                return authorizeRequest!;
+                return authorizeRequest;
             }
 
             throw new ArgumentException("The given XML representation of an authorize request is invalid: " + errorResponse,

@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a status notification request will be sent to the CSMS.
+        /// An event fired whenever a StatusNotification request will be sent to the CSMS.
         /// </summary>
         public event OnStatusNotificationRequestDelegate?     OnStatusNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a status notification request will be sent to the CSMS.
+        /// An event fired whenever a StatusNotification request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                 OnStatusNotificationWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a status notification request was received.
+        /// An event fired whenever a response to a StatusNotification request was received.
         /// </summary>
         public event ClientResponseLogHandler?                OnStatusNotificationWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a status notification request was received.
+        /// An event fired whenever a response to a StatusNotification request was received.
         /// </summary>
         public event OnStatusNotificationResponseDelegate?    OnStatusNotificationResponse;
 
@@ -75,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SendStatusNotification(Request)
 
         /// <summary>
-        /// Send a status notification for the given connector.
+        /// Send a status notification for the given EVSE and connector.
         /// </summary>
         /// <param name="Request">A StatusNotification request.</param>
         public async Task<StatusNotificationResponse>
@@ -110,16 +109,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomStatusNotificationRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomStatusNotificationRequestSerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

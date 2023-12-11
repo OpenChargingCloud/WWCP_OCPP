@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a cost updated websocket request was received.
+        /// An event sent whenever a CostUpdated websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?        OnCostUpdatedWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnCostUpdatedWSRequest;
 
         /// <summary>
-        /// An event sent whenever a cost updated request was received.
+        /// An event sent whenever a CostUpdated request was received.
         /// </summary>
-        public event OnCostUpdatedRequestDelegate?     OnCostUpdatedRequest;
+        public event OnCostUpdatedRequestDelegate?                 OnCostUpdatedRequest;
 
         /// <summary>
-        /// An event sent whenever a cost updated request was received.
+        /// An event sent whenever a CostUpdated request was received.
         /// </summary>
-        public event OnCostUpdatedDelegate?            OnCostUpdated;
+        public event OnCostUpdatedDelegate?                        OnCostUpdated;
 
         /// <summary>
-        /// An event sent whenever a response to a cost updated request was sent.
+        /// An event sent whenever a response to a CostUpdated request was sent.
         /// </summary>
-        public event OnCostUpdatedResponseDelegate?    OnCostUpdatedResponse;
+        public event OnCostUpdatedResponseDelegate?                OnCostUpdatedResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a cost updated request was sent.
+        /// An event sent whenever a websocket response to a CostUpdated request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?       OnCostUpdatedWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnCostUpdatedWSResponse;
 
         #endregion
 

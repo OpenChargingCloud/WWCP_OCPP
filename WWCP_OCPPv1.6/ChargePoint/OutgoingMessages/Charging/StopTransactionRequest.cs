@@ -434,9 +434,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                          RequestId,
                          NetworkingNodeId,
                          out var stopTransactionRequest,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                stopTransactionRequest is not null)
             {
-                return stopTransactionRequest!;
+                return stopTransactionRequest;
             }
 
             throw new ArgumentException("The given XML representation of a stop transaction request is invalid: " + errorResponse,

@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -55,27 +54,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an UpdateDynamicSchedule websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                  OnUpdateDynamicScheduleWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnUpdateDynamicScheduleWSRequest;
 
         /// <summary>
         /// An event sent whenever an UpdateDynamicSchedule request was received.
         /// </summary>
-        public event OnUpdateDynamicScheduleRequestDelegate?     OnUpdateDynamicScheduleRequest;
+        public event OnUpdateDynamicScheduleRequestDelegate?       OnUpdateDynamicScheduleRequest;
 
         /// <summary>
         /// An event sent whenever an UpdateDynamicSchedule request was received.
         /// </summary>
-        public event OnUpdateDynamicScheduleDelegate?            OnUpdateDynamicSchedule;
+        public event OnUpdateDynamicScheduleDelegate?              OnUpdateDynamicSchedule;
 
         /// <summary>
         /// An event sent whenever a response to an UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event OnUpdateDynamicScheduleResponseDelegate?    OnUpdateDynamicScheduleResponse;
+        public event OnUpdateDynamicScheduleResponseDelegate?      OnUpdateDynamicScheduleResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UpdateDynamicSchedule request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                 OnUpdateDynamicScheduleWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnUpdateDynamicScheduleWSResponse;
 
         #endregion
 

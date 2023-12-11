@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a trigger message websocket request was received.
+        /// An event sent whenever a TriggerMessage websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?           OnTriggerMessageWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnTriggerMessageWSRequest;
 
         /// <summary>
-        /// An event sent whenever a trigger message request was received.
+        /// An event sent whenever a TriggerMessage request was received.
         /// </summary>
-        public event OnTriggerMessageRequestDelegate?     OnTriggerMessageRequest;
+        public event OnTriggerMessageRequestDelegate?              OnTriggerMessageRequest;
 
         /// <summary>
-        /// An event sent whenever a trigger message request was received.
+        /// An event sent whenever a TriggerMessage request was received.
         /// </summary>
-        public event OnTriggerMessageDelegate?            OnTriggerMessage;
+        public event OnTriggerMessageDelegate?                     OnTriggerMessage;
 
         /// <summary>
-        /// An event sent whenever a response to a trigger message request was sent.
+        /// An event sent whenever a response to a TriggerMessage request was sent.
         /// </summary>
-        public event OnTriggerMessageResponseDelegate?    OnTriggerMessageResponse;
+        public event OnTriggerMessageResponseDelegate?             OnTriggerMessageResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a trigger message request was sent.
+        /// An event sent whenever a websocket response to a TriggerMessage request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?          OnTriggerMessageWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnTriggerMessageWSResponse;
 
         #endregion
 

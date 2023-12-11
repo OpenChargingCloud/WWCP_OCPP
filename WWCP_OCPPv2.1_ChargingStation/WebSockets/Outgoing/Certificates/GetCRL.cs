@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a get certificate revocation list request will be sent to the CSMS.
+        /// An event fired whenever a GetCRL (certificate revocation list) request will be sent to the CSMS.
         /// </summary>
         public event OnGetCRLRequestDelegate?     OnGetCRLRequest;
 
         /// <summary>
-        /// An event fired whenever a get certificate revocation list request will be sent to the CSMS.
+        /// An event fired whenever a GetCRL (certificate revocation list) request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?     OnGetCRLWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a get certificate revocation list request was received.
+        /// An event fired whenever a response to a GetCRL (certificate revocation list) request was received.
         /// </summary>
         public event ClientResponseLogHandler?    OnGetCRLWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a get certificate revocation list request was received.
+        /// An event fired whenever a response to a GetCRL (certificate revocation list) request was received.
         /// </summary>
         public event OnGetCRLResponseDelegate?    OnGetCRLResponse;
 
@@ -75,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region GetCRL(Request)
 
         /// <summary>
-        /// Send a get certificate revocation list request.
+        /// Send a GetCRL (certificate revocation list) request.
         /// </summary>
         /// <param name="Request">A GetCRL request.</param>
         public async Task<GetCRLResponse>
@@ -110,17 +109,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomGetCRLSerializer,
-                                             CustomCertificateHashDataSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomGetCRLSerializer,
+                                                   CustomCertificateHashDataSerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever an authorize request will be sent to the CSMS.
+        /// An event fired whenever a TransactionEvent request will be sent to the CSMS.
         /// </summary>
         public event OnTransactionEventRequestDelegate?     OnTransactionEventRequest;
 
         /// <summary>
-        /// An event fired whenever an authorize request will be sent to the CSMS.
+        /// An event fired whenever a TransactionEvent request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?               OnTransactionEventWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to an authorize request was received.
+        /// An event fired whenever a response to a TransactionEvent request was received.
         /// </summary>
         public event ClientResponseLogHandler?              OnTransactionEventWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to an authorize request was received.
+        /// An event fired whenever a response to a TransactionEvent request was received.
         /// </summary>
         public event OnTransactionEventResponseDelegate?    OnTransactionEventResponse;
 
@@ -110,24 +109,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomTransactionEventRequestSerializer,
-                                             CustomTransactionSerializer,
-                                             CustomIdTokenSerializer,
-                                             CustomAdditionalInfoSerializer,
-                                             CustomEVSESerializer,
-                                             CustomMeterValueSerializer,
-                                             CustomSampledValueSerializer,
-                                             CustomSignedMeterValueSerializer,
-                                             CustomUnitsOfMeasureSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomTransactionEventRequestSerializer,
+                                                   CustomTransactionSerializer,
+                                                   CustomIdTokenSerializer,
+                                                   CustomAdditionalInfoSerializer,
+                                                   CustomEVSESerializer,
+                                                   CustomMeterValueSerializer,
+                                                   CustomSampledValueSerializer,
+                                                   CustomSignedMeterValueSerializer,
+                                                   CustomUnitsOfMeasureSerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

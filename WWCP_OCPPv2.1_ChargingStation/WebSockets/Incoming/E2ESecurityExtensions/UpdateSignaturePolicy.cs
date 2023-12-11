@@ -44,7 +44,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<UpdateSignaturePolicyRequest>?  CustomUpdateSignaturePolicyRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<UpdateSignaturePolicyRequest>?       CustomUpdateSignaturePolicyRequestParser         { get; set; }
+
+        public CustomJObjectSerializerDelegate<UpdateSignaturePolicyResponse>?  CustomUpdateSignaturePolicyResponseSerializer    { get; set; }
 
         #endregion
 

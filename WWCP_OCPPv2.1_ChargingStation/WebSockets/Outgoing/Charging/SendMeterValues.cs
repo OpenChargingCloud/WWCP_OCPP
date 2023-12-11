@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a meter values request will be sent to the CSMS.
+        /// An event fired whenever a MeterValues request will be sent to the CSMS.
         /// </summary>
         public event OnMeterValuesRequestDelegate?     OnMeterValuesRequest;
 
         /// <summary>
-        /// An event fired whenever a meter values request will be sent to the CSMS.
+        /// An event fired whenever a MeterValues request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?          OnMeterValuesWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a meter values request was received.
+        /// An event fired whenever a response to a MeterValues request was received.
         /// </summary>
         public event ClientResponseLogHandler?         OnMeterValuesWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a meter values request was received.
+        /// An event fired whenever a response to a MeterValues request was received.
         /// </summary>
         public event OnMeterValuesResponseDelegate?    OnMeterValuesResponse;
 
@@ -110,18 +109,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomMeterValuesRequestSerializer,
-                                             CustomMeterValueSerializer,
-                                             CustomSampledValueSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomMeterValuesRequestSerializer,
+                                                   CustomMeterValueSerializer,
+                                                   CustomSampledValueSerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

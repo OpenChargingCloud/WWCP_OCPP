@@ -152,9 +152,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                          RequestId,
                          NetworkingNodeId,
                          out var heartbeatRequest,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                heartbeatRequest is not null)
             {
-                return heartbeatRequest!;
+                return heartbeatRequest;
             }
 
             throw new ArgumentException("The given XML representation of a heartbeat request is invalid: " + errorResponse,

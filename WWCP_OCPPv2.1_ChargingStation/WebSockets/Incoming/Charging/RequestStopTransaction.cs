@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a request stop transaction websocket request was received.
+        /// An event sent whenever a RequestStopTransaction websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                   OnRequestStopTransactionWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnRequestStopTransactionWSRequest;
 
         /// <summary>
-        /// An event sent whenever a request stop transaction request was received.
+        /// An event sent whenever a RequestStopTransaction request was received.
         /// </summary>
-        public event OnRequestStopTransactionRequestDelegate?     OnRequestStopTransactionRequest;
+        public event OnRequestStopTransactionRequestDelegate?      OnRequestStopTransactionRequest;
 
         /// <summary>
-        /// An event sent whenever a request stop transaction request was received.
+        /// An event sent whenever a RequestStopTransaction request was received.
         /// </summary>
-        public event OnRequestStopTransactionDelegate?            OnRequestStopTransaction;
+        public event OnRequestStopTransactionDelegate?             OnRequestStopTransaction;
 
         /// <summary>
-        /// An event sent whenever a response to a request stop transaction request was sent.
+        /// An event sent whenever a response to a RequestStopTransaction request was sent.
         /// </summary>
-        public event OnRequestStopTransactionResponseDelegate?    OnRequestStopTransactionResponse;
+        public event OnRequestStopTransactionResponseDelegate?     OnRequestStopTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a request stop transaction request was sent.
+        /// An event sent whenever a websocket response to a RequestStopTransaction request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                  OnRequestStopTransactionWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnRequestStopTransactionWSResponse;
 
         #endregion
 

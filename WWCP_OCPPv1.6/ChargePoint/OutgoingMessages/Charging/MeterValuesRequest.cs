@@ -374,9 +374,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                          RequestId,
                          NetworkingNodeId,
                          out var meterValuesRequest,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                meterValuesRequest is not null)
             {
-                return meterValuesRequest!;
+                return meterValuesRequest;
             }
 
             throw new ArgumentException("The given XML representation of a meter values request is invalid: " + errorResponse,

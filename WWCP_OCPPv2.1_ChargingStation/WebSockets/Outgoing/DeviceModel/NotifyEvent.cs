@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a notify event request will be sent to the CSMS.
+        /// An event fired whenever a NotifyEvent request will be sent to the CSMS.
         /// </summary>
         public event OnNotifyEventRequestDelegate?     OnNotifyEventRequest;
 
         /// <summary>
-        /// An event fired whenever a notify event request will be sent to the CSMS.
+        /// An event fired whenever a NotifyEvent request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?          OnNotifyEventWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a notify event request was received.
+        /// An event fired whenever a response to a NotifyEvent request was received.
         /// </summary>
         public event ClientResponseLogHandler?         OnNotifyEventWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a notify event request was received.
+        /// An event fired whenever a response to a NotifyEvent request was received.
         /// </summary>
         public event OnNotifyEventResponseDelegate?    OnNotifyEventResponse;
 
@@ -110,20 +109,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomNotifyEventRequestSerializer,
-                                             CustomEventDataSerializer,
-                                             CustomComponentSerializer,
-                                             CustomEVSESerializer,
-                                             CustomVariableSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomNotifyEventRequestSerializer,
+                                                   CustomEventDataSerializer,
+                                                   CustomComponentSerializer,
+                                                   CustomEVSESerializer,
+                                                   CustomVariableSerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

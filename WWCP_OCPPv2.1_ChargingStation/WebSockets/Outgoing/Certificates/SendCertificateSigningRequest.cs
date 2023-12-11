@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a sign certificate request will be sent to the CSMS.
+        /// An event fired whenever a SignCertificate request will be sent to the CSMS.
         /// </summary>
         public event OnSignCertificateRequestDelegate?     OnSignCertificateRequest;
 
         /// <summary>
-        /// An event fired whenever a sign certificate request will be sent to the CSMS.
+        /// An event fired whenever a SignCertificate request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?              OnSignCertificateWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a sign certificate request was received.
+        /// An event fired whenever a response to a SignCertificate request was received.
         /// </summary>
         public event ClientResponseLogHandler?             OnSignCertificateWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a sign certificate request was received.
+        /// An event fired whenever a response to a SignCertificate request was received.
         /// </summary>
         public event OnSignCertificateResponseDelegate?    OnSignCertificateResponse;
 
@@ -75,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SendCertificateSigningRequest(Request)
 
         /// <summary>
-        /// Send a sign certificate request.
+        /// Send a SignCertificate request.
         /// </summary>
         /// <param name="Request">A SignCertificate request.</param>
         public async Task<SignCertificateResponse>
@@ -110,16 +109,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomSignCertificateRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomSignCertificateRequestSerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

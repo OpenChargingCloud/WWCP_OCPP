@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a get report websocket request was received.
+        /// An event sent whenever a GetReport websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?      OnGetReportWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnGetReportWSRequest;
 
         /// <summary>
-        /// An event sent whenever a get report request was received.
+        /// An event sent whenever a GetReport request was received.
         /// </summary>
-        public event OnGetReportRequestDelegate?     OnGetReportRequest;
+        public event OnGetReportRequestDelegate?                   OnGetReportRequest;
 
         /// <summary>
-        /// An event sent whenever a get report request was received.
+        /// An event sent whenever a GetReport request was received.
         /// </summary>
-        public event OnGetReportDelegate?            OnGetReport;
+        public event OnGetReportDelegate?                          OnGetReport;
 
         /// <summary>
-        /// An event sent whenever a response to a get report request was sent.
+        /// An event sent whenever a response to a GetReport request was sent.
         /// </summary>
-        public event OnGetReportResponseDelegate?    OnGetReportResponse;
+        public event OnGetReportResponseDelegate?                  OnGetReportResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a get report request was sent.
+        /// An event sent whenever a websocket response to a GetReport request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?     OnGetReportWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnGetReportWSResponse;
 
         #endregion
 

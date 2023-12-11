@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a reservation status update request will be sent to the CSMS.
+        /// An event fired whenever a ReservationStatusUpdate request will be sent to the CSMS.
         /// </summary>
         public event OnReservationStatusUpdateRequestDelegate?     OnReservationStatusUpdateRequest;
 
         /// <summary>
-        /// An event fired whenever a reservation status update request will be sent to the CSMS.
+        /// An event fired whenever a ReservationStatusUpdate request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?                      OnReservationStatusUpdateWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a reservation status update request was received.
+        /// An event fired whenever a response to a ReservationStatusUpdate request was received.
         /// </summary>
         public event ClientResponseLogHandler?                     OnReservationStatusUpdateWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a reservation status update request was received.
+        /// An event fired whenever a response to a ReservationStatusUpdate request was received.
         /// </summary>
         public event OnReservationStatusUpdateResponseDelegate?    OnReservationStatusUpdateResponse;
 
@@ -75,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region SendReservationStatusUpdate(Request)
 
         /// <summary>
-        /// Send a reservation status update.
+        /// Send a ReservationStatusUpdate.
         /// </summary>
         /// <param name="Request">A ReservationStatusUpdate request.</param>
         public async Task<ReservationStatusUpdateResponse>
@@ -110,16 +109,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomReservationStatusUpdateRequestSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomReservationStatusUpdateRequestSerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

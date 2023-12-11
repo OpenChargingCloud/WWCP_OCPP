@@ -206,7 +206,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          CustomExtendedTriggerMessageRequestParser) &&
                 extendedTriggerMessageRequest is not null)
             {
-                return extendedTriggerMessageRequest!;
+                return extendedTriggerMessageRequest;
             }
 
             throw new ArgumentException("The given JSON representation of an extended trigger message request is invalid: " + errorResponse,

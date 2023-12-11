@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a clear display message websocket request was received.
+        /// An event sent whenever a ClearDisplayMessage websocket request was received.
         /// </summary>
         public event WSClientJSONRequestLogHandler?                OnClearDisplayMessageWSRequest;
 
         /// <summary>
-        /// An event sent whenever a clear display message request was received.
+        /// An event sent whenever a ClearDisplayMessage request was received.
         /// </summary>
-        public event OnClearDisplayMessageRequestDelegate?     OnClearDisplayMessageRequest;
+        public event OnClearDisplayMessageRequestDelegate?         OnClearDisplayMessageRequest;
 
         /// <summary>
-        /// An event sent whenever a clear display message request was received.
+        /// An event sent whenever a ClearDisplayMessage request was received.
         /// </summary>
-        public event OnClearDisplayMessageDelegate?            OnClearDisplayMessage;
+        public event OnClearDisplayMessageDelegate?                OnClearDisplayMessage;
 
         /// <summary>
-        /// An event sent whenever a response to a clear display message request was sent.
+        /// An event sent whenever a response to a ClearDisplayMessage request was sent.
         /// </summary>
-        public event OnClearDisplayMessageResponseDelegate?    OnClearDisplayMessageResponse;
+        public event OnClearDisplayMessageResponseDelegate?        OnClearDisplayMessageResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a clear display message request was sent.
+        /// An event sent whenever a websocket response to a ClearDisplayMessage request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?               OnClearDisplayMessageWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnClearDisplayMessageWSResponse;
 
         #endregion
 

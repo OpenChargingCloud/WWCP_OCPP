@@ -144,9 +144,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (TryParse(Request,
                          XML,
                          out var diagnosticsStatusNotificationResponse,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                diagnosticsStatusNotificationResponse is not null)
             {
-                return diagnosticsStatusNotificationResponse!;
+                return diagnosticsStatusNotificationResponse;
             }
 
             throw new ArgumentException("The given XML representation of a diagnostics status notification response is invalid: " + errorResponse,
@@ -173,9 +174,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON,
                          out var diagnosticsStatusNotificationResponse,
                          out var errorResponse,
-                         CustomBootNotificationResponseParser))
+                         CustomBootNotificationResponseParser) &&
+                diagnosticsStatusNotificationResponse is not null)
             {
-                return diagnosticsStatusNotificationResponse!;
+                return diagnosticsStatusNotificationResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a diagnostics status notification response is invalid: " + errorResponse,

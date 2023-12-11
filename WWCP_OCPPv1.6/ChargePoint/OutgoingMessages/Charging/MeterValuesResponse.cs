@@ -129,9 +129,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (TryParse(Request,
                          XML,
                          out var meterValuesResponse,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                meterValuesResponse is not null)
             {
-                return meterValuesResponse!;
+                return meterValuesResponse;
             }
 
             throw new ArgumentException("The given XML representation of a boot notification response is invalid: " + errorResponse,
@@ -158,9 +159,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON,
                          out var meterValuesResponse,
                          out var errorResponse,
-                         CustomMeterValuesResponseParser))
+                         CustomMeterValuesResponseParser) &&
+                meterValuesResponse is not null)
             {
-                return meterValuesResponse!;
+                return meterValuesResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a boot notification response is invalid: " + errorResponse,

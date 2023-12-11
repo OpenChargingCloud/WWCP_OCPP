@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a notify report request will be sent to the CSMS.
+        /// An event fired whenever a NotifyReport request will be sent to the CSMS.
         /// </summary>
         public event OnNotifyReportRequestDelegate?     OnNotifyReportRequest;
 
         /// <summary>
-        /// An event fired whenever a notify report request will be sent to the CSMS.
+        /// An event fired whenever a NotifyReport request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?           OnNotifyReportWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a notify report request was received.
+        /// An event fired whenever a response to a NotifyReport request was received.
         /// </summary>
         public event ClientResponseLogHandler?          OnNotifyReportWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a notify report request was received.
+        /// An event fired whenever a response to a NotifyReport request was received.
         /// </summary>
         public event OnNotifyReportResponseDelegate?    OnNotifyReportResponse;
 
@@ -110,22 +109,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomNotifyReportRequestSerializer,
-                                             CustomReportDataSerializer,
-                                             CustomComponentSerializer,
-                                             CustomEVSESerializer,
-                                             CustomVariableSerializer,
-                                             CustomVariableAttributeSerializer,
-                                             CustomVariableCharacteristicsSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomNotifyReportRequestSerializer,
+                                                   CustomReportDataSerializer,
+                                                   CustomComponentSerializer,
+                                                   CustomEVSESerializer,
+                                                   CustomVariableSerializer,
+                                                   CustomVariableAttributeSerializer,
+                                                   CustomVariableCharacteristicsSerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

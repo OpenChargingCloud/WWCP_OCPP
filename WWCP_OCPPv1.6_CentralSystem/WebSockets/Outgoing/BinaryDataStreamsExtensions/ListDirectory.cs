@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CSMS
         /// <summary>
         /// An event sent whenever a ListDirectory request was sent.
         /// </summary>
-        public event OnListDirectoryRequestDelegate?     OnListDirectoryRequest;
+        public event OCPP.CSMS.OnListDirectoryRequestDelegate?     OnListDirectoryRequest;
 
         /// <summary>
         /// An event sent whenever a response to a ListDirectory request was sent.
         /// </summary>
-        public event OnListDirectoryResponseDelegate?    OnListDirectoryResponse;
+        public event OCPP.CSMS.OnListDirectoryResponseDelegate?    OnListDirectoryResponse;
 
         #endregion
 

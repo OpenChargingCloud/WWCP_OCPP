@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a reserve now websocket request was received.
+        /// An event sent whenever a ReserveNow websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?       OnReserveNowWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnReserveNowWSRequest;
 
         /// <summary>
-        /// An event sent whenever a reserve now request was received.
+        /// An event sent whenever a ReserveNow request was received.
         /// </summary>
-        public event OnReserveNowRequestDelegate?     OnReserveNowRequest;
+        public event OnReserveNowRequestDelegate?                  OnReserveNowRequest;
 
         /// <summary>
-        /// An event sent whenever a reserve now request was received.
+        /// An event sent whenever a ReserveNow request was received.
         /// </summary>
-        public event OnReserveNowDelegate?            OnReserveNow;
+        public event OnReserveNowDelegate?                         OnReserveNow;
 
         /// <summary>
-        /// An event sent whenever a response to a reserve now request was sent.
+        /// An event sent whenever a response to a ReserveNow request was sent.
         /// </summary>
-        public event OnReserveNowResponseDelegate?    OnReserveNowResponse;
+        public event OnReserveNowResponseDelegate?                 OnReserveNowResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a reserve now request was sent.
+        /// An event sent whenever a websocket response to a ReserveNow request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?      OnReserveNowWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnReserveNowWSResponse;
 
         #endregion
 

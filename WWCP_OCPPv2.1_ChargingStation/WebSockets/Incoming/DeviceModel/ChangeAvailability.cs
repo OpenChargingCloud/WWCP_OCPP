@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -44,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<ChangeAvailabilityRequest>?       CustomChangeAvailabilityRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<ChangeAvailabilityRequest>?       CustomChangeAvailabilityRequestParser         { get; set; }
 
         public CustomJObjectSerializerDelegate<ChangeAvailabilityResponse>?  CustomChangeAvailabilityResponseSerializer    { get; set; }
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a change availability websocket request was received.
+        /// An event sent whenever a ChangeAvailability websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?               OnChangeAvailabilityWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnChangeAvailabilityWSRequest;
 
         /// <summary>
-        /// An event sent whenever a change availability request was received.
+        /// An event sent whenever a ChangeAvailability request was received.
         /// </summary>
-        public event OnChangeAvailabilityRequestDelegate?     OnChangeAvailabilityRequest;
+        public event OnChangeAvailabilityRequestDelegate?          OnChangeAvailabilityRequest;
 
         /// <summary>
-        /// An event sent whenever a change availability request was received.
+        /// An event sent whenever a ChangeAvailability request was received.
         /// </summary>
-        public event OnChangeAvailabilityDelegate?            OnChangeAvailability;
+        public event OnChangeAvailabilityDelegate?                 OnChangeAvailability;
 
         /// <summary>
-        /// An event sent whenever a response to a change availability request was sent.
+        /// An event sent whenever a response to a ChangeAvailability request was sent.
         /// </summary>
-        public event OnChangeAvailabilityResponseDelegate?    OnChangeAvailabilityResponse;
+        public event OnChangeAvailabilityResponseDelegate?         OnChangeAvailabilityResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a change availability request was sent.
+        /// An event sent whenever a websocket response to a ChangeAvailability request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?              OnChangeAvailabilityWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnChangeAvailabilityWSResponse;
 
         #endregion
 

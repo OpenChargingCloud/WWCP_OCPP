@@ -370,9 +370,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                          RequestId,
                          NetworkingNodeId,
                          out var bootNotificationRequest,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                bootNotificationRequest is not null)
             {
-                return bootNotificationRequest!;
+                return bootNotificationRequest;
             }
 
             throw new ArgumentException("The given XML representation of a boot notification request is invalid: " + errorResponse,

@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever an install certificate websocket request was received.
+        /// An event sent whenever an InstallCertificate websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                  OnInstallCertificateWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnInstallCertificateWSRequest;
 
         /// <summary>
-        /// An event sent whenever an install certificate request was received.
+        /// An event sent whenever an InstallCertificate request was received.
         /// </summary>
-        public event OnInstallCertificateRequestDelegate?        OnInstallCertificateRequest;
+        public event OnInstallCertificateRequestDelegate?          OnInstallCertificateRequest;
 
         /// <summary>
-        /// An event sent whenever an install certificate request was received.
+        /// An event sent whenever an InstallCertificate request was received.
         /// </summary>
-        public event OnInstallCertificateDelegate?               OnInstallCertificate;
+        public event OnInstallCertificateDelegate?                 OnInstallCertificate;
 
         /// <summary>
-        /// An event sent whenever a response to an install certificate request was sent.
+        /// An event sent whenever a response to an InstallCertificate request was sent.
         /// </summary>
-        public event OnInstallCertificateResponseDelegate?       OnInstallCertificateResponse;
+        public event OnInstallCertificateResponseDelegate?         OnInstallCertificateResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to an install certificate request was sent.
+        /// An event sent whenever a websocket response to an InstallCertificate request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                 OnInstallCertificateWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnInstallCertificateWSResponse;
 
         #endregion
 

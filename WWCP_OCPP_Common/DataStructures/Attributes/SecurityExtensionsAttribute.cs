@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPP
     /// <summary>
     /// Tag a struct, class or property as 'mandatory'.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Struct|AttributeTargets.Class|AttributeTargets.Property,
+    [AttributeUsage(AttributeTargets.Struct | AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Method,
                     AllowMultiple  = false,
                     Inherited      = true)]
     public class SecurityExtensionsAttribute : Attribute

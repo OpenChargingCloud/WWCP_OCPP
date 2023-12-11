@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -52,29 +51,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a cancel reservation websocket request was received.
+        /// An event sent whenever a CancelReservation websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?              OnCancelReservationWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnCancelReservationWSRequest;
 
         /// <summary>
-        /// An event sent whenever a cancel reservation request was received.
+        /// An event sent whenever a CancelReservation request was received.
         /// </summary>
-        public event OnCancelReservationRequestDelegate?     OnCancelReservationRequest;
+        public event OnCancelReservationRequestDelegate?           OnCancelReservationRequest;
 
         /// <summary>
-        /// An event sent whenever a cancel reservation request was received.
+        /// An event sent whenever a CancelReservation request was received.
         /// </summary>
-        public event OnCancelReservationDelegate?            OnCancelReservation;
+        public event OnCancelReservationDelegate?                  OnCancelReservation;
 
         /// <summary>
-        /// An event sent whenever a response to a cancel reservation request was sent.
+        /// An event sent whenever a response to a CancelReservation request was sent.
         /// </summary>
-        public event OnCancelReservationResponseDelegate?    OnCancelReservationResponse;
+        public event OnCancelReservationResponseDelegate?          OnCancelReservationResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a cancel reservation request was sent.
+        /// An event sent whenever a websocket response to a CancelReservation request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?             OnCancelReservationWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnCancelReservationWSResponse;
 
         #endregion
 

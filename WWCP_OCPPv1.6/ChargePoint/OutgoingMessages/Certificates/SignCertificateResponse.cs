@@ -179,7 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          CustomSignCertificateResponseParser) &&
                 signCertificateResponse is not null)
             {
-                return signCertificateResponse!;
+                return signCertificateResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a sign certificate request is invalid: " + errorResponse,

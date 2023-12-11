@@ -129,7 +129,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                                  CustomBinaryDataTransferRequestParser) &&
                     request is not null) {
 
-                    #region Send OnBinaryDataTransferRequest event
+                    #region Send OnIncomingBinaryDataTransferRequest event
 
                     try
                     {
@@ -141,7 +141,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                     }
                     catch (Exception e)
                     {
-                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnBinaryDataTransferRequest));
+                        DebugX.Log(e, nameof(ChargingStationWSClient) + "." + nameof(OnIncomingBinaryDataTransferRequest));
                     }
 
                     #endregion

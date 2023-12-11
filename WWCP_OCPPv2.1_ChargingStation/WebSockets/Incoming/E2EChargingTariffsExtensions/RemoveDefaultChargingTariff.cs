@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -44,7 +43,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<RemoveDefaultChargingTariffRequest>?  CustomRemoveDefaultChargingTariffRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<RemoveDefaultChargingTariffRequest>?       CustomRemoveDefaultChargingTariffRequestParser         { get; set; }
+
+        public CustomJObjectSerializerDelegate<RemoveDefaultChargingTariffResponse>?  CustomRemoveDefaultChargingTariffResponseSerializer    { get; set; }
 
         #endregion
 
@@ -53,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a RemoveDefaultChargingTariff websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                        OnRemoveDefaultChargingTariffWSRequest;
+        public event WSClientJSONRequestLogHandler?                    OnRemoveDefaultChargingTariffWSRequest;
 
         /// <summary>
         /// An event sent whenever a RemoveDefaultChargingTariff request was received.
@@ -73,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever a websocket response to a RemoveDefaultChargingTariff request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                       OnRemoveDefaultChargingTariffWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?        OnRemoveDefaultChargingTariffWSResponse;
 
         #endregion
 

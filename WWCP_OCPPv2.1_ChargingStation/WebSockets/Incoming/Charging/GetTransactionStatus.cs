@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a get transaction status websocket request was received.
+        /// An event sent whenever a GetTransactionStatus websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                 OnGetTransactionStatusWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnGetTransactionStatusWSRequest;
 
         /// <summary>
-        /// An event sent whenever a get transaction status request was received.
+        /// An event sent whenever a GetTransactionStatus request was received.
         /// </summary>
-        public event OnGetTransactionStatusRequestDelegate?     OnGetTransactionStatusRequest;
+        public event OnGetTransactionStatusRequestDelegate?        OnGetTransactionStatusRequest;
 
         /// <summary>
-        /// An event sent whenever a get transaction status request was received.
+        /// An event sent whenever a GetTransactionStatus request was received.
         /// </summary>
-        public event OnGetTransactionStatusDelegate?            OnGetTransactionStatus;
+        public event OnGetTransactionStatusDelegate?               OnGetTransactionStatus;
 
         /// <summary>
-        /// An event sent whenever a response to a get transaction status request was sent.
+        /// An event sent whenever a response to a GetTransactionStatus request was sent.
         /// </summary>
-        public event OnGetTransactionStatusResponseDelegate?    OnGetTransactionStatusResponse;
+        public event OnGetTransactionStatusResponseDelegate?       OnGetTransactionStatusResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a get transaction status request was sent.
+        /// An event sent whenever a websocket response to a GetTransactionStatus request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                OnGetTransactionStatusWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnGetTransactionStatusWSResponse;
 
         #endregion
 

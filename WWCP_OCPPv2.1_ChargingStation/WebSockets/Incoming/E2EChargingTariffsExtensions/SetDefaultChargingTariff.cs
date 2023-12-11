@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -44,7 +43,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<SetDefaultChargingTariffRequest>?  CustomSetDefaultChargingTariffRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<SetDefaultChargingTariffRequest>?       CustomSetDefaultChargingTariffRequestParser         { get; set; }
+
+        public CustomJObjectSerializerDelegate<SetDefaultChargingTariffResponse>?  CustomSetDefaultChargingTariffResponseSerializer    { get; set; }
 
         #endregion
 

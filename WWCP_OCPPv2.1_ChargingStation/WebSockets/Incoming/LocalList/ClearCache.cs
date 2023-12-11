@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a reset websocket request was received.
+        /// An event sent whenever a ClearCache websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?       OnClearCacheWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnClearCacheWSRequest;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a ClearCache request was received.
         /// </summary>
-        public event OnClearCacheRequestDelegate?     OnClearCacheRequest;
+        public event OnClearCacheRequestDelegate?                  OnClearCacheRequest;
 
         /// <summary>
-        /// An event sent whenever a reset request was received.
+        /// An event sent whenever a ClearCache request was received.
         /// </summary>
-        public event OnClearCacheDelegate?            OnClearCache;
+        public event OnClearCacheDelegate?                         OnClearCache;
 
         /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
+        /// An event sent whenever a response to a ClearCache request was sent.
         /// </summary>
-        public event OnClearCacheResponseDelegate?    OnClearCacheResponse;
+        public event OnClearCacheResponseDelegate?                 OnClearCacheResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a reset request was sent.
+        /// An event sent whenever a websocket response to a ClearCache request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?      OnClearCacheWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnClearCacheWSResponse;
 
         #endregion
 

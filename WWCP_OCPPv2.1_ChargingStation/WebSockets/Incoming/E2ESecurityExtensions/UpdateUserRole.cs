@@ -44,7 +44,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<UpdateUserRoleRequest>?  CustomUpdateUserRoleRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<UpdateUserRoleRequest>?       CustomUpdateUserRoleRequestParser         { get; set; }
+
+        public CustomJObjectSerializerDelegate<UpdateUserRoleResponse>?  CustomUpdateUserRoleResponseSerializer    { get; set; }
 
         #endregion
 

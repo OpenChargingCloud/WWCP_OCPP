@@ -178,9 +178,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             if (TryParse(Request,
                          XML,
                          out var changeAvailabilityResponse,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                changeAvailabilityResponse is not null)
             {
-                return changeAvailabilityResponse!;
+                return changeAvailabilityResponse;
             }
 
             throw new ArgumentException("The given XML representation of a change availability response is invalid: " + errorResponse,

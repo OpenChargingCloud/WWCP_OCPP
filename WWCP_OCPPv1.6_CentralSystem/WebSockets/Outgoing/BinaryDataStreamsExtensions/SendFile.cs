@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CSMS
         /// <summary>
         /// An event sent whenever a SendFile request was sent.
         /// </summary>
-        public event OnSendFileRequestDelegate?     OnSendFileRequest;
+        public event OCPP.CSMS.OnSendFileRequestDelegate?     OnSendFileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a SendFile request was sent.
         /// </summary>
-        public event OnSendFileResponseDelegate?    OnSendFileResponse;
+        public event OCPP.CSMS.OnSendFileResponseDelegate?    OnSendFileResponse;
 
         #endregion
 

@@ -142,9 +142,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON,
                          out var logStatusNotificationResponse,
                          out var errorResponse,
-                         CustomLogStatusNotificationResponseParser))
+                         CustomLogStatusNotificationResponseParser) &&
+                logStatusNotificationResponse is not null)
             {
-                return logStatusNotificationResponse!;
+                return logStatusNotificationResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a log status notification response is invalid: " + errorResponse,

@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever a boot notification request will be sent to the CSMS.
+        /// An event fired whenever a BootNotification request will be sent to the CSMS.
         /// </summary>
         public event OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
 
         /// <summary>
-        /// An event fired whenever a boot notification request will be sent to the CSMS.
+        /// An event fired whenever a BootNotification request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?               OnBootNotificationWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to a boot notification request was received.
+        /// An event fired whenever a response to a BootNotification request was received.
         /// </summary>
         public event ClientResponseLogHandler?              OnBootNotificationWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to a boot notification request was received.
+        /// An event fired whenever a response to a BootNotification request was received.
         /// </summary>
         public event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
 
@@ -110,17 +109,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomBootNotificationRequestSerializer,
-                                             CustomChargingStationSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomBootNotificationRequestSerializer,
+                                                   CustomChargingStationSerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {

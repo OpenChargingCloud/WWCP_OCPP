@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a request start transaction websocket request was received.
+        /// An event sent whenever a RequestStartTransaction websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                    OnRequestStartTransactionWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnRequestStartTransactionWSRequest;
 
         /// <summary>
-        /// An event sent whenever a request start transaction request was received.
+        /// An event sent whenever a RequestStartTransaction request was received.
         /// </summary>
         public event OnRequestStartTransactionRequestDelegate?     OnRequestStartTransactionRequest;
 
         /// <summary>
-        /// An event sent whenever a request start transaction request was received.
+        /// An event sent whenever a RequestStartTransaction request was received.
         /// </summary>
         public event OnRequestStartTransactionDelegate?            OnRequestStartTransaction;
 
         /// <summary>
-        /// An event sent whenever a response to a request start transaction request was sent.
+        /// An event sent whenever a response to a RequestStartTransaction request was sent.
         /// </summary>
         public event OnRequestStartTransactionResponseDelegate?    OnRequestStartTransactionResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a request start transaction request was sent.
+        /// An event sent whenever a websocket response to a RequestStartTransaction request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                   OnRequestStartTransactionWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnRequestStartTransactionWSResponse;
 
         #endregion
 

@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a clear variable monitoring websocket request was received.
+        /// An event sent whenever a ClearVariableMonitoring websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                    OnClearVariableMonitoringWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnClearVariableMonitoringWSRequest;
 
         /// <summary>
-        /// An event sent whenever a clear variable monitoring request was received.
+        /// An event sent whenever a ClearVariableMonitoring request was received.
         /// </summary>
         public event OnClearVariableMonitoringRequestDelegate?     OnClearVariableMonitoringRequest;
 
         /// <summary>
-        /// An event sent whenever a clear variable monitoring request was received.
+        /// An event sent whenever a ClearVariableMonitoring request was received.
         /// </summary>
         public event OnClearVariableMonitoringDelegate?            OnClearVariableMonitoring;
 
         /// <summary>
-        /// An event sent whenever a response to a clear variable monitoring request was sent.
+        /// An event sent whenever a response to a ClearVariableMonitoring request was sent.
         /// </summary>
         public event OnClearVariableMonitoringResponseDelegate?    OnClearVariableMonitoringResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a clear variable monitoring request was sent.
+        /// An event sent whenever a websocket response to a ClearVariableMonitoring request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                   OnClearVariableMonitoringWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnClearVariableMonitoringWSResponse;
 
         #endregion
 

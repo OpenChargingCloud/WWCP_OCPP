@@ -225,9 +225,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (TryParse(Request,
                          XML,
                          out var startTransactionResponse,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                startTransactionResponse is not null)
             {
-                return startTransactionResponse!;
+                return startTransactionResponse;
             }
 
             throw new ArgumentException("The given XML representation of a start transaction response is invalid: " + errorResponse,
@@ -254,9 +255,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON,
                          out var startTransactionResponse,
                          out var errorResponse,
-                         CustomStartTransactionResponseParser))
+                         CustomStartTransactionResponseParser) &&
+                startTransactionResponse is not null)
             {
-                return startTransactionResponse!;
+                return startTransactionResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a start transaction response is invalid: " + errorResponse,

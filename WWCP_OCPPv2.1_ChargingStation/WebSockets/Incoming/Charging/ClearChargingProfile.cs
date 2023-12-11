@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a clear charging profile websocket request was received.
+        /// An event sent whenever a ClearChargingProfile websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?                 OnClearChargingProfileWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnClearChargingProfileWSRequest;
 
         /// <summary>
-        /// An event sent whenever a clear charging profile request was received.
+        /// An event sent whenever a ClearChargingProfile request was received.
         /// </summary>
-        public event OnClearChargingProfileRequestDelegate?     OnClearChargingProfileRequest;
+        public event OnClearChargingProfileRequestDelegate?        OnClearChargingProfileRequest;
 
         /// <summary>
-        /// An event sent whenever a clear charging profile request was received.
+        /// An event sent whenever a ClearChargingProfile request was received.
         /// </summary>
-        public event OnClearChargingProfileDelegate?            OnClearChargingProfile;
+        public event OnClearChargingProfileDelegate?               OnClearChargingProfile;
 
         /// <summary>
-        /// An event sent whenever a response to a clear charging profile request was sent.
+        /// An event sent whenever a response to a ClearChargingProfile request was sent.
         /// </summary>
-        public event OnClearChargingProfileResponseDelegate?    OnClearChargingProfileResponse;
+        public event OnClearChargingProfileResponseDelegate?       OnClearChargingProfileResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a clear charging profile request was sent.
+        /// An event sent whenever a websocket response to a ClearChargingProfile request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?                OnClearChargingProfileWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnClearChargingProfileWSResponse;
 
         #endregion
 

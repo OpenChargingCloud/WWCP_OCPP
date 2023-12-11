@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a get display messages websocket request was received.
+        /// An event sent whenever a GetDisplayMessages websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?               OnGetDisplayMessagesWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnGetDisplayMessagesWSRequest;
 
         /// <summary>
-        /// An event sent whenever a get display messages request was received.
+        /// An event sent whenever a GetDisplayMessages request was received.
         /// </summary>
-        public event OnGetDisplayMessagesRequestDelegate?     OnGetDisplayMessagesRequest;
+        public event OnGetDisplayMessagesRequestDelegate?          OnGetDisplayMessagesRequest;
 
         /// <summary>
-        /// An event sent whenever a get display messages request was received.
+        /// An event sent whenever a GetDisplayMessages request was received.
         /// </summary>
-        public event OnGetDisplayMessagesDelegate?            OnGetDisplayMessages;
+        public event OnGetDisplayMessagesDelegate?                 OnGetDisplayMessages;
 
         /// <summary>
-        /// An event sent whenever a response to a get display messages request was sent.
+        /// An event sent whenever a response to a GetDisplayMessages request was sent.
         /// </summary>
-        public event OnGetDisplayMessagesResponseDelegate?    OnGetDisplayMessagesResponse;
+        public event OnGetDisplayMessagesResponseDelegate?         OnGetDisplayMessagesResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a get display messages request was sent.
+        /// An event sent whenever a websocket response to a GetDisplayMessages request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?              OnGetDisplayMessagesWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnGetDisplayMessagesWSResponse;
 
         #endregion
 

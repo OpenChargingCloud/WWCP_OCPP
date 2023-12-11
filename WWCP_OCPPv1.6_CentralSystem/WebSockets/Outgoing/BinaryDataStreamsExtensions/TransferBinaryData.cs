@@ -46,12 +46,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CSMS
         /// <summary>
         /// An event sent whenever a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
+        public event OCPP.CSMS.OnBinaryDataTransferRequestDelegate?     OnBinaryDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a BinaryDataTransfer request was sent.
         /// </summary>
-        public event OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
+        public event OCPP.CSMS.OnBinaryDataTransferResponseDelegate?    OnBinaryDataTransferResponse;
 
         #endregion
 

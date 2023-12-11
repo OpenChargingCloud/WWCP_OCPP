@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -60,22 +59,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was received.
         /// </summary>
-        public event OnUsePriorityChargingRequestDelegate?     OnUsePriorityChargingRequest;
+        public event OnUsePriorityChargingRequestDelegate?         OnUsePriorityChargingRequest;
 
         /// <summary>
         /// An event sent whenever an UsePriorityCharging request was received.
         /// </summary>
-        public event OnUsePriorityChargingDelegate?            OnUsePriorityCharging;
+        public event OnUsePriorityChargingDelegate?                OnUsePriorityCharging;
 
         /// <summary>
         /// An event sent whenever a response to an UsePriorityCharging request was sent.
         /// </summary>
-        public event OnUsePriorityChargingResponseDelegate?    OnUsePriorityChargingResponse;
+        public event OnUsePriorityChargingResponseDelegate?        OnUsePriorityChargingResponse;
 
         /// <summary>
         /// An event sent whenever a websocket response to an UsePriorityCharging request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?               OnUsePriorityChargingWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnUsePriorityChargingWSResponse;
 
         #endregion
 

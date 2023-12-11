@@ -175,7 +175,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                          CustomInstallCertificateResponseParser) &&
                 installCertificateResponse is not null)
             {
-                return installCertificateResponse!;
+                return installCertificateResponse;
             }
 
             throw new ArgumentException("The given JSON representation of an install certificate response is invalid: " + errorResponse,

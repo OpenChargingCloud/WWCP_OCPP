@@ -177,9 +177,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             if (TryParse(Request,
                          XML,
                          out var heartbeatResponse,
-                         out var errorResponse))
+                         out var errorResponse) &&
+                heartbeatResponse is not null)
             {
-                return heartbeatResponse!;
+                return heartbeatResponse;
             }
 
             throw new ArgumentException("The given XML representation of a heartbeat response is invalid: " + errorResponse,
@@ -206,9 +207,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                          JSON,
                          out var heartbeatResponse,
                          out var errorResponse,
-                         CustomHeartbeatResponseParser))
+                         CustomHeartbeatResponseParser) &&
+                heartbeatResponse is not null)
             {
-                return heartbeatResponse!;
+                return heartbeatResponse;
             }
 
             throw new ArgumentException("The given JSON representation of a heartbeat response is invalid: " + errorResponse,

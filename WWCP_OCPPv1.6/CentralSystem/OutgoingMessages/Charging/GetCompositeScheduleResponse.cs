@@ -555,22 +555,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #endregion
 
-        #region ToJSON(CustomGetCompositeScheduleResponseSerializer = null, CustomSignatureSerializer = null, ...)
+        #region ToJSON(CustomGetCompositeScheduleResponseSerializer = null, CustomChargingScheduleSerializer = null, ...)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomGetCompositeScheduleResponseSerializer">A delegate to serialize custom get composite schedule responses.</param>
+        /// <param name="CustomChargingScheduleSerializer">A delegate to serialize custom charging schedule requests.</param>
+        /// <param name="CustomChargingSchedulePeriodSerializer">A delegate to serialize custom charging schedule periods.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<GetCompositeScheduleResponse>?  CustomGetCompositeScheduleResponseSerializer   = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedule>?              CustomChargingScheduleSerializer               = null,
+                              CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?        CustomChargingSchedulePeriodSerializer         = null,
                               CustomJObjectSerializerDelegate<OCPP.Signature>?                CustomSignatureSerializer                      = null,
                               CustomJObjectSerializerDelegate<CustomData>?                    CustomCustomDataSerializer                     = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("status",                   Status.             AsText()),
+                                 new JProperty("status",             Status.             AsText()),
 
                            ConnectorId.HasValue
                                ? new JProperty("connectorId",        ConnectorId.  Value.Value)
@@ -581,7 +585,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                : null,
 
                            ChargingSchedule is not null
-                               ? new JProperty("chargingSchedule",   ChargingSchedule.   ToJSON())
+                               ? new JProperty("chargingSchedule",   ChargingSchedule.   ToJSON(CustomChargingScheduleSerializer,
+                                                                                                CustomChargingSchedulePeriodSerializer))
                                : null,
 
                            Signatures.Any()

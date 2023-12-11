@@ -23,6 +23,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 
 #endregion
@@ -42,7 +44,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON parser delegates
 
-        public CustomJObjectParserDelegate<OCPP.CSMS.AddSignaturePolicyRequest>?  CustomAddSignaturePolicyRequestParser    { get; set; }
+        public CustomJObjectParserDelegate<AddSignaturePolicyRequest>?       CustomAddSignaturePolicyRequestParser         { get; set; }
+
+        public CustomJObjectSerializerDelegate<AddSignaturePolicyResponse>?  CustomAddSignaturePolicyResponseSerializer    { get; set; }
 
         #endregion
 
@@ -120,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             try
             {
 
-                if (OCPP.CSMS.AddSignaturePolicyRequest.TryParse(RequestJSON,
+                if (AddSignaturePolicyRequest.TryParse(RequestJSON,
                                                        RequestId,
                                                        NetworkingNodeId,
                                                        NetworkPath,
@@ -147,15 +151,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     #region Call async subscribers
 
-                    OCPP.CS.AddSignaturePolicyResponse? response = null;
+                    AddSignaturePolicyResponse? response = null;
 
                     var results = OnAddSignaturePolicy?.
                                       GetInvocationList()?.
-                                      SafeSelect(subscriber => (subscriber as OCPP.CS.OnAddSignaturePolicyDelegate)?.Invoke(Timestamp.Now,
-                                                                                                                            this,
-                                                                                                                            WebSocketConnection,
-                                                                                                                            request,
-                                                                                                                            CancellationToken)).
+                                      SafeSelect(subscriber => (subscriber as OnAddSignaturePolicyDelegate)?.Invoke(Timestamp.Now,
+                                                                                                                    this,
+                                                                                                                    WebSocketConnection,
+                                                                                                                    request,
+                                                                                                                    CancellationToken)).
                                       ToArray();
 
                     if (results?.Length > 0)
@@ -167,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                     }
 
-                    response ??= OCPP.CS.AddSignaturePolicyResponse.Failed(request);
+                    response ??= AddSignaturePolicyResponse.Failed(request);
 
                     #endregion
 

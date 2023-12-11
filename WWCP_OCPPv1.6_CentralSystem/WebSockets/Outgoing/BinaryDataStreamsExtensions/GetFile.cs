@@ -48,12 +48,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CSMS
         /// <summary>
         /// An event sent whenever a GetFile request was sent.
         /// </summary>
-        public event OnGetFileRequestDelegate?     OnGetFileRequest;
+        public event OCPP.CSMS.OnGetFileRequestDelegate?     OnGetFileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetFile request was sent.
         /// </summary>
-        public event OnGetFileResponseDelegate?    OnGetFileResponse;
+        public event OCPP.CSMS.OnGetFileResponseDelegate?    OnGetFileResponse;
 
         #endregion
 

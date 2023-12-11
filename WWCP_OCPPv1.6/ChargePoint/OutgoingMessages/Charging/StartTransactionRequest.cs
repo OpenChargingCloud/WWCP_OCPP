@@ -280,9 +280,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                          NetworkPath,
                          out var startTransactionRequest,
                          out var errorResponse,
-                         CustomStartTransactionRequestParser))
+                         CustomStartTransactionRequestParser) &&
+                startTransactionRequest is not null)
             {
-                return startTransactionRequest!;
+                return startTransactionRequest;
             }
 
             throw new ArgumentException("The given JSON representation of a start transaction request is invalid: " + errorResponse,

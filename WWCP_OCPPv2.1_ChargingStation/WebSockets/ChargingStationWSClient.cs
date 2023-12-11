@@ -105,11 +105,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
         #region Custom JSON serializer delegates
 
+        public CustomJObjectSerializerDelegate<CustomData>?                                CustomCustomDataSerializer                                  { get; set; }
         public CustomJObjectSerializerDelegate<StatusInfo>?                                CustomStatusInfoSerializer                                  { get; set; }
         public CustomJObjectSerializerDelegate<ClearMonitoringResult>?                     CustomClearMonitoringResultSerializer                       { get; set; }
         public CustomJObjectSerializerDelegate<ChargingStation>?                           CustomChargingStationSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.Signature>?                                 CustomSignatureSerializer                                   { get; set; }
-        public CustomJObjectSerializerDelegate<CustomData>?                                CustomCustomDataSerializer                                  { get; set; }
         public CustomJObjectSerializerDelegate<EventData>?                                 CustomEventDataSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<Component>?                                 CustomComponentSerializer                                   { get; set; }
         public CustomJObjectSerializerDelegate<SetVariableResult>?                         CustomSetVariableResultSerializer                           { get; set; }
@@ -169,8 +168,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         public CustomJObjectSerializerDelegate<CertificateHashData>?                       CustomCertificateHashDataSerializer                         { get; set; }
 
 
+        // Security extensions
+        public CustomJObjectSerializerDelegate<OCPP.Signature>?                            CustomSignatureSerializer                                   { get; set; }
+
+
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<OCPP.Signature>?                                  CustomBinarySignatureSerializer                             { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.Signature>?                            CustomBinarySignatureSerializer                             { get; set; }
 
         #endregion
 

@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CSMS;
 
 #endregion
 
@@ -53,29 +52,29 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a set network profile websocket request was received.
+        /// An event sent whenever a SetNetworkProfile websocket request was received.
         /// </summary>
-        public event WSClientJSONRequestLogHandler?              OnSetNetworkProfileWSRequest;
+        public event WSClientJSONRequestLogHandler?                OnSetNetworkProfileWSRequest;
 
         /// <summary>
-        /// An event sent whenever a set network profile request was received.
+        /// An event sent whenever a SetNetworkProfile request was received.
         /// </summary>
-        public event OnSetNetworkProfileRequestDelegate?     OnSetNetworkProfileRequest;
+        public event OnSetNetworkProfileRequestDelegate?           OnSetNetworkProfileRequest;
 
         /// <summary>
-        /// An event sent whenever a set network profile request was received.
+        /// An event sent whenever a SetNetworkProfile request was received.
         /// </summary>
-        public event OnSetNetworkProfileDelegate?            OnSetNetworkProfile;
+        public event OnSetNetworkProfileDelegate?                  OnSetNetworkProfile;
 
         /// <summary>
-        /// An event sent whenever a response to a set network profile request was sent.
+        /// An event sent whenever a response to a SetNetworkProfile request was sent.
         /// </summary>
-        public event OnSetNetworkProfileResponseDelegate?    OnSetNetworkProfileResponse;
+        public event OnSetNetworkProfileResponseDelegate?          OnSetNetworkProfileResponse;
 
         /// <summary>
-        /// An event sent whenever a websocket response to a set network profile request was sent.
+        /// An event sent whenever a websocket response to a SetNetworkProfile request was sent.
         /// </summary>
-        public event WSClientJSONRequestJSONResponseLogHandler?             OnSetNetworkProfileWSResponse;
+        public event WSClientJSONRequestJSONResponseLogHandler?    OnSetNetworkProfileWSResponse;
 
         #endregion
 

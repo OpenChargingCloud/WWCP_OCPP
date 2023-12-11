@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
@@ -50,22 +49,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #region Events
 
         /// <summary>
-        /// An event fired whenever an authorize request will be sent to the CSMS.
+        /// An event fired whenever an Authorize request will be sent to the CSMS.
         /// </summary>
         public event OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
 
         /// <summary>
-        /// An event fired whenever an authorize request will be sent to the CSMS.
+        /// An event fired whenever an Authorize request will be sent to the CSMS.
         /// </summary>
         public event ClientRequestLogHandler?        OnAuthorizeWSRequest;
 
         /// <summary>
-        /// An event fired whenever a response to an authorize request was received.
+        /// An event fired whenever a response to an Authorize request was received.
         /// </summary>
         public event ClientResponseLogHandler?       OnAuthorizeWSResponse;
 
         /// <summary>
-        /// An event fired whenever a response to an authorize request was received.
+        /// An event fired whenever a response to an Authorize request was received.
         /// </summary>
         public event OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
 
@@ -110,19 +109,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
             {
 
                 var requestMessage = await SendRequest(
-                                         Request.NetworkingNodeId,
-                                         Request.NetworkPath,
-                                         Request.Action,
-                                         Request.RequestId,
-                                         Request.ToJSON(
-                                             CustomAuthorizeRequestSerializer,
-                                             CustomIdTokenSerializer,
-                                             CustomAdditionalInfoSerializer,
-                                             CustomOCSPRequestDataSerializer,
-                                             CustomSignatureSerializer,
-                                             CustomCustomDataSerializer
-                                         )
-                                     );
+                                               Request.NetworkingNodeId,
+                                               Request.NetworkPath,
+                                               Request.Action,
+                                               Request.RequestId,
+                                               Request.ToJSON(
+                                                   CustomAuthorizeRequestSerializer,
+                                                   CustomIdTokenSerializer,
+                                                   CustomAdditionalInfoSerializer,
+                                                   CustomOCSPRequestDataSerializer,
+                                                   CustomSignatureSerializer,
+                                                   CustomCustomDataSerializer
+                                               )
+                                           );
 
                 if (requestMessage.NoErrors)
                 {
