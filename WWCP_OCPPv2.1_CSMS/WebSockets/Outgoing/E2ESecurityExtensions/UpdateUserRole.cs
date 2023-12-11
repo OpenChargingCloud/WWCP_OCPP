@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
@@ -48,12 +46,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a UpdateUserRole request was sent.
+        /// An event sent whenever an UpdateUserRole request was sent.
         /// </summary>
         public event OCPP.CSMS.OnUpdateUserRoleRequestDelegate?     OnUpdateUserRoleRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a UpdateUserRole request was sent.
+        /// An event sent whenever a response to an UpdateUserRole request was sent.
         /// </summary>
         public event OCPP.CSMS.OnUpdateUserRoleResponseDelegate?    OnUpdateUserRoleResponse;
 
@@ -73,8 +71,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             {
 
                 OnUpdateUserRoleRequest?.Invoke(startTime,
-                                                   this,
-                                                   Request);
+                                                this,
+                                                Request);
             }
             catch (Exception e)
             {
@@ -96,13 +94,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  Request.RequestId,
                                                  Request.Action,
                                                  Request.ToJSON(
-                                                     CustomUpdateUserRoleRequestSerializer
-                                                     //CustomMessageInfoSerializer,
-                                                     //CustomMessageContentSerializer,
-                                                     //CustomComponentSerializer,
-                                                     //CustomEVSESerializer,
-                                                     //CustomSignatureSerializer,
-                                                     //CustomCustomDataSerializer
+                                                     CustomUpdateUserRoleRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
                                                  ),
                                                  Request.RequestTimeout
                                              );
@@ -153,10 +147,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             {
 
                 OnUpdateUserRoleResponse?.Invoke(endTime,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
+                                                 this,
+                                                 Request,
+                                                 response,
+                                                 endTime - startTime);
 
             }
             catch (Exception e)

@@ -72,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  CancellationToken                                          CancellationToken                         = default)
 
 
-                => ChargingStation.SendBootNotification(
+                => ChargingStation.BootNotification(
                        new BootNotificationRequest(
                            ChargingStation.Id,
                            new ChargingStation(
@@ -187,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                            CancellationToken        CancellationToken         = default)
 
 
-                => ChargingStation.SendFirmwareStatusNotification(
+                => ChargingStation.FirmwareStatusNotification(
                        new FirmwareStatusNotificationRequest(
                            ChargingStation.Id,
                            Status,
@@ -246,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                                   CancellationToken        CancellationToken   = default)
 
 
-                => ChargingStation.SendPublishFirmwareStatusNotification(
+                => ChargingStation.PublishFirmwareStatusNotification(
                        new PublishFirmwareStatusNotificationRequest(
                            ChargingStation.Id,
                            Status,
@@ -300,7 +300,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                           CancellationToken        CancellationToken   = default)
 
 
-                => ChargingStation.SendHeartbeat(
+                => ChargingStation.Heartbeat(
                        new HeartbeatRequest(
                            ChargingStation.Id,
 
@@ -420,7 +420,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                           CancellationToken        CancellationToken   = default)
 
 
-                => ChargingStation.SendSecurityEventNotification(
+                => ChargingStation.SecurityEventNotification(
                        new SecurityEventNotificationRequest(
                            ChargingStation.Id,
                            Type,
@@ -610,7 +610,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                       CancellationToken        CancellationToken   = default)
 
 
-                => ChargingStation.SendLogStatusNotification(
+                => ChargingStation.LogStatusNotification(
                        new LogStatusNotificationRequest(
                            ChargingStation.Id,
                            Status,
@@ -669,7 +669,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                          CancellationToken             CancellationToken   = default)
 
 
-                => ChargingStation.TransferData(
+                => ChargingStation.DataTransfer(
                        new OCPP.CS.DataTransferRequest(
                            ChargingStation.Id,
                            VendorId,
@@ -730,7 +730,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                           CancellationToken        CancellationToken   = default)
 
 
-                => ChargingStation.SendCertificateSigningRequest(
+                => ChargingStation.SignCertificate(
                        new SignCertificateRequest(
                            ChargingStation.Id,
                            CSR,
@@ -967,7 +967,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                         CancellationToken        CancellationToken   = default)
 
 
-                => ChargingStation.SendReservationStatusUpdate(
+                => ChargingStation.ReservationStatusUpdate(
                        new ReservationStatusUpdateRequest(
                            ChargingStation.Id,
                            ReservationId,
@@ -1171,7 +1171,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                  CancellationToken         CancellationToken       = default)
 
 
-                => ChargingStation.SendTransactionEvent(
+                => ChargingStation.TransactionEvent(
                        new TransactionEventRequest(
                            ChargingStation.Id,
 
@@ -1245,7 +1245,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                    CancellationToken        CancellationToken   = default)
 
 
-                => ChargingStation.SendStatusNotification(
+                => ChargingStation.StatusNotification(
                        new StatusNotificationRequest(
                            ChargingStation.Id,
                            Timestamp,
@@ -1304,7 +1304,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                             CancellationToken        CancellationToken   = default)
 
 
-                => ChargingStation.SendMeterValues(
+                => ChargingStation.MeterValues(
                        new MeterValuesRequest(
                            ChargingStation.Id,
                            EVSEId,
@@ -1421,7 +1421,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                      CancellationToken        CancellationToken   = default)
 
 
-                => ChargingStation.SendClearedChargingLimit(
+                => ChargingStation.ClearedChargingLimit(
                        new ClearedChargingLimitRequest(
                            ChargingStation.Id,
                            ChargingLimitSource,
@@ -1857,7 +1857,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                                CancellationToken             CancellationToken   = default)
 
 
-                => ChargingStation.TransferBinaryData(
+                => ChargingStation.BinaryDataTransfer(
                        new OCPP.CS.BinaryDataTransferRequest(
                            ChargingStation.Id,
                            VendorId,

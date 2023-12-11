@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -52,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ReservationStatusUpdate WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                   OnReservationStatusUpdateWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                 OnReservationStatusUpdateWSRequest;
 
         /// <summary>
         /// An event sent whenever a ReservationStatusUpdate request was received.
@@ -72,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a WebSocket response to a ReservationStatusUpdate was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnReservationStatusUpdateWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?     OnReservationStatusUpdateWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnReservationStatusUpdateRequest?.Invoke(Timestamp.Now,
                                                                  this,
+                                                                 Connection,
                                                                  request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnReservationStatusUpdateDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                this,
+                                                                                                                               Connection,
                                                                                                                                request,
                                                                                                                                CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnReservationStatusUpdateResponse?.Invoke(Timestamp.Now,
                                                                   this,
+                                                                  Connection,
                                                                   request,
                                                                   response,
                                                                   response.Runtime);

@@ -18,12 +18,8 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
@@ -51,12 +47,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SetDefaultChargingTariff request was sent.
         /// </summary>
-        public event OnSetDefaultChargingTariffRequestDelegate?        OnSetDefaultChargingTariffRequest;
+        public event OnSetDefaultChargingTariffRequestDelegate?     OnSetDefaultChargingTariffRequest;
 
         /// <summary>
         /// An event sent whenever a response to a SetDefaultChargingTariff request was sent.
         /// </summary>
-        public event OnSetDefaultChargingTariffResponseDelegate?       OnSetDefaultChargingTariffResponse;
+        public event OnSetDefaultChargingTariffResponseDelegate?    OnSetDefaultChargingTariffResponse;
 
         #endregion
 

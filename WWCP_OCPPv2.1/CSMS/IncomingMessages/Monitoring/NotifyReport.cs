@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 
@@ -31,12 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The stop transaction request.</param>
     public delegate Task
 
-        OnNotifyReportRequestDelegate(DateTime              Timestamp,
-                                      IEventSender          Sender,
-                                      NotifyReportRequest   Request);
+        OnNotifyReportRequestDelegate(DateTime                    Timestamp,
+                                      IEventSender                Sender,
+                                      WebSocketServerConnection   Connection,
+                                      NotifyReportRequest         Request);
 
 
     /// <summary>
@@ -44,14 +47,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The stop transaction request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<NotifyReportResponse>
 
-        OnNotifyReportDelegate(DateTime              Timestamp,
-                               IEventSender          Sender,
-                               NotifyReportRequest   Request,
-                               CancellationToken     CancellationToken);
+        OnNotifyReportDelegate(DateTime                    Timestamp,
+                               IEventSender                Sender,
+                               WebSocketServerConnection   Connection,
+                               NotifyReportRequest         Request,
+                               CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -59,15 +64,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The stop transaction request.</param>
     /// <param name="Response">The stop transaction response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnNotifyReportResponseDelegate(DateTime               Timestamp,
-                                       IEventSender           Sender,
-                                       NotifyReportRequest    Request,
-                                       NotifyReportResponse   Response,
-                                       TimeSpan               Runtime);
+        OnNotifyReportResponseDelegate(DateTime                    Timestamp,
+                                       IEventSender                Sender,
+                                       WebSocketServerConnection   Connection,
+                                       NotifyReportRequest         Request,
+                                       NotifyReportResponse        Response,
+                                       TimeSpan                    Runtime);
 
 }

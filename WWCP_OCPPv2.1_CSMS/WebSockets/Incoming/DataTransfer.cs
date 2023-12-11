@@ -20,7 +20,6 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
@@ -138,6 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnIncomingDataTransferRequest?.Invoke(Timestamp.Now,
                                                               this,
+                                                              Connection,
                                                               request);
 
                     }
@@ -156,6 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OCPP.CSMS.OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                       this,
+                                                                                                                                      Connection,
                                                                                                                                       request,
                                                                                                                                       CancellationToken)).
                                             ToArray();
@@ -177,6 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
                                                                this,
+                                                               Connection,
                                                                request,
                                                                response,
                                                                response.Runtime);

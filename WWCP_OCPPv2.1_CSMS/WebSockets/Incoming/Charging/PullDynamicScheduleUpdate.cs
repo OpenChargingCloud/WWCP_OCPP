@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                    OnPullDynamicScheduleUpdateWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                   OnPullDynamicScheduleUpdateWSRequest;
 
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate request was received.
         /// </summary>
-        public event OnPullDynamicScheduleUpdateRequestDelegate?    OnPullDynamicScheduleUpdateRequest;
+        public event OnPullDynamicScheduleUpdateRequestDelegate?     OnPullDynamicScheduleUpdateRequest;
 
         /// <summary>
         /// An event sent whenever a PullDynamicScheduleUpdate was received.
         /// </summary>
-        public event OnPullDynamicScheduleUpdateDelegate?           OnPullDynamicScheduleUpdate;
+        public event OnPullDynamicScheduleUpdateDelegate?            OnPullDynamicScheduleUpdate;
 
         /// <summary>
         /// An event sent whenever a response to a PullDynamicScheduleUpdate was sent.
         /// </summary>
-        public event OnPullDynamicScheduleUpdateResponseDelegate?   OnPullDynamicScheduleUpdateResponse;
+        public event OnPullDynamicScheduleUpdateResponseDelegate?    OnPullDynamicScheduleUpdateResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a PullDynamicScheduleUpdate was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnPullDynamicScheduleUpdateWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?       OnPullDynamicScheduleUpdateWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnPullDynamicScheduleUpdateRequest?.Invoke(Timestamp.Now,
                                                                    this,
+                                                                   Connection,
                                                                    request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnPullDynamicScheduleUpdateDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                  this,
+                                                                                                                                 Connection,
                                                                                                                                  request,
                                                                                                                                  CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnPullDynamicScheduleUpdateResponse?.Invoke(Timestamp.Now,
                                                                     this,
+                                                                    Connection,
                                                                     request,
                                                                     response,
                                                                     response.Runtime);

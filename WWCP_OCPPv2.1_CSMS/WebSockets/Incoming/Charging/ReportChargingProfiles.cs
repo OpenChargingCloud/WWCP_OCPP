@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                   OnReportChargingProfilesWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                OnReportChargingProfilesWSRequest;
 
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles request was received.
         /// </summary>
-        public event OnReportChargingProfilesRequestDelegate?      OnReportChargingProfilesRequest;
+        public event OnReportChargingProfilesRequestDelegate?     OnReportChargingProfilesRequest;
 
         /// <summary>
         /// An event sent whenever a ReportChargingProfiles was received.
         /// </summary>
-        public event OnReportChargingProfilesDelegate?             OnReportChargingProfiles;
+        public event OnReportChargingProfilesDelegate?            OnReportChargingProfiles;
 
         /// <summary>
         /// An event sent whenever a response to a ReportChargingProfiles was sent.
         /// </summary>
-        public event OnReportChargingProfilesResponseDelegate?     OnReportChargingProfilesResponse;
+        public event OnReportChargingProfilesResponseDelegate?    OnReportChargingProfilesResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a ReportChargingProfiles was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnReportChargingProfilesWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnReportChargingProfilesWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnReportChargingProfilesRequest?.Invoke(Timestamp.Now,
                                                                 this,
+                                                                Connection,
                                                                 request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnReportChargingProfilesDelegate)?.Invoke(Timestamp.Now,
                                                                                                                               this,
+                                                                                                                              Connection,
                                                                                                                               request,
                                                                                                                               CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnReportChargingProfilesResponse?.Invoke(Timestamp.Now,
                                                                  this,
+                                                                 Connection,
                                                                  request,
                                                                  response,
                                                                  response.Runtime);

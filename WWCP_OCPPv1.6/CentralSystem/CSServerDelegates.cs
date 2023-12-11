@@ -90,60 +90,60 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
 
-    public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,
-                                                                  ICentralSystem              CentralSystem,
-                                                                  WebSocketServerConnection   Connection,
-                                                                  ChargeBox_Id                ChargeBoxId,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
-                                                                  JArray                      RequestMessage,
-                                                                  CancellationToken           CancellationToken);
+    //public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,
+    //                                                              ICentralSystem              CentralSystem,
+    //                                                              WebSocketServerConnection   Connection,
+    //                                                              ChargeBox_Id                ChargeBoxId,
+    //                                                              EventTracking_Id            EventTrackingId,
+    //                                                              DateTime                    RequestTimestamp,
+    //                                                              JArray                      RequestMessage,
+    //                                                              CancellationToken           CancellationToken);
 
-    public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTime                    Timestamp,
-                                                                  ICentralSystem              CentralSystem,
-                                                                  WebSocketServerConnection   Connection,
-                                                                  ChargeBox_Id                ChargeBoxId,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
-                                                                  JArray                      JSONRequestMessage,
-                                                                  Byte[]                      BinaryRequestMessage,
-                                                                  DateTime                    ResponseTimestamp,
-                                                                  JArray                      ResponseMessage,
-                                                                  CancellationToken           CancellationToken);
+    //public delegate Task OnWebSocketJSONMessageResponseDelegate  (DateTime                    Timestamp,
+    //                                                              ICentralSystem              CentralSystem,
+    //                                                              WebSocketServerConnection   Connection,
+    //                                                              ChargeBox_Id                ChargeBoxId,
+    //                                                              EventTracking_Id            EventTrackingId,
+    //                                                              DateTime                    RequestTimestamp,
+    //                                                              JArray                      JSONRequestMessage,
+    //                                                              Byte[]                      BinaryRequestMessage,
+    //                                                              DateTime                    ResponseTimestamp,
+    //                                                              JArray                      ResponseMessage,
+    //                                                              CancellationToken           CancellationToken);
 
-    public delegate Task OnWebSocketTextErrorResponseDelegate    (DateTime                    Timestamp,
-                                                                  ICentralSystem              CentralSystem,
-                                                                  WebSocketServerConnection   Connection,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
-                                                                  String                      TextRequestMessage,
-                                                                  Byte[]                      BinaryRequestMessage,
-                                                                  DateTime                    ResponseTimestamp,
-                                                                  String                      TextResponseMessage,
-                                                                  CancellationToken           CancellationToken);
+    //public delegate Task OnWebSocketTextErrorResponseDelegate    (DateTime                    Timestamp,
+    //                                                              ICentralSystem              CentralSystem,
+    //                                                              WebSocketServerConnection   Connection,
+    //                                                              EventTracking_Id            EventTrackingId,
+    //                                                              DateTime                    RequestTimestamp,
+    //                                                              String                      TextRequestMessage,
+    //                                                              Byte[]                      BinaryRequestMessage,
+    //                                                              DateTime                    ResponseTimestamp,
+    //                                                              String                      TextResponseMessage,
+    //                                                              CancellationToken           CancellationToken);
 
 
 
-    public delegate Task OnWebSocketBinaryMessageRequestDelegate (DateTime                    Timestamp,
-                                                                  ICentralSystem              CentralSystem,
-                                                                  WebSocketServerConnection   Connection,
-                                                                  ChargeBox_Id                ChargeBoxId,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
-                                                                  Byte[]                      RequestMessage,
-                                                                  CancellationToken           CancellationToken);
+    //public delegate Task OnWebSocketBinaryMessageRequestDelegate (DateTime                    Timestamp,
+    //                                                              ICentralSystem              CentralSystem,
+    //                                                              WebSocketServerConnection   Connection,
+    //                                                              ChargeBox_Id                ChargeBoxId,
+    //                                                              EventTracking_Id            EventTrackingId,
+    //                                                              DateTime                    RequestTimestamp,
+    //                                                              Byte[]                      RequestMessage,
+    //                                                              CancellationToken           CancellationToken);
 
-    public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTime                    Timestamp,
-                                                                  ICentralSystem              CentralSystem,
-                                                                  WebSocketServerConnection   Connection,
-                                                                  ChargeBox_Id                ChargeBoxId,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
-                                                                  JArray                      JSONRequestMessage,
-                                                                  Byte[]                      BinaryRequestMessage,
-                                                                  DateTime                    ResponseTimestamp,
-                                                                  Byte[]                      ResponseMessage,
-                                                                  CancellationToken           CancellationToken);
+    //public delegate Task OnWebSocketBinaryMessageResponseDelegate(DateTime                    Timestamp,
+    //                                                              ICentralSystem              CentralSystem,
+    //                                                              WebSocketServerConnection   Connection,
+    //                                                              ChargeBox_Id                ChargeBoxId,
+    //                                                              EventTracking_Id            EventTrackingId,
+    //                                                              DateTime                    RequestTimestamp,
+    //                                                              JArray                      JSONRequestMessage,
+    //                                                              Byte[]                      BinaryRequestMessage,
+    //                                                              DateTime                    ResponseTimestamp,
+    //                                                              Byte[]                      ResponseMessage,
+    //                                                              CancellationToken           CancellationToken);
 
     //public delegate Task OnWebSocketBinaryErrorResponseDelegate  (DateTime                    Timestamp,
     //                                                              CSMSWSServer                Server,

@@ -28,7 +28,9 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CSMS;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -43,23 +45,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Data
 
-        private          readonly  HashSet<ICentralSystemServer>                                         centralSystemServers     = [];
+        private          readonly  HashSet<SignaturePolicy>                                                   signaturePolicies        = [];
 
-        private          readonly  ConcurrentDictionary<ChargeBox_Id, Tuple<ICentralSystem, DateTime>>   reachableChargingBoxes   = [];
+        private          readonly  HashSet<ICentralSystemServer>                                              centralSystemServers     = [];
 
-        private          readonly  HTTPExtAPI                                                            TestAPI;
+        private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<ICentralSystem, DateTime>>   reachableChargeBoxes     = [];
 
-        private          readonly  OCPPWebAPI                                                            WebAPI;
+        private          readonly  HTTPExtAPI                                                                 TestAPI;
 
-        protected static readonly  SemaphoreSlim                                                         ChargeBoxesSemaphore     = new (1, 1);
+        private          readonly  OCPPWebAPI                                                                 WebAPI;
 
-        protected static readonly  TimeSpan                                                              SemaphoreSlimTimeout     = TimeSpan.FromSeconds(5);
+        protected static readonly  SemaphoreSlim                                                              ChargeBoxesSemaphore     = new (1, 1);
 
-        public    static readonly  IPPort                                                                DefaultHTTPUploadPort    = IPPort.Parse(9901);
+        protected static readonly  TimeSpan                                                                   SemaphoreSlimTimeout     = TimeSpan.FromSeconds(5);
 
-        private                    Int64                                                                 internalRequestId        = 900000;
+        public    static readonly  IPPort                                                                     DefaultHTTPUploadPort    = IPPort.Parse(9901);
 
-        private                    TimeSpan                                                              defaultRequestTimeout    = TimeSpan.FromSeconds(30);
+        private                    Int64                                                                      internalRequestId        = 900000;
+
+        private                    TimeSpan                                                                   defaultRequestTimeout    = TimeSpan.FromSeconds(30);
 
         #endregion
 
@@ -103,11 +107,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The unique identifications of all connected or reachable charge boxes.
         /// </summary>
-        public IEnumerable<ChargeBox_Id> ChargeBoxIds
-            => reachableChargingBoxes.Values.SelectMany(tuple => tuple.Item1.ChargeBoxIds);
+        public IEnumerable<NetworkingNode_Id> NetworkingNodeIds
+            => reachableChargeBoxes.Values.SelectMany(tuple => tuple.Item1.NetworkingNodeIds);
 
 
         public Dictionary<String, Transaction_Id> TransactionIds = [];
+
+
+        /// <summary>
+        /// The enumeration of all signature policies.
+        /// </summary>
+        public IEnumerable<SignaturePolicy>  SignaturePolicies
+            => signaturePolicies;
+
+        /// <summary>
+        /// The currently active signature policy.
+        /// </summary>
+        public SignaturePolicy               SignaturePolicy
+            => SignaturePolicies.First();
+
 
         #endregion
 
@@ -240,60 +258,52 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-
-        #region OnTextMessage  (Request/Response)
-
-        public event OnWebSocketTextMessageDelegate?                  OnTextMessageRequest;
-
-        //public event OnWebSocketTextMessageDelegate                   OnTextMessage;
-
-        public event OnWebSocketTextMessageResponseDelegate?          OnTextMessageResponse;
-
-        #endregion
-
-
         #region CSMS <- Charging Station Messages
 
-        #region OnBootNotification
+        // Certificates
+
+        #region OnSignCertificate
 
         /// <summary>
-        /// An event sent whenever a boot notification request was received.
+        /// An event sent whenever a SignCertificate request was received.
         /// </summary>
-        public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+        public event OnSignCertificateRequestDelegate?   OnSignCertificateRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a boot notification request was sent.
+        /// An event sent whenever a response to a SignCertificate request was sent.
         /// </summary>
-        public event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+        public event OnSignCertificateResponseDelegate?  OnSignCertificateResponse;
 
         #endregion
 
-        #region OnHeartbeat
 
-        /// <summary>
-        /// An event sent whenever a heartbeat request was received.
-        /// </summary>
-        public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a heartbeat request was sent.
-        /// </summary>
-        public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
-
-        #endregion
-
+        // Charging
 
         #region OnAuthorize
 
         /// <summary>
-        /// An event sent whenever an authorize request was received.
+        /// An event sent whenever an Authorize request was received.
         /// </summary>
         public event OnAuthorizeRequestDelegate?   OnAuthorizeRequest;
 
         /// <summary>
-        /// An event sent whenever a response to an authorize request was sent.
+        /// An event sent whenever a response to an Authorize request was sent.
         /// </summary>
         public event OnAuthorizeResponseDelegate?  OnAuthorizeResponse;
+
+        #endregion
+
+        #region OnMeterValues
+
+        /// <summary>
+        /// An event sent whenever a MeterValues request was received.
+        /// </summary>
+        public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a MeterValues request was sent.
+        /// </summary>
+        public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
 
         #endregion
 
@@ -325,20 +335,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnMeterValues
-
-        /// <summary>
-        /// An event sent whenever a MeterValues request was received.
-        /// </summary>
-        public event OnMeterValuesRequestDelegate?   OnMeterValuesRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a MeterValues request was sent.
-        /// </summary>
-        public event OnMeterValuesResponseDelegate?  OnMeterValuesResponse;
-
-        #endregion
-
         #region OnStopTransaction
 
         /// <summary>
@@ -350,6 +346,110 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// An event sent whenever a response to a StopTransaction request was sent.
         /// </summary>
         public event OnStopTransactionResponseDelegate?  OnStopTransactionResponse;
+
+        #endregion
+
+
+        // Firmware
+
+        #region OnBootNotification
+
+        /// <summary>
+        /// An event sent whenever a BootNotification request was received.
+        /// </summary>
+        public event OnBootNotificationRequestDelegate?   OnBootNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a BootNotification request was sent.
+        /// </summary>
+        public event OnBootNotificationResponseDelegate?  OnBootNotificationResponse;
+
+        #endregion
+
+        #region OnFirmwareStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a FirmwareStatusNotification request was received.
+        /// </summary>
+        public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
+        /// </summary>
+        public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
+
+        #endregion
+
+        #region OnHeartbeat
+
+        /// <summary>
+        /// An event sent whenever a Heartbeat request was received.
+        /// </summary>
+        public event OnHeartbeatRequestDelegate?   OnHeartbeatRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a Heartbeat request was sent.
+        /// </summary>
+        public event OnHeartbeatResponseDelegate?  OnHeartbeatResponse;
+
+        #endregion
+
+        #region OnSignedFirmwareStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a SignedFirmwareStatusNotification request was received.
+        /// </summary>
+        public event OnSignedFirmwareStatusNotificationRequestDelegate?   OnSignedFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SignedFirmwareStatusNotification request was sent.
+        /// </summary>
+        public event OnSignedFirmwareStatusNotificationResponseDelegate?  OnSignedFirmwareStatusNotificationResponse;
+
+        #endregion
+
+
+        // Monitoring
+
+        #region OnDiagnosticsStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a DiagnosticsStatusNotification request was received.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a DiagnosticsStatusNotification request was sent.
+        /// </summary>
+        public event OnDiagnosticsStatusNotificationResponseDelegate?  OnDiagnosticsStatusNotificationResponse;
+
+        #endregion
+
+        #region OnLogStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a LogStatusNotification request was received.
+        /// </summary>
+        public event OnLogStatusNotificationRequestDelegate?   OnLogStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a LogStatusNotification request was sent.
+        /// </summary>
+        public event OnLogStatusNotificationResponseDelegate?  OnLogStatusNotificationResponse;
+
+        #endregion
+
+        #region OnSecurityEventNotification
+
+        /// <summary>
+        /// An event sent whenever a SecurityEventNotification request was received.
+        /// </summary>
+        public event OnSecurityEventNotificationRequestDelegate?   OnSecurityEventNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SecurityEventNotification request was sent.
+        /// </summary>
+        public event OnSecurityEventNotificationResponseDelegate?  OnSecurityEventNotificationResponse;
 
         #endregion
 
@@ -368,326 +468,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnDiagnosticsStatusNotification
+
+
+        #region OnIncomingBinaryDataTransfer
 
         /// <summary>
-        /// An event sent whenever a DiagnosticsStatusNotification request was received.
+        /// An event sent whenever an IncomingBinaryDataTransfer request was received.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationRequestDelegate?   OnDiagnosticsStatusNotificationRequest;
+        public event OnIncomingBinaryDataTransferRequestDelegate?   OnIncomingBinaryDataTransferRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a DiagnosticsStatusNotification request was sent.
+        /// An event sent whenever a response to an IncomingBinaryDataTransfer request was sent.
         /// </summary>
-        public event OnDiagnosticsStatusNotificationResponseDelegate?  OnDiagnosticsStatusNotificationResponse;
+        public event OnIncomingBinaryDataTransferResponseDelegate?  OnIncomingBinaryDataTransferResponse;
 
         #endregion
 
-        #region OnFirmwareStatusNotification
-
-        /// <summary>
-        /// An event sent whenever a FirmwareStatusNotification request was received.
-        /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?   OnFirmwareStatusNotificationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
-        /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?  OnFirmwareStatusNotificationResponse;
-
         #endregion
 
+        #region CSMS -> Charging Station Messages
 
-        //ToDo: Add security extensions
-
-        // LogStatusNotification
-        // SecurityEventNotification
-        // SignCertificate
-        // SignedFirmwareStatusNotification
-
-        #endregion
-
-        #region CSMS <- Charging Station Messages
-
-        #region OnReset
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnResetRequestDelegate?   OnResetRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnResetResponseDelegate?  OnResetResponse;
-
-        #endregion
-
-        #region OnChangeAvailability
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
-
-        #endregion
-
-        #region OnGetConfiguration
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
-
-        #endregion
-
-        #region OnChangeConfiguration
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
-
-        #endregion
-
-        #region OnDataTransfer
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnIncomingDataTransferRequestDelegate?   OnDataTransferRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnIncomingDataTransferResponseDelegate?  OnDataTransferResponse;
-
-        #endregion
-
-        #region OnGetDiagnostics
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
-
-        #endregion
-
-        #region OnTriggerMessage
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
-
-        #endregion
-
-        #region OnUpdateFirmware
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
-
-        #endregion
-
-
-        #region OnReserveNow
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnReserveNowRequestDelegate?   OnReserveNowRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnReserveNowResponseDelegate?  OnReserveNowResponse;
-
-        #endregion
-
-        #region OnCancelReservation
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
-
-        #endregion
-
-        #region OnRemoteStartTransaction
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
-
-        #endregion
-
-        #region OnRemoteStopTransaction
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
-
-        #endregion
-
-        #region OnSetChargingProfile
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
-
-        #endregion
-
-        #region OnClearChargingProfile
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
-
-        #endregion
-
-        #region OnGetCompositeSchedule
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
-
-        #endregion
-
-        #region OnUnlockConnector
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
-
-        #endregion
-
-
-        #region OnGetLocalListVersion
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
-
-        #endregion
-
-        #region OnSendLocalList
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
-
-        #endregion
-
-        #region OnClearCache
-
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event CP.OnClearCacheRequestDelegate?   OnClearCacheRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event CP.OnClearCacheResponseDelegate?  OnClearCacheResponse;
-
-        #endregion
-
-
-        // Security extensions
+        // Certificates
 
         #region OnCertificateSigned
 
         /// <summary>
-        /// An event sent whenever a certificate signed request was sent.
+        /// An event sent whenever a CertificateSigned request was sent.
         /// </summary>
         public event CP.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a certificate signed request was sent.
+        /// An event sent whenever a response to a CertificateSigned request was sent.
         /// </summary>
         public event CP.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
 
@@ -696,88 +507,664 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #region OnDeleteCertificate
 
         /// <summary>
-        /// An event sent whenever a delete certificate request was sent.
+        /// An event sent whenever a DeleteCertificate request was sent.
         /// </summary>
         public event CP.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a delete certificate request was sent.
+        /// An event sent whenever a response to a DeleteCertificate request was sent.
         /// </summary>
         public event CP.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
-
-        #endregion
-
-        #region OnExtendedTriggerMessage
-
-        /// <summary>
-        /// An event sent whenever an extended trigger message request was sent.
-        /// </summary>
-        public event CP.OnExtendedTriggerMessageRequestDelegate?   OnExtendedTriggerMessageRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to an extended trigger message request was sent.
-        /// </summary>
-        public event CP.OnExtendedTriggerMessageResponseDelegate?  OnExtendedTriggerMessageResponse;
 
         #endregion
 
         #region OnGetInstalledCertificateIds
 
         /// <summary>
-        /// An event sent whenever a get installed certificate ids request was sent.
+        /// An event sent whenever a GetInstalledCertificateIds request was sent.
         /// </summary>
         public event CP.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a get installed certificate ids request was sent.
+        /// An event sent whenever a response to a GetInstalledCertificateIds request was sent.
         /// </summary>
         public event CP.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
-
-        #endregion
-
-        #region OnGetLog
-
-        /// <summary>
-        /// An event sent whenever a get log request was sent.
-        /// </summary>
-        public event CP.OnGetLogRequestDelegate?   OnGetLogRequest;
-
-        /// <summary>
-        /// An event sent whenever a response to a get log request was sent.
-        /// </summary>
-        public event CP.OnGetLogResponseDelegate?  OnGetLogResponse;
 
         #endregion
 
         #region OnInstallCertificate
 
         /// <summary>
-        /// An event sent whenever an install certificate request was sent.
+        /// An event sent whenever an InstallCertificate request was sent.
         /// </summary>
         public event CP.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
 
         /// <summary>
-        /// An event sent whenever a response to an install certificate request was sent.
+        /// An event sent whenever a response to an InstallCertificate request was sent.
         /// </summary>
         public event CP.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+
+        #endregion
+
+
+        // Charging
+
+        #region OnCancelReservation
+
+        /// <summary>
+        /// An event sent whenever a CancelReservation request was sent.
+        /// </summary>
+        public event CP.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a CancelReservation request was sent.
+        /// </summary>
+        public event CP.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+
+        #endregion
+
+        #region OnClearChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a ClearChargingProfile request was sent.
+        /// </summary>
+        public event CP.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ClearChargingProfile request was sent.
+        /// </summary>
+        public event CP.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+
+        #endregion
+
+        #region OnGetCompositeSchedule
+
+        /// <summary>
+        /// An event sent whenever a GetCompositeSchedule request was sent.
+        /// </summary>
+        public event CP.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetCompositeSchedule request was sent.
+        /// </summary>
+        public event CP.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+
+        #endregion
+
+        #region OnRemoteStartTransaction
+
+        /// <summary>
+        /// An event sent whenever a RemoteStartTransaction request was sent.
+        /// </summary>
+        public event CP.OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a RemoteStartTransaction request was sent.
+        /// </summary>
+        public event CP.OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
+
+        #endregion
+
+        #region OnRemoteStopTransaction
+
+        /// <summary>
+        /// An event sent whenever a RemoteStopTransaction request was sent.
+        /// </summary>
+        public event CP.OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a RemoteStopTransaction request was sent.
+        /// </summary>
+        public event CP.OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
+
+        #endregion
+
+        #region OnReserveNow
+
+        /// <summary>
+        /// An event sent whenever a ReserveNow request was sent.
+        /// </summary>
+        public event CP.OnReserveNowRequestDelegate?   OnReserveNowRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ReserveNow request was sent.
+        /// </summary>
+        public event CP.OnReserveNowResponseDelegate?  OnReserveNowResponse;
+
+        #endregion
+
+        #region OnSetChargingProfile
+
+        /// <summary>
+        /// An event sent whenever a SetChargingProfile request was sent.
+        /// </summary>
+        public event CP.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SetChargingProfile request was sent.
+        /// </summary>
+        public event CP.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+
+        #endregion
+
+        #region OnUnlockConnector
+
+        /// <summary>
+        /// An event sent whenever an UnlockConnector request was sent.
+        /// </summary>
+        public event CP.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an UnlockConnector request was sent.
+        /// </summary>
+        public event CP.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+
+        #endregion
+
+
+        // Firmware
+
+        #region OnReset
+
+        /// <summary>
+        /// An event sent whenever a Reset request was sent.
+        /// </summary>
+        public event CP.OnResetRequestDelegate?   OnResetRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a Reset request was sent.
+        /// </summary>
+        public event CP.OnResetResponseDelegate?  OnResetResponse;
 
         #endregion
 
         #region OnSignedUpdateFirmware
 
         /// <summary>
-        /// An event sent whenever a signed update firmware request was sent.
+        /// An event sent whenever a SignedUpdateFirmware request was sent.
         /// </summary>
         public event CP.OnSignedUpdateFirmwareRequestDelegate?   OnSignedUpdateFirmwareRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a signed update firmware request was sent.
+        /// An event sent whenever a response to a SignedUpdateFirmware request was sent.
         /// </summary>
         public event CP.OnSignedUpdateFirmwareResponseDelegate?  OnSignedUpdateFirmwareResponse;
 
         #endregion
 
+        #region OnUpdateFirmware
+
+        /// <summary>
+        /// An event sent whenever an UpdateFirmware request was sent.
+        /// </summary>
+        public event CP.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an UpdateFirmware request was sent.
+        /// </summary>
+        public event CP.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+
         #endregion
+
+
+        // LocalList
+
+        #region OnClearCache
+
+        /// <summary>
+        /// An event sent whenever a ClearCache request was sent.
+        /// </summary>
+        public event CP.OnClearCacheRequestDelegate?   OnClearCacheRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ClearCache request was sent.
+        /// </summary>
+        public event CP.OnClearCacheResponseDelegate?  OnClearCacheResponse;
+
+        #endregion
+
+        #region OnGetLocalListVersion
+
+        /// <summary>
+        /// An event sent whenever a GetLocalListVersion request was sent.
+        /// </summary>
+        public event CP.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetLocalListVersion request was sent.
+        /// </summary>
+        public event CP.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+
+        #endregion
+
+        #region OnSendLocalList
+
+        /// <summary>
+        /// An event sent whenever a SendLocalList request was sent.
+        /// </summary>
+        public event CP.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SendLocalList request was sent.
+        /// </summary>
+        public event CP.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+
+        #endregion
+
+
+        // Monitoring
+
+        #region OnChangeAvailability
+
+        /// <summary>
+        /// An event sent whenever a ChangeAvailability request was sent.
+        /// </summary>
+        public event CP.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ChangeAvailability request was sent.
+        /// </summary>
+        public event CP.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+
+        #endregion
+
+        #region OnChangeConfiguration
+
+        /// <summary>
+        /// An event sent whenever a ChangeConfiguration request was sent.
+        /// </summary>
+        public event CP.OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ChangeConfiguration request was sent.
+        /// </summary>
+        public event CP.OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
+
+        #endregion
+
+        #region OnExtendedTriggerMessage
+
+        /// <summary>
+        /// An event sent whenever an ExtendedTriggerMessage request was sent.
+        /// </summary>
+        public event CP.OnExtendedTriggerMessageRequestDelegate?   OnExtendedTriggerMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an ExtendedTriggerMessage request was sent.
+        /// </summary>
+        public event CP.OnExtendedTriggerMessageResponseDelegate?  OnExtendedTriggerMessageResponse;
+
+        #endregion
+
+        #region OnGetConfiguration
+
+        /// <summary>
+        /// An event sent whenever a GetConfiguration request was sent.
+        /// </summary>
+        public event CP.OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetConfiguration request was sent.
+        /// </summary>
+        public event CP.OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
+
+        #endregion
+
+        #region OnGetDiagnostics
+
+        /// <summary>
+        /// An event sent whenever a GetDiagnostics request was sent.
+        /// </summary>
+        public event CP.OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetDiagnostics request was sent.
+        /// </summary>
+        public event CP.OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
+
+        #endregion
+
+        #region OnGetLog
+
+        /// <summary>
+        /// An event sent whenever a GetLog request was sent.
+        /// </summary>
+        public event CP.OnGetLogRequestDelegate?   OnGetLogRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetLog request was sent.
+        /// </summary>
+        public event CP.OnGetLogResponseDelegate?  OnGetLogResponse;
+
+        #endregion
+
+        #region OnTriggerMessage
+
+        /// <summary>
+        /// An event sent whenever a TriggerMessage request was sent.
+        /// </summary>
+        public event CP.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a TriggerMessage request was sent.
+        /// </summary>
+        public event CP.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+
+        #endregion
+
+
+        #region OnDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a reset request was sent.
+        /// </summary>
+        public event OCPP.CS.OnIncomingDataTransferRequestDelegate?   OnDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a reset request was sent.
+        /// </summary>
+        public event OCPP.CS.OnIncomingDataTransferResponseDelegate?  OnDataTransferResponse;
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region OnBinaryDataTransfer          (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a BinaryDataTransfer request will be sent to the charging station.
+        /// </summary>
+        public event OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a BinaryDataTransfer request was received.
+        /// </summary>
+        public event OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
+
+        #endregion
+
+        #region OnGetFile                     (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a GetFile request will be sent to the charging station.
+        /// </summary>
+        public event OnGetFileRequestDelegate?   OnGetFileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a GetFile request was received.
+        /// </summary>
+        public event OnGetFileResponseDelegate?  OnGetFileResponse;
+
+        #endregion
+
+        #region OnSendFile                    (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a SendFile request will be sent to the charging station.
+        /// </summary>
+        public event OnSendFileRequestDelegate?   OnSendFileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a SendFile request was received.
+        /// </summary>
+        public event OnSendFileResponseDelegate?  OnSendFileResponse;
+
+        #endregion
+
+        #region OnDeleteFile                    (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a DeleteFile request will be sent to the charging station.
+        /// </summary>
+        public event OnDeleteFileRequestDelegate?   OnDeleteFileRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a DeleteFile request was received.
+        /// </summary>
+        public event OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
+
+        #endregion
+
+
+        // E2E Security Extensions
+
+        #region AddSignaturePolicy            (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a AddSignaturePolicy request will be sent to the charging station.
+        /// </summary>
+        public event OnAddSignaturePolicyRequestDelegate?   OnAddSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a AddSignaturePolicy request was received.
+        /// </summary>
+        public event OnAddSignaturePolicyResponseDelegate?  OnAddSignaturePolicyResponse;
+
+        #endregion
+
+        #region UpdateSignaturePolicy         (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a UpdateSignaturePolicy request will be sent to the charging station.
+        /// </summary>
+        public event OnUpdateSignaturePolicyRequestDelegate?   OnUpdateSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a UpdateSignaturePolicy request was received.
+        /// </summary>
+        public event OnUpdateSignaturePolicyResponseDelegate?  OnUpdateSignaturePolicyResponse;
+
+        #endregion
+
+        #region DeleteSignaturePolicy         (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a DeleteSignaturePolicy request will be sent to the charging station.
+        /// </summary>
+        public event OnDeleteSignaturePolicyRequestDelegate?   OnDeleteSignaturePolicyRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a DeleteSignaturePolicy request was received.
+        /// </summary>
+        public event OnDeleteSignaturePolicyResponseDelegate?  OnDeleteSignaturePolicyResponse;
+
+        #endregion
+
+        #region AddUserRole                   (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a AddUserRole request will be sent to the charging station.
+        /// </summary>
+        public event OnAddUserRoleRequestDelegate?   OnAddUserRoleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a AddUserRole request was received.
+        /// </summary>
+        public event OnAddUserRoleResponseDelegate?  OnAddUserRoleResponse;
+
+        #endregion
+
+        #region UpdateUserRole                (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a UpdateUserRole request will be sent to the charging station.
+        /// </summary>
+        public event OnUpdateUserRoleRequestDelegate?   OnUpdateUserRoleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a UpdateUserRole request was received.
+        /// </summary>
+        public event OnUpdateUserRoleResponseDelegate?  OnUpdateUserRoleResponse;
+
+        #endregion
+
+        #region DeleteUserRole                (-Request/-Response)
+
+        /// <summary>
+        /// An event fired whenever a DeleteUserRole request will be sent to the charging station.
+        /// </summary>
+        public event OnDeleteUserRoleRequestDelegate?   OnDeleteUserRoleRequest;
+
+        /// <summary>
+        /// An event fired whenever a response to a DeleteUserRole request was received.
+        /// </summary>
+        public event OnDeleteUserRoleResponseDelegate?  OnDeleteUserRoleResponse;
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #region Custom JSON serializer delegates
+
+
+
+
+        CustomJObjectSerializerDelegate<DataTransferResponse>? CustomIncomingDataTransferResponseSerializer { get; set; }
+
+
+
+        #region Messages CentralSystem <- Charge Box
+
+        public CustomJObjectSerializerDelegate<ResetRequest>?                           CustomResetRequestSerializer                            { get; set; }
+        public CustomJObjectSerializerDelegate<CP.ResetResponse>?                       CustomResetResponseSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?              CustomChangeAvailabilityRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CP.ChangeAvailabilityResponse>?          CustomChangeAvailabilityResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<GetConfigurationRequest>?                CustomGetConfigurationRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CP.GetConfigurationResponse>?            CustomGetConfigurationResponseSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>?             CustomChangeConfigurationRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CP.ChangeConfigurationResponse>?         CustomChangeConfigurationResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.DataTransferRequest>?          CustomDataTransferRequestSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.DataTransferResponse>?           CustomDataTransferResponseSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<GetDiagnosticsRequest>?                  CustomGetDiagnosticsRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CP.GetDiagnosticsResponse>?              CustomGetDiagnosticsResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                  CustomTriggerMessageRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CP.TriggerMessageResponse>?              CustomTriggerMessageResponseSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?                  CustomUpdateFirmwareRequestSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<CP.UpdateFirmwareResponse>?              CustomUpdateFirmwareResponseSerializer                  { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<ReserveNowRequest>?                      CustomReserveNowRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<CP.ReserveNowResponse>?                  CustomReserveNowResponseSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<CancelReservationRequest>?               CustomCancelReservationRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CP.CancelReservationResponse>?           CustomCancelReservationResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<RemoteStartTransactionRequest>?          CustomRemoteStartTransactionRequestSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<CP.RemoteStartTransactionResponse>?      CustomRemoteStartTransactionResponseSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>?           CustomRemoteStopTransactionRequestSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<CP.RemoteStopTransactionResponse>?       CustomRemoteStopTransactionResponseSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?              CustomSetChargingProfileRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CP.SetChargingProfileResponse>?          CustomSetChargingProfileResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?            CustomClearChargingProfileRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CP.ClearChargingProfileResponse>?        CustomClearChargingProfileResponseSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?            CustomGetCompositeScheduleRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CP.GetCompositeScheduleResponse>?        CustomGetCompositeScheduleResponseSerializer            { get; set; }
+        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?                 CustomUnlockConnectorRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CP.UnlockConnectorResponse>?             CustomUnlockConnectorResponseSerializer                 { get; set; }
+
+        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?             CustomGetLocalListVersionRequestSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<CP.GetLocalListVersionResponse>?         CustomGetLocalListVersionResponseSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<SendLocalListRequest>?                   CustomSendLocalListRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CP.SendLocalListResponse>?               CustomSendLocalListResponseSerializer                   { get; set; }
+        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                      CustomClearCacheRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<CP.ClearCacheResponse>?                  CustomClearCacheResponseSerializer                      { get; set; }
+
+        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?               CustomCertificateSignedRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CP.CertificateSignedResponse>?           CustomCertificateSignedResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?               CustomDeleteCertificateRequestSerializer                { get; set; }
+        public CustomJObjectSerializerDelegate<CP.DeleteCertificateResponse>?           CustomDeleteCertificateResponseSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<ExtendedTriggerMessageRequest>?          CustomExtendedTriggerMessageRequestSerializer           { get; set; }
+        public CustomJObjectSerializerDelegate<CP.ExtendedTriggerMessageResponse>?      CustomExtendedTriggerMessageResponseSerializer          { get; set; }
+        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?      CustomGetInstalledCertificateIdsRequestSerializer       { get; set; }
+        public CustomJObjectSerializerDelegate<CP.GetInstalledCertificateIdsResponse>?  CustomGetInstalledCertificateIdsResponseSerializer      { get; set; }
+        public CustomJObjectSerializerDelegate<GetLogRequest>?                          CustomGetLogRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<CP.GetLogResponse>?                      CustomGetLogResponseSerializer                          { get; set; }
+        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?              CustomInstallCertificateRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CP.InstallCertificateResponse>?          CustomInstallCertificateResponseSerializer              { get; set; }
+        public CustomJObjectSerializerDelegate<SignedUpdateFirmwareRequest>?            CustomSignedUpdateFirmwareRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CP.SignedUpdateFirmwareResponse>?        CustomSignedUpdateFirmwareResponseSerializer            { get; set; }
+
+
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate<OCPP.CSMS.BinaryDataTransferResponse>?    CustomIncomingBinaryDataTransferResponseSerializer      { get; set; }
+
+
+        // Binary Data Streams Extensions
+
+        public CustomBinarySerializerDelegate <OCPP.CSMS.BinaryDataTransferRequest>?                 CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.GetFileRequest>?                            CustomGetFileRequestSerializer                               { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CSMS.SendFileRequest>?                           CustomSendFileRequestSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteFileRequest>?                         CustomDeleteFileRequestSerializer                            { get; set; }
+
+
+        // E2E Security Extensions
+
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.AddSignaturePolicyRequest>?                 CustomAddSignaturePolicyRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.UpdateSignaturePolicyRequest>?              CustomUpdateSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteSignaturePolicyRequest>?              CustomDeleteSignaturePolicyRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.AddUserRoleRequest>?                        CustomAddUserRoleRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.UpdateUserRoleRequest>?                     CustomUpdateUserRoleRequestSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.DeleteUserRoleRequest>?                     CustomDeleteUserRoleRequestSerializer                        { get; set; }
+
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferResponse>?                  CustomBinaryDataTransferResponseSerializer                   { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CS.GetFileResponse>?                             CustomGetFileResponseSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?                            CustomSendFileResponseSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?                          CustomDeleteFileResponseSerializer                           { get; set; }
+
+
+
+        #region Charging Station Request  Messages
+
+        public CustomJObjectSerializerDelegate<CP.BootNotificationRequest>?                          CustomBootNotificationRequestSerializer                      { get; set; }
+        public CustomJObjectSerializerDelegate<CP.HeartbeatRequest>?                                 CustomHeartbeatRequestSerializer                             { get; set; }
+
+        public CustomJObjectSerializerDelegate<CP.AuthorizeRequest>?                                 CustomAuthorizeRequestSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<CP.StartTransactionRequest>?                          CustomStartTransactionRequestRequestSerializer               { get; set; }
+        public CustomJObjectSerializerDelegate<CP.StatusNotificationRequest>?                        CustomStatusNotificationRequestSerializer                    { get; set; }
+        public CustomJObjectSerializerDelegate<CP.MeterValuesRequest>?                               CustomMeterValuesRequestSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<CP.StopTransactionRequest>?                           CustomStopTransactionRequestRequestSerializer                { get; set; }
+
+        public CustomJObjectSerializerDelegate<OCPP.CS.DataTransferRequest>?                         CustomIncomingDataTransferRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<CP.DiagnosticsStatusNotificationRequest>?             CustomDiagnosticsStatusNotificationRequestSerializer         { get; set; }
+        public CustomJObjectSerializerDelegate<CP.FirmwareStatusNotificationRequest>?                CustomFirmwareStatusNotificationRequestSerializer            { get; set; }
+
+
+        // Security extensions
+        public CustomJObjectSerializerDelegate<CP.SecurityEventNotificationRequest>?                 CustomSecurityEventNotificationRequestSerializer             { get; set; }
+        public CustomJObjectSerializerDelegate<CP.LogStatusNotificationRequest>?                     CustomLogStatusNotificationRequestSerializer                 { get; set; }
+        public CustomJObjectSerializerDelegate<CP.SignCertificateRequest>?                           CustomSignCertificateRequestSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<CP.SignedFirmwareStatusNotificationRequest>?          CustomSignedFirmwareStatusNotificationRequestSerializer      { get; set; }
+
+
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferRequest>?                   CustomIncomingBinaryDataTransferRequestSerializer            { get; set; }
+
+        #endregion
+
+        public CustomJObjectSerializerDelegate<ConfigurationKey>?                       CustomConfigurationKeySerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfile>?                        CustomChargingProfileSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedule>?                       CustomChargingScheduleSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?                 CustomChargingSchedulePeriodSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizationData>?                      CustomAuthorizationDataSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<IdTagInfo>?                              CustomIdTagInfoSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<CertificateHashData>?                    CustomCertificateHashDataSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<LogParameters>?                          CustomLogParametersSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<FirmwareImage>?                          CustomFirmwareImageSerializer                           { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<OCPP.Signature>?                         CustomSignatureSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<CustomData>?                             CustomCustomDataSerializer                              { get; set; }
+
+
+        // Binary Data Streams Extensions
+        public CustomBinarySerializerDelegate<OCPP.Signature>?                          CustomBinarySignatureSerializer                         { get; set; }
+
 
         #endregion
 
@@ -1025,9 +1412,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                                                 sharedSubprotocols,
                                                                                 cancellationToken) => {
 
-                // A new connection from the same networking node/charging station will replace the older one!
-                if (!reachableChargingBoxes.TryAdd(networkingNodeId, new Tuple<ICentralSystem, DateTime>(centralSystem, timestamp)))
-                     reachableChargingBoxes[networkingNodeId]      = new Tuple<ICentralSystem, DateTime>(centralSystem, timestamp);
+                // A new connection from the same networking node/charge box will replace the older one!
+                if (!reachableChargeBoxes.TryAdd(networkingNodeId, new Tuple<ICentralSystem, DateTime>(centralSystem, timestamp)))
+                     reachableChargeBoxes[networkingNodeId]      = new Tuple<ICentralSystem, DateTime>(centralSystem, timestamp);
 
 
                 var onNewWebSocketConnection = OnNewWebSocketConnection;
@@ -1495,56 +1882,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-
-
-
-            #region OnTextMessageRequest
-
-            centralSystemServer.OnTextMessageReceived += async (timestamp,
-                                                                webSocketServer,
-                                                                webSocketConnection,
-                                                                eventTrackingId,
-                                                                requestMessage,
-                                                                cancellationToken) => {
-
-                if (OnTextMessageRequest is not null)
-                    await OnTextMessageRequest.Invoke(timestamp,
-                                                      webSocketServer,
-                                                      webSocketConnection,
-                                                      eventTrackingId,
-                                                      requestMessage,
-                                                      cancellationToken);
-
-            };
-
-            #endregion
-
-            #region OnTextMessageResponse
-
-            centralSystemServer.OnTextMessageResponseSent += async (timestamp,
-                                                                    webSocketServer,
-                                                                    webSocketConnection,
-                                                                    eventTrackingId,
-                                                                    requestTimestamp,
-                                                                    requestMessage,
-                                                                    responseTimestamp,
-                                                                    responseMessage) => {
-
-                if (OnTextMessageResponse is not null)
-                    await OnTextMessageResponse.Invoke(timestamp,
-                                                       webSocketServer,
-                                                       webSocketConnection,
-                                                       eventTrackingId,
-                                                       requestTimestamp,
-                                                       requestMessage,
-                                                       responseTimestamp,
-                                                       responseMessage);
-
-            };
-
-            #endregion
-
-
             Attach(centralSystemServer);
 
 
@@ -1590,7 +1927,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                Select (loggingDelegate => loggingDelegate.Invoke(
                                                                               startTime,
                                                                               this,
-                                                                           //   connection,
+                                                                              connection,
                                                                               request
                                                                           )).
                                                ToArray());
@@ -1610,14 +1947,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                Console.WriteLine("OnBootNotification: " + request.ChargeBoxId             + ", " +
+                Console.WriteLine("OnBootNotification: " + request.NetworkingNodeId             + ", " +
                                                            request.ChargePointVendor       + ", " +
                                                            request.ChargePointModel        + ", " +
                                                            request.ChargePointSerialNumber + ", " +
                                                            request.ChargeBoxSerialNumber);
 
 
-                //await AddChargeBoxIfNotExists(new ChargeBox(request.ChargeBoxId,
+                //await AddChargeBoxIfNotExists(new ChargeBox(request.NetworkingNodeId,
                 //                                            1,
                 //                                            request.ChargePointVendor,
                 //                                            request.ChargePointModel,
@@ -1629,26 +1966,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 //                                            request.IMSI,
                 //                                            request.MeterType,
                 //                                            request.MeterSerialNumber));
-
-
-                if (!reachableChargingBoxes.ContainsKey(request.ChargeBoxId))
-                {
-
-                    if (sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.TryAdd(request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
-
-                }
-                else
-                {
-
-                    if (sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
-
-                }
 
 
                 await Task.Delay(100, cancellationToken);
@@ -1675,7 +1992,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                Select (loggingDelegate => loggingDelegate.Invoke(
                                                                               responseTime,
                                                                               this,
-                                                                              //connection,
+                                                                              connection,
                                                                               request,
                                                                               response,
                                                                               responseTime - startTime
@@ -1719,6 +2036,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnHeartbeatRequest?.Invoke(startTime,
                                                this,
+                                               connection,
                                                Request);
 
                 }
@@ -1730,26 +2048,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                Console.WriteLine("OnHeartbeat: " + Request.ChargeBoxId);
-
-                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
-                {
-
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
-
-                }
-                else
-                {
-
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
-
-                }
+                Console.WriteLine("OnHeartbeat: " + Request.NetworkingNodeId);
 
 
                 await Task.Delay(100, CancellationToken);
@@ -1766,6 +2065,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnHeartbeatResponse?.Invoke(Timestamp.Now,
                                                 this,
+                                                connection,
                                                 Request,
                                                 response,
                                                 Timestamp.Now - startTime);
@@ -1802,6 +2102,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnAuthorizeRequest?.Invoke(startTime,
                                                this,
+                                               connection,
                                                Request);
 
                 }
@@ -1813,27 +2114,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                Console.WriteLine("OnAuthorize: " + Request.ChargeBoxId + ", " +
+                Console.WriteLine("OnAuthorize: " + Request.NetworkingNodeId + ", " +
                                                     Request.IdTag);
-
-                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
-                {
-
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
-
-                }
-                else
-                {
-
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
-
-                }
 
                 await Task.Delay(100, CancellationToken);
 
@@ -1853,6 +2135,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnAuthorizeResponse?.Invoke(Timestamp.Now,
                                                 this,
+                                                connection,
                                                 Request,
                                                 response,
                                                 Timestamp.Now - startTime);
@@ -1888,6 +2171,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnStartTransactionRequest?.Invoke(startTime,
                                                       this,
+                                                      connection,
                                                       Request);
 
                 }
@@ -1899,31 +2183,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                Console.WriteLine("OnStartTransaction: " + Request.ChargeBoxId + ", " +
+                Console.WriteLine("OnStartTransaction: " + Request.NetworkingNodeId + ", " +
                                                            Request.ConnectorId + ", " +
                                                            Request.IdTag + ", " +
                                                            Request.StartTimestamp + ", " +
                                                            Request.MeterStart + ", " +
                                                            Request.ReservationId ?? "-");
-
-                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
-                {
-
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
-
-                    //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
-
-                }
-                else
-                {
-
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
-
-                    //if (Sender is CentralSystemSOAPServer centralSystemSOAPServer)
-
-                }
 
                 await Task.Delay(100, CancellationToken);
 
@@ -1932,7 +2197,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                             IdTagInfo:      new IdTagInfo(Status:      AuthorizationStatus.Accepted,
                                                                                           ExpiryDate:  Timestamp.Now.AddDays(3)));
 
-                var key = Request.ChargeBoxId + "*" + Request.ConnectorId;
+                var key = Request.NetworkingNodeId + "*" + Request.ConnectorId;
 
                 if (TransactionIds.ContainsKey(key))
                     TransactionIds[key] = response.TransactionId;
@@ -1947,6 +2212,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnStartTransactionResponse?.Invoke(Timestamp.Now,
                                                        this,
+                                                       connection,
                                                        Request,
                                                        response,
                                                        Timestamp.Now - startTime);
@@ -1981,8 +2247,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 {
 
                     OnStatusNotificationRequest?.Invoke(startTime,
-                                                      this,
-                                                      Request);
+                                                        this,
+                                                        connection,
+                                                        Request);
 
                 }
                 catch (Exception e)
@@ -2001,16 +2268,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                              Request.VendorId        + ", " +
                                                              Request.VendorErrorCode);
 
-                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
-                {
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
-                }
-                else
-                {
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
-                }
 
                 await Task.Delay(100, CancellationToken);
 
@@ -2024,6 +2281,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnStatusNotificationResponse?.Invoke(Timestamp.Now,
                                                          this,
+                                                         connection,
                                                          Request,
                                                          response,
                                                          Timestamp.Now - startTime);
@@ -2058,8 +2316,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 {
 
                     OnMeterValuesRequest?.Invoke(startTime,
-                                                      this,
-                                                      Request);
+                                                 this,
+                                                 connection,
+                                                 Request);
 
                 }
                 catch (Exception e)
@@ -2076,16 +2335,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 Console.WriteLine(Request.MeterValues.SafeSelect(meterValue => meterValue.Timestamp.ToIso8601() +
                                           meterValue.SampledValues.SafeSelect(sampledValue => sampledValue.Context + ", " + sampledValue.Value + ", " + sampledValue.Value).AggregateWith("; ")).AggregateWith(Environment.NewLine));
 
-                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
-                {
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
-                }
-                else
-                {
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
-                }
 
                 await Task.Delay(100, CancellationToken);
 
@@ -2098,10 +2347,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 {
 
                     OnMeterValuesResponse?.Invoke(Timestamp.Now,
-                                                       this,
-                                                       Request,
-                                                       response,
-                                                       Timestamp.Now - startTime);
+                                                  this,
+                                                  connection,
+                                                  Request,
+                                                  response,
+                                                  Timestamp.Now - startTime);
 
                 }
                 catch (Exception e)
@@ -2134,6 +2384,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnStopTransactionRequest?.Invoke(startTime,
                                                      this,
+                                                     connection,
                                                      Request);
 
                 }
@@ -2172,6 +2423,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnStopTransactionResponse?.Invoke(Timestamp.Now,
                                                       this,
+                                                      connection,
                                                       Request,
                                                       response,
                                                       Timestamp.Now - startTime);
@@ -2196,7 +2448,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CentralSystemServer.OnIncomingDataTransfer += async (LogTimestamp,
                                                                  Sender,
                                                                  connection,
-                                                                 Request,
+                                                                 request,
                                                                  CancellationToken) => {
 
                 #region Send OnIncomingDataRequest event
@@ -2208,7 +2460,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnIncomingDataTransferRequest?.Invoke(startTime,
                                                           this,
-                                                          Request);
+                                                          connection,
+                                                          request);
 
                 }
                 catch (Exception e)
@@ -2219,26 +2472,99 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 #endregion
 
 
-                Console.WriteLine("OnIncomingDataTransfer: " + Request.VendorId  + ", " +
-                                                               Request.MessageId + ", " +
-                                                               Request.Data);
+                // VendorId
+                // MessageId
+                // Data
 
-                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
+                DebugX.Log("OnIncomingDataTransfer: " + request.VendorId  + ", " +
+                                                        request.MessageId + ", " +
+                                                        request.Data);
+
+
+                var responseData = request.Data;
+
+                if (request.Data is not null)
                 {
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
-                }
-                else
-                {
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
+
+                    if      (request.Data.Type == JTokenType.String)
+                        responseData = request.Data.ToString().Reverse();
+
+                    else if (request.Data.Type == JTokenType.Object) {
+
+                        var responseObject = new JObject();
+
+                        foreach (var property in (request.Data as JObject)!)
+                        {
+                            if (property.Value?.Type == JTokenType.String)
+                                responseObject.Add(property.Key,
+                                                   property.Value.ToString().Reverse());
+                        }
+
+                        responseData = responseObject;
+
+                    }
+
+                    else if (request.Data.Type == JTokenType.Array) {
+
+                        var responseArray = new JArray();
+
+                        foreach (var element in (request.Data as JArray)!)
+                        {
+                            if (element?.Type == JTokenType.String)
+                                responseArray.Add(element.ToString().Reverse());
+                        }
+
+                        responseData = responseArray;
+
+                    }
+
                 }
 
-                await Task.Delay(100, CancellationToken);
 
-                var response = new DataTransferResponse(Request:  Request,
-                                                        Status:   DataTransferStatus.Accepted,
-                                                        Data:     Request.Data.Reverse());
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToJSON(
+                                       CustomIncomingDataTransferRequestSerializer,
+                                       CustomSignatureSerializer,
+                                       CustomCustomDataSerializer
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new DataTransferResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : request.VendorId == Vendor_Id.GraphDefined
+
+                                         ? new (
+                                               Request:      request,
+                                               Status:       DataTransferStatus.Accepted,
+                                               Data:         responseData,
+                                               StatusInfo:   null,
+                                               CustomData:   null
+                                           )
+
+                                         : new DataTransferResponse(
+                                               Request:      request,
+                                               Status:       DataTransferStatus.Rejected,
+                                               Data:         null,
+                                               StatusInfo:   null,
+                                               CustomData:   null
+                                         );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomIncomingDataTransferResponseSerializer,
+                        null,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
 
 
                 #region Send OnIncomingDataResponse event
@@ -2248,7 +2574,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
                                                            this,
-                                                           Request,
+                                                           connection,
+                                                           request,
                                                            response,
                                                            Timestamp.Now - startTime);
 
@@ -2283,6 +2610,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnDiagnosticsStatusNotificationRequest?.Invoke(startTime,
                                                                    this,
+                                                                   connection,
                                                                    Request);
 
                 }
@@ -2296,16 +2624,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 Console.WriteLine("OnDiagnosticsStatusNotification: " + Request.Status);
 
-                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
-                {
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
-                }
-                else
-                {
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
-                }
 
                 await Task.Delay(100, CancellationToken);
 
@@ -2319,6 +2637,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnDiagnosticsStatusNotificationResponse?.Invoke(Timestamp.Now,
                                                                     this,
+                                                                    connection,
                                                                     Request,
                                                                     response,
                                                                     Timestamp.Now - startTime);
@@ -2354,6 +2673,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnFirmwareStatusNotificationRequest?.Invoke(startTime,
                                                                 this,
+                                                                connection,
                                                                 Request);
 
                 }
@@ -2367,17 +2687,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 Console.WriteLine("OnFirmwareStatus: " + Request.Status);
 
-                if (!reachableChargingBoxes.ContainsKey(Request.ChargeBoxId))
-                {
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes.TryAdd(Request.ChargeBoxId, new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now));
-                }
-                else
-                {
-                    if (Sender is CentralSystemWSServer centralSystemWSServer)
-                        reachableChargingBoxes[Request.ChargeBoxId] = new Tuple<ICentralSystem, DateTime>(centralSystemWSServer, Timestamp.Now);
-                }
-
                 await Task.Delay(100, CancellationToken);
 
                 var response = new FirmwareStatusNotificationResponse(Request);
@@ -2390,6 +2699,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
                                                                  this,
+                                                                 connection,
                                                                  Request,
                                                                  response,
                                                                  Timestamp.Now - startTime);
@@ -2408,19 +2718,389 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #endregion
 
+
+            // Security extensions
+
+            #region OnSecurityEventNotification
+
+            CentralSystemServer.OnSecurityEventNotification += async (LogTimestamp,
+                                                                       Sender,
+                                                                       connection,
+                                                                       Request,
+                                                                       CancellationToken) => {
+
+                #region Send OnSecurityEventNotificationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSecurityEventNotificationRequest?.Invoke(startTime,
+                                                                this,
+                                                                connection,
+                                                                Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecurityEventNotificationRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnSecurityEventNotification: " );
+
+                await Task.Delay(100, CancellationToken);
+
+                var response = new SecurityEventNotificationResponse(Request);
+
+
+                #region Send OnFirmwareStatusResponse event
+
+                try
+                {
+
+                    OnSecurityEventNotificationResponse?.Invoke(Timestamp.Now,
+                                                                 this,
+                                                                 connection,
+                                                                 Request,
+                                                                 response,
+                                                                 Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSecurityEventNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnLogStatusNotification
+
+            CentralSystemServer.OnLogStatusNotification += async (LogTimestamp,
+                                                                       Sender,
+                                                                       connection,
+                                                                       Request,
+                                                                       CancellationToken) => {
+
+                #region Send OnLogStatusNotificationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnLogStatusNotificationRequest?.Invoke(startTime,
+                                                                this,
+                                                                connection,
+                                                                Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnLogStatusNotificationRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnLogStatusNotification: " + Request.Status);
+
+                await Task.Delay(100, CancellationToken);
+
+                var response = new LogStatusNotificationResponse(Request);
+
+
+                #region Send OnFirmwareStatusResponse event
+
+                try
+                {
+
+                    OnLogStatusNotificationResponse?.Invoke(Timestamp.Now,
+                                                                 this,
+                                                                 connection,
+                                                                 Request,
+                                                                 response,
+                                                                 Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnLogStatusNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnSignCertificate
+
+            CentralSystemServer.OnSignCertificate += async (LogTimestamp,
+                                                                       Sender,
+                                                                       connection,
+                                                                       Request,
+                                                                       CancellationToken) => {
+
+                #region Send OnSignCertificateRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSignCertificateRequest?.Invoke(startTime,
+                                                                this,
+                                                                connection,
+                                                                Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignCertificateRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnSignCertificate: " );
+
+                await Task.Delay(100, CancellationToken);
+
+                var response = new SignCertificateResponse(Request, GenericStatus.Accepted);
+
+
+                #region Send OnFirmwareStatusResponse event
+
+                try
+                {
+
+                    OnSignCertificateResponse?.Invoke(Timestamp.Now,
+                                                                 this,
+                                                                 connection,
+                                                                 Request,
+                                                                 response,
+                                                                 Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignCertificateResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+            #region OnSignedFirmwareStatusNotification
+
+            CentralSystemServer.OnSignedFirmwareStatusNotification += async (LogTimestamp,
+                                                                       Sender,
+                                                                       connection,
+                                                                       Request,
+                                                                       CancellationToken) => {
+
+                #region Send OnSignedFirmwareStatusNotificationRequest event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnSignedFirmwareStatusNotificationRequest?.Invoke(startTime,
+                                                                this,
+                                                                connection,
+                                                                Request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignedFirmwareStatusNotificationRequest));
+                }
+
+                #endregion
+
+
+                Console.WriteLine("OnSignedFirmwareStatusNotification: " + Request.Status);
+
+                await Task.Delay(100, CancellationToken);
+
+                var response = new SignedFirmwareStatusNotificationResponse(Request);
+
+
+                #region Send OnFirmwareStatusResponse event
+
+                try
+                {
+
+                    OnSignedFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
+                                                                 this,
+                                                                 connection,
+                                                                 Request,
+                                                                 response,
+                                                                 Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSignedFirmwareStatusNotificationResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
+
+            // Binary Data Streams Extensions
+
+            #region OnIncomingBinaryDataTransfer
+
+            CentralSystemServer.OnIncomingBinaryDataTransfer += async (timestamp,
+                                                                       sender,
+                                                                       connection,
+                                                                       request,
+                                                                       cancellationToken) => {
+
+                #region Send OnIncomingBinaryDataTransfer event
+
+                var startTime = Timestamp.Now;
+
+                try
+                {
+
+                    OnIncomingBinaryDataTransferRequest?.Invoke(startTime,
+                                                                this,
+                                                                connection,
+                                                                request);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnIncomingBinaryDataTransferRequest));
+                }
+
+                #endregion
+
+
+                // VendorId
+                // MessageId
+                // BinaryData
+
+                DebugX.Log("OnIncomingBinaryDataTransfer: " + request.VendorId  + ", " +
+                                                              request.MessageId + ", " +
+                                                              request.Data?.ToUTF8String() ?? "-");
+
+
+                var responseBinaryData = Array.Empty<byte>();
+
+                if (request.Data is not null)
+                {
+                    responseBinaryData = ((Byte[]) request.Data.Clone()).Reverse();
+                }
+
+
+                var response = !SignaturePolicy.VerifyRequestMessage(
+                                   request,
+                                   request.ToBinary(
+                                       CustomIncomingBinaryDataTransferRequestSerializer,
+                                       CustomBinarySignatureSerializer,
+                                       IncludeSignatures: false
+                                   ),
+                                   out var errorResponse
+                               )
+
+                                   ? new OCPP.CSMS.BinaryDataTransferResponse(
+                                         Request:      request,
+                                         Result:       Result.SignatureError(
+                                                           $"Invalid signature(s): {errorResponse}"
+                                                       )
+                                     )
+
+                                   : request.VendorId == Vendor_Id.GraphDefined
+
+                                         ? new (
+                                               Request:                request,
+                                               Status:                 BinaryDataTransferStatus.Accepted,
+                                               AdditionalStatusInfo:   null,
+                                               Data:                   responseBinaryData
+                                           )
+
+                                         : new OCPP.CSMS.BinaryDataTransferResponse(
+                                               Request:                request,
+                                               Status:                 BinaryDataTransferStatus.Rejected,
+                                               AdditionalStatusInfo:   null,
+                                               Data:                   responseBinaryData
+                                           );
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToBinary(
+                        CustomIncomingBinaryDataTransferResponseSerializer,
+                        null, //CustomStatusInfoSerializer,
+                        CustomBinarySignatureSerializer,
+                        IncludeSignatures: false
+                    ),
+                    out var errorResponse2);
+
+
+                #region Send OnIncomingBinaryDataTransferResponse event
+
+                try
+                {
+
+                    OnIncomingBinaryDataTransferResponse?.Invoke(Timestamp.Now,
+                                                                 this,
+                                                                 connection,
+                                                                 request,
+                                                                 response,
+                                                                 Timestamp.Now - startTime);
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnIncomingBinaryDataTransferResponse));
+                }
+
+                #endregion
+
+                return response;
+
+            };
+
+            #endregion
+
         }
 
         #endregion
 
 
-        #region AddHTTPBasicAuth(ChargeBoxId, Password)
+        #region AddHTTPBasicAuth(NetworkingNodeId, Password)
 
         /// <summary>
         /// Add the given HTTP Basic Authentication password for the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of the charge box.</param>
+        /// <param name="NetworkingNodeId">The unique identification of the charge box.</param>
         /// <param name="Password">The password of the charge box.</param>
-        public void AddHTTPBasicAuth(ChargeBox_Id  ChargeBoxId,
+        public void AddHTTPBasicAuth(ChargeBox_Id  NetworkingNodeId,
                                      String        Password)
         {
 
@@ -2429,8 +3109,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 if (centralSystemServer is CentralSystemWSServer centralSystemWSServer)
                 {
 
-                    centralSystemWSServer.AddHTTPBasicAuth(ChargeBoxId,
-                                                           Password);
+                    //centralSystemWSServer.AddHTTPBasicAuth(NetworkingNodeId,
+                    //                                       Password);
 
                 }
             }
@@ -3080,7 +3760,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            this
                        );
 
-            //if (ChargeBox.Id.Length < MinChargeBoxIdLength)
+            //if (ChargeBox.Id.Length < MinNetworkingNodeIdLength)
             //    return AddChargeBoxResult.ArgumentError(ChargeBox,
             //                                               eventTrackingId,
             //                                               nameof(ChargeBox),
@@ -3242,7 +3922,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            this
                        );
 
-            //if (ChargeBox.Id.Length < MinChargeBoxIdLength)
+            //if (ChargeBox.Id.Length < MinNetworkingNodeIdLength)
             //    return AddChargeBoxResult.ArgumentError(ChargeBox,
             //                                                          eventTrackingId,
             //                                                          nameof(ChargeBox),
@@ -3398,7 +4078,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                            this
                        );
 
-            //if (ChargeBox.Id.Length < MinChargeBoxIdLength)
+            //if (ChargeBox.Id.Length < MinNetworkingNodeIdLength)
             //    return AddOrUpdateChargeBoxResult.ArgumentError(ChargeBox,
             //                                                       eventTrackingId,
             //                                                       nameof(ChargeBox),
@@ -4110,30 +4790,30 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region ChargeBoxExists(ChargeBoxId)
+        #region ChargeBoxExists(NetworkingNodeId)
 
         /// <summary>
         /// Determines whether the given chargeBox identification exists within this API.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        protected internal Boolean _ChargeBoxExists(ChargeBox_Id ChargeBoxId)
+        /// <param name="NetworkingNodeId">The unique identification of an charge box.</param>
+        protected internal Boolean _ChargeBoxExists(ChargeBox_Id NetworkingNodeId)
 
-            => ChargeBoxId.IsNotNullOrEmpty && chargeBoxes.ContainsKey(ChargeBoxId);
-
-        /// <summary>
-        /// Determines whether the given chargeBox identification exists within this API.
-        /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        protected internal Boolean _ChargeBoxExists(ChargeBox_Id? ChargeBoxId)
-
-            => ChargeBoxId.IsNotNullOrEmpty() && chargeBoxes.ContainsKey(ChargeBoxId.Value);
-
+            => NetworkingNodeId.IsNotNullOrEmpty && chargeBoxes.ContainsKey(NetworkingNodeId);
 
         /// <summary>
         /// Determines whether the given chargeBox identification exists within this API.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        public Boolean ChargeBoxExists(ChargeBox_Id ChargeBoxId)
+        /// <param name="NetworkingNodeId">The unique identification of an charge box.</param>
+        protected internal Boolean _ChargeBoxExists(ChargeBox_Id? NetworkingNodeId)
+
+            => NetworkingNodeId.IsNotNullOrEmpty() && chargeBoxes.ContainsKey(NetworkingNodeId.Value);
+
+
+        /// <summary>
+        /// Determines whether the given chargeBox identification exists within this API.
+        /// </summary>
+        /// <param name="NetworkingNodeId">The unique identification of an charge box.</param>
+        public Boolean ChargeBoxExists(ChargeBox_Id NetworkingNodeId)
         {
 
             if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
@@ -4141,7 +4821,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 try
                 {
 
-                    return _ChargeBoxExists(ChargeBoxId);
+                    return _ChargeBoxExists(NetworkingNodeId);
 
                 }
                 catch
@@ -4164,8 +4844,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Determines whether the given chargeBox identification exists within this API.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        public Boolean ChargeBoxExists(ChargeBox_Id? ChargeBoxId)
+        /// <param name="NetworkingNodeId">The unique identification of an charge box.</param>
+        public Boolean ChargeBoxExists(ChargeBox_Id? NetworkingNodeId)
         {
 
             if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
@@ -4173,7 +4853,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 try
                 {
 
-                    return _ChargeBoxExists(ChargeBoxId);
+                    return _ChargeBoxExists(NetworkingNodeId);
 
                 }
                 catch
@@ -4195,16 +4875,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region GetChargeBox   (ChargeBoxId)
+        #region GetChargeBox   (NetworkingNodeId)
 
         /// <summary>
         /// Get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        protected internal ChargeBox? _GetChargeBox(ChargeBox_Id ChargeBoxId)
+        /// <param name="NetworkingNodeId">The unique identification of an charge box.</param>
+        protected internal ChargeBox? _GetChargeBox(ChargeBox_Id NetworkingNodeId)
         {
 
-            if (ChargeBoxId.IsNotNullOrEmpty && chargeBoxes.TryGetValue(ChargeBoxId, out var chargeBox))
+            if (NetworkingNodeId.IsNotNullOrEmpty && chargeBoxes.TryGetValue(NetworkingNodeId, out var chargeBox))
                 return chargeBox;
 
             return default;
@@ -4214,11 +4894,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        protected internal ChargeBox? _GetChargeBox(ChargeBox_Id? ChargeBoxId)
+        /// <param name="NetworkingNodeId">The unique identification of an charge box.</param>
+        protected internal ChargeBox? _GetChargeBox(ChargeBox_Id? NetworkingNodeId)
         {
 
-            if (ChargeBoxId is not null && chargeBoxes.TryGetValue(ChargeBoxId.Value, out var chargeBox))
+            if (NetworkingNodeId is not null && chargeBoxes.TryGetValue(NetworkingNodeId.Value, out var chargeBox))
                 return chargeBox;
 
             return default;
@@ -4229,8 +4909,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        public ChargeBox? GetChargeBox(ChargeBox_Id ChargeBoxId)
+        /// <param name="NetworkingNodeId">The unique identification of an charge box.</param>
+        public ChargeBox? GetChargeBox(ChargeBox_Id NetworkingNodeId)
         {
 
             if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
@@ -4238,7 +4918,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 try
                 {
 
-                    return _GetChargeBox(ChargeBoxId);
+                    return _GetChargeBox(NetworkingNodeId);
 
                 }
                 catch
@@ -4261,8 +4941,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
-        public ChargeBox? GetChargeBox(ChargeBox_Id? ChargeBoxId)
+        /// <param name="NetworkingNodeId">The unique identification of an charge box.</param>
+        public ChargeBox? GetChargeBox(ChargeBox_Id? NetworkingNodeId)
         {
 
             if (ChargeBoxesSemaphore.Wait(SemaphoreSlimTimeout))
@@ -4270,7 +4950,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 try
                 {
 
-                    return _GetChargeBox(ChargeBoxId);
+                    return _GetChargeBox(NetworkingNodeId);
 
                 }
                 catch
@@ -4292,18 +4972,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region TryGetChargeBox(ChargeBoxId, out ChargeBox)
+        #region TryGetChargeBox(NetworkingNodeId, out ChargeBox)
 
         /// <summary>
         /// Try to get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="NetworkingNodeId">The unique identification of an charge box.</param>
         /// <param name="ChargeBox">The charge box.</param>
-        protected internal Boolean _TryGetChargeBox(ChargeBox_Id    ChargeBoxId,
+        protected internal Boolean _TryGetChargeBox(ChargeBox_Id    NetworkingNodeId,
                                                     out ChargeBox?  ChargeBox)
         {
 
-            if (ChargeBoxId.IsNotNullOrEmpty && chargeBoxes.TryGetValue(ChargeBoxId, out var chargeBox))
+            if (NetworkingNodeId.IsNotNullOrEmpty && chargeBoxes.TryGetValue(NetworkingNodeId, out var chargeBox))
             {
                 ChargeBox = chargeBox;
                 return true;
@@ -4317,13 +4997,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Try to get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="NetworkingNodeId">The unique identification of an charge box.</param>
         /// <param name="ChargeBox">The charge box.</param>
-        protected internal Boolean _TryGetChargeBox(ChargeBox_Id?   ChargeBoxId,
+        protected internal Boolean _TryGetChargeBox(ChargeBox_Id?   NetworkingNodeId,
                                                     out ChargeBox?  ChargeBox)
         {
 
-            if (ChargeBoxId is not null && chargeBoxes.TryGetValue(ChargeBoxId.Value, out var chargeBox))
+            if (NetworkingNodeId is not null && chargeBoxes.TryGetValue(NetworkingNodeId.Value, out var chargeBox))
             {
                 ChargeBox = chargeBox;
                 return true;
@@ -4338,9 +5018,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Try to get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="NetworkingNodeId">The unique identification of an charge box.</param>
         /// <param name="ChargeBox">The charge box.</param>
-        public Boolean TryGetChargeBox(ChargeBox_Id    ChargeBoxId,
+        public Boolean TryGetChargeBox(ChargeBox_Id    NetworkingNodeId,
                                        out ChargeBox?  ChargeBox)
         {
 
@@ -4349,7 +5029,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 try
                 {
 
-                    return _TryGetChargeBox(ChargeBoxId, out ChargeBox);
+                    return _TryGetChargeBox(NetworkingNodeId, out ChargeBox);
 
                 }
                 catch
@@ -4373,9 +5053,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// Try to get the chargeBox having the given unique identification.
         /// </summary>
-        /// <param name="ChargeBoxId">The unique identification of an charge box.</param>
+        /// <param name="NetworkingNodeId">The unique identification of an charge box.</param>
         /// <param name="ChargeBox">The charge box.</param>
-        public Boolean TryGetChargeBox(ChargeBox_Id?   ChargeBoxId,
+        public Boolean TryGetChargeBox(ChargeBox_Id?   NetworkingNodeId,
                                        out ChargeBox?  ChargeBox)
         {
 
@@ -4384,7 +5064,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 try
                 {
 
-                    return _TryGetChargeBox(ChargeBoxId, out ChargeBox);
+                    return _TryGetChargeBox(NetworkingNodeId, out ChargeBox);
 
                 }
                 catch
@@ -4409,6 +5089,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
+
+        #region CSMS -> Charging Station Messages
 
         #region (private) NextRequestId
 
@@ -4427,55 +5109,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region Reset                 (ChargeBoxId, ResetType, ...)
+        #region Reset                       (Request)
 
         /// <summary>
         /// Reset the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ResetType">The type of reset that the charge point should perform.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A Reset request.</param>
         public async Task<CP.ResetResponse>
-
-            Reset(ChargeBox_Id       ChargeBoxId,
-                  ResetTypes         ResetType,
-
-                  DateTime?          RequestTimestamp    = null,
-                  TimeSpan?          RequestTimeout      = null,
-                  EventTracking_Id?  EventTrackingId     = null,
-                  CancellationToken  CancellationToken   = default)
+            Reset(ResetRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new ResetRequest(
-                                 ChargeBoxId,
-                                 ResetType,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnResetRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnResetRequest?.Invoke(startTime,
                                        this,
-                                       request);
+                                       Request);
             }
             catch (Exception e)
             {
@@ -4485,12 +5139,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.Reset(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomResetRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.ResetResponse(request,
-                                                      Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.Reset(Request)
+
+                                      : new CP.ResetResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.ResetResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomResetResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnResetResponse event
@@ -4502,7 +5185,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 OnResetResponse?.Invoke(endTime,
                                         this,
-                                        request,
+                                        Request,
                                         response,
                                         endTime - startTime);
 
@@ -4520,58 +5203,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ChangeAvailability    (ChargeBoxId, ConnectorId, Availability, ...)
+        #region ChangeAvailability                       (Request)
 
         /// <summary>
-        /// Change the availability of the given charge box.
+        /// ChangeAvailability the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ConnectorId">The identification of the connector for which its availability should be changed. Id '0' (zero) is used if the availability of the entire charge point and all its connectors should be changed.</param>
-        /// <param name="Availability">The new availability of the charge point or charge point connector.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A ChangeAvailability request.</param>
         public async Task<CP.ChangeAvailabilityResponse>
-
-            ChangeAvailability(ChargeBox_Id       ChargeBoxId,
-                               Connector_Id       ConnectorId,
-                               Availabilities     Availability,
-
-                               DateTime?          RequestTimestamp    = null,
-                               TimeSpan?          RequestTimeout      = null,
-                               EventTracking_Id?  EventTrackingId     = null,
-                               CancellationToken  CancellationToken   = default)
+            ChangeAvailability(ChangeAvailabilityRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new ChangeAvailabilityRequest(
-                                 ChargeBoxId,
-                                 ConnectorId,
-                                 Availability,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnChangeAvailabilityRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnChangeAvailabilityRequest?.Invoke(startTime,
-                                                    this,
-                                                    request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -4581,12 +5233,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.ChangeAvailability(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomChangeAvailabilityRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.ChangeAvailabilityResponse(request,
-                                                                   Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.ChangeAvailability(Request)
+
+                                      : new CP.ChangeAvailabilityResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.ChangeAvailabilityResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomChangeAvailabilityResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnChangeAvailabilityResponse event
@@ -4597,10 +5278,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnChangeAvailabilityResponse?.Invoke(endTime,
-                                                     this,
-                                                     request,
-                                                     response,
-                                                     endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -4616,55 +5297,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region GetConfiguration      (ChargeBoxId, Keys = null, ...)
+        #region GetConfiguration                       (Request)
 
         /// <summary>
-        /// Get the configuration of the given charge box.
+        /// GetConfiguration the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="Keys">An optional enumeration of keys for which the configuration is requested. Return all keys if empty.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A GetConfiguration request.</param>
         public async Task<CP.GetConfigurationResponse>
-
-            GetConfiguration(ChargeBox_Id          ChargeBoxId,
-                             IEnumerable<String>?  Keys                = null,
-
-                             DateTime?             RequestTimestamp    = null,
-                             TimeSpan?             RequestTimeout      = null,
-                             EventTracking_Id?     EventTrackingId     = null,
-                             CancellationToken     CancellationToken   = default)
+            GetConfiguration(GetConfigurationRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new GetConfigurationRequest(
-                                 ChargeBoxId,
-                                 Keys,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnGetConfigurationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnGetConfigurationRequest?.Invoke(startTime,
-                                                  this,
-                                                  request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -4674,12 +5327,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.GetConfiguration(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetConfigurationRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.GetConfigurationResponse(request,
-                                                                 Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.GetConfiguration(Request)
+
+                                      : new CP.GetConfigurationResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.GetConfigurationResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetConfigurationResponseSerializer,
+                    CustomConfigurationKeySerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnGetConfigurationResponse event
@@ -4690,10 +5373,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnGetConfigurationResponse?.Invoke(endTime,
-                                                   this,
-                                                   request,
-                                                   response,
-                                                   endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -4709,58 +5392,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ChangeConfiguration   (ChargeBoxId, Key, Value, ...)
+        #region ChangeConfiguration                       (Request)
 
         /// <summary>
-        /// Change the configuration of the given charge box.
+        /// ChangeConfiguration the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="Key">The name of the configuration setting to change.</param>
-        /// <param name="Value">The new value as string for the setting.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A ChangeConfiguration request.</param>
         public async Task<CP.ChangeConfigurationResponse>
-
-            ChangeConfiguration(ChargeBox_Id       ChargeBoxId,
-                                String             Key,
-                                String             Value,
-
-                                DateTime?          RequestTimestamp    = null,
-                                TimeSpan?          RequestTimeout      = null,
-                                EventTracking_Id?  EventTrackingId     = null,
-                                CancellationToken  CancellationToken   = default)
+            ChangeConfiguration(ChangeConfigurationRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new ChangeConfigurationRequest(
-                                 ChargeBoxId,
-                                 Key,
-                                 Value,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnChangeConfigurationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnChangeConfigurationRequest?.Invoke(startTime,
-                                                     this,
-                                                     request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -4770,12 +5422,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.ChangeConfiguration(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomChangeConfigurationRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.ChangeConfigurationResponse(request,
-                                                                    Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.ChangeConfiguration(Request)
+
+                                      : new CP.ChangeConfigurationResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.ChangeConfigurationResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomChangeConfigurationResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnChangeConfigurationResponse event
@@ -4786,10 +5467,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnChangeConfigurationResponse?.Invoke(endTime,
-                                                      this,
-                                                      request,
-                                                      response,
-                                                      endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -4805,61 +5486,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region DataTransfer          (ChargeBoxId, VendorId, MessageId = null, Data = null, ...)
+        #region DataTransfer                       (Request)
 
         /// <summary>
-        /// Transfer the given data to the given charge box.
+        /// DataTransfer the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">An optional message identification field.</param>
-        /// <param name="Data">Optional message data as text without specified length or format.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CP.DataTransferResponse>
-
-            DataTransfer(ChargeBox_Id       ChargeBoxId,
-                         String             VendorId,
-                         String?            MessageId           = null,
-                         String?            Data                = null,
-
-                         DateTime?          RequestTimestamp    = null,
-                         TimeSpan?          RequestTimeout      = null,
-                         EventTracking_Id?  EventTrackingId     = null,
-                         CancellationToken  CancellationToken   = default)
+        /// <param name="Request">A DataTransfer request.</param>
+        public async Task<OCPP.CS.DataTransferResponse>
+            DataTransfer(DataTransferRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new DataTransferRequest(
-                                 ChargeBoxId,
-                                 VendorId,
-                                 MessageId,
-                                 Data,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnDataTransferRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnDataTransferRequest?.Invoke(startTime,
-                                              this,
-                                              request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -4869,12 +5516,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.DataTransfer(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomDataTransferRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.DataTransferResponse(request,
-                                                             Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.DataTransfer(Request)
+
+                                      : new OCPP.CS.DataTransferResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new OCPP.CS.DataTransferResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomDataTransferResponseSerializer,
+                    null,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnDataTransferResponse event
@@ -4885,10 +5562,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnDataTransferResponse?.Invoke(endTime,
-                                               this,
-                                               request,
-                                               response,
-                                               endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -4904,67 +5581,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region GetDiagnostics        (ChargeBoxId, Location, StartTime = null, StopTime = null, Retries = null, RetryInterval = null,...)
+        #region GetDiagnostics                       (Request)
 
         /// <summary>
-        /// Upload diagnostics data of the given charge box to the given file location.
+        /// GetDiagnostics the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="Location">The URI where the diagnostics file shall be uploaded to.</param>
-        /// <param name="StartTime">The timestamp of the oldest logging information to include in the diagnostics.</param>
-        /// <param name="StopTime">The timestamp of the latest logging information to include in the diagnostics.</param>
-        /// <param name="Retries">The optional number of retries of a charge point for trying to upload the diagnostics before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
-        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A GetDiagnostics request.</param>
         public async Task<CP.GetDiagnosticsResponse>
-
-            GetDiagnostics(ChargeBox_Id       ChargeBoxId,
-                           String             Location,
-                           DateTime?          StartTime           = null,
-                           DateTime?          StopTime            = null,
-                           Byte?              Retries             = null,
-                           TimeSpan?          RetryInterval       = null,
-
-                           DateTime?          RequestTimestamp    = null,
-                           TimeSpan?          RequestTimeout      = null,
-                           EventTracking_Id?  EventTrackingId     = null,
-                           CancellationToken  CancellationToken   = default)
+            GetDiagnostics(GetDiagnosticsRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new GetDiagnosticsRequest(
-                                 ChargeBoxId,
-                                 Location,
-                                 StartTime,
-                                 StopTime,
-                                 Retries,
-                                 RetryInterval,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnGetDiagnosticsRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnGetDiagnosticsRequest?.Invoke(startTime,
-                                                this,
-                                                request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -4974,12 +5611,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.GetDiagnostics(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetDiagnosticsRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.GetDiagnosticsResponse(request,
-                                                               Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.GetDiagnostics(Request)
+
+                                      : new CP.GetDiagnosticsResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.GetDiagnosticsResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetDiagnosticsResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnGetDiagnosticsResponse event
@@ -4990,10 +5656,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnGetDiagnosticsResponse?.Invoke(endTime,
-                                                 this,
-                                                 request,
-                                                 response,
-                                                 endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -5009,58 +5675,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region TriggerMessage        (ChargeBoxId, RequestedMessage, ConnectorId = null,...)
+        #region TriggerMessage                       (Request)
 
         /// <summary>
-        /// Create a trigger for the given message at the given charge box connector.
+        /// TriggerMessage the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="RequestedMessage">The message to trigger.</param>
-        /// <param name="ConnectorId">Optional connector identification whenever the message applies to a specific connector.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A TriggerMessage request.</param>
         public async Task<CP.TriggerMessageResponse>
-
-            TriggerMessage(ChargeBox_Id       ChargeBoxId,
-                           MessageTriggers    RequestedMessage,
-                           Connector_Id?      ConnectorId         = null,
-
-                           DateTime?          RequestTimestamp    = null,
-                           TimeSpan?          RequestTimeout      = null,
-                           EventTracking_Id?  EventTrackingId     = null,
-                           CancellationToken  CancellationToken   = default)
+            TriggerMessage(TriggerMessageRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new TriggerMessageRequest(
-                                 ChargeBoxId,
-                                 RequestedMessage,
-                                 ConnectorId,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnTriggerMessageRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnTriggerMessageRequest?.Invoke(startTime,
-                                                this,
-                                                request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -5070,12 +5705,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.TriggerMessage(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomTriggerMessageRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.TriggerMessageResponse(request,
-                                                               Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.TriggerMessage(Request)
+
+                                      : new CP.TriggerMessageResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.TriggerMessageResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomTriggerMessageResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnTriggerMessageResponse event
@@ -5086,10 +5750,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnTriggerMessageResponse?.Invoke(endTime,
-                                                 this,
-                                                 request,
-                                                 response,
-                                                 endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -5105,64 +5769,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region UpdateFirmware        (ChargeBoxId, FirmwareURL, RetrieveTimestamp, Retries = null, RetryInterval = null, ...)
+        #region UpdateFirmware                       (Request)
 
         /// <summary>
-        /// Initiate a firmware download from the given location at the given charge box.
+        /// UpdateFirmware the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="FirmwareURL">The URL where to download the firmware.</param>
-        /// <param name="RetrieveTimestamp">The timestamp after which the charge point must retrieve the firmware.</param>
-        /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
-        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A UpdateFirmware request.</param>
         public async Task<CP.UpdateFirmwareResponse>
-
-            UpdateFirmware(ChargeBox_Id       ChargeBoxId,
-                           URL                FirmwareURL,
-                           DateTime           RetrieveTimestamp,
-                           Byte?              Retries             = null,
-                           TimeSpan?          RetryInterval       = null,
-
-                           DateTime?          RequestTimestamp    = null,
-                           TimeSpan?          RequestTimeout      = null,
-                           EventTracking_Id?  EventTrackingId     = null,
-                           CancellationToken  CancellationToken   = default)
+            UpdateFirmware(UpdateFirmwareRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new UpdateFirmwareRequest(
-                                 ChargeBoxId,
-                                 FirmwareURL,
-                                 RetrieveTimestamp,
-                                 Retries,
-                                 RetryInterval,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnUpdateFirmwareRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnUpdateFirmwareRequest?.Invoke(startTime,
-                                                this,
-                                                request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -5172,12 +5799,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.UpdateFirmware(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomUpdateFirmwareRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.UpdateFirmwareResponse(request,
-                                                               Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.UpdateFirmware(Request)
+
+                                      : new CP.UpdateFirmwareResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.UpdateFirmwareResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomUpdateFirmwareResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnUpdateFirmwareResponse event
@@ -5188,10 +5844,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnUpdateFirmwareResponse?.Invoke(endTime,
-                                                 this,
-                                                 request,
-                                                 response,
-                                                 endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -5208,67 +5864,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region ReserveNow            (ChargeBoxId, ConnectorId, ReservationId, ExpiryDate, IdTag, ParentIdTag = null, ...)
+        #region ReserveNow                       (Request)
 
         /// <summary>
-        /// Create a charging reservation of the given charge box connector.
+        /// ReserveNow the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ConnectorId">The identification of the connector to be reserved. A value of 0 means that the reservation is not for a specific connector.</param>
-        /// <param name="ReservationId">The unique identification of this reservation.</param>
-        /// <param name="ExpiryDate">The timestamp when the reservation ends.</param>
-        /// <param name="IdTag">The identifier for which the charge point has to reserve a connector.</param>
-        /// <param name="ParentIdTag">An optional ParentIdTag.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A ReserveNow request.</param>
         public async Task<CP.ReserveNowResponse>
-
-            ReserveNow(ChargeBox_Id       ChargeBoxId,
-                       Connector_Id       ConnectorId,
-                       Reservation_Id     ReservationId,
-                       DateTime           ExpiryDate,
-                       IdToken            IdTag,
-                       IdToken?           ParentIdTag         = null,
-
-                       DateTime?          RequestTimestamp    = null,
-                       TimeSpan?          RequestTimeout      = null,
-                       EventTracking_Id?  EventTrackingId     = null,
-                       CancellationToken  CancellationToken   = default)
+            ReserveNow(ReserveNowRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new ReserveNowRequest(
-                                 ChargeBoxId,
-                                 ConnectorId,
-                                 ReservationId,
-                                 ExpiryDate,
-                                 IdTag,
-                                 ParentIdTag,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnReserveNowRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnReserveNowRequest?.Invoke(startTime,
-                                            this,
-                                            request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -5278,12 +5894,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.ReserveNow(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomReserveNowRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.ReserveNowResponse(request,
-                                                           Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.ReserveNow(Request)
+
+                                      : new CP.ReserveNowResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.ReserveNowResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomReserveNowResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnReserveNowResponse event
@@ -5294,10 +5939,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnReserveNowResponse?.Invoke(endTime,
-                                             this,
-                                             request,
-                                             response,
-                                             endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -5313,55 +5958,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region CancelReservation     (ChargeBoxId, ReservationId, ...)
+        #region CancelReservation                       (Request)
 
         /// <summary>
-        /// Cancel the given charging reservation at the given charge box.
+        /// CancelReservation the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ReservationId">The unique identification of this reservation.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A CancelReservation request.</param>
         public async Task<CP.CancelReservationResponse>
-
-            CancelReservation(ChargeBox_Id       ChargeBoxId,
-                              Reservation_Id     ReservationId,
-
-                              DateTime?          RequestTimestamp    = null,
-                              TimeSpan?          RequestTimeout      = null,
-                              EventTracking_Id?  EventTrackingId     = null,
-                              CancellationToken  CancellationToken   = default)
+            CancelReservation(CancelReservationRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new CancelReservationRequest(
-                                 ChargeBoxId,
-                                 ReservationId,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnCancelReservationRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnCancelReservationRequest?.Invoke(startTime,
-                                                   this,
-                                                   request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -5371,12 +5988,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.CancelReservation(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomCancelReservationRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.CancelReservationResponse(request,
-                                                                  Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.CancelReservation(Request)
+
+                                      : new CP.CancelReservationResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.CancelReservationResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomCancelReservationResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnCancelReservationResponse event
@@ -5387,10 +6033,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnCancelReservationResponse?.Invoke(endTime,
-                                                    this,
-                                                    request,
-                                                    response,
-                                                    endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -5406,61 +6052,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region RemoteStartTransaction(ChargeBoxId, IdTag, ConnectorId = null, ChargingProfile = null, ...)
+        #region RemoteStartTransaction                       (Request)
 
         /// <summary>
-        /// Start a charging session at the given charge box connector using the given charging profile.
+        /// RemoteStartTransaction the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="IdTag">The identification tag to start the charging transaction.</param>
-        /// <param name="ConnectorId">An optional connector identification on which the charging transaction should be started (SHALL be > 0).</param>
-        /// <param name="ChargingProfile">An optional charging profile to be used by the charge point for the requested charging transaction.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A RemoteStartTransaction request.</param>
         public async Task<CP.RemoteStartTransactionResponse>
-
-            RemoteStartTransaction(ChargeBox_Id       ChargeBoxId,
-                                   IdToken            IdTag,
-                                   Connector_Id?      ConnectorId         = null,
-                                   ChargingProfile?   ChargingProfile     = null,
-
-                                   DateTime?          RequestTimestamp    = null,
-                                   TimeSpan?          RequestTimeout      = null,
-                                   EventTracking_Id?  EventTrackingId     = null,
-                                   CancellationToken  CancellationToken   = default)
+            RemoteStartTransaction(RemoteStartTransactionRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new RemoteStartTransactionRequest(
-                                 ChargeBoxId,
-                                 IdTag,
-                                 ConnectorId,
-                                 ChargingProfile,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnRemoteStartTransactionRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnRemoteStartTransactionRequest?.Invoke(startTime,
-                                                        this,
-                                                        request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -5470,12 +6082,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.RemoteStartTransaction(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomRemoteStartTransactionRequestSerializer,
+                                          CustomChargingProfileSerializer,
+                                          CustomChargingScheduleSerializer,
+                                          CustomChargingSchedulePeriodSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.RemoteStartTransactionResponse(request,
-                                                                       Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.RemoteStartTransaction(Request)
+
+                                      : new CP.RemoteStartTransactionResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.RemoteStartTransactionResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomRemoteStartTransactionResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnRemoteStartTransactionResponse event
@@ -5486,10 +6130,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnRemoteStartTransactionResponse?.Invoke(endTime,
-                                                         this,
-                                                         request,
-                                                         response,
-                                                         endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -5505,55 +6149,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region RemoteStopTransaction (ChargeBoxId, TransactionId, ...)
+        #region RemoteStopTransaction                       (Request)
 
         /// <summary>
-        /// Stop a charging session at the given charge box.
+        /// RemoteStopTransaction the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="TransactionId">The identification of the transaction which the charge point is requested to stop.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A RemoteStopTransaction request.</param>
         public async Task<CP.RemoteStopTransactionResponse>
-
-            RemoteStopTransaction(ChargeBox_Id       ChargeBoxId,
-                                  Transaction_Id     TransactionId,
-
-                                  DateTime?          RequestTimestamp    = null,
-                                  TimeSpan?          RequestTimeout      = null,
-                                  EventTracking_Id?  EventTrackingId     = null,
-                                  CancellationToken  CancellationToken   = default)
+            RemoteStopTransaction(RemoteStopTransactionRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new RemoteStopTransactionRequest(
-                                 ChargeBoxId,
-                                 TransactionId,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnRemoteStopTransactionRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnRemoteStopTransactionRequest?.Invoke(startTime,
-                                                       this,
-                                                       request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -5563,12 +6179,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.RemoteStopTransaction(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomRemoteStopTransactionRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.RemoteStopTransactionResponse(request,
-                                                                      Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.RemoteStopTransaction(Request)
+
+                                      : new CP.RemoteStopTransactionResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.RemoteStopTransactionResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomRemoteStopTransactionResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnRemoteStopTransactionResponse event
@@ -5579,10 +6224,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnRemoteStopTransactionResponse?.Invoke(endTime,
-                                                        this,
-                                                        request,
-                                                        response,
-                                                        endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -5598,58 +6243,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region SetChargingProfile    (ChargeBoxId, ConnectorId, ChargingProfile, ...)
+        #region SetChargingProfile                       (Request)
 
         /// <summary>
-        /// Set the charging profile of the given charge box connector.
+        /// SetChargingProfile the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ConnectorId">The connector to which the charging profile applies. If connectorId = 0, the message contains an overall limit for the charge point.</param>
-        /// <param name="ChargingProfile">The charging profile to be set.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A SetChargingProfile request.</param>
         public async Task<CP.SetChargingProfileResponse>
-
-            SetChargingProfile(ChargeBox_Id       ChargeBoxId,
-                               Connector_Id       ConnectorId,
-                               ChargingProfile    ChargingProfile,
-
-                               DateTime?          RequestTimestamp    = null,
-                               TimeSpan?          RequestTimeout      = null,
-                               EventTracking_Id?  EventTrackingId     = null,
-                               CancellationToken  CancellationToken   = default)
+            SetChargingProfile(SetChargingProfileRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new SetChargingProfileRequest(
-                                 ChargeBoxId,
-                                 ConnectorId,
-                                 ChargingProfile,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnSetChargingProfileRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnSetChargingProfileRequest?.Invoke(startTime,
-                                                    this,
-                                                    request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -5659,12 +6273,44 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.SetChargingProfile(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomSetChargingProfileRequestSerializer,
+                                          CustomChargingProfileSerializer,
+                                          CustomChargingScheduleSerializer,
+                                          CustomChargingSchedulePeriodSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.SetChargingProfileResponse(request,
-                                                                   Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.SetChargingProfile(Request)
+
+                                      : new CP.SetChargingProfileResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.SetChargingProfileResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSetChargingProfileResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnSetChargingProfileResponse event
@@ -5675,10 +6321,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnSetChargingProfileResponse?.Invoke(endTime,
-                                                     this,
-                                                     request,
-                                                     response,
-                                                     endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -5694,64 +6340,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ClearChargingProfile  (ChargeBoxId, ChargingProfileId, ConnectorId, ChargingProfilePurpose, StackLevel, ...)
+        #region ClearChargingProfile                       (Request)
 
         /// <summary>
-        /// Remove the charging profile at the given charge box connector.
+        /// ClearChargingProfile the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ChargingProfileId">The optional identification of the charging profile to clear.</param>
-        /// <param name="ConnectorId">The optional connector for which to clear the charging profiles. Connector identification 0 specifies the charging profile for the overall charge point. Absence of this parameter means the clearing applies to all charging profiles that match the other criteria in the request.</param>
-        /// <param name="ChargingProfilePurpose">The optional purpose of the charging profiles that will be cleared, if they meet the other criteria in the request.</param>
-        /// <param name="StackLevel">The optional stack level for which charging profiles will be cleared, if they meet the other criteria in the request.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A ClearChargingProfile request.</param>
         public async Task<CP.ClearChargingProfileResponse>
-
-            ClearChargingProfile(ChargeBox_Id              ChargeBoxId,
-                                 ChargingProfile_Id?       ChargingProfileId        = null,
-                                 Connector_Id?             ConnectorId              = null,
-                                 ChargingProfilePurposes?  ChargingProfilePurpose   = null,
-                                 UInt32?                   StackLevel               = null,
-
-                                 DateTime?                 RequestTimestamp         = null,
-                                 TimeSpan?                 RequestTimeout           = null,
-                                 EventTracking_Id?         EventTrackingId          = null,
-                                 CancellationToken         CancellationToken        = default)
+            ClearChargingProfile(ClearChargingProfileRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new ClearChargingProfileRequest(
-                                 ChargeBoxId,
-                                 ChargingProfileId,
-                                 ConnectorId,
-                                 ChargingProfilePurpose,
-                                 StackLevel,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnClearChargingProfileRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnClearChargingProfileRequest?.Invoke(startTime,
-                                                      this,
-                                                      request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -5761,12 +6370,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.ClearChargingProfile(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomClearChargingProfileRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.ClearChargingProfileResponse(request,
-                                                                     Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.ClearChargingProfile(Request)
+
+                                      : new CP.ClearChargingProfileResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.ClearChargingProfileResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomClearChargingProfileResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnClearChargingProfileResponse event
@@ -5777,10 +6415,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnClearChargingProfileResponse?.Invoke(endTime,
-                                                       this,
-                                                       request,
-                                                       response,
-                                                       endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -5796,61 +6434,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region GetCompositeSchedule  (ChargeBoxId, ConnectorId, Duration, ChargingRateUnit = null, ...)
+        #region GetCompositeSchedule                       (Request)
 
         /// <summary>
-        /// Return the charging schedule of the given charge box connector.
+        /// GetCompositeSchedule the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ConnectorId">The connector identification for which the schedule is requested. Connector identification 0 will calculate the expected consumption for the grid connection.</param>
-        /// <param name="Duration">The length of requested schedule.</param>
-        /// <param name="ChargingRateUnit">Can optionally be used to force a power or current profile.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A GetCompositeSchedule request.</param>
         public async Task<CP.GetCompositeScheduleResponse>
-
-            GetCompositeSchedule(ChargeBox_Id        ChargeBoxId,
-                                 Connector_Id        ConnectorId,
-                                 TimeSpan            Duration,
-                                 ChargingRateUnits?  ChargingRateUnit    = null,
-
-                                 DateTime?           RequestTimestamp    = null,
-                                 TimeSpan?           RequestTimeout      = null,
-                                 EventTracking_Id?   EventTrackingId     = null,
-                                 CancellationToken   CancellationToken   = default)
+            GetCompositeSchedule(GetCompositeScheduleRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new GetCompositeScheduleRequest(
-                                 ChargeBoxId,
-                                 ConnectorId,
-                                 Duration,
-                                 ChargingRateUnit,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnGetCompositeScheduleRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnGetCompositeScheduleRequest?.Invoke(startTime,
-                                                      this,
-                                                      request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -5860,12 +6464,43 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.GetCompositeSchedule(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetCompositeScheduleRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.GetCompositeScheduleResponse(request,
-                                                                     Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.GetCompositeSchedule(Request)
+
+                                      : new CP.GetCompositeScheduleResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.GetCompositeScheduleResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetCompositeScheduleResponseSerializer,
+                    CustomChargingScheduleSerializer,
+                    CustomChargingSchedulePeriodSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnGetCompositeScheduleResponse event
@@ -5876,10 +6511,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnGetCompositeScheduleResponse?.Invoke(endTime,
-                                                       this,
-                                                       request,
-                                                       response,
-                                                       endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -5895,55 +6530,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region UnlockConnector       (ChargeBoxId, ConnectorId, ...)
+        #region UnlockConnector                       (Request)
 
         /// <summary>
-        /// Unlock the given charge box connector.
+        /// UnlockConnector the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ConnectorId">The identifier of the connector to be unlocked.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A UnlockConnector request.</param>
         public async Task<CP.UnlockConnectorResponse>
-
-            UnlockConnector(ChargeBox_Id       ChargeBoxId,
-                            Connector_Id       ConnectorId,
-
-                            DateTime?          RequestTimestamp    = null,
-                            TimeSpan?          RequestTimeout      = null,
-                            EventTracking_Id?  EventTrackingId     = null,
-                            CancellationToken  CancellationToken   = default)
+            UnlockConnector(UnlockConnectorRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new UnlockConnectorRequest(
-                                 ChargeBoxId,
-                                 ConnectorId,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnUnlockConnectorRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnUnlockConnectorRequest?.Invoke(startTime,
-                                                 this,
-                                                 request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -5953,12 +6560,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.UnlockConnector(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomUnlockConnectorRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.UnlockConnectorResponse(request,
-                                                                Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.UnlockConnector(Request)
+
+                                      : new CP.UnlockConnectorResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.UnlockConnectorResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomUnlockConnectorResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnUnlockConnectorResponse event
@@ -5969,10 +6605,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnUnlockConnectorResponse?.Invoke(endTime,
-                                                  this,
-                                                  request,
-                                                  response,
-                                                  endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -5989,52 +6625,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region GetLocalListVersion   (ChargeBoxId, ...)
+        #region GetLocalListVersion                       (Request)
 
         /// <summary>
-        /// Return the local white list of the given charge box.
+        /// GetLocalListVersion the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A GetLocalListVersion request.</param>
         public async Task<CP.GetLocalListVersionResponse>
-
-            GetLocalListVersion(ChargeBox_Id       ChargeBoxId,
-
-                                DateTime?          RequestTimestamp    = null,
-                                TimeSpan?          RequestTimeout      = null,
-                                EventTracking_Id?  EventTrackingId     = null,
-                                CancellationToken  CancellationToken   = default)
+            GetLocalListVersion(GetLocalListVersionRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new GetLocalListVersionRequest(
-                                 ChargeBoxId,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnGetLocalListVersionRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnGetLocalListVersionRequest?.Invoke(startTime,
-                                                     this,
-                                                     request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -6044,12 +6655,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.GetLocalListVersion(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetLocalListVersionRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.GetLocalListVersionResponse(request,
-                                                                    Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.GetLocalListVersion(Request)
+
+                                      : new CP.GetLocalListVersionResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.GetLocalListVersionResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetLocalListVersionResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnGetLocalListVersionResponse event
@@ -6060,10 +6700,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnGetLocalListVersionResponse?.Invoke(endTime,
-                                                      this,
-                                                      request,
-                                                      response,
-                                                      endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -6079,61 +6719,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region SendLocalList         (ChargeBoxId, ListVersion, UpdateType, LocalAuthorizationList = null, ...)
+        #region SendLocalList                       (Request)
 
         /// <summary>
-        /// Set the local white liste at the given charge box.
+        /// SendLocalList the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="ListVersion">In case of a full update this is the version number of the full list. In case of a differential update it is the version number of the list after the update has been applied.</param>
-        /// <param name="UpdateType">The type of update (full or differential).</param>
-        /// <param name="LocalAuthorizationList">In case of a full update this contains the list of values that form the new local authorization list. In case of a differential update it contains the changes to be applied to the local authorization list in the charge point. Maximum number of AuthorizationData elements is available in the configuration key: SendLocalListMaxLength.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A SendLocalList request.</param>
         public async Task<CP.SendLocalListResponse>
-
-            SendLocalList(ChargeBox_Id                     ChargeBoxId,
-                          UInt64                           ListVersion,
-                          UpdateTypes                      UpdateType,
-                          IEnumerable<AuthorizationData>?  LocalAuthorizationList   = null,
-
-                          DateTime?                        RequestTimestamp         = null,
-                          TimeSpan?                        RequestTimeout           = null,
-                          EventTracking_Id?                EventTrackingId          = null,
-                          CancellationToken                CancellationToken        = default)
+            SendLocalList(SendLocalListRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new SendLocalListRequest(
-                                 ChargeBoxId,
-                                 ListVersion,
-                                 UpdateType,
-                                 LocalAuthorizationList,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnSendLocalListRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnSendLocalListRequest?.Invoke(startTime,
-                                               this,
-                                               request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -6143,12 +6749,43 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.SendLocalList(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomSendLocalListRequestSerializer,
+                                          CustomAuthorizationDataSerializer,
+                                          CustomIdTagInfoSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.SendLocalListResponse(request,
-                                                              Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.SendLocalList(Request)
+
+                                      : new CP.SendLocalListResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.SendLocalListResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSendLocalListResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnSendLocalListResponse event
@@ -6159,10 +6796,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnSendLocalListResponse?.Invoke(endTime,
-                                                this,
-                                                request,
-                                                response,
-                                                endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -6178,52 +6815,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ClearCache            (ChargeBoxId, ...)
+        #region ClearCache                       (Request)
 
         /// <summary>
-        /// Clear the local white liste cache of the given charge box.
+        /// ClearCache the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A ClearCache request.</param>
         public async Task<CP.ClearCacheResponse>
-
-            ClearCache(ChargeBox_Id       ChargeBoxId,
-
-                       DateTime?          RequestTimestamp    = null,
-                       TimeSpan?          RequestTimeout      = null,
-                       EventTracking_Id?  EventTrackingId     = null,
-                       CancellationToken  CancellationToken   = default)
+            ClearCache(ClearCacheRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new ClearCacheRequest(
-                                 ChargeBoxId,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnClearCacheRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnClearCacheRequest?.Invoke(startTime,
-                                            this,
-                                            request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -6233,12 +6845,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.ClearCache(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomClearCacheRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.ClearCacheResponse(request,
-                                                           Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.ClearCache(Request)
+
+                                      : new CP.ClearCacheResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.ClearCacheResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomClearCacheResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnClearCacheResponse event
@@ -6249,10 +6890,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnClearCacheResponse?.Invoke(endTime,
-                                             this,
-                                             request,
-                                             response,
-                                             endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -6269,58 +6910,29 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-
         // Security extensions
 
-        #region CertificateSigned         (ChargeBoxId, CertificateChain, ...)
+        #region CertificateSigned                       (Request)
 
         /// <summary>
-        /// Clear the local white liste cache of the given charge box.
+        /// CertificateSigned the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CertificateChain">The signed PEM encoded X.509 certificates. This can also contain the necessary sub CA certificates.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A CertificateSigned request.</param>
         public async Task<CP.CertificateSignedResponse>
-
-            CertificateSigned(ChargeBox_Id       ChargeBoxId,
-                              CertificateChain   CertificateChain,
-
-                              DateTime?          RequestTimestamp    = null,
-                              TimeSpan?          RequestTimeout      = null,
-                              EventTracking_Id?  EventTrackingId     = null,
-                              CancellationToken  CancellationToken   = default)
+            CertificateSigned(CertificateSignedRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new CertificateSignedRequest(
-                                 ChargeBoxId,
-                                 CertificateChain,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnCertificateSignedRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnCertificateSignedRequest?.Invoke(startTime,
-                                                   this,
-                                                   request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -6330,12 +6942,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.CertificateSigned(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomCertificateSignedRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.CertificateSignedResponse(request,
-                                                           Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.CertificateSigned(Request)
+
+                                      : new CP.CertificateSignedResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.CertificateSignedResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomCertificateSignedResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnCertificateSignedResponse event
@@ -6346,10 +6987,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnCertificateSignedResponse?.Invoke(endTime,
-                                                    this,
-                                                    request,
-                                                    response,
-                                                    endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -6365,55 +7006,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region DeleteCertificate         (ChargeBoxId, CertificateHashData, ...)
+        #region DeleteCertificate                       (Request)
 
         /// <summary>
-        /// Delete the given certificate on the charge point.
+        /// DeleteCertificate the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CertificateHashData">Indicates the certificate which should be deleted.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A DeleteCertificate request.</param>
         public async Task<CP.DeleteCertificateResponse>
-
-            DeleteCertificate(ChargeBox_Id         ChargeBoxId,
-                              CertificateHashData  CertificateHashData,
-
-                              DateTime?            RequestTimestamp    = null,
-                              TimeSpan?            RequestTimeout      = null,
-                              EventTracking_Id?    EventTrackingId     = null,
-                              CancellationToken    CancellationToken   = default)
+            DeleteCertificate(DeleteCertificateRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new DeleteCertificateRequest(
-                                 ChargeBoxId,
-                                 CertificateHashData,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnDeleteCertificateRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnDeleteCertificateRequest?.Invoke(startTime,
-                                                   this,
-                                                   request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -6423,12 +7036,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.DeleteCertificate(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomDeleteCertificateRequestSerializer,
+                                          CustomCertificateHashDataSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.DeleteCertificateResponse(request,
-                                                                  Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.DeleteCertificate(Request)
+
+                                      : new CP.DeleteCertificateResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.DeleteCertificateResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomDeleteCertificateResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnDeleteCertificateResponse event
@@ -6439,10 +7082,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnDeleteCertificateResponse?.Invoke(endTime,
-                                                    this,
-                                                    request,
-                                                    response,
-                                                    endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -6458,58 +7101,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ExtendedTriggerMessage    (ChargeBoxId, RequestedMessage, ConnectorId = null, ...)
+        #region ExtendedTriggerMessage                       (Request)
 
         /// <summary>
-        /// Send an extended trigger message to the charge point.
+        /// ExtendedTriggerMessage the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="RequestedMessage">The message to trigger.</param>
-        /// <param name="ConnectorId">Optional connector identification whenever the message applies to a specific connector.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A ExtendedTriggerMessage request.</param>
         public async Task<CP.ExtendedTriggerMessageResponse>
-
-            ExtendedTriggerMessage(ChargeBox_Id       ChargeBoxId,
-                                   MessageTriggers    RequestedMessage,
-                                   Connector_Id?      ConnectorId         = null,
-
-                                   DateTime?          RequestTimestamp    = null,
-                                   TimeSpan?          RequestTimeout      = null,
-                                   EventTracking_Id?  EventTrackingId     = null,
-                                   CancellationToken  CancellationToken   = default)
+            ExtendedTriggerMessage(ExtendedTriggerMessageRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new ExtendedTriggerMessageRequest(
-                                 ChargeBoxId,
-                                 RequestedMessage,
-                                 ConnectorId,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnExtendedTriggerMessageRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnExtendedTriggerMessageRequest?.Invoke(startTime,
-                                                        this,
-                                                        request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -6519,12 +7131,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.ExtendedTriggerMessage(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomExtendedTriggerMessageRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.ExtendedTriggerMessageResponse(request,
-                                                                       Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.ExtendedTriggerMessage(Request)
+
+                                      : new CP.ExtendedTriggerMessageResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.ExtendedTriggerMessageResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomExtendedTriggerMessageResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnExtendedTriggerMessageResponse event
@@ -6535,10 +7176,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnExtendedTriggerMessageResponse?.Invoke(endTime,
-                                                         this,
-                                                         request,
-                                                         response,
-                                                         endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -6554,55 +7195,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region GetInstalledCertificateIds(ChargeBoxId, CertificateType, ...)
+        #region GetInstalledCertificateIds                       (Request)
 
         /// <summary>
-        /// Retrieve a list of all installed certificates within the charge point.
+        /// GetInstalledCertificateIds the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CertificateType">The type of the certificates requested.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A GetInstalledCertificateIds request.</param>
         public async Task<CP.GetInstalledCertificateIdsResponse>
-
-            GetInstalledCertificateIds(ChargeBox_Id       ChargeBoxId,
-                                       CertificateUse     CertificateType,
-
-                                       DateTime?          RequestTimestamp    = null,
-                                       TimeSpan?          RequestTimeout      = null,
-                                       EventTracking_Id?  EventTrackingId     = null,
-                                       CancellationToken  CancellationToken   = default)
+            GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new GetInstalledCertificateIdsRequest(
-                                 ChargeBoxId,
-                                 CertificateType,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnGetInstalledCertificateIdsRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnGetInstalledCertificateIdsRequest?.Invoke(startTime,
-                                                            this,
-                                                            request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -6612,12 +7225,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.GetInstalledCertificateIds(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetInstalledCertificateIdsRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.GetInstalledCertificateIdsResponse(request,
-                                                                           Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.GetInstalledCertificateIds(Request)
+
+                                      : new CP.GetInstalledCertificateIdsResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.GetInstalledCertificateIdsResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetInstalledCertificateIdsResponseSerializer,
+                    CustomCertificateHashDataSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnGetInstalledCertificateIdsResponse event
@@ -6628,10 +7271,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnGetInstalledCertificateIdsResponse?.Invoke(endTime,
-                                                             this,
-                                                             request,
-                                                             response,
-                                                             endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -6647,67 +7290,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region GetLog                    (ChargeBoxId, LogType, LogRequestId, Log, Retries = null, RetryInterval = null, ...)
+        #region GetLog                       (Request)
 
         /// <summary>
-        /// Retrieve log files from the charge point.
+        /// GetLog the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="LogType">The type of the certificates requested.</param>
-        /// <param name="LogRequestId">The unique identification of this request.</param>
-        /// <param name="Log">This field specifies the requested log and the location to which the log should be sent.</param>
-        /// <param name="Retries">This specifies how many times the Charge Point must try to upload the log before giving up. If this field is not present, it is left to Charge Point to decide how many times it wants to retry.</param>
-        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to Charge Point to decide how long to wait between attempts.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A GetLog request.</param>
         public async Task<CP.GetLogResponse>
-
-            GetLog(ChargeBox_Id       ChargeBoxId,
-                   LogTypes           LogType,
-                   Int32              LogRequestId,
-                   LogParameters      Log,
-                   Byte?              Retries             = null,
-                   TimeSpan?          RetryInterval       = null,
-
-                   DateTime?          RequestTimestamp    = null,
-                   TimeSpan?          RequestTimeout      = null,
-                   EventTracking_Id?  EventTrackingId     = null,
-                   CancellationToken  CancellationToken   = default)
+            GetLog(GetLogRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new GetLogRequest(
-                                 ChargeBoxId,
-                                 LogType,
-                                 LogRequestId,
-                                 Log,
-                                 Retries,
-                                 RetryInterval,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnGetLogRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnGetLogRequest?.Invoke(startTime,
-                                        this,
-                                        request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -6717,12 +7320,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.GetLog(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetLogRequestSerializer,
+                                          CustomLogParametersSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.GetLogResponse(request,
-                                                       Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.GetLog(Request)
+
+                                      : new CP.GetLogResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.GetLogResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomGetLogResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnGetLogResponse event
@@ -6733,10 +7366,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnGetLogResponse?.Invoke(endTime,
-                                         this,
-                                         request,
-                                         response,
-                                         endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -6752,58 +7385,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region InstallCertificate        (ChargeBoxId, CertificateType, Certificate, ...)
+        #region InstallCertificate                       (Request)
 
         /// <summary>
-        /// Install the given certificate within the charge point.
+        /// InstallCertificate the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="CertificateType">The type of the certificate.</param>
-        /// <param name="Certificate">The PEM encoded X.509 certificate.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A InstallCertificate request.</param>
         public async Task<CP.InstallCertificateResponse>
-
-            InstallCertificate(ChargeBox_Id       ChargeBoxId,
-                               CertificateUse     CertificateType,
-                               Certificate        Certificate,
-
-                               DateTime?          RequestTimestamp    = null,
-                               TimeSpan?          RequestTimeout      = null,
-                               EventTracking_Id?  EventTrackingId     = null,
-                               CancellationToken  CancellationToken   = default)
+            InstallCertificate(InstallCertificateRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new InstallCertificateRequest(
-                                 ChargeBoxId,
-                                 CertificateType,
-                                 Certificate,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnInstallCertificateRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnInstallCertificateRequest?.Invoke(startTime,
-                                                    this,
-                                                    request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -6813,12 +7415,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.InstallCertificate(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomInstallCertificateRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.InstallCertificateResponse(request,
-                                                                   Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.InstallCertificate(Request)
+
+                                      : new CP.InstallCertificateResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.InstallCertificateResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomInstallCertificateResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnInstallCertificateResponse event
@@ -6829,10 +7460,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnInstallCertificateResponse?.Invoke(endTime,
-                                                     this,
-                                                     request,
-                                                     response,
-                                                     endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -6848,64 +7479,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region SignedUpdateFirmware      (ChargeBoxId, Firmware, UpdateRequestId, Retries = null, RetryInterval = null, ...)
+        #region SignedUpdateFirmware                       (Request)
 
         /// <summary>
-        /// Update the firmware of the charge point.
+        /// SignedUpdateFirmware the given charge box.
         /// </summary>
-        /// <param name="ChargeBoxId">The charge box identification.</param>
-        /// <param name="Firmware">The firmware image to be installed on the Charge Point.</param>
-        /// <param name="UpdateRequestId">The unique identification of this signed update firmware request</param>
-        /// <param name="Retries">The optional number of retries of a charge point for trying to download the firmware before giving up. If this field is not present, it is left to the charge point to decide how many times it wants to retry.</param>
-        /// <param name="RetryInterval">The interval after which a retry may be attempted. If this field is not present, it is left to charge point to decide how long to wait between attempts.</param>
-        /// 
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A SignedUpdateFirmware request.</param>
         public async Task<CP.SignedUpdateFirmwareResponse>
-
-            SignedUpdateFirmware(ChargeBox_Id       ChargeBoxId,
-                                 FirmwareImage      Firmware,
-                                 Int32              UpdateRequestId,
-                                 Byte?              Retries             = null,
-                                 TimeSpan?          RetryInterval       = null,
-
-                                 DateTime?          RequestTimestamp    = null,
-                                 TimeSpan?          RequestTimeout      = null,
-                                 EventTracking_Id?  EventTrackingId     = null,
-                                 CancellationToken  CancellationToken   = default)
+            SignedUpdateFirmware(SignedUpdateFirmwareRequest Request)
 
         {
 
-            #region Create request
-
-            var startTime  = Timestamp.Now;
-
-            var request    = new SignedUpdateFirmwareRequest(
-                                 ChargeBoxId,
-                                 Firmware,
-                                 UpdateRequestId,
-                                 Retries,
-                                 RetryInterval,
-
-                                 NextRequestId,
-                                 RequestTimestamp ?? startTime,
-                                 RequestTimeout   ?? DefaultRequestTimeout,
-                                 EventTrackingId,
-                                 CancellationToken
-                             );
-
-            #endregion
-
             #region Send OnSignedUpdateFirmwareRequest event
+
+            var startTime = Timestamp.Now;
 
             try
             {
 
                 OnSignedUpdateFirmwareRequest?.Invoke(startTime,
-                                                      this,
-                                                      request);
+                                       this,
+                                       Request);
             }
             catch (Exception e)
             {
@@ -6915,12 +7509,42 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            var response = reachableChargingBoxes.TryGetValue(ChargeBoxId, out var centralSystem) && centralSystem is not null
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
 
-                               ? await centralSystem.Item1.SignedUpdateFirmware(request)
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomSignedUpdateFirmwareRequestSerializer,
+                                          CustomFirmwareImageSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
 
-                               : new CP.SignedUpdateFirmwareResponse(request,
-                                                                     Result.Server("Unknown or unreachable charge box!"));
+                                      ? await centralSystem.Item1.SignedUpdateFirmware(Request)
+
+                                      : new CP.SignedUpdateFirmwareResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new CP.SignedUpdateFirmwareResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charge box!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSignedUpdateFirmwareResponseSerializer,
+                    CustomSignatureSerializer,
+                    CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
 
 
             #region Send OnSignedUpdateFirmwareResponse event
@@ -6931,10 +7555,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             {
 
                 OnSignedUpdateFirmwareResponse?.Invoke(endTime,
-                                                       this,
-                                                       request,
-                                                       response,
-                                                       endTime - startTime);
+                                        this,
+                                        Request,
+                                        response,
+                                        endTime - startTime);
 
             }
             catch (Exception e)
@@ -6951,14 +7575,984 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
+        // Binary Data Streams Extensions
 
-        // CertificateSigned
-        // DeleteCertificate
-        // ExtendedTriggerMessage
-        // GetInstalledCertificateIds
-        // GetLog
-        // InstallCertificate
-        // SignedUpdateFirmware
+        #region TransferBinaryData          (Request)
+
+        /// <summary>
+        /// Transfer the given data to the given charging station.
+        /// </summary>
+        /// <param name="Request">A BinaryDataTransfer request.</param>
+        public async Task<OCPP.CS.BinaryDataTransferResponse>
+            TransferBinaryData(OCPP.CSMS.BinaryDataTransferRequest Request)
+
+        {
+
+            #region Send OnBinaryDataTransferRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnBinaryDataTransferRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToBinary(
+                                          CustomBinaryDataTransferRequestSerializer,
+                                          CustomBinarySignatureSerializer,
+                                          IncludeSignatures: false
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.TransferBinaryData(Request)
+
+                                      : new OCPP.CS.BinaryDataTransferResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new OCPP.CS.BinaryDataTransferResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToBinary(
+                    CustomBinaryDataTransferResponseSerializer,
+                    null, // CustomStatusInfoSerializer
+                    CustomBinarySignatureSerializer,
+                    IncludeSignatures: false
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnBinaryDataTransferResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnBinaryDataTransferResponse?.Invoke(endTime,
+                                               this,
+                                               Request,
+                                               response,
+                                               endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnBinaryDataTransferResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region GetFile                     (Request)
+
+        /// <summary>
+        /// Request the given file from the charging station.
+        /// </summary>
+        /// <param name="Request">A GetFile request.</param>
+        public async Task<OCPP.CS.GetFileResponse>
+            GetFile(OCPP.CSMS.GetFileRequest Request)
+
+        {
+
+            #region Send OnGetFileRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetFileRequest?.Invoke(startTime,
+                                         this,
+                                         Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetFileRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomGetFileRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.GetFile(Request)
+
+                                      : new OCPP.CS.GetFileResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new OCPP.CS.GetFileResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToBinary(
+                    CustomGetFileResponseSerializer,
+                    null, // CustomStatusInfoSerializer
+                    CustomBinarySignatureSerializer,
+                    IncludeSignatures: false
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnGetFileResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnGetFileResponse?.Invoke(endTime,
+                                          this,
+                                          Request,
+                                          response,
+                                          endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnGetFileResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region SendFile                    (Request)
+
+        /// <summary>
+        /// Request the given file from the charging station.
+        /// </summary>
+        /// <param name="Request">A SendFile request.</param>
+        public async Task<OCPP.CS.SendFileResponse>
+            SendFile(OCPP.CSMS.SendFileRequest Request)
+
+        {
+
+            #region Send OnSendFileRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSendFileRequest?.Invoke(startTime,
+                                          this,
+                                          Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendFileRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToBinary(
+                                          CustomSendFileRequestSerializer,
+                                          CustomBinarySignatureSerializer,
+                                          IncludeSignatures: false
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.SendFile(Request)
+
+                                      : new OCPP.CS.SendFileResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new OCPP.CS.SendFileResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomSendFileResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnSendFileResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnSendFileResponse?.Invoke(endTime,
+                                           this,
+                                           Request,
+                                           response,
+                                           endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnSendFileResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region DeleteFile                  (Request)
+
+        /// <summary>
+        /// Delete the given file from the charging station.
+        /// </summary>
+        /// <param name="Request">A DeleteFile request.</param>
+        public async Task<OCPP.CS.DeleteFileResponse>
+            DeleteFile(OCPP.CSMS.DeleteFileRequest Request)
+
+        {
+
+            #region Send OnDeleteFileRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteFileRequest?.Invoke(startTime,
+                                            this,
+                                            Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteFileRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          CustomDeleteFileRequestSerializer,
+                                          CustomSignatureSerializer,
+                                          CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.DeleteFile(Request)
+
+                                      : new OCPP.CS.DeleteFileResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new OCPP.CS.DeleteFileResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    CustomDeleteFileResponseSerializer,
+                    CustomStatusInfoSerializer,
+                    CustomSignatureSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnDeleteFileResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteFileResponse?.Invoke(endTime,
+                                             this,
+                                             Request,
+                                             response,
+                                             endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteFileResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+
+        // E2E Security Extensions
+
+        #region AddSignaturePolicy          (Request)
+
+        /// <summary>
+        /// Add a signature policy.
+        /// </summary>
+        /// <param name="Request">An AddSignaturePolicy request.</param>
+        public async Task<OCPP.CS.AddSignaturePolicyResponse>
+            AddSignaturePolicy(OCPP.CSMS.AddSignaturePolicyRequest Request)
+
+        {
+
+            #region Send OnAddSignaturePolicyRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAddSignaturePolicyRequest?.Invoke(startTime,
+                                                    this,
+                                                    Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddSignaturePolicyRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          //CustomAddSignaturePolicyRequestSerializer,
+                                          //CustomMessageInfoSerializer,
+                                          //CustomMessageContentSerializer,
+                                          //CustomComponentSerializer,
+                                          //CustomEVSESerializer,
+                                          //CustomSignatureSerializer,
+                                          //CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.AddSignaturePolicy(Request)
+
+                                      : new OCPP.CS.AddSignaturePolicyResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new OCPP.CS.AddSignaturePolicyResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    //CustomAddSignaturePolicyResponseSerializer,
+                    //CustomStatusInfoSerializer,
+                    //CustomSignatureSerializer,
+                    //CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnAddSignaturePolicyResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAddSignaturePolicyResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddSignaturePolicyResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region UpdateSignaturePolicy       (Request)
+
+        /// <summary>
+        /// Set a display message.
+        /// </summary>
+        /// <param name="Request">A UpdateSignaturePolicy request.</param>
+        public async Task<OCPP.CS.UpdateSignaturePolicyResponse>
+            UpdateSignaturePolicy(OCPP.CSMS.UpdateSignaturePolicyRequest Request)
+
+        {
+
+            #region Send OnUpdateSignaturePolicyRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateSignaturePolicyRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateSignaturePolicyRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          //CustomUpdateSignaturePolicyRequestSerializer,
+                                          //CustomMessageInfoSerializer,
+                                          //CustomMessageContentSerializer,
+                                          //CustomComponentSerializer,
+                                          //CustomEVSESerializer,
+                                          //CustomSignatureSerializer,
+                                          //CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.UpdateSignaturePolicy(Request)
+
+                                      : new OCPP.CS.UpdateSignaturePolicyResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new OCPP.CS.UpdateSignaturePolicyResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    //CustomUpdateSignaturePolicyResponseSerializer,
+                    //CustomStatusInfoSerializer,
+                    //CustomSignatureSerializer,
+                    //CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnUpdateSignaturePolicyResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateSignaturePolicyResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateSignaturePolicyResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region DeleteSignaturePolicy       (Request)
+
+        /// <summary>
+        /// Set a display message.
+        /// </summary>
+        /// <param name="Request">A DeleteSignaturePolicy request.</param>
+        public async Task<OCPP.CS.DeleteSignaturePolicyResponse>
+            DeleteSignaturePolicy(OCPP.CSMS.DeleteSignaturePolicyRequest Request)
+
+        {
+
+            #region Send OnDeleteSignaturePolicyRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteSignaturePolicyRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteSignaturePolicyRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          //CustomDeleteSignaturePolicyRequestSerializer,
+                                          //CustomMessageInfoSerializer,
+                                          //CustomMessageContentSerializer,
+                                          //CustomComponentSerializer,
+                                          //CustomEVSESerializer,
+                                          //CustomSignatureSerializer,
+                                          //CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.DeleteSignaturePolicy(Request)
+
+                                      : new OCPP.CS.DeleteSignaturePolicyResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new OCPP.CS.DeleteSignaturePolicyResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    //CustomDeleteSignaturePolicyResponseSerializer,
+                    //CustomStatusInfoSerializer,
+                    //CustomSignatureSerializer,
+                    //CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnDeleteSignaturePolicyResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteSignaturePolicyResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteSignaturePolicyResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region AddUserRole                 (Request)
+
+        /// <summary>
+        /// Set a display message.
+        /// </summary>
+        /// <param name="Request">A AddUserRole request.</param>
+        public async Task<OCPP.CS.AddUserRoleResponse>
+            AddUserRole(OCPP.CSMS.AddUserRoleRequest Request)
+
+        {
+
+            #region Send OnAddUserRoleRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAddUserRoleRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddUserRoleRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          //CustomAddUserRoleRequestSerializer,
+                                          //CustomMessageInfoSerializer,
+                                          //CustomMessageContentSerializer,
+                                          //CustomComponentSerializer,
+                                          //CustomEVSESerializer,
+                                          //CustomSignatureSerializer,
+                                          //CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.AddUserRole(Request)
+
+                                      : new OCPP.CS.AddUserRoleResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new OCPP.CS.AddUserRoleResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    //CustomAddUserRoleResponseSerializer,
+                    //CustomStatusInfoSerializer,
+                    //CustomSignatureSerializer,
+                    //CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnAddUserRoleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnAddUserRoleResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnAddUserRoleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region UpdateUserRole              (Request)
+
+        /// <summary>
+        /// Set a display message.
+        /// </summary>
+        /// <param name="Request">A UpdateUserRole request.</param>
+        public async Task<OCPP.CS.UpdateUserRoleResponse>
+            UpdateUserRole(OCPP.CSMS.UpdateUserRoleRequest Request)
+
+        {
+
+            #region Send OnUpdateUserRoleRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateUserRoleRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateUserRoleRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          //CustomUpdateUserRoleRequestSerializer,
+                                          //CustomMessageInfoSerializer,
+                                          //CustomMessageContentSerializer,
+                                          //CustomComponentSerializer,
+                                          //CustomEVSESerializer,
+                                          //CustomSignatureSerializer,
+                                          //CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.UpdateUserRole(Request)
+
+                                      : new OCPP.CS.UpdateUserRoleResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new OCPP.CS.UpdateUserRoleResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    //CustomUpdateUserRoleResponseSerializer,
+                    //CustomStatusInfoSerializer,
+                    //CustomSignatureSerializer,
+                    //CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnUpdateUserRoleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnUpdateUserRoleResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnUpdateUserRoleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #region DeleteUserRole              (Request)
+
+        /// <summary>
+        /// Set a display message.
+        /// </summary>
+        /// <param name="Request">A DeleteUserRole request.</param>
+        public async Task<OCPP.CS.DeleteUserRoleResponse>
+            DeleteUserRole(OCPP.CSMS.DeleteUserRoleRequest Request)
+
+        {
+
+            #region Send OnDeleteUserRoleRequest event
+
+            var startTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteUserRoleRequest?.Invoke(startTime,
+                                                   this,
+                                                   Request);
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteUserRoleRequest));
+            }
+
+            #endregion
+
+
+            var response  = reachableChargeBoxes.TryGetValue(Request.NetworkingNodeId, out var centralSystem) &&
+                                centralSystem is not null
+
+                                ? SignaturePolicy.SignRequestMessage(
+                                      Request,
+                                      Request.ToJSON(
+                                          //CustomDeleteUserRoleRequestSerializer,
+                                          //CustomMessageInfoSerializer,
+                                          //CustomMessageContentSerializer,
+                                          //CustomComponentSerializer,
+                                          //CustomEVSESerializer,
+                                          //CustomSignatureSerializer,
+                                          //CustomCustomDataSerializer
+                                      ),
+                                      out var errorResponse
+                                  )
+
+                                      ? await centralSystem.Item1.DeleteUserRole(Request)
+
+                                      : new OCPP.CS.DeleteUserRoleResponse(
+                                            Request,
+                                            Result.SignatureError(errorResponse)
+                                        )
+
+                                : new OCPP.CS.DeleteUserRoleResponse(
+                                      Request,
+                                      Result.Server("Unknown or unreachable charging station!")
+                                  );
+
+
+            SignaturePolicy.VerifyResponseMessage(
+                response,
+                response.ToJSON(
+                    //CustomDeleteUserRoleResponseSerializer,
+                    //CustomStatusInfoSerializer,
+                    //CustomSignatureSerializer,
+                    //CustomCustomDataSerializer
+                ),
+                out errorResponse
+            );
+
+
+            #region Send OnDeleteUserRoleResponse event
+
+            var endTime = Timestamp.Now;
+
+            try
+            {
+
+                OnDeleteUserRoleResponse?.Invoke(endTime,
+                                                    this,
+                                                    Request,
+                                                    response,
+                                                    endTime - startTime);
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e, nameof(TestCentralSystem) + "." + nameof(OnDeleteUserRoleResponse));
+            }
+
+            #endregion
+
+            return response;
+
+        }
+
+        #endregion
+
+        #endregion
 
 
 

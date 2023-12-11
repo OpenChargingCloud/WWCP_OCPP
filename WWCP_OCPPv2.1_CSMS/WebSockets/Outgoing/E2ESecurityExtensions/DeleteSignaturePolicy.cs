@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
@@ -73,8 +71,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             {
 
                 OnDeleteSignaturePolicyRequest?.Invoke(startTime,
-                                                   this,
-                                                   Request);
+                                                       this,
+                                                       Request);
             }
             catch (Exception e)
             {
@@ -96,13 +94,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  Request.RequestId,
                                                  Request.Action,
                                                  Request.ToJSON(
-                                                     CustomDeleteSignaturePolicyRequestSerializer
-                                                     //CustomMessageInfoSerializer,
-                                                     //CustomMessageContentSerializer,
-                                                     //CustomComponentSerializer,
-                                                     //CustomEVSESerializer,
-                                                     //CustomSignatureSerializer,
-                                                     //CustomCustomDataSerializer
+                                                     CustomDeleteSignaturePolicyRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
                                                  ),
                                                  Request.RequestTimeout
                                              );
@@ -153,10 +147,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             {
 
                 OnDeleteSignaturePolicyResponse?.Invoke(endTime,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
+                                                        this,
+                                                        Request,
+                                                        response,
+                                                        endTime - startTime);
 
             }
             catch (Exception e)

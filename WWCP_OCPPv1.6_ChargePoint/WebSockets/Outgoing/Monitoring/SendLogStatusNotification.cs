@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #endregion
 
 
-        #region SendLogStatusNotification(Request)
+        #region LogStatusNotification(Request)
 
         /// <summary>
         /// Send a log status notification.
@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         [SecurityExtensions]
         public async Task<LogStatusNotificationResponse>
 
-            SendLogStatusNotification(LogStatusNotificationRequest  Request)
+            LogStatusNotification(LogStatusNotificationRequest  Request)
 
         {
 

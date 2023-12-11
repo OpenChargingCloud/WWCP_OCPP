@@ -23,8 +23,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
@@ -139,6 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnFirmwareStatusNotificationRequest?.Invoke(Timestamp.Now,
                                                                     this,
+                                                                    Connection,
                                                                     request);
 
                     }
@@ -157,6 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                   this,
+                                                                                                                                  Connection,
                                                                                                                                   request,
                                                                                                                                   CancellationToken)).
                                             ToArray();
@@ -178,6 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
                                                                      this,
+                                                                     Connection,
                                                                      request,
                                                                      response,
                                                                      response.Runtime);

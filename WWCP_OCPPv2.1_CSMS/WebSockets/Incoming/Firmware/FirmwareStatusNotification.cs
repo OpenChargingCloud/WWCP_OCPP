@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                     OnFirmwareStatusNotificationWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                    OnFirmwareStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?    OnFirmwareStatusNotificationRequest;
+        public event OnFirmwareStatusNotificationRequestDelegate?     OnFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a FirmwareStatusNotification request was received.
         /// </summary>
-        public event OnFirmwareStatusNotificationDelegate?           OnFirmwareStatusNotification;
+        public event OnFirmwareStatusNotificationDelegate?            OnFirmwareStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a FirmwareStatusNotification request was sent.
         /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?   OnFirmwareStatusNotificationResponse;
+        public event OnFirmwareStatusNotificationResponseDelegate?    OnFirmwareStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a FirmwareStatusNotification request was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?     OnFirmwareStatusNotificationWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?        OnFirmwareStatusNotificationWSResponse;
 
         #endregion
 
@@ -140,6 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnFirmwareStatusNotificationRequest?.Invoke(Timestamp.Now,
                                                                     this,
+                                                                    Connection,
                                                                     request);
 
                     }
@@ -158,6 +158,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                   this,
+                                                                                                                                  Connection,
                                                                                                                                   request,
                                                                                                                                   CancellationToken)).
                                             ToArray();
@@ -179,6 +180,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
                                                                      this,
+                                                                     Connection,
                                                                      request,
                                                                      response,
                                                                      response.Runtime);

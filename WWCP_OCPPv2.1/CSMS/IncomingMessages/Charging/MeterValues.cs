@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 
@@ -31,12 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The meter values request.</param>
     public delegate Task
 
-        OnMeterValuesRequestDelegate(DateTime             Timestamp,
-                                     IEventSender         Sender,
-                                     MeterValuesRequest   Request);
+        OnMeterValuesRequestDelegate(DateTime                    Timestamp,
+                                     IEventSender                Sender,
+                                     WebSocketServerConnection   Connection,
+                                     MeterValuesRequest          Request);
 
 
     /// <summary>
@@ -44,14 +47,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The meter values request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<MeterValuesResponse>
 
-        OnMeterValuesDelegate(DateTime             Timestamp,
-                              IEventSender         Sender,
-                              MeterValuesRequest   Request,
-                              CancellationToken    CancellationToken);
+        OnMeterValuesDelegate(DateTime                    Timestamp,
+                              IEventSender                Sender,
+                              WebSocketServerConnection   Connection,
+                              MeterValuesRequest          Request,
+                              CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -59,15 +64,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The meter values request.</param>
     /// <param name="Response">The meter values response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnMeterValuesResponseDelegate(DateTime              Timestamp,
-                                      IEventSender          Sender,
-                                      MeterValuesRequest    Request,
-                                      MeterValuesResponse   Response,
-                                      TimeSpan              Runtime);
+        OnMeterValuesResponseDelegate(DateTime                    Timestamp,
+                                      IEventSender                Sender,
+                                      WebSocketServerConnection   Connection,
+                                      MeterValuesRequest          Request,
+                                      MeterValuesResponse         Response,
+                                      TimeSpan                    Runtime);
 
 }

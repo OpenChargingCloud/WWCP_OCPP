@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 
@@ -34,9 +35,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Request">The authorize request.</param>
     public delegate Task
 
-        OnAuthorizeRequestDelegate(DateTime          Timestamp,
-                                   IEventSender      Sender,
-                                   AuthorizeRequest  Request);
+        OnAuthorizeRequestDelegate(DateTime                    Timestamp,
+                                   IEventSender                Sender,
+                                   WebSocketServerConnection   Connection,
+                                   AuthorizeRequest            Request);
 
 
     /// <summary>
@@ -48,10 +50,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="CancellationToken">A token to cancel this authorize request.</param>
     public delegate Task<AuthorizeResponse>
 
-        OnAuthorizeDelegate(DateTime            Timestamp,
-                            IEventSender        Sender,
-                            AuthorizeRequest    Request,
-                            CancellationToken   CancellationToken);
+        OnAuthorizeDelegate(DateTime                    Timestamp,
+                            IEventSender                Sender,
+                            WebSocketServerConnection   Connection,
+                            AuthorizeRequest            Request,
+                            CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -64,10 +67,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <param name="Runtime">The runtime of the authorize response.</param>
     public delegate Task
 
-        OnAuthorizeResponseDelegate(DateTime            Timestamp,
-                                    IEventSender        Sender,
-                                    AuthorizeRequest    Request,
-                                    AuthorizeResponse   Response,
-                                    TimeSpan            Runtime);
+        OnAuthorizeResponseDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketServerConnection   Connection,
+                                    AuthorizeRequest            Request,
+                                    AuthorizeResponse           Response,
+                                    TimeSpan                    Runtime);
 
 }

@@ -137,6 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnIncomingDataTransferRequest?.Invoke(Timestamp.Now,
                                                               this,
+                                                              Connection,
                                                               request);
 
                     }
@@ -155,6 +156,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OCPP.CSMS.OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                       this,
+                                                                                                                                      Connection,
                                                                                                                                       request,
                                                                                                                                       CancellationToken)).
                                             ToArray();
@@ -176,6 +178,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnIncomingDataTransferResponse?.Invoke(Timestamp.Now,
                                                                this,
+                                                               Connection,
                                                                request,
                                                                response,
                                                                response.Runtime);

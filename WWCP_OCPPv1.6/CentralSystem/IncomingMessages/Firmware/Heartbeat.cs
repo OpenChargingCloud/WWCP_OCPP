@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 
@@ -31,27 +32,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the charging station heartbeat request.</param>
     /// <param name="Sender">The sender of the charging station heartbeat request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The charging station heartbeat request.</param>
     public delegate Task
 
-        OnHeartbeatRequestDelegate(DateTime           Timestamp,
-                                   IEventSender       Sender,
-                                   HeartbeatRequest   Request);
+        OnHeartbeatRequestDelegate(DateTime                    Timestamp,
+                                   IEventSender                Sender,
+                                   WebSocketServerConnection   Connection,
+                                   HeartbeatRequest            Request);
 
 
     /// <summary>
-    /// A heartbeat.
+    /// Send a heartbeat.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the charging station heartbeat request.</param>
     /// <param name="Sender">The sender of the charging station heartbeat request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The heartbeat charging station heartbeat request.</param>
     /// <param name="CancellationToken">A token to cancel this charging station heartbeat request.</param>
     public delegate Task<HeartbeatResponse>
 
-        OnHeartbeatDelegate(DateTime            Timestamp,
-                            IEventSender        Sender,
-                            HeartbeatRequest    Request,
-                            CancellationToken   CancellationToken);
+        OnHeartbeatDelegate(DateTime                    Timestamp,
+                            IEventSender                Sender,
+                            WebSocketServerConnection   Connection,
+                            HeartbeatRequest            Request,
+                            CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -59,15 +64,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the charging station heartbeat response.</param>
     /// <param name="Sender">The sender of the charging station heartbeat response.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The charging station heartbeat request.</param>
     /// <param name="Response">The charging station heartbeat response.</param>
     /// <param name="Runtime">The runtime of the charging station heartbeat response.</param>
     public delegate Task
 
-        OnHeartbeatResponseDelegate(DateTime            Timestamp,
-                                    IEventSender        Sender,
-                                    HeartbeatRequest    Request,
-                                    HeartbeatResponse   Response,
-                                    TimeSpan            Runtime);
+        OnHeartbeatResponseDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketServerConnection   Connection,
+                                    HeartbeatRequest            Request,
+                                    HeartbeatResponse           Response,
+                                    TimeSpan                    Runtime);
 
 }

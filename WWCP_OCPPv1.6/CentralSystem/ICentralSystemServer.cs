@@ -233,6 +233,107 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+
+        // Security extensions
+
+        #region OnSecurityEventNotification
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        event OnSecurityEventNotificationRequestDelegate OnSecurityEventNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        event OnSecurityEventNotificationDelegate OnSecurityEventNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a firmware status notification request was sent.
+        /// </summary>
+        event OnSecurityEventNotificationResponseDelegate OnSecurityEventNotificationResponse;
+
+        #endregion
+
+        #region OnLogStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        event OnLogStatusNotificationRequestDelegate    OnLogStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        event OnLogStatusNotificationDelegate           OnLogStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a firmware status notification request was sent.
+        /// </summary>
+        event OnLogStatusNotificationResponseDelegate   OnLogStatusNotificationResponse;
+
+        #endregion
+
+        #region OnSignCertificate
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        event OnSignCertificateRequestDelegate    OnSignCertificateRequest;
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        event OnSignCertificateDelegate           OnSignCertificate;
+
+        /// <summary>
+        /// An event sent whenever a response to a firmware status notification request was sent.
+        /// </summary>
+        event OnSignCertificateResponseDelegate   OnSignCertificateResponse;
+
+        #endregion
+
+        #region OnSignedFirmwareStatusNotification
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        event OnSignedFirmwareStatusNotificationRequestDelegate    OnSignedFirmwareStatusNotificationRequest;
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        event OnSignedFirmwareStatusNotificationDelegate           OnSignedFirmwareStatusNotification;
+
+        /// <summary>
+        /// An event sent whenever a response to a firmware status notification request was sent.
+        /// </summary>
+        event OnSignedFirmwareStatusNotificationResponseDelegate   OnSignedFirmwareStatusNotificationResponse;
+
+        #endregion
+
+
+        // Binary Data Streams Extensions
+
+        #region OnIncomingBinaryDataTransfer
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        event OCPP.CSMS.OnIncomingBinaryDataTransferRequestDelegate    OnIncomingBinaryDataTransferRequest;
+
+        /// <summary>
+        /// An event sent whenever a firmware status notification request was received.
+        /// </summary>
+        event OCPP.CSMS.OnIncomingBinaryDataTransferDelegate           OnIncomingBinaryDataTransfer;
+
+        /// <summary>
+        /// An event sent whenever a response to a firmware status notification request was sent.
+        /// </summary>
+        event OCPP.CSMS.OnIncomingBinaryDataTransferResponseDelegate   OnIncomingBinaryDataTransferResponse;
+
+        #endregion
+
         #endregion
 
 

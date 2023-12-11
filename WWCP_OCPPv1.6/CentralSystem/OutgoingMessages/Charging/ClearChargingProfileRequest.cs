@@ -558,28 +558,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             var json = JSONObject.Create(
 
                            ChargingProfileId.HasValue
-                               ? new JProperty("id",                      ChargingProfileId.     Value.Value)
+                               ? new JProperty("id",                       ChargingProfileId.     Value.Value)
                                : null,
 
                            ConnectorId.HasValue
-                               ? new JProperty("connectorId",             ConnectorId.           Value.Value)
+                               ? new JProperty("connectorId",              ConnectorId.           Value.Value)
                                : null,
 
                            ChargingProfilePurpose.HasValue
-                               ? new JProperty("chargingProfilePurpose",  ChargingProfilePurpose.Value.ToString())
+                               ? new JProperty("chargingProfilePurpose",   ChargingProfilePurpose.Value.ToString())
                                : null,
 
                            StackLevel.HasValue
-                               ? new JProperty("stackLevel",              StackLevel.            Value.ToString())
+                               ? new JProperty("stackLevel",               StackLevel.            Value.ToString())
                                : null,
 
                            Signatures.Any()
-                               ? new JProperty("signatures",              new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
-                                                                                                                                     CustomCustomDataSerializer))))
+                               ? new JProperty("signatures",               new JArray(Signatures.Select(signature => signature.ToJSON(CustomSignatureSerializer,
+                                                                                                                                      CustomCustomDataSerializer))))
                                : null,
 
                            CustomData is not null
-                               ? new JProperty("customData",              CustomData.                  ToJSON(CustomCustomDataSerializer))
+                               ? new JProperty("customData",               CustomData.                  ToJSON(CustomCustomDataSerializer))
                                : null
 
                        );

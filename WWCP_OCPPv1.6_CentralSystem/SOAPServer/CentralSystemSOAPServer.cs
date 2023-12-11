@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
+using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 
@@ -383,6 +384,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+
+
+        public event OnSecurityEventNotificationRequestDelegate OnSecurityEventNotificationRequest;
+        public event OnSecurityEventNotificationDelegate OnSecurityEventNotification;
+        public event OnSecurityEventNotificationResponseDelegate OnSecurityEventNotificationResponse;
+
+        public event OnLogStatusNotificationRequestDelegate OnLogStatusNotificationRequest;
+        public event OnLogStatusNotificationDelegate OnLogStatusNotification;
+        public event OnLogStatusNotificationResponseDelegate OnLogStatusNotificationResponse;
+
+        public event OnSignCertificateRequestDelegate OnSignCertificateRequest;
+        public event OnSignCertificateDelegate OnSignCertificate;
+        public event OnSignCertificateResponseDelegate OnSignCertificateResponse;
+
+        public event OnSignedFirmwareStatusNotificationRequestDelegate OnSignedFirmwareStatusNotificationRequest;
+        public event OnSignedFirmwareStatusNotificationDelegate OnSignedFirmwareStatusNotification;
+        public event OnSignedFirmwareStatusNotificationResponseDelegate OnSignedFirmwareStatusNotificationResponse;
+
+        public event OnIncomingBinaryDataTransferRequestDelegate OnIncomingBinaryDataTransferRequest;
+        public event OnIncomingBinaryDataTransferDelegate OnIncomingBinaryDataTransfer;
+        public event OnIncomingBinaryDataTransferResponseDelegate OnIncomingBinaryDataTransferResponse;
+
         #endregion
 
         #region Constructor(s)
@@ -529,6 +552,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnBootNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                       this,
+                                                                                                                      null,
                                                                                                                       request,
                                                                                                                       Request.CancellationToken)).
                                           ToArray();
@@ -673,6 +697,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnHeartbeatRequest?.Invoke(request.RequestTimestamp,
                                                    this,
+                                                   null,
                                                    request);
 
                     }
@@ -692,6 +717,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnHeartbeatDelegate)?.Invoke(Timestamp.Now,
                                                                                                                this,
+                                                                                                               null,
                                                                                                                request,
                                                                                                                Request.CancellationToken)).
                                           ToArray();
@@ -721,6 +747,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnHeartbeatResponse?.Invoke(responseTimestamp,
                                                     this,
+                                                    null,
                                                     request,
                                                     response,
                                                     responseTimestamp - requestTimestamp);
@@ -836,6 +863,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnAuthorizeRequest?.Invoke(request.RequestTimestamp,
                                                    this,
+                                                   null,
                                                    request);
 
                     }
@@ -855,6 +883,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnAuthorizeDelegate)?.Invoke(Timestamp.Now,
                                                                                                                this,
+                                                                                                               null,
                                                                                                                request,
                                                                                                                Request.CancellationToken)).
                                           ToArray();
@@ -884,6 +913,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnAuthorizeResponse?.Invoke(responseTimestamp,
                                                     this,
+                                                    null,
                                                     request,
                                                     response,
                                                     responseTimestamp - requestTimestamp);
@@ -998,6 +1028,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnStartTransactionRequest?.Invoke(request.RequestTimestamp,
                                                           this,
+                                                          null,
                                                           request);
 
                     }
@@ -1017,6 +1048,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStartTransactionDelegate)?.Invoke(Timestamp.Now,
                                                                                                                       this,
+                                                                                                                      null,
                                                                                                                       request,
                                                                                                                       Request.CancellationToken)).
                                           ToArray();
@@ -1046,6 +1078,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnStartTransactionResponse?.Invoke(responseTimestamp,
                                                            this,
+                                                           null,
                                                            request,
                                                            response,
                                                            responseTimestamp - requestTimestamp);
@@ -1160,6 +1193,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnStatusNotificationRequest?.Invoke(request.RequestTimestamp,
                                                             this,
+                                                            null,
                                                             request);
 
                     }
@@ -1179,6 +1213,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                         this,
+                                                                                                                        null,
                                                                                                                         request,
                                                                                                                         Request.CancellationToken)).
                                           ToArray();
@@ -1208,6 +1243,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnStatusNotificationResponse?.Invoke(responseTimestamp,
                                                              this,
+                                                             null,
                                                              request,
                                                              response,
                                                              responseTimestamp - requestTimestamp);
@@ -1322,6 +1358,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnMeterValuesRequest?.Invoke(request.RequestTimestamp,
                                                      this,
+                                                     null,
                                                      request);
 
                     }
@@ -1341,6 +1378,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnMeterValuesDelegate)?.Invoke(Timestamp.Now,
                                                                                                                  this,
+                                                                                                                 null,
                                                                                                                  request,
                                                                                                                  Request.CancellationToken)).
                                           ToArray();
@@ -1370,6 +1408,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnMeterValuesResponse?.Invoke(responseTimestamp,
                                                       this,
+                                                      null,
                                                       request,
                                                       response,
                                                       responseTimestamp - requestTimestamp);
@@ -1484,6 +1523,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnStopTransactionRequest?.Invoke(request.RequestTimestamp,
                                                          this,
+                                                         null,
                                                          request);
 
                     }
@@ -1503,6 +1543,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnStopTransactionDelegate)?.Invoke(Timestamp.Now,
                                                                                                                      this,
+                                                                                                                     null,
                                                                                                                      request,
                                                                                                                      Request.CancellationToken)).
                                           ToArray();
@@ -1532,6 +1573,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnStopTransactionResponse?.Invoke(responseTimestamp,
                                                           this,
+                                                          null,
                                                           request,
                                                           response,
                                                           responseTimestamp - requestTimestamp);
@@ -1650,6 +1692,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnIncomingDataTransferRequest?.Invoke(request.RequestTimestamp,
                                                               this,
+                                                              null,
                                                               request);
 
                     }
@@ -1669,6 +1712,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OCPP.CSMS.OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                     this,
+                                                                                                                                    null,
                                                                                                                                     request,
                                                                                                                                     Request.CancellationToken)).
                                           ToArray();
@@ -1698,6 +1742,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnIncomingDataTransferResponse?.Invoke(responseTimestamp,
                                                                this,
+                                                               null,
                                                                request,
                                                                response,
                                                                responseTimestamp - requestTimestamp);
@@ -1813,6 +1858,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnDiagnosticsStatusNotificationRequest?.Invoke(request.RequestTimestamp,
                                                                        this,
+                                                                       null,
                                                                        request);
 
                     }
@@ -1832,6 +1878,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnDiagnosticsStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                    this,
+                                                                                                                                   null,
                                                                                                                                    request,
                                                                                                                                    Request.CancellationToken)).
                                           ToArray();
@@ -1861,6 +1908,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnDiagnosticsStatusNotificationResponse?.Invoke(responseTimestamp,
                                                                         this,
+                                                                        null,
                                                                         request,
                                                                         response,
                                                                         responseTimestamp - requestTimestamp);
@@ -1976,6 +2024,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnFirmwareStatusNotificationRequest?.Invoke(request.RequestTimestamp,
                                                                     this,
+                                                                    null,
                                                                     request);
 
                     }
@@ -1995,6 +2044,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                           GetInvocationList()?.
                                           SafeSelect(subscriber => (subscriber as OnFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                 this,
+                                                                                                                                null,
                                                                                                                                 request,
                                                                                                                                 Request.CancellationToken)).
                                           ToArray();
@@ -2024,6 +2074,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                         OnFirmwareStatusNotificationResponse?.Invoke(responseTimestamp,
                                                                      this,
+                                                                     null,
                                                                      request,
                                                                      response,
                                                                      responseTimestamp - requestTimestamp);

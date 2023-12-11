@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 
@@ -31,12 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the authorize request.</param>
     /// <param name="Sender">The sender of the authorize request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The authorize request.</param>
     public delegate Task
 
-        OnAuthorizeRequestDelegate(DateTime           Timestamp,
-                                   IEventSender       Sender,
-                                   AuthorizeRequest   Request);
+        OnAuthorizeRequestDelegate(DateTime                    Timestamp,
+                                   IEventSender                Sender,
+                                   WebSocketServerConnection   Connection,
+                                   AuthorizeRequest            Request);
 
 
     /// <summary>
@@ -44,14 +47,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the authorize request.</param>
     /// <param name="Sender">The sender of the authorize request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The authorize request.</param>
     /// <param name="CancellationToken">A token to cancel this authorize request.</param>
     public delegate Task<AuthorizeResponse>
 
-        OnAuthorizeDelegate(DateTime            Timestamp,
-                            IEventSender        Sender,
-                            AuthorizeRequest    Request,
-                            CancellationToken   CancellationToken);
+        OnAuthorizeDelegate(DateTime                    Timestamp,
+                            IEventSender                Sender,
+                            WebSocketServerConnection   Connection,
+                            AuthorizeRequest            Request,
+                            CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -60,14 +65,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The timestamp of the authorize response.</param>
     /// <param name="Sender">The sender of the authorize response.</param>
     /// <param name="Request">The authorize request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Response">The authorize response.</param>
     /// <param name="Runtime">The runtime of the authorize response.</param>
     public delegate Task
 
-        OnAuthorizeResponseDelegate(DateTime            Timestamp,
-                                    IEventSender        Sender,
-                                    AuthorizeRequest    Request,
-                                    AuthorizeResponse   Response,
-                                    TimeSpan            Runtime);
+        OnAuthorizeResponseDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketServerConnection   Connection,
+                                    AuthorizeRequest            Request,
+                                    AuthorizeResponse           Response,
+                                    TimeSpan                    Runtime);
 
 }

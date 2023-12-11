@@ -36,13 +36,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         String? ClientCloseMessage { get; }
 
 
-        #region SendBootNotification
+        #region BootNotification
 
         /// <summary>
         /// Send a boot notification.
         /// </summary>
         /// <param name="Request">A boot notification request.</param>
-        public Task<BootNotificationResponse> SendBootNotification(BootNotificationRequest Request);
+        public Task<BootNotificationResponse> BootNotification(BootNotificationRequest Request);
 
         #endregion
 
@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Send a heartbeat.
         /// </summary>
         /// <param name="Request">A heartbeat request.</param>
-        public Task<HeartbeatResponse> SendHeartbeat(HeartbeatRequest Request);
+        public Task<HeartbeatResponse> Heartbeat(HeartbeatRequest Request);
 
         #endregion
 
@@ -69,20 +69,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         #region StartTransaction
 
         /// <summary>
-        /// Start a charging process at the given connector.
+        /// Send a start transaction information.
         /// </summary>
         /// <param name="Request">A start transaction request.</param>
         public Task<StartTransactionResponse> StartTransaction(StartTransactionRequest Request);
 
         #endregion
 
-        #region SendStatusNotification
+        #region StatusNotification
 
         /// <summary>
         /// Send a status notification for the given connector.
         /// </summary>
         /// <param name="Request">A status notification request.</param>
-        public Task<StatusNotificationResponse> SendStatusNotification(StatusNotificationRequest Request);
+        public Task<StatusNotificationResponse> StatusNotification(StatusNotificationRequest Request);
 
         #endregion
 
@@ -92,14 +92,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Send a meter values for the given connector.
         /// </summary>
         /// <param name="Request">A meter values request.</param>
-        public Task<MeterValuesResponse> SendMeterValues(MeterValuesRequest Request);
+        public Task<MeterValuesResponse> MeterValues(MeterValuesRequest Request);
 
         #endregion
 
         #region StopTransaction
 
         /// <summary>
-        /// Stop a charging process at the given connector.
+        /// Send a stop transaction information.
         /// </summary>
         /// <param name="Request">A stop transaction request.</param>
         public Task<StopTransactionResponse> StopTransaction(StopTransactionRequest Request);
@@ -112,27 +112,27 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Send the given vendor-specific data to the central system.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        public Task<OCPP.CSMS.DataTransferResponse> TransferData(OCPP.CS.DataTransferRequest Request);
+        public Task<OCPP.CSMS.DataTransferResponse> DataTransfer(OCPP.CS.DataTransferRequest Request);
 
         #endregion
 
-        #region SendDiagnosticsStatusNotification
+        #region DiagnosticsStatusNotification
 
         /// <summary>
         /// Send a diagnostics status notification to the central system.
         /// </summary>
         /// <param name="Request">A diagnostics status notification request.</param>
-        public Task<DiagnosticsStatusNotificationResponse> SendDiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest Request);
+        public Task<DiagnosticsStatusNotificationResponse> DiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest Request);
 
         #endregion
 
-        #region SendFirmwareStatusNotification
+        #region FirmwareStatusNotification
 
         /// <summary>
         /// Send a firmware status notification to the central system.
         /// </summary>
         /// <param name="Request">A firmware status notification request.</param>
-        public Task<FirmwareStatusNotificationResponse> SendFirmwareStatusNotification(FirmwareStatusNotificationRequest Request);
+        public Task<FirmwareStatusNotificationResponse> FirmwareStatusNotification(FirmwareStatusNotificationRequest Request);
 
         #endregion
 
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">A log status notification request.</param>
         public Task<LogStatusNotificationResponse>
 
-            SendLogStatusNotification(LogStatusNotificationRequest  Request);
+            LogStatusNotification(LogStatusNotificationRequest  Request);
 
         #endregion
 
@@ -171,7 +171,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="Request">A sign certificate request.</param>
         public Task<SignCertificateResponse>
 
-            SendCertificateSigningRequest(SignCertificateRequest  Request);
+            SignCertificate(SignCertificateRequest  Request);
 
         #endregion
 

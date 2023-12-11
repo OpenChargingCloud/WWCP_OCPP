@@ -565,12 +565,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         /// <param name="CustomSendLocalListRequestSerializer">A delegate to serialize custom start transaction requests.</param>
         /// <param name="CustomAuthorizationDataSerializer">A delegate to serialize custom start transaction requests.</param>
-        /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
+        /// <param name="CustomIdTagInfoSerializer">A delegate to serialize custom IdTagInfos.</param>
         /// <param name="CustomSignatureSerializer">A delegate to serialize cryptographic signature objects.</param>
         /// <param name="CustomCustomDataSerializer">A delegate to serialize CustomData objects.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<SendLocalListRequest>?  CustomSendLocalListRequestSerializer   = null,
                               CustomJObjectSerializerDelegate<AuthorizationData>?     CustomAuthorizationDataSerializer      = null,
-                              CustomJObjectSerializerDelegate<IdTagInfo>?             CustomIdTagInfoResponseSerializer      = null,
+                              CustomJObjectSerializerDelegate<IdTagInfo>?             CustomIdTagInfoSerializer              = null,
                               CustomJObjectSerializerDelegate<OCPP.Signature>?        CustomSignatureSerializer              = null,
                               CustomJObjectSerializerDelegate<CustomData>?            CustomCustomDataSerializer             = null)
         {
@@ -582,7 +582,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
                            LocalAuthorizationList.IsNeitherNullNorEmpty()
                                ? new JProperty("localAuthorizationList",   new JArray(LocalAuthorizationList.Select(item      => item.     ToJSON(CustomAuthorizationDataSerializer,
-                                                                                                                                                  CustomIdTagInfoResponseSerializer))))
+                                                                                                                                                  CustomIdTagInfoSerializer))))
                                : null,
 
                            Signatures.Any()

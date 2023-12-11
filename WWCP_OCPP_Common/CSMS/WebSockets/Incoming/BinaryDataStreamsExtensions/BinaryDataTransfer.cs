@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
@@ -31,11 +32,13 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The binary data transfer request.</param>
     public delegate Task
 
         OnIncomingBinaryDataTransferRequestDelegate(DateTime                            Timestamp,
                                                     IEventSender                        Sender,
+                                                    WebSocketServerConnection           Connection,
                                                     OCPP.CS.BinaryDataTransferRequest   Request);
 
 
@@ -44,12 +47,14 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The binary data transfer request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<OCPP.CSMS.BinaryDataTransferResponse>
 
         OnIncomingBinaryDataTransferDelegate(DateTime                            Timestamp,
                                              IEventSender                        Sender,
+                                             WebSocketServerConnection           Connection,
                                              OCPP.CS.BinaryDataTransferRequest   Request,
                                              CancellationToken                   CancellationToken);
 
@@ -59,6 +64,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The binary data transfer request.</param>
     /// <param name="Response">The stop transaction response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
@@ -66,6 +72,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         OnIncomingBinaryDataTransferResponseDelegate(DateTime                               Timestamp,
                                                      IEventSender                           Sender,
+                                                     WebSocketServerConnection              Connection,
                                                      OCPP.CS.BinaryDataTransferRequest      Request,
                                                      OCPP.CSMS.BinaryDataTransferResponse   Response,
                                                      TimeSpan                               Runtime);

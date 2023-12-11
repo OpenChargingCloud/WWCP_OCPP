@@ -147,18 +147,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             public String          Command           { get; }
 
-            public IRequest        Request           { get; }
+            public OCPP.IRequest   Request           { get; }
 
             public JObject         RequestJSON       { get; }
 
             public DateTime        EnqueTimestamp    { get; }
 
-            public EnqueuedStatus    Status            { get; set; }
+            public EnqueuedStatus  Status            { get; set; }
 
             public Action<Object>  ResponseAction    { get; }
 
             public EnqueuedRequest(String          Command,
-                                   IRequest        Request,
+                                   OCPP.IRequest   Request,
                                    JObject         RequestJSON,
                                    DateTime        EnqueTimestamp,
                                    EnqueuedStatus  Status,
@@ -2814,14 +2814,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region (private) NextRequestId
 
-        private Request_Id NextRequestId
+        private OCPP.Request_Id NextRequestId
         {
             get
             {
 
                 Interlocked.Increment(ref internalRequestId);
 
-                return Request_Id.Parse(internalRequestId.ToString());
+                return OCPP.Request_Id.Parse(internalRequestId.ToString());
 
             }
         }
@@ -2894,7 +2894,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.BootNotificationResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.SendBootNotification(request);
+                response = await CPClient.BootNotification(request);
 
             if (response is not null)
             {
@@ -3005,7 +3005,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.HeartbeatResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.SendHeartbeat(request);
+                response = await CPClient.Heartbeat(request);
 
             if (response is not null)
             {
@@ -3339,7 +3339,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.StatusNotificationResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.SendStatusNotification(request);
+                response = await CPClient.StatusNotification(request);
 
             response ??= new CS.StatusNotificationResponse(request,
                                                            Result.Server("Response is null!"));
@@ -3438,7 +3438,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.MeterValuesResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.SendMeterValues(request);
+                response = await CPClient.MeterValues(request);
 
             response ??= new CS.MeterValuesResponse(request,
                                                     Result.Server("Response is null!"));
@@ -3593,7 +3593,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        public async Task<CS.DataTransferResponse>
+        public async Task<OCPP.CSMS.DataTransferResponse>
 
             TransferData(String             VendorId,
                          String?            MessageId           = null,
@@ -3610,7 +3610,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             var startTime  = Timestamp.Now;
 
-            var request    = new DataTransferRequest(
+            var request    = new OCPP.CS.DataTransferRequest(
                                  ChargeBoxId,
                                  VendorId,
                                  MessageId,
@@ -3643,13 +3643,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             #endregion
 
 
-            CS.DataTransferResponse? response = null;
+            OCPP.CSMS.DataTransferResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.TransferData(request);
+                response = await CPClient.DataTransfer(request);
 
-            response ??= new CS.DataTransferResponse(request,
-                                                     Result.Server("Response is null!"));
+            response ??= new OCPP.CSMS.DataTransferResponse(request,
+                                                     OCPP.Result.Server("Response is null!"));
 
 
             #region Send OnDataTransferResponse event
@@ -3739,7 +3739,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.DiagnosticsStatusNotificationResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.SendDiagnosticsStatusNotification(request);
+                response = await CPClient.DiagnosticsStatusNotification(request);
 
             response ??= new CS.DiagnosticsStatusNotificationResponse(request,
                                                                       Result.Server("Response is null!"));
@@ -3832,7 +3832,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CS.FirmwareStatusNotificationResponse? response = null;
 
             if (CPClient is not null)
-                response = await CPClient.SendFirmwareStatusNotification(request);
+                response = await CPClient.FirmwareStatusNotification(request);
 
             response ??= new CS.FirmwareStatusNotificationResponse(request,
                                                                    Result.Server("Response is null!"));

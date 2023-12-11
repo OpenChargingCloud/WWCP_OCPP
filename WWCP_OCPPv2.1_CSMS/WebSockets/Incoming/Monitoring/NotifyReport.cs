@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyReport WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                   OnNotifyReportWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                OnNotifyReportWSRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyReport request was received.
         /// </summary>
-        public event OnNotifyReportRequestDelegate?                OnNotifyReportRequest;
+        public event OnNotifyReportRequestDelegate?               OnNotifyReportRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyReport was received.
         /// </summary>
-        public event OnNotifyReportDelegate?                       OnNotifyReport;
+        public event OnNotifyReportDelegate?                      OnNotifyReport;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyReport was sent.
         /// </summary>
-        public event OnNotifyReportResponseDelegate?               OnNotifyReportResponse;
+        public event OnNotifyReportResponseDelegate?              OnNotifyReportResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyReport was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnNotifyReportWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnNotifyReportWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnNotifyReportRequest?.Invoke(Timestamp.Now,
                                                       this,
+                                                      Connection,
                                                       request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnNotifyReportDelegate)?.Invoke(Timestamp.Now,
                                                                                                                     this,
+                                                                                                                    Connection,
                                                                                                                     request,
                                                                                                                     CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnNotifyReportResponse?.Invoke(Timestamp.Now,
                                                        this,
+                                                       Connection,
                                                        request,
                                                        response,
                                                        response.Runtime);

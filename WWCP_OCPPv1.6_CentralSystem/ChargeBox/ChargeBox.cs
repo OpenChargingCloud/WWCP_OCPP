@@ -23,9 +23,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP.Notifications;
 
 using cloud.charging.open.protocols.OCPPv1_6.CP;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP.Notifications;
 
 #endregion
 
@@ -469,12 +469,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event fired whenever a data transfer request will be sent to the central system.
         /// </summary>
-        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
+        public event OCPP.CS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a data transfer request was received.
         /// </summary>
-        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
+        public event OCPP.CS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 
@@ -571,12 +571,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        public event OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
+        public event OCPP.CSMS.OnIncomingDataTransferRequestDelegate?   OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        public event OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
+        public event OCPP.CSMS.OnIncomingDataTransferResponseDelegate?  OnIncomingDataTransferResponse;
 
         #endregion
 

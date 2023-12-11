@@ -18958,6 +18958,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                OfType <OCPP.CSMS.OnIncomingDataTransferRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 null,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -19085,6 +19086,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   OfType <OCPP.CSMS.OnIncomingDataTransferResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    null,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).
@@ -21442,6 +21444,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                OfType <OCPP.CSMS.OnIncomingBinaryDataTransferRequestDelegate>().
                                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                                  this,
+                                                                                                                 null,
                                                                                                                  request)).
                                                                ToArray();
 
@@ -21535,6 +21538,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode
                                                                   OfType <OCPP.CSMS.OnIncomingBinaryDataTransferResponseDelegate>().
                                                                   Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                     this,
+                                                                                                                    null,
                                                                                                                     request,
                                                                                                                     response,
                                                                                                                     responseTime - startTime)).

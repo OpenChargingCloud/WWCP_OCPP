@@ -1077,7 +1077,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// The common interface of all central system clients.
     /// </summary>
-    public interface ICentralSystemClient
+    public interface ICentralSystemClient : OCPP.ICSMSClient
     {
 
         NetworkingNode_Id                       ChargeBoxIdentity    { get; }

@@ -4161,7 +4161,60 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             throw new NotImplementedException();
         }
 
+        // ---------------------------------------------------------------------------------------
+
         #endregion
+
+
+        public Task<OCPP.CS.BinaryDataTransferResponse> TransferBinaryData(OCPP.CSMS.BinaryDataTransferRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OCPP.CS.GetFileResponse> GetFile(OCPP.CSMS.GetFileRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OCPP.CS.SendFileResponse> SendFile(OCPP.CSMS.SendFileRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OCPP.CS.DeleteFileResponse> DeleteFile(OCPP.CSMS.DeleteFileRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OCPP.CS.AddSignaturePolicyResponse> AddSignaturePolicy(OCPP.CSMS.AddSignaturePolicyRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OCPP.CS.AddUserRoleResponse> AddUserRole(OCPP.CSMS.AddUserRoleRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OCPP.CS.UpdateSignaturePolicyResponse> UpdateSignaturePolicy(OCPP.CSMS.UpdateSignaturePolicyRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OCPP.CS.UpdateUserRoleResponse> UpdateUserRole(OCPP.CSMS.UpdateUserRoleRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OCPP.CS.DeleteSignaturePolicyResponse> DeleteSignaturePolicy(OCPP.CSMS.DeleteSignaturePolicyRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OCPP.CS.DeleteUserRoleResponse> DeleteUserRole(OCPP.CSMS.DeleteUserRoleRequest Request)
+        {
+            throw new NotImplementedException();
+        }
 
 
     }

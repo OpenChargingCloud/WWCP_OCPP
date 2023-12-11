@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendStatusNotification(Request)
+        #region StatusNotification(Request)
 
         /// <summary>
         /// Send a status notification for the given EVSE and connector.
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">A StatusNotification request.</param>
         public async Task<StatusNotificationResponse>
 
-            SendStatusNotification(StatusNotificationRequest  Request)
+            StatusNotification(StatusNotificationRequest  Request)
 
         {
 

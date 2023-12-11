@@ -18,24 +18,25 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 #endregion
 
 namespace cloud.charging.open.protocols.OCPP.CSMS
 {
 
-    #region OnIncomingDataTransfer
-
     /// <summary>
     /// An incoming data transfer request.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The data transfer request.</param>
     public delegate Task
 
         OnIncomingDataTransferRequestDelegate(DateTime                      Timestamp,
                                               IEventSender                  Sender,
+                                              WebSocketServerConnection     Connection,
                                               OCPP.CS.DataTransferRequest   Request);
 
 
@@ -44,14 +45,16 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The data transfer request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<DataTransferResponse>
 
-        OnIncomingDataTransferDelegate(DateTime                 Timestamp,
-                                       IEventSender             Sender,
-                                       CS.DataTransferRequest   Request,
-                                       CancellationToken        CancellationToken);
+        OnIncomingDataTransferDelegate(DateTime                    Timestamp,
+                                       IEventSender                Sender,
+                                       WebSocketServerConnection   Connection,
+                                       CS.DataTransferRequest      Request,
+                                       CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -59,6 +62,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The data transfer request.</param>
     /// <param name="Response">The stop transaction response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
@@ -66,11 +70,9 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         OnIncomingDataTransferResponseDelegate(DateTime                         Timestamp,
                                                IEventSender                     Sender,
+                                               WebSocketServerConnection        Connection,
                                                OCPP.CS.DataTransferRequest      Request,
                                                OCPP.CSMS.DataTransferResponse   Response,
                                                TimeSpan                         Runtime);
-
-    #endregion
-
 
 }

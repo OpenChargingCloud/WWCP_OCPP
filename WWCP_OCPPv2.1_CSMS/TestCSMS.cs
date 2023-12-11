@@ -48,25 +48,25 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region Data
 
-        private          readonly  HashSet<SignaturePolicy>                                                 signaturePolicies           = new();
+        private          readonly  HashSet<SignaturePolicy>                                                               signaturePolicies           = [];
 
-        private          readonly  HashSet<OCPPv2_1.CSMS.ICSMSChannel>                                                    centralSystemServers        = new();
+        private          readonly  HashSet<OCPPv2_1.CSMS.ICSMSChannel>                                                    centralSystemServers        = [];
 
-        private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<OCPPv2_1.CSMS.ICSMSChannel, DateTime>>   reachableChargingStations   = new();
+        private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<OCPPv2_1.CSMS.ICSMSChannel, DateTime>>   reachableChargingStations   = [];
 
-        private          readonly  HTTPExtAPI                                                               TestAPI;
+        private          readonly  HTTPExtAPI                                                                             TestAPI;
 
-        private          readonly  CSMSWebAPI                                                               WebAPI;
+        private          readonly  CSMSWebAPI                                                                             WebAPI;
 
-        protected static readonly  SemaphoreSlim                                                            ChargingStationSemaphore    = new (1, 1);
+        protected static readonly  SemaphoreSlim                                                                          ChargingStationSemaphore    = new (1, 1);
 
-        protected static readonly  TimeSpan                                                                 SemaphoreSlimTimeout        = TimeSpan.FromSeconds(5);
+        protected static readonly  TimeSpan                                                                               SemaphoreSlimTimeout        = TimeSpan.FromSeconds(5);
 
-        public    static readonly  IPPort                                                                   DefaultHTTPUploadPort       = IPPort.Parse(9901);
+        public    static readonly  IPPort                                                                                 DefaultHTTPUploadPort       = IPPort.Parse(9901);
 
-        private                    Int64                                                                    internalRequestId           = 900000;
+        private                    Int64                                                                                  internalRequestId           = 900000;
 
-        private                    TimeSpan                                                                 defaultRequestTimeout       = TimeSpan.FromSeconds(30);
+        private                    TimeSpan                                                                               defaultRequestTimeout       = TimeSpan.FromSeconds(30);
 
         #endregion
 
@@ -1774,10 +1774,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferResponse>?                       CustomBinaryDataTransferResponseSerializer                   { get; set; }
-        public CustomBinarySerializerDelegate <OCPP.CS.GetFileResponse>?                                  CustomGetFileResponseSerializer                              { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?                                 CustomSendFileResponseSerializer                             { get; set; }
-        public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?                               CustomDeleteFileResponseSerializer                           { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferResponse>?                  CustomBinaryDataTransferResponseSerializer                   { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CS.GetFileResponse>?                             CustomGetFileResponseSerializer                              { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.SendFileResponse>?                            CustomSendFileResponseSerializer                             { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.DeleteFileResponse>?                          CustomDeleteFileResponseSerializer                           { get; set; }
 
 
         // E2E Charging Tariff Extensions
@@ -2805,6 +2805,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnFirmwareStatusNotification += async (timestamp,
                                                                sender,
+                                                               connection,
                                                                request,
                                                                cancellationToken) => {
 
@@ -2820,6 +2821,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnFirmwareStatusNotificationRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -2890,6 +2892,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnFirmwareStatusNotificationResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -2922,6 +2925,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnPublishFirmwareStatusNotification += async (timestamp,
                                                                       sender,
+                                                                      connection,
                                                                       request,
                                                                       cancellationToken) => {
 
@@ -2937,6 +2941,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnPublishFirmwareStatusNotificationRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -3008,6 +3013,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnPublishFirmwareStatusNotificationResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -3040,6 +3046,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnHeartbeat += async (timestamp,
                                               sender,
+                                              connection,
                                               request,
                                               cancellationToken) => {
 
@@ -3055,6 +3062,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnHeartbeatRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -3124,6 +3132,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnHeartbeatResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -3156,6 +3165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnNotifyEvent += async (timestamp,
                                                 sender,
+                                                connection,
                                                 request,
                                                 cancellationToken) => {
 
@@ -3171,6 +3181,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnNotifyEventRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -3247,6 +3258,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnNotifyEventResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -3279,6 +3291,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnSecurityEventNotification += async (timestamp,
                                                               sender,
+                                                              connection,
                                                               request,
                                                               cancellationToken) => {
 
@@ -3294,6 +3307,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnSecurityEventNotificationRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -3365,6 +3379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnSecurityEventNotificationResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -3397,6 +3412,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnNotifyReport += async (timestamp,
                                                  sender,
+                                                 connection,
                                                  request,
                                                  cancellationToken) => {
 
@@ -3412,6 +3428,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnNotifyReportRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -3490,6 +3507,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnNotifyReportResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -3522,6 +3540,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnNotifyMonitoringReport += async (timestamp,
                                                            sender,
+                                                           connection,
                                                            request,
                                                            cancellationToken) => {
 
@@ -3537,6 +3556,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnNotifyMonitoringReportRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -3615,6 +3635,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnNotifyMonitoringReportResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -3647,6 +3668,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnLogStatusNotification += async (timestamp,
                                                           sender,
+                                                          connection,
                                                           request,
                                                           cancellationToken) => {
 
@@ -3662,6 +3684,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnLogStatusNotificationRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -3732,6 +3755,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnLogStatusNotificationResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -3764,6 +3788,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnIncomingDataTransfer += async (timestamp,
                                                          sender,
+                                                         connection,
                                                          request,
                                                          cancellationToken) => {
 
@@ -3779,6 +3804,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnIncomingDataTransferRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -3906,6 +3932,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnIncomingDataTransferResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -3939,6 +3966,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnSignCertificate += async (timestamp,
                                                     sender,
+                                                    connection,
                                                     request,
                                                     cancellationToken) => {
 
@@ -3954,6 +3982,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnSignCertificateRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -4027,6 +4056,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnSignCertificateResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -4059,6 +4089,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnGet15118EVCertificate += async (timestamp,
                                                           sender,
+                                                          connection,
                                                           request,
                                                           cancellationToken) => {
 
@@ -4074,6 +4105,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnGet15118EVCertificateRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -4152,6 +4184,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnGet15118EVCertificateResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -4184,6 +4217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnGetCertificateStatus += async (timestamp,
                                                          sender,
+                                                         connection,
                                                          request,
                                                          cancellationToken) => {
 
@@ -4199,6 +4233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnGetCertificateStatusRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -4273,6 +4308,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnGetCertificateStatusResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -4305,6 +4341,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnGetCRL += async (timestamp,
                                            sender,
+                                           connection,
                                            request,
                                            cancellationToken) => {
 
@@ -4320,6 +4357,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnGetCRLRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -4395,6 +4433,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnGetCRLResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -4428,6 +4467,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnReservationStatusUpdate += async (timestamp,
                                                             sender,
+                                                            connection,
                                                             request,
                                                             cancellationToken) => {
 
@@ -4443,6 +4483,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnReservationStatusUpdateRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -4513,6 +4554,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnReservationStatusUpdateResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -4545,6 +4587,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnAuthorize += async (timestamp,
                                               sender,
+                                              connection,
                                               request,
                                               cancellationToken) => {
 
@@ -4560,6 +4603,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnAuthorizeRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -4645,6 +4689,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnAuthorizeResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -4677,6 +4722,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnNotifyEVChargingNeeds += async (timestamp,
                                                           sender,
+                                                          connection,
                                                           request,
                                                           cancellationToken) => {
 
@@ -4692,6 +4738,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnNotifyEVChargingNeedsRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -4776,6 +4823,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnNotifyEVChargingNeedsResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -4808,6 +4856,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnTransactionEvent += async (timestamp,
                                                      sender,
+                                                     connection,
                                                      request,
                                                      cancellationToken) => {
 
@@ -4823,6 +4872,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnTransactionEventRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -4923,6 +4973,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnTransactionEventResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -4955,6 +5006,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnStatusNotification += async (timestamp,
                                                        sender,
+                                                       connection,
                                                        request,
                                                        cancellationToken) => {
 
@@ -4970,6 +5022,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnStatusNotificationRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -5042,6 +5095,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnStatusNotificationResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -5074,6 +5128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnMeterValues += async (timestamp,
                                                 sender,
+                                                connection,
                                                 request,
                                                 cancellationToken) => {
 
@@ -5089,6 +5144,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnMeterValuesRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -5164,6 +5220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnMeterValuesResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -5196,6 +5253,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnNotifyChargingLimit += async (timestamp,
                                                         sender,
+                                                        connection,
                                                         request,
                                                         cancellationToken) => {
 
@@ -5211,6 +5269,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnNotifyChargingLimitRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -5306,6 +5365,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnNotifyChargingLimitResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -5338,6 +5398,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnClearedChargingLimit += async (timestamp,
                                                          sender,
+                                                         connection,
                                                          request,
                                                          cancellationToken) => {
 
@@ -5353,6 +5414,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnClearedChargingLimitRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -5423,6 +5485,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnClearedChargingLimitResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -5455,6 +5518,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnReportChargingProfiles += async (timestamp,
                                                            sender,
+                                                           connection,
                                                            request,
                                                            cancellationToken) => {
 
@@ -5470,6 +5534,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnReportChargingProfilesRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -5568,6 +5633,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnReportChargingProfilesResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -5600,6 +5666,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnNotifyEVChargingSchedule += async (timestamp,
                                                              sender,
+                                                             connection,
                                                              request,
                                                              cancellationToken) => {
 
@@ -5615,6 +5682,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnNotifyEVChargingScheduleRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -5715,6 +5783,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnNotifyEVChargingScheduleResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -5747,6 +5816,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnNotifyPriorityCharging += async (timestamp,
                                                            sender,
+                                                           connection,
                                                            request,
                                                            cancellationToken) => {
 
@@ -5762,6 +5832,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnNotifyPriorityChargingRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -5832,6 +5903,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnNotifyPriorityChargingResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -5864,6 +5936,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnPullDynamicScheduleUpdate += async (timestamp,
                                                               sender,
+                                                              connection,
                                                               request,
                                                               cancellationToken) => {
 
@@ -5879,6 +5952,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnPullDynamicScheduleUpdateRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -5967,6 +6041,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnPullDynamicScheduleUpdateResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -6000,6 +6075,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnNotifyDisplayMessages += async (timestamp,
                                                           sender,
+                                                          connection,
                                                           request,
                                                           cancellationToken) => {
 
@@ -6015,6 +6091,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnNotifyDisplayMessagesRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -6093,6 +6170,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnNotifyDisplayMessagesResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -6125,6 +6203,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnNotifyCustomerInformation += async (timestamp,
                                                               sender,
+                                                              connection,
                                                               request,
                                                               cancellationToken) => {
 
@@ -6140,6 +6219,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                            OfType <OnNotifyCustomerInformationRequestDelegate>().
                                                            Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                              this,
+                                                                                                             connection,
                                                                                                              request)).
                                                            ToArray();
 
@@ -6213,6 +6293,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnNotifyCustomerInformationResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -6248,6 +6329,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             CSMSChannel.OnIncomingBinaryDataTransfer += async (timestamp,
                                                                sender,
+                                                               connection,
                                                                request,
                                                                cancellationToken) => {
 
@@ -6265,6 +6347,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                OfType <OnIncomingBinaryDataTransferRequestDelegate>().
                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                  this,
+                                                                                                 connection,
                                                                                                  request)).
                                                ToArray());
 
@@ -6354,6 +6437,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                               OfType <OnIncomingBinaryDataTransferResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).

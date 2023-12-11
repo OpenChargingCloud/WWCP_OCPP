@@ -343,23 +343,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region ToJSON(CustomAuthorizationDataSerializer = null, CustomIdTagInfoResponseSerializer = null)
+        #region ToJSON(CustomAuthorizationDataSerializer = null, CustomIdTagInfoSerializer = null)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="CustomAuthorizationDataSerializer">A delegate to serialize custom start transaction requests.</param>
-        /// <param name="CustomIdTagInfoResponseSerializer">A delegate to serialize custom IdTagInfos.</param>
+        /// <param name="CustomIdTagInfoSerializer">A delegate to serialize custom IdTagInfos.</param>
         public JObject ToJSON(CustomJObjectSerializerDelegate<AuthorizationData>? CustomAuthorizationDataSerializer   = null,
-                              CustomJObjectSerializerDelegate<IdTagInfo>?         CustomIdTagInfoResponseSerializer   = null)
+                              CustomJObjectSerializerDelegate<IdTagInfo>?         CustomIdTagInfoSerializer           = null)
         {
 
             var json = JSONObject.Create(
 
-                           new JProperty("idTag",            IdTag.          ToString()),
+                                 new JProperty("idTag",       IdTag.          ToString()),
 
                            IdTagInfo.HasValue
-                               ? new JProperty("idTagInfo",  IdTagInfo.Value.ToJSON(CustomIdTagInfoResponseSerializer))
+                               ? new JProperty("idTagInfo",   IdTagInfo.Value.ToJSON(CustomIdTagInfoSerializer))
                                : null
 
                        );

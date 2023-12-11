@@ -879,13 +879,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnFirmwareStatusNotification            (-Request/-Response)
 
-            CSMS.OnFirmwareStatusNotificationRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnFirmwareStatusNotificationRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnFirmwareStatusNotificationRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomFirmwareStatusNotificationRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnFirmwareStatusNotificationResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnFirmwareStatusNotificationResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnFirmwareStatusNotificationResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomFirmwareStatusNotificationRequestSerializer,
                                                                                         CustomSignatureSerializer,
@@ -898,13 +898,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnPublishFirmwareStatusNotification     (-Request/-Response)
 
-            CSMS.OnPublishFirmwareStatusNotificationRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnPublishFirmwareStatusNotificationRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnPublishFirmwareStatusNotificationRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomPublishFirmwareStatusNotificationRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnPublishFirmwareStatusNotificationResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnPublishFirmwareStatusNotificationResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnPublishFirmwareStatusNotificationResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomPublishFirmwareStatusNotificationRequestSerializer,
                                                                                         CustomSignatureSerializer,
@@ -917,13 +917,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnHeartbeat                             (-Request/-Response)
 
-            CSMS.OnHeartbeatRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnHeartbeatRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnHeartbeatRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomHeartbeatRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnHeartbeatResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnHeartbeatResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnHeartbeatResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomHeartbeatRequestSerializer,
                                                                                         CustomSignatureSerializer,
@@ -936,7 +936,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyEvent                           (-Request/-Response)
 
-            CSMS.OnNotifyEventRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnNotifyEventRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnNotifyEventRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomNotifyEventRequestSerializer,
                                                                                       CustomEventDataSerializer,
@@ -946,7 +946,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnNotifyEventResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnNotifyEventResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnNotifyEventResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomNotifyEventRequestSerializer,
                                                                                         CustomEventDataSerializer,
@@ -963,13 +963,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSecurityEventNotification             (-Request/-Response)
 
-            CSMS.OnSecurityEventNotificationRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnSecurityEventNotificationRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnSecurityEventNotificationRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomSecurityEventNotificationRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnSecurityEventNotificationResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnSecurityEventNotificationResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnSecurityEventNotificationResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomSecurityEventNotificationRequestSerializer,
                                                                                         CustomSignatureSerializer,
@@ -982,7 +982,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyReport                          (-Request/-Response)
 
-            CSMS.OnNotifyReportRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnNotifyReportRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnNotifyReportRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomNotifyReportRequestSerializer,
                                                                                       CustomReportDataSerializer,
@@ -994,7 +994,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnNotifyReportResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnNotifyReportResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnNotifyReportResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomNotifyReportRequestSerializer,
                                                                                         CustomReportDataSerializer,
@@ -1013,7 +1013,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyMonitoringReport                (-Request/-Response)
 
-            CSMS.OnNotifyMonitoringReportRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnNotifyMonitoringReportRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnNotifyMonitoringReportRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomNotifyMonitoringReportRequestSerializer,
                                                                                       CustomMonitoringDataSerializer,
@@ -1024,7 +1024,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnNotifyMonitoringReportResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnNotifyMonitoringReportResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnNotifyMonitoringReportResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomNotifyMonitoringReportRequestSerializer,
                                                                                         CustomMonitoringDataSerializer,
@@ -1042,13 +1042,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnLogStatusNotification                 (-Request/-Response)
 
-            CSMS.OnLogStatusNotificationRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnLogStatusNotificationRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnLogStatusNotificationRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomLogStatusNotificationRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnLogStatusNotificationResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnLogStatusNotificationResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnLogStatusNotificationResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomLogStatusNotificationRequestSerializer,
                                                                                         CustomSignatureSerializer,
@@ -1061,13 +1061,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnIncomingDataTransfer                  (-Request/-Response)
 
-            CSMS.OnIncomingDataTransferRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnIncomingDataTransferRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnIncomingDataTransferRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomDataTransferRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnIncomingDataTransferResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnIncomingDataTransferResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnIncomingDataTransferResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomDataTransferRequestSerializer,
                                                                                         CustomSignatureSerializer,
@@ -1082,13 +1082,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnSignCertificate                       (-Request/-Response)
 
-            CSMS.OnSignCertificateRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnSignCertificateRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnSignCertificateRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomSignCertificateRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnSignCertificateResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnSignCertificateResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnSignCertificateResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomSignCertificateRequestSerializer,
                                                                                         CustomSignatureSerializer,
@@ -1102,13 +1102,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGet15118EVCertificate                 (-Request/-Response)
 
-            CSMS.OnGet15118EVCertificateRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnGet15118EVCertificateRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnGet15118EVCertificateRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomGet15118EVCertificateRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnGet15118EVCertificateResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnGet15118EVCertificateResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnGet15118EVCertificateResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomGet15118EVCertificateRequestSerializer,
                                                                                         CustomSignatureSerializer,
@@ -1122,14 +1122,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetCertificateStatus                  (-Request/-Response)
 
-            CSMS.OnGetCertificateStatusRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnGetCertificateStatusRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnGetCertificateStatusRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomGetCertificateStatusRequestSerializer,
                                                                                       CustomOCSPRequestDataSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnGetCertificateStatusResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnGetCertificateStatusResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnGetCertificateStatusResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomGetCertificateStatusRequestSerializer,
                                                                                         CustomOCSPRequestDataSerializer,
@@ -1144,14 +1144,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnGetCRL                                (-Request/-Response)
 
-            CSMS.OnGetCRLRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnGetCRLRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnGetCRLRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomGetCRLRequestSerializer,
                                                                                       CustomCertificateHashDataSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnGetCRLResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnGetCRLResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnGetCRLResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomGetCRLRequestSerializer,
                                                                                         CustomCertificateHashDataSerializer,
@@ -1167,13 +1167,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnReservationStatusUpdate               (-Request/-Response)
 
-            CSMS.OnReservationStatusUpdateRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnReservationStatusUpdateRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnReservationStatusUpdateRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomReservationStatusUpdateRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnReservationStatusUpdateResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnReservationStatusUpdateResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnReservationStatusUpdateResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomReservationStatusUpdateRequestSerializer,
                                                                                         CustomSignatureSerializer,
@@ -1186,7 +1186,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnAuthorize                             (-Request/-Response)
 
-            CSMS.OnAuthorizeRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnAuthorizeRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnAuthorizeRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomAuthorizeRequestSerializer,
                                                                                       CustomIdTokenSerializer,
@@ -1195,7 +1195,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnAuthorizeResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnAuthorizeResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnAuthorizeResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomAuthorizeRequestSerializer,
                                                                                         CustomIdTokenSerializer,
@@ -1216,7 +1216,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyEVChargingNeeds                 (-Request/-Response)
 
-            CSMS.OnNotifyEVChargingNeedsRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnNotifyEVChargingNeedsRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnNotifyEVChargingNeedsRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomNotifyEVChargingNeedsRequestSerializer,
                                                                                       CustomChargingNeedsSerializer,
@@ -1232,7 +1232,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnNotifyEVChargingNeedsResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnNotifyEVChargingNeedsResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnNotifyEVChargingNeedsResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomNotifyEVChargingNeedsRequestSerializer,
                                                                                         CustomChargingNeedsSerializer,
@@ -1256,7 +1256,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnTransactionEvent                      (-Request/-Response)
 
-            CSMS.OnTransactionEventRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnTransactionEventRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnTransactionEventRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomTransactionEventRequestSerializer,
                                                                                       CustomTransactionSerializer,
@@ -1270,7 +1270,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnTransactionEventResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnTransactionEventResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnTransactionEventResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomTransactionEventRequestSerializer,
                                                                                         CustomTransactionSerializer,
@@ -1295,13 +1295,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnStatusNotification                    (-Request/-Response)
 
-            CSMS.OnStatusNotificationRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnStatusNotificationRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnStatusNotificationRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomStatusNotificationRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnStatusNotificationResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnStatusNotificationResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnStatusNotificationResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomStatusNotificationRequestSerializer,
                                                                                         CustomSignatureSerializer,
@@ -1314,7 +1314,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnMeterValues                           (-Request/-Response)
 
-            CSMS.OnMeterValuesRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnMeterValuesRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnMeterValuesRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomMeterValuesRequestSerializer,
                                                                                       CustomMeterValueSerializer,
@@ -1322,7 +1322,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnMeterValuesResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnMeterValuesResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnMeterValuesResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomMeterValuesRequestSerializer,
                                                                                         CustomMeterValueSerializer,
@@ -1337,7 +1337,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyChargingLimit                   (-Request/-Response)
 
-            CSMS.OnNotifyChargingLimitRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnNotifyChargingLimitRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnNotifyChargingLimitRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomNotifyChargingLimitRequestSerializer,
 
@@ -1366,7 +1366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnNotifyChargingLimitResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnNotifyChargingLimitResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnNotifyChargingLimitResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomNotifyChargingLimitRequestSerializer,
 
@@ -1402,13 +1402,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnClearedChargingLimit                  (-Request/-Response)
 
-            CSMS.OnClearedChargingLimitRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnClearedChargingLimitRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnClearedChargingLimitRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomClearedChargingLimitRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnClearedChargingLimitResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnClearedChargingLimitResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnClearedChargingLimitResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomClearedChargingLimitRequestSerializer,
                                                                                         CustomSignatureSerializer,
@@ -1421,7 +1421,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnReportChargingProfiles                (-Request/-Response)
 
-            CSMS.OnReportChargingProfilesRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnReportChargingProfilesRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnReportChargingProfilesRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomReportChargingProfilesRequestSerializer,
 
@@ -1451,7 +1451,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnReportChargingProfilesResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnReportChargingProfilesResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnReportChargingProfilesResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomReportChargingProfilesRequestSerializer,
 
@@ -1488,7 +1488,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyEVChargingSchedule              (-Request/-Response)
 
-            CSMS.OnNotifyEVChargingScheduleRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnNotifyEVChargingScheduleRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnNotifyEVChargingScheduleRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomNotifyEVChargingScheduleRequestSerializer,
 
@@ -1517,7 +1517,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnNotifyEVChargingScheduleResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnNotifyEVChargingScheduleResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnNotifyEVChargingScheduleResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomNotifyEVChargingScheduleRequestSerializer,
 
@@ -1554,13 +1554,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyPriorityCharging                (-Request/-Response)
 
-            CSMS.OnNotifyPriorityChargingRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnNotifyPriorityChargingRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnNotifyPriorityChargingRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomNotifyPriorityChargingRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnNotifyPriorityChargingResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnNotifyPriorityChargingResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnNotifyPriorityChargingResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomNotifyPriorityChargingRequestSerializer,
                                                                                         CustomSignatureSerializer,
@@ -1573,13 +1573,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnPullDynamicScheduleUpdate             (-Request/-Response)
 
-            CSMS.OnPullDynamicScheduleUpdateRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnPullDynamicScheduleUpdateRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnPullDynamicScheduleUpdateRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomPullDynamicScheduleUpdateRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnPullDynamicScheduleUpdateResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnPullDynamicScheduleUpdateResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnPullDynamicScheduleUpdateResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomPullDynamicScheduleUpdateRequestSerializer,
                                                                                         CustomSignatureSerializer,
@@ -1593,7 +1593,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyDisplayMessages                 (-Request/-Response)
 
-            CSMS.OnNotifyDisplayMessagesRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnNotifyDisplayMessagesRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnNotifyDisplayMessagesRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomNotifyDisplayMessagesRequestSerializer,
                                                                                       CustomMessageInfoSerializer,
@@ -1603,7 +1603,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnNotifyDisplayMessagesResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnNotifyDisplayMessagesResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnNotifyDisplayMessagesResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomNotifyDisplayMessagesRequestSerializer,
                                                                                         CustomMessageInfoSerializer,
@@ -1620,13 +1620,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #region OnNotifyCustomerInformation             (-Request/-Response)
 
-            CSMS.OnNotifyCustomerInformationRequest += async (logTimestamp, sender, request) =>
+            CSMS.OnNotifyCustomerInformationRequest += async (logTimestamp, sender, connection, request) =>
                 await this.EventLog.SubmitEvent("OnNotifyCustomerInformationRequest",
                                                 request.ToAbstractJSON(request.ToJSON(CustomNotifyCustomerInformationRequestSerializer,
                                                                                       CustomSignatureSerializer,
                                                                                       CustomCustomDataSerializer)));
 
-            CSMS.OnNotifyCustomerInformationResponse += async (logTimestamp, sender, request, response, runtime) =>
+            CSMS.OnNotifyCustomerInformationResponse += async (logTimestamp, sender, connection, request, response, runtime) =>
                 await this.EventLog.SubmitEvent("OnNotifyCustomerInformationResponse",
                                                 response.ToAbstractJSON(request. ToJSON(CustomNotifyCustomerInformationRequestSerializer,
                                                                                         CustomSignatureSerializer,

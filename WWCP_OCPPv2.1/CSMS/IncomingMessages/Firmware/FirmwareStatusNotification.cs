@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 
@@ -31,12 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The firmware status notification request.</param>
 
     public delegate Task
 
         OnFirmwareStatusNotificationRequestDelegate(DateTime                            Timestamp,
                                                     IEventSender                        Sender,
+                                                    WebSocketServerConnection           Connection,
                                                     FirmwareStatusNotificationRequest   Request);
 
 
@@ -45,12 +48,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The firmware status notification request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<FirmwareStatusNotificationResponse>
 
         OnFirmwareStatusNotificationDelegate(DateTime                            Timestamp,
                                              IEventSender                        Sender,
+                                             WebSocketServerConnection           Connection,
                                              FirmwareStatusNotificationRequest   Request,
                                              CancellationToken                   CancellationToken);
 
@@ -60,6 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The firmware status notification request.</param>
     /// <param name="Response">The firmware status notification response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
@@ -67,6 +73,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         OnFirmwareStatusNotificationResponseDelegate(DateTime                             Timestamp,
                                                      IEventSender                         Sender,
+                                                     WebSocketServerConnection            Connection,
                                                      FirmwareStatusNotificationRequest    Request,
                                                      FirmwareStatusNotificationResponse   Response,
                                                      TimeSpan                             Runtime);

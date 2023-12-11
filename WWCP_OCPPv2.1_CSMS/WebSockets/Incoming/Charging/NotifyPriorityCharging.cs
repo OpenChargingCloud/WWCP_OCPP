@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a NotifyPriorityCharging WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                   OnNotifyPriorityChargingWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                OnNotifyPriorityChargingWSRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyPriorityCharging request was received.
         /// </summary>
-        public event OnNotifyPriorityChargingRequestDelegate?      OnNotifyPriorityChargingRequest;
+        public event OnNotifyPriorityChargingRequestDelegate?     OnNotifyPriorityChargingRequest;
 
         /// <summary>
         /// An event sent whenever a NotifyPriorityCharging was received.
         /// </summary>
-        public event OnNotifyPriorityChargingDelegate?             OnNotifyPriorityCharging;
+        public event OnNotifyPriorityChargingDelegate?            OnNotifyPriorityCharging;
 
         /// <summary>
         /// An event sent whenever a response to a NotifyPriorityCharging was sent.
         /// </summary>
-        public event OnNotifyPriorityChargingResponseDelegate?     OnNotifyPriorityChargingResponse;
+        public event OnNotifyPriorityChargingResponseDelegate?    OnNotifyPriorityChargingResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a NotifyPriorityCharging was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnNotifyPriorityChargingWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnNotifyPriorityChargingWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnNotifyPriorityChargingRequest?.Invoke(Timestamp.Now,
                                                                 this,
+                                                                Connection,
                                                                 request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnNotifyPriorityChargingDelegate)?.Invoke(Timestamp.Now,
                                                                                                                               this,
+                                                                                                                              Connection,
                                                                                                                               request,
                                                                                                                               CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnNotifyPriorityChargingResponse?.Invoke(Timestamp.Now,
                                                                  this,
+                                                                 Connection,
                                                                  request,
                                                                  response,
                                                                  response.Runtime);

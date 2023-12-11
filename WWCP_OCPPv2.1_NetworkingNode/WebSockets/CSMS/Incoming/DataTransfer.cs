@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OCPP.CSMS.OnIncomingDataTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                       this,
+                                                                                                                                      Connection,
                                                                                                                                       request,
                                                                                                                                       CancellationToken)).
                                             ToArray();

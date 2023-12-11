@@ -18,6 +18,7 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPPv2_1.CS;
 
@@ -31,12 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The stop transaction request.</param>
     public delegate Task
 
-        OnGetCRLRequestDelegate(DateTime        Timestamp,
-                                IEventSender    Sender,
-                                GetCRLRequest   Request);
+        OnGetCRLRequestDelegate(DateTime                    Timestamp,
+                                IEventSender                Sender,
+                                WebSocketServerConnection   Connection,
+                                GetCRLRequest               Request);
 
 
     /// <summary>
@@ -44,14 +47,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The stop transaction request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<GetCRLResponse>
 
-        OnGetCRLDelegate(DateTime            Timestamp,
-                         IEventSender        Sender,
-                         GetCRLRequest       Request,
-                         CancellationToken   CancellationToken);
+        OnGetCRLDelegate(DateTime                    Timestamp,
+                         IEventSender                Sender,
+                         WebSocketServerConnection   Connection,
+                         GetCRLRequest               Request,
+                         CancellationToken           CancellationToken);
 
 
     /// <summary>
@@ -59,15 +64,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The stop transaction request.</param>
     /// <param name="Response">The stop transaction response.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     public delegate Task
 
-        OnGetCRLResponseDelegate(DateTime         Timestamp,
-                                 IEventSender     Sender,
-                                 GetCRLRequest    Request,
-                                 GetCRLResponse   Response,
-                                 TimeSpan         Runtime);
+        OnGetCRLResponseDelegate(DateTime                    Timestamp,
+                                 IEventSender                Sender,
+                                 WebSocketServerConnection   Connection,
+                                 GetCRLRequest               Request,
+                                 GetCRLResponse              Response,
+                                 TimeSpan                    Runtime);
 
 }

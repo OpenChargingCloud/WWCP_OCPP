@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
@@ -48,12 +46,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region Events
 
         /// <summary>
-        /// An event sent whenever a AddUserRole request was sent.
+        /// An event sent whenever an AddUserRole request was sent.
         /// </summary>
         public event OCPP.CSMS.OnAddUserRoleRequestDelegate?     OnAddUserRoleRequest;
 
         /// <summary>
-        /// An event sent whenever a response to a AddUserRole request was sent.
+        /// An event sent whenever a response to an AddUserRole request was sent.
         /// </summary>
         public event OCPP.CSMS.OnAddUserRoleResponseDelegate?    OnAddUserRoleResponse;
 
@@ -96,13 +94,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                                  Request.RequestId,
                                                  Request.Action,
                                                  Request.ToJSON(
-                                                     CustomAddUserRoleRequestSerializer
-                                                     //CustomMessageInfoSerializer,
-                                                     //CustomMessageContentSerializer,
-                                                     //CustomComponentSerializer,
-                                                     //CustomEVSESerializer,
-                                                     //CustomSignatureSerializer,
-                                                     //CustomCustomDataSerializer
+                                                     CustomAddUserRoleRequestSerializer,
+                                                     CustomSignatureSerializer,
+                                                     CustomCustomDataSerializer
                                                  ),
                                                  Request.RequestTimeout
                                              );
@@ -153,10 +147,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
             {
 
                 OnAddUserRoleResponse?.Invoke(endTime,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
+                                              this,
+                                              Request,
+                                              response,
+                                              endTime - startTime);
 
             }
             catch (Exception e)

@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a SecurityEventNotification WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                    OnSecurityEventNotificationWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                   OnSecurityEventNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a SecurityEventNotification request was received.
         /// </summary>
-        public event OnSecurityEventNotificationRequestDelegate?    OnSecurityEventNotificationRequest;
+        public event OnSecurityEventNotificationRequestDelegate?     OnSecurityEventNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a SecurityEventNotification request was received.
         /// </summary>
-        public event OnSecurityEventNotificationDelegate?           OnSecurityEventNotification;
+        public event OnSecurityEventNotificationDelegate?            OnSecurityEventNotification;
 
         /// <summary>
         /// An event sent whenever a response to a SecurityEventNotification request was sent.
         /// </summary>
-        public event OnSecurityEventNotificationResponseDelegate?   OnSecurityEventNotificationResponse;
+        public event OnSecurityEventNotificationResponseDelegate?    OnSecurityEventNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a SecurityEventNotification request was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnSecurityEventNotificationWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?       OnSecurityEventNotificationWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnSecurityEventNotificationRequest?.Invoke(Timestamp.Now,
                                                                    this,
+                                                                   Connection,
                                                                    request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnSecurityEventNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                  this,
+                                                                                                                                 Connection,
                                                                                                                                  request,
                                                                                                                                  CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnSecurityEventNotificationResponse?.Invoke(Timestamp.Now,
                                                                     this,
+                                                                    Connection,
                                                                     request,
                                                                     response,
                                                                     response.Runtime);

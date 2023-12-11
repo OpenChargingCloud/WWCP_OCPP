@@ -21,8 +21,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 
@@ -32,7 +30,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The common interface of all CSMS clients.
     /// </summary>
-    public interface ICSMSClient : ICSMSClientEvents
+    public interface ICSMSClient : OCPP.ICSMSClient,
+                                   ICSMSClientEvents
     {
 
         #region Custom JSON serializer delegates
@@ -649,110 +648,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #endregion
 
 
-        // Binary Data Streams Extensions
 
-        #region TransferBinaryData          (Request)
-
-        /// <summary>
-        /// Send the given vendor-specific binary data.
-        /// </summary>
-        /// <param name="Request">A binary data transfer request.</param>
-        Task<OCPP.CS.BinaryDataTransferResponse> TransferBinaryData(OCPP.CSMS.BinaryDataTransferRequest Request);
-
-        #endregion
-
-        #region GetFile                     (Request)
-
-        /// <summary>
-        /// Request to download the specified file.
-        /// </summary>
-        /// <param name="Request">A GetFile request.</param>
-        Task<OCPP.CS.GetFileResponse> GetFile(GetFileRequest Request);
-
-        #endregion
-
-        #region SendFile                    (Request)
-
-        /// <summary>
-        /// Send the given file to the charging station.
-        /// </summary>
-        /// <param name="Request">A SendFile request.</param>
-        Task<OCPP.CS.SendFileResponse> SendFile(SendFileRequest Request);
-
-        #endregion
-
-        #region DeleteFile                  (Request)
-
-        /// <summary>
-        /// Delete the given file from the charging station.
-        /// </summary>
-        /// <param name="Request">A DeleteFile request.</param>
-        Task<OCPP.CS.DeleteFileResponse> DeleteFile(DeleteFileRequest Request);
-
-        #endregion
-
-
-        // E2E Security Extensions
-
-        #region AddSignaturePolicy          (Request)
-
-        /// <summary>
-        /// Add a signature policy.
-        /// </summary>
-        /// <param name="Request">An AddSignaturePolicy request.</param>
-        Task<AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request);
-
-        #endregion
-
-        #region UpdateSignaturePolicy       (Request)
-
-        /// <summary>
-        /// Update a signature policy.
-        /// </summary>
-        /// <param name="Request">An UpdateSignaturePolicy request.</param>
-        Task<UpdateSignaturePolicyResponse> UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request);
-
-        #endregion
-
-        #region DeleteSignaturePolicy       (Request)
-
-        /// <summary>
-        /// Delete a signature policy.
-        /// </summary>
-        /// <param name="Request">A DeleteSignaturePolicy request.</param>
-        Task<DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request);
-
-        #endregion
-
-        #region AddUserRole                 (Request)
-
-        /// <summary>
-        /// Add a user role.
-        /// </summary>
-        /// <param name="Request">An AddUserRole request.</param>
-        Task<AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request);
-
-        #endregion
-
-        #region UpdateUserRole              (Request)
-
-        /// <summary>
-        /// Update a user role.
-        /// </summary>
-        /// <param name="Request">An UpdateUserRole request.</param>
-        Task<UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request);
-
-        #endregion
-
-        #region DeleteUserRole              (Request)
-
-        /// <summary>
-        /// Delete a user role.
-        /// </summary>
-        /// <param name="Request">An DeleteUserRole request.</param>
-        Task<DeleteUserRoleResponse> DeleteUserRole(DeleteUserRoleRequest Request);
-
-        #endregion
 
 
         // E2E Charging Tariffs Extensions

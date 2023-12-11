@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a PublishFirmwareStatusNotification WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                            OnPublishFirmwareStatusNotificationWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                           OnPublishFirmwareStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a PublishFirmwareStatusNotification request was received.
         /// </summary>
-        public event OnPublishFirmwareStatusNotificationRequestDelegate?    OnPublishFirmwareStatusNotificationRequest;
+        public event OnPublishFirmwareStatusNotificationRequestDelegate?     OnPublishFirmwareStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a PublishFirmwareStatusNotification request was received.
         /// </summary>
-        public event OnPublishFirmwareStatusNotificationDelegate?           OnPublishFirmwareStatusNotification;
+        public event OnPublishFirmwareStatusNotificationDelegate?            OnPublishFirmwareStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a PublishFirmwareStatusNotification request was sent.
         /// </summary>
-        public event OnPublishFirmwareStatusNotificationResponseDelegate?   OnPublishFirmwareStatusNotificationResponse;
+        public event OnPublishFirmwareStatusNotificationResponseDelegate?    OnPublishFirmwareStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a PublishFirmwareStatusNotification request was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?            OnPublishFirmwareStatusNotificationWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?               OnPublishFirmwareStatusNotificationWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnPublishFirmwareStatusNotificationRequest?.Invoke(Timestamp.Now,
                                                                            this,
+                                                                           Connection,
                                                                            request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnPublishFirmwareStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                          this,
+                                                                                                                                         Connection,
                                                                                                                                          request,
                                                                                                                                          CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnPublishFirmwareStatusNotificationResponse?.Invoke(Timestamp.Now,
                                                                             this,
+                                                                            Connection,
                                                                             request,
                                                                             response,
                                                                             response.Runtime);

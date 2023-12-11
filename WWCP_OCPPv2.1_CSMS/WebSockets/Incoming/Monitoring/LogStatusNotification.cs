@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a LogStatusNotification WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                   OnLogStatusNotificationWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                OnLogStatusNotificationWSRequest;
 
         /// <summary>
         /// An event sent whenever a LogStatusNotification request was received.
         /// </summary>
-        public event OnLogStatusNotificationRequestDelegate?       OnLogStatusNotificationRequest;
+        public event OnLogStatusNotificationRequestDelegate?      OnLogStatusNotificationRequest;
 
         /// <summary>
         /// An event sent whenever a LogStatusNotification request was received.
         /// </summary>
-        public event OnLogStatusNotificationDelegate?              OnLogStatusNotification;
+        public event OnLogStatusNotificationDelegate?             OnLogStatusNotification;
 
         /// <summary>
         /// An event sent whenever a response to a LogStatusNotification request was sent.
         /// </summary>
-        public event OnLogStatusNotificationResponseDelegate?      OnLogStatusNotificationResponse;
+        public event OnLogStatusNotificationResponseDelegate?     OnLogStatusNotificationResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a LogStatusNotification request was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnLogStatusNotificationWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnLogStatusNotificationWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnLogStatusNotificationRequest?.Invoke(Timestamp.Now,
                                                                this,
+                                                               Connection,
                                                                request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnLogStatusNotificationDelegate)?.Invoke(Timestamp.Now,
                                                                                                                              this,
+                                                                                                                             Connection,
                                                                                                                              request,
                                                                                                                              CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnLogStatusNotificationResponse?.Invoke(Timestamp.Now,
                                                                 this,
+                                                                Connection,
                                                                 request,
                                                                 response,
                                                                 response.Runtime);

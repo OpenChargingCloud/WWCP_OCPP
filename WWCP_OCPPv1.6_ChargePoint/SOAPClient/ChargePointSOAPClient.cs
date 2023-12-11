@@ -457,7 +457,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Send a boot notification.
         /// </summary>
         /// <param name="Request">A boot notification request.</param>
-        public async Task<BootNotificationResponse> SendBootNotification(BootNotificationRequest Request)
+        public async Task<BootNotificationResponse> BootNotification(BootNotificationRequest Request)
         {
 
             #region Send OnBootNotificationRequest event
@@ -623,7 +623,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Send a heartbeat.
         /// </summary>
         /// <param name="Request">A heartbeat request.</param>
-        public async Task<HeartbeatResponse> SendHeartbeat(HeartbeatRequest Request)
+        public async Task<HeartbeatResponse> Heartbeat(HeartbeatRequest Request)
 
         {
 
@@ -1124,7 +1124,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Send a status notification for the given connector.
         /// </summary>
         /// <param name="Request">A status notification request.</param>
-        public async Task<StatusNotificationResponse> SendStatusNotification(StatusNotificationRequest Request)
+        public async Task<StatusNotificationResponse> StatusNotification(StatusNotificationRequest Request)
 
         {
 
@@ -1291,7 +1291,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Send a meter values for the given connector.
         /// </summary>
         /// <param name="Request">A meter values request.</param>
-        public async Task<MeterValuesResponse> SendMeterValues(MeterValuesRequest Request)
+        public async Task<MeterValuesResponse> MeterValues(MeterValuesRequest Request)
 
         {
 
@@ -1625,7 +1625,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Send the given vendor-specific data to the central system.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        public async Task<OCPP.CSMS.DataTransferResponse> TransferData(OCPP.CS.DataTransferRequest Request)
+        public async Task<OCPP.CSMS.DataTransferResponse> DataTransfer(OCPP.CS.DataTransferRequest Request)
 
         {
 
@@ -1792,7 +1792,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Send a diagnostics status notification to the central system.
         /// </summary>
         /// <param name="Request">A diagnostics status notification request.</param>
-        public async Task<DiagnosticsStatusNotificationResponse> SendDiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest Request)
+        public async Task<DiagnosticsStatusNotificationResponse> DiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest Request)
         {
 
             #region Send OnDiagnosticsStatusNotificationRequest event
@@ -1958,7 +1958,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Send a firmware status notification to the central system.
         /// </summary>
         /// <param name="Request">A firmware status notification request.</param>
-        public async Task<FirmwareStatusNotificationResponse> SendFirmwareStatusNotification(FirmwareStatusNotificationRequest Request)
+        public async Task<FirmwareStatusNotificationResponse> FirmwareStatusNotification(FirmwareStatusNotificationRequest Request)
         {
 
             #region Send OnFirmwareStatusNotificationRequest event
@@ -2123,7 +2123,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Security extensions
 
-        public Task<LogStatusNotificationResponse> SendLogStatusNotification(LogStatusNotificationRequest Request)
+        public Task<LogStatusNotificationResponse> LogStatusNotification(LogStatusNotificationRequest Request)
         {
             throw new NotImplementedException();
         }
@@ -2133,7 +2133,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             throw new NotImplementedException();
         }
 
-        public Task<SignCertificateResponse> SendCertificateSigningRequest(SignCertificateRequest Request)
+        public Task<SignCertificateResponse> SignCertificate(SignCertificateRequest Request)
         {
             throw new NotImplementedException();
         }

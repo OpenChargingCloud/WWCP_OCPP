@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        #region SendTransactionEvent(Request)
+        #region TransactionEvent(Request)
 
         /// <summary>
         /// Send a transaction event.
@@ -79,7 +79,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <param name="Request">A TransactionEvent request.</param>
         public async Task<TransactionEventResponse>
 
-            SendTransactionEvent(TransactionEventRequest  Request)
+            TransactionEvent(TransactionEventRequest  Request)
 
         {
 

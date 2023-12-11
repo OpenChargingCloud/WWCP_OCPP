@@ -12570,7 +12570,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         /// <param name="Request">A boot notification request.</param>
         public async Task<CSMS.BootNotificationResponse>
-            SendBootNotification(BootNotificationRequest Request)
+            BootNotification(BootNotificationRequest Request)
 
         {
 
@@ -12607,7 +12607,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      out var errorResponse
                                  )
 
-                                     ? await CSClient.SendBootNotification(Request)
+                                     ? await CSClient.BootNotification(Request)
 
                                      : new CSMS.BootNotificationResponse(
                                            Request,
@@ -12694,7 +12694,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.FirmwareStatusNotificationResponse>
-            SendFirmwareStatusNotification(FirmwareStatusNotificationRequest Request)
+            FirmwareStatusNotification(FirmwareStatusNotificationRequest Request)
 
         {
 
@@ -12730,7 +12730,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      out var errorResponse
                                  )
 
-                                     ? await CSClient.SendFirmwareStatusNotification(Request)
+                                     ? await CSClient.FirmwareStatusNotification(Request)
 
                                      : new CSMS.FirmwareStatusNotificationResponse(
                                            Request,
@@ -12796,7 +12796,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.PublishFirmwareStatusNotificationResponse>
-            SendPublishFirmwareStatusNotification(PublishFirmwareStatusNotificationRequest Request)
+            PublishFirmwareStatusNotification(PublishFirmwareStatusNotificationRequest Request)
 
         {
 
@@ -12832,7 +12832,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      out var errorResponse
                                  )
 
-                                     ? await CSClient.SendPublishFirmwareStatusNotification(Request)
+                                     ? await CSClient.PublishFirmwareStatusNotification(Request)
 
                                      : new CSMS.PublishFirmwareStatusNotificationResponse(
                                            Request,
@@ -12895,7 +12895,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.HeartbeatResponse>
-            SendHeartbeat(HeartbeatRequest Request)
+            Heartbeat(HeartbeatRequest Request)
 
         {
 
@@ -12931,7 +12931,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      out var errorResponse
                                  )
 
-                                     ? await CSClient.SendHeartbeat(Request)
+                                     ? await CSClient.Heartbeat(Request)
 
                                      : new CSMS.HeartbeatResponse(
                                            Request,
@@ -13104,7 +13104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.SecurityEventNotificationResponse>
-            SendSecurityEventNotification(SecurityEventNotificationRequest Request)
+            SecurityEventNotification(SecurityEventNotificationRequest Request)
 
         {
 
@@ -13140,7 +13140,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      out var errorResponse
                                  )
 
-                                     ? await CSClient.SendSecurityEventNotification(Request)
+                                     ? await CSClient.SecurityEventNotification(Request)
 
                                      : new CSMS.SecurityEventNotificationResponse(
                                            Request,
@@ -13424,7 +13424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.LogStatusNotificationResponse>
-            SendLogStatusNotification(LogStatusNotificationRequest Request)
+            LogStatusNotification(LogStatusNotificationRequest Request)
 
         {
 
@@ -13460,7 +13460,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      out var errorResponse
                                  )
 
-                                     ? await CSClient.SendLogStatusNotification(Request)
+                                     ? await CSClient.LogStatusNotification(Request)
 
                                      : new CSMS.LogStatusNotificationResponse(
                                            Request,
@@ -13526,7 +13526,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<OCPP.CSMS.DataTransferResponse>
-            TransferData(OCPP.CS.DataTransferRequest Request)
+            DataTransfer(OCPP.CS.DataTransferRequest Request)
 
         {
 
@@ -13562,7 +13562,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      out var errorResponse
                                  )
 
-                                     ? await CSClient.TransferData(Request)
+                                     ? await CSClient.DataTransfer(Request)
 
                                      : new OCPP.CSMS.DataTransferResponse(
                                            Request,
@@ -13629,7 +13629,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.SignCertificateResponse>
-            SendCertificateSigningRequest(SignCertificateRequest Request)
+            SignCertificate(SignCertificateRequest Request)
 
         {
 
@@ -13665,7 +13665,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      out var errorResponse
                                  )
 
-                                     ? await CSClient.SendCertificateSigningRequest(Request)
+                                     ? await CSClient.SignCertificate(Request)
 
                                      : new CSMS.SignCertificateResponse(
                                            Request,
@@ -14043,7 +14043,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.ReservationStatusUpdateResponse>
-            SendReservationStatusUpdate(ReservationStatusUpdateRequest Request)
+            ReservationStatusUpdate(ReservationStatusUpdateRequest Request)
 
         {
 
@@ -14079,7 +14079,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      out var errorResponse
                                  )
 
-                                     ? await CSClient.SendReservationStatusUpdate(Request)
+                                     ? await CSClient.ReservationStatusUpdate(Request)
 
                                      : new CSMS.ReservationStatusUpdateResponse(
                                            Request,
@@ -14380,7 +14380,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.TransactionEventResponse>
-            SendTransactionEvent(TransactionEventRequest Request)
+            TransactionEvent(TransactionEventRequest Request)
 
         {
 
@@ -14424,7 +14424,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      out var errorResponse
                                  )
 
-                                     ? await CSClient.SendTransactionEvent(Request)
+                                     ? await CSClient.TransactionEvent(Request)
 
                                      : new CSMS.TransactionEventResponse(
                                            Request,
@@ -14495,7 +14495,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.StatusNotificationResponse>
-            SendStatusNotification(StatusNotificationRequest Request)
+            StatusNotification(StatusNotificationRequest Request)
 
         {
 
@@ -14531,7 +14531,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      out var errorResponse
                                  )
 
-                                     ? await CSClient.SendStatusNotification(Request)
+                                     ? await CSClient.StatusNotification(Request)
 
                                      : new CSMS.StatusNotificationResponse(
                                            Request,
@@ -14596,7 +14596,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.MeterValuesResponse>
-            SendMeterValues(MeterValuesRequest Request)
+            MeterValues(MeterValuesRequest Request)
 
         {
 
@@ -14634,7 +14634,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      out var errorResponse
                                  )
 
-                                     ? await CSClient.SendMeterValues(Request)
+                                     ? await CSClient.MeterValues(Request)
 
                                      : new CSMS.MeterValuesResponse(
                                            Request,
@@ -14825,7 +14825,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<CSMS.ClearedChargingLimitResponse>
-            SendClearedChargingLimit(ClearedChargingLimitRequest Request)
+            ClearedChargingLimit(ClearedChargingLimitRequest Request)
 
         {
 
@@ -14861,7 +14861,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      out var errorResponse
                                  )
 
-                                     ? await CSClient.SendClearedChargingLimit(Request)
+                                     ? await CSClient.ClearedChargingLimit(Request)
 
                                      : new CSMS.ClearedChargingLimitResponse(
                                            Request,
@@ -15601,7 +15601,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         public async Task<OCPP.CSMS.BinaryDataTransferResponse>
-            TransferBinaryData(OCPP.CS.BinaryDataTransferRequest Request)
+            BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request)
 
         {
 
@@ -15637,7 +15637,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                      out var errorResponse
                                  )
 
-                                     ? await CSClient.TransferBinaryData(Request)
+                                     ? await CSClient.BinaryDataTransfer(Request)
 
                                      : new OCPP.CSMS.BinaryDataTransferResponse(
                                            Request,

@@ -135,6 +135,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnIncomingBinaryDataTransferRequest?.Invoke(Timestamp.Now,
                                                                     this,
+                                                                    Connection,
                                                                     request);
 
                     }
@@ -153,6 +154,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OCPP.CSMS.OnIncomingBinaryDataTransferDelegate)?.Invoke(Timestamp.Now,
                                                                                                                                             this,
+                                                                                                                                            Connection,
                                                                                                                                             request,
                                                                                                                                             CancellationToken)).
                                             ToArray();
@@ -174,6 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnIncomingBinaryDataTransferResponse?.Invoke(Timestamp.Now,
                                                                      this,
+                                                                     Connection,
                                                                      request,
                                                                      response,
                                                                      response.Runtime);

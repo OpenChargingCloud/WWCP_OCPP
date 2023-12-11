@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send a boot notification.
         /// </summary>
         /// <param name="Request">A boot notification request.</param>
-        public Task<BootNotificationResponse> SendBootNotification(BootNotificationRequest Request);
+        public Task<BootNotificationResponse> BootNotification(BootNotificationRequest Request);
 
         #endregion
 
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send a firmware status notification.
         /// </summary>
         /// <param name="Request">A firmware status notification request.</param>
-        public Task<FirmwareStatusNotificationResponse> SendFirmwareStatusNotification(FirmwareStatusNotificationRequest Request);
+        public Task<FirmwareStatusNotificationResponse> FirmwareStatusNotification(FirmwareStatusNotificationRequest Request);
 
         #endregion
 
@@ -87,7 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send a publish firmware status notification.
         /// </summary>
         /// <param name="Request">A publish firmware status notification request.</param>
-        public Task<PublishFirmwareStatusNotificationResponse> SendPublishFirmwareStatusNotification(PublishFirmwareStatusNotificationRequest Request);
+        public Task<PublishFirmwareStatusNotificationResponse> PublishFirmwareStatusNotification(PublishFirmwareStatusNotificationRequest Request);
 
         #endregion
 
@@ -97,7 +97,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send a heartbeat.
         /// </summary>
         /// <param name="Request">A heartbeat request.</param>
-        public Task<HeartbeatResponse> SendHeartbeat(HeartbeatRequest Request);
+        public Task<HeartbeatResponse> Heartbeat(HeartbeatRequest Request);
 
         #endregion
 
@@ -117,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send a security event notification.
         /// </summary>
         /// <param name="Request">A security event notification request.</param>
-        public Task<SecurityEventNotificationResponse> SendSecurityEventNotification(SecurityEventNotificationRequest Request);
+        public Task<SecurityEventNotificationResponse> SecurityEventNotification(SecurityEventNotificationRequest Request);
 
         #endregion
 
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send a log status notification.
         /// </summary>
         /// <param name="Request">A log status notification request.</param>
-        public Task<LogStatusNotificationResponse> SendLogStatusNotification(LogStatusNotificationRequest Request);
+        public Task<LogStatusNotificationResponse> LogStatusNotification(LogStatusNotificationRequest Request);
 
         #endregion
 
@@ -157,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send the given vendor-specific data.
         /// </summary>
         /// <param name="Request">A data transfer request.</param>
-        public Task<OCPP.CSMS.DataTransferResponse> TransferData(DataTransferRequest Request);
+        public Task<OCPP.CSMS.DataTransferResponse> DataTransfer(DataTransferRequest Request);
 
         #endregion
 
@@ -168,7 +168,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send a certificate signing request.
         /// </summary>
         /// <param name="Request">A sign certificate request.</param>
-        public Task<SignCertificateResponse> SendCertificateSigningRequest(SignCertificateRequest Request);
+        public Task<SignCertificateResponse> SignCertificate(SignCertificateRequest Request);
 
         #endregion
 
@@ -209,7 +209,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send a reservation status update.
         /// </summary>
         /// <param name="Request">A reservation status update request.</param>
-        public Task<ReservationStatusUpdateResponse> SendReservationStatusUpdate(ReservationStatusUpdateRequest Request);
+        public Task<ReservationStatusUpdateResponse> ReservationStatusUpdate(ReservationStatusUpdateRequest Request);
 
         #endregion
 
@@ -239,7 +239,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send a transaction event.
         /// </summary>
         /// <param name="Request">A transaction event request.</param>
-        public Task<TransactionEventResponse> SendTransactionEvent(TransactionEventRequest Request);
+        public Task<TransactionEventResponse> TransactionEvent(TransactionEventRequest Request);
 
         #endregion
 
@@ -249,7 +249,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send a status notification for the given evse and connector.
         /// </summary>
         /// <param name="Request">A status notification request.</param>
-        public Task<StatusNotificationResponse> SendStatusNotification(StatusNotificationRequest Request);
+        public Task<StatusNotificationResponse> StatusNotification(StatusNotificationRequest Request);
 
         #endregion
 
@@ -259,7 +259,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send a meter values for the given evse.
         /// </summary>
         /// <param name="Request">A meter values request.</param>
-        public Task<MeterValuesResponse> SendMeterValues(MeterValuesRequest Request);
+        public Task<MeterValuesResponse> MeterValues(MeterValuesRequest Request);
 
         #endregion
 
@@ -279,7 +279,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Notify about charging limits.
         /// </summary>
         /// <param name="Request">A notify charging limit request.</param>
-        public Task<ClearedChargingLimitResponse> SendClearedChargingLimit(ClearedChargingLimitRequest Request);
+        public Task<ClearedChargingLimitResponse> ClearedChargingLimit(ClearedChargingLimitRequest Request);
 
         #endregion
 
@@ -353,7 +353,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send the given vendor-specific binary data.
         /// </summary>
         /// <param name="Request">A binary data transfer request.</param>
-        public Task<OCPP.CSMS.BinaryDataTransferResponse> TransferBinaryData(BinaryDataTransferRequest Request);
+        public Task<OCPP.CSMS.BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request);
 
         #endregion
 

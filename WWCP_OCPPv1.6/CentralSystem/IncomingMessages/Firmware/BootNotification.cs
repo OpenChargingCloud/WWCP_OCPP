@@ -43,18 +43,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
     /// <summary>
-    /// A boot notification.
+    /// Send a boot notification.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the boot notification request.</param>
     /// <param name="Sender">The sender of the boot notification request.</param>
+    /// <param name="Connection">The HTTP WebSocket server connection.</param>
     /// <param name="Request">The boot notification request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<BootNotificationResponse>
 
-        OnBootNotificationDelegate(DateTime                  Timestamp,
-                                   IEventSender              Sender,
-                                   BootNotificationRequest   Request,
-                                   CancellationToken         CancellationToken);
+        OnBootNotificationDelegate(DateTime                    Timestamp,
+                                   IEventSender                Sender,
+                                   WebSocketServerConnection   Connection,
+                                   BootNotificationRequest     Request,
+                                   CancellationToken           CancellationToken);
 
 
     /// <summary>

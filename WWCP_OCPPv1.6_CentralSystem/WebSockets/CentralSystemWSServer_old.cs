@@ -1,3493 +1,3493 @@
-﻿/*
- * Copyright (c) 2014-2023 GraphDefined GmbH
- * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-#region Usings
-
-using System.Collections.Concurrent;
-using System.Security.Authentication;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.Sockets;
-using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv1_6.CP;
-using cloud.charging.open.protocols.OCPP.WebSockets;
-
-#endregion
-
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
-{
-
-    /// <summary>
-    /// The delegate for the HTTP web socket request log.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the incoming request.</param>
-    /// <param name="WebSocketServer">The sending WebSocket server.</param>
-    /// <param name="Request">The incoming request.</param>
-    public delegate Task WebSocketRequestLogHandler              (DateTime                    Timestamp,
-                                                                  WebSocketServer             WebSocketServer,
-                                                                  JArray                      Request);
-
-    /// <summary>
-    /// The delegate for the HTTP web socket response log.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the incoming request.</param>
-    /// <param name="WebSocketServer">The sending WebSocket server.</param>
-    /// <param name="Request">The incoming WebSocket request.</param>
-    /// <param name="Response">The outgoing WebSocket response.</param>
-    public delegate Task WebSocketResponseLogHandler             (DateTime                    Timestamp,
-                                                                  WebSocketServer             WebSocketServer,
-                                                                  JArray                      Request,
-                                                                  JArray                      Response);
-
-
-    public delegate Task OnWebSocketTextMessageResponseDelegate  (DateTime                    Timestamp,
-                                                                  CentralSystemWSServer_old       Server,
-                                                                  WebSocketServerConnection   Connection,
-                                                                  EventTracking_Id            EventTrackingId,
-                                                                  DateTime                    RequestTimestamp,
-                                                                  String                      RequestMessage,
-                                                                  DateTime                    ResponseTimestamp,
-                                                                  String?                     ResponseMessage);
-
-
-    /// <summary>
-    /// The central system HTTP/WebSocket/JSON server.
-    /// </summary>
-    public class CentralSystemWSServer_old : WebSocketServer,
-                                             ICentralSystem
-    {
-
-        #region (enum)  SendJSONResults
+﻿///*
+// * Copyright (c) 2014-2023 GraphDefined GmbH
+// * This file is part of WWCP OCPP <https://github.com/OpenChargingCloud/WWCP_OCPP>
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *     http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// */
+
+//#region Usings
+
+//using System.Collections.Concurrent;
+//using System.Security.Authentication;
+
+//using Newtonsoft.Json;
+//using Newtonsoft.Json.Linq;
+
+//using org.GraphDefined.Vanaheimr.Illias;
+//using org.GraphDefined.Vanaheimr.Hermod;
+//using org.GraphDefined.Vanaheimr.Hermod.DNS;
+//using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+//using org.GraphDefined.Vanaheimr.Hermod.Sockets;
+//using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
+//using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
+//using cloud.charging.open.protocols.OCPP;
+//using cloud.charging.open.protocols.OCPPv1_6.CP;
+//using cloud.charging.open.protocols.OCPP.WebSockets;
+
+//#endregion
+
+//namespace cloud.charging.open.protocols.OCPPv1_6.CS
+//{
+
+//    /// <summary>
+//    /// The delegate for the HTTP web socket request log.
+//    /// </summary>
+//    /// <param name="Timestamp">The timestamp of the incoming request.</param>
+//    /// <param name="WebSocketServer">The sending WebSocket server.</param>
+//    /// <param name="Request">The incoming request.</param>
+//    public delegate Task WebSocketRequestLogHandler              (DateTime                    Timestamp,
+//                                                                  WebSocketServer             WebSocketServer,
+//                                                                  JArray                      Request);
+
+//    /// <summary>
+//    /// The delegate for the HTTP web socket response log.
+//    /// </summary>
+//    /// <param name="Timestamp">The timestamp of the incoming request.</param>
+//    /// <param name="WebSocketServer">The sending WebSocket server.</param>
+//    /// <param name="Request">The incoming WebSocket request.</param>
+//    /// <param name="Response">The outgoing WebSocket response.</param>
+//    public delegate Task WebSocketResponseLogHandler             (DateTime                    Timestamp,
+//                                                                  WebSocketServer             WebSocketServer,
+//                                                                  JArray                      Request,
+//                                                                  JArray                      Response);
+
+
+//    public delegate Task OnWebSocketTextMessageResponseDelegate  (DateTime                    Timestamp,
+//                                                                  CentralSystemWSServer_old       Server,
+//                                                                  WebSocketServerConnection   Connection,
+//                                                                  EventTracking_Id            EventTrackingId,
+//                                                                  DateTime                    RequestTimestamp,
+//                                                                  String                      RequestMessage,
+//                                                                  DateTime                    ResponseTimestamp,
+//                                                                  String?                     ResponseMessage);
+
+
+//    /// <summary>
+//    /// The central system HTTP/WebSocket/JSON server.
+//    /// </summary>
+//    public class CentralSystemWSServer_old : WebSocketServer,
+//                                             ICentralSystem
+//    {
+
+//        #region (enum)  SendJSONResults
 
-        public enum SendJSONResults
-        {
-            Success,
-            UnknownClient,
-            TransmissionFailed
-        }
+//        public enum SendJSONResults
+//        {
+//            Success,
+//            UnknownClient,
+//            TransmissionFailed
+//        }
 
-        #endregion
+//        #endregion
 
-        #region (class) SendRequestState
+//        #region (class) SendRequestState
 
-        //public class SendRequestState
-        //{
+//        //public class SendRequestState
+//        //{
 
-        //    public DateTime                       Timestamp            { get; }
-        //    public ChargeBox_Id                   ChargeBoxId          { get; }
-        //    public OCPP_WebSocket_RequestMessage  WSRequestMessage     { get; }
-        //    public DateTime                       Timeout              { get; }
+//        //    public DateTime                       Timestamp            { get; }
+//        //    public ChargeBox_Id                   ChargeBoxId          { get; }
+//        //    public OCPP_WebSocket_RequestMessage  WSRequestMessage     { get; }
+//        //    public DateTime                       Timeout              { get; }
 
-        //    public DateTime?                      ResponseTimestamp    { get; set; }
-        //    public JObject?                       Response             { get; set; }
+//        //    public DateTime?                      ResponseTimestamp    { get; set; }
+//        //    public JObject?                       Response             { get; set; }
 
-        //    public ResultCode?                    ErrorCode            { get; set; }
-        //    public String?                        ErrorDescription     { get; set; }
-        //    public JObject?                       ErrorDetails         { get; set; }
+//        //    public ResultCode?                    ErrorCode            { get; set; }
+//        //    public String?                        ErrorDescription     { get; set; }
+//        //    public JObject?                       ErrorDetails         { get; set; }
 
 
-        //    public Boolean                        NoErrors
-        //         => !ErrorCode.HasValue;
+//        //    public Boolean                        NoErrors
+//        //         => !ErrorCode.HasValue;
 
-        //    public Boolean                        HasErrors
-        //         =>  ErrorCode.HasValue;
+//        //    public Boolean                        HasErrors
+//        //         =>  ErrorCode.HasValue;
 
 
-        //    public SendRequestState(DateTime                       Timestamp,
-        //                            ChargeBox_Id                   ChargeBoxId,
-        //                            OCPP_WebSocket_RequestMessage  WSRequestMessage,
-        //                            DateTime                       Timeout,
+//        //    public SendRequestState(DateTime                       Timestamp,
+//        //                            ChargeBox_Id                   ChargeBoxId,
+//        //                            OCPP_WebSocket_RequestMessage  WSRequestMessage,
+//        //                            DateTime                       Timeout,
 
-        //                            DateTime?                      ResponseTimestamp   = null,
-        //                            JObject?                       Response            = null,
+//        //                            DateTime?                      ResponseTimestamp   = null,
+//        //                            JObject?                       Response            = null,
 
-        //                            ResultCode?                    ErrorCode           = null,
-        //                            String?                        ErrorDescription    = null,
-        //                            JObject?                       ErrorDetails        = null)
-        //    {
+//        //                            ResultCode?                    ErrorCode           = null,
+//        //                            String?                        ErrorDescription    = null,
+//        //                            JObject?                       ErrorDetails        = null)
+//        //    {
 
-        //        this.Timestamp          = Timestamp;
-        //        this.ChargeBoxId        = ChargeBoxId;
-        //        this.WSRequestMessage   = WSRequestMessage;
-        //        this.Timeout            = Timeout;
+//        //        this.Timestamp          = Timestamp;
+//        //        this.ChargeBoxId        = ChargeBoxId;
+//        //        this.WSRequestMessage   = WSRequestMessage;
+//        //        this.Timeout            = Timeout;
 
-        //        this.ResponseTimestamp  = ResponseTimestamp;
-        //        this.Response           = Response;
+//        //        this.ResponseTimestamp  = ResponseTimestamp;
+//        //        this.Response           = Response;
 
-        //        this.ErrorCode          = ErrorCode;
-        //        this.ErrorDescription   = ErrorDescription;
-        //        this.ErrorDetails       = ErrorDetails;
+//        //        this.ErrorCode          = ErrorCode;
+//        //        this.ErrorDescription   = ErrorDescription;
+//        //        this.ErrorDetails       = ErrorDetails;
 
-        //    }
+//        //    }
 
-        //}
+//        //}
 
-        #endregion
+//        #endregion
 
 
-        #region Data
+//        #region Data
 
-        /// <summary>
-        /// The default HTTP server name.
-        /// </summary>
-        public const            String                                                                          DefaultHTTPServiceName        = $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON Central System API";
+//        /// <summary>
+//        /// The default HTTP server name.
+//        /// </summary>
+//        public const            String                                                                          DefaultHTTPServiceName        = $"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON Central System API";
 
-        /// <summary>
-        /// The default HTTP server TCP port.
-        /// </summary>
-        public static readonly  IPPort                                                                          DefaultHTTPServerPort         = IPPort.Parse(2010);
+//        /// <summary>
+//        /// The default HTTP server TCP port.
+//        /// </summary>
+//        public static readonly  IPPort                                                                          DefaultHTTPServerPort         = IPPort.Parse(2010);
 
-        /// <summary>
-        /// The default HTTP server URI prefix.
-        /// </summary>
-        public static readonly  HTTPPath                                                                        DefaultURLPrefix              = HTTPPath.Parse("/" + Version.String);
+//        /// <summary>
+//        /// The default HTTP server URI prefix.
+//        /// </summary>
+//        public static readonly  HTTPPath                                                                        DefaultURLPrefix              = HTTPPath.Parse("/" + Version.String);
 
-        /// <summary>
-        /// The default request timeout.
-        /// </summary>
-        public static readonly  TimeSpan                                                                        DefaultRequestTimeout         = TimeSpan.FromMinutes(1);
+//        /// <summary>
+//        /// The default request timeout.
+//        /// </summary>
+//        public static readonly  TimeSpan                                                                        DefaultRequestTimeout         = TimeSpan.FromMinutes(1);
 
 
-        private readonly        ConcurrentDictionary<ChargeBox_Id, Tuple<WebSocketServerConnection, DateTime>>  connectedChargeBoxes          = [];
+//        private readonly        ConcurrentDictionary<ChargeBox_Id, Tuple<WebSocketServerConnection, DateTime>>  connectedChargeBoxes          = [];
 
-        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                              requests                      = [];
+//        private readonly        ConcurrentDictionary<Request_Id, SendRequestState>                              requests                      = [];
 
-        private const           String                                                                          LogfileName                   = "CentralSystemWSServer_old.log";
+//        private const           String                                                                          LogfileName                   = "CentralSystemWSServer_old.log";
 
-        public  const           String                                                                          chargeBoxId_WebSocketKey      = "chargeBoxId";
-        public  const           String                                                                          networkingMode_WebSocketKey   = "networkingMode";
+//        public  const           String                                                                          chargeBoxId_WebSocketKey      = "chargeBoxId";
+//        public  const           String                                                                          networkingMode_WebSocketKey   = "networkingMode";
 
-        #endregion
+//        #endregion
 
-        #region Properties
+//        #region Properties
 
-        /// <summary>
-        /// The sender identification.
-        /// </summary>
-        String IEventSender.Id
-            => HTTPServiceName;
+//        /// <summary>
+//        /// The sender identification.
+//        /// </summary>
+//        String IEventSender.Id
+//            => HTTPServiceName;
 
-        public IEnumerable<ChargeBox_Id> ChargeBoxIds
-            => connectedChargeBoxes.Keys;
+//        public IEnumerable<ChargeBox_Id> ChargeBoxIds
+//            => connectedChargeBoxes.Keys;
 
-        public ChargeBox_Id ChargeBoxIdentity
-            => throw new NotImplementedException();
+//        public ChargeBox_Id ChargeBoxIdentity
+//            => throw new NotImplementedException();
 
-        public String                             From
-            => "";
+//        public String                             From
+//            => "";
 
-        public String                             To
-            => "";
+//        public String                             To
+//            => "";
 
-        /// <summary>
-        /// Require a HTTP Basic Authentication of all networking nodes.
-        /// </summary>
-        public Boolean                                            RequireAuthentication    { get; }
+//        /// <summary>
+//        /// Require a HTTP Basic Authentication of all networking nodes.
+//        /// </summary>
+//        public Boolean                                            RequireAuthentication    { get; }
 
-        /// <summary>
-        /// Logins and passwords for HTTP Basic Authentication.
-        /// </summary>
-        public ConcurrentDictionary<ChargeBox_Id, String?>   ChargingBoxLogins        { get; }
-            = new();
+//        /// <summary>
+//        /// Logins and passwords for HTTP Basic Authentication.
+//        /// </summary>
+//        public ConcurrentDictionary<ChargeBox_Id, String?>   ChargingBoxLogins        { get; }
+//            = new();
 
-        /// <summary>
-        /// The JSON formatting to use.
-        /// </summary>
-        public Formatting                                         JSONFormatting           { get; set; }
-            = Formatting.None;
+//        /// <summary>
+//        /// The JSON formatting to use.
+//        /// </summary>
+//        public Formatting                                         JSONFormatting           { get; set; }
+//            = Formatting.None;
 
-        /// <summary>
-        /// The request timeout for messages sent by this HTTP WebSocket server.
-        /// </summary>
-        public TimeSpan?                                          RequestTimeout           { get; set; }
+//        /// <summary>
+//        /// The request timeout for messages sent by this HTTP WebSocket server.
+//        /// </summary>
+//        public TimeSpan?                                          RequestTimeout           { get; set; }
 
-        public CentralSystemSOAPClient.CSClientLogger Logger
-            => throw new NotImplementedException();
+//        public CentralSystemSOAPClient.CSClientLogger Logger
+//            => throw new NotImplementedException();
 
-        #endregion
+//        #endregion
 
-        #region Events
+//        #region Events
 
-        #region Connection Management
+//        #region Connection Management
 
-        /// <summary>
-        /// An event sent whenever the HTTP connection switched successfully to web socket.
-        /// </summary>
-        public event OnCentralSystemNewWebSocketConnectionDelegate?    OnCentralSystemNewWebSocketConnection;
+//        /// <summary>
+//        /// An event sent whenever the HTTP connection switched successfully to web socket.
+//        /// </summary>
+//        public event OnCentralSystemNewWebSocketConnectionDelegate?    OnCentralSystemNewWebSocketConnection;
 
-        /// <summary>
-        /// An event sent whenever a web socket close frame was received.
-        /// </summary>
-        public event OnCentralSystemCloseMessageReceivedDelegate?      OnCentralSystemCloseMessageReceived;
+//        /// <summary>
+//        /// An event sent whenever a web socket close frame was received.
+//        /// </summary>
+//        public event OnCentralSystemCloseMessageReceivedDelegate?      OnCentralSystemCloseMessageReceived;
 
-        /// <summary>
-        /// An event sent whenever a TCP connection was closed.
-        /// </summary>
-        public event OnCentralSystemTCPConnectionClosedDelegate?       OnCentralSystemTCPConnectionClosed;
+//        /// <summary>
+//        /// An event sent whenever a TCP connection was closed.
+//        /// </summary>
+//        public event OnCentralSystemTCPConnectionClosedDelegate?       OnCentralSystemTCPConnectionClosed;
 
-        #endregion
+//        #endregion
 
-        #region Generic JSON Messages
+//        #region Generic JSON Messages
 
-        /// <summary>
-        /// An event sent whenever a text message request was received.
-        /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
+//        /// <summary>
+//        /// An event sent whenever a text message request was received.
+//        /// </summary>
+//        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestReceived;
 
-        /// <summary>
-        /// An event sent whenever the response to a text message was sent.
-        /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
+//        /// <summary>
+//        /// An event sent whenever the response to a text message was sent.
+//        /// </summary>
+//        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseSent;
 
-        /// <summary>
-        /// An event sent whenever the error response to a text message was sent.
-        /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
+//        /// <summary>
+//        /// An event sent whenever the error response to a text message was sent.
+//        /// </summary>
+//        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseSent;
 
 
-        /// <summary>
-        /// An event sent whenever a text message request was sent.
-        /// </summary>
-        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
+//        /// <summary>
+//        /// An event sent whenever a text message request was sent.
+//        /// </summary>
+//        public event OnWebSocketJSONMessageRequestDelegate?     OnJSONMessageRequestSent;
 
-        /// <summary>
-        /// An event sent whenever the response to a text message request was received.
-        /// </summary>
-        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
+//        /// <summary>
+//        /// An event sent whenever the response to a text message request was received.
+//        /// </summary>
+//        public event OnWebSocketJSONMessageResponseDelegate?    OnJSONMessageResponseReceived;
 
-        /// <summary>
-        /// An event sent whenever an error response to a text message request was received.
-        /// </summary>
-        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
+//        /// <summary>
+//        /// An event sent whenever an error response to a text message request was received.
+//        /// </summary>
+//        public event OnWebSocketTextErrorResponseDelegate?      OnJSONErrorResponseReceived;
 
-        #endregion
+//        #endregion
 
-        #region Generic Binary Messages
+//        #region Generic Binary Messages
 
-        /// <summary>
-        /// An event sent whenever a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
+//        /// <summary>
+//        /// An event sent whenever a binary message request was received.
+//        /// </summary>
+//        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestReceived;
 
-        /// <summary>
-        /// An event sent whenever the response to a binary message was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
+//        /// <summary>
+//        /// An event sent whenever the response to a binary message was sent.
+//        /// </summary>
+//        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseSent;
 
-        /// <summary>
-        /// An event sent whenever the error response to a binary message was sent.
-        /// </summary>
-        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
+//        /// <summary>
+//        /// An event sent whenever the error response to a binary message was sent.
+//        /// </summary>
+//        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseSent;
 
 
-        /// <summary>
-        /// An event sent whenever a binary message request was sent.
-        /// </summary>
-        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
+//        /// <summary>
+//        /// An event sent whenever a binary message request was sent.
+//        /// </summary>
+//        public event OnWebSocketBinaryMessageRequestDelegate?     OnBinaryMessageRequestSent;
 
-        /// <summary>
-        /// An event sent whenever the response to a binary message request was received.
-        /// </summary>
-        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
+//        /// <summary>
+//        /// An event sent whenever the response to a binary message request was received.
+//        /// </summary>
+//        public event OnWebSocketBinaryMessageResponseDelegate?    OnBinaryMessageResponseReceived;
 
-        /// <summary>
-        /// An event sent whenever the error response to a binary message request was sent.
-        /// </summary>
-        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
+//        /// <summary>
+//        /// An event sent whenever the error response to a binary message request was sent.
+//        /// </summary>
+//        //public event OnWebSocketBinaryErrorResponseDelegate?      OnBinaryErrorResponseReceived;
 
-        #endregion
+//        #endregion
 
 
 
 
-        /// <summary>
-        /// An event sent whenever the response to a text message was sent.
-        /// </summary>
-        public event OnWebSocketTextMessageResponseDelegate?          OnTextMessageResponseSent;
+//        /// <summary>
+//        /// An event sent whenever the response to a text message was sent.
+//        /// </summary>
+//        public event OnWebSocketTextMessageResponseDelegate?          OnTextMessageResponseSent;
 
-        /// <summary>
-        /// An event sent whenever the response to a text message was received.
-        /// </summary>
-        public event OnWebSocketTextMessageResponseDelegate?          OnTextMessageResponseReceived;
+//        /// <summary>
+//        /// An event sent whenever the response to a text message was received.
+//        /// </summary>
+//        public event OnWebSocketTextMessageResponseDelegate?          OnTextMessageResponseReceived;
 
 
-        #region CSMS -> Charging Station
+//        #region CSMS -> Charging Station
 
-        #region OnReset
+//        #region OnReset
 
-        /// <summary>
-        /// An event sent whenever a reset request was sent.
-        /// </summary>
-        public event OnResetRequestDelegate?   OnResetRequest;
+//        /// <summary>
+//        /// An event sent whenever a reset request was sent.
+//        /// </summary>
+//        public event OnResetRequestDelegate?   OnResetRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reset request was sent.
-        /// </summary>
-        public event OnResetResponseDelegate?  OnResetResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a reset request was sent.
+//        /// </summary>
+//        public event OnResetResponseDelegate?  OnResetResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnChangeAvailability
+//        #region OnChangeAvailability
 
-        /// <summary>
-        /// An event sent whenever a change availability request was sent.
-        /// </summary>
-        public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+//        /// <summary>
+//        /// An event sent whenever a change availability request was sent.
+//        /// </summary>
+//        public event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a change availability request was sent.
-        /// </summary>
-        public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a change availability request was sent.
+//        /// </summary>
+//        public event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnGetConfiguration
+//        #region OnGetConfiguration
 
-        /// <summary>
-        /// An event sent whenever a get configuration request was sent.
-        /// </summary>
-        public event OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
+//        /// <summary>
+//        /// An event sent whenever a get configuration request was sent.
+//        /// </summary>
+//        public event OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a get configuration request was sent.
-        /// </summary>
-        public event OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a get configuration request was sent.
+//        /// </summary>
+//        public event OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnChangeConfiguration
+//        #region OnChangeConfiguration
 
-        /// <summary>
-        /// An event sent whenever a change configuration request was sent.
-        /// </summary>
-        public event OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
+//        /// <summary>
+//        /// An event sent whenever a change configuration request was sent.
+//        /// </summary>
+//        public event OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a change configuration request was sent.
-        /// </summary>
-        public event OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a change configuration request was sent.
+//        /// </summary>
+//        public event OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnDataTransfer
+//        #region OnDataTransfer
 
-        /// <summary>
-        /// An event sent whenever a data transfer request was sent.
-        /// </summary>
-        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
+//        /// <summary>
+//        /// An event sent whenever a data transfer request was sent.
+//        /// </summary>
+//        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
-        /// </summary>
-        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a data transfer request was sent.
+//        /// </summary>
+//        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnGetDiagnostics
+//        #region OnGetDiagnostics
 
-        /// <summary>
-        /// An event sent whenever a get diagnostics request was sent.
-        /// </summary>
-        public event OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
+//        /// <summary>
+//        /// An event sent whenever a get diagnostics request was sent.
+//        /// </summary>
+//        public event OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a get diagnostics request was sent.
-        /// </summary>
-        public event OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a get diagnostics request was sent.
+//        /// </summary>
+//        public event OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnTriggerMessage
+//        #region OnTriggerMessage
 
-        /// <summary>
-        /// An event sent whenever a trigger message request was sent.
-        /// </summary>
-        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+//        /// <summary>
+//        /// An event sent whenever a trigger message request was sent.
+//        /// </summary>
+//        public event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a trigger message request was sent.
-        /// </summary>
-        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a trigger message request was sent.
+//        /// </summary>
+//        public event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnUpdateFirmware
+//        #region OnUpdateFirmware
 
-        /// <summary>
-        /// An event sent whenever an update firmware request was sent.
-        /// </summary>
-        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+//        /// <summary>
+//        /// An event sent whenever an update firmware request was sent.
+//        /// </summary>
+//        public event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to an update firmware request was sent.
-        /// </summary>
-        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to an update firmware request was sent.
+//        /// </summary>
+//        public event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
 
-        #endregion
+//        #endregion
 
 
-        #region OnReserveNow
+//        #region OnReserveNow
 
-        /// <summary>
-        /// An event sent whenever a reserve now request was sent.
-        /// </summary>
-        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
+//        /// <summary>
+//        /// An event sent whenever a reserve now request was sent.
+//        /// </summary>
+//        public event OnReserveNowRequestDelegate?   OnReserveNowRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a reserve now request was sent.
-        /// </summary>
-        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a reserve now request was sent.
+//        /// </summary>
+//        public event OnReserveNowResponseDelegate?  OnReserveNowResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnCancelReservation
+//        #region OnCancelReservation
 
-        /// <summary>
-        /// An event sent whenever a cancel reservation request was sent.
-        /// </summary>
-        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+//        /// <summary>
+//        /// An event sent whenever a cancel reservation request was sent.
+//        /// </summary>
+//        public event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a cancel reservation request was sent.
-        /// </summary>
-        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a cancel reservation request was sent.
+//        /// </summary>
+//        public event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnRemoteStartTransaction
+//        #region OnRemoteStartTransaction
 
-        /// <summary>
-        /// An event sent whenever a remote start transaction request was sent.
-        /// </summary>
-        public event OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
+//        /// <summary>
+//        /// An event sent whenever a remote start transaction request was sent.
+//        /// </summary>
+//        public event OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a remote start transaction request was sent.
-        /// </summary>
-        public event OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a remote start transaction request was sent.
+//        /// </summary>
+//        public event OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnRemoteStopTransaction
+//        #region OnRemoteStopTransaction
 
-        /// <summary>
-        /// An event sent whenever a remote stop transaction request was sent.
-        /// </summary>
-        public event OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
+//        /// <summary>
+//        /// An event sent whenever a remote stop transaction request was sent.
+//        /// </summary>
+//        public event OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a remote stop transaction request was sent.
-        /// </summary>
-        public event OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a remote stop transaction request was sent.
+//        /// </summary>
+//        public event OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnSetChargingProfile
+//        #region OnSetChargingProfile
 
-        /// <summary>
-        /// An event sent whenever a set charging profile request was sent.
-        /// </summary>
-        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+//        /// <summary>
+//        /// An event sent whenever a set charging profile request was sent.
+//        /// </summary>
+//        public event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a set charging profile request was sent.
-        /// </summary>
-        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a set charging profile request was sent.
+//        /// </summary>
+//        public event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnClearChargingProfile
+//        #region OnClearChargingProfile
 
-        /// <summary>
-        /// An event sent whenever a clear charging profile request was sent.
-        /// </summary>
-        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+//        /// <summary>
+//        /// An event sent whenever a clear charging profile request was sent.
+//        /// </summary>
+//        public event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a clear charging profile request was sent.
-        /// </summary>
-        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a clear charging profile request was sent.
+//        /// </summary>
+//        public event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnGetCompositeSchedule
+//        #region OnGetCompositeSchedule
 
-        /// <summary>
-        /// An event sent whenever a get composite schedule request was sent.
-        /// </summary>
-        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+//        /// <summary>
+//        /// An event sent whenever a get composite schedule request was sent.
+//        /// </summary>
+//        public event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a get composite schedule request was sent.
-        /// </summary>
-        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a get composite schedule request was sent.
+//        /// </summary>
+//        public event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnUnlockConnector
+//        #region OnUnlockConnector
 
-        /// <summary>
-        /// An event sent whenever an unlock connector request was sent.
-        /// </summary>
-        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+//        /// <summary>
+//        /// An event sent whenever an unlock connector request was sent.
+//        /// </summary>
+//        public event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to an unlock connector request was sent.
-        /// </summary>
-        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to an unlock connector request was sent.
+//        /// </summary>
+//        public event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
 
-        #endregion
+//        #endregion
 
 
-        #region OnGetLocalListVersion
+//        #region OnGetLocalListVersion
 
-        /// <summary>
-        /// An event sent whenever a get local list version request was sent.
-        /// </summary>
-        public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+//        /// <summary>
+//        /// An event sent whenever a get local list version request was sent.
+//        /// </summary>
+//        public event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a get local list version request was sent.
-        /// </summary>
-        public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a get local list version request was sent.
+//        /// </summary>
+//        public event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnSendLocalList
+//        #region OnSendLocalList
 
-        /// <summary>
-        /// An event sent whenever a send local list request was sent.
-        /// </summary>
-        public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+//        /// <summary>
+//        /// An event sent whenever a send local list request was sent.
+//        /// </summary>
+//        public event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a send local list request was sent.
-        /// </summary>
-        public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a send local list request was sent.
+//        /// </summary>
+//        public event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnClearCache
+//        #region OnClearCache
 
-        /// <summary>
-        /// An event sent whenever a clear cache request was sent.
-        /// </summary>
-        public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
+//        /// <summary>
+//        /// An event sent whenever a clear cache request was sent.
+//        /// </summary>
+//        public event OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a clear cache request was sent.
-        /// </summary>
-        public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a clear cache request was sent.
+//        /// </summary>
+//        public event OnClearCacheResponseDelegate?  OnClearCacheResponse;
 
-        #endregion
+//        #endregion
 
 
-        // Security extensions
+//        // Security extensions
 
-        #region OnCertificateSigned
+//        #region OnCertificateSigned
 
-        /// <summary>
-        /// An event sent whenever a certificate signed request was sent.
-        /// </summary>
-        public event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+//        /// <summary>
+//        /// An event sent whenever a certificate signed request was sent.
+//        /// </summary>
+//        public event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a certificate signed request was sent.
-        /// </summary>
-        public event OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a certificate signed request was sent.
+//        /// </summary>
+//        public event OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnDeleteCertificate
+//        #region OnDeleteCertificate
 
-        /// <summary>
-        /// An event sent whenever a delete certificate request was sent.
-        /// </summary>
-        public event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+//        /// <summary>
+//        /// An event sent whenever a delete certificate request was sent.
+//        /// </summary>
+//        public event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a delete certificate request was sent.
-        /// </summary>
-        public event OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a delete certificate request was sent.
+//        /// </summary>
+//        public event OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnExtendedTriggerMessage
+//        #region OnExtendedTriggerMessage
 
-        /// <summary>
-        /// An event sent whenever an extended trigger message request was sent.
-        /// </summary>
-        public event OnExtendedTriggerMessageRequestDelegate?   OnExtendedTriggerMessageRequest;
+//        /// <summary>
+//        /// An event sent whenever an extended trigger message request was sent.
+//        /// </summary>
+//        public event OnExtendedTriggerMessageRequestDelegate?   OnExtendedTriggerMessageRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to an extended trigger message request was sent.
-        /// </summary>
-        public event OnExtendedTriggerMessageResponseDelegate?  OnExtendedTriggerMessageResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to an extended trigger message request was sent.
+//        /// </summary>
+//        public event OnExtendedTriggerMessageResponseDelegate?  OnExtendedTriggerMessageResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnGetInstalledCertificateIds
+//        #region OnGetInstalledCertificateIds
 
-        /// <summary>
-        /// An event sent whenever a get installed certificate ids request was sent.
-        /// </summary>
-        public event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+//        /// <summary>
+//        /// An event sent whenever a get installed certificate ids request was sent.
+//        /// </summary>
+//        public event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a get installed certificate ids request was sent.
-        /// </summary>
-        public event OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a get installed certificate ids request was sent.
+//        /// </summary>
+//        public event OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnGetLog
+//        #region OnGetLog
 
-        /// <summary>
-        /// An event sent whenever a get log request was sent.
-        /// </summary>
-        public event OnGetLogRequestDelegate?   OnGetLogRequest;
+//        /// <summary>
+//        /// An event sent whenever a get log request was sent.
+//        /// </summary>
+//        public event OnGetLogRequestDelegate?   OnGetLogRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a get log request was sent.
-        /// </summary>
-        public event OnGetLogResponseDelegate?  OnGetLogResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a get log request was sent.
+//        /// </summary>
+//        public event OnGetLogResponseDelegate?  OnGetLogResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnInstallCertificate
+//        #region OnInstallCertificate
 
-        /// <summary>
-        /// An event sent whenever an install certificate request was sent.
-        /// </summary>
-        public event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+//        /// <summary>
+//        /// An event sent whenever an install certificate request was sent.
+//        /// </summary>
+//        public event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to an install certificate request was sent.
-        /// </summary>
-        public event OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to an install certificate request was sent.
+//        /// </summary>
+//        public event OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnSignedUpdateFirmware
+//        #region OnSignedUpdateFirmware
 
-        /// <summary>
-        /// An event sent whenever a signed update firmware request was sent.
-        /// </summary>
-        public event OnSignedUpdateFirmwareRequestDelegate?   OnSignedUpdateFirmwareRequest;
+//        /// <summary>
+//        /// An event sent whenever a signed update firmware request was sent.
+//        /// </summary>
+//        public event OnSignedUpdateFirmwareRequestDelegate?   OnSignedUpdateFirmwareRequest;
 
-        /// <summary>
-        /// An event sent whenever a response to a signed update firmware request was sent.
-        /// </summary>
-        public event OnSignedUpdateFirmwareResponseDelegate?  OnSignedUpdateFirmwareResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a signed update firmware request was sent.
+//        /// </summary>
+//        public event OnSignedUpdateFirmwareResponseDelegate?  OnSignedUpdateFirmwareResponse;
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region CSMS <- Charging Station
+//        #region CSMS <- Charging Station
 
-        #region OnBootNotification
+//        #region OnBootNotification
 
-        /// <summary>
-        /// An event sent whenever a boot notification web socket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?            OnBootNotificationWSRequest;
+//        /// <summary>
+//        /// An event sent whenever a boot notification web socket request was received.
+//        /// </summary>
+//        public event WebSocketRequestLogHandler?            OnBootNotificationWSRequest;
 
-        /// <summary>
-        /// An event sent whenever a boot notification request was received.
-        /// </summary>
-        public event OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
+//        /// <summary>
+//        /// An event sent whenever a boot notification request was received.
+//        /// </summary>
+//        public event OnBootNotificationRequestDelegate?     OnBootNotificationRequest;
 
-        /// <summary>
-        /// An event sent whenever a boot notification was received.
-        /// </summary>
-        public event OnBootNotificationDelegate?            OnBootNotification;
+//        /// <summary>
+//        /// An event sent whenever a boot notification was received.
+//        /// </summary>
+//        public event OnBootNotificationDelegate?            OnBootNotification;
 
-        /// <summary>
-        /// An event sent whenever a response to a boot notification was sent.
-        /// </summary>
-        public event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a boot notification was sent.
+//        /// </summary>
+//        public event OnBootNotificationResponseDelegate?    OnBootNotificationResponse;
 
-        /// <summary>
-        /// An event sent whenever a web socket response to a boot notification was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?           OnBootNotificationWSResponse;
+//        /// <summary>
+//        /// An event sent whenever a web socket response to a boot notification was sent.
+//        /// </summary>
+//        public event WebSocketResponseLogHandler?           OnBootNotificationWSResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnHeartbeat
+//        #region OnHeartbeat
 
-        /// <summary>
-        /// An event sent whenever a heartbeat web socket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?     OnHeartbeatWSRequest;
+//        /// <summary>
+//        /// An event sent whenever a heartbeat web socket request was received.
+//        /// </summary>
+//        public event WebSocketRequestLogHandler?     OnHeartbeatWSRequest;
 
-        /// <summary>
-        /// An event sent whenever a heartbeat request was received.
-        /// </summary>
-        public event OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
+//        /// <summary>
+//        /// An event sent whenever a heartbeat request was received.
+//        /// </summary>
+//        public event OnHeartbeatRequestDelegate?     OnHeartbeatRequest;
 
-        /// <summary>
-        /// An event sent whenever a heartbeat was received.
-        /// </summary>
-        public event OnHeartbeatDelegate?            OnHeartbeat;
+//        /// <summary>
+//        /// An event sent whenever a heartbeat was received.
+//        /// </summary>
+//        public event OnHeartbeatDelegate?            OnHeartbeat;
 
-        /// <summary>
-        /// An event sent whenever a response to a heartbeat was sent.
-        /// </summary>
-        public event OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a heartbeat was sent.
+//        /// </summary>
+//        public event OnHeartbeatResponseDelegate?    OnHeartbeatResponse;
 
-        /// <summary>
-        /// An event sent whenever a web socket response to a heartbeat was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?    OnHeartbeatWSResponse;
+//        /// <summary>
+//        /// An event sent whenever a web socket response to a heartbeat was sent.
+//        /// </summary>
+//        public event WebSocketResponseLogHandler?    OnHeartbeatWSResponse;
 
-        #endregion
+//        #endregion
 
 
-        #region OnAuthorize
+//        #region OnAuthorize
 
-        /// <summary>
-        /// An event sent whenever an authorize web socket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?     OnAuthorizeWSRequest;
+//        /// <summary>
+//        /// An event sent whenever an authorize web socket request was received.
+//        /// </summary>
+//        public event WebSocketRequestLogHandler?     OnAuthorizeWSRequest;
 
-        /// <summary>
-        /// An event sent whenever an authorize request was received.
-        /// </summary>
-        public event OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
+//        /// <summary>
+//        /// An event sent whenever an authorize request was received.
+//        /// </summary>
+//        public event OnAuthorizeRequestDelegate?     OnAuthorizeRequest;
 
-        /// <summary>
-        /// An event sent whenever an authorize request was received.
-        /// </summary>
-        public event OnAuthorizeDelegate?            OnAuthorize;
+//        /// <summary>
+//        /// An event sent whenever an authorize request was received.
+//        /// </summary>
+//        public event OnAuthorizeDelegate?            OnAuthorize;
 
-        /// <summary>
-        /// An event sent whenever an authorize response was sent.
-        /// </summary>
-        public event OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
+//        /// <summary>
+//        /// An event sent whenever an authorize response was sent.
+//        /// </summary>
+//        public event OnAuthorizeResponseDelegate?    OnAuthorizeResponse;
 
-        /// <summary>
-        /// An event sent whenever an authorize web socket response was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?    OnAuthorizeWSResponse;
+//        /// <summary>
+//        /// An event sent whenever an authorize web socket response was sent.
+//        /// </summary>
+//        public event WebSocketResponseLogHandler?    OnAuthorizeWSResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnStartTransaction
+//        #region OnStartTransaction
 
-        /// <summary>
-        /// An event sent whenever a start transaction web socket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?           OnStartTransactionWSRequest;
+//        /// <summary>
+//        /// An event sent whenever a start transaction web socket request was received.
+//        /// </summary>
+//        public event WebSocketRequestLogHandler?           OnStartTransactionWSRequest;
 
-        /// <summary>
-        /// An event sent whenever a start transaction request was received.
-        /// </summary>
-        public event OnStartTransactionRequestDelegate?    OnStartTransactionRequest;
+//        /// <summary>
+//        /// An event sent whenever a start transaction request was received.
+//        /// </summary>
+//        public event OnStartTransactionRequestDelegate?    OnStartTransactionRequest;
 
-        /// <summary>
-        /// An event sent whenever a start transaction request was received.
-        /// </summary>
-        public event OnStartTransactionDelegate?           OnStartTransaction;
+//        /// <summary>
+//        /// An event sent whenever a start transaction request was received.
+//        /// </summary>
+//        public event OnStartTransactionDelegate?           OnStartTransaction;
 
-        /// <summary>
-        /// An event sent whenever a response to a start transaction request was sent.
-        /// </summary>
-        public event OnStartTransactionResponseDelegate?   OnStartTransactionResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a start transaction request was sent.
+//        /// </summary>
+//        public event OnStartTransactionResponseDelegate?   OnStartTransactionResponse;
 
-        /// <summary>
-        /// An event sent whenever a web socket response to a start transaction request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?          OnStartTransactionWSResponse;
+//        /// <summary>
+//        /// An event sent whenever a web socket response to a start transaction request was sent.
+//        /// </summary>
+//        public event WebSocketResponseLogHandler?          OnStartTransactionWSResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnStatusNotification
+//        #region OnStatusNotification
 
-        /// <summary>
-        /// An event sent whenever a status notification web socket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?             OnStatusNotificationWSRequest;
+//        /// <summary>
+//        /// An event sent whenever a status notification web socket request was received.
+//        /// </summary>
+//        public event WebSocketRequestLogHandler?             OnStatusNotificationWSRequest;
 
-        /// <summary>
-        /// An event sent whenever a status notification request was received.
-        /// </summary>
-        public event OnStatusNotificationRequestDelegate?    OnStatusNotificationRequest;
+//        /// <summary>
+//        /// An event sent whenever a status notification request was received.
+//        /// </summary>
+//        public event OnStatusNotificationRequestDelegate?    OnStatusNotificationRequest;
 
-        /// <summary>
-        /// An event sent whenever a status notification request was received.
-        /// </summary>
-        public event OnStatusNotificationDelegate?           OnStatusNotification;
+//        /// <summary>
+//        /// An event sent whenever a status notification request was received.
+//        /// </summary>
+//        public event OnStatusNotificationDelegate?           OnStatusNotification;
 
-        /// <summary>
-        /// An event sent whenever a response to a status notification request was sent.
-        /// </summary>
-        public event OnStatusNotificationResponseDelegate?   OnStatusNotificationResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a status notification request was sent.
+//        /// </summary>
+//        public event OnStatusNotificationResponseDelegate?   OnStatusNotificationResponse;
 
-        /// <summary>
-        /// An event sent whenever a web socket response to a status notification request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?            OnStatusNotificationWSResponse;
+//        /// <summary>
+//        /// An event sent whenever a web socket response to a status notification request was sent.
+//        /// </summary>
+//        public event WebSocketResponseLogHandler?            OnStatusNotificationWSResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnMeterValues
+//        #region OnMeterValues
 
-        /// <summary>
-        /// An event sent whenever a meter values web socket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?      OnMeterValuesWSRequest;
+//        /// <summary>
+//        /// An event sent whenever a meter values web socket request was received.
+//        /// </summary>
+//        public event WebSocketRequestLogHandler?      OnMeterValuesWSRequest;
 
-        /// <summary>
-        /// An event sent whenever a meter values request was received.
-        /// </summary>
-        public event OnMeterValuesRequestDelegate?    OnMeterValuesRequest;
+//        /// <summary>
+//        /// An event sent whenever a meter values request was received.
+//        /// </summary>
+//        public event OnMeterValuesRequestDelegate?    OnMeterValuesRequest;
 
-        /// <summary>
-        /// An event sent whenever a meter values request was received.
-        /// </summary>
-        public event OnMeterValuesDelegate?           OnMeterValues;
+//        /// <summary>
+//        /// An event sent whenever a meter values request was received.
+//        /// </summary>
+//        public event OnMeterValuesDelegate?           OnMeterValues;
 
-        /// <summary>
-        /// An event sent whenever a response to a meter values request was sent.
-        /// </summary>
-        public event OnMeterValuesResponseDelegate?   OnMeterValuesResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a meter values request was sent.
+//        /// </summary>
+//        public event OnMeterValuesResponseDelegate?   OnMeterValuesResponse;
 
-        /// <summary>
-        /// An event sent whenever a web socket response to a meter values request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?     OnMeterValuesWSResponse;
+//        /// <summary>
+//        /// An event sent whenever a web socket response to a meter values request was sent.
+//        /// </summary>
+//        public event WebSocketResponseLogHandler?     OnMeterValuesWSResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnStopTransaction
+//        #region OnStopTransaction
 
-        /// <summary>
-        /// An event sent whenever a stop transaction web socket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?          OnStopTransactionWSRequest;
+//        /// <summary>
+//        /// An event sent whenever a stop transaction web socket request was received.
+//        /// </summary>
+//        public event WebSocketRequestLogHandler?          OnStopTransactionWSRequest;
 
-        /// <summary>
-        /// An event sent whenever a stop transaction request was received.
-        /// </summary>
-        public event OnStopTransactionRequestDelegate?    OnStopTransactionRequest;
+//        /// <summary>
+//        /// An event sent whenever a stop transaction request was received.
+//        /// </summary>
+//        public event OnStopTransactionRequestDelegate?    OnStopTransactionRequest;
 
-        /// <summary>
-        /// An event sent whenever a stop transaction request was received.
-        /// </summary>
-        public event OnStopTransactionDelegate?           OnStopTransaction;
+//        /// <summary>
+//        /// An event sent whenever a stop transaction request was received.
+//        /// </summary>
+//        public event OnStopTransactionDelegate?           OnStopTransaction;
 
-        /// <summary>
-        /// An event sent whenever a response to a stop transaction request was sent.
-        /// </summary>
-        public event OnStopTransactionResponseDelegate?   OnStopTransactionResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a stop transaction request was sent.
+//        /// </summary>
+//        public event OnStopTransactionResponseDelegate?   OnStopTransactionResponse;
 
-        /// <summary>
-        /// An event sent whenever a web socket response to a stop transaction request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?         OnStopTransactionWSResponse;
+//        /// <summary>
+//        /// An event sent whenever a web socket response to a stop transaction request was sent.
+//        /// </summary>
+//        public event WebSocketResponseLogHandler?         OnStopTransactionWSResponse;
 
-        #endregion
+//        #endregion
 
 
-        #region OnDataTransfer
+//        #region OnDataTransfer
 
-        /// <summary>
-        /// An event sent whenever a data transfer web socket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?               OnIncomingDataTransferWSRequest;
+//        /// <summary>
+//        /// An event sent whenever a data transfer web socket request was received.
+//        /// </summary>
+//        public event WebSocketRequestLogHandler?               OnIncomingDataTransferWSRequest;
 
-        /// <summary>
-        /// An event sent whenever a data transfer request was received.
-        /// </summary>
-        public event OnIncomingDataTransferRequestDelegate?    OnIncomingDataTransferRequest;
+//        /// <summary>
+//        /// An event sent whenever a data transfer request was received.
+//        /// </summary>
+//        public event OnIncomingDataTransferRequestDelegate?    OnIncomingDataTransferRequest;
 
-        /// <summary>
-        /// An event sent whenever a data transfer request was received.
-        /// </summary>
-        public event OnIncomingDataTransferDelegate?           OnIncomingDataTransfer;
+//        /// <summary>
+//        /// An event sent whenever a data transfer request was received.
+//        /// </summary>
+//        public event OnIncomingDataTransferDelegate?           OnIncomingDataTransfer;
 
-        /// <summary>
-        /// An event sent whenever a response to a data transfer request was sent.
-        /// </summary>
-        public event OnIncomingDataTransferResponseDelegate?   OnIncomingDataTransferResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a data transfer request was sent.
+//        /// </summary>
+//        public event OnIncomingDataTransferResponseDelegate?   OnIncomingDataTransferResponse;
 
-        /// <summary>
-        /// An event sent whenever a web socket response to a data transfer request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?              OnIncomingDataTransferWSResponse;
+//        /// <summary>
+//        /// An event sent whenever a web socket response to a data transfer request was sent.
+//        /// </summary>
+//        public event WebSocketResponseLogHandler?              OnIncomingDataTransferWSResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnDiagnosticsStatusNotification
+//        #region OnDiagnosticsStatusNotification
 
-        /// <summary>
-        /// An event sent whenever a diagnostics status notification web socket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?                        OnDiagnosticsStatusNotificationWSRequest;
+//        /// <summary>
+//        /// An event sent whenever a diagnostics status notification web socket request was received.
+//        /// </summary>
+//        public event WebSocketRequestLogHandler?                        OnDiagnosticsStatusNotificationWSRequest;
 
-        /// <summary>
-        /// An event sent whenever a diagnostics status notification request was received.
-        /// </summary>
-        public event OnDiagnosticsStatusNotificationRequestDelegate?    OnDiagnosticsStatusNotificationRequest;
+//        /// <summary>
+//        /// An event sent whenever a diagnostics status notification request was received.
+//        /// </summary>
+//        public event OnDiagnosticsStatusNotificationRequestDelegate?    OnDiagnosticsStatusNotificationRequest;
 
-        /// <summary>
-        /// An event sent whenever a diagnostics status notification request was received.
-        /// </summary>
-        public event OnDiagnosticsStatusNotificationDelegate?           OnDiagnosticsStatusNotification;
+//        /// <summary>
+//        /// An event sent whenever a diagnostics status notification request was received.
+//        /// </summary>
+//        public event OnDiagnosticsStatusNotificationDelegate?           OnDiagnosticsStatusNotification;
 
-        /// <summary>
-        /// An event sent whenever a response to a diagnostics status notification request was sent.
-        /// </summary>
-        public event OnDiagnosticsStatusNotificationResponseDelegate?   OnDiagnosticsStatusNotificationResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a diagnostics status notification request was sent.
+//        /// </summary>
+//        public event OnDiagnosticsStatusNotificationResponseDelegate?   OnDiagnosticsStatusNotificationResponse;
 
-        /// <summary>
-        /// An event sent whenever a web socket response to a diagnostics status notification request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?                       OnDiagnosticsStatusNotificationWSResponse;
+//        /// <summary>
+//        /// An event sent whenever a web socket response to a diagnostics status notification request was sent.
+//        /// </summary>
+//        public event WebSocketResponseLogHandler?                       OnDiagnosticsStatusNotificationWSResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnFirmwareStatusNotification
+//        #region OnFirmwareStatusNotification
 
-        /// <summary>
-        /// An event sent whenever a firmware status notification web socket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?                     OnFirmwareStatusNotificationWSRequest;
+//        /// <summary>
+//        /// An event sent whenever a firmware status notification web socket request was received.
+//        /// </summary>
+//        public event WebSocketRequestLogHandler?                     OnFirmwareStatusNotificationWSRequest;
 
-        /// <summary>
-        /// An event sent whenever a firmware status notification request was received.
-        /// </summary>
-        public event OnFirmwareStatusNotificationRequestDelegate?    OnFirmwareStatusNotificationRequest;
+//        /// <summary>
+//        /// An event sent whenever a firmware status notification request was received.
+//        /// </summary>
+//        public event OnFirmwareStatusNotificationRequestDelegate?    OnFirmwareStatusNotificationRequest;
 
-        /// <summary>
-        /// An event sent whenever a firmware status notification request was received.
-        /// </summary>
-        public event OnFirmwareStatusNotificationDelegate?           OnFirmwareStatusNotification;
+//        /// <summary>
+//        /// An event sent whenever a firmware status notification request was received.
+//        /// </summary>
+//        public event OnFirmwareStatusNotificationDelegate?           OnFirmwareStatusNotification;
 
-        /// <summary>
-        /// An event sent whenever a response to a firmware status notification request was sent.
-        /// </summary>
-        public event OnFirmwareStatusNotificationResponseDelegate?   OnFirmwareStatusNotificationResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a firmware status notification request was sent.
+//        /// </summary>
+//        public event OnFirmwareStatusNotificationResponseDelegate?   OnFirmwareStatusNotificationResponse;
 
-        /// <summary>
-        /// An event sent whenever a web socket response to a firmware status notification request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?                    OnFirmwareStatusNotificationWSResponse;
+//        /// <summary>
+//        /// An event sent whenever a web socket response to a firmware status notification request was sent.
+//        /// </summary>
+//        public event WebSocketResponseLogHandler?                    OnFirmwareStatusNotificationWSResponse;
 
-        #endregion
+//        #endregion
 
 
-        // Security extensions
+//        // Security extensions
 
-        #region OnLogStatusNotification
+//        #region OnLogStatusNotification
 
-        /// <summary>
-        /// An event sent whenever a log status notification web socket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?                OnLogStatusNotificationWSRequest;
+//        /// <summary>
+//        /// An event sent whenever a log status notification web socket request was received.
+//        /// </summary>
+//        public event WebSocketRequestLogHandler?                OnLogStatusNotificationWSRequest;
 
-        /// <summary>
-        /// An event sent whenever a log status notification request was received.
-        /// </summary>
-        public event OnLogStatusNotificationRequestDelegate?    OnLogStatusNotificationRequest;
+//        /// <summary>
+//        /// An event sent whenever a log status notification request was received.
+//        /// </summary>
+//        public event OnLogStatusNotificationRequestDelegate?    OnLogStatusNotificationRequest;
 
-        /// <summary>
-        /// An event sent whenever a log status notification request was received.
-        /// </summary>
-        public event OnLogStatusNotificationDelegate?           OnLogStatusNotification;
+//        /// <summary>
+//        /// An event sent whenever a log status notification request was received.
+//        /// </summary>
+//        public event OnLogStatusNotificationDelegate?           OnLogStatusNotification;
 
-        /// <summary>
-        /// An event sent whenever a response to a log status notification request was sent.
-        /// </summary>
-        public event OnLogStatusNotificationResponseDelegate?   OnLogStatusNotificationResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a log status notification request was sent.
+//        /// </summary>
+//        public event OnLogStatusNotificationResponseDelegate?   OnLogStatusNotificationResponse;
 
-        /// <summary>
-        /// An event sent whenever a web socket response to a log status notification request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?               OnLogStatusNotificationWSResponse;
+//        /// <summary>
+//        /// An event sent whenever a web socket response to a log status notification request was sent.
+//        /// </summary>
+//        public event WebSocketResponseLogHandler?               OnLogStatusNotificationWSResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnSecurityEventNotification
+//        #region OnSecurityEventNotification
 
-        /// <summary>
-        /// An event sent whenever a security event notification web socket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?                    OnSecurityEventNotificationWSRequest;
+//        /// <summary>
+//        /// An event sent whenever a security event notification web socket request was received.
+//        /// </summary>
+//        public event WebSocketRequestLogHandler?                    OnSecurityEventNotificationWSRequest;
 
-        /// <summary>
-        /// An event sent whenever a security event notification request was received.
-        /// </summary>
-        public event OnSecurityEventNotificationRequestDelegate?    OnSecurityEventNotificationRequest;
+//        /// <summary>
+//        /// An event sent whenever a security event notification request was received.
+//        /// </summary>
+//        public event OnSecurityEventNotificationRequestDelegate?    OnSecurityEventNotificationRequest;
 
-        /// <summary>
-        /// An event sent whenever a security event notification request was received.
-        /// </summary>
-        public event OnSecurityEventNotificationDelegate?           OnSecurityEventNotification;
+//        /// <summary>
+//        /// An event sent whenever a security event notification request was received.
+//        /// </summary>
+//        public event OnSecurityEventNotificationDelegate?           OnSecurityEventNotification;
 
-        /// <summary>
-        /// An event sent whenever a response to a security event notification request was sent.
-        /// </summary>
-        public event OnSecurityEventNotificationResponseDelegate?   OnSecurityEventNotificationResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a security event notification request was sent.
+//        /// </summary>
+//        public event OnSecurityEventNotificationResponseDelegate?   OnSecurityEventNotificationResponse;
 
-        /// <summary>
-        /// An event sent whenever a web socket response to a security event notification request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?                   OnSecurityEventNotificationWSResponse;
+//        /// <summary>
+//        /// An event sent whenever a web socket response to a security event notification request was sent.
+//        /// </summary>
+//        public event WebSocketResponseLogHandler?                   OnSecurityEventNotificationWSResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnSignCertificate
+//        #region OnSignCertificate
 
-        /// <summary>
-        /// An event sent whenever a sign certificate web socket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?          OnSignCertificateWSRequest;
+//        /// <summary>
+//        /// An event sent whenever a sign certificate web socket request was received.
+//        /// </summary>
+//        public event WebSocketRequestLogHandler?          OnSignCertificateWSRequest;
 
-        /// <summary>
-        /// An event sent whenever a sign certificate request was received.
-        /// </summary>
-        public event OnSignCertificateRequestDelegate?    OnSignCertificateRequest;
+//        /// <summary>
+//        /// An event sent whenever a sign certificate request was received.
+//        /// </summary>
+//        public event OnSignCertificateRequestDelegate?    OnSignCertificateRequest;
 
-        /// <summary>
-        /// An event sent whenever a sign certificate request was received.
-        /// </summary>
-        public event OnSignCertificateDelegate?           OnSignCertificate;
+//        /// <summary>
+//        /// An event sent whenever a sign certificate request was received.
+//        /// </summary>
+//        public event OnSignCertificateDelegate?           OnSignCertificate;
 
-        /// <summary>
-        /// An event sent whenever a response to a sign certificate request was sent.
-        /// </summary>
-        public event OnSignCertificateResponseDelegate?   OnSignCertificateResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a sign certificate request was sent.
+//        /// </summary>
+//        public event OnSignCertificateResponseDelegate?   OnSignCertificateResponse;
 
-        /// <summary>
-        /// An event sent whenever a web socket response to a sign certificate request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?         OnSignCertificateWSResponse;
+//        /// <summary>
+//        /// An event sent whenever a web socket response to a sign certificate request was sent.
+//        /// </summary>
+//        public event WebSocketResponseLogHandler?         OnSignCertificateWSResponse;
 
-        #endregion
+//        #endregion
 
-        #region OnSignedFirmwareStatusNotification
+//        #region OnSignedFirmwareStatusNotification
 
-        /// <summary>
-        /// An event sent whenever a firmware status notification web socket request was received.
-        /// </summary>
-        public event WebSocketRequestLogHandler?                           OnSignedFirmwareStatusNotificationWSRequest;
+//        /// <summary>
+//        /// An event sent whenever a firmware status notification web socket request was received.
+//        /// </summary>
+//        public event WebSocketRequestLogHandler?                           OnSignedFirmwareStatusNotificationWSRequest;
 
-        /// <summary>
-        /// An event sent whenever a firmware status notification request was received.
-        /// </summary>
-        public event OnSignedFirmwareStatusNotificationRequestDelegate?    OnSignedFirmwareStatusNotificationRequest;
+//        /// <summary>
+//        /// An event sent whenever a firmware status notification request was received.
+//        /// </summary>
+//        public event OnSignedFirmwareStatusNotificationRequestDelegate?    OnSignedFirmwareStatusNotificationRequest;
 
-        /// <summary>
-        /// An event sent whenever a firmware status notification request was received.
-        /// </summary>
-        public event OnSignedFirmwareStatusNotificationDelegate?           OnSignedFirmwareStatusNotification;
+//        /// <summary>
+//        /// An event sent whenever a firmware status notification request was received.
+//        /// </summary>
+//        public event OnSignedFirmwareStatusNotificationDelegate?           OnSignedFirmwareStatusNotification;
 
-        /// <summary>
-        /// An event sent whenever a response to a firmware status notification request was sent.
-        /// </summary>
-        public event OnSignedFirmwareStatusNotificationResponseDelegate?   OnSignedFirmwareStatusNotificationResponse;
+//        /// <summary>
+//        /// An event sent whenever a response to a firmware status notification request was sent.
+//        /// </summary>
+//        public event OnSignedFirmwareStatusNotificationResponseDelegate?   OnSignedFirmwareStatusNotificationResponse;
 
-        /// <summary>
-        /// An event sent whenever a web socket response to a firmware status notification request was sent.
-        /// </summary>
-        public event WebSocketResponseLogHandler?                          OnSignedFirmwareStatusNotificationWSResponse;
+//        /// <summary>
+//        /// An event sent whenever a web socket response to a firmware status notification request was sent.
+//        /// </summary>
+//        public event WebSocketResponseLogHandler?                          OnSignedFirmwareStatusNotificationWSResponse;
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-        #region Custom JSON parser/serializer delegates
+//        #region Custom JSON parser/serializer delegates
 
-        /// <summary>
-        /// A delegate to parse custom BootNotification requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<BootNotificationRequest>?                  CustomBootNotificationRequestParser                    { get; set; }
+//        /// <summary>
+//        /// A delegate to parse custom BootNotification requests.
+//        /// </summary>
+//        public CustomJObjectParserDelegate<BootNotificationRequest>?                  CustomBootNotificationRequestParser                    { get; set; }
 
-        /// <summary>
-        /// A delegate to parse custom Heartbeat requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<HeartbeatRequest>?                         CustomHeartbeatRequestParser                           { get; set; }
+//        /// <summary>
+//        /// A delegate to parse custom Heartbeat requests.
+//        /// </summary>
+//        public CustomJObjectParserDelegate<HeartbeatRequest>?                         CustomHeartbeatRequestParser                           { get; set; }
 
 
-        /// <summary>
-        /// A delegate to parse custom Authorize requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<AuthorizeRequest>?                         CustomAuthorizeRequestParser                           { get; set; }
+//        /// <summary>
+//        /// A delegate to parse custom Authorize requests.
+//        /// </summary>
+//        public CustomJObjectParserDelegate<AuthorizeRequest>?                         CustomAuthorizeRequestParser                           { get; set; }
 
-        /// <summary>
-        /// A delegate to parse custom StartTransaction requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<StartTransactionRequest>?                  CustomStartTransactionRequestParser                    { get; set; }
+//        /// <summary>
+//        /// A delegate to parse custom StartTransaction requests.
+//        /// </summary>
+//        public CustomJObjectParserDelegate<StartTransactionRequest>?                  CustomStartTransactionRequestParser                    { get; set; }
 
-        /// <summary>
-        /// A delegate to parse custom StatusNotification requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<StatusNotificationRequest>?                CustomStatusNotificationRequestParser                  { get; set; }
+//        /// <summary>
+//        /// A delegate to parse custom StatusNotification requests.
+//        /// </summary>
+//        public CustomJObjectParserDelegate<StatusNotificationRequest>?                CustomStatusNotificationRequestParser                  { get; set; }
 
-        /// <summary>
-        /// A delegate to parse custom MeterValues requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<MeterValuesRequest>?                       CustomMeterValuesRequestParser                         { get; set; }
+//        /// <summary>
+//        /// A delegate to parse custom MeterValues requests.
+//        /// </summary>
+//        public CustomJObjectParserDelegate<MeterValuesRequest>?                       CustomMeterValuesRequestParser                         { get; set; }
 
-        /// <summary>
-        /// A delegate to parse custom StopTransaction requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<StopTransactionRequest>?                   CustomStopTransactionRequestParser                     { get; set; }
+//        /// <summary>
+//        /// A delegate to parse custom StopTransaction requests.
+//        /// </summary>
+//        public CustomJObjectParserDelegate<StopTransactionRequest>?                   CustomStopTransactionRequestParser                     { get; set; }
 
 
-        /// <summary>
-        /// A delegate to parse custom DiagnosticsStatusNotification requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>?     CustomDiagnosticsStatusNotificationRequestParser       { get; set; }
+//        /// <summary>
+//        /// A delegate to parse custom DiagnosticsStatusNotification requests.
+//        /// </summary>
+//        public CustomJObjectParserDelegate<DiagnosticsStatusNotificationRequest>?     CustomDiagnosticsStatusNotificationRequestParser       { get; set; }
 
-        /// <summary>
-        /// A delegate to parse custom FirmwareStatusNotification requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>?        CustomFirmwareStatusNotificationRequestParser          { get; set; }
+//        /// <summary>
+//        /// A delegate to parse custom FirmwareStatusNotification requests.
+//        /// </summary>
+//        public CustomJObjectParserDelegate<FirmwareStatusNotificationRequest>?        CustomFirmwareStatusNotificationRequestParser          { get; set; }
 
 
-        // Security extensions
+//        // Security extensions
 
-        /// <summary>
-        /// A delegate to parse custom LogStatusNotification requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<LogStatusNotificationRequest>?             CustomLogStatusNotificationRequestParser               { get; set; }
+//        /// <summary>
+//        /// A delegate to parse custom LogStatusNotification requests.
+//        /// </summary>
+//        public CustomJObjectParserDelegate<LogStatusNotificationRequest>?             CustomLogStatusNotificationRequestParser               { get; set; }
 
-        /// <summary>
-        /// A delegate to parse custom SecurityEventNotification requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<SecurityEventNotificationRequest>?         CustomSecurityEventNotificationRequestParser           { get; set; }
+//        /// <summary>
+//        /// A delegate to parse custom SecurityEventNotification requests.
+//        /// </summary>
+//        public CustomJObjectParserDelegate<SecurityEventNotificationRequest>?         CustomSecurityEventNotificationRequestParser           { get; set; }
 
-        /// <summary>
-        /// A delegate to parse custom SignCertificate requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<SignCertificateRequest>?                   CustomSignCertificateRequestParser                     { get; set; }
+//        /// <summary>
+//        /// A delegate to parse custom SignCertificate requests.
+//        /// </summary>
+//        public CustomJObjectParserDelegate<SignCertificateRequest>?                   CustomSignCertificateRequestParser                     { get; set; }
 
-        /// <summary>
-        /// A delegate to parse custom SignedFirmwareStatusNotification requests.
-        /// </summary>
-        public CustomJObjectParserDelegate<SignedFirmwareStatusNotificationRequest>?  CustomSignedFirmwareStatusNotificationRequestParser    { get; set; }
+//        /// <summary>
+//        /// A delegate to parse custom SignedFirmwareStatusNotification requests.
+//        /// </summary>
+//        public CustomJObjectParserDelegate<SignedFirmwareStatusNotificationRequest>?  CustomSignedFirmwareStatusNotificationRequestParser    { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<ResetRequest>?                         CustomResetRequestSerializer                           { get; set; }
+//        public CustomJObjectSerializerDelegate<ResetRequest>?                         CustomResetRequestSerializer                           { get; set; }
 
-        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?            CustomChangeAvailabilityRequestSerializer              { get; set; }
+//        public CustomJObjectSerializerDelegate<ChangeAvailabilityRequest>?            CustomChangeAvailabilityRequestSerializer              { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetConfigurationRequest>?              CustomGetConfigurationRequestSerializer                { get; set; }
+//        public CustomJObjectSerializerDelegate<GetConfigurationRequest>?              CustomGetConfigurationRequestSerializer                { get; set; }
 
-        public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>?           CustomChangeConfigurationRequestSerializer             { get; set; }
+//        public CustomJObjectSerializerDelegate<ChangeConfigurationRequest>?           CustomChangeConfigurationRequestSerializer             { get; set; }
 
-        public CustomJObjectSerializerDelegate<DataTransferRequest>?                  CustomDataTransferRequestSerializer                    { get; set; }
+//        public CustomJObjectSerializerDelegate<DataTransferRequest>?                  CustomDataTransferRequestSerializer                    { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetDiagnosticsRequest>?                CustomGetDiagnosticsRequestSerializer                  { get; set; }
+//        public CustomJObjectSerializerDelegate<GetDiagnosticsRequest>?                CustomGetDiagnosticsRequestSerializer                  { get; set; }
 
-        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                CustomTriggerMessageRequestSerializer                  { get; set; }
+//        public CustomJObjectSerializerDelegate<TriggerMessageRequest>?                CustomTriggerMessageRequestSerializer                  { get; set; }
 
-        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?                CustomUpdateFirmwareRequestSerializer                  { get; set; }
+//        public CustomJObjectSerializerDelegate<UpdateFirmwareRequest>?                CustomUpdateFirmwareRequestSerializer                  { get; set; }
 
 
 
-        public CustomJObjectSerializerDelegate<ReserveNowRequest>?                    CustomReserveNowRequestSerializer                      { get; set; }
+//        public CustomJObjectSerializerDelegate<ReserveNowRequest>?                    CustomReserveNowRequestSerializer                      { get; set; }
 
-        public CustomJObjectSerializerDelegate<CancelReservationRequest>?             CustomCancelReservationRequestSerializer               { get; set; }
+//        public CustomJObjectSerializerDelegate<CancelReservationRequest>?             CustomCancelReservationRequestSerializer               { get; set; }
 
-        public CustomJObjectSerializerDelegate<RemoteStartTransactionRequest>?        CustomRemoteStartTransactionRequestSerializer          { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingProfile>?                      CustomChargingProfileSerializer                        { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedule>?                     CustomChargingScheduleSerializer                       { get; set; }
-        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?               CustomChargingSchedulePeriodSerializer                 { get; set; }
+//        public CustomJObjectSerializerDelegate<RemoteStartTransactionRequest>?        CustomRemoteStartTransactionRequestSerializer          { get; set; }
+//        public CustomJObjectSerializerDelegate<ChargingProfile>?                      CustomChargingProfileSerializer                        { get; set; }
+//        public CustomJObjectSerializerDelegate<ChargingSchedule>?                     CustomChargingScheduleSerializer                       { get; set; }
+//        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?               CustomChargingSchedulePeriodSerializer                 { get; set; }
 
-        public CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>?         CustomRemoteStopTransactionRequestSerializer           { get; set; }
+//        public CustomJObjectSerializerDelegate<RemoteStopTransactionRequest>?         CustomRemoteStopTransactionRequestSerializer           { get; set; }
 
-        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?            CustomSetChargingProfileRequestSerializer              { get; set; }
+//        public CustomJObjectSerializerDelegate<SetChargingProfileRequest>?            CustomSetChargingProfileRequestSerializer              { get; set; }
 
-        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?          CustomClearChargingProfileRequestSerializer            { get; set; }
+//        public CustomJObjectSerializerDelegate<ClearChargingProfileRequest>?          CustomClearChargingProfileRequestSerializer            { get; set; }
 
-        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?          CustomGetCompositeScheduleRequestSerializer            { get; set; }
+//        public CustomJObjectSerializerDelegate<GetCompositeScheduleRequest>?          CustomGetCompositeScheduleRequestSerializer            { get; set; }
 
-        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?               CustomUnlockConnectorRequestSerializer                 { get; set; }
+//        public CustomJObjectSerializerDelegate<UnlockConnectorRequest>?               CustomUnlockConnectorRequestSerializer                 { get; set; }
 
 
-        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?           CustomGetLocalListVersionRequestSerializer             { get; set; }
+//        public CustomJObjectSerializerDelegate<GetLocalListVersionRequest>?           CustomGetLocalListVersionRequestSerializer             { get; set; }
 
-        public CustomJObjectSerializerDelegate<SendLocalListRequest>?                 CustomSendLocalListRequestSerializer                   { get; set; }
-        public CustomJObjectSerializerDelegate<AuthorizationData>?                    CustomAuthorizationDataSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<IdTagInfo>?                            CustomIdTagInfoResponseSerializer                      { get; set; }
-        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                    CustomClearCacheRequestSerializer                      { get; set; }
+//        public CustomJObjectSerializerDelegate<SendLocalListRequest>?                 CustomSendLocalListRequestSerializer                   { get; set; }
+//        public CustomJObjectSerializerDelegate<AuthorizationData>?                    CustomAuthorizationDataSerializer                      { get; set; }
+//        public CustomJObjectSerializerDelegate<IdTagInfo>?                            CustomIdTagInfoResponseSerializer                      { get; set; }
+//        public CustomJObjectSerializerDelegate<ClearCacheRequest>?                    CustomClearCacheRequestSerializer                      { get; set; }
 
 
-        // Security extensions
-        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?             CustomCertificateSignedRequestSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?             CustomDeleteCertificateRequestSerializer               { get; set; }
-        public CustomJObjectSerializerDelegate<ExtendedTriggerMessageRequest>?        CustomExtendedTriggerMessageRequestSerializer          { get; set; }
-        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?    CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
-        public CustomJObjectSerializerDelegate<GetLogRequest>?                        CustomGetLogRequestSerializer                          { get; set; }
-        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?            CustomInstallCertificateRequestSerializer              { get; set; }
-        public CustomJObjectSerializerDelegate<SignedUpdateFirmwareRequest>?          CustomSignedUpdateFirmwareRequestSerializer            { get; set; }
+//        // Security extensions
+//        public CustomJObjectSerializerDelegate<CertificateSignedRequest>?             CustomCertificateSignedRequestSerializer               { get; set; }
+//        public CustomJObjectSerializerDelegate<DeleteCertificateRequest>?             CustomDeleteCertificateRequestSerializer               { get; set; }
+//        public CustomJObjectSerializerDelegate<ExtendedTriggerMessageRequest>?        CustomExtendedTriggerMessageRequestSerializer          { get; set; }
+//        public CustomJObjectSerializerDelegate<GetInstalledCertificateIdsRequest>?    CustomGetInstalledCertificateIdsRequestSerializer      { get; set; }
+//        public CustomJObjectSerializerDelegate<GetLogRequest>?                        CustomGetLogRequestSerializer                          { get; set; }
+//        public CustomJObjectSerializerDelegate<InstallCertificateRequest>?            CustomInstallCertificateRequestSerializer              { get; set; }
+//        public CustomJObjectSerializerDelegate<SignedUpdateFirmwareRequest>?          CustomSignedUpdateFirmwareRequestSerializer            { get; set; }
 
-        #endregion
+//        #endregion
 
-        #region Constructor(s)
+//        #region Constructor(s)
 
-        /// <summary>
-        /// Initialize a new HTTP server for the central system HTTP/WebSocket/JSON API.
-        /// </summary>
-        /// <param name="HTTPServiceName">An optional identification string for the HTTP service.</param>
-        /// <param name="IPAddress">An IP address to listen on.</param>
-        /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
-        /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
-        /// <param name="DNSClient">An optional DNS client to use.</param>
-        /// <param name="AutoStart">Start the server immediately.</param>
-        public CentralSystemWSServer_old(String                               HTTPServiceName              = DefaultHTTPServiceName,
-                                     IIPAddress?                          IPAddress                    = null,
-                                     IPPort?                              TCPPort                      = null,
+//        /// <summary>
+//        /// Initialize a new HTTP server for the central system HTTP/WebSocket/JSON API.
+//        /// </summary>
+//        /// <param name="HTTPServiceName">An optional identification string for the HTTP service.</param>
+//        /// <param name="IPAddress">An IP address to listen on.</param>
+//        /// <param name="TCPPort">An optional TCP port for the HTTP server.</param>
+//        /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
+//        /// <param name="DNSClient">An optional DNS client to use.</param>
+//        /// <param name="AutoStart">Start the server immediately.</param>
+//        public CentralSystemWSServer_old(String                               HTTPServiceName              = DefaultHTTPServiceName,
+//                                     IIPAddress?                          IPAddress                    = null,
+//                                     IPPort?                              TCPPort                      = null,
 
-                                     Boolean                              RequireAuthentication        = true,
-                                     Boolean                              DisableWebSocketPings        = false,
-                                     TimeSpan?                            WebSocketPingEvery           = null,
-                                     TimeSpan?                            SlowNetworkSimulationDelay   = null,
+//                                     Boolean                              RequireAuthentication        = true,
+//                                     Boolean                              DisableWebSocketPings        = false,
+//                                     TimeSpan?                            WebSocketPingEvery           = null,
+//                                     TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                                     ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
-                                     RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
-                                     LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                                     SslProtocols?                        AllowedTLSProtocols          = null,
-                                     Boolean?                             ClientCertificateRequired    = null,
-                                     Boolean?                             CheckCertificateRevocation   = null,
+//                                     ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+//                                     RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
+//                                     LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+//                                     SslProtocols?                        AllowedTLSProtocols          = null,
+//                                     Boolean?                             ClientCertificateRequired    = null,
+//                                     Boolean?                             CheckCertificateRevocation   = null,
 
-                                     ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
-                                     ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
-                                     Boolean?                             ServerThreadIsBackground     = null,
-                                     ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
-                                     TimeSpan?                            ConnectionTimeout            = null,
-                                     UInt32?                              MaxClientConnections         = null,
+//                                     ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
+//                                     ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
+//                                     Boolean?                             ServerThreadIsBackground     = null,
+//                                     ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
+//                                     TimeSpan?                            ConnectionTimeout            = null,
+//                                     UInt32?                              MaxClientConnections         = null,
 
-                                     DNSClient?                           DNSClient                    = null,
-                                     Boolean                              AutoStart                    = false)
+//                                     DNSClient?                           DNSClient                    = null,
+//                                     Boolean                              AutoStart                    = false)
 
-            : base(IPAddress,
-                   TCPPort ?? IPPort.Parse(8000),
-                   HTTPServiceName,
+//            : base(IPAddress,
+//                   TCPPort ?? IPPort.Parse(8000),
+//                   HTTPServiceName,
 
-                   new[] { Version.WebSocketSubProtocolId },
-                   DisableWebSocketPings,
-                   WebSocketPingEvery,
-                   SlowNetworkSimulationDelay,
+//                   new[] { Version.WebSocketSubProtocolId },
+//                   DisableWebSocketPings,
+//                   WebSocketPingEvery,
+//                   SlowNetworkSimulationDelay,
 
-                   ServerCertificateSelector,
-                   ClientCertificateValidator,
-                   ClientCertificateSelector,
-                   AllowedTLSProtocols,
-                   ClientCertificateRequired,
-                   CheckCertificateRevocation,
+//                   ServerCertificateSelector,
+//                   ClientCertificateValidator,
+//                   ClientCertificateSelector,
+//                   AllowedTLSProtocols,
+//                   ClientCertificateRequired,
+//                   CheckCertificateRevocation,
 
-                   ServerThreadNameCreator,
-                   ServerThreadPrioritySetter,
-                   ServerThreadIsBackground,
-                   ConnectionIdBuilder,
-                   ConnectionTimeout,
-                   MaxClientConnections,
+//                   ServerThreadNameCreator,
+//                   ServerThreadPrioritySetter,
+//                   ServerThreadIsBackground,
+//                   ConnectionIdBuilder,
+//                   ConnectionTimeout,
+//                   MaxClientConnections,
 
-                   DNSClient,
-                   false)
+//                   DNSClient,
+//                   false)
 
-        {
+//        {
 
-            this.RequireAuthentication           = RequireAuthentication;
+//            this.RequireAuthentication           = RequireAuthentication;
 
-            base.OnValidateTCPConnection        += ValidateTCPConnection;
-            base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
-            base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
-            base.OnCloseMessageReceived         += ProcessCloseMessage;
+//            base.OnValidateTCPConnection        += ValidateTCPConnection;
+//            base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
+//            base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
+//            base.OnCloseMessageReceived         += ProcessCloseMessage;
 
-            if (AutoStart)
-                Start();
+//            if (AutoStart)
+//                Start();
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
 
 
-        #region Reset                 (Request)
+//        #region Reset                 (Request)
 
-        public async Task<ResetResponse> Reset(ResetRequest Request)
-        {
+//        public async Task<ResetResponse> Reset(ResetRequest Request)
+//        {
 
-            #region Send OnResetRequest event
+//            #region Send OnResetRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnResetRequest?.Invoke(startTime,
-                                       this,
-                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnResetRequest));
-            }
+//                OnResetRequest?.Invoke(startTime,
+//                                       this,
+//                                       Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnResetRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            ResetResponse? response = null;
+//            ResetResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomResetRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomResetRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (ResetResponse.TryParse(Request,
-                                           sendRequestState.JSONResponse.Payload,
-                                           out var resetResponse,
-                                           out var errorResponse) &&
-                    resetResponse is not null)
-                {
-                    response = resetResponse;
-                }
+//                if (ResetResponse.TryParse(Request,
+//                                           sendRequestState.JSONResponse.Payload,
+//                                           out var resetResponse,
+//                                           out var errorResponse) &&
+//                    resetResponse is not null)
+//                {
+//                    response = resetResponse;
+//                }
 
-                response ??= new ResetResponse(Request,
-                                               Result.Format(errorResponse));
+//                response ??= new ResetResponse(Request,
+//                                               Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new ResetResponse(Request,
-                                           Result.FromSendRequestState(sendRequestState));
+//            response ??= new ResetResponse(Request,
+//                                           Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnResetResponse event
+//            #region Send OnResetResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnResetResponse?.Invoke(endTime,
-                                        this,
-                                        Request,
-                                        response,
-                                        endTime - startTime);
+//                OnResetResponse?.Invoke(endTime,
+//                                        this,
+//                                        Request,
+//                                        response,
+//                                        endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnResetResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnResetResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region ChangeAvailability    (Request)
+//        #region ChangeAvailability    (Request)
 
-        public async Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request)
-        {
+//        public async Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request)
+//        {
 
-            #region Send OnChangeAvailabilityRequest event
+//            #region Send OnChangeAvailabilityRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnChangeAvailabilityRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeAvailabilityRequest));
-            }
+//                OnChangeAvailabilityRequest?.Invoke(startTime,
+//                                                    this,
+//                                                    Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeAvailabilityRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            ChangeAvailabilityResponse? response = null;
+//            ChangeAvailabilityResponse? response = null;
 
-            var sendRequestState = await SendRequest(
-                                             Request.RequestId,
-                                             Request.ChargeBoxId,
-                                             Request.Action,
-                                             Request.ToJSON(CustomChangeAvailabilityRequestSerializer),
-                                             Request.RequestTimeout
-                                         );
+//            var sendRequestState = await SendRequest(
+//                                             Request.RequestId,
+//                                             Request.ChargeBoxId,
+//                                             Request.Action,
+//                                             Request.ToJSON(CustomChangeAvailabilityRequestSerializer),
+//                                             Request.RequestTimeout
+//                                         );
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (ChangeAvailabilityResponse.TryParse(Request,
-                                                        sendRequestState.JSONResponse.Payload,
-                                                        out var changeAvailabilityResponse,
-                                                        out var errorResponse) &&
-                    changeAvailabilityResponse is not null)
-                {
-                    response = changeAvailabilityResponse;
-                }
+//                if (ChangeAvailabilityResponse.TryParse(Request,
+//                                                        sendRequestState.JSONResponse.Payload,
+//                                                        out var changeAvailabilityResponse,
+//                                                        out var errorResponse) &&
+//                    changeAvailabilityResponse is not null)
+//                {
+//                    response = changeAvailabilityResponse;
+//                }
 
-                response ??= new ChangeAvailabilityResponse(Request,
-                                                            Result.Format(errorResponse));
+//                response ??= new ChangeAvailabilityResponse(Request,
+//                                                            Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new ChangeAvailabilityResponse(Request,
-                                                        Result.FromSendRequestState(sendRequestState));
+//            response ??= new ChangeAvailabilityResponse(Request,
+//                                                        Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnChangeAvailabilityResponse event
+//            #region Send OnChangeAvailabilityResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnChangeAvailabilityResponse?.Invoke(endTime,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     endTime - startTime);
+//                OnChangeAvailabilityResponse?.Invoke(endTime,
+//                                                     this,
+//                                                     Request,
+//                                                     response,
+//                                                     endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeAvailabilityResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeAvailabilityResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region GetConfiguration      (Request)
+//        #region GetConfiguration      (Request)
 
-        public async Task<GetConfigurationResponse> GetConfiguration(GetConfigurationRequest Request)
-        {
+//        public async Task<GetConfigurationResponse> GetConfiguration(GetConfigurationRequest Request)
+//        {
 
-            #region Send OnGetConfigurationRequest event
+//            #region Send OnGetConfigurationRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnGetConfigurationRequest?.Invoke(startTime,
-                                                  this,
-                                                  Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetConfigurationRequest));
-            }
+//                OnGetConfigurationRequest?.Invoke(startTime,
+//                                                  this,
+//                                                  Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetConfigurationRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            GetConfigurationResponse? response = null;
+//            GetConfigurationResponse? response = null;
 
-            var sendRequestState = await SendRequest(
-                                             Request.RequestId,
-                                             Request.ChargeBoxId,
-                                             Request.Action,
-                                             Request.ToJSON(CustomGetConfigurationRequestSerializer),
-                                             Request.RequestTimeout
-                                         );
+//            var sendRequestState = await SendRequest(
+//                                             Request.RequestId,
+//                                             Request.ChargeBoxId,
+//                                             Request.Action,
+//                                             Request.ToJSON(CustomGetConfigurationRequestSerializer),
+//                                             Request.RequestTimeout
+//                                         );
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (GetConfigurationResponse.TryParse(Request,
-                                                      sendRequestState.JSONResponse.Payload,
-                                                      out var getConfigurationResponse,
-                                                      out var errorResponse) &&
-                    getConfigurationResponse is not null)
-                {
-                    response = getConfigurationResponse;
-                }
+//                if (GetConfigurationResponse.TryParse(Request,
+//                                                      sendRequestState.JSONResponse.Payload,
+//                                                      out var getConfigurationResponse,
+//                                                      out var errorResponse) &&
+//                    getConfigurationResponse is not null)
+//                {
+//                    response = getConfigurationResponse;
+//                }
 
-                response ??= new GetConfigurationResponse(Request,
-                                                          Result.Format(errorResponse));
+//                response ??= new GetConfigurationResponse(Request,
+//                                                          Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new GetConfigurationResponse(Request,
-                                                      Result.FromSendRequestState(sendRequestState));
+//            response ??= new GetConfigurationResponse(Request,
+//                                                      Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnGetConfigurationResponse event
+//            #region Send OnGetConfigurationResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnGetConfigurationResponse?.Invoke(endTime,
-                                                   this,
-                                                   Request,
-                                                   response,
-                                                   endTime - startTime);
+//                OnGetConfigurationResponse?.Invoke(endTime,
+//                                                   this,
+//                                                   Request,
+//                                                   response,
+//                                                   endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetConfigurationResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetConfigurationResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region ChangeConfiguration   (Request)
+//        #region ChangeConfiguration   (Request)
 
-        public async Task<ChangeConfigurationResponse> ChangeConfiguration(ChangeConfigurationRequest Request)
-        {
+//        public async Task<ChangeConfigurationResponse> ChangeConfiguration(ChangeConfigurationRequest Request)
+//        {
 
-            #region Send OnChangeConfigurationRequest event
+//            #region Send OnChangeConfigurationRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnChangeConfigurationRequest?.Invoke(startTime,
-                                                     this,
-                                                     Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeConfigurationRequest));
-            }
+//                OnChangeConfigurationRequest?.Invoke(startTime,
+//                                                     this,
+//                                                     Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeConfigurationRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            ChangeConfigurationResponse? response = null;
+//            ChangeConfigurationResponse? response = null;
 
-            var sendRequestState = await SendRequest(
-                                             Request.RequestId,
-                                             Request.ChargeBoxId,
-                                             Request.Action,
-                                             Request.ToJSON(CustomChangeConfigurationRequestSerializer),
-                                             Request.RequestTimeout
-                                         );
+//            var sendRequestState = await SendRequest(
+//                                             Request.RequestId,
+//                                             Request.ChargeBoxId,
+//                                             Request.Action,
+//                                             Request.ToJSON(CustomChangeConfigurationRequestSerializer),
+//                                             Request.RequestTimeout
+//                                         );
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (ChangeConfigurationResponse.TryParse(Request,
-                                                         sendRequestState.JSONResponse.Payload,
-                                                         out var changeConfigurationResponse,
-                                                         out var errorResponse) &&
-                    changeConfigurationResponse is not null)
-                {
-                    response = changeConfigurationResponse;
-                }
+//                if (ChangeConfigurationResponse.TryParse(Request,
+//                                                         sendRequestState.JSONResponse.Payload,
+//                                                         out var changeConfigurationResponse,
+//                                                         out var errorResponse) &&
+//                    changeConfigurationResponse is not null)
+//                {
+//                    response = changeConfigurationResponse;
+//                }
 
-                response ??= new ChangeConfigurationResponse(Request,
-                                                             Result.Format(errorResponse));
+//                response ??= new ChangeConfigurationResponse(Request,
+//                                                             Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new ChangeConfigurationResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+//            response ??= new ChangeConfigurationResponse(Request,
+//                                                         Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnChangeConfigurationResponse event
+//            #region Send OnChangeConfigurationResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnChangeConfigurationResponse?.Invoke(endTime,
-                                                      this,
-                                                      Request,
-                                                      response,
-                                                      endTime - startTime);
+//                OnChangeConfigurationResponse?.Invoke(endTime,
+//                                                      this,
+//                                                      Request,
+//                                                      response,
+//                                                      endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeConfigurationResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnChangeConfigurationResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region DataTransfer          (Request)
+//        #region DataTransfer          (Request)
 
-        public async Task<CP.DataTransferResponse> DataTransfer(DataTransferRequest Request)
-        {
+//        public async Task<CP.DataTransferResponse> DataTransfer(DataTransferRequest Request)
+//        {
 
-            #region Send OnDataTransferRequest event
+//            #region Send OnDataTransferRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnDataTransferRequest?.Invoke(startTime,
-                                              this,
-                                              Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDataTransferRequest));
-            }
+//                OnDataTransferRequest?.Invoke(startTime,
+//                                              this,
+//                                              Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDataTransferRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            CP.DataTransferResponse? response = null;
+//            CP.DataTransferResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomDataTransferRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomDataTransferRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (CP.DataTransferResponse.TryParse(Request,
-                                                     sendRequestState.JSONResponse.Payload,
-                                                     out var dataTransferResponse,
-                                                     out var errorResponse) &&
-                    dataTransferResponse is not null)
-                {
-                    response = dataTransferResponse;
-                }
+//                if (CP.DataTransferResponse.TryParse(Request,
+//                                                     sendRequestState.JSONResponse.Payload,
+//                                                     out var dataTransferResponse,
+//                                                     out var errorResponse) &&
+//                    dataTransferResponse is not null)
+//                {
+//                    response = dataTransferResponse;
+//                }
 
-                response ??= new CP.DataTransferResponse(Request,
-                                                         Result.Format(errorResponse));
+//                response ??= new CP.DataTransferResponse(Request,
+//                                                         Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new CP.DataTransferResponse(Request,
-                                                     Result.FromSendRequestState(sendRequestState));
+//            response ??= new CP.DataTransferResponse(Request,
+//                                                     Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnDataTransferResponse event
+//            #region Send OnDataTransferResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnDataTransferResponse?.Invoke(endTime,
-                                               this,
-                                               Request,
-                                               response,
-                                               endTime - startTime);
+//                OnDataTransferResponse?.Invoke(endTime,
+//                                               this,
+//                                               Request,
+//                                               response,
+//                                               endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDataTransferResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDataTransferResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region GetDiagnostics        (Request)
+//        #region GetDiagnostics        (Request)
 
-        public async Task<GetDiagnosticsResponse> GetDiagnostics(GetDiagnosticsRequest Request)
-        {
+//        public async Task<GetDiagnosticsResponse> GetDiagnostics(GetDiagnosticsRequest Request)
+//        {
 
-            #region Send OnGetDiagnosticsRequest event
+//            #region Send OnGetDiagnosticsRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnGetDiagnosticsRequest?.Invoke(startTime,
-                                                this,
-                                                Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetDiagnosticsRequest));
-            }
+//                OnGetDiagnosticsRequest?.Invoke(startTime,
+//                                                this,
+//                                                Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetDiagnosticsRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            GetDiagnosticsResponse? response = null;
+//            GetDiagnosticsResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomGetDiagnosticsRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomGetDiagnosticsRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (GetDiagnosticsResponse.TryParse(Request,
-                                                    sendRequestState.JSONResponse.Payload,
-                                                    out var getDiagnosticsResponse,
-                                                    out var errorResponse) &&
-                    getDiagnosticsResponse is not null)
-                {
-                    response = getDiagnosticsResponse;
-                }
+//                if (GetDiagnosticsResponse.TryParse(Request,
+//                                                    sendRequestState.JSONResponse.Payload,
+//                                                    out var getDiagnosticsResponse,
+//                                                    out var errorResponse) &&
+//                    getDiagnosticsResponse is not null)
+//                {
+//                    response = getDiagnosticsResponse;
+//                }
 
-                response ??= new GetDiagnosticsResponse(Request,
-                                                        Result.Format(errorResponse));
+//                response ??= new GetDiagnosticsResponse(Request,
+//                                                        Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new GetDiagnosticsResponse(Request,
-                                                    Result.FromSendRequestState(sendRequestState));
+//            response ??= new GetDiagnosticsResponse(Request,
+//                                                    Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnGetDiagnosticsResponse event
+//            #region Send OnGetDiagnosticsResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnGetDiagnosticsResponse?.Invoke(endTime,
-                                                 this,
-                                                 Request,
-                                                 response,
-                                                 endTime - startTime);
+//                OnGetDiagnosticsResponse?.Invoke(endTime,
+//                                                 this,
+//                                                 Request,
+//                                                 response,
+//                                                 endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetDiagnosticsResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetDiagnosticsResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region TriggerMessage        (Request)
+//        #region TriggerMessage        (Request)
 
-        public async Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request)
-        {
+//        public async Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request)
+//        {
 
-            #region Send OnTriggerMessageRequest event
+//            #region Send OnTriggerMessageRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnTriggerMessageRequest?.Invoke(startTime,
-                                                this,
-                                                Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnTriggerMessageRequest));
-            }
+//                OnTriggerMessageRequest?.Invoke(startTime,
+//                                                this,
+//                                                Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnTriggerMessageRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            TriggerMessageResponse? response = null;
+//            TriggerMessageResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomTriggerMessageRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomTriggerMessageRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (TriggerMessageResponse.TryParse(Request,
-                                                    sendRequestState.JSONResponse.Payload,
-                                                    out var triggerMessageResponse,
-                                                    out var errorResponse) &&
-                    triggerMessageResponse is not null)
-                {
-                    response = triggerMessageResponse;
-                }
+//                if (TriggerMessageResponse.TryParse(Request,
+//                                                    sendRequestState.JSONResponse.Payload,
+//                                                    out var triggerMessageResponse,
+//                                                    out var errorResponse) &&
+//                    triggerMessageResponse is not null)
+//                {
+//                    response = triggerMessageResponse;
+//                }
 
-                response ??= new TriggerMessageResponse(Request,
-                                                        Result.Format(errorResponse));
+//                response ??= new TriggerMessageResponse(Request,
+//                                                        Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new TriggerMessageResponse(Request,
-                                                    Result.FromSendRequestState(sendRequestState));
+//            response ??= new TriggerMessageResponse(Request,
+//                                                    Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnTriggerMessageResponse event
+//            #region Send OnTriggerMessageResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnTriggerMessageResponse?.Invoke(endTime,
-                                                 this,
-                                                 Request,
-                                                 response,
-                                                 endTime - startTime);
+//                OnTriggerMessageResponse?.Invoke(endTime,
+//                                                 this,
+//                                                 Request,
+//                                                 response,
+//                                                 endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnTriggerMessageResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnTriggerMessageResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region UpdateFirmware        (Request)
+//        #region UpdateFirmware        (Request)
 
-        public async Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
-        {
+//        public async Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request)
+//        {
 
-            #region Send OnUpdateFirmwareRequest event
+//            #region Send OnUpdateFirmwareRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnUpdateFirmwareRequest?.Invoke(startTime,
-                                                this,
-                                                Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUpdateFirmwareRequest));
-            }
+//                OnUpdateFirmwareRequest?.Invoke(startTime,
+//                                                this,
+//                                                Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUpdateFirmwareRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            UpdateFirmwareResponse? response = null;
+//            UpdateFirmwareResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomUpdateFirmwareRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomUpdateFirmwareRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (UpdateFirmwareResponse.TryParse(Request,
-                                                    sendRequestState.JSONResponse.Payload,
-                                                    out var updateFirmwareResponse,
-                                                    out var errorResponse) &&
-                    updateFirmwareResponse is not null)
-                {
-                    response = updateFirmwareResponse;
-                }
+//                if (UpdateFirmwareResponse.TryParse(Request,
+//                                                    sendRequestState.JSONResponse.Payload,
+//                                                    out var updateFirmwareResponse,
+//                                                    out var errorResponse) &&
+//                    updateFirmwareResponse is not null)
+//                {
+//                    response = updateFirmwareResponse;
+//                }
 
-                response ??= new UpdateFirmwareResponse(Request,
-                                                        Result.Format(errorResponse));
+//                response ??= new UpdateFirmwareResponse(Request,
+//                                                        Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new UpdateFirmwareResponse(Request,
-                                                    Result.FromSendRequestState(sendRequestState));
+//            response ??= new UpdateFirmwareResponse(Request,
+//                                                    Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnUpdateFirmwareResponse event
+//            #region Send OnUpdateFirmwareResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnUpdateFirmwareResponse?.Invoke(endTime,
-                                                 this,
-                                                 Request,
-                                                 response,
-                                                 endTime - startTime);
+//                OnUpdateFirmwareResponse?.Invoke(endTime,
+//                                                 this,
+//                                                 Request,
+//                                                 response,
+//                                                 endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUpdateFirmwareResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUpdateFirmwareResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
 
-        #region ReserveNow            (Request)
+//        #region ReserveNow            (Request)
 
-        public async Task<ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
-        {
+//        public async Task<ReserveNowResponse> ReserveNow(ReserveNowRequest Request)
+//        {
 
-            #region Send OnReserveNowRequest event
+//            #region Send OnReserveNowRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnReserveNowRequest?.Invoke(startTime,
-                                            this,
-                                            Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnReserveNowRequest));
-            }
+//                OnReserveNowRequest?.Invoke(startTime,
+//                                            this,
+//                                            Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnReserveNowRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            ReserveNowResponse? response = null;
+//            ReserveNowResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomReserveNowRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomReserveNowRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (ReserveNowResponse.TryParse(Request,
-                                                    sendRequestState.JSONResponse.Payload,
-                                                    out var reserveNowResponse,
-                                                    out var errorResponse) &&
-                    reserveNowResponse is not null)
-                {
-                    response = reserveNowResponse;
-                }
+//                if (ReserveNowResponse.TryParse(Request,
+//                                                    sendRequestState.JSONResponse.Payload,
+//                                                    out var reserveNowResponse,
+//                                                    out var errorResponse) &&
+//                    reserveNowResponse is not null)
+//                {
+//                    response = reserveNowResponse;
+//                }
 
-                response ??= new ReserveNowResponse(Request,
-                                                    Result.Format(errorResponse));
+//                response ??= new ReserveNowResponse(Request,
+//                                                    Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new ReserveNowResponse(Request,
-                                                Result.FromSendRequestState(sendRequestState));
+//            response ??= new ReserveNowResponse(Request,
+//                                                Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnReserveNowResponse event
+//            #region Send OnReserveNowResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnReserveNowResponse?.Invoke(endTime,
-                                             this,
-                                             Request,
-                                             response,
-                                             endTime - startTime);
+//                OnReserveNowResponse?.Invoke(endTime,
+//                                             this,
+//                                             Request,
+//                                             response,
+//                                             endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnReserveNowResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnReserveNowResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region CancelReservation     (Request)
+//        #region CancelReservation     (Request)
 
-        public async Task<CancelReservationResponse> CancelReservation(CancelReservationRequest Request)
-        {
+//        public async Task<CancelReservationResponse> CancelReservation(CancelReservationRequest Request)
+//        {
 
-            #region Send OnCancelReservationRequest event
+//            #region Send OnCancelReservationRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnCancelReservationRequest?.Invoke(startTime,
-                                                   this,
-                                                   Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCancelReservationRequest));
-            }
+//                OnCancelReservationRequest?.Invoke(startTime,
+//                                                   this,
+//                                                   Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCancelReservationRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            CancelReservationResponse? response = null;
+//            CancelReservationResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomCancelReservationRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomCancelReservationRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (CancelReservationResponse.TryParse(Request,
-                                                       sendRequestState.JSONResponse.Payload,
-                                                       out var cancelReservationResponse,
-                                                       out var errorResponse) &&
-                    cancelReservationResponse is not null)
-                {
-                    response = cancelReservationResponse;
-                }
+//                if (CancelReservationResponse.TryParse(Request,
+//                                                       sendRequestState.JSONResponse.Payload,
+//                                                       out var cancelReservationResponse,
+//                                                       out var errorResponse) &&
+//                    cancelReservationResponse is not null)
+//                {
+//                    response = cancelReservationResponse;
+//                }
 
-                response ??= new CancelReservationResponse(Request,
-                                                           Result.Format(errorResponse));
+//                response ??= new CancelReservationResponse(Request,
+//                                                           Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new CancelReservationResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
+//            response ??= new CancelReservationResponse(Request,
+//                                                       Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnCancelReservationResponse event
+//            #region Send OnCancelReservationResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnCancelReservationResponse?.Invoke(endTime,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
+//                OnCancelReservationResponse?.Invoke(endTime,
+//                                                    this,
+//                                                    Request,
+//                                                    response,
+//                                                    endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCancelReservationResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCancelReservationResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region RemoteStartTransaction(Request)
+//        #region RemoteStartTransaction(Request)
 
-        public async Task<RemoteStartTransactionResponse> RemoteStartTransaction(RemoteStartTransactionRequest Request)
-        {
+//        public async Task<RemoteStartTransactionResponse> RemoteStartTransaction(RemoteStartTransactionRequest Request)
+//        {
 
-            #region Send OnRemoteStartTransactionRequest event
+//            #region Send OnRemoteStartTransactionRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnRemoteStartTransactionRequest?.Invoke(startTime,
-                                                        this,
-                                                        Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStartTransactionRequest));
-            }
+//                OnRemoteStartTransactionRequest?.Invoke(startTime,
+//                                                        this,
+//                                                        Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStartTransactionRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            RemoteStartTransactionResponse? response = null;
+//            RemoteStartTransactionResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(
-                                                         CustomRemoteStartTransactionRequestSerializer,
-                                                         CustomChargingProfileSerializer,
-                                                         CustomChargingScheduleSerializer,
-                                                         CustomChargingSchedulePeriodSerializer
-                                                     ),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(
+//                                                         CustomRemoteStartTransactionRequestSerializer,
+//                                                         CustomChargingProfileSerializer,
+//                                                         CustomChargingScheduleSerializer,
+//                                                         CustomChargingSchedulePeriodSerializer
+//                                                     ),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (RemoteStartTransactionResponse.TryParse(Request,
-                                                            sendRequestState.JSONResponse.Payload,
-                                                            out var remoteStartTransactionResponse,
-                                                            out var errorResponse) &&
-                    remoteStartTransactionResponse is not null)
-                {
-                    response = remoteStartTransactionResponse;
-                }
+//                if (RemoteStartTransactionResponse.TryParse(Request,
+//                                                            sendRequestState.JSONResponse.Payload,
+//                                                            out var remoteStartTransactionResponse,
+//                                                            out var errorResponse) &&
+//                    remoteStartTransactionResponse is not null)
+//                {
+//                    response = remoteStartTransactionResponse;
+//                }
 
-                response ??= new RemoteStartTransactionResponse(Request,
-                                                                Result.Format(errorResponse));
+//                response ??= new RemoteStartTransactionResponse(Request,
+//                                                                Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new RemoteStartTransactionResponse(Request,
-                                                            Result.FromSendRequestState(sendRequestState));
+//            response ??= new RemoteStartTransactionResponse(Request,
+//                                                            Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnRemoteStartTransactionResponse event
+//            #region Send OnRemoteStartTransactionResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnRemoteStartTransactionResponse?.Invoke(endTime,
-                                                         this,
-                                                         Request,
-                                                         response,
-                                                         endTime - startTime);
+//                OnRemoteStartTransactionResponse?.Invoke(endTime,
+//                                                         this,
+//                                                         Request,
+//                                                         response,
+//                                                         endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStartTransactionResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStartTransactionResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region RemoteStopTransaction (Request)
+//        #region RemoteStopTransaction (Request)
 
-        public async Task<RemoteStopTransactionResponse> RemoteStopTransaction(RemoteStopTransactionRequest Request)
-        {
+//        public async Task<RemoteStopTransactionResponse> RemoteStopTransaction(RemoteStopTransactionRequest Request)
+//        {
 
-            #region Send OnRemoteStopTransactionRequest event
+//            #region Send OnRemoteStopTransactionRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnRemoteStopTransactionRequest?.Invoke(startTime,
-                                                       this,
-                                                       Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStopTransactionRequest));
-            }
+//                OnRemoteStopTransactionRequest?.Invoke(startTime,
+//                                                       this,
+//                                                       Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStopTransactionRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            RemoteStopTransactionResponse? response = null;
+//            RemoteStopTransactionResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomRemoteStopTransactionRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomRemoteStopTransactionRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (RemoteStopTransactionResponse.TryParse(Request,
-                                                           sendRequestState.JSONResponse.Payload,
-                                                           out var remoteStopTransactionResponse,
-                                                           out var errorResponse) &&
-                    remoteStopTransactionResponse is not null)
-                {
-                    response = remoteStopTransactionResponse;
-                }
+//                if (RemoteStopTransactionResponse.TryParse(Request,
+//                                                           sendRequestState.JSONResponse.Payload,
+//                                                           out var remoteStopTransactionResponse,
+//                                                           out var errorResponse) &&
+//                    remoteStopTransactionResponse is not null)
+//                {
+//                    response = remoteStopTransactionResponse;
+//                }
 
-                response ??= new RemoteStopTransactionResponse(Request,
-                                                               Result.Format(errorResponse));
+//                response ??= new RemoteStopTransactionResponse(Request,
+//                                                               Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new RemoteStopTransactionResponse(Request,
-                                                           Result.FromSendRequestState(sendRequestState));
+//            response ??= new RemoteStopTransactionResponse(Request,
+//                                                           Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnRemoteStopTransactionResponse event
+//            #region Send OnRemoteStopTransactionResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnRemoteStopTransactionResponse?.Invoke(endTime,
-                                                        this,
-                                                        Request,
-                                                        response,
-                                                        endTime - startTime);
+//                OnRemoteStopTransactionResponse?.Invoke(endTime,
+//                                                        this,
+//                                                        Request,
+//                                                        response,
+//                                                        endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStopTransactionResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnRemoteStopTransactionResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region SetChargingProfile    (Request)
+//        #region SetChargingProfile    (Request)
 
-        public async Task<SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request)
-        {
+//        public async Task<SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request)
+//        {
 
-            #region Send OnSetChargingProfileRequest event
+//            #region Send OnSetChargingProfileRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnSetChargingProfileRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSetChargingProfileRequest));
-            }
+//                OnSetChargingProfileRequest?.Invoke(startTime,
+//                                                    this,
+//                                                    Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSetChargingProfileRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            SetChargingProfileResponse? response = null;
+//            SetChargingProfileResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomSetChargingProfileRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomSetChargingProfileRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (SetChargingProfileResponse.TryParse(Request,
-                                                        sendRequestState.JSONResponse.Payload,
-                                                        out var setChargingProfileResponse,
-                                                        out var errorResponse) &&
-                    setChargingProfileResponse is not null)
-                {
-                    response = setChargingProfileResponse;
-                }
+//                if (SetChargingProfileResponse.TryParse(Request,
+//                                                        sendRequestState.JSONResponse.Payload,
+//                                                        out var setChargingProfileResponse,
+//                                                        out var errorResponse) &&
+//                    setChargingProfileResponse is not null)
+//                {
+//                    response = setChargingProfileResponse;
+//                }
 
-                response ??= new SetChargingProfileResponse(Request,
-                                                            Result.Format(errorResponse));
+//                response ??= new SetChargingProfileResponse(Request,
+//                                                            Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new SetChargingProfileResponse(Request,
-                                                        Result.FromSendRequestState(sendRequestState));
+//            response ??= new SetChargingProfileResponse(Request,
+//                                                        Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnSetChargingProfileResponse event
+//            #region Send OnSetChargingProfileResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnSetChargingProfileResponse?.Invoke(endTime,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     endTime - startTime);
+//                OnSetChargingProfileResponse?.Invoke(endTime,
+//                                                     this,
+//                                                     Request,
+//                                                     response,
+//                                                     endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSetChargingProfileResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSetChargingProfileResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region ClearChargingProfile  (Request)
+//        #region ClearChargingProfile  (Request)
 
-        public async Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request)
-        {
+//        public async Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request)
+//        {
 
-            #region Send OnClearChargingProfileRequest event
+//            #region Send OnClearChargingProfileRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnClearChargingProfileRequest?.Invoke(startTime,
-                                                      this,
-                                                      Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearChargingProfileRequest));
-            }
+//                OnClearChargingProfileRequest?.Invoke(startTime,
+//                                                      this,
+//                                                      Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearChargingProfileRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            ClearChargingProfileResponse? response = null;
+//            ClearChargingProfileResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomClearChargingProfileRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomClearChargingProfileRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (ClearChargingProfileResponse.TryParse(Request,
-                                                          sendRequestState.JSONResponse.Payload,
-                                                          out var clearChargingProfileResponse,
-                                                          out var errorResponse) &&
-                    clearChargingProfileResponse is not null)
-                {
-                    response = clearChargingProfileResponse;
-                }
+//                if (ClearChargingProfileResponse.TryParse(Request,
+//                                                          sendRequestState.JSONResponse.Payload,
+//                                                          out var clearChargingProfileResponse,
+//                                                          out var errorResponse) &&
+//                    clearChargingProfileResponse is not null)
+//                {
+//                    response = clearChargingProfileResponse;
+//                }
 
-                response ??= new ClearChargingProfileResponse(Request,
-                                                              Result.Format(errorResponse));
+//                response ??= new ClearChargingProfileResponse(Request,
+//                                                              Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new ClearChargingProfileResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+//            response ??= new ClearChargingProfileResponse(Request,
+//                                                          Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnClearChargingProfileResponse event
+//            #region Send OnClearChargingProfileResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnClearChargingProfileResponse?.Invoke(endTime,
-                                                       this,
-                                                       Request,
-                                                       response,
-                                                       endTime - startTime);
+//                OnClearChargingProfileResponse?.Invoke(endTime,
+//                                                       this,
+//                                                       Request,
+//                                                       response,
+//                                                       endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearChargingProfileResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearChargingProfileResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region GetCompositeSchedule  (Request)
+//        #region GetCompositeSchedule  (Request)
 
 
-        public async Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request)
-        {
+//        public async Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request)
+//        {
 
-            #region Send OnGetCompositeScheduleRequest event
+//            #region Send OnGetCompositeScheduleRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnGetCompositeScheduleRequest?.Invoke(startTime,
-                                                      this,
-                                                      Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetCompositeScheduleRequest));
-            }
+//                OnGetCompositeScheduleRequest?.Invoke(startTime,
+//                                                      this,
+//                                                      Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetCompositeScheduleRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            GetCompositeScheduleResponse? response = null;
+//            GetCompositeScheduleResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomGetCompositeScheduleRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomGetCompositeScheduleRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (GetCompositeScheduleResponse.TryParse(Request,
-                                                          sendRequestState.JSONResponse.Payload,
-                                                          out var getCompositeScheduleResponse,
-                                                          out var errorResponse) &&
-                    getCompositeScheduleResponse is not null)
-                {
-                    response = getCompositeScheduleResponse;
-                }
+//                if (GetCompositeScheduleResponse.TryParse(Request,
+//                                                          sendRequestState.JSONResponse.Payload,
+//                                                          out var getCompositeScheduleResponse,
+//                                                          out var errorResponse) &&
+//                    getCompositeScheduleResponse is not null)
+//                {
+//                    response = getCompositeScheduleResponse;
+//                }
 
-                response ??= new GetCompositeScheduleResponse(Request,
-                                                              Result.Format(errorResponse));
+//                response ??= new GetCompositeScheduleResponse(Request,
+//                                                              Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new GetCompositeScheduleResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+//            response ??= new GetCompositeScheduleResponse(Request,
+//                                                          Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnGetCompositeScheduleResponse event
+//            #region Send OnGetCompositeScheduleResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnGetCompositeScheduleResponse?.Invoke(endTime,
-                                                       this,
-                                                       Request,
-                                                       response,
-                                                       endTime - startTime);
+//                OnGetCompositeScheduleResponse?.Invoke(endTime,
+//                                                       this,
+//                                                       Request,
+//                                                       response,
+//                                                       endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetCompositeScheduleResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetCompositeScheduleResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region UnlockConnector       (Request)
+//        #region UnlockConnector       (Request)
 
-        public async Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request)
-        {
+//        public async Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request)
+//        {
 
-            #region Send OnUnlockConnectorRequest event
+//            #region Send OnUnlockConnectorRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnUnlockConnectorRequest?.Invoke(startTime,
-                                                 this,
-                                                 Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUnlockConnectorRequest));
-            }
+//                OnUnlockConnectorRequest?.Invoke(startTime,
+//                                                 this,
+//                                                 Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUnlockConnectorRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            UnlockConnectorResponse? response = null;
+//            UnlockConnectorResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomUnlockConnectorRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomUnlockConnectorRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (UnlockConnectorResponse.TryParse(Request,
-                                                     sendRequestState.JSONResponse.Payload,
-                                                     out var unlockConnectorResponse,
-                                                     out var errorResponse) &&
-                    unlockConnectorResponse is not null)
-                {
-                    response = unlockConnectorResponse;
-                }
+//                if (UnlockConnectorResponse.TryParse(Request,
+//                                                     sendRequestState.JSONResponse.Payload,
+//                                                     out var unlockConnectorResponse,
+//                                                     out var errorResponse) &&
+//                    unlockConnectorResponse is not null)
+//                {
+//                    response = unlockConnectorResponse;
+//                }
 
-                response ??= new UnlockConnectorResponse(Request,
-                                                         Result.Format(errorResponse));
+//                response ??= new UnlockConnectorResponse(Request,
+//                                                         Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new UnlockConnectorResponse(Request,
-                                                     Result.FromSendRequestState(sendRequestState));
+//            response ??= new UnlockConnectorResponse(Request,
+//                                                     Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnUnlockConnectorResponse event
+//            #region Send OnUnlockConnectorResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnUnlockConnectorResponse?.Invoke(endTime,
-                                                  this,
-                                                  Request,
-                                                  response,
-                                                  endTime - startTime);
+//                OnUnlockConnectorResponse?.Invoke(endTime,
+//                                                  this,
+//                                                  Request,
+//                                                  response,
+//                                                  endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUnlockConnectorResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnUnlockConnectorResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
 
-        #region GetLocalListVersion   (Request)
+//        #region GetLocalListVersion   (Request)
 
-        public async Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
-        {
+//        public async Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request)
+//        {
 
-            #region Send OnGetLocalListVersionRequest event
+//            #region Send OnGetLocalListVersionRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnGetLocalListVersionRequest?.Invoke(startTime,
-                                                     this,
-                                                     Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLocalListVersionRequest));
-            }
+//                OnGetLocalListVersionRequest?.Invoke(startTime,
+//                                                     this,
+//                                                     Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLocalListVersionRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            GetLocalListVersionResponse? response = null;
+//            GetLocalListVersionResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomGetLocalListVersionRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomGetLocalListVersionRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (GetLocalListVersionResponse.TryParse(Request,
-                                                         sendRequestState.JSONResponse.Payload,
-                                                         out var getLocalListVersionResponse,
-                                                         out var errorResponse) &&
-                    getLocalListVersionResponse is not null)
-                {
-                    response = getLocalListVersionResponse;
-                }
+//                if (GetLocalListVersionResponse.TryParse(Request,
+//                                                         sendRequestState.JSONResponse.Payload,
+//                                                         out var getLocalListVersionResponse,
+//                                                         out var errorResponse) &&
+//                    getLocalListVersionResponse is not null)
+//                {
+//                    response = getLocalListVersionResponse;
+//                }
 
-                response ??= new GetLocalListVersionResponse(Request,
-                                                             Result.Format(errorResponse));
+//                response ??= new GetLocalListVersionResponse(Request,
+//                                                             Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new GetLocalListVersionResponse(Request,
-                                                         Result.FromSendRequestState(sendRequestState));
+//            response ??= new GetLocalListVersionResponse(Request,
+//                                                         Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnGetLocalListVersionResponse event
+//            #region Send OnGetLocalListVersionResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnGetLocalListVersionResponse?.Invoke(endTime,
-                                                      this,
-                                                      Request,
-                                                      response,
-                                                      endTime - startTime);
+//                OnGetLocalListVersionResponse?.Invoke(endTime,
+//                                                      this,
+//                                                      Request,
+//                                                      response,
+//                                                      endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLocalListVersionResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLocalListVersionResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region SendLocalList         (Request)
+//        #region SendLocalList         (Request)
 
-        public async Task<SendLocalListResponse> SendLocalList(SendLocalListRequest Request)
-        {
+//        public async Task<SendLocalListResponse> SendLocalList(SendLocalListRequest Request)
+//        {
 
-            #region Send OnSendLocalListRequest event
+//            #region Send OnSendLocalListRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnSendLocalListRequest?.Invoke(startTime,
-                                               this,
-                                               Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSendLocalListRequest));
-            }
+//                OnSendLocalListRequest?.Invoke(startTime,
+//                                               this,
+//                                               Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSendLocalListRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            SendLocalListResponse? response = null;
+//            SendLocalListResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomSendLocalListRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomSendLocalListRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (SendLocalListResponse.TryParse(Request,
-                                                   sendRequestState.JSONResponse.Payload,
-                                                   out var sendLocalListResponse,
-                                                   out var errorResponse) &&
-                    sendLocalListResponse is not null)
-                {
-                    response = sendLocalListResponse;
-                }
+//                if (SendLocalListResponse.TryParse(Request,
+//                                                   sendRequestState.JSONResponse.Payload,
+//                                                   out var sendLocalListResponse,
+//                                                   out var errorResponse) &&
+//                    sendLocalListResponse is not null)
+//                {
+//                    response = sendLocalListResponse;
+//                }
 
-                response ??= new SendLocalListResponse(Request,
-                                                       Result.Format(errorResponse));
+//                response ??= new SendLocalListResponse(Request,
+//                                                       Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new SendLocalListResponse(Request,
-                                                   Result.FromSendRequestState(sendRequestState));
+//            response ??= new SendLocalListResponse(Request,
+//                                                   Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnSendLocalListResponse event
+//            #region Send OnSendLocalListResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnSendLocalListResponse?.Invoke(endTime,
-                                                this,
-                                                Request,
-                                                response,
-                                                endTime - startTime);
+//                OnSendLocalListResponse?.Invoke(endTime,
+//                                                this,
+//                                                Request,
+//                                                response,
+//                                                endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSendLocalListResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSendLocalListResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region ClearCache            (Request)
+//        #region ClearCache            (Request)
 
-        public async Task<ClearCacheResponse> ClearCache(ClearCacheRequest Request)
-        {
+//        public async Task<ClearCacheResponse> ClearCache(ClearCacheRequest Request)
+//        {
 
-            #region Send OnClearCacheRequest event
+//            #region Send OnClearCacheRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnClearCacheRequest?.Invoke(startTime,
-                                            this,
-                                            Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearCacheRequest));
-            }
+//                OnClearCacheRequest?.Invoke(startTime,
+//                                            this,
+//                                            Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearCacheRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            ClearCacheResponse? response = null;
+//            ClearCacheResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomClearCacheRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomClearCacheRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (ClearCacheResponse.TryParse(Request,
-                                                sendRequestState.JSONResponse.Payload,
-                                                out var clearCacheResponse,
-                                                out var errorResponse) &&
-                    clearCacheResponse is not null)
-                {
-                    response = clearCacheResponse;
-                }
+//                if (ClearCacheResponse.TryParse(Request,
+//                                                sendRequestState.JSONResponse.Payload,
+//                                                out var clearCacheResponse,
+//                                                out var errorResponse) &&
+//                    clearCacheResponse is not null)
+//                {
+//                    response = clearCacheResponse;
+//                }
 
-                response ??= new ClearCacheResponse(Request,
-                                                    Result.Format(errorResponse));
+//                response ??= new ClearCacheResponse(Request,
+//                                                    Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new ClearCacheResponse(Request,
-                                                Result.FromSendRequestState(sendRequestState));
+//            response ??= new ClearCacheResponse(Request,
+//                                                Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnClearCacheResponse event
+//            #region Send OnClearCacheResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnClearCacheResponse?.Invoke(endTime,
-                                             this,
-                                             Request,
-                                             response,
-                                             endTime - startTime);
+//                OnClearCacheResponse?.Invoke(endTime,
+//                                             this,
+//                                             Request,
+//                                             response,
+//                                             endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearCacheResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnClearCacheResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
 
 
-        // Security extensions
+//        // Security extensions
 
-        #region CertificateSigned         (Request)
+//        #region CertificateSigned         (Request)
 
-        /// <summary>
-        /// Send the signed certificate to the charge point.
-        /// </summary>
-        /// <param name="Request">A certificate signed request.</param>
-        public async Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request)
-        {
+//        /// <summary>
+//        /// Send the signed certificate to the charge point.
+//        /// </summary>
+//        /// <param name="Request">A certificate signed request.</param>
+//        public async Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request)
+//        {
 
-            #region Send OnCertificateSignedRequest event
+//            #region Send OnCertificateSignedRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnCertificateSignedRequest?.Invoke(startTime,
-                                                   this,
-                                                   Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCertificateSignedRequest));
-            }
+//                OnCertificateSignedRequest?.Invoke(startTime,
+//                                                   this,
+//                                                   Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCertificateSignedRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            CertificateSignedResponse? response = null;
+//            CertificateSignedResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomCertificateSignedRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomCertificateSignedRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (CertificateSignedResponse.TryParse(Request,
-                                                       sendRequestState.JSONResponse.Payload,
-                                                       out var certificateSignedResponse,
-                                                       out var errorResponse) &&
-                    certificateSignedResponse is not null)
-                {
-                    response = certificateSignedResponse;
-                }
+//                if (CertificateSignedResponse.TryParse(Request,
+//                                                       sendRequestState.JSONResponse.Payload,
+//                                                       out var certificateSignedResponse,
+//                                                       out var errorResponse) &&
+//                    certificateSignedResponse is not null)
+//                {
+//                    response = certificateSignedResponse;
+//                }
 
-                response ??= new CertificateSignedResponse(Request,
-                                                           Result.Format(errorResponse));
+//                response ??= new CertificateSignedResponse(Request,
+//                                                           Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new CertificateSignedResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
+//            response ??= new CertificateSignedResponse(Request,
+//                                                       Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnCertificateSignedResponse event
+//            #region Send OnCertificateSignedResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnCertificateSignedResponse?.Invoke(endTime,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
+//                OnCertificateSignedResponse?.Invoke(endTime,
+//                                                    this,
+//                                                    Request,
+//                                                    response,
+//                                                    endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCertificateSignedResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnCertificateSignedResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region DeleteCertificate         (Request)
+//        #region DeleteCertificate         (Request)
 
-        /// <summary>
-        /// Delete the given certificate on the charge point.
-        /// </summary>
-        /// <param name="Request">A delete certificate request.</param>
-        public async Task<DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request)
-        {
+//        /// <summary>
+//        /// Delete the given certificate on the charge point.
+//        /// </summary>
+//        /// <param name="Request">A delete certificate request.</param>
+//        public async Task<DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request)
+//        {
 
-            #region Send OnDeleteCertificateRequest event
+//            #region Send OnDeleteCertificateRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnDeleteCertificateRequest?.Invoke(startTime,
-                                                   this,
-                                                   Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDeleteCertificateRequest));
-            }
+//                OnDeleteCertificateRequest?.Invoke(startTime,
+//                                                   this,
+//                                                   Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDeleteCertificateRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            DeleteCertificateResponse? response = null;
+//            DeleteCertificateResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomDeleteCertificateRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomDeleteCertificateRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (DeleteCertificateResponse.TryParse(Request,
-                                                       sendRequestState.JSONResponse.Payload,
-                                                       out var deleteCertificateResponse,
-                                                       out var errorResponse) &&
-                    deleteCertificateResponse is not null)
-                {
-                    response = deleteCertificateResponse;
-                }
+//                if (DeleteCertificateResponse.TryParse(Request,
+//                                                       sendRequestState.JSONResponse.Payload,
+//                                                       out var deleteCertificateResponse,
+//                                                       out var errorResponse) &&
+//                    deleteCertificateResponse is not null)
+//                {
+//                    response = deleteCertificateResponse;
+//                }
 
-                response ??= new DeleteCertificateResponse(Request,
-                                                           Result.Format(errorResponse));
+//                response ??= new DeleteCertificateResponse(Request,
+//                                                           Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new DeleteCertificateResponse(Request,
-                                                       Result.FromSendRequestState(sendRequestState));
+//            response ??= new DeleteCertificateResponse(Request,
+//                                                       Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnDeleteCertificateResponse event
+//            #region Send OnDeleteCertificateResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnDeleteCertificateResponse?.Invoke(endTime,
-                                                    this,
-                                                    Request,
-                                                    response,
-                                                    endTime - startTime);
+//                OnDeleteCertificateResponse?.Invoke(endTime,
+//                                                    this,
+//                                                    Request,
+//                                                    response,
+//                                                    endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDeleteCertificateResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnDeleteCertificateResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region ExtendedTriggerMessage    (Request)
+//        #region ExtendedTriggerMessage    (Request)
 
-        /// <summary>
-        /// Send an extended trigger message to the charge point.
-        /// </summary>
-        /// <param name="Request">A extended trigger message request.</param>
-        public async Task<ExtendedTriggerMessageResponse> ExtendedTriggerMessage(ExtendedTriggerMessageRequest Request)
-        {
+//        /// <summary>
+//        /// Send an extended trigger message to the charge point.
+//        /// </summary>
+//        /// <param name="Request">A extended trigger message request.</param>
+//        public async Task<ExtendedTriggerMessageResponse> ExtendedTriggerMessage(ExtendedTriggerMessageRequest Request)
+//        {
 
-            #region Send OnExtendedTriggerMessageRequest event
+//            #region Send OnExtendedTriggerMessageRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnExtendedTriggerMessageRequest?.Invoke(startTime,
-                                                        this,
-                                                        Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnExtendedTriggerMessageRequest));
-            }
+//                OnExtendedTriggerMessageRequest?.Invoke(startTime,
+//                                                        this,
+//                                                        Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnExtendedTriggerMessageRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            ExtendedTriggerMessageResponse? response = null;
+//            ExtendedTriggerMessageResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomExtendedTriggerMessageRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomExtendedTriggerMessageRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (ExtendedTriggerMessageResponse.TryParse(Request,
-                                                            sendRequestState.JSONResponse.Payload,
-                                                            out var extendedTriggerMessageResponse,
-                                                            out var errorResponse) &&
-                    extendedTriggerMessageResponse is not null)
-                {
-                    response = extendedTriggerMessageResponse;
-                }
+//                if (ExtendedTriggerMessageResponse.TryParse(Request,
+//                                                            sendRequestState.JSONResponse.Payload,
+//                                                            out var extendedTriggerMessageResponse,
+//                                                            out var errorResponse) &&
+//                    extendedTriggerMessageResponse is not null)
+//                {
+//                    response = extendedTriggerMessageResponse;
+//                }
 
-                response ??= new ExtendedTriggerMessageResponse(Request,
-                                                                Result.Format(errorResponse));
+//                response ??= new ExtendedTriggerMessageResponse(Request,
+//                                                                Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new ExtendedTriggerMessageResponse(Request,
-                                                            Result.FromSendRequestState(sendRequestState));
+//            response ??= new ExtendedTriggerMessageResponse(Request,
+//                                                            Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnExtendedTriggerMessageResponse event
+//            #region Send OnExtendedTriggerMessageResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnExtendedTriggerMessageResponse?.Invoke(endTime,
-                                                         this,
-                                                         Request,
-                                                         response,
-                                                         endTime - startTime);
+//                OnExtendedTriggerMessageResponse?.Invoke(endTime,
+//                                                         this,
+//                                                         Request,
+//                                                         response,
+//                                                         endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnExtendedTriggerMessageResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnExtendedTriggerMessageResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region GetInstalledCertificateIds(Request)
+//        #region GetInstalledCertificateIds(Request)
 
-        /// <summary>
-        /// Retrieve a list of all installed certificates within the charge point.
-        /// </summary>
-        /// <param name="Request">A get installed certificate ids request.</param>
-        public async Task<GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
-        {
+//        /// <summary>
+//        /// Retrieve a list of all installed certificates within the charge point.
+//        /// </summary>
+//        /// <param name="Request">A get installed certificate ids request.</param>
+//        public async Task<GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request)
+//        {
 
-            #region Send OnGetInstalledCertificateIdsRequest event
+//            #region Send OnGetInstalledCertificateIdsRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnGetInstalledCertificateIdsRequest?.Invoke(startTime,
-                                                            this,
-                                                            Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetInstalledCertificateIdsRequest));
-            }
+//                OnGetInstalledCertificateIdsRequest?.Invoke(startTime,
+//                                                            this,
+//                                                            Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetInstalledCertificateIdsRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            GetInstalledCertificateIdsResponse? response = null;
+//            GetInstalledCertificateIdsResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomGetInstalledCertificateIdsRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomGetInstalledCertificateIdsRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (GetInstalledCertificateIdsResponse.TryParse(Request,
-                                                                sendRequestState.JSONResponse.Payload,
-                                                                out var getInstalledCertificateIdsResponse,
-                                                                out var errorResponse) &&
-                    getInstalledCertificateIdsResponse is not null)
-                {
-                    response = getInstalledCertificateIdsResponse;
-                }
+//                if (GetInstalledCertificateIdsResponse.TryParse(Request,
+//                                                                sendRequestState.JSONResponse.Payload,
+//                                                                out var getInstalledCertificateIdsResponse,
+//                                                                out var errorResponse) &&
+//                    getInstalledCertificateIdsResponse is not null)
+//                {
+//                    response = getInstalledCertificateIdsResponse;
+//                }
 
-                response ??= new GetInstalledCertificateIdsResponse(Request,
-                                                                    Result.Format(errorResponse));
+//                response ??= new GetInstalledCertificateIdsResponse(Request,
+//                                                                    Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new GetInstalledCertificateIdsResponse(Request,
-                                                                Result.FromSendRequestState(sendRequestState));
+//            response ??= new GetInstalledCertificateIdsResponse(Request,
+//                                                                Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnGetInstalledCertificateIdsResponse event
+//            #region Send OnGetInstalledCertificateIdsResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnGetInstalledCertificateIdsResponse?.Invoke(endTime,
-                                                             this,
-                                                             Request,
-                                                             response,
-                                                             endTime - startTime);
+//                OnGetInstalledCertificateIdsResponse?.Invoke(endTime,
+//                                                             this,
+//                                                             Request,
+//                                                             response,
+//                                                             endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetInstalledCertificateIdsResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetInstalledCertificateIdsResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region GetLog                    (Request)
+//        #region GetLog                    (Request)
 
-        /// <summary>
-        /// Retrieve log files from the charge point.
-        /// </summary>
-        /// <param name="Request">A get log request.</param>
-        public async Task<GetLogResponse> GetLog(GetLogRequest Request)
-        {
+//        /// <summary>
+//        /// Retrieve log files from the charge point.
+//        /// </summary>
+//        /// <param name="Request">A get log request.</param>
+//        public async Task<GetLogResponse> GetLog(GetLogRequest Request)
+//        {
 
-            #region Send OnGetLogRequest event
+//            #region Send OnGetLogRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnGetLogRequest?.Invoke(startTime,
-                                        this,
-                                        Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLogRequest));
-            }
+//                OnGetLogRequest?.Invoke(startTime,
+//                                        this,
+//                                        Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLogRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            GetLogResponse? response = null;
+//            GetLogResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomGetLogRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomGetLogRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (GetLogResponse.TryParse(Request,
-                                            sendRequestState.JSONResponse.Payload,
-                                            out var getLogResponse,
-                                            out var errorResponse) &&
-                    getLogResponse is not null)
-                {
-                    response = getLogResponse;
-                }
+//                if (GetLogResponse.TryParse(Request,
+//                                            sendRequestState.JSONResponse.Payload,
+//                                            out var getLogResponse,
+//                                            out var errorResponse) &&
+//                    getLogResponse is not null)
+//                {
+//                    response = getLogResponse;
+//                }
 
-                response ??= new GetLogResponse(Request,
-                                                Result.Format(errorResponse));
+//                response ??= new GetLogResponse(Request,
+//                                                Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new GetLogResponse(Request,
-                                            Result.FromSendRequestState(sendRequestState));
+//            response ??= new GetLogResponse(Request,
+//                                            Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnGetLogResponse event
+//            #region Send OnGetLogResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnGetLogResponse?.Invoke(endTime,
-                                         this,
-                                         Request,
-                                         response,
-                                         endTime - startTime);
+//                OnGetLogResponse?.Invoke(endTime,
+//                                         this,
+//                                         Request,
+//                                         response,
+//                                         endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLogResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnGetLogResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region InstallCertificate        (Request)
+//        #region InstallCertificate        (Request)
 
-        /// <summary>
-        /// Install the given certificate within the charge point.
-        /// </summary>
-        /// <param name="Request">An install certificate request.</param>
-        public async Task<InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request)
-        {
+//        /// <summary>
+//        /// Install the given certificate within the charge point.
+//        /// </summary>
+//        /// <param name="Request">An install certificate request.</param>
+//        public async Task<InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request)
+//        {
 
-            #region Send OnInstallCertificateRequest event
+//            #region Send OnInstallCertificateRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnInstallCertificateRequest?.Invoke(startTime,
-                                                    this,
-                                                    Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnInstallCertificateRequest));
-            }
+//                OnInstallCertificateRequest?.Invoke(startTime,
+//                                                    this,
+//                                                    Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnInstallCertificateRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            InstallCertificateResponse? response = null;
+//            InstallCertificateResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomInstallCertificateRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomInstallCertificateRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (InstallCertificateResponse.TryParse(Request,
-                                                        sendRequestState.JSONResponse.Payload,
-                                                        out var installCertificateResponse,
-                                                        out var errorResponse) &&
-                    installCertificateResponse is not null)
-                {
-                    response = installCertificateResponse;
-                }
+//                if (InstallCertificateResponse.TryParse(Request,
+//                                                        sendRequestState.JSONResponse.Payload,
+//                                                        out var installCertificateResponse,
+//                                                        out var errorResponse) &&
+//                    installCertificateResponse is not null)
+//                {
+//                    response = installCertificateResponse;
+//                }
 
-                response ??= new InstallCertificateResponse(Request,
-                                                            Result.Format(errorResponse));
+//                response ??= new InstallCertificateResponse(Request,
+//                                                            Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new InstallCertificateResponse(Request,
-                                                        Result.FromSendRequestState(sendRequestState));
+//            response ??= new InstallCertificateResponse(Request,
+//                                                        Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnInstallCertificateResponse event
+//            #region Send OnInstallCertificateResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnInstallCertificateResponse?.Invoke(endTime,
-                                                     this,
-                                                     Request,
-                                                     response,
-                                                     endTime - startTime);
+//                OnInstallCertificateResponse?.Invoke(endTime,
+//                                                     this,
+//                                                     Request,
+//                                                     response,
+//                                                     endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnInstallCertificateResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnInstallCertificateResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region SignedUpdateFirmware      (Request)
+//        #region SignedUpdateFirmware      (Request)
 
-        /// <summary>
-        /// Update the firmware of the charge point.
-        /// </summary>
-        /// <param name="Request">A signed update firmware request.</param>
-        public async Task<SignedUpdateFirmwareResponse> SignedUpdateFirmware(SignedUpdateFirmwareRequest Request)
-        {
+//        /// <summary>
+//        /// Update the firmware of the charge point.
+//        /// </summary>
+//        /// <param name="Request">A signed update firmware request.</param>
+//        public async Task<SignedUpdateFirmwareResponse> SignedUpdateFirmware(SignedUpdateFirmwareRequest Request)
+//        {
 
-            #region Send OnSignedUpdateFirmwareRequest event
+//            #region Send OnSignedUpdateFirmwareRequest event
 
-            var startTime = Timestamp.Now;
+//            var startTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnSignedUpdateFirmwareRequest?.Invoke(startTime,
-                                                      this,
-                                                      Request);
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignedUpdateFirmwareRequest));
-            }
+//                OnSignedUpdateFirmwareRequest?.Invoke(startTime,
+//                                                      this,
+//                                                      Request);
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignedUpdateFirmwareRequest));
+//            }
 
-            #endregion
+//            #endregion
 
 
-            SignedUpdateFirmwareResponse? response = null;
+//            SignedUpdateFirmwareResponse? response = null;
 
-            var sendRequestState = await SendRequest(Request.RequestId,
-                                                     Request.ChargeBoxId,
-                                                     Request.Action,
-                                                     Request.ToJSON(CustomSignedUpdateFirmwareRequestSerializer),
-                                                     Request.RequestTimeout);
+//            var sendRequestState = await SendRequest(Request.RequestId,
+//                                                     Request.ChargeBoxId,
+//                                                     Request.Action,
+//                                                     Request.ToJSON(CustomSignedUpdateFirmwareRequestSerializer),
+//                                                     Request.RequestTimeout);
 
-            if (sendRequestState.NoErrors &&
-                sendRequestState.JSONResponse is not null)
-            {
+//            if (sendRequestState.NoErrors &&
+//                sendRequestState.JSONResponse is not null)
+//            {
 
-                if (SignedUpdateFirmwareResponse.TryParse(Request,
-                                                          sendRequestState.JSONResponse.Payload,
-                                                          out var signedUpdateFirmwareResponse,
-                                                          out var errorResponse) &&
-                    signedUpdateFirmwareResponse is not null)
-                {
-                    response = signedUpdateFirmwareResponse;
-                }
+//                if (SignedUpdateFirmwareResponse.TryParse(Request,
+//                                                          sendRequestState.JSONResponse.Payload,
+//                                                          out var signedUpdateFirmwareResponse,
+//                                                          out var errorResponse) &&
+//                    signedUpdateFirmwareResponse is not null)
+//                {
+//                    response = signedUpdateFirmwareResponse;
+//                }
 
-                response ??= new SignedUpdateFirmwareResponse(Request,
-                                                              Result.Format(errorResponse));
+//                response ??= new SignedUpdateFirmwareResponse(Request,
+//                                                              Result.Format(errorResponse));
 
-            }
+//            }
 
-            response ??= new SignedUpdateFirmwareResponse(Request,
-                                                          Result.FromSendRequestState(sendRequestState));
+//            response ??= new SignedUpdateFirmwareResponse(Request,
+//                                                          Result.FromSendRequestState(sendRequestState));
 
 
-            #region Send OnSignedUpdateFirmwareResponse event
+//            #region Send OnSignedUpdateFirmwareResponse event
 
-            var endTime = Timestamp.Now;
+//            var endTime = Timestamp.Now;
 
-            try
-            {
+//            try
+//            {
 
-                OnSignedUpdateFirmwareResponse?.Invoke(endTime,
-                                                       this,
-                                                       Request,
-                                                       response,
-                                                       endTime - startTime);
+//                OnSignedUpdateFirmwareResponse?.Invoke(endTime,
+//                                                       this,
+//                                                       Request,
+//                                                       response,
+//                                                       endTime - startTime);
 
-            }
-            catch (Exception e)
-            {
-                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignedUpdateFirmwareResponse));
-            }
+//            }
+//            catch (Exception e)
+//            {
+//                DebugX.Log(e, nameof(CentralSystemWSServer_old) + "." + nameof(OnSignedUpdateFirmwareResponse));
+//            }
 
-            #endregion
+//            #endregion
 
-            return response;
+//            return response;
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
 
-    }
+//    }
 
-}
+//}

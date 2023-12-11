@@ -43,7 +43,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
     public partial class CentralSystemWSServer : ACSMSWSServer,
-                                                 ICSMSChannel
+                                                 ICSMSChannel,
+                                                 ICentralSystemServer
     {
 
         #region Data
@@ -75,6 +76,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         String IEventSender.Id
             => HTTPServiceName;
 
+        public IEnumerable<ChargeBox_Id> ChargeBoxIds
+            => throw new NotImplementedException();
+
         #endregion
 
         #region Events
@@ -83,7 +87,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region Custom JSON serializer delegates
 
-        public CustomJObjectSerializerDelegate<IdTagInfo>?  CustomIdTagInfoSerializer    { get; set; }
+        public CustomJObjectSerializerDelegate<CertificateHashData>?        CustomCertificateHashDataSerializer                     { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingProfile>?            CustomChargingProfileSerializer                         { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedule>?           CustomChargingScheduleSerializer                        { get; set; }
+        public CustomJObjectSerializerDelegate<ChargingSchedulePeriod>?     CustomChargingSchedulePeriodSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<FirmwareImage>?              CustomFirmwareImageSerializer                           { get; set; }
+        public CustomJObjectSerializerDelegate<AuthorizationData>?          CustomAuthorizationDataSerializer                       { get; set; }
+        public CustomJObjectSerializerDelegate<IdTagInfo>?                  CustomIdTagInfoSerializer                               { get; set; }
+        public CustomJObjectSerializerDelegate<LogParameters>?              CustomLogParametersSerializer                           { get; set; }
+
+
+        public CustomJObjectSerializerDelegate<SignaturePolicy>?            CustomSignaturePolicySerializer                         { get; set; }
 
 
         #endregion

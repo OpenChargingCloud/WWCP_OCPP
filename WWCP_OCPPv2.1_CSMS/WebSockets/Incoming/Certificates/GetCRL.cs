@@ -20,12 +20,11 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -52,27 +51,27 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a GetCRL WebSocket request was received.
         /// </summary>
-        public event OnOCPPJSONRequestLogDelegate?                   OnGetCRLWSRequest;
+        public event OnOCPPJSONRequestLogDelegate?                OnGetCRLWSRequest;
 
         /// <summary>
         /// An event sent whenever a GetCRL request was received.
         /// </summary>
-        public event OnGetCRLRequestDelegate?                      OnGetCRLRequest;
+        public event OnGetCRLRequestDelegate?                     OnGetCRLRequest;
 
         /// <summary>
         /// An event sent whenever a GetCRL was received.
         /// </summary>
-        public event OnGetCRLDelegate?                             OnGetCRL;
+        public event OnGetCRLDelegate?                            OnGetCRL;
 
         /// <summary>
         /// An event sent whenever a response to a GetCRL was sent.
         /// </summary>
-        public event OnGetCRLResponseDelegate?                     OnGetCRLResponse;
+        public event OnGetCRLResponseDelegate?                    OnGetCRLResponse;
 
         /// <summary>
         /// An event sent whenever a WebSocket response to a GetCRL was sent.
         /// </summary>
-        public event OnOCPPJSONRequestJSONResponseLogDelegate?   OnGetCRLWSResponse;
+        public event OnOCPPJSONRequestJSONResponseLogDelegate?    OnGetCRLWSResponse;
 
         #endregion
 
@@ -139,6 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnGetCRLRequest?.Invoke(Timestamp.Now,
                                                 this,
+                                                Connection,
                                                 request);
 
                     }
@@ -157,6 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                             GetInvocationList()?.
                                             SafeSelect(subscriber => (subscriber as OnGetCRLDelegate)?.Invoke(Timestamp.Now,
                                                                                                               this,
+                                                                                                              Connection,
                                                                                                               request,
                                                                                                               CancellationToken)).
                                             ToArray();
@@ -178,6 +179,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
                         OnGetCRLResponse?.Invoke(Timestamp.Now,
                                                  this,
+                                                 Connection,
                                                  request,
                                                  response,
                                                  response.Runtime);
