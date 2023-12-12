@@ -25,643 +25,643 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// The common interface of all CSMS clients.
+    /// The common interface of all OCPP v2.1 CSMS clients.
     /// </summary>
-    public interface ICSMSClientEvents
+    public interface ICSMSClientEvents : OCPP.ICSMSClientEvents
     {
 
         #region Reset                          (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a Reset request will be sent to the CSMS.
+        /// An event fired whenever a Reset request will be sent to a charging station.
         /// </summary>
-        event OnResetRequestDelegate?   OnResetRequest;
+        event OnResetRequestDelegate?                           OnResetRequest;
 
         /// <summary>
         /// An event fired whenever a response to a Reset request was received.
         /// </summary>
-        event OnResetResponseDelegate?  OnResetResponse;
+        event OnResetResponseDelegate?                          OnResetResponse;
 
         #endregion
 
         #region UpdateFirmware                 (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever an UpdateFirmware request will be sent to the CSMS.
+        /// An event fired whenever an UpdateFirmware request will be sent to a charging station.
         /// </summary>
-        event OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+        event OnUpdateFirmwareRequestDelegate?                  OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event fired whenever a response to an UpdateFirmware request was received.
         /// </summary>
-        event OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+        event OnUpdateFirmwareResponseDelegate?                 OnUpdateFirmwareResponse;
 
         #endregion
 
         #region PublishFirmware                (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a PublishFirmware request will be sent to the CSMS.
+        /// An event fired whenever a PublishFirmware request will be sent to a charging station.
         /// </summary>
-        event OnPublishFirmwareRequestDelegate?   OnPublishFirmwareRequest;
+        event OnPublishFirmwareRequestDelegate?                 OnPublishFirmwareRequest;
 
         /// <summary>
         /// An event fired whenever a response to a PublishFirmware request was received.
         /// </summary>
-        event OnPublishFirmwareResponseDelegate?  OnPublishFirmwareResponse;
+        event OnPublishFirmwareResponseDelegate?                OnPublishFirmwareResponse;
 
         #endregion
 
         #region UnpublishFirmware              (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever an UnpublishFirmware request will be sent to the CSMS.
+        /// An event fired whenever an UnpublishFirmware request will be sent to a charging station.
         /// </summary>
-        event OnUnpublishFirmwareRequestDelegate?   OnUnpublishFirmwareRequest;
+        event OnUnpublishFirmwareRequestDelegate?               OnUnpublishFirmwareRequest;
 
         /// <summary>
         /// An event fired whenever a response to an UnpublishFirmware request was received.
         /// </summary>
-        event OnUnpublishFirmwareResponseDelegate?  OnUnpublishFirmwareResponse;
+        event OnUnpublishFirmwareResponseDelegate?              OnUnpublishFirmwareResponse;
 
         #endregion
 
         #region GetBaseReport                  (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetBaseReport request will be sent to the CSMS.
+        /// An event fired whenever a GetBaseReport request will be sent to a charging station.
         /// </summary>
-        event OnGetBaseReportRequestDelegate?   OnGetBaseReportRequest;
+        event OnGetBaseReportRequestDelegate?                   OnGetBaseReportRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetBaseReport request was received.
         /// </summary>
-        event OnGetBaseReportResponseDelegate?  OnGetBaseReportResponse;
+        event OnGetBaseReportResponseDelegate?                  OnGetBaseReportResponse;
 
         #endregion
 
-        #region GetReport
+        #region GetReport                      (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetReport request will be sent to the CSMS.
+        /// An event fired whenever a GetReport request will be sent to a charging station.
         /// </summary>
-        event OnGetReportRequestDelegate?   OnGetReportRequest;
+        event OnGetReportRequestDelegate?                       OnGetReportRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetReport request was received.
         /// </summary>
-        event OnGetReportResponseDelegate?  OnGetReportResponse;
+        event OnGetReportResponseDelegate?                      OnGetReportResponse;
 
         #endregion
 
-        #region GetLog
+        #region GetLog                         (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetLog request will be sent to the CSMS.
+        /// An event fired whenever a GetLog request will be sent to a charging station.
         /// </summary>
-        event OnGetLogRequestDelegate?   OnGetLogRequest;
+        event OnGetLogRequestDelegate?                          OnGetLogRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetLog request was received.
         /// </summary>
-        event OnGetLogResponseDelegate?  OnGetLogResponse;
+        event OnGetLogResponseDelegate?                         OnGetLogResponse;
 
         #endregion
 
-        #region SetVariables
+        #region SetVariables                   (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SetVariables request will be sent to the CSMS.
+        /// An event fired whenever a SetVariables request will be sent to a charging station.
         /// </summary>
-        event OnSetVariablesRequestDelegate?   OnSetVariablesRequest;
+        event OnSetVariablesRequestDelegate?                    OnSetVariablesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetVariables request was received.
         /// </summary>
-        event OnSetVariablesResponseDelegate?  OnSetVariablesResponse;
+        event OnSetVariablesResponseDelegate?                   OnSetVariablesResponse;
 
         #endregion
 
-        #region GetVariables
+        #region GetVariables                   (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetVariables request will be sent to the CSMS.
+        /// An event fired whenever a GetVariables request will be sent to a charging station.
         /// </summary>
-        event OnGetVariablesRequestDelegate?   OnGetVariablesRequest;
+        event OnGetVariablesRequestDelegate?                    OnGetVariablesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetVariables request was received.
         /// </summary>
-        event OnGetVariablesResponseDelegate?  OnGetVariablesResponse;
+        event OnGetVariablesResponseDelegate?                   OnGetVariablesResponse;
 
         #endregion
 
-        #region SetMonitoringBase
+        #region SetMonitoringBase              (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SetMonitoringBase request will be sent to the CSMS.
+        /// An event fired whenever a SetMonitoringBase request will be sent to a charging station.
         /// </summary>
-        event OnSetMonitoringBaseRequestDelegate?   OnSetMonitoringBaseRequest;
+        event OnSetMonitoringBaseRequestDelegate?               OnSetMonitoringBaseRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetMonitoringBase request was received.
         /// </summary>
-        event OnSetMonitoringBaseResponseDelegate?  OnSetMonitoringBaseResponse;
+        event OnSetMonitoringBaseResponseDelegate?              OnSetMonitoringBaseResponse;
 
         #endregion
 
-        #region GetMonitoringReport
+        #region GetMonitoringReport            (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetMonitoringReport request will be sent to the CSMS.
+        /// An event fired whenever a GetMonitoringReport request will be sent to a charging station.
         /// </summary>
-        event OnGetMonitoringReportRequestDelegate?   OnGetMonitoringReportRequest;
+        event OnGetMonitoringReportRequestDelegate?             OnGetMonitoringReportRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetMonitoringReport request was received.
         /// </summary>
-        event OnGetMonitoringReportResponseDelegate?  OnGetMonitoringReportResponse;
+        event OnGetMonitoringReportResponseDelegate?            OnGetMonitoringReportResponse;
 
         #endregion
 
-        #region SetMonitoringLevel
+        #region SetMonitoringLevel             (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SetMonitoringLevel request will be sent to the CSMS.
+        /// An event fired whenever a SetMonitoringLevel request will be sent to a charging station.
         /// </summary>
-        event OnSetMonitoringLevelRequestDelegate?   OnSetMonitoringLevelRequest;
+        event OnSetMonitoringLevelRequestDelegate?              OnSetMonitoringLevelRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetMonitoringLevel request was received.
         /// </summary>
-        event OnSetMonitoringLevelResponseDelegate?  OnSetMonitoringLevelResponse;
+        event OnSetMonitoringLevelResponseDelegate?             OnSetMonitoringLevelResponse;
 
         #endregion
 
-        #region SetVariableMonitoring
+        #region SetVariableMonitoring          (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SetVariableMonitoring request will be sent to the CSMS.
+        /// An event fired whenever a SetVariableMonitoring request will be sent to a charging station.
         /// </summary>
-        event OnSetVariableMonitoringRequestDelegate?   OnSetVariableMonitoringRequest;
+        event OnSetVariableMonitoringRequestDelegate?           OnSetVariableMonitoringRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetVariableMonitoring request was received.
         /// </summary>
-        event OnSetVariableMonitoringResponseDelegate?  OnSetVariableMonitoringResponse;
+        event OnSetVariableMonitoringResponseDelegate?          OnSetVariableMonitoringResponse;
 
         #endregion
 
-        #region ClearVariableMonitoring
+        #region ClearVariableMonitoring        (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ClearVariableMonitoring request will be sent to the CSMS.
+        /// An event fired whenever a ClearVariableMonitoring request will be sent to a charging station.
         /// </summary>
-        event OnClearVariableMonitoringRequestDelegate?   OnClearVariableMonitoringRequest;
+        event OnClearVariableMonitoringRequestDelegate?         OnClearVariableMonitoringRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ClearVariableMonitoring request was received.
         /// </summary>
-        event OnClearVariableMonitoringResponseDelegate?  OnClearVariableMonitoringResponse;
+        event OnClearVariableMonitoringResponseDelegate?        OnClearVariableMonitoringResponse;
 
         #endregion
 
-        #region SetNetworkProfile
+        #region SetNetworkProfile              (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SetNetworkProfile request will be sent to the CSMS.
+        /// An event fired whenever a SetNetworkProfile request will be sent to a charging station.
         /// </summary>
-        event OnSetNetworkProfileRequestDelegate?   OnSetNetworkProfileRequest;
+        event OnSetNetworkProfileRequestDelegate?               OnSetNetworkProfileRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetNetworkProfile request was received.
         /// </summary>
-        event OnSetNetworkProfileResponseDelegate?  OnSetNetworkProfileResponse;
+        event OnSetNetworkProfileResponseDelegate?              OnSetNetworkProfileResponse;
 
         #endregion
 
-        #region ChangeAvailability
+        #region ChangeAvailability             (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ChangeAvailability request will be sent to the CSMS.
+        /// An event fired whenever a ChangeAvailability request will be sent to a charging station.
         /// </summary>
-        event OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+        event OnChangeAvailabilityRequestDelegate?              OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ChangeAvailability request was received.
         /// </summary>
-        event OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+        event OnChangeAvailabilityResponseDelegate?             OnChangeAvailabilityResponse;
 
         #endregion
 
-        #region TriggerMessage
+        #region TriggerMessage                 (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a TriggerMessage request will be sent to the CSMS.
+        /// An event fired whenever a TriggerMessage request will be sent to a charging station.
         /// </summary>
-        event OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+        event OnTriggerMessageRequestDelegate?                  OnTriggerMessageRequest;
 
         /// <summary>
         /// An event fired whenever a response to a TriggerMessage request was received.
         /// </summary>
-        event OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+        event OnTriggerMessageResponseDelegate?                 OnTriggerMessageResponse;
 
         #endregion
 
-        #region DataTransfer
+        #region DataTransfer                   (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a DataTransfer request will be sent to the CSMS.
+        /// An event fired whenever a DataTransfer request will be sent to a charging station.
         /// </summary>
-        event OnDataTransferRequestDelegate?   OnDataTransferRequest;
+        event OnDataTransferRequestDelegate?                    OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a DataTransfer request was received.
         /// </summary>
-        event OnDataTransferResponseDelegate?  OnDataTransferResponse;
+        event OnDataTransferResponseDelegate?                   OnDataTransferResponse;
 
         #endregion
 
 
-        #region SendSignedCertificate
+        #region CertificateSigned              (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SignedCertificate request will be sent to the CSMS.
+        /// An event fired whenever a SignedCertificate request will be sent to a charging station.
         /// </summary>
-        event OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+        event OnCertificateSignedRequestDelegate?               OnCertificateSignedRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SignedCertificate request was received.
         /// </summary>
-        event OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+        event OnCertificateSignedResponseDelegate?              OnCertificateSignedResponse;
 
         #endregion
 
-        #region InstallCertificate
+        #region InstallCertificate             (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever an InstallCertificate request will be sent to the CSMS.
+        /// An event fired whenever an InstallCertificate request will be sent to a charging station.
         /// </summary>
-        event OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+        event OnInstallCertificateRequestDelegate?              OnInstallCertificateRequest;
 
         /// <summary>
         /// An event fired whenever a response to an InstallCertificate request was received.
         /// </summary>
-        event OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+        event OnInstallCertificateResponseDelegate?             OnInstallCertificateResponse;
 
         #endregion
 
-        #region GetInstalledCertificateIds
+        #region GetInstalledCertificateIds     (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetInstalledCertificateIds request will be sent to the CSMS.
+        /// An event fired whenever a GetInstalledCertificateIds request will be sent to a charging station.
         /// </summary>
-        event OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+        event OnGetInstalledCertificateIdsRequestDelegate?      OnGetInstalledCertificateIdsRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetInstalledCertificateIds request was received.
         /// </summary>
-        event OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+        event OnGetInstalledCertificateIdsResponseDelegate?     OnGetInstalledCertificateIdsResponse;
 
         #endregion
 
-        #region DeleteCertificate
+        #region DeleteCertificate              (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a DeleteCertificate request will be sent to the CSMS.
+        /// An event fired whenever a DeleteCertificate request will be sent to a charging station.
         /// </summary>
-        event OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+        event OnDeleteCertificateRequestDelegate?               OnDeleteCertificateRequest;
 
         /// <summary>
         /// An event fired whenever a response to a DeleteCertificate request was received.
         /// </summary>
-        event OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+        event OnDeleteCertificateResponseDelegate?              OnDeleteCertificateResponse;
 
         #endregion
 
-        #region NotifyCRL
+        #region NotifyCRL                      (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a NotifyCRL request will be sent to the CSMS.
+        /// An event fired whenever a NotifyCRL request will be sent to a charging station.
         /// </summary>
-        event OnNotifyCRLRequestDelegate?   OnNotifyCRLRequest;
+        event OnNotifyCRLRequestDelegate?                       OnNotifyCRLRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyCRL request was received.
         /// </summary>
-        event OnNotifyCRLResponseDelegate?  OnNotifyCRLResponse;
+        event OnNotifyCRLResponseDelegate?                      OnNotifyCRLResponse;
 
         #endregion
 
 
-        #region GetLocalListVersion
+        #region GetLocalListVersion            (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetLocalListVersion request will be sent to the CSMS.
+        /// An event fired whenever a GetLocalListVersion request will be sent to a charging station.
         /// </summary>
-        event OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+        event OnGetLocalListVersionRequestDelegate?             OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetLocalListVersion request was received.
         /// </summary>
-        event OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+        event OnGetLocalListVersionResponseDelegate?            OnGetLocalListVersionResponse;
 
         #endregion
 
-        #region SendLocalList
+        #region SendLocalList                  (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SendLocalList request will be sent to the CSMS.
+        /// An event fired whenever a SendLocalList request will be sent to a charging station.
         /// </summary>
-        event OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+        event OnSendLocalListRequestDelegate?                   OnSendLocalListRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SendLocalList request was received.
         /// </summary>
-        event OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+        event OnSendLocalListResponseDelegate?                  OnSendLocalListResponse;
 
         #endregion
 
-        #region ClearCache
+        #region ClearCache                     (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ClearCache request will be sent to the CSMS.
+        /// An event fired whenever a ClearCache request will be sent to a charging station.
         /// </summary>
-        event OnClearCacheRequestDelegate?   OnClearCacheRequest;
+        event OnClearCacheRequestDelegate?                      OnClearCacheRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ClearCache request was received.
         /// </summary>
-        event OnClearCacheResponseDelegate?  OnClearCacheResponse;
+        event OnClearCacheResponseDelegate?                     OnClearCacheResponse;
 
         #endregion
 
 
-        #region ReserveNow
+        #region ReserveNow                     (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ReserveNow request will be sent to the CSMS.
+        /// An event fired whenever a ReserveNow request will be sent to a charging station.
         /// </summary>
-        event OnReserveNowRequestDelegate?   OnReserveNowRequest;
+        event OnReserveNowRequestDelegate?                      OnReserveNowRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ReserveNow request was received.
         /// </summary>
-        event OnReserveNowResponseDelegate?  OnReserveNowResponse;
+        event OnReserveNowResponseDelegate?                     OnReserveNowResponse;
 
         #endregion
 
-        #region CancelReservation
+        #region CancelReservation              (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a CancelReservation request will be sent to the CSMS.
+        /// An event fired whenever a CancelReservation request will be sent to a charging station.
         /// </summary>
-        event OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+        event OnCancelReservationRequestDelegate?               OnCancelReservationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a CancelReservation request was received.
         /// </summary>
-        event OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+        event OnCancelReservationResponseDelegate?              OnCancelReservationResponse;
 
         #endregion
 
-        #region StartCharging
+        #region RequestStartTransaction        (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a RequestStartTransaction request will be sent to the CSMS.
+        /// An event fired whenever a RequestStartTransaction request will be sent to a charging station.
         /// </summary>
-        event OnRequestStartTransactionRequestDelegate?   OnRequestStartTransactionRequest;
+        event OnRequestStartTransactionRequestDelegate?         OnRequestStartTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a response to a RequestStartTransaction request was received.
         /// </summary>
-        event OnRequestStartTransactionResponseDelegate?  OnRequestStartTransactionResponse;
+        event OnRequestStartTransactionResponseDelegate?        OnRequestStartTransactionResponse;
 
         #endregion
 
-        #region StopCharging
+        #region RequestStopTransaction         (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a RequestStopTransaction request will be sent to the CSMS.
+        /// An event fired whenever a RequestStopTransaction request will be sent to a charging station.
         /// </summary>
-        event OnRequestStopTransactionRequestDelegate?   OnRequestStopTransactionRequest;
+        event OnRequestStopTransactionRequestDelegate?          OnRequestStopTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a response to a RequestStopTransaction request was received.
         /// </summary>
-        event OnRequestStopTransactionResponseDelegate?  OnRequestStopTransactionResponse;
+        event OnRequestStopTransactionResponseDelegate?         OnRequestStopTransactionResponse;
 
         #endregion
 
-        #region GetTransactionStatus
+        #region GetTransactionStatus           (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetTransactionStatus request will be sent to the CSMS.
+        /// An event fired whenever a GetTransactionStatus request will be sent to a charging station.
         /// </summary>
-        event OnGetTransactionStatusRequestDelegate?   OnGetTransactionStatusRequest;
+        event OnGetTransactionStatusRequestDelegate?            OnGetTransactionStatusRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetTransactionStatus request was received.
         /// </summary>
-        event OnGetTransactionStatusResponseDelegate?  OnGetTransactionStatusResponse;
+        event OnGetTransactionStatusResponseDelegate?           OnGetTransactionStatusResponse;
 
         #endregion
 
-        #region SetChargingProfile
+        #region SetChargingProfile             (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SetChargingProfile request will be sent to the CSMS.
+        /// An event fired whenever a SetChargingProfile request will be sent to a charging station.
         /// </summary>
-        event OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+        event OnSetChargingProfileRequestDelegate?              OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetChargingProfile request was received.
         /// </summary>
-        event OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+        event OnSetChargingProfileResponseDelegate?             OnSetChargingProfileResponse;
 
         #endregion
 
-        #region GetChargingProfiles
+        #region GetChargingProfiles            (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetChargingProfiles request will be sent to the CSMS.
+        /// An event fired whenever a GetChargingProfiles request will be sent to a charging station.
         /// </summary>
-        event OnGetChargingProfilesRequestDelegate?   OnGetChargingProfilesRequest;
+        event OnGetChargingProfilesRequestDelegate?             OnGetChargingProfilesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetChargingProfiles request was received.
         /// </summary>
-        event OnGetChargingProfilesResponseDelegate?  OnGetChargingProfilesResponse;
+        event OnGetChargingProfilesResponseDelegate?            OnGetChargingProfilesResponse;
 
         #endregion
 
-        #region ClearChargingProfile
+        #region ClearChargingProfile           (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ClearChargingProfile request will be sent to the CSMS.
+        /// An event fired whenever a ClearChargingProfile request will be sent to a charging station.
         /// </summary>
-        event OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+        event OnClearChargingProfileRequestDelegate?            OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ClearChargingProfile request was received.
         /// </summary>
-        event OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+        event OnClearChargingProfileResponseDelegate?           OnClearChargingProfileResponse;
 
         #endregion
 
-        #region GetCompositeSchedule
+        #region GetCompositeSchedule           (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetCompositeSchedule request will be sent to the CSMS.
+        /// An event fired whenever a GetCompositeSchedule request will be sent to a charging station.
         /// </summary>
-        event OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+        event OnGetCompositeScheduleRequestDelegate?            OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetCompositeSchedule request was received.
         /// </summary>
-        event OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+        event OnGetCompositeScheduleResponseDelegate?           OnGetCompositeScheduleResponse;
 
         #endregion
 
-        #region UpdateDynamicSchedule
+        #region UpdateDynamicSchedule          (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a UpdateDynamicSchedule request will be sent to the CSMS.
+        /// An event fired whenever a UpdateDynamicSchedule request will be sent to a charging station.
         /// </summary>
-        event OnUpdateDynamicScheduleRequestDelegate?   OnUpdateDynamicScheduleRequest;
+        event OnUpdateDynamicScheduleRequestDelegate?           OnUpdateDynamicScheduleRequest;
 
         /// <summary>
         /// An event fired whenever a response to a UpdateDynamicSchedule request was received.
         /// </summary>
-        event OnUpdateDynamicScheduleResponseDelegate?  OnUpdateDynamicScheduleResponse;
+        event OnUpdateDynamicScheduleResponseDelegate?          OnUpdateDynamicScheduleResponse;
 
         #endregion
 
         #region NotifyAllowedEnergyTransfer    (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to the CSMS.
+        /// An event fired whenever a NotifyAllowedEnergyTransfer request will be sent to a charging station.
         /// </summary>
-        event OnNotifyAllowedEnergyTransferRequestDelegate?   OnNotifyAllowedEnergyTransferRequest;
+        event OnNotifyAllowedEnergyTransferRequestDelegate?     OnNotifyAllowedEnergyTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a NotifyAllowedEnergyTransfer request was received.
         /// </summary>
-        event OnNotifyAllowedEnergyTransferResponseDelegate?  OnNotifyAllowedEnergyTransferResponse;
+        event OnNotifyAllowedEnergyTransferResponseDelegate?    OnNotifyAllowedEnergyTransferResponse;
 
         #endregion
 
-        #region UsePriorityCharging
+        #region UsePriorityCharging            (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a UsePriorityCharging request will be sent to the CSMS.
+        /// An event fired whenever a UsePriorityCharging request will be sent to a charging station.
         /// </summary>
-        event OnUsePriorityChargingRequestDelegate?   OnUsePriorityChargingRequest;
+        event OnUsePriorityChargingRequestDelegate?             OnUsePriorityChargingRequest;
 
         /// <summary>
         /// An event fired whenever a response to a UsePriorityCharging request was received.
         /// </summary>
-        event OnUsePriorityChargingResponseDelegate?  OnUsePriorityChargingResponse;
+        event OnUsePriorityChargingResponseDelegate?            OnUsePriorityChargingResponse;
 
         #endregion
 
-        #region UnlockConnector
+        #region UnlockConnector                (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever an UnlockConnector request will be sent to the CSMS.
+        /// An event fired whenever an UnlockConnector request will be sent to a charging station.
         /// </summary>
-        event OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+        event OnUnlockConnectorRequestDelegate?                 OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event fired whenever a response to an UnlockConnector request was received.
         /// </summary>
-        event OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+        event OnUnlockConnectorResponseDelegate?                OnUnlockConnectorResponse;
 
         #endregion
 
 
-        #region AFRRSignal
+        #region AFRRSignal                     (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever an AFRR signal request will be sent to the CSMS.
+        /// An event fired whenever an AFRR signal request will be sent to a charging station.
         /// </summary>
-        event OnAFRRSignalRequestDelegate?   OnAFRRSignalRequest;
+        event OnAFRRSignalRequestDelegate?                      OnAFRRSignalRequest;
 
         /// <summary>
         /// An event fired whenever a response to an AFRR signal request was received.
         /// </summary>
-        event OnAFRRSignalResponseDelegate?  OnAFRRSignalResponse;
+        event OnAFRRSignalResponseDelegate?                     OnAFRRSignalResponse;
 
         #endregion
 
 
-        #region SetDisplayMessage
+        #region SetDisplayMessage              (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a SetDisplayMessage request will be sent to the CSMS.
+        /// An event fired whenever a SetDisplayMessage request will be sent to a charging station.
         /// </summary>
-        event OnSetDisplayMessageRequestDelegate?   OnSetDisplayMessageRequest;
+        event OnSetDisplayMessageRequestDelegate?               OnSetDisplayMessageRequest;
 
         /// <summary>
         /// An event fired whenever a response to a SetDisplayMessage request was received.
         /// </summary>
-        event OnSetDisplayMessageResponseDelegate?  OnSetDisplayMessageResponse;
+        event OnSetDisplayMessageResponseDelegate?              OnSetDisplayMessageResponse;
 
         #endregion
 
-        #region GetDisplayMessages
+        #region GetDisplayMessages             (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a GetDisplayMessages request will be sent to the CSMS.
+        /// An event fired whenever a GetDisplayMessages request will be sent to a charging station.
         /// </summary>
-        event OnGetDisplayMessagesRequestDelegate?   OnGetDisplayMessagesRequest;
+        event OnGetDisplayMessagesRequestDelegate?              OnGetDisplayMessagesRequest;
 
         /// <summary>
         /// An event fired whenever a response to a GetDisplayMessages request was received.
         /// </summary>
-        event OnGetDisplayMessagesResponseDelegate?  OnGetDisplayMessagesResponse;
+        event OnGetDisplayMessagesResponseDelegate?             OnGetDisplayMessagesResponse;
 
         #endregion
 
-        #region ClearDisplayMessage
+        #region ClearDisplayMessage            (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a ClearDisplayMessage request will be sent to the CSMS.
+        /// An event fired whenever a ClearDisplayMessage request will be sent to a charging station.
         /// </summary>
-        event OnClearDisplayMessageRequestDelegate?   OnClearDisplayMessageRequest;
+        event OnClearDisplayMessageRequestDelegate?             OnClearDisplayMessageRequest;
 
         /// <summary>
         /// An event fired whenever a response to a ClearDisplayMessage request was received.
         /// </summary>
-        event OnClearDisplayMessageResponseDelegate?  OnClearDisplayMessageResponse;
+        event OnClearDisplayMessageResponseDelegate?            OnClearDisplayMessageResponse;
 
         #endregion
 
-        #region SendCostUpdated
+        #region SendCostUpdated                (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a CostUpdated request will be sent to the CSMS.
+        /// An event fired whenever a CostUpdated request will be sent to a charging station.
         /// </summary>
-        event OnCostUpdatedRequestDelegate?   OnCostUpdatedRequest;
+        event OnCostUpdatedRequestDelegate?                     OnCostUpdatedRequest;
 
         /// <summary>
         /// An event fired whenever a response to a CostUpdated request was received.
         /// </summary>
-        event OnCostUpdatedResponseDelegate?  OnCostUpdatedResponse;
+        event OnCostUpdatedResponseDelegate?                    OnCostUpdatedResponse;
 
         #endregion
 
-        #region RequestCustomerInformation
+        #region RequestCustomerInformation     (-Request/-Response)
 
         /// <summary>
-        /// An event fired whenever a CustomerInformation request will be sent to the CSMS.
+        /// An event fired whenever a CustomerInformation request will be sent to a charging station.
         /// </summary>
-        event OnCustomerInformationRequestDelegate?   OnCustomerInformationRequest;
+        event OnCustomerInformationRequestDelegate?             OnCustomerInformationRequest;
 
         /// <summary>
         /// An event fired whenever a response to a CustomerInformation request was received.
         /// </summary>
-        event OnCustomerInformationResponseDelegate?  OnCustomerInformationResponse;
+        event OnCustomerInformationResponseDelegate?            OnCustomerInformationResponse;
 
         #endregion
 

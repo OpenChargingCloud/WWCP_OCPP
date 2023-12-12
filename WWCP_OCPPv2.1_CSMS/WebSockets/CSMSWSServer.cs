@@ -20,9 +20,6 @@
 using System.Reflection;
 using System.Security.Authentication;
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
