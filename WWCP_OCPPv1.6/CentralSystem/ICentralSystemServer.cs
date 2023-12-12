@@ -17,6 +17,7 @@
 
 #region Usings
 
+using cloud.charging.open.protocols.OCPP;
 using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
@@ -35,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The unique identifications of all connected charge boxes.
         /// </summary>
-        IEnumerable<ChargeBox_Id>  ChargeBoxIds    { get; }
+        IEnumerable<NetworkingNode_Id>  NetworkingNodeIds    { get; }
 
         #endregion
 

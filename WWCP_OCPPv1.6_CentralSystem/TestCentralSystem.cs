@@ -1147,6 +1147,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
+
+        public CustomJObjectSerializerDelegate<StatusInfo>?                             CustomStatusInfoSerializer                              { get; set; }
         public CustomJObjectSerializerDelegate<ConfigurationKey>?                       CustomConfigurationKeySerializer                        { get; set; }
         public CustomJObjectSerializerDelegate<ChargingProfile>?                        CustomChargingProfileSerializer                         { get; set; }
         public CustomJObjectSerializerDelegate<ChargingSchedule>?                       CustomChargingScheduleSerializer                        { get; set; }

@@ -63,13 +63,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The unique identification of this charge box.
         /// </summary>
-        public ChargeBox_Id    ChargeBoxIdentity   { get; }
+        public NetworkingNode_Id  ChargeBoxId   { get; }
 
         /// <summary>
         /// The sender identification.
         /// </summary>
         String IEventSender.Id
-            => ChargeBoxIdentity.ToString();
+            => ChargeBoxId.ToString();
 
         /// <summary>
         /// The source URI of the SOAP message.
@@ -345,7 +345,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// Create a new charge point SOAP client running on a charge point
         /// and connecting to a central system to invoke methods.
         /// </summary>
-        /// <param name="ChargeBoxIdentity">The unique identification of this charge box.</param>
+        /// <param name="ChargeBoxId">The unique identification of this charge box.</param>
         /// <param name="From">The source URI of the SOAP message.</param>
         /// <param name="To">The destination URI of the SOAP message.</param>
         /// 
@@ -367,7 +367,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
         /// <param name="HTTPLogger">A HTTP logger.</param>
         /// <param name="DNSClient">The DNS client to use.</param>
-        public ChargePointSOAPClient(ChargeBox_Id                         ChargeBoxIdentity,
+        public ChargePointSOAPClient(NetworkingNode_Id                    ChargeBoxId,
                                      String                               From,
                                      String                               To,
 
@@ -423,8 +423,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #region Initial checks
 
-            if (ChargeBoxIdentity.IsNullOrEmpty)
-                throw new ArgumentNullException(nameof(ChargeBoxIdentity),  "The given charge box identification must not be null or empty!");
+            if (ChargeBoxId.IsNullOrEmpty)
+                throw new ArgumentNullException(nameof(ChargeBoxId),  "The given charge box identification must not be null or empty!");
 
             if (From.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(From),               "The given SOAP message source must not be null or empty!");
@@ -434,7 +434,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
             #endregion
 
-            this.ChargeBoxIdentity  = ChargeBoxIdentity;
+            this.ChargeBoxId  = ChargeBoxId;
             this.From               = From;
             this.To                 = To;
 

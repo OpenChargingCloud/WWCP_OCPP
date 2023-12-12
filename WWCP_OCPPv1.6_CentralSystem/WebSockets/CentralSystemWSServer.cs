@@ -76,7 +76,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         String IEventSender.Id
             => HTTPServiceName;
 
-        public IEnumerable<ChargeBox_Id> ChargeBoxIds
+        public IEnumerable<ChargeBox_Id> NetworkingNodeIds
             => throw new NotImplementedException();
 
         #endregion

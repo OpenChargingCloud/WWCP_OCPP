@@ -851,7 +851,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
                                                 catch (Exception e)
                                                 {
-                                                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/Reset");
+                                                    DebugX.LogException(e, nameof(ChargePointSOAPServer) + "." + "/Reset");
                                                 }
 
                                                 HTTPResponse ??= new HTTPResponse.Builder(Request) {
@@ -1017,7 +1017,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
                                                 }
                                                 catch (Exception e)
                                                 {
-                                                    DebugX.LogException(e, nameof(CentralSystemSOAPServer) + "." + "/ReserveNow");
+                                                    DebugX.LogException(e, nameof(ChargePointSOAPServer) + "." + "/ReserveNow");
                                                 }
 
                                                 HTTPResponse ??= new HTTPResponse.Builder(Request) {
