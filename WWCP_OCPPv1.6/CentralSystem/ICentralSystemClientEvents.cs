@@ -176,7 +176,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a RemoteStartTransaction request will be sent to a charge box.
         /// </summary>
-        event OnRemoteStartTransactionRequestDelegate?          OnRemoteStartTransactionRemote;
+        event OnRemoteStartTransactionRequestDelegate?          OnRemoteStartTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a response to a RemoteStartTransaction request was received.
@@ -190,7 +190,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever a RemoteStopTransaction request will be sent to a charge box.
         /// </summary>
-        event OnRemoteStopTransactionRequestDelegate?           OnRemoteStopTransactionRemote;
+        event OnRemoteStopTransactionRequestDelegate?           OnRemoteStopTransactionRequest;
 
         /// <summary>
         /// An event fired whenever a response to a RemoteStopTransaction request was received.
@@ -335,12 +335,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// An event fired whenever an ExtendedTriggerMessage request will be sent to a charge box.
         /// </summary>
-        event OnTriggerMessageRequestDelegate?                  OnExtendedTriggerMessageRequest;
+        event OnExtendedTriggerMessageRequestDelegate?          OnExtendedTriggerMessageRequest;
 
         /// <summary>
         /// An event fired whenever a response to an ExtendedTriggerMessage request was received.
         /// </summary>
-        event OnTriggerMessageResponseDelegate?                 OnExtendedTriggerMessageResponse;
+        event OnExtendedTriggerMessageResponseDelegate?         OnExtendedTriggerMessageResponse;
 
         #endregion
 

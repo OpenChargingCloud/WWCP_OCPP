@@ -2856,7 +2856,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
                                CancellationToken        CancellationToken   = default)
 
 
-                => CSMS.TransferBinaryData(
+                => CSMS.BinaryDataTransfer(
                        new OCPP.CSMS.BinaryDataTransferRequest(
                            NetworkingNodeId,
                            VendorId,

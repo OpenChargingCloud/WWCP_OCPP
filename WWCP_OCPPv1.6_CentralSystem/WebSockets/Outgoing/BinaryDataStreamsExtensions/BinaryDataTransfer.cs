@@ -20,17 +20,19 @@
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CSMS
+namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
     public partial class CentralSystemWSServer : ACSMSWSServer,
-                                                 ICSMSChannel
+                                                 ICSMSChannel,
+                                                 ICentralSystemChannel
     {
 
         #region Custom binary serializer delegates
@@ -56,9 +58,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CSMS
         #endregion
 
 
-        #region TransferBinaryData(Request)
+        #region BinaryDataTransfer(Request)
 
-        public async Task<OCPP.CS.BinaryDataTransferResponse> TransferBinaryData(OCPP.CSMS.BinaryDataTransferRequest Request)
+        public async Task<OCPP.CS.BinaryDataTransferResponse> BinaryDataTransfer(OCPP.CSMS.BinaryDataTransferRequest Request)
         {
 
             #region Send OnBinaryDataTransferRequest event

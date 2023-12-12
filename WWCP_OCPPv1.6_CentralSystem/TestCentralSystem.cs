@@ -40,30 +40,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// A central system for testing.
     /// </summary>
-    public class TestCentralSystem : IEventSender
+    public class TestCentralSystem : ICentralSystemService,
+                                     IEventSender
     {
 
         #region Data
 
-        private          readonly  HashSet<SignaturePolicy>                                                   signaturePolicies        = [];
+        private          readonly  HashSet<SignaturePolicy>                                                                      signaturePolicies        = [];
 
-        private          readonly  HashSet<ICentralSystemServer>                                              centralSystemServers     = [];
+        private          readonly  HashSet<OCPPv1_6.CS.ICentralSystemChannel>                                                    centralSystemServers     = [];
 
-        private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<ICentralSystem, DateTime>>   reachableChargeBoxes     = [];
+        private          readonly  ConcurrentDictionary<NetworkingNode_Id, Tuple<OCPPv1_6.CS.ICentralSystemChannel, DateTime>>   reachableChargeBoxes     = [];
 
-        private          readonly  HTTPExtAPI                                                                 TestAPI;
+        private          readonly  HTTPExtAPI                                                                                    TestAPI;
 
-        private          readonly  OCPPWebAPI                                                                 WebAPI;
+        private          readonly  OCPPWebAPI                                                                                    WebAPI;
 
-        protected static readonly  SemaphoreSlim                                                              ChargeBoxesSemaphore     = new (1, 1);
+        protected static readonly  SemaphoreSlim                                                                                 ChargeBoxesSemaphore     = new (1, 1);
 
-        protected static readonly  TimeSpan                                                                   SemaphoreSlimTimeout     = TimeSpan.FromSeconds(5);
+        protected static readonly  TimeSpan                                                                                      SemaphoreSlimTimeout     = TimeSpan.FromSeconds(5);
 
-        public    static readonly  IPPort                                                                     DefaultHTTPUploadPort    = IPPort.Parse(9901);
+        public    static readonly  IPPort                                                                                        DefaultHTTPUploadPort    = IPPort.Parse(9901);
 
-        private                    Int64                                                                      internalRequestId        = 900000;
+        private                    Int64                                                                                         internalRequestId        = 900000;
 
-        private                    TimeSpan                                                                   defaultRequestTimeout    = TimeSpan.FromSeconds(30);
+        private                    TimeSpan                                                                                      defaultRequestTimeout    = TimeSpan.FromSeconds(30);
 
         #endregion
 
@@ -101,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An enumeration of central system servers.
         /// </summary>
-        public IEnumerable<ICentralSystemServer> CentralSystemServers
+        public IEnumerable<OCPPv1_6.CS.ICentralSystemChannel> CentralSystemServers
             => centralSystemServers;
 
         /// <summary>
@@ -162,7 +163,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever the HTTP connection switched successfully to web socket.
         /// </summary>
-        public event OnCentralSystemNewWebSocketConnectionDelegate?   OnNewWebSocketConnection;
+        public event OnCSMSNewWebSocketConnectionDelegate?            OnNewWebSocketConnection;
 
         /// <summary>
         /// An event sent whenever a reponse to a HTTP request was sent.
@@ -172,12 +173,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a web socket close frame was received.
         /// </summary>
-        public event OnCentralSystemCloseMessageReceivedDelegate?     OnCloseMessageReceived;
+        public event OnCSMSCloseMessageReceivedDelegate?              OnCloseMessageReceived;
 
         /// <summary>
         /// An event sent whenever a TCP connection was closed.
         /// </summary>
-        public event OnCentralSystemTCPConnectionClosedDelegate?      OnTCPConnectionClosed;
+        public event OnCSMSTCPConnectionClosedDelegate?               OnTCPConnectionClosed;
 
         /// <summary>
         /// An event sent whenever the HTTP web socket server stopped.
@@ -470,7 +471,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
 
-        #region OnIncomingBinaryDataTransfer
+        // Binary Data Streams Extensions
+
+        #region OnIncomingBinaryDataTransfer (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever an IncomingBinaryDataTransfer request was received.
@@ -495,12 +498,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a CertificateSigned request was sent.
         /// </summary>
-        public event CP.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
+        public event CS.OnCertificateSignedRequestDelegate?   OnCertificateSignedRequest;
 
         /// <summary>
         /// An event sent whenever a response to a CertificateSigned request was sent.
         /// </summary>
-        public event CP.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
+        public event CS.OnCertificateSignedResponseDelegate?  OnCertificateSignedResponse;
 
         #endregion
 
@@ -509,12 +512,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a DeleteCertificate request was sent.
         /// </summary>
-        public event CP.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
+        public event CS.OnDeleteCertificateRequestDelegate?   OnDeleteCertificateRequest;
 
         /// <summary>
         /// An event sent whenever a response to a DeleteCertificate request was sent.
         /// </summary>
-        public event CP.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
+        public event CS.OnDeleteCertificateResponseDelegate?  OnDeleteCertificateResponse;
 
         #endregion
 
@@ -523,12 +526,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a GetInstalledCertificateIds request was sent.
         /// </summary>
-        public event CP.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
+        public event CS.OnGetInstalledCertificateIdsRequestDelegate?   OnGetInstalledCertificateIdsRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetInstalledCertificateIds request was sent.
         /// </summary>
-        public event CP.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
+        public event CS.OnGetInstalledCertificateIdsResponseDelegate?  OnGetInstalledCertificateIdsResponse;
 
         #endregion
 
@@ -537,12 +540,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever an InstallCertificate request was sent.
         /// </summary>
-        public event CP.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
+        public event CS.OnInstallCertificateRequestDelegate?   OnInstallCertificateRequest;
 
         /// <summary>
         /// An event sent whenever a response to an InstallCertificate request was sent.
         /// </summary>
-        public event CP.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
+        public event CS.OnInstallCertificateResponseDelegate?  OnInstallCertificateResponse;
 
         #endregion
 
@@ -554,12 +557,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a CancelReservation request was sent.
         /// </summary>
-        public event CP.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
+        public event CS.OnCancelReservationRequestDelegate?   OnCancelReservationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a CancelReservation request was sent.
         /// </summary>
-        public event CP.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
+        public event CS.OnCancelReservationResponseDelegate?  OnCancelReservationResponse;
 
         #endregion
 
@@ -568,12 +571,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a ClearChargingProfile request was sent.
         /// </summary>
-        public event CP.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
+        public event CS.OnClearChargingProfileRequestDelegate?   OnClearChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a ClearChargingProfile request was sent.
         /// </summary>
-        public event CP.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
+        public event CS.OnClearChargingProfileResponseDelegate?  OnClearChargingProfileResponse;
 
         #endregion
 
@@ -582,12 +585,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a GetCompositeSchedule request was sent.
         /// </summary>
-        public event CP.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
+        public event CS.OnGetCompositeScheduleRequestDelegate?   OnGetCompositeScheduleRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetCompositeSchedule request was sent.
         /// </summary>
-        public event CP.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
+        public event CS.OnGetCompositeScheduleResponseDelegate?  OnGetCompositeScheduleResponse;
 
         #endregion
 
@@ -596,12 +599,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a RemoteStartTransaction request was sent.
         /// </summary>
-        public event CP.OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
+        public event CS.OnRemoteStartTransactionRequestDelegate?   OnRemoteStartTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a RemoteStartTransaction request was sent.
         /// </summary>
-        public event CP.OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
+        public event CS.OnRemoteStartTransactionResponseDelegate?  OnRemoteStartTransactionResponse;
 
         #endregion
 
@@ -610,12 +613,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a RemoteStopTransaction request was sent.
         /// </summary>
-        public event CP.OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
+        public event CS.OnRemoteStopTransactionRequestDelegate?   OnRemoteStopTransactionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a RemoteStopTransaction request was sent.
         /// </summary>
-        public event CP.OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
+        public event CS.OnRemoteStopTransactionResponseDelegate?  OnRemoteStopTransactionResponse;
 
         #endregion
 
@@ -624,12 +627,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a ReserveNow request was sent.
         /// </summary>
-        public event CP.OnReserveNowRequestDelegate?   OnReserveNowRequest;
+        public event CS.OnReserveNowRequestDelegate?   OnReserveNowRequest;
 
         /// <summary>
         /// An event sent whenever a response to a ReserveNow request was sent.
         /// </summary>
-        public event CP.OnReserveNowResponseDelegate?  OnReserveNowResponse;
+        public event CS.OnReserveNowResponseDelegate?  OnReserveNowResponse;
 
         #endregion
 
@@ -638,12 +641,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a SetChargingProfile request was sent.
         /// </summary>
-        public event CP.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
+        public event CS.OnSetChargingProfileRequestDelegate?   OnSetChargingProfileRequest;
 
         /// <summary>
         /// An event sent whenever a response to a SetChargingProfile request was sent.
         /// </summary>
-        public event CP.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
+        public event CS.OnSetChargingProfileResponseDelegate?  OnSetChargingProfileResponse;
 
         #endregion
 
@@ -652,12 +655,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever an UnlockConnector request was sent.
         /// </summary>
-        public event CP.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
+        public event CS.OnUnlockConnectorRequestDelegate?   OnUnlockConnectorRequest;
 
         /// <summary>
         /// An event sent whenever a response to an UnlockConnector request was sent.
         /// </summary>
-        public event CP.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
+        public event CS.OnUnlockConnectorResponseDelegate?  OnUnlockConnectorResponse;
 
         #endregion
 
@@ -669,12 +672,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a Reset request was sent.
         /// </summary>
-        public event CP.OnResetRequestDelegate?   OnResetRequest;
+        public event CS.OnResetRequestDelegate?   OnResetRequest;
 
         /// <summary>
         /// An event sent whenever a response to a Reset request was sent.
         /// </summary>
-        public event CP.OnResetResponseDelegate?  OnResetResponse;
+        public event CS.OnResetResponseDelegate?  OnResetResponse;
 
         #endregion
 
@@ -683,12 +686,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a SignedUpdateFirmware request was sent.
         /// </summary>
-        public event CP.OnSignedUpdateFirmwareRequestDelegate?   OnSignedUpdateFirmwareRequest;
+        public event CS.OnSignedUpdateFirmwareRequestDelegate?   OnSignedUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a response to a SignedUpdateFirmware request was sent.
         /// </summary>
-        public event CP.OnSignedUpdateFirmwareResponseDelegate?  OnSignedUpdateFirmwareResponse;
+        public event CS.OnSignedUpdateFirmwareResponseDelegate?  OnSignedUpdateFirmwareResponse;
 
         #endregion
 
@@ -697,12 +700,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever an UpdateFirmware request was sent.
         /// </summary>
-        public event CP.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
+        public event CS.OnUpdateFirmwareRequestDelegate?   OnUpdateFirmwareRequest;
 
         /// <summary>
         /// An event sent whenever a response to an UpdateFirmware request was sent.
         /// </summary>
-        public event CP.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
+        public event CS.OnUpdateFirmwareResponseDelegate?  OnUpdateFirmwareResponse;
 
         #endregion
 
@@ -714,12 +717,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a ClearCache request was sent.
         /// </summary>
-        public event CP.OnClearCacheRequestDelegate?   OnClearCacheRequest;
+        public event CS.OnClearCacheRequestDelegate?   OnClearCacheRequest;
 
         /// <summary>
         /// An event sent whenever a response to a ClearCache request was sent.
         /// </summary>
-        public event CP.OnClearCacheResponseDelegate?  OnClearCacheResponse;
+        public event CS.OnClearCacheResponseDelegate?  OnClearCacheResponse;
 
         #endregion
 
@@ -728,12 +731,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a GetLocalListVersion request was sent.
         /// </summary>
-        public event CP.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
+        public event CS.OnGetLocalListVersionRequestDelegate?   OnGetLocalListVersionRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetLocalListVersion request was sent.
         /// </summary>
-        public event CP.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
+        public event CS.OnGetLocalListVersionResponseDelegate?  OnGetLocalListVersionResponse;
 
         #endregion
 
@@ -742,12 +745,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a SendLocalList request was sent.
         /// </summary>
-        public event CP.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
+        public event CS.OnSendLocalListRequestDelegate?   OnSendLocalListRequest;
 
         /// <summary>
         /// An event sent whenever a response to a SendLocalList request was sent.
         /// </summary>
-        public event CP.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
+        public event CS.OnSendLocalListResponseDelegate?  OnSendLocalListResponse;
 
         #endregion
 
@@ -759,12 +762,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a ChangeAvailability request was sent.
         /// </summary>
-        public event CP.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
+        public event CS.OnChangeAvailabilityRequestDelegate?   OnChangeAvailabilityRequest;
 
         /// <summary>
         /// An event sent whenever a response to a ChangeAvailability request was sent.
         /// </summary>
-        public event CP.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
+        public event CS.OnChangeAvailabilityResponseDelegate?  OnChangeAvailabilityResponse;
 
         #endregion
 
@@ -773,12 +776,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a ChangeConfiguration request was sent.
         /// </summary>
-        public event CP.OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
+        public event CS.OnChangeConfigurationRequestDelegate?   OnChangeConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a ChangeConfiguration request was sent.
         /// </summary>
-        public event CP.OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
+        public event CS.OnChangeConfigurationResponseDelegate?  OnChangeConfigurationResponse;
 
         #endregion
 
@@ -787,12 +790,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever an ExtendedTriggerMessage request was sent.
         /// </summary>
-        public event CP.OnExtendedTriggerMessageRequestDelegate?   OnExtendedTriggerMessageRequest;
+        public event CS.OnExtendedTriggerMessageRequestDelegate?   OnExtendedTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a response to an ExtendedTriggerMessage request was sent.
         /// </summary>
-        public event CP.OnExtendedTriggerMessageResponseDelegate?  OnExtendedTriggerMessageResponse;
+        public event CS.OnExtendedTriggerMessageResponseDelegate?  OnExtendedTriggerMessageResponse;
 
         #endregion
 
@@ -801,12 +804,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a GetConfiguration request was sent.
         /// </summary>
-        public event CP.OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
+        public event CS.OnGetConfigurationRequestDelegate?   OnGetConfigurationRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetConfiguration request was sent.
         /// </summary>
-        public event CP.OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
+        public event CS.OnGetConfigurationResponseDelegate?  OnGetConfigurationResponse;
 
         #endregion
 
@@ -815,12 +818,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a GetDiagnostics request was sent.
         /// </summary>
-        public event CP.OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
+        public event CS.OnGetDiagnosticsRequestDelegate?   OnGetDiagnosticsRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetDiagnostics request was sent.
         /// </summary>
-        public event CP.OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
+        public event CS.OnGetDiagnosticsResponseDelegate?  OnGetDiagnosticsResponse;
 
         #endregion
 
@@ -829,12 +832,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a GetLog request was sent.
         /// </summary>
-        public event CP.OnGetLogRequestDelegate?   OnGetLogRequest;
+        public event CS.OnGetLogRequestDelegate?   OnGetLogRequest;
 
         /// <summary>
         /// An event sent whenever a response to a GetLog request was sent.
         /// </summary>
-        public event CP.OnGetLogResponseDelegate?  OnGetLogResponse;
+        public event CS.OnGetLogResponseDelegate?  OnGetLogResponse;
 
         #endregion
 
@@ -843,12 +846,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a TriggerMessage request was sent.
         /// </summary>
-        public event CP.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
+        public event CS.OnTriggerMessageRequestDelegate?   OnTriggerMessageRequest;
 
         /// <summary>
         /// An event sent whenever a response to a TriggerMessage request was sent.
         /// </summary>
-        public event CP.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
+        public event CS.OnTriggerMessageResponseDelegate?  OnTriggerMessageResponse;
 
         #endregion
 
@@ -858,12 +861,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// An event sent whenever a reset request was sent.
         /// </summary>
-        public event OCPP.CS.OnIncomingDataTransferRequestDelegate?   OnDataTransferRequest;
+        public event OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a reset request was sent.
         /// </summary>
-        public event OCPP.CS.OnIncomingDataTransferResponseDelegate?  OnDataTransferResponse;
+        public event OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 
@@ -912,7 +915,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
-        #region OnDeleteFile                    (-Request/-Response)
+        #region OnDeleteFile                  (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a DeleteFile request will be sent to the charging station.
@@ -923,6 +926,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// An event sent whenever a response to a DeleteFile request was received.
         /// </summary>
         public event OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
+
+        #endregion
+
+        #region OnListDirectory               (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a ListDirectory request will be sent to the charging station.
+        /// </summary>
+        public event OnListDirectoryRequestDelegate?   OnListDirectoryRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ListDirectory request was received.
+        /// </summary>
+        public event OnListDirectoryResponseDelegate?  OnListDirectoryResponse;
 
         #endregion
 
@@ -1018,9 +1035,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
         #region Custom JSON serializer delegates
-
-
-
 
         CustomJObjectSerializerDelegate<DataTransferResponse>? CustomIncomingDataTransferResponseSerializer { get; set; }
 
@@ -1275,7 +1289,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                           false
                                       );
 
-            Attach(centralSystemServer);
+            //Attach(centralSystemServer);
 
             if (AutoStart)
                 centralSystemServer.Start();
@@ -1406,17 +1420,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region OnNewWebSocketConnection
 
-            centralSystemServer.OnCentralSystemNewWebSocketConnection += async (timestamp,
-                                                                                centralSystem,
-                                                                                newConnection,
-                                                                                networkingNodeId,
-                                                                                eventTrackingId,
-                                                                                sharedSubprotocols,
-                                                                                cancellationToken) => {
+            centralSystemServer.OnCSMSNewWebSocketConnection += async (timestamp,
+                                                                       csmsChannel,
+                                                                       newConnection,
+                                                                       networkingNodeId,
+                                                                       eventTrackingId,
+                                                                       sharedSubprotocols,
+                                                                       cancellationToken) => {
 
                 // A new connection from the same networking node/charge box will replace the older one!
-                if (!reachableChargeBoxes.TryAdd(networkingNodeId, new Tuple<ICentralSystem, DateTime>(centralSystem, timestamp)))
-                     reachableChargeBoxes[networkingNodeId]      = new Tuple<ICentralSystem, DateTime>(centralSystem, timestamp);
+                if (!reachableChargeBoxes.TryAdd(networkingNodeId, new Tuple<ICentralSystemChannel, DateTime>(csmsChannel as OCPPv1_6.CS.ICentralSystemChannel, timestamp)))
+                     reachableChargeBoxes[networkingNodeId]      = new Tuple<ICentralSystemChannel, DateTime>(csmsChannel as OCPPv1_6.CS.ICentralSystemChannel, timestamp);
 
 
                 var onNewWebSocketConnection = OnNewWebSocketConnection;
@@ -1426,10 +1440,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     {
 
                         await Task.WhenAll(onNewWebSocketConnection.GetInvocationList().
-                                               OfType <OnCentralSystemNewWebSocketConnectionDelegate>().
+                                               OfType <OnCSMSNewWebSocketConnectionDelegate>().
                                                Select (loggingDelegate => loggingDelegate.Invoke(
                                                                               timestamp,
-                                                                              centralSystem,
+                                                                              csmsChannel,
                                                                               newConnection,
                                                                               networkingNodeId,
                                                                               eventTrackingId,
@@ -1455,14 +1469,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             #region OnCloseMessageReceived
 
-            centralSystemServer.OnCentralSystemCloseMessageReceived += async (timestamp,
-                                                                              server,
-                                                                              connection,
-                                                                              networkingNodeId,
-                                                                              eventTrackingId,
-                                                                              statusCode,
-                                                                              reason,
-                                                                              cancellationToken) => {
+            centralSystemServer.OnCSMSCloseMessageReceived += async (timestamp,
+                                                                     csmsChannel,
+                                                                     connection,
+                                                                     networkingNodeId,
+                                                                     eventTrackingId,
+                                                                     statusCode,
+                                                                     reason,
+                                                                     cancellationToken) => {
 
                 var onCloseMessageReceived = OnCloseMessageReceived;
                 if (onCloseMessageReceived is not null)
@@ -1471,10 +1485,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     {
 
                         await Task.WhenAll(onCloseMessageReceived.GetInvocationList().
-                                               OfType <OnCentralSystemCloseMessageReceivedDelegate>().
+                                               OfType <OnCSMSCloseMessageReceivedDelegate>().
                                                Select (loggingDelegate => loggingDelegate.Invoke(
                                                                               timestamp,
-                                                                              server,
+                                                                              csmsChannel,
                                                                               connection,
                                                                               networkingNodeId,
                                                                               eventTrackingId,
@@ -1898,7 +1912,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Attach(CentralSystemServer)
 
-        public void Attach(ICentralSystemServer CentralSystemServer)
+        public void Attach(ICentralSystemChannel CentralSystemServer)
         {
 
             centralSystemServers.Add(CentralSystemServer);
@@ -3102,8 +3116,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="NetworkingNodeId">The unique identification of the charge box.</param>
         /// <param name="Password">The password of the charge box.</param>
-        public void AddHTTPBasicAuth(ChargeBox_Id  NetworkingNodeId,
-                                     String        Password)
+        public void AddHTTPBasicAuth(NetworkingNode_Id  NetworkingNodeId,
+                                     String             Password)
         {
 
             foreach (var centralSystemServer in centralSystemServers)
@@ -5107,6 +5121,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             }
         }
+
+        public CentralSystem_Id Id => throw new NotImplementedException();
+
+        Request_Id ICentralSystem.NextRequestId => throw new NotImplementedException();
+
+        public IEnumerable<ICSMSChannel> CSMSChannels => throw new NotImplementedException();
+
+        public NetworkingNode_Id ChargeBoxIdentity => throw new NotImplementedException();
+
+        public string From => throw new NotImplementedException();
+
+        public string To => throw new NotImplementedException();
 
         #endregion
 
@@ -7579,14 +7605,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         // Binary Data Streams Extensions
 
-        #region TransferBinaryData          (Request)
+        #region BinaryDataTransfer          (Request)
 
         /// <summary>
         /// Transfer the given data to the given charging station.
         /// </summary>
         /// <param name="Request">A BinaryDataTransfer request.</param>
         public async Task<OCPP.CS.BinaryDataTransferResponse>
-            TransferBinaryData(OCPP.CSMS.BinaryDataTransferRequest Request)
+            BinaryDataTransfer(OCPP.CSMS.BinaryDataTransferRequest Request)
 
         {
 
@@ -7622,7 +7648,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.TransferBinaryData(Request)
+                                      ? await centralSystem.Item1.BinaryDataTransfer(Request)
 
                                       : new OCPP.CS.BinaryDataTransferResponse(
                                             Request,

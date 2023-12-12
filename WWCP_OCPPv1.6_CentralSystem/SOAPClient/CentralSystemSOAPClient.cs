@@ -544,6 +544,47 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
+
+
+        public event OnCertificateSignedRequestDelegate?                      OnCertificateSignedRequest;
+        public event OnCertificateSignedResponseDelegate?                     OnCertificateSignedResponse;
+        public event OnDeleteCertificateRequestDelegate?                      OnDeleteCertificateRequest;
+        public event OnDeleteCertificateResponseDelegate?                     OnDeleteCertificateResponse;
+        public event OnInstallCertificateRequestDelegate?                     OnInstallCertificateRequest;
+        public event OnInstallCertificateResponseDelegate?                    OnInstallCertificateResponse;
+        public event OnExtendedTriggerMessageRequestDelegate?                 OnExtendedTriggerMessageRequest;
+        public event OnExtendedTriggerMessageResponseDelegate?                OnExtendedTriggerMessageResponse;
+        public event OnGetInstalledCertificateIdsRequestDelegate?             OnGetInstalledCertificateIdsRequest;
+        public event OnGetInstalledCertificateIdsResponseDelegate?            OnGetInstalledCertificateIdsResponse;
+        public event OnGetLogRequestDelegate?                                 OnGetLogRequest;
+        public event OnGetLogResponseDelegate?                                OnGetLogResponse;
+        public event OnSignedUpdateFirmwareRequestDelegate?                   OnSignedUpdateFirmwareRequest;
+        public event OnSignedUpdateFirmwareResponseDelegate?                  OnSignedUpdateFirmwareResponse;
+
+        public event OCPP.CSMS.OnBinaryDataTransferRequestDelegate?           OnBinaryDataTransferRequest;
+        public event OCPP.CSMS.OnBinaryDataTransferResponseDelegate?          OnBinaryDataTransferResponse;
+        public event OCPP.CSMS.OnGetFileRequestDelegate?                      OnGetFileRequest;
+        public event OCPP.CSMS.OnGetFileResponseDelegate?                     OnGetFileResponse;
+        public event OCPP.CSMS.OnSendFileRequestDelegate?                     OnSendFileRequest;
+        public event OCPP.CSMS.OnSendFileResponseDelegate?                    OnSendFileResponse;
+        public event OCPP.CSMS.OnDeleteFileRequestDelegate?                   OnDeleteFileRequest;
+        public event OCPP.CSMS.OnDeleteFileResponseDelegate?                  OnDeleteFileResponse;
+        public event OCPP.CSMS.OnListDirectoryRequestDelegate?                OnListDirectoryRequest;
+        public event OCPP.CSMS.OnListDirectoryResponseDelegate?               OnListDirectoryResponse;
+
+        public event OCPP.CSMS.OnAddSignaturePolicyRequestDelegate?           OnAddSignaturePolicyRequest;
+        public event OCPP.CSMS.OnAddSignaturePolicyResponseDelegate?          OnAddSignaturePolicyResponse;
+        public event OCPP.CSMS.OnUpdateSignaturePolicyRequestDelegate?        OnUpdateSignaturePolicyRequest;
+        public event OCPP.CSMS.OnUpdateSignaturePolicyResponseDelegate?       OnUpdateSignaturePolicyResponse;
+        public event OCPP.CSMS.OnDeleteSignaturePolicyRequestDelegate?        OnDeleteSignaturePolicyRequest;
+        public event OCPP.CSMS.OnDeleteSignaturePolicyResponseDelegate?       OnDeleteSignaturePolicyResponse;
+        public event OCPP.CSMS.OnAddUserRoleRequestDelegate?                  OnAddUserRoleRequest;
+        public event OCPP.CSMS.OnAddUserRoleResponseDelegate?                 OnAddUserRoleResponse;
+        public event OCPP.CSMS.OnUpdateUserRoleRequestDelegate?               OnUpdateUserRoleRequest;
+        public event OCPP.CSMS.OnUpdateUserRoleResponseDelegate?              OnUpdateUserRoleResponse;
+        public event OCPP.CSMS.OnDeleteUserRoleRequestDelegate?               OnDeleteUserRoleRequest;
+        public event OCPP.CSMS.OnDeleteUserRoleResponseDelegate?              OnDeleteUserRoleResponse;
+
         #endregion
 
         #region Constructor(s)
@@ -4166,7 +4207,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        public Task<OCPP.CS.BinaryDataTransferResponse> TransferBinaryData(OCPP.CSMS.BinaryDataTransferRequest Request)
+        public Task<OCPP.CS.BinaryDataTransferResponse> BinaryDataTransfer(OCPP.CSMS.BinaryDataTransferRequest Request)
         {
             throw new NotImplementedException();
         }

@@ -29,6 +29,9 @@ using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
+using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
@@ -40,7 +43,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// </summary>
     public partial class CentralSystemWSServer : ACSMSWSServer,
                                                  ICSMSChannel,
-                                                 ICentralSystemServer
+                                                 ICentralSystemChannel
     {
 
         #region Data
@@ -94,6 +97,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
 
         public CustomJObjectSerializerDelegate<SignaturePolicy>?            CustomSignaturePolicySerializer                         { get; set; }
+
+        public NetworkingNode_Id ChargeBoxIdentity => throw new NotImplementedException();
+
+        public string From => throw new NotImplementedException();
+
+        public string To => throw new NotImplementedException();
 
 
         #endregion
@@ -247,7 +256,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             return Task.CompletedTask;
 
         }
-
 
     }
 

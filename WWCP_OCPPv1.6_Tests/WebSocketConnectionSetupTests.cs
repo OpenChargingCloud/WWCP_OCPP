@@ -69,11 +69,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
         //                                                                messageId,
         //                                                                data);
 
-        //        Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+        //        Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
         //        Assert.AreEqual(DataTransferStatus.Rejected,    response1.Status);
 
         //        Assert.AreEqual(1,                              dataTransferRequests.Count);
-        //        Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+        //        Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().NetworkingNodeId);
         //        Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
         //        Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
         //        Assert.AreEqual(data,                           dataTransferRequests.First().Data);

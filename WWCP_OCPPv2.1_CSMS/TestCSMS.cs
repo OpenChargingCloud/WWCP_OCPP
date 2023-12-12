@@ -677,7 +677,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-
         #endregion
 
         #region CSMS -> Charging Station Messages
@@ -1376,7 +1375,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnListDirectory                  (-Request/-Response)
+        #region OnListDirectory               (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a ListDirectory request will be sent to the charging station.
@@ -10905,14 +10904,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         // Binary Data Streams Extensions
 
-        #region TransferBinaryData          (Request)
+        #region BinaryDataTransfer          (Request)
 
         /// <summary>
         /// Transfer the given data to the given charging station.
         /// </summary>
         /// <param name="Request">A BinaryDataTransfer request.</param>
         public async Task<OCPP.CS.BinaryDataTransferResponse>
-            TransferBinaryData(OCPP.CSMS.BinaryDataTransferRequest Request)
+            BinaryDataTransfer(OCPP.CSMS.BinaryDataTransferRequest Request)
 
         {
 
@@ -10948,7 +10947,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
                                       out var errorResponse
                                   )
 
-                                      ? await centralSystem.Item1.TransferBinaryData(Request)
+                                      ? await centralSystem.Item1.BinaryDataTransfer(Request)
 
                                       : new OCPP.CS.BinaryDataTransferResponse(
                                             Request,
@@ -12241,7 +12240,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region ChargingStationes
+        #region ChargingStations
 
         #region Data
 

@@ -51,7 +51,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
             base.SetupEachTest();
 
             chargingStation1  = new TestChargePoint(
-                                    ChargeBoxId:              ChargeBox_Id.Parse("GD001"),
+                                    ChargeBoxId:              OCPP.NetworkingNode_Id.Parse("GD001"),
                                     ChargePointVendor:        "GraphDefined OEM #1",
                                     ChargePointModel:         "VCP.1",
                                     NumberOfConnectors:       2,
@@ -74,7 +74,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
             Assert.IsNotNull(chargingStation1);
 
             chargingStation2  = new TestChargePoint(
-                                    ChargeBoxId:              ChargeBox_Id.Parse("CP002"),
+                                    ChargeBoxId:              OCPP.NetworkingNode_Id.Parse("CP002"),
                                     ChargePointVendor:        "GraphDefined OEM #2",
                                     ChargePointModel:         "VCP.2",
                                     NumberOfConnectors:       2,
@@ -95,7 +95,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
             Assert.IsNotNull(chargingStation2);
 
             chargingStation3  = new TestChargePoint(
-                                    ChargeBoxId:              ChargeBox_Id.Parse("CP003"),
+                                    ChargeBoxId:              OCPP.NetworkingNode_Id.Parse("CP003"),
                                     ChargePointVendor:        "GraphDefined OEM #3",
                                     ChargePointModel:         "VCP.3",
                                     NumberOfConnectors:       4,

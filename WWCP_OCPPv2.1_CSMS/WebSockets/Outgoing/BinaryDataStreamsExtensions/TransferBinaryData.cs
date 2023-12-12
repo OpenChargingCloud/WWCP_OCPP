@@ -58,7 +58,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 
         #region TransferBinaryData(Request)
 
-        public async Task<OCPP.CS.BinaryDataTransferResponse> TransferBinaryData(OCPP.CSMS.BinaryDataTransferRequest Request)
+        public async Task<OCPP.CS.BinaryDataTransferResponse> BinaryDataTransfer(OCPP.CSMS.BinaryDataTransferRequest Request)
         {
 
             #region Send OnBinaryDataTransferRequest event

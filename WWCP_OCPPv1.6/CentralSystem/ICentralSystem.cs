@@ -15,13 +15,35 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using cloud.charging.open.protocols.OCPP;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
     /// The common interface of all central systems.
     /// </summary>
-    public interface ICentralSystem : ICentralSystemClient, ICentralSystemServer
-    { }
+    public interface ICentralSystem : ICentralSystemClient,
+                                      ICentralSystemServer,
+                                      ICentralSystemServerRequestResponseEvents
+    {
+
+        CentralSystem_Id           Id                       { get; }
+
+        TimeSpan                   DefaultRequestTimeout    { get; }
+
+        Request_Id                 NextRequestId            { get; }
+
+        SignaturePolicy?           SignaturePolicy          { get; }
+
+
+        IEnumerable<ICSMSChannel>  CSMSChannels             { get; }
+
+
+    }
 
 }

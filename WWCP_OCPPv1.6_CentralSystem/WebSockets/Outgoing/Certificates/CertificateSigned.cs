@@ -31,7 +31,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
     public partial class CentralSystemWSServer : ACSMSWSServer,
-                                                 ICSMSChannel
+                                                 ICSMSChannel,
+                                                 ICentralSystemChannel
     {
 
         #region Custom JSON serializer delegates
@@ -63,7 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Send the signed certificate to the charging station.
         /// </summary>
         /// <param name="Request">A certificate signed request.</param>
-        public async Task<CertificateSignedResponse> SendSignedCertificate(CertificateSignedRequest Request)
+        public async Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request)
         {
 
             #region Send OnCertificateSignedRequest event

@@ -27,20 +27,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #region WebSocket connection
 
-        /// <summary>
-        /// An event sent whenever the HTTP connection switched successfully to web socket.
-        /// </summary>
-        event OnCentralSystemNewWebSocketConnectionDelegate?    OnCentralSystemNewWebSocketConnection;
+        ///// <summary>
+        ///// An event sent whenever the HTTP connection switched successfully to web socket.
+        ///// </summary>
+        //event OnCentralSystemNewWebSocketConnectionDelegate?    OnCentralSystemNewWebSocketConnection;
 
-        /// <summary>
-        /// An event sent whenever a web socket close frame was received.
-        /// </summary>
-        event OnCentralSystemCloseMessageReceivedDelegate?      OnCentralSystemCloseMessageReceived;
+        ///// <summary>
+        ///// An event sent whenever a web socket close frame was received.
+        ///// </summary>
+        //event OnCentralSystemCloseMessageReceivedDelegate?      OnCentralSystemCloseMessageReceived;
 
-        /// <summary>
-        /// An event sent whenever a TCP connection was closed.
-        /// </summary>
-        event OnCentralSystemTCPConnectionClosedDelegate?       OnCentralSystemTCPConnectionClosed;
+        ///// <summary>
+        ///// An event sent whenever a TCP connection was closed.
+        ///// </summary>
+        //event OnCentralSystemTCPConnectionClosedDelegate?       OnCentralSystemTCPConnectionClosed;
 
         #endregion
 

@@ -30,7 +30,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// The CSMS HTTP/WebSocket/JSON server.
     /// </summary>
     public partial class CentralSystemWSServer : ACSMSWSServer,
-                                                 ICSMSChannel
+                                                 ICSMSChannel,
+                                                 ICentralSystemChannel
     {
 
         #region Custom JSON serializer delegates
@@ -56,9 +57,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         #endregion
 
 
-        #region TransferData(Request)
+        #region DataTransfer(Request)
 
-        public async Task<OCPP.CS.DataTransferResponse> TransferData(OCPP.CSMS.DataTransferRequest Request)
+        public async Task<OCPP.CS.DataTransferResponse> DataTransfer(OCPP.CSMS.DataTransferRequest Request)
         {
 
             #region Send OnDataTransferRequest event

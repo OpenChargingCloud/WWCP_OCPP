@@ -20,6 +20,7 @@
 using NUnit.Framework;
 
 using cloud.charging.open.protocols.OCPPv1_6.CS;
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -64,11 +65,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 var resetType  = ResetTypes.Hard;
                 var response1  = await testCentralSystem01.Reset(chargingStation1.ChargeBoxId, resetType);
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
                 Assert.AreEqual(ResetStatus.Accepted,           response1.Status);
 
                 Assert.AreEqual(1,                              resetRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   resetRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   resetRequests.First().NetworkingNodeId);
                 Assert.AreEqual(resetType,                      resetRequests.First().ResetType);
 
             }
@@ -108,11 +109,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 var resetType  = ResetTypes.Hard;
                 var response1  = await testCentralSystem01.Reset(chargingStation2.ChargeBoxId, resetType);
 
-                Assert.AreEqual  (ResultCodes.NetworkError,  response1.Result.ResultCode);
-                Assert.IsNotEmpty(                           response1.Result.Description);
-                Assert.AreEqual  (ResetStatus.Unknown,       response1.Status);
+                Assert.AreEqual  (OCPP.ResultCode.NetworkError,   response1.Result.ResultCode);
+                Assert.IsNotEmpty(                                response1.Result.Description);
+                Assert.AreEqual  (ResetStatus.Unknown,            response1.Status);
 
-                Assert.AreEqual  (0,                         resetRequests.Count);
+                Assert.AreEqual  (0,                              resetRequests.Count);
 
             }
 
@@ -155,11 +156,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                                                                  connectorId,
                                                                                  availability);
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
                 Assert.AreEqual(AvailabilityStatus.Accepted,    response1.Status);
 
                 Assert.AreEqual(1,                              changeAvailabilityRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   changeAvailabilityRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   changeAvailabilityRequests.First().NetworkingNodeId);
                 Assert.AreEqual(connectorId,                    changeAvailabilityRequests.First().ConnectorId);
                 Assert.AreEqual(availability,                   changeAvailabilityRequests.First().Availability);
 
@@ -203,11 +204,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                                                                  connectorId,
                                                                                  availability);
 
-                Assert.AreEqual  (ResultCodes.NetworkError,     response1.Result.ResultCode);
-                Assert.IsNotEmpty(                              response1.Result.Description);
-                Assert.AreEqual  (AvailabilityStatus.Unknown,   response1.Status);
+                Assert.AreEqual  (OCPP.ResultCode.NetworkError,   response1.Result.ResultCode);
+                Assert.IsNotEmpty(                                response1.Result.Description);
+                Assert.AreEqual  (AvailabilityStatus.Unknown,     response1.Status);
 
-                Assert.AreEqual  (0,                            changeAvailabilityRequests.Count);
+                Assert.AreEqual  (0,                              changeAvailabilityRequests.Count);
 
             }
 
@@ -246,12 +247,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
                 var response1 = await testCentralSystem01.GetConfiguration(chargingStation1.ChargeBoxId);
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
                 Assert.AreEqual(4,                              response1.ConfigurationKeys.Count());
                 Assert.AreEqual(0,                              response1.UnknownKeys.      Count());
 
                 Assert.AreEqual(1,                              getConfigurationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getConfigurationRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getConfigurationRequests.First().NetworkingNodeId);
 
             }
 
@@ -290,12 +291,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 var response1 = await testCentralSystem01.GetConfiguration(chargingStation1.ChargeBoxId,
                                                                            new String[] { "hello" });
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
                 Assert.AreEqual(1,                              response1.ConfigurationKeys.Count());
                 Assert.AreEqual(0,                              response1.UnknownKeys.      Count());
 
                 Assert.AreEqual(1,                              getConfigurationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getConfigurationRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getConfigurationRequests.First().NetworkingNodeId);
 
             }
 
@@ -334,12 +335,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 var response1 = await testCentralSystem01.GetConfiguration(chargingStation1.ChargeBoxId,
                                                                            new String[] { "ABCD", "BCDE" });
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
                 Assert.AreEqual(0,                              response1.ConfigurationKeys.Count());
                 Assert.AreEqual(2,                              response1.UnknownKeys.      Count());
 
                 Assert.AreEqual(1,                              getConfigurationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getConfigurationRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getConfigurationRequests.First().NetworkingNodeId);
 
             }
 
@@ -382,11 +383,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                                                                key,
                                                                                value);
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
                 Assert.AreEqual(ConfigurationStatus.Rejected,   response1.Status);
 
                 Assert.AreEqual(1,                              changeConfigurationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   changeConfigurationRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   changeConfigurationRequests.First().NetworkingNodeId);
                 Assert.AreEqual(key,                            changeConfigurationRequests.First().Key);
                 Assert.AreEqual(value,                          changeConfigurationRequests.First().Value);
 
@@ -430,11 +431,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                                                                key,
                                                                                value);
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
                 Assert.AreEqual(ConfigurationStatus.Accepted,   response1.Status);
 
                 Assert.AreEqual(1,                              changeConfigurationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   changeConfigurationRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   changeConfigurationRequests.First().NetworkingNodeId);
                 Assert.AreEqual(key,                            changeConfigurationRequests.First().Key);
                 Assert.AreEqual(value,                          changeConfigurationRequests.First().Value);
 
@@ -450,13 +451,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 var response2 = await testCentralSystem01.GetConfiguration(chargingStation1.ChargeBoxId,
                                                                            new String[] { key });
 
-                Assert.AreEqual(ResultCodes.OK,                 response2.Result.ResultCode);
+                Assert.AreEqual(OCPP.ResultCode.OK,             response2.Result.ResultCode);
                 Assert.AreEqual(1,                              response2.ConfigurationKeys.Count());
                 Assert.AreEqual(0,                              response2.UnknownKeys.      Count());
                 Assert.AreEqual(value,                          response2.ConfigurationKeys.First().Value);
 
                 Assert.AreEqual(1,                              getConfigurationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getConfigurationRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getConfigurationRequests.First().NetworkingNodeId);
 
             }
 
@@ -498,11 +499,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                                                                key,
                                                                                value);
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
                 Assert.AreEqual(ConfigurationStatus.Rejected,   response1.Status);
 
                 Assert.AreEqual(1,                              changeConfigurationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   changeConfigurationRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   changeConfigurationRequests.First().NetworkingNodeId);
                 Assert.AreEqual(key,                            changeConfigurationRequests.First().Key);
                 Assert.AreEqual(value,                          changeConfigurationRequests.First().Value);
 
@@ -518,13 +519,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 var response2 = await testCentralSystem01.GetConfiguration(chargingStation1.ChargeBoxId,
                                                                            new String[] { key });
 
-                Assert.AreEqual(ResultCodes.OK,                 response2.Result.ResultCode);
+                Assert.AreEqual(OCPP.ResultCode.OK,             response2.Result.ResultCode);
                 Assert.AreEqual(1,                              response2.ConfigurationKeys.Count());
                 Assert.AreEqual(0,                              response2.UnknownKeys.      Count());
                 Assert.AreEqual("world",                        response2.ConfigurationKeys.First().Value);
 
                 Assert.AreEqual(1,                              getConfigurationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   getConfigurationRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   getConfigurationRequests.First().NetworkingNodeId);
 
             }
 
@@ -555,25 +556,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new List<DataTransferRequest>();
+                var dataTransferRequests = new List<OCPP.CSMS.DataTransferRequest>();
 
                 chargingStation1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
                     dataTransferRequests.Add(dataTransferRequest);
                 };
 
-                var vendorId   = "graphdefined";
-                var messageId  = "hello";
+                var vendorId   = Vendor_Id. Parse("graphdefined");
+                var messageId  = Message_Id.Parse("hello");
                 var data       = "world!";
                 var response1  = await testCentralSystem01.DataTransfer(chargingStation1.ChargeBoxId,
                                                                         vendorId,
                                                                         messageId,
                                                                         data);
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
-                Assert.AreEqual(DataTransferStatus.Accepted,    response1.Status);
+                Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
+                Assert.AreEqual(OCPP.DataTransferStatus.Accepted,    response1.Status);
 
                 Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().NetworkingNodeId);
                 Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
                 Assert.AreEqual(data,                           dataTransferRequests.First().Data);
@@ -606,25 +607,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 chargingStation3        is not null)
             {
 
-                var dataTransferRequests = new List<DataTransferRequest>();
+                var dataTransferRequests = new List<OCPP.CSMS.DataTransferRequest>();
 
                 chargingStation1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
                     dataTransferRequests.Add(dataTransferRequest);
                 };
 
-                var vendorId   = "ACME Inc.";
-                var messageId  = "hello";
+                var vendorId   = Vendor_Id. Parse("ACME Inc.");
+                var messageId  = Message_Id.Parse("hello");
                 var data       = "world!";
                 var response1  = await testCentralSystem01.DataTransfer(chargingStation1.ChargeBoxId,
                                                                         vendorId,
                                                                         messageId,
                                                                         data);
 
-                Assert.AreEqual(ResultCodes.OK,                 response1.Result.ResultCode);
+                Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
                 Assert.AreEqual(DataTransferStatus.Rejected,    response1.Status);
 
                 Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().ChargeBoxId);
+                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().NetworkingNodeId);
                 Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
                 Assert.AreEqual(data,                           dataTransferRequests.First().Data);
