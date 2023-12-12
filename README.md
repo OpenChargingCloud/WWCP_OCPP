@@ -30,27 +30,30 @@ The official protocol specifications of [OCPP v1.6](WWCP_OCPPv1.6/README.md), [O
 
 #### End-to-End Cyber Security
 
-Via *Digital Signatures* on all requests, responses and main data structures. *Signature Policies* and *User Roles* will further limit the attack surface of your charging infrastructure.
+OCCP currently on ly offers *hop-by-hop* security via *Transport-Layer-Security (TLS)*. This only provides communication privacy and security against external attackers, but can not secure more complex networking scenarios e.g. with local controllers between the charging stations and the backend(s).
+
+This project provides fills these gaps via *Digital Signatures* on all requests, responses and main data structures. Additional *Signature Policies* and *User Roles* will further limit the attack surface of your critical charging infrastructure and allow you to implement fine-grained access controls.
+
 
 #### German Calibration Law (Eichrecht)
 
-...
+The software aspects of the German Calibration Law (Eichrecht) demand a secure communication of meter values, errors (and charging tariff information for ad hoc charging sessions) and a Charging Transparency Software for end users and regulators. Currently OCPP only supports minimal support for this regulatory requirements and thus the expected security benefit does not reach the end users.
+
+This project provides additional data structures and commands to ensure a secure exchange of cryptographic and metrological data.
+
 
 #### European General Data Protection Regulation (GDPR)
 
-...
+Neither RFID cards, nor AutoCharge, smartphone apps and even not ISO 15118 Plug & Charge currently provide a GDPR compliant protection of end users and their data.
+
 
 #### Overlay Networking
 
-...
+While in the past a single charging station was connected directly to an operator backend, todays charging infrastructure is far more complex. Today we have to support efficient and secure operations for a cluster of colocated charging stations connected to the same grid connection point. Those charging stations oftern come from different vendors and some sort of local load management should reduce energy consumption peaks.
+
+This project provides additional data structures and commands to enable overlay networking between charging stations, local controllers and operator backends. It also provides enhanced network configuration options for High-Available network setups to simplify the *NEVI requirements* in the US.
 
 
 ### Your participation
 
-This software is Open Source under the **Apache 2.0 license** and in some parts
-**Affero GPL 3.0 license**. We appreciate your participation in this
-ongoing project, and your help to improve it and the e-mobility ICT in
-general. If you find bugs, want to request a feature or send us a pull
-request, feel free to use the normal GitHub features to do so. For this
-please read the Contributor License Agreement carefully and send us a signed
-copy or use a similar free and open license.
+This software is Open Source under the **Apache 2.0 license** and in some parts **Affero GPL 3.0 license**. We appreciate your participation in this ongoing project, and your help to improve it and the e-mobility ICT in general. If you find bugs, want to request a feature or send us a pull request, feel free to use the normal GitHub features to do so. For this please read the Contributor License Agreement carefully and send us a signed copy or use a similar free and open license.
