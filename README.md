@@ -1,13 +1,11 @@
 # WWCP OCPP
 
-This software will allow the communication between World Wide Charging
-Protocol (WWCP) entities and entities implementing the
-_Open ChargePoint Protocol Version 1.6/2.0.1/2.1_, which is defined by the
-_Open Charge Alliance (OCA)_. The focus of this protocol are the communication
-aspects between e-mobility charging stations, local nodes and charging station
-operator backends.
+This software libraries will allow the communication between World Wide Charging Protocol (WWCP) entities and entities implementing the _Open Charge Point Protocol Version 1.6/2.0.1/2.1_, which is defined by the [_Open Charge Alliance (OCA)_](http://www.openchargealliance.org). The focus of the *Open Charge Point Protocol* are all the communication aspects between e-mobility *charging stations*, *local nodes* and *Charging Station Operator Systems/Backends (CSMS)*.
 
-For more details on this protocol please visit http://www.openchargealliance.org.
+This software also allows you to build standalone OCPP micro services and use case specific gateways between OCPP and your internal microservice architecture.
+
+For more details on the *Open Charge Point Protocol* please visit http://www.openchargealliance.org.
+
 
 ## Versions
 
@@ -26,9 +24,25 @@ version was also tested on multiple *Open Charge Alliance Plugfests*.
 - **OCPP v1.5** is no longer maintained. If you still need this version please
 send us an e-mail.
 
-## Content
+## Implementation Details and Differences
 
-- **Implementation Details and Differences** for [OCPP v1.6](WWCP_OCPPv1.6/README.md), [OCPP v2.0.1](WWCP_OCPPv2.0.1/README.md)  and [OCPP v2.1](WWCP_OCPPv2.1/README.md) to the official protocol specification. The OCPP specification has unfortunatelly many flaws and security issues. This implementation provides extentions and work-arounds for most of these issues to simplify the daily operations business, high availability or to support additional concepts/methods like *European General Data Protection Regulation (GDPR)*  and the *German Calibration Law (Eichrecht)*.
+The official protocol specifications of [OCPP v1.6](WWCP_OCPPv1.6/README.md), [OCPP v2.0.1](WWCP_OCPPv2.0.1/README.md) and [OCPP v2.1](WWCP_OCPPv2.1/README.md) have unfortunatelly still many protocol design flaws and security issues which are still not addressed properly by the *Open Charge Alliance Technical Working Group (TWG)*. Therefore this implementation provides a rich set of vendor extentions and work-arounds for most of these issues to simplify the daily operations business, high availability or to support additional concepts/methods.
+
+#### End-to-End Cyber Security
+
+Via *Digital Signatures* on all requests, responses and main data structures. *Signature Policies* and *User Roles* will further limit the attack surface of your charging infrastructure.
+
+#### German Calibration Law (Eichrecht)
+
+...
+
+#### European General Data Protection Regulation (GDPR)
+
+...
+
+#### Overlay Networking
+
+...
 
 
 ### Your participation
