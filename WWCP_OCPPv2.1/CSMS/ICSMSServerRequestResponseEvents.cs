@@ -15,68 +15,14 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using org.GraphDefined.Vanaheimr.Hermod;
-
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CSMS;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
     /// The common interface of all CSMS servers.
     /// </summary>
-    public interface ICSMSServerLogger : IEventSender
+    public interface ICSMSServerRequestResponseEvents : OCPP.CSMS.ICSMSServerRequestResponseEvents
     {
-
-        #region Properties
-
-        /// <summary>
-        /// The unique identifications of all connected networking nodes.
-        /// </summary>
-        IEnumerable<NetworkingNode_Id>  NetworkingNodeIds    { get; }
-
-        #endregion
-
-
-        #region OnJSONMessage   (-Received/-ResponseSent/-ErrorResponseSent)
-
-        event OnWebSocketJSONMessageRequestDelegate?      OnJSONMessageRequestReceived;
-
-        event OnWebSocketJSONMessageResponseDelegate?     OnJSONMessageResponseSent;
-
-        event OnWebSocketTextErrorResponseDelegate?       OnJSONErrorResponseSent;
-
-
-        event OnWebSocketJSONMessageRequestDelegate?      OnJSONMessageRequestSent;
-
-        event OnWebSocketJSONMessageResponseDelegate?     OnJSONMessageResponseReceived;
-
-        event OnWebSocketTextErrorResponseDelegate?       OnJSONErrorResponseReceived;
-
-        #endregion
-
-        #region OnBinaryMessage (-Received/-ResponseSent/-ErrorResponseSent)
-
-        event OnWebSocketBinaryMessageRequestDelegate?    OnBinaryMessageRequestReceived;
-
-        event OnWebSocketBinaryMessageResponseDelegate?   OnBinaryMessageResponseSent;
-
-        //event OnWebSocketBinaryErrorResponseDelegate?     OnBinaryErrorResponseSent;
-
-
-        event OnWebSocketBinaryMessageRequestDelegate?    OnBinaryMessageRequestSent;
-
-        event OnWebSocketBinaryMessageResponseDelegate?   OnBinaryMessageResponseReceived;
-
-        //event OnWebSocketBinaryErrorResponseDelegate?     OnBinaryErrorResponseReceived;
-
-        #endregion
-
 
         #region OnBootNotification                     (-Request/-Response)
 
@@ -209,12 +155,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// <summary>
         /// An event sent whenever a data transfer request was received.
         /// </summary>
-        event OnIncomingDataTransferRequestDelegate    OnIncomingDataTransferRequest;
+        event OCPP.CSMS.OnIncomingDataTransferRequestDelegate    OnIncomingDataTransferRequest;
 
         /// <summary>
         /// An event sent whenever a response to a data transfer request was sent.
         /// </summary>
-        event OnIncomingDataTransferResponseDelegate   OnIncomingDataTransferResponse;
+        event OCPP.CSMS.OnIncomingDataTransferResponseDelegate   OnIncomingDataTransferResponse;
 
         #endregion
 

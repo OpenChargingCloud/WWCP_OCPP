@@ -18,9 +18,9 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-using Newtonsoft.Json.Linq;
+
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
@@ -35,14 +35,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="CentralSystem">The OCPP central system.</param>
     /// <param name="NewConnection">The new HTTP web socket connection.</param>
-    /// <param name="ChargeBoxId">The sending charge box identification.</param>
+    /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
     /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
     /// <param name="SharedSubprotocols">An enumeration of shared HTTP Web Sockets subprotocols.</param>
     /// <param name="CancellationToken">A token to cancel the processing.</param>
     public delegate Task OnCentralSystemNewWebSocketConnectionDelegate(DateTime                           Timestamp,
                                                                        ICentralSystem                     CentralSystem,
                                                                        WebSocketServerConnection          NewConnection,
-                                                                       ChargeBox_Id                       ChargeBoxId,
+                                                                       NetworkingNode_Id                  NetworkingNodeId,
                                                                        EventTracking_Id                   EventTrackingId,
                                                                        IEnumerable<String>                SharedSubprotocols,
                                                                        CancellationToken                  CancellationToken);
@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="CentralSystem">The OCPP central system.</param>
     /// <param name="Connection">The HTTP Web Socket connection to be closed.</param>
-    /// <param name="ChargeBoxId">The sending charge box identification.</param>
+    /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
     /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
     /// <param name="StatusCode">The HTTP Web Socket Closing Status Code.</param>
     /// <param name="Reason">An optional HTTP Web Socket closing reason.</param>
@@ -61,7 +61,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     public delegate Task OnCentralSystemCloseMessageReceivedDelegate  (DateTime                           Timestamp,
                                                                        ICentralSystem                     CentralSystem,
                                                                        WebSocketServerConnection          Connection,
-                                                                       ChargeBox_Id                       ChargeBoxId,
+                                                                       NetworkingNode_Id                  NetworkingNodeId,
                                                                        EventTracking_Id                   EventTrackingId,
                                                                        WebSocketFrame.ClosingStatusCode   StatusCode,
                                                                        String?                            Reason,
@@ -73,14 +73,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <param name="Timestamp">The logging timestamp.</param>
     /// <param name="CentralSystem">The OCPP central system.</param>
     /// <param name="Connection">The HTTP Web Socket connection to be closed.</param>
-    /// <param name="ChargeBoxId">The sending charge box identification.</param>
+    /// <param name="NetworkingNodeId">The sending OCPP networking node/charging station identification.</param>
     /// <param name="EventTrackingId">The event tracking identification for correlating this request with other events.</param>
     /// <param name="Reason">An optional closing reason.</param>
     /// <param name="CancellationToken">A token to cancel the processing.</param>
     public delegate Task OnCentralSystemTCPConnectionClosedDelegate   (DateTime                           Timestamp,
                                                                        ICentralSystem                     CentralSystem,
                                                                        WebSocketServerConnection          Connection,
-                                                                       ChargeBox_Id                       ChargeBoxId,
+                                                                       NetworkingNode_Id                  NetworkingNodeId,
                                                                        EventTracking_Id                   EventTrackingId,
                                                                        String?                            Reason,
                                                                        CancellationToken                  CancellationToken);

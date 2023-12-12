@@ -17,23 +17,16 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
+
+using cloud.charging.open.protocols.OCPP;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.CS
+namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
-    /// <summary>
-    /// The common interface of all central systems channels.
-    /// CSMS might have multiple channels, e.g. a SOAP and a WebSockets channel.
-    /// </summary>
-    public interface ICSMSChannel : IWebSocketServer,
-                                    ICSMSClient,
-                                    ICSMSServerEvents
-    {
-
-
-    }
+    
 
 }

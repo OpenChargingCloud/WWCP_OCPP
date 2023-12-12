@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 namespace cloud.charging.open.protocols.OCPP
 {
 
-    #region Connection Management
+    #region Common Connection Management
 
     /// <summary>
     /// A delegate for logging new HTTP Web Socket connections.
@@ -236,18 +236,6 @@ namespace cloud.charging.open.protocols.OCPP
                                                                       TimeSpan                    Runtime);
 
     #endregion
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     public delegate Task OnWebSocketJSONMessageRequestDelegate   (DateTime                    Timestamp,

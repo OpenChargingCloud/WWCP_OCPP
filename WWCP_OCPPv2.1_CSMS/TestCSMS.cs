@@ -40,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 {
 
     /// <summary>
-    /// A central system for testing.
+    /// A Charging Station Management System for testing.
     /// </summary>
     public class TestCSMS : ICSMSService,
                             IEventSender
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An enumeration of central system servers.
         /// </summary>
-        public IEnumerable<ICSMSServerEvents> CSMSServers
+        public IEnumerable<OCPPv2_1.CSMS.ICSMSServerEvents> CSMSServers
             => centralSystemServers;
 
 
@@ -1362,7 +1362,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region OnDeleteFile                    (-Request/-Response)
+        #region OnDeleteFile                  (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a DeleteFile request will be sent to the charging station.
@@ -1373,6 +1373,20 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event sent whenever a response to a DeleteFile request was received.
         /// </summary>
         public event OnDeleteFileResponseDelegate?  OnDeleteFileResponse;
+
+        #endregion
+
+        #region OnListDirectory                  (-Request/-Response)
+
+        /// <summary>
+        /// An event sent whenever a ListDirectory request will be sent to the charging station.
+        /// </summary>
+        public event OnListDirectoryRequestDelegate?   OnListDirectoryRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a ListDirectory request was received.
+        /// </summary>
+        public event OnListDirectoryResponseDelegate?  OnListDirectoryResponse;
 
         #endregion
 

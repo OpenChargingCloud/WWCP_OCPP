@@ -124,7 +124,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         #region Events
 
-        #region Connection Management
+        #region Common Connection Management
 
         /// <summary>
         /// An event sent whenever the HTTP connection switched successfully to web socket.

@@ -28,7 +28,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// The common interface of all central systems.
     /// </summary>
     public interface ICSMS : ICSMSClient,
-                             ICSMSServerLogger
+                             ICSMSServerRequestResponseEvents
     {
 
         CSMS_Id                    Id                       { get; }

@@ -15,41 +15,15 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CSMS;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
     /// The common interface of all CSMS servers.
     /// </summary>
-    public interface ICSMSServerEvents : ICSMSServerLogger
+    public interface ICSMSServerEvents : OCPP.CSMS.ICSMSServerEvents,
+                                         ICSMSServerRequestResponseEvents
     {
-
-        #region WebSocket connection
-
-        /// <summary>
-        /// An event sent whenever the HTTP connection switched successfully to web socket.
-        /// </summary>
-        event OnCSMSNewWebSocketConnectionDelegate?  OnCSMSNewWebSocketConnection;
-
-        /// <summary>
-        /// An event sent whenever a web socket close frame was received.
-        /// </summary>
-        event OnCSMSCloseMessageReceivedDelegate?    OnCSMSCloseMessageReceived;
-
-        /// <summary>
-        /// An event sent whenever a TCP connection was closed.
-        /// </summary>
-        event OnCSMSTCPConnectionClosedDelegate?     OnCSMSTCPConnectionClosed;
-
-        #endregion
-
 
         #region OnBootNotification
 
@@ -135,9 +109,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         #region OnIncomingDataTransfer
 
         /// <summary>
-        /// An event sent whenever a data transfer request was received.
+        /// An event sent whenever an incoming DataTransfer request was received.
         /// </summary>
-        event OnIncomingDataTransferDelegate           OnIncomingDataTransfer;
+        event OCPP.CSMS.OnIncomingDataTransferDelegate    OnIncomingDataTransfer;
 
         #endregion
 
@@ -303,18 +277,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// An event sent whenever a notify customer information was received.
         /// </summary>
         event OnNotifyCustomerInformationDelegate           OnNotifyCustomerInformation;
-
-        #endregion
-
-
-        // Binary Data Streams Extensions
-
-        #region OnIncomingBinaryDataTransfer
-
-        /// <summary>
-        /// An event sent whenever a binary data transfer request was received.
-        /// </summary>
-        event OnIncomingBinaryDataTransferDelegate   OnIncomingBinaryDataTransfer;
 
         #endregion
 
