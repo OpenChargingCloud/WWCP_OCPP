@@ -1195,7 +1195,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                  Boolean           RequireAuthentication   = true,
                                  TimeSpan?         DefaultRequestTimeout   = null,
                                  IPPort?           HTTPUploadPort          = null,
-                                 DNSClient?        DNSClient               = null)
+                                 DNSClient?        DNSClient               = null,
+
+                                 SignaturePolicy?  SignaturePolicy         = null)
         {
 
             if (CentralSystemId.IsNullOrEmpty)
@@ -1249,6 +1251,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                            );
 
             this.DNSClient               = DNSClient ?? new DNSClient(SearchForIPv6DNSServers: false);
+
+            this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
 
         }
 

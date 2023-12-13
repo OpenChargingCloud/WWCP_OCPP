@@ -20,9 +20,9 @@
 using org.GraphDefined.Vanaheimr.Illias;
 
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
 
 #endregion
 
@@ -32,7 +32,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// A charging station HTTP Web Socket client.
     /// </summary>
-    public partial class ChargingStationWSClient : WebSocketClient,
+    public partial class ChargingStationWSClient : AChargingStationWSClient,
                                                    IChargingStationWebSocketClient,
                                                    IChargingStationServer,
                                                    IChargingStationClientEvents

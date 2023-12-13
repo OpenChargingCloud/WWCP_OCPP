@@ -63,8 +63,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         public new static readonly  HTTPPath     DefaultURLPrefix        = HTTPPath.Parse("/" + OCPPv1_6.Version.String);
 
-        private readonly        Dictionary<String, MethodInfo>      incomingMessageProcessorsLookup   = [];
-
         #endregion
 
         #region Properties

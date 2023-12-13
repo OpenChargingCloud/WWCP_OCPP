@@ -25,6 +25,7 @@ using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.WebSockets;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPP.CS;
 
 #endregion
 
@@ -35,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// The charging station HTTP WebSocket client runs on a charging station
     /// and connects to a CSMS to invoke methods.
     /// </summary>
-    public partial class ChargingStationWSClient : WebSocketClient,
+    public partial class ChargingStationWSClient : AChargingStationWSClient,
                                                    IChargingStationWebSocketClient,
                                                    IChargingStationServer,
                                                    IChargingStationClientEvents

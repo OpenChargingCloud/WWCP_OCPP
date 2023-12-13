@@ -20,19 +20,17 @@
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-
-using cloud.charging.open.protocols.OCPP;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CS
+namespace cloud.charging.open.protocols.OCPP.CS
 {
 
     // Incoming JSON requests
 
     public delegate Task  OnWebSocketClientJSONMessageResponseDelegate  (DateTime                          Timestamp,
-                                                                         IChargingStationWebSocketClient   Client,
+                                                                         IEventSender                      Client,
                                                                          EventTracking_Id                  EventTrackingId,
                                                                          DateTime                          RequestTimestamp,
                                                                          JArray?                           JSONRequestMessage,
@@ -42,7 +40,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
 
     public delegate Task  OnWebSocketClientBinaryMessageResponseDelegate(DateTime                          Timestamp,
-                                                                         IChargingStationWebSocketClient   Client,
+                                                                         IEventSender                      Client,
                                                                          EventTracking_Id                  EventTrackingId,
                                                                          DateTime                          RequestTimestamp,
                                                                          JArray?                           JSONRequestMessage,

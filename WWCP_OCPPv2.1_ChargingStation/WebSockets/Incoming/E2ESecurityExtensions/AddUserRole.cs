@@ -36,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// The charging station HTTP WebSocket client runs on a charging station
     /// and connects to a CSMS to invoke methods.
     /// </summary>
-    public partial class ChargingStationWSClient : WebSocketClient,
+    public partial class ChargingStationWSClient : AChargingStationWSClient,
                                                    IChargingStationWebSocketClient,
                                                    IChargingStationServer,
                                                    IChargingStationClientEvents
