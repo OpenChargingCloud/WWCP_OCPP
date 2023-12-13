@@ -22,19 +22,19 @@ using NUnit.Framework;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv2_1.CS;
-using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
+using cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsExtensions
+namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsExtensions
 {
 
     /// <summary>
-    /// Unit tests for charging stations sending binary messages to the CSMS.
+    /// Unit tests for charge points sending binary messages to the central system.
     /// </summary>
     [TestFixture]
-    public class CS_SendBinaryData_Tests : AChargingStationTests
+    public class CP_SendBinaryData_Tests : AChargePointTests
     {
 
         #region TransferBinaryData_Test()
@@ -46,22 +46,22 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
         public async Task TransferBinaryData_Test()
         {
 
-            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testCentralSystem01);
             Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(chargePoint1);
+            Assert.IsNotNull(chargePoint2);
+            Assert.IsNotNull(chargePoint3);
 
-            if (testCSMS01              is not null &&
+            if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var binaryDataTransferRequests= new ConcurrentList<OCPP.CS.BinaryDataTransferRequest>();
 
-                testCSMS01.OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, binaryDataTransferRequest) => {
+                testCentralSystem01.OnIncomingBinaryDataTransferRequest += (timestamp, sender, connection, binaryDataTransferRequest) => {
                     binaryDataTransferRequests.TryAdd(binaryDataTransferRequest);
                     return Task.CompletedTask;
                 };
@@ -71,7 +71,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 var data       = "Hello world!".ToUTF8Bytes();
 
 
-                var response   = await chargingStation1.TransferBinaryData(
+                var response   = await chargePoint1.TransferBinaryData(
                                      VendorId:     vendorId,
                                      MessageId:    messageId,
                                      Data:         data,
@@ -83,7 +83,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 Assert.AreEqual(data.Reverse().ToUTF8String(),   response.Data?.ToUTF8String());
 
                 Assert.AreEqual(1,                               binaryDataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,             binaryDataTransferRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,                 binaryDataTransferRequests.First().NetworkingNodeId);
                 Assert.AreEqual(vendorId,                        binaryDataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                       binaryDataTransferRequests.First().MessageId);
                 Assert.AreEqual(data,                            binaryDataTransferRequests.First().Data);

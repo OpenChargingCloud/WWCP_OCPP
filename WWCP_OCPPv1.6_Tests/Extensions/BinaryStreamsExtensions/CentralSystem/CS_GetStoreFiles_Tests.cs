@@ -25,21 +25,21 @@ using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
+using cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsExtensions
+namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsExtensions
 {
 
     /// <summary>
-    /// Unit tests for a CSMS fetching files from charging stations,
-    /// storing files at charging stations and
-    /// deleting files from charging stations.
+    /// Unit tests for a central system fetching files from charge points,
+    /// storing files at charge points and
+    /// deleting files from charge points.
     /// </summary>
     [TestFixture]
-    public class CSMS_GetStoreFiles_Tests : AChargingStationTests
+    public class CSMS_GetStoreFiles_Tests : AChargePointTests
     {
 
         #region GetFile_Test()
@@ -51,30 +51,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
         public async Task GetFile_Test()
         {
 
-            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testCentralSystem01);
             Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(chargePoint1);
+            Assert.IsNotNull(chargePoint2);
+            Assert.IsNotNull(chargePoint3);
 
-            if (testCSMS01              is not null &&
+            if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var getFileRequests = new ConcurrentList<GetFileRequest>();
 
-                chargingStation1.OnGetFileRequest += (timestamp, sender, getFileRequest) => {
+                chargePoint1.OnGetFileRequest += (timestamp, sender, getFileRequest) => {
                     getFileRequests.TryAdd(getFileRequest);
                     return Task.CompletedTask;
                 };
 
                 var filename   = FilePath.Parse("/hello/world.txt");
 
-                var response   = await testCSMS01.GetFile(
-                                     NetworkingNodeId:   chargingStation1.Id,
+                var response   = await testCentralSystem01.GetFile(
+                                     NetworkingNodeId:   chargePoint1.Id,
                                      Filename:           filename
                                  );
 
@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 Assert.AreEqual(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   response.FileSHA512.ToHexString());
 
                 Assert.AreEqual(1,                                                             getFileRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                                           getFileRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,                                               getFileRequests.First().NetworkingNodeId);
                 Assert.AreEqual(filename,                                                      getFileRequests.First().FileName);
 
             }
@@ -107,30 +107,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
         public async Task SendFile_Test()
         {
 
-            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testCentralSystem01);
             Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(chargePoint1);
+            Assert.IsNotNull(chargePoint2);
+            Assert.IsNotNull(chargePoint3);
 
-            if (testCSMS01              is not null &&
+            if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var sendFileRequests = new ConcurrentList<SendFileRequest>();
 
-                chargingStation1.OnSendFileRequest += (timestamp, sender, sendFileRequest) => {
+                chargePoint1.OnSendFileRequest += (timestamp, sender, sendFileRequest) => {
                     sendFileRequests.TryAdd(sendFileRequest);
                     return Task.CompletedTask;
                 };
 
                 var filename   = FilePath.Parse("/hello/world.txt");
 
-                var response   = await testCSMS01.SendFile(
-                                     NetworkingNodeId:   chargingStation1.Id,
+                var response   = await testCentralSystem01.SendFile(
+                                     NetworkingNodeId:   chargePoint1.Id,
                                      FileName:           filename,
                                      FileContent:        "Hello world!".ToUTF8Bytes(),
                                      FileContentType:    ContentType.Text.Plain,
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 Assert.AreEqual(filename,                                                      response.FileName);
 
                 Assert.AreEqual(1,                                                             sendFileRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,                                           sendFileRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,                                               sendFileRequests.First().NetworkingNodeId);
                 Assert.AreEqual("Hello world!",                                                sendFileRequests.First().FileContent.ToUTF8String());
                 Assert.AreEqual(ContentType.Text.Plain,                                        sendFileRequests.First().FileContentType);
                 Assert.AreEqual(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   sendFileRequests.First().FileSHA256.ToHexString());
@@ -168,30 +168,30 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
         public async Task DeleteFile_Test()
         {
 
-            Assert.IsNotNull(testCSMS01);
+            Assert.IsNotNull(testCentralSystem01);
             Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(chargePoint1);
+            Assert.IsNotNull(chargePoint2);
+            Assert.IsNotNull(chargePoint3);
 
-            if (testCSMS01              is not null &&
+            if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var deleteFileRequests = new ConcurrentList<DeleteFileRequest>();
 
-                chargingStation1.OnDeleteFileRequest += (timestamp, sender, deleteFileRequest) => {
+                chargePoint1.OnDeleteFileRequest += (timestamp, sender, deleteFileRequest) => {
                     deleteFileRequests.TryAdd(deleteFileRequest);
                     return Task.CompletedTask;
                 };
 
                 var filename   = FilePath.Parse("/hello/world.txt");
 
-                var response   = await testCSMS01.DeleteFile(
-                                     NetworkingNodeId:   chargingStation1.Id,
+                var response   = await testCentralSystem01.DeleteFile(
+                                     NetworkingNodeId:   chargePoint1.Id,
                                      FileName:           filename,
                                      FileSHA256:         SHA256.HashData("Hello world!".ToUTF8Bytes()),
                                      FileSHA512:         SHA512.HashData("Hello world!".ToUTF8Bytes())
@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 Assert.AreEqual(filename,                   response.FileName);
 
                 Assert.AreEqual(1,                          deleteFileRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,        deleteFileRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,            deleteFileRequests.First().NetworkingNodeId);
 
             }
 

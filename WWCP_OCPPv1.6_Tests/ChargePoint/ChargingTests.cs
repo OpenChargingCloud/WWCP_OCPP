@@ -19,11 +19,9 @@
 
 using NUnit.Framework;
 
-using cloud.charging.open.protocols.OCPPv1_6.CS;
-
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.tests
+namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 {
 
     /// <summary>

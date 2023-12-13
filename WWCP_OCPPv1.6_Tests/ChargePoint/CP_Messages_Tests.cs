@@ -17,54 +17,23 @@
 
 #region Usings
 
-using cloud.charging.open.protocols.OCPP;
 using NUnit.Framework;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
+using cloud.charging.open.protocols.OCPP;
+
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv1_6.tests
+namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 {
 
     /// <summary>
     /// Unit tests for charge points sending messages to the central system.
     /// </summary>
     [TestFixture]
-    public class ChargePointMessagesTests : AChargePointTests
+    public class CP_Messages_Tests : AChargePointTests
     {
-
-        #region ChargePoint_Init_Test()
-
-        /// <summary>
-        /// A test for creating charge points.
-        /// </summary>
-        [Test]
-        public void ChargePoint_Init_Test()
-        {
-
-            Assert.IsNotNull(testCentralSystem01);
-            Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
-
-            if (testCentralSystem01     is not null &&
-                testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
-            {
-
-                Assert.AreEqual("GraphDefined OEM #1",  chargingStation1.ChargePointVendor);
-                Assert.AreEqual("GraphDefined OEM #2",  chargingStation2.ChargePointVendor);
-                Assert.AreEqual("GraphDefined OEM #3",  chargingStation3.ChargePointVendor);
-
-            }
-
-        }
-
-        #endregion
 
         #region ChargePoint_SendBootNotifications_Test()
 
@@ -77,15 +46,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
             Assert.IsNotNull(testCentralSystem01);
             Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(chargePoint1);
+            Assert.IsNotNull(chargePoint2);
+            Assert.IsNotNull(chargePoint3);
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargePoint1        is not null &&
+                chargePoint2        is not null &&
+                chargePoint3        is not null)
             {
 
                 var bootNotificationRequests = new List<CP.BootNotificationRequest>();
@@ -94,20 +63,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                     bootNotificationRequests.Add(bootNotificationRequest);
                 };
 
-                var response1 = await chargingStation1.SendBootNotification();
+                var response1 = await chargePoint1.SendBootNotification();
 
                 Assert.AreEqual(OCPP.ResultCode.OK,                        response1.Result.ResultCode);
                 Assert.AreEqual(RegistrationStatus.Accepted,               response1.Status);
 
                 Assert.AreEqual(1,                                         bootNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,              bootNotificationRequests.First().NetworkingNodeId);
-                Assert.AreEqual(chargingStation1.ChargePointVendor,        bootNotificationRequests.First().ChargePointVendor);
-                Assert.AreEqual(chargingStation1.ChargePointSerialNumber,  bootNotificationRequests.First().ChargePointSerialNumber);
-                Assert.AreEqual(chargingStation1.ChargeBoxSerialNumber,    bootNotificationRequests.First().ChargeBoxSerialNumber);
-                Assert.AreEqual(chargingStation1.Iccid,                    bootNotificationRequests.First().Iccid);
-                Assert.AreEqual(chargingStation1.IMSI,                     bootNotificationRequests.First().IMSI);
-                Assert.AreEqual(chargingStation1.MeterType,                bootNotificationRequests.First().MeterType);
-                Assert.AreEqual(chargingStation1.MeterSerialNumber,        bootNotificationRequests.First().MeterSerialNumber);
+                Assert.AreEqual(chargePoint1.ChargeBoxId,              bootNotificationRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.ChargePointVendor,        bootNotificationRequests.First().ChargePointVendor);
+                Assert.AreEqual(chargePoint1.ChargePointSerialNumber,  bootNotificationRequests.First().ChargePointSerialNumber);
+                Assert.AreEqual(chargePoint1.ChargeBoxSerialNumber,    bootNotificationRequests.First().ChargeBoxSerialNumber);
+                Assert.AreEqual(chargePoint1.Iccid,                    bootNotificationRequests.First().Iccid);
+                Assert.AreEqual(chargePoint1.IMSI,                     bootNotificationRequests.First().IMSI);
+                Assert.AreEqual(chargePoint1.MeterType,                bootNotificationRequests.First().MeterType);
+                Assert.AreEqual(chargePoint1.MeterSerialNumber,        bootNotificationRequests.First().MeterSerialNumber);
 
             }
 
@@ -126,15 +95,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
             Assert.IsNotNull(testCentralSystem01);
             Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(chargePoint1);
+            Assert.IsNotNull(chargePoint2);
+            Assert.IsNotNull(chargePoint3);
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargePoint1        is not null &&
+                chargePoint2        is not null &&
+                chargePoint3        is not null)
             {
 
                 var heartbeatRequests = new List<CP.HeartbeatRequest>();
@@ -144,14 +113,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 };
 
 
-                var response1 = await chargingStation1.SendHeartbeat();
+                var response1 = await chargePoint1.SendHeartbeat();
 
 
                 Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
                 Assert.IsTrue  (Timestamp.Now - response1.CurrentTime < TimeSpan.FromSeconds(10));
 
                 Assert.AreEqual(1,                              heartbeatRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   heartbeatRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.ChargeBoxId,   heartbeatRequests.First().NetworkingNodeId);
 
             }
 
@@ -171,15 +140,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
             Assert.IsNotNull(testCentralSystem01);
             Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(chargePoint1);
+            Assert.IsNotNull(chargePoint2);
+            Assert.IsNotNull(chargePoint3);
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargePoint1        is not null &&
+                chargePoint2        is not null &&
+                chargePoint3        is not null)
             {
 
                 var authorizeRequests = new List<CP.AuthorizeRequest>();
@@ -189,14 +158,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 };
 
                 var idToken   = IdToken.NewRandom();
-                var response1 = await chargingStation1.Authorize(idToken);
+                var response1 = await chargePoint1.Authorize(idToken);
 
 
                 Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
                 Assert.AreEqual(AuthorizationStatus.Accepted,   response1.IdTagInfo.Status);
 
                 Assert.AreEqual(1,                              authorizeRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   authorizeRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.ChargeBoxId,   authorizeRequests.First().NetworkingNodeId);
                 Assert.AreEqual(idToken,                        authorizeRequests.First().IdTag);
 
             }
@@ -216,15 +185,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
             Assert.IsNotNull(testCentralSystem01);
             Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(chargePoint1);
+            Assert.IsNotNull(chargePoint2);
+            Assert.IsNotNull(chargePoint3);
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargePoint1        is not null &&
+                chargePoint2        is not null &&
+                chargePoint3        is not null)
             {
 
                 var startTransactionRequests = new List<CP.StartTransactionRequest>();
@@ -239,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 var meterStart      = 1234UL;
                 var reservationId   = Reservation_Id.NewRandom;
 
-                var response1       = await chargingStation1.StartTransaction(
+                var response1       = await chargePoint1.StartTransaction(
                                           connectorId,
                                           idToken,
                                           startTimestamp,
@@ -253,7 +222,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 Assert.IsTrue  (response1.TransactionId.IsNotNullOrEmpty);
 
                 Assert.AreEqual(1,                              startTransactionRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   startTransactionRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.ChargeBoxId,   startTransactionRequests.First().NetworkingNodeId);
                 Assert.AreEqual(connectorId,                    startTransactionRequests.First().ConnectorId);
                 Assert.AreEqual(idToken,                        startTransactionRequests.First().IdTag);
                 Assert.AreEqual(startTimestamp.ToIso8601(),     startTransactionRequests.First().StartTimestamp.ToIso8601());
@@ -277,15 +246,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
             Assert.IsNotNull(testCentralSystem01);
             Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(chargePoint1);
+            Assert.IsNotNull(chargePoint2);
+            Assert.IsNotNull(chargePoint3);
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargePoint1        is not null &&
+                chargePoint2        is not null &&
+                chargePoint3        is not null)
             {
 
                 var statusNotificationRequests = new List<CP.StatusNotificationRequest>();
@@ -302,7 +271,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 var vendorId         = "GraphDefined OEM";
                 var vendorErrorCode  = "E0001";
 
-                var response1        = await chargingStation1.SendStatusNotification(
+                var response1        = await chargePoint1.SendStatusNotification(
                                            connectorId,
                                            status,
                                            errorCode,
@@ -316,7 +285,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
 
                 Assert.AreEqual(1,                              statusNotificationRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   statusNotificationRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.ChargeBoxId,   statusNotificationRequests.First().NetworkingNodeId);
                 Assert.AreEqual(connectorId,                    statusNotificationRequests.First().ConnectorId);
                 Assert.AreEqual(status,                         statusNotificationRequests.First().Status);
                 Assert.AreEqual(errorCode,                      statusNotificationRequests.First().ErrorCode);
@@ -342,15 +311,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
             Assert.IsNotNull(testCentralSystem01);
             Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(chargePoint1);
+            Assert.IsNotNull(chargePoint2);
+            Assert.IsNotNull(chargePoint3);
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargePoint1        is not null &&
+                chargePoint2        is not null &&
+                chargePoint3        is not null)
             {
 
                 var meterValuesRequests = new List<CP.MeterValuesRequest>();
@@ -410,7 +379,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                       };
                 var transactionId   = Transaction_Id.NewRandom;
 
-                var response1       = await chargingStation1.SendMeterValues(
+                var response1       = await chargePoint1.SendMeterValues(
                                           connectorId,
                                           meterValues,
                                           transactionId
@@ -420,7 +389,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 Assert.AreEqual (OCPP.ResultCode.OK,                                              response1.Result.ResultCode);
 
                 Assert.AreEqual (1,                                                               meterValuesRequests.Count);
-                Assert.AreEqual (chargingStation1.ChargeBoxId,                                    meterValuesRequests.First().NetworkingNodeId);
+                Assert.AreEqual (chargePoint1.ChargeBoxId,                                    meterValuesRequests.First().NetworkingNodeId);
                 Assert.AreEqual (connectorId,                                                     meterValuesRequests.First().ConnectorId);
                 Assert.AreEqual (transactionId,                                                   meterValuesRequests.First().TransactionId);
 
@@ -483,15 +452,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
             Assert.IsNotNull(testCentralSystem01);
             Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(chargePoint1);
+            Assert.IsNotNull(chargePoint2);
+            Assert.IsNotNull(chargePoint3);
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargePoint1        is not null &&
+                chargePoint2        is not null &&
+                chargePoint3        is not null)
             {
 
                 var stopTransactionRequests = new List<CP.StopTransactionRequest>();
@@ -554,7 +523,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                            )
                                        };
 
-                var response1        = await chargingStation1.StopTransaction(
+                var response1        = await chargePoint1.StopTransaction(
                                            transactionId,
                                            stopTimestamp,
                                            meterStop,
@@ -569,7 +538,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 Assert.AreEqual (AuthorizationStatus.Accepted,                                        response1.IdTagInfo!.Value.Status);
 
                 Assert.AreEqual (1,                                                                   stopTransactionRequests.Count);
-                Assert.AreEqual (chargingStation1.ChargeBoxId,                                        stopTransactionRequests.First().NetworkingNodeId);
+                Assert.AreEqual (chargePoint1.ChargeBoxId,                                        stopTransactionRequests.First().NetworkingNodeId);
                 Assert.AreEqual (transactionId,                                                       stopTransactionRequests.First().TransactionId);
                 Assert.AreEqual (stopTimestamp.ToIso8601(),                                           stopTransactionRequests.First().StopTimestamp.ToIso8601());
                 Assert.AreEqual (meterStop,                                                           stopTransactionRequests.First().MeterStop);
@@ -636,15 +605,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
             Assert.IsNotNull(testCentralSystem01);
             Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(chargePoint1);
+            Assert.IsNotNull(chargePoint2);
+            Assert.IsNotNull(chargePoint3);
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargePoint1        is not null &&
+                chargePoint2        is not null &&
+                chargePoint3        is not null)
             {
 
                 var dataTransferRequests = new List<OCPP.CS.DataTransferRequest>();
@@ -657,7 +626,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 var messageId  = Message_Id.Parse(RandomExtensions.RandomString(10));
                 var data       = RandomExtensions.RandomString(40);
 
-                var response1  = await chargingStation1.TransferData(
+                var response1  = await chargePoint1.TransferData(
                                      vendorId,
                                      messageId,
                                      data
@@ -668,7 +637,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 Assert.AreEqual(data.Reverse(),                 response1.Data);
 
                 Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.ChargeBoxId,   dataTransferRequests.First().NetworkingNodeId);
                 Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
                 Assert.AreEqual(data,                           dataTransferRequests.First().Data);
@@ -690,15 +659,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
             Assert.IsNotNull(testCentralSystem01);
             Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(chargePoint1);
+            Assert.IsNotNull(chargePoint2);
+            Assert.IsNotNull(chargePoint3);
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargePoint1        is not null &&
+                chargePoint2        is not null &&
+                chargePoint3        is not null)
             {
 
                 var diagnosticsStatusNotifications = new List<CP.DiagnosticsStatusNotificationRequest>();
@@ -709,7 +678,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
                 var status     = DiagnosticsStatus.Uploaded;
 
-                var response1  = await chargingStation1.SendDiagnosticsStatusNotification(
+                var response1  = await chargePoint1.SendDiagnosticsStatusNotification(
                                      status
                                  );
 
@@ -717,7 +686,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
 
                 Assert.AreEqual(1,                              diagnosticsStatusNotifications.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   diagnosticsStatusNotifications.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.ChargeBoxId,   diagnosticsStatusNotifications.First().NetworkingNodeId);
                 Assert.AreEqual(status,                         diagnosticsStatusNotifications.First().Status);
 
             }
@@ -737,15 +706,15 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
             Assert.IsNotNull(testCentralSystem01);
             Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            Assert.IsNotNull(chargePoint1);
+            Assert.IsNotNull(chargePoint2);
+            Assert.IsNotNull(chargePoint3);
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargingStation1        is not null &&
-                chargingStation2        is not null &&
-                chargingStation3        is not null)
+                chargePoint1        is not null &&
+                chargePoint2        is not null &&
+                chargePoint3        is not null)
             {
 
                 var firmwareStatusNotifications = new List<CP.FirmwareStatusNotificationRequest>();
@@ -756,7 +725,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
 
                 var status     = FirmwareStatus.Installed;
 
-                var response1  = await chargingStation1.SendFirmwareStatusNotification(
+                var response1  = await chargePoint1.SendFirmwareStatusNotification(
                                      status
                                  );
 
@@ -764,7 +733,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                 Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
 
                 Assert.AreEqual(1,                              firmwareStatusNotifications.Count);
-                Assert.AreEqual(chargingStation1.ChargeBoxId,   firmwareStatusNotifications.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.ChargeBoxId,   firmwareStatusNotifications.First().NetworkingNodeId);
                 Assert.AreEqual(status,                         firmwareStatusNotifications.First().Status);
 
             }
