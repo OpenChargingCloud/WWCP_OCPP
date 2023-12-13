@@ -238,40 +238,38 @@ namespace cloud.charging.open.protocols.OCPP
         /// <param name="RequireAuthentication">Require a HTTP Basic Authentication of all charging boxes.</param>
         /// <param name="DNSClient">An optional DNS client to use.</param>
         /// <param name="AutoStart">Start the server immediately.</param>
-        public ACSMSWSServer(String                               HTTPServiceName              = DefaultHTTPServiceName,
-                            IIPAddress?                          IPAddress                    = null,
-                            IPPort?                              TCPPort                      = null,
+        public ACSMSWSServer(IEnumerable<String>                  SupportedOCPPWebSocketSubprotocols,
+                             String                               HTTPServiceName              = DefaultHTTPServiceName,
+                             IIPAddress?                          IPAddress                    = null,
+                             IPPort?                              TCPPort                      = null,
 
-                            Boolean                              RequireAuthentication        = true,
-                            Boolean                              DisableWebSocketPings        = false,
-                            TimeSpan?                            WebSocketPingEvery           = null,
-                            TimeSpan?                            SlowNetworkSimulationDelay   = null,
+                             Boolean                              RequireAuthentication        = true,
+                             Boolean                              DisableWebSocketPings        = false,
+                             TimeSpan?                            WebSocketPingEvery           = null,
+                             TimeSpan?                            SlowNetworkSimulationDelay   = null,
 
-                            ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
-                            RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
-                            LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
-                            SslProtocols?                        AllowedTLSProtocols          = null,
-                            Boolean?                             ClientCertificateRequired    = null,
-                            Boolean?                             CheckCertificateRevocation   = null,
+                             ServerCertificateSelectorDelegate?   ServerCertificateSelector    = null,
+                             RemoteCertificateValidationHandler?  ClientCertificateValidator   = null,
+                             LocalCertificateSelectionHandler?    ClientCertificateSelector    = null,
+                             SslProtocols?                        AllowedTLSProtocols          = null,
+                             Boolean?                             ClientCertificateRequired    = null,
+                             Boolean?                             CheckCertificateRevocation   = null,
 
-                            ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
-                            ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
-                            Boolean?                             ServerThreadIsBackground     = null,
-                            ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
-                            TimeSpan?                            ConnectionTimeout            = null,
-                            UInt32?                              MaxClientConnections         = null,
+                             ServerThreadNameCreatorDelegate?     ServerThreadNameCreator      = null,
+                             ServerThreadPriorityDelegate?        ServerThreadPrioritySetter   = null,
+                             Boolean?                             ServerThreadIsBackground     = null,
+                             ConnectionIdBuilder?                 ConnectionIdBuilder          = null,
+                             TimeSpan?                            ConnectionTimeout            = null,
+                             UInt32?                              MaxClientConnections         = null,
 
-                            DNSClient?                           DNSClient                    = null,
-                            Boolean                              AutoStart                    = false)
+                             DNSClient?                           DNSClient                    = null,
+                             Boolean                              AutoStart                    = false)
 
             : base(IPAddress,
                    TCPPort ?? IPPort.Parse(8000),
                    HTTPServiceName,
 
-                   new[] {
-                      "ocpp2.0.1",
-                       Version.WebSocketSubProtocolId
-                   },
+                   SupportedOCPPWebSocketSubprotocols,
                    DisableWebSocketPings,
                    WebSocketPingEvery,
                    SlowNetworkSimulationDelay,

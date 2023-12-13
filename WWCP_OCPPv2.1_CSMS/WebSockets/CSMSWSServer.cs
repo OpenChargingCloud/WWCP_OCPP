@@ -219,7 +219,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
            //        DNSClient,
            //        false)
 
-            : base(HTTPServiceName,
+            : base(new[] {
+                      "ocpp2.0.1",
+                       Version.WebSocketSubProtocolId
+                   },
+                   HTTPServiceName,
                    IPAddress,
                    TCPPort,
 

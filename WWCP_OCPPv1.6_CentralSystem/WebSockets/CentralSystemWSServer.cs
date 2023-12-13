@@ -144,7 +144,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
                                      DNSClient?                           DNSClient                    = null,
                                      Boolean                              AutoStart                    = false)
 
-            : base(HTTPServiceName,
+            : base(new[] {
+                       Version.WebSocketSubProtocolId
+                   },
+                   HTTPServiceName,
                    IPAddress,
                    TCPPort,
 

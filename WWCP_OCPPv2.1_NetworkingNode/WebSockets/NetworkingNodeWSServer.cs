@@ -337,31 +337,35 @@ namespace cloud.charging.open.protocols.OCPPv2_1.NetworkingNode.CSMS
             //       DNSClient,
             //       false)
 
-           : base(HTTPServiceName,
-                   IPAddress,
-                   TCPPort,
+           : base(new[] {
+                     "ocpp2.0.1",
+                      Version.WebSocketSubProtocolId
+                  },
+                  HTTPServiceName,
+                  IPAddress,
+                  TCPPort,
 
-                   RequireAuthentication,
-                   DisableWebSocketPings,
-                   WebSocketPingEvery,
-                   SlowNetworkSimulationDelay,
+                  RequireAuthentication,
+                  DisableWebSocketPings,
+                  WebSocketPingEvery,
+                  SlowNetworkSimulationDelay,
 
-                   ServerCertificateSelector,
-                   ClientCertificateValidator,
-                   ClientCertificateSelector,
-                   AllowedTLSProtocols,
-                   ClientCertificateRequired,
-                   CheckCertificateRevocation,
+                  ServerCertificateSelector,
+                  ClientCertificateValidator,
+                  ClientCertificateSelector,
+                  AllowedTLSProtocols,
+                  ClientCertificateRequired,
+                  CheckCertificateRevocation,
 
-                   ServerThreadNameCreator,
-                   ServerThreadPrioritySetter,
-                   ServerThreadIsBackground,
-                   ConnectionIdBuilder,
-                   ConnectionTimeout,
-                   MaxClientConnections,
+                  ServerThreadNameCreator,
+                  ServerThreadPrioritySetter,
+                  ServerThreadIsBackground,
+                  ConnectionIdBuilder,
+                  ConnectionTimeout,
+                  MaxClientConnections,
 
-                   DNSClient,
-                   AutoStart)
+                  DNSClient,
+                  AutoStart)
 
 
 
