@@ -59,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
         /// </summary>
         public new static readonly  HTTPPath               DefaultURLPrefix        = HTTPPath.Parse("/" + Version.String);
 
-        private readonly        Dictionary<String, MethodInfo>  incomingMessageProcessorsLookup   = [];
+        //private readonly        Dictionary<String, MethodInfo>  incomingMessageProcessorsLookup   = [];
 
         #endregion
 

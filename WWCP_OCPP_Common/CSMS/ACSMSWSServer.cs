@@ -80,7 +80,7 @@ namespace cloud.charging.open.protocols.OCPP
 
         private const           String                                                                                LogfileName                       = "CSMSWSServer.log";
 
-        private readonly        Dictionary<String, MethodInfo>                                                        incomingMessageProcessorsLookup   = [];
+        protected readonly      Dictionary<String, MethodInfo>                                                        incomingMessageProcessorsLookup   = [];
 
         #endregion
 
@@ -299,27 +299,6 @@ namespace cloud.charging.open.protocols.OCPP
             base.OnValidateWebSocketConnection  += ValidateWebSocketConnection;
             base.OnNewWebSocketConnection       += ProcessNewWebSocketConnection;
             base.OnCloseMessageReceived         += ProcessCloseMessage;
-
-            #region Reflect "Receive_XXX" messages and wire them...
-
-            foreach (var method in typeof(ACSMSWSServer).
-                                       GetMethods(BindingFlags.Public | BindingFlags.Instance).
-                                            Where(method            => method.Name.StartsWith("Receive_") &&
-                                                 (method.ReturnType == typeof(Task<Tuple<OCPP_JSONResponseMessage?,   OCPP_JSONErrorMessage?>>) ||
-                                                  method.ReturnType == typeof(Task<Tuple<OCPP_BinaryResponseMessage?, OCPP_JSONErrorMessage?>>))))
-            {
-
-                var processorName = method.Name[8..];
-
-                if (incomingMessageProcessorsLookup.ContainsKey(processorName))
-                    throw new ArgumentException("Duplicate processor name: " + processorName);
-
-                incomingMessageProcessorsLookup.Add(processorName,
-                                                    method);
-
-            }
-
-            #endregion
 
             if (AutoStart)
                 Start();
