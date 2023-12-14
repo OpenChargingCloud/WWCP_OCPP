@@ -68,7 +68,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     public partial class ChargePointWSClient : AChargingStationWSClient,
                                                IChargePointWebSocketClient,
-                                               IChargePointServer
+                                               ICPIncomingMessages
     {
 
         #region Data

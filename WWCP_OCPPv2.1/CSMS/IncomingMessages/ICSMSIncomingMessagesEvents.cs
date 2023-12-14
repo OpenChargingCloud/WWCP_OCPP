@@ -21,7 +21,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The common interface of all CSMS servers.
     /// </summary>
-    public interface ICSMSServerRequestResponseEvents : OCPP.CSMS.ICSMSServerRequestResponseEvents
+    public interface ICSMSIncomingMessagesEvents : OCPP.CSMS.ICSMSIncomingMessagesEvents
     {
 
         #region OnBootNotification                     (-Request/-Response)

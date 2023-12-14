@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// The common interface of all OCPP v1.6 central system clients.
     /// </summary>
-    public interface ICentralSystemClientEvents : OCPP.ICSMSClientEvents
+    public interface ICSOutgoingMessagesEvents : OCPP.ICSMSOutgoingMessagesEvents
     {
 
         #region Reset                          (-Request/-Response)

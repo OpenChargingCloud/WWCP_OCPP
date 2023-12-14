@@ -41,7 +41,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// and connects to a central system to invoke methods.
     /// </summary>
     public partial class ChargePointSOAPClient : ASOAPClient,
-                                                 IChargePointSOAPClient
+                                                 IChargePointSOAPClient,
+                                                 IEventSender
     {
 
         #region Data
@@ -49,12 +50,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The default HTTP user agent string.
         /// </summary>
-        public new const           String  DefaultHTTPUserAgent  = "GraphDefined OCPP " + Version.String + " CP Client";
+        public new const           String  DefaultHTTPUserAgent   = $"GraphDefined OCPP {Version.String} CP Client";
 
         /// <summary>
         /// The default remote TCP port to connect to.
         /// </summary>
-        public new static readonly IPPort  DefaultRemotePort     = IPPort.Parse(443);
+        public new static readonly IPPort  DefaultRemotePort      = IPPort.Parse(443);
 
         #endregion
 
@@ -63,33 +64,37 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         /// <summary>
         /// The unique identification of this charge box.
         /// </summary>
-        public NetworkingNode_Id  ChargeBoxId   { get; }
+        public NetworkingNode_Id  ChargeBoxId           { get; }
 
-        /// <summary>
-        /// The sender identification.
-        /// </summary>
-        String IEventSender.Id
+        string IEventSender.Id
             => ChargeBoxId.ToString();
+
+
+        ///// <summary>
+        ///// The sender identification.
+        ///// </summary>
+        //String IEventSender.Id
+        //    => ChargeBoxId.ToString();
 
         /// <summary>
         /// The source URI of the SOAP message.
         /// </summary>
-        public String          From                  { get; }
+        public String             From                  { get; }
 
         /// <summary>
         /// The destination URI of the SOAP message.
         /// </summary>
-        public String          To                    { get; }
+        public String             To                    { get; }
 
         /// <summary>
         /// The optional error message when this client closed the HTTP SOAP connection.
         /// </summary>
-        public String?         ClientCloseMessage    { get; private set; }
+        public String?            ClientCloseMessage    { get; private set; }
 
         /// <summary>
         /// The attached OCPP CP client (HTTP/SOAP client) logger.
         /// </summary>
-        public CPClientLogger  Logger                { get; }
+        public CPClientLogger     Logger                { get; }
 
         #endregion
 
@@ -2008,11 +2013,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             {
 
                 result = await soapClient.Query(SOAP.Encapsulation(Request.NetworkingNodeId,
-                                                                    "/FirmwareStatusNotification",
-                                                                    Request_Id.NewRandom().ToString(),
-                                                                    From,
-                                                                    To,
-                                                                    Request.ToXML()),
+                                                                   "/FirmwareStatusNotification",
+                                                                   Request_Id.NewRandom().ToString(),
+                                                                   From,
+                                                                   To,
+                                                                   Request.ToXML()),
                                                  "FirmwareStatusNotification",
                                                  RequestLogDelegate:   OnFirmwareStatusNotificationSOAPRequest,
                                                  ResponseLogDelegate:  OnFirmwareStatusNotificationSOAPResponse,
@@ -2123,27 +2128,36 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         #region Security extensions
 
-        public Task<LogStatusNotificationResponse> LogStatusNotification(LogStatusNotificationRequest Request)
+        public Task<LogStatusNotificationResponse>             LogStatusNotification(LogStatusNotificationRequest Request)
         {
             throw new NotImplementedException();
         }
 
-        public Task<SecurityEventNotificationResponse> SendSecurityEventNotification(SecurityEventNotificationRequest Request)
+        public Task<SecurityEventNotificationResponse>         SendSecurityEventNotification(SecurityEventNotificationRequest Request)
         {
             throw new NotImplementedException();
         }
 
-        public Task<SignCertificateResponse> SignCertificate(SignCertificateRequest Request)
+        public Task<SignCertificateResponse>                   SignCertificate(SignCertificateRequest Request)
         {
             throw new NotImplementedException();
         }
 
-        public Task<SignedFirmwareStatusNotificationResponse> SignedFirmwareStatusNotification(SignedFirmwareStatusNotificationRequest Request)
+        public Task<SignedFirmwareStatusNotificationResponse>  SignedFirmwareStatusNotification(SignedFirmwareStatusNotificationRequest Request)
         {
             throw new NotImplementedException();
         }
 
         #endregion
+
+
+
+        // Binary Data Streams Extensions
+
+        public Task<OCPP.CSMS.BinaryDataTransferResponse>      BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request)
+        {
+            throw new NotImplementedException();
+        }
 
 
     }

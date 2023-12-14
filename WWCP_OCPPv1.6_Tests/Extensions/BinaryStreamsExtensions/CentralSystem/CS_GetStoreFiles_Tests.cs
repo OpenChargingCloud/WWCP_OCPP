@@ -89,7 +89,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsE
                 Assert.AreEqual(SHA512.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   response.FileSHA512.ToHexString());
 
                 Assert.AreEqual(1,                                                             getFileRequests.Count);
-                Assert.AreEqual(chargePoint1.Id,                                               getFileRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,                                      getFileRequests.First().NetworkingNodeId);
                 Assert.AreEqual(filename,                                                      getFileRequests.First().FileName);
 
             }
@@ -147,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsE
                 Assert.AreEqual(filename,                                                      response.FileName);
 
                 Assert.AreEqual(1,                                                             sendFileRequests.Count);
-                Assert.AreEqual(chargePoint1.Id,                                               sendFileRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,                                      sendFileRequests.First().NetworkingNodeId);
                 Assert.AreEqual("Hello world!",                                                sendFileRequests.First().FileContent.ToUTF8String());
                 Assert.AreEqual(ContentType.Text.Plain,                                        sendFileRequests.First().FileContentType);
                 Assert.AreEqual(SHA256.HashData("Hello world!".ToUTF8Bytes()).ToHexString(),   sendFileRequests.First().FileSHA256.ToHexString());
@@ -204,7 +204,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsE
                 Assert.AreEqual(filename,                   response.FileName);
 
                 Assert.AreEqual(1,                          deleteFileRequests.Count);
-                Assert.AreEqual(chargePoint1.Id,            deleteFileRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,   deleteFileRequests.First().NetworkingNodeId);
 
             }
 

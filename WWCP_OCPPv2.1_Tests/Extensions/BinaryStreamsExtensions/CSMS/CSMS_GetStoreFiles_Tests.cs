@@ -212,7 +212,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
         #endregion
 
-
     }
 
 }

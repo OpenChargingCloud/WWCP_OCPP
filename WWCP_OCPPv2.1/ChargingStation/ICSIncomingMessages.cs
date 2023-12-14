@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The common interface of all charging station servers.
     /// </summary>
-    public interface IChargingStationServer : IChargingStationServerLogger
+    public interface ICSIncomingMessages : OCPP.CS.ICSIncomingMessages
     {
 
         #region OnReset
@@ -441,103 +441,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         #endregion
 
 
-        // Binary Data Streams Extensions
-
-        #region OnIncomingBinaryDataTransfer
-
-        /// <summary>
-        /// An event sent whenever a binary data transfer request was received.
-        /// </summary>
-        event OnIncomingBinaryDataTransferDelegate   OnIncomingBinaryDataTransfer;
-
-        #endregion
-
-        #region OnGetFile
-
-        /// <summary>
-        /// An event sent whenever a GetFile request was received.
-        /// </summary>
-        event OnGetFileDelegate                      OnGetFile;
-
-        #endregion
-
-        #region OnSendFile
-
-        /// <summary>
-        /// An event sent whenever a SendFile request was received.
-        /// </summary>
-        event OnSendFileDelegate                     OnSendFile;
-
-        #endregion
-
-        #region OnDeleteFile
-
-        /// <summary>
-        /// An event sent whenever a DeleteFile request was received.
-        /// </summary>
-        event OnDeleteFileDelegate                     OnDeleteFile;
-
-        #endregion
-
-
-        // E2E Security Extensions
-
-        #region OnAddSignaturePolicy
-
-        /// <summary>
-        /// An event sent whenever an AddSignaturePolicy request was received.
-        /// </summary>
-        event OnAddSignaturePolicyDelegate            OnAddSignaturePolicy;
-
-        #endregion
-
-        #region OnUpdateSignaturePolicy
-
-        /// <summary>
-        /// An event sent whenever an UpdateSignaturePolicy request was received.
-        /// </summary>
-        event OnUpdateSignaturePolicyDelegate         OnUpdateSignaturePolicy;
-
-        #endregion
-
-        #region OnDeleteSignaturePolicy
-
-        /// <summary>
-        /// An event sent whenever a DeleteSignaturePolicy request was received.
-        /// </summary>
-        event OnDeleteSignaturePolicyDelegate         OnDeleteSignaturePolicy;
-
-        #endregion
-
-        #region OnAddUserRole
-
-        /// <summary>
-        /// An event sent whenever an AddUserRole request was received.
-        /// </summary>
-        event OnAddUserRoleDelegate                   OnAddUserRole;
-
-        #endregion
-
-        #region OnUpdateUserRole
-
-        /// <summary>
-        /// An event sent whenever an UpdateUserRole request was received.
-        /// </summary>
-        event OnUpdateUserRoleDelegate                OnUpdateUserRole;
-
-        #endregion
-
-        #region OnDeleteUserRole
-
-        /// <summary>
-        /// An event sent whenever a DeleteUserRole request was received.
-        /// </summary>
-        event OnDeleteUserRoleDelegate                OnDeleteUserRole;
-
-        #endregion
-
-
-        // E2E Security Extensions
+        // E2E Charging Tariffs Extensions
 
         #region OnSetDefaultChargingTariff
 

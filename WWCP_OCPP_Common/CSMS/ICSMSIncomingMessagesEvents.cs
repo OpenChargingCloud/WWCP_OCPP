@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
     /// <summary>
     /// The common interface of all CSMS servers.
     /// </summary>
-    public interface ICSMSServerRequestResponseEvents : IEventSender
+    public interface ICSMSIncomingMessagesEvents : IEventSender
     {
 
         #region Properties
@@ -77,7 +77,7 @@ namespace cloud.charging.open.protocols.OCPP.CSMS
 
         // Binary Data Streams Extensions
 
-        #region OnIncomingBinaryDataTransfer
+        #region OnIncomingBinaryDataTransfer (-Request/-Response)
 
         /// <summary>
         /// An event sent whenever a firmware status notification request was received.

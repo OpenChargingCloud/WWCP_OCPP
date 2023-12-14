@@ -29,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The common interface of all central systems.
     /// </summary>
-    public interface ICSMSService : ICSMS
+    public interface ICSMSWebSocket : ICSMS
     {
 
         #region WebSocket connections

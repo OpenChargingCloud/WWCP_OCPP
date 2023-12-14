@@ -1844,7 +1844,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
 
                 var response = await chargingStation1.NotifyEVChargingSchedule(
 
-                                   NotifyEVChargingScheduleRequestId:   1,
                                    TimeBase:                            Timestamp.Now,
                                    EVSEId:                              EVSE_Id.Parse("1"),
                                    ChargingSchedule:                    new ChargingSchedule(
@@ -1948,7 +1947,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 };
 
                 var response = await chargingStation1.NotifyPriorityCharging(
-                                   NotifyPriorityChargingRequestId:   1,
                                    TransactionId:                     Transaction_Id.Parse("1234"),
                                    Activated:                         true,
                                    CustomData:                        null

@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// <summary>
     /// The common interface of all OCPP v2.1 CSMS clients.
     /// </summary>
-    public interface ICSMSClientEvents : OCPP.ICSMSClientEvents
+    public interface ICSMSOutgoingMessagesEvents : OCPP.ICSMSOutgoingMessagesEvents
     {
 
         #region Reset                          (-Request/-Response)

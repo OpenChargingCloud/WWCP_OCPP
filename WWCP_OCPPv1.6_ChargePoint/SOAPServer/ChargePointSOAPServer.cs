@@ -24,6 +24,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
@@ -36,7 +37,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     public class ChargePointSOAPServer : ASOAPServer,
                                          IEventSender,
-                                         IChargePointServer
+                                         ICPIncomingMessages,
+                                         ICPIncomingMessagesEvents
     {
 
         #region Data
@@ -637,6 +639,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         public event AccessLogHandler?                OnClearCacheSOAPResponse;
 
         #endregion
+
+
+        public event OnIncomingBinaryDataTransferRequestDelegate     OnIncomingBinaryDataTransferRequest;
+        public event OnIncomingBinaryDataTransferDelegate            OnIncomingBinaryDataTransfer;
+        public event OnIncomingBinaryDataTransferResponseDelegate    OnIncomingBinaryDataTransferResponse;
+
+        public event OnGetFileRequestDelegate                        OnGetFileRequest;
+        public event OnGetFileDelegate                               OnGetFile;
+        public event OnGetFileResponseDelegate                       OnGetFileResponse;
+
+        public event OnSendFileRequestDelegate                       OnSendFileRequest;
+        public event OnSendFileDelegate                              OnSendFile;
+        public event OnSendFileResponseDelegate                      OnSendFileResponse;
+
+        public event OnDeleteFileRequestDelegate                     OnDeleteFileRequest;
+        public event OnDeleteFileDelegate                            OnDeleteFile;
+        public event OnDeleteFileResponseDelegate                    OnDeleteFileResponse;
+
+
+        public event OnAddSignaturePolicyRequestDelegate             OnAddSignaturePolicyRequest;
+        public event OnAddSignaturePolicyDelegate                    OnAddSignaturePolicy;
+        public event OnAddSignaturePolicyResponseDelegate            OnAddSignaturePolicyResponse;
+
+        public event OnUpdateSignaturePolicyRequestDelegate          OnUpdateSignaturePolicyRequest;
+        public event OnUpdateSignaturePolicyDelegate                 OnUpdateSignaturePolicy;
+        public event OnUpdateSignaturePolicyResponseDelegate         OnUpdateSignaturePolicyResponse;
+
+        public event OnDeleteSignaturePolicyRequestDelegate          OnDeleteSignaturePolicyRequest;
+        public event OnDeleteSignaturePolicyDelegate                 OnDeleteSignaturePolicy;
+        public event OnDeleteSignaturePolicyResponseDelegate         OnDeleteSignaturePolicyResponse;
+
+        public event OnAddUserRoleRequestDelegate                    OnAddUserRoleRequest;
+        public event OnAddUserRoleDelegate                           OnAddUserRole;
+        public event OnAddUserRoleResponseDelegate                   OnAddUserRoleResponse;
+
+        public event OnUpdateUserRoleRequestDelegate                 OnUpdateUserRoleRequest;
+        public event OnUpdateUserRoleDelegate                        OnUpdateUserRole;
+        public event OnUpdateUserRoleResponseDelegate                OnUpdateUserRoleResponse;
+
+        public event OnDeleteUserRoleRequestDelegate                 OnDeleteUserRoleRequest;
+        public event OnDeleteUserRoleDelegate                        OnDeleteUserRole;
+        public event OnDeleteUserRoleResponseDelegate                OnDeleteUserRoleResponse;
 
         #endregion
 

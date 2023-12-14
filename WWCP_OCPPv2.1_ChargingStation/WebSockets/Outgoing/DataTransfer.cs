@@ -33,8 +33,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// </summary>
     public partial class ChargingStationWSClient : AChargingStationWSClient,
                                                    IChargingStationWebSocketClient,
-                                                   IChargingStationServer,
-                                                   IChargingStationClientEvents
+                                                   ICSIncomingMessages,
+                                                   ICSOutgoingMessagesEvents
     {
 
         #region Custom JSON serializer delegates

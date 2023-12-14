@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The common interface of all HTTP WebSocket charging station clients.
     /// </summary>
-    public interface IChargingStationWebSocketClient : IChargingStationClient
+    public interface IChargingStationWebSocketClient : ICSOutgoingMessages
     {
 
         #region OnBootNotificationRequest/-Response

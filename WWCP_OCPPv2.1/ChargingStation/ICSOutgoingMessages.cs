@@ -18,8 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPP.CS;
@@ -33,9 +31,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
     /// <summary>
     /// The common interface of all charging station clients.
     /// </summary>
-    public interface IChargingStationClient : IChargingStationClientEvents,
-                                              IHTTPClient,
-                                              IEventSender
+    public interface ICSOutgoingMessages : OCPP.CS.ICSOutgoingMessages
     {
 
         String?  ClientCloseMessage    { get; }
@@ -341,19 +337,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// </summary>
         /// <param name="Request">A notify customer information request.</param>
         public Task<NotifyCustomerInformationResponse> NotifyCustomerInformation(NotifyCustomerInformationRequest Request);
-
-        #endregion
-
-
-        // Binary Data Streams Extensions
-
-        #region TransferBinaryData                    (Request)
-
-        /// <summary>
-        /// Send the given vendor-specific binary data.
-        /// </summary>
-        /// <param name="Request">A binary data transfer request.</param>
-        public Task<OCPP.CSMS.BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request);
 
         #endregion
 

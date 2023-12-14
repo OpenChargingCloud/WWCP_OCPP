@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
@@ -31,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
 using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPP.CS;
 
 #endregion
 
@@ -40,7 +40,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6
     /// <summary>
     /// A charge point for testing.
     /// </summary>
-    public class TestChargePoint : IEventSender
+    public class TestChargePoint : IChargePoint,
+                                   IEventSender
     {
 
         /// <summary>
@@ -181,29 +182,31 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region Data
 
+        private readonly           HashSet<SignaturePolicy>    signaturePolicies           = [];
+
         /// <summary>
         /// The default time span between heartbeat requests.
         /// </summary>
-        public readonly             TimeSpan                    DefaultSendHeartbeatEvery   = TimeSpan.FromSeconds(30);
+        public readonly            TimeSpan                    DefaultSendHeartbeatEvery   = TimeSpan.FromSeconds(30);
 
-        protected static readonly   TimeSpan                    SemaphoreSlimTimeout        = TimeSpan.FromSeconds(5);
+        protected static readonly  TimeSpan                    SemaphoreSlimTimeout        = TimeSpan.FromSeconds(5);
 
         /// <summary>
         /// The default maintenance interval.
         /// </summary>
-        public readonly             TimeSpan                    DefaultMaintenanceEvery     = TimeSpan.FromSeconds(1);
-        private static readonly     SemaphoreSlim               MaintenanceSemaphore        = new (1, 1);
-        private readonly            Timer                       MaintenanceTimer;
+        public readonly            TimeSpan                    DefaultMaintenanceEvery     = TimeSpan.FromSeconds(1);
+        private static readonly    SemaphoreSlim               MaintenanceSemaphore        = new (1, 1);
+        private readonly           Timer                       MaintenanceTimer;
 
-        private readonly            Timer                       SendHeartbeatTimer;
+        private readonly           Timer                       SendHeartbeatTimer;
 
 
-        private readonly            List<EnqueuedRequest>         EnqueuedRequests;
+        private readonly           List<EnqueuedRequest>       EnqueuedRequests;
 
-        public                      IHTTPAuthentication?        HTTPAuthentication          { get; }
-        public                      DNSClient?                  DNSClient                   { get; }
+        public                     IHTTPAuthentication?        HTTPAuthentication          { get; }
+        public                     DNSClient?                  DNSClient                   { get; }
 
-        private                     Int64                       internalRequestId           = 100000;
+        private                    Int64                       internalRequestId           = 100000;
 
         #endregion
 
@@ -212,7 +215,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// <summary>
         /// The client connected to a central system.
         /// </summary>
-        public IChargePointClient       CPClient                    { get; private set; }
+        public CP.ICPOutgoingMessages       CPClient                    { get; private set; }
 
 
         public ChargePointSOAPServer    CPServer                    { get; private set; }
@@ -222,14 +225,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// The sender identification.
         /// </summary>
         String IEventSender.Id
-            => ChargeBoxId.ToString();
+            => Id.ToString();
 
 
 
         /// <summary>
         /// The charge box identification.
         /// </summary>
-        public OCPP.NetworkingNode_Id   ChargeBoxId            { get; }
+        public NetworkingNode_Id        Id                          { get; }
 
         /// <summary>
         /// The charge point vendor identification.
@@ -333,6 +336,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public Boolean                  DisableSendHeartbeats       { get; set; }
 
 
+
+        public CustomData               CustomData                  { get; }
+
+
+        /// <summary>
+        /// The enumeration of all signature policies.
+        /// </summary>
+        public IEnumerable<SignaturePolicy>  SignaturePolicies
+            => signaturePolicies;
+
+        /// <summary>
+        /// The currently active signature policy.
+        /// </summary>
+        public SignaturePolicy               SignaturePolicy
+            => SignaturePolicies.First();
 
 
 
@@ -767,6 +785,70 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #endregion
 
+
+        public event OnResetDelegate OnReset;
+        public event OnChangeAvailabilityDelegate OnChangeAvailability;
+        public event OnGetConfigurationDelegate OnGetConfiguration;
+        public event OnChangeConfigurationDelegate OnChangeConfiguration;
+        public event OCPP.CS.OnIncomingDataTransferDelegate OnIncomingDataTransfer;
+        public event OnGetDiagnosticsDelegate OnGetDiagnostics;
+        public event OnTriggerMessageDelegate OnTriggerMessage;
+        public event OnUpdateFirmwareDelegate OnUpdateFirmware;
+        public event OnReserveNowDelegate OnReserveNow;
+        public event OnCancelReservationDelegate OnCancelReservation;
+        public event OnRemoteStartTransactionDelegate OnRemoteStartTransaction;
+        public event OnRemoteStopTransactionDelegate OnRemoteStopTransaction;
+        public event OnSetChargingProfileDelegate OnSetChargingProfile;
+        public event OnClearChargingProfileDelegate OnClearChargingProfile;
+        public event OnGetCompositeScheduleDelegate OnGetCompositeSchedule;
+        public event OnUnlockConnectorDelegate OnUnlockConnector;
+        public event OnGetLocalListVersionDelegate OnGetLocalListVersion;
+        public event OnSendLocalListDelegate OnSendLocalList;
+        public event OnClearCacheDelegate OnClearCache;
+
+
+        public event OnIncomingBinaryDataTransferRequestDelegate     OnIncomingBinaryDataTransferRequest;
+        public event OnIncomingBinaryDataTransferDelegate            OnIncomingBinaryDataTransfer;
+        public event OnIncomingBinaryDataTransferResponseDelegate    OnIncomingBinaryDataTransferResponse;
+
+        public event OnGetFileRequestDelegate                        OnGetFileRequest;
+        public event OnGetFileDelegate                               OnGetFile;
+        public event OnGetFileResponseDelegate                       OnGetFileResponse;
+
+        public event OnSendFileRequestDelegate                       OnSendFileRequest;
+        public event OnSendFileDelegate                              OnSendFile;
+        public event OnSendFileResponseDelegate                      OnSendFileResponse;
+
+        public event OnDeleteFileRequestDelegate                     OnDeleteFileRequest;
+        public event OnDeleteFileDelegate                            OnDeleteFile;
+        public event OnDeleteFileResponseDelegate                    OnDeleteFileResponse;
+
+        public event OnAddSignaturePolicyRequestDelegate             OnAddSignaturePolicyRequest;
+        public event OnAddSignaturePolicyDelegate                    OnAddSignaturePolicy;
+        public event OnAddSignaturePolicyResponseDelegate            OnAddSignaturePolicyResponse;
+
+        public event OnUpdateSignaturePolicyRequestDelegate          OnUpdateSignaturePolicyRequest;
+        public event OnUpdateSignaturePolicyDelegate                 OnUpdateSignaturePolicy;
+        public event OnUpdateSignaturePolicyResponseDelegate         OnUpdateSignaturePolicyResponse;
+
+        public event OnDeleteSignaturePolicyRequestDelegate          OnDeleteSignaturePolicyRequest;
+        public event OnDeleteSignaturePolicyDelegate                 OnDeleteSignaturePolicy;
+        public event OnDeleteSignaturePolicyResponseDelegate         OnDeleteSignaturePolicyResponse;
+
+        public event OnAddUserRoleRequestDelegate                    OnAddUserRoleRequest;
+        public event OnAddUserRoleDelegate                           OnAddUserRole;
+        public event OnAddUserRoleResponseDelegate                   OnAddUserRoleResponse;
+
+        public event OnUpdateUserRoleRequestDelegate                 OnUpdateUserRoleRequest;
+        public event OnUpdateUserRoleDelegate                        OnUpdateUserRole;
+        public event OnUpdateUserRoleResponseDelegate                OnUpdateUserRoleResponse;
+
+        public event OnDeleteUserRoleRequestDelegate                 OnDeleteUserRoleRequest;
+        public event OnDeleteUserRoleDelegate                        OnDeleteUserRole;
+        public event OnDeleteUserRoleResponseDelegate                OnDeleteUserRoleResponse;
+        public event OnBinaryDataTransferRequestDelegate? OnBinaryDataTransferRequest;
+        public event OnBinaryDataTransferResponseDelegate? OnBinaryDataTransferResponse;
+
         #endregion
 
         #region Constructor(s)
@@ -829,7 +911,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 throw new ArgumentNullException(nameof(ChargePointModel),   "The given charge point model must not be null or empty!");
 
 
-            this.ChargeBoxId              = ChargeBoxId;
+            this.Id              = ChargeBoxId;
 
             this.connectors               = new Dictionary<Connector_Id, ChargePointConnector>();
             for (var i = 1; i <= NumberOfConnectors; i++)
@@ -928,7 +1010,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         {
 
             this.CPClient = new ChargePointSOAPClient(
-                                ChargeBoxId,
+                                Id,
                                 From,
                                 To,
 
@@ -1010,46 +1092,48 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         {
 
-            var WSClient   = new ChargePointWSClient(
-                                 ChargeBoxId,
-                                 From,
-                                 To,
+            var chargePointWSClient   = new ChargePointWSClient(
 
-                                 RemoteURL,
-                                 VirtualHostname,
-                                 Description,
-                                 PreferIPv4,
-                                 RemoteCertificateValidator,
-                                 ClientCertificateSelector,
-                                 ClientCert,
-                                 TLSProtocol,
-                                 HTTPUserAgent,
-                                 HTTPAuthentication ?? this.HTTPAuthentication,
-                                 RequestTimeout,
-                                 TransmissionRetryDelay,
-                                 MaxNumberOfRetries,
-                                 InternalBufferSize,
+                                            Id,
+                                            From,
+                                            To,
 
-                                 SecWebSocketProtocols ?? new[] { Version.WebSocketSubProtocolId },
+                                            RemoteURL,
+                                            VirtualHostname,
+                                            Description,
+                                            PreferIPv4,
+                                            RemoteCertificateValidator,
+                                            ClientCertificateSelector,
+                                            ClientCert,
+                                            TLSProtocol,
+                                            HTTPUserAgent,
+                                            HTTPAuthentication ?? this.HTTPAuthentication,
+                                            RequestTimeout,
+                                            TransmissionRetryDelay,
+                                            MaxNumberOfRetries,
+                                            InternalBufferSize,
 
-                                 DisableMaintenanceTasks,
-                                 MaintenanceEvery,
-                                 DisableWebSocketPings,
-                                 WebSocketPingEvery,
-                                 SlowNetworkSimulationDelay,
+                                            SecWebSocketProtocols ?? new[] { Version.WebSocketSubProtocolId },
 
-                                 LoggingPath,
-                                 LoggingContext,
-                                 LogfileCreator,
-                                 HTTPLogger,
-                                 DNSClient ?? this.DNSClient
-                             );
+                                            DisableMaintenanceTasks,
+                                            MaintenanceEvery,
+                                            DisableWebSocketPings,
+                                            WebSocketPingEvery,
+                                            SlowNetworkSimulationDelay,
 
-            this.CPClient  = WSClient;
+                                            LoggingPath,
+                                            LoggingContext,
+                                            LogfileCreator,
+                                            HTTPLogger,
+                                            DNSClient ?? this.DNSClient
 
-            WireEvents(WSClient);
+                                        );
 
-            var response = await WSClient.Connect();
+            this.CPClient  = chargePointWSClient;
+
+            WireEvents(chargePointWSClient);
+
+            var response = await chargePointWSClient.Connect();
 
             return response;
 
@@ -1059,7 +1143,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         #region WireEvents(CPServer)
 
-        public void WireEvents(IChargePointServer CPServer)
+        public void WireEvents(ICPIncomingMessages CPServer)
         {
 
             #region OnReset
@@ -1095,7 +1179,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 ResetResponse? response = null;
 
 
-                DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming '", Request.ResetType, "' reset request accepted."));
+                DebugX.Log(String.Concat("ChargeBox[", Id, "] Incoming '", Request.ResetType, "' reset request accepted."));
                 response = new ResetResponse(Request,
                                              ResetStatus.Accepted);
 
@@ -1160,7 +1244,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 ChangeAvailabilityResponse? response = null;
 
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming ChangeAvailability '", Request.Availability, "' request for connector '", Request.ConnectorId, "'."));
+                    DebugX.Log(String.Concat("ChargeBox[", Id, "] Incoming ChangeAvailability '", Request.Availability, "' request for connector '", Request.ConnectorId, "'."));
 
                     if (connectors.ContainsKey(Request.ConnectorId))
                     {
@@ -1237,7 +1321,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 
 
-                DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming get configuration request."));
+                DebugX.Log(String.Concat("ChargeBox[", Id, "] Incoming get configuration request."));
 
                 var configurationKeys  = new List<ConfigurationKey>();
                 var unkownKeys         = new List<String>();
@@ -1336,7 +1420,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
 
-                DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming change configuration for '", Request.Key, "' with value '", Request.Value, "'."));
+                DebugX.Log(String.Concat("ChargeBox[", Id, "] Incoming change configuration for '", Request.Key, "' with value '", Request.Value, "'."));
 
                 if (Configuration.TryGetValue(Request.Key, out var configurationData))
                 {
@@ -1434,7 +1518,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 OCPP.CS.DataTransferResponse? response = null;
 
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming data transfer request: ", Request.VendorId, ".", Request.MessageId?.ToString() ?? "-", ": ", Request.Data ?? "-"));
+                    DebugX.Log(String.Concat("ChargeBox[", Id, "] Incoming data transfer request: ", Request.VendorId, ".", Request.MessageId?.ToString() ?? "-", ": ", Request.Data ?? "-"));
 
                     if (Request.VendorId.  ToString().ToLower() == "graphdefined" &&
                         Request.MessageId?.ToString().ToLower() == "hello"        &&
@@ -1509,7 +1593,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 GetDiagnosticsResponse? response = null;
 
 
-                    DebugX.Log(String.Concat("ChargeBox[", ChargeBoxId, "] Incoming get diagnostics request"));
+                    DebugX.Log(String.Concat("ChargeBox[", Id, "] Incoming get diagnostics request"));
 
                     response = new GetDiagnosticsResponse(Request);
 
@@ -1573,7 +1657,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 TriggerMessageResponse? response = null;
 
-                DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming TriggerMessage request for '" + Request.RequestedMessage + "' at connector '" + Request.ConnectorId + "'.");
+                DebugX.Log($"ChargeBox[{Id}] Incoming TriggerMessage request for '" + Request.RequestedMessage + "' at connector '" + Request.ConnectorId + "'.");
 
                 response = new TriggerMessageResponse(Request,
                                                       TriggerMessageStatus.Rejected);
@@ -1639,7 +1723,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 UpdateFirmwareResponse? response = null;
 
 
-                DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming UpdateFirmware request for '" + Request.FirmwareURL + "'.");
+                DebugX.Log($"ChargeBox[{Id}] Incoming UpdateFirmware request for '" + Request.FirmwareURL + "'.");
 
                 response = new UpdateFirmwareResponse(Request);
 
@@ -1823,7 +1907,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming RemoteStartTransaction for '" + Request.ConnectorId + "' with IdTag '" + Request.IdTag + "'.");
+                    DebugX.Log($"ChargeBox[{Id}] Incoming RemoteStartTransaction for '" + Request.ConnectorId + "' with IdTag '" + Request.IdTag + "'.");
 
                     // ToDo: lock(connectors)
 
@@ -1841,7 +1925,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                         connector.IsCharging         = true;
                         connector.StartTimestamp     = Timestamp.Now;
 
-                        var startTransactionRequest  = new StartTransactionRequest(ChargeBoxId,
+                        var startTransactionRequest  = new StartTransactionRequest(Id,
                                                                                    Request.ConnectorId ?? Connector_Id.Parse(0),
                                                                                    Request.IdTag,
                                                                                    Timestamp.Now,
@@ -1873,7 +1957,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                              }));
 
                         // ToDo: StartTransaction request might fail!
-                        var statusNotificationRequest  = new StatusNotificationRequest(ChargeBoxId,
+                        var statusNotificationRequest  = new StatusNotificationRequest(Id,
                                                                                        Request.ConnectorId ?? Connector_Id.Parse(0),
                                                                                        ChargePointStatus.Charging,
                                                                                        ChargePointErrorCodes.NoError);
@@ -1969,7 +2053,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 RemoteStopTransactionResponse? response = null;
 
 
-                DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming RemoteStopTransaction for '" + Request.TransactionId + "'.");
+                DebugX.Log($"ChargeBox[{Id}] Incoming RemoteStopTransaction for '" + Request.TransactionId + "'.");
 
                 // ToDo: lock(connectors)
 
@@ -1981,7 +2065,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     connector.StopTimestamp  = Timestamp.Now;
                     connector.IsCharging     = false;
 
-                    var stopTransactionRequest = new StopTransactionRequest(ChargeBoxId,
+                    var stopTransactionRequest = new StopTransactionRequest(Id,
                                                                             Request.TransactionId,
                                                                             Timestamp.Now,
                                                                             connector.MeterStopValue,
@@ -2007,7 +2091,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
                     // ToDo: StopTransaction request might fail!
-                    var statusNotificationRequest  = new StatusNotificationRequest(ChargeBoxId,
+                    var statusNotificationRequest  = new StatusNotificationRequest(Id,
                                                                                    connector.Id,
                                                                                    ChargePointStatus.Available,
                                                                                    ChargePointErrorCodes.NoError);
@@ -2111,7 +2195,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 else
                 {
 
-                    DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SetChargingProfile for '" + Request.ConnectorId + "'.");
+                    DebugX.Log($"ChargeBox[{Id}] Incoming SetChargingProfile for '" + Request.ConnectorId + "'.");
 
                     // ToDo: lock(connectors)
 
@@ -2320,7 +2404,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 UnlockConnectorResponse? response = null;
 
 
-                DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming UnlockConnector for '" + Request.ConnectorId + "'.");
+                DebugX.Log($"ChargeBox[{Id}] Incoming UnlockConnector for '" + Request.ConnectorId + "'.");
 
                 // ToDo: lock(connectors)
 
@@ -2400,7 +2484,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
 
-                DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming GetLocalListVersion request.");
+                DebugX.Log($"ChargeBox[{Id}] Incoming GetLocalListVersion request.");
 
                 response = new GetLocalListVersionResponse(Request,
                                                            0);
@@ -2466,7 +2550,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 SendLocalListResponse? response = null;
 
 
-                DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming SendLocalList request: '" + Request.UpdateType + "' version '" + Request.ListVersion + "'.");
+                DebugX.Log($"ChargeBox[{Id}] Incoming SendLocalList request: '" + Request.UpdateType + "' version '" + Request.ListVersion + "'.");
 
                 response = new SendLocalListResponse(Request,
                                                      UpdateStatus.NotSupported);
@@ -2532,7 +2616,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 ClearCacheResponse? response = null;
 
 
-                DebugX.Log($"ChargeBox[{ChargeBoxId}] Incoming ClearCache request.");
+                DebugX.Log($"ChargeBox[{Id}] Incoming ClearCache request.");
 
                 response = new ClearCacheResponse(Request,
                                                   ClearCacheStatus.Rejected);
@@ -2657,21 +2741,50 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         #endregion
 
 
-        #region (private) NextRequestId
+        #region NextRequestId
 
-        private OCPP.Request_Id NextRequestId
+        public Request_Id NextRequestId
         {
             get
             {
 
                 Interlocked.Increment(ref internalRequestId);
 
-                return OCPP.Request_Id.Parse(internalRequestId.ToString());
+                return Request_Id.Parse(internalRequestId.ToString());
 
             }
         }
 
         #endregion
+
+        public string? ClientCloseMessage => throw new NotImplementedException();
+
+        public URL RemoteURL => throw new NotImplementedException();
+
+        public HTTPHostname? VirtualHostname => throw new NotImplementedException();
+
+        string? IHTTPClient.Description { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public RemoteCertificateValidationHandler? RemoteCertificateValidator => throw new NotImplementedException();
+
+        public X509Certificate? ClientCert => throw new NotImplementedException();
+
+        public SslProtocols TLSProtocol => throw new NotImplementedException();
+
+        public bool PreferIPv4 => throw new NotImplementedException();
+
+        public string HTTPUserAgent => throw new NotImplementedException();
+
+        public TimeSpan RequestTimeout { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public TransmissionRetryDelayDelegate TransmissionRetryDelay => throw new NotImplementedException();
+
+        public ushort MaxNumberOfRetries => throw new NotImplementedException();
+
+        public bool UseHTTPPipelining => throw new NotImplementedException();
+
+        public HTTPClientLogger? HTTPLogger => throw new NotImplementedException();
+
 
 
         #region SendBootNotification             (...)
@@ -2697,7 +2810,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var startTime  = Timestamp.Now;
 
             var request    = new BootNotificationRequest(
-                                 ChargeBoxId,
+                                 Id,
                                  ChargePointVendor,
                                  ChargePointModel,
 
@@ -2814,7 +2927,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var startTime  = Timestamp.Now;
 
             var request    = new HeartbeatRequest(
-                                 ChargeBoxId,
+                                 Id,
 
                                  RequestId: NextRequestId
                              );
@@ -2908,7 +3021,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var startTime  = Timestamp.Now;
 
             var request    = new AuthorizeRequest(
-                                 ChargeBoxId,
+                                 Id,
                                  IdTag,
 
                                  RequestId: NextRequestId
@@ -3005,7 +3118,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var startTime  = Timestamp.Now;
 
             var request    = new StartTransactionRequest(
-                                 ChargeBoxId,
+                                 Id,
                                  ConnectorId,
                                  IdTag,
                                  StartTimestamp,
@@ -3129,7 +3242,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var startTime  = Timestamp.Now;
 
             var request    = new StatusNotificationRequest(
-                                 ChargeBoxId,
+                                 Id,
                                  ConnectorId,
                                  Status,
                                  ErrorCode,
@@ -3228,7 +3341,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var startTime  = Timestamp.Now;
 
             var request    = new MeterValuesRequest(
-                                 ChargeBoxId,
+                                 Id,
                                  ConnectorId,
                                  MeterValues,
                                  TransactionId,
@@ -3329,7 +3442,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var startTime  = Timestamp.Now;
 
             var request    = new StopTransactionRequest(
-                                 ChargeBoxId,
+                                 Id,
                                  TransactionId,
                                  StopTimestamp,
                                  MeterStop,
@@ -3428,7 +3541,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var startTime  = Timestamp.Now;
 
             var request    = new OCPP.CS.DataTransferRequest(
-                                 ChargeBoxId,
+                                 Id,
                                  VendorId,
                                  MessageId,
                                  Data,
@@ -3519,7 +3632,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var startTime  = Timestamp.Now;
 
             var request    = new DiagnosticsStatusNotificationRequest(
-                                 ChargeBoxId,
+                                 Id,
                                  Status,
 
                                  RequestId: NextRequestId
@@ -3608,7 +3721,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             var startTime  = Timestamp.Now;
 
             var request    = new FirmwareStatusNotificationRequest(
-                                 ChargeBoxId,
+                                 Id,
                                  Status,
 
                                  RequestId: NextRequestId
@@ -3668,7 +3781,91 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
         }
 
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
+
+
+        public Task<CS.BootNotificationResponse> BootNotification(BootNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CS.HeartbeatResponse> Heartbeat(HeartbeatRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CS.AuthorizeResponse> Authorize(AuthorizeRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CS.StartTransactionResponse> StartTransaction(StartTransactionRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CS.StatusNotificationResponse> StatusNotification(StatusNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CS.MeterValuesResponse> MeterValues(MeterValuesRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CS.StopTransactionResponse> StopTransaction(StopTransactionRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OCPP.CSMS.DataTransferResponse> DataTransfer(OCPP.CS.DataTransferRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CS.DiagnosticsStatusNotificationResponse> DiagnosticsStatusNotification(DiagnosticsStatusNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CS.FirmwareStatusNotificationResponse> FirmwareStatusNotification(FirmwareStatusNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CS.LogStatusNotificationResponse> LogStatusNotification(LogStatusNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CS.SecurityEventNotificationResponse> SendSecurityEventNotification(SecurityEventNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CS.SignCertificateResponse> SignCertificate(SignCertificateRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<CS.SignedFirmwareStatusNotificationResponse> SignedFirmwareStatusNotification(SignedFirmwareStatusNotificationRequest Request)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+
+        public Task<OCPP.CSMS.BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
+        {
+            throw new NotImplementedException();
+        }
 
 
         //ToDo: Add security extensions

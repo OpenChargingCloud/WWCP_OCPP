@@ -38,8 +38,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     public partial class ChargePointWSClient : AChargingStationWSClient,
                                                    IChargePointWebSocketClient,
-                                                   IChargePointServer,
-                                                   IChargePointClientEvents
+                                                   ICPIncomingMessages,
+                                                   ICPOutgoingMessagesEvents
     {
 
         #region Custom JSON parser delegates

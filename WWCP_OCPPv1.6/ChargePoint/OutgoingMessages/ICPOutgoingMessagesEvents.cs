@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 
-using org.GraphDefined.Vanaheimr.Hermod;
-
 namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
-    public interface IChargePointClientEvents : IEventSender
+    public interface ICPOutgoingMessagesEvents : OCPP.CS.ICSOutgoingMessagesEvents
     {
 
         #region OnBootNotificationRequest/-Response
@@ -164,6 +162,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
         event OnFirmwareStatusNotificationResponseDelegate  OnFirmwareStatusNotificationResponse;
 
         #endregion
+
 
     }
 

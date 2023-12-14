@@ -52,7 +52,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             /// <summary>
             /// The attached OCPP SOAP CP client.
             /// </summary>
-            public IChargePointClient  CPClient    { get; }
+            public ICPOutgoingMessages  CPClient    { get; }
 
             #endregion
 
@@ -67,7 +67,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             /// <param name="LoggingPath">The logging path.</param>
             /// <param name="Context">A context of this API.</param>
             /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
-            public CPClientLogger(ChargePointSOAPClient    CPClient,
+            public CPClientLogger(IChargePoint             CPClient,
                                   String                   LoggingPath,
                                   String                   Context          = DefaultContext,
                                   LogfileCreatorDelegate?  LogfileCreator   = null)
@@ -111,7 +111,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
             /// <param name="LogHTTPError_toHTTPSSE">A delegate to log HTTP errors to a HTTP client sent events source.</param>
             /// 
             /// <param name="LogfileCreator">A delegate to create a log file from the given context and log file name.</param>
-            public CPClientLogger(IChargePointClient                    CPClient,
+            public CPClientLogger(IChargePoint                 CPClient,
                                   String                       LoggingPath,
                                   String                       Context,
 

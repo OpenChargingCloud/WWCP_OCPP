@@ -42,7 +42,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
     /// <summary>
     /// A Charging Station Management System for testing.
     /// </summary>
-    public class TestCSMS : ICSMSService,
+    public class TestCSMS : ICSMSWebSocket,
                             IEventSender
     {
 
@@ -104,7 +104,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// An enumeration of central system servers.
         /// </summary>
-        public IEnumerable<OCPPv2_1.CSMS.ICSMSServerEvents> CSMSServers
+        public IEnumerable<OCPPv2_1.CSMS.ICSMSIncomingMessages> CSMSServers
             => centralSystemServers;
 
 
@@ -2083,7 +2083,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region (private) AttachCSMSChannel(CSMSChannel)
 
-        private void AttachCSMSChannel(OCPPv2_1.CSMS.ICSMSChannel CSMSChannel)
+        private void AttachCSMSChannel(ICSMSWebsocketsChannel CSMSChannel)
         {
 
             centralSystemServers.Add(CSMSChannel);
@@ -13680,6 +13680,38 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// An event fired whenever a charging station was deleted.
         /// </summary>
         public event OnChargingStationDeletedDelegate? OnChargingStationDeleted;
+        public event OnBootNotificationDelegate OnBootNotification;
+        public event OnFirmwareStatusNotificationDelegate OnFirmwareStatusNotification;
+        public event OnPublishFirmwareStatusNotificationDelegate OnPublishFirmwareStatusNotification;
+        public event OnHeartbeatDelegate OnHeartbeat;
+        public event OnNotifyEventDelegate OnNotifyEvent;
+        public event OnSecurityEventNotificationDelegate OnSecurityEventNotification;
+        public event OnNotifyReportDelegate OnNotifyReport;
+        public event OnNotifyMonitoringReportDelegate OnNotifyMonitoringReport;
+        public event OnLogStatusNotificationDelegate OnLogStatusNotification;
+        public event OnIncomingDataTransferDelegate OnIncomingDataTransfer;
+        public event OnSignCertificateDelegate OnSignCertificate;
+        public event OnGet15118EVCertificateDelegate OnGet15118EVCertificate;
+        public event OnGetCertificateStatusDelegate OnGetCertificateStatus;
+        public event OnGetCRLDelegate OnGetCRL;
+        public event OnReservationStatusUpdateDelegate OnReservationStatusUpdate;
+        public event OnAuthorizeDelegate OnAuthorize;
+        public event OnNotifyEVChargingNeedsDelegate OnNotifyEVChargingNeeds;
+        public event OnTransactionEventDelegate OnTransactionEvent;
+        public event OnStatusNotificationDelegate OnStatusNotification;
+        public event OnMeterValuesDelegate OnMeterValues;
+        public event OnNotifyChargingLimitDelegate OnNotifyChargingLimit;
+        public event OnClearedChargingLimitDelegate OnClearedChargingLimit;
+        public event OnReportChargingProfilesDelegate OnReportChargingProfiles;
+        public event OnNotifyEVChargingScheduleDelegate OnNotifyEVChargingSchedule;
+        public event OnNotifyPriorityChargingDelegate OnNotifyPriorityCharging;
+        public event OnPullDynamicScheduleUpdateDelegate OnPullDynamicScheduleUpdate;
+        public event OnNotifyDisplayMessagesDelegate OnNotifyDisplayMessages;
+        public event OnNotifyCustomerInformationDelegate OnNotifyCustomerInformation;
+        public event OnCSMSNewWebSocketConnectionDelegate? OnCSMSNewWebSocketConnection;
+        public event OnCSMSCloseMessageReceivedDelegate? OnCSMSCloseMessageReceived;
+        public event OnCSMSTCPConnectionClosedDelegate? OnCSMSTCPConnectionClosed;
+        public event OnIncomingBinaryDataTransferDelegate OnIncomingBinaryDataTransfer;
 
 
         #region (protected internal virtual) _CanDeleteChargingStation(ChargingStation)

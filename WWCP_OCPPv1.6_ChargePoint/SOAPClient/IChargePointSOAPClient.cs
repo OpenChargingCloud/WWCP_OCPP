@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// The common interface of all HTTP/SOAP charge point clients.
     /// </summary>
-    public interface IChargePointSOAPClient : IChargePointClient
+    public interface IChargePointSOAPClient : ICPOutgoingMessages
     {
 
         #region OnBootNotificationRequest/-Response

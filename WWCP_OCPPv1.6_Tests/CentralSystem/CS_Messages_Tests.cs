@@ -64,13 +64,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 };
 
                 var resetType  = ResetTypes.Hard;
-                var response1  = await testCentralSystem01.Reset(chargePoint1.ChargeBoxId, resetType);
+                var response1  = await testCentralSystem01.Reset(chargePoint1.Id, resetType);
 
                 Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
                 Assert.AreEqual(ResetStatus.Accepted,           response1.Status);
 
                 Assert.AreEqual(1,                              resetRequests.Count);
-                Assert.AreEqual(chargePoint1.ChargeBoxId,   resetRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,   resetRequests.First().NetworkingNodeId);
                 Assert.AreEqual(resetType,                      resetRequests.First().ResetType);
 
             }
@@ -108,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 };
 
                 var resetType  = ResetTypes.Hard;
-                var response1  = await testCentralSystem01.Reset(chargePoint2.ChargeBoxId, resetType);
+                var response1  = await testCentralSystem01.Reset(chargePoint2.Id, resetType);
 
                 Assert.AreEqual  (OCPP.ResultCode.NetworkError,   response1.Result.ResultCode);
                 Assert.IsNotEmpty(                                response1.Result.Description);
@@ -153,7 +153,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var connectorId   = Connector_Id.Parse(1);
                 var availability  = Availabilities.Operative;
-                var response1     = await testCentralSystem01.ChangeAvailability(chargePoint1.ChargeBoxId,
+                var response1     = await testCentralSystem01.ChangeAvailability(chargePoint1.Id,
                                                                                  connectorId,
                                                                                  availability);
 
@@ -161,7 +161,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 Assert.AreEqual(AvailabilityStatus.Accepted,    response1.Status);
 
                 Assert.AreEqual(1,                              changeAvailabilityRequests.Count);
-                Assert.AreEqual(chargePoint1.ChargeBoxId,   changeAvailabilityRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,   changeAvailabilityRequests.First().NetworkingNodeId);
                 Assert.AreEqual(connectorId,                    changeAvailabilityRequests.First().ConnectorId);
                 Assert.AreEqual(availability,                   changeAvailabilityRequests.First().Availability);
 
@@ -201,7 +201,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var connectorId   = Connector_Id.Parse(1);
                 var availability  = Availabilities.Operative;
-                var response1     = await testCentralSystem01.ChangeAvailability(chargePoint2.ChargeBoxId,
+                var response1     = await testCentralSystem01.ChangeAvailability(chargePoint2.Id,
                                                                                  connectorId,
                                                                                  availability);
 
@@ -246,14 +246,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
-                var response1 = await testCentralSystem01.GetConfiguration(chargePoint1.ChargeBoxId);
+                var response1 = await testCentralSystem01.GetConfiguration(chargePoint1.Id);
 
                 Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
                 Assert.AreEqual(4,                              response1.ConfigurationKeys.Count());
                 Assert.AreEqual(0,                              response1.UnknownKeys.      Count());
 
                 Assert.AreEqual(1,                              getConfigurationRequests.Count);
-                Assert.AreEqual(chargePoint1.ChargeBoxId,   getConfigurationRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,   getConfigurationRequests.First().NetworkingNodeId);
 
             }
 
@@ -289,7 +289,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
-                var response1 = await testCentralSystem01.GetConfiguration(chargePoint1.ChargeBoxId,
+                var response1 = await testCentralSystem01.GetConfiguration(chargePoint1.Id,
                                                                            new String[] { "hello" });
 
                 Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
@@ -297,7 +297,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 Assert.AreEqual(0,                              response1.UnknownKeys.      Count());
 
                 Assert.AreEqual(1,                              getConfigurationRequests.Count);
-                Assert.AreEqual(chargePoint1.ChargeBoxId,   getConfigurationRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,   getConfigurationRequests.First().NetworkingNodeId);
 
             }
 
@@ -333,7 +333,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
-                var response1 = await testCentralSystem01.GetConfiguration(chargePoint1.ChargeBoxId,
+                var response1 = await testCentralSystem01.GetConfiguration(chargePoint1.Id,
                                                                            new String[] { "ABCD", "BCDE" });
 
                 Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
@@ -341,7 +341,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 Assert.AreEqual(2,                              response1.UnknownKeys.      Count());
 
                 Assert.AreEqual(1,                              getConfigurationRequests.Count);
-                Assert.AreEqual(chargePoint1.ChargeBoxId,   getConfigurationRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,   getConfigurationRequests.First().NetworkingNodeId);
 
             }
 
@@ -380,7 +380,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var key        = "hello";
                 var value      = "world!!!";
-                var response1  = await testCentralSystem01.ChangeConfiguration(chargePoint1.ChargeBoxId,
+                var response1  = await testCentralSystem01.ChangeConfiguration(chargePoint1.Id,
                                                                                key,
                                                                                value);
 
@@ -388,7 +388,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 Assert.AreEqual(ConfigurationStatus.Rejected,   response1.Status);
 
                 Assert.AreEqual(1,                              changeConfigurationRequests.Count);
-                Assert.AreEqual(chargePoint1.ChargeBoxId,   changeConfigurationRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,   changeConfigurationRequests.First().NetworkingNodeId);
                 Assert.AreEqual(key,                            changeConfigurationRequests.First().Key);
                 Assert.AreEqual(value,                          changeConfigurationRequests.First().Value);
 
@@ -428,7 +428,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var key        = "changeMe";
                 var value      = "now!!!";
-                var response1  = await testCentralSystem01.ChangeConfiguration(chargePoint1.ChargeBoxId,
+                var response1  = await testCentralSystem01.ChangeConfiguration(chargePoint1.Id,
                                                                                key,
                                                                                value);
 
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 Assert.AreEqual(ConfigurationStatus.Accepted,   response1.Status);
 
                 Assert.AreEqual(1,                              changeConfigurationRequests.Count);
-                Assert.AreEqual(chargePoint1.ChargeBoxId,   changeConfigurationRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,   changeConfigurationRequests.First().NetworkingNodeId);
                 Assert.AreEqual(key,                            changeConfigurationRequests.First().Key);
                 Assert.AreEqual(value,                          changeConfigurationRequests.First().Value);
 
@@ -449,7 +449,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
-                var response2 = await testCentralSystem01.GetConfiguration(chargePoint1.ChargeBoxId,
+                var response2 = await testCentralSystem01.GetConfiguration(chargePoint1.Id,
                                                                            new String[] { key });
 
                 Assert.AreEqual(OCPP.ResultCode.OK,             response2.Result.ResultCode);
@@ -458,7 +458,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 Assert.AreEqual(value,                          response2.ConfigurationKeys.First().Value);
 
                 Assert.AreEqual(1,                              getConfigurationRequests.Count);
-                Assert.AreEqual(chargePoint1.ChargeBoxId,   getConfigurationRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,   getConfigurationRequests.First().NetworkingNodeId);
 
             }
 
@@ -496,7 +496,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var key        = "hello";
                 var value      = "hell";
-                var response1  = await testCentralSystem01.ChangeConfiguration(chargePoint1.ChargeBoxId,
+                var response1  = await testCentralSystem01.ChangeConfiguration(chargePoint1.Id,
                                                                                key,
                                                                                value);
 
@@ -504,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 Assert.AreEqual(ConfigurationStatus.Rejected,   response1.Status);
 
                 Assert.AreEqual(1,                              changeConfigurationRequests.Count);
-                Assert.AreEqual(chargePoint1.ChargeBoxId,   changeConfigurationRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,   changeConfigurationRequests.First().NetworkingNodeId);
                 Assert.AreEqual(key,                            changeConfigurationRequests.First().Key);
                 Assert.AreEqual(value,                          changeConfigurationRequests.First().Value);
 
@@ -517,7 +517,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
-                var response2 = await testCentralSystem01.GetConfiguration(chargePoint1.ChargeBoxId,
+                var response2 = await testCentralSystem01.GetConfiguration(chargePoint1.Id,
                                                                            new String[] { key });
 
                 Assert.AreEqual(OCPP.ResultCode.OK,             response2.Result.ResultCode);
@@ -526,7 +526,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 Assert.AreEqual("world",                        response2.ConfigurationKeys.First().Value);
 
                 Assert.AreEqual(1,                              getConfigurationRequests.Count);
-                Assert.AreEqual(chargePoint1.ChargeBoxId,   getConfigurationRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,   getConfigurationRequests.First().NetworkingNodeId);
 
             }
 
@@ -566,7 +566,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 var vendorId   = Vendor_Id. Parse("graphdefined");
                 var messageId  = Message_Id.Parse("hello");
                 var data       = "world!";
-                var response1  = await testCentralSystem01.DataTransfer(chargePoint1.ChargeBoxId,
+                var response1  = await testCentralSystem01.DataTransfer(chargePoint1.Id,
                                                                         vendorId,
                                                                         messageId,
                                                                         data);
@@ -575,7 +575,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 Assert.AreEqual(OCPP.DataTransferStatus.Accepted,    response1.Status);
 
                 Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargePoint1.ChargeBoxId,   dataTransferRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,   dataTransferRequests.First().NetworkingNodeId);
                 Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
                 Assert.AreEqual(data,                           dataTransferRequests.First().Data);
@@ -617,7 +617,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 var vendorId   = Vendor_Id. Parse("ACME Inc.");
                 var messageId  = Message_Id.Parse("hello");
                 var data       = "world!";
-                var response1  = await testCentralSystem01.DataTransfer(chargePoint1.ChargeBoxId,
+                var response1  = await testCentralSystem01.DataTransfer(chargePoint1.Id,
                                                                         vendorId,
                                                                         messageId,
                                                                         data);
@@ -626,7 +626,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 Assert.AreEqual(DataTransferStatus.Rejected,    response1.Status);
 
                 Assert.AreEqual(1,                              dataTransferRequests.Count);
-                Assert.AreEqual(chargePoint1.ChargeBoxId,   dataTransferRequests.First().NetworkingNodeId);
+                Assert.AreEqual(chargePoint1.Id,   dataTransferRequests.First().NetworkingNodeId);
                 Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
                 Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
                 Assert.AreEqual(data,                           dataTransferRequests.First().Data);

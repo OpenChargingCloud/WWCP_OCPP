@@ -27,9 +27,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
     /// <summary>
     /// The common interface of all central systems.
     /// </summary>
-    public interface ICentralSystem : ICentralSystemClient,
+    public interface ICentralSystem : ICSOutgoingMessages,
                                       ICentralSystemServer,
-                                      ICentralSystemServerRequestResponseEvents
+                                      ICSIncomingMessagesEvents
     {
 
         CentralSystem_Id           Id                       { get; }

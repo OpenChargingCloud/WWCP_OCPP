@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPP
     /// <summary>
     /// The common OCPP central system client interface.
     /// </summary>
-    public interface ICSMSClientEvents
+    public interface ICSMSOutgoingMessagesEvents
     {
 
         // Binary Data Streams Extensions

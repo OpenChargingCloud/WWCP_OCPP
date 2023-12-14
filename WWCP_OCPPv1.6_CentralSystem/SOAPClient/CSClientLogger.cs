@@ -53,7 +53,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             /// <summary>
             /// The attached central system client.
             /// </summary>
-            public ICentralSystemClient CSClient    { get; }
+            public ICSOutgoingMessages CSClient    { get; }
 
             #endregion
 

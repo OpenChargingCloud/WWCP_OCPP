@@ -15,24 +15,16 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv1_6.CP;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
 
     /// <summary>
     /// The common interface of all central system clients.
     /// </summary>
-    public interface ICentralSystemClient : OCPP.ICSMSClient,
-                                            ICentralSystemClientEvents
+    public interface ICSOutgoingMessages : OCPP.ICSMSOutgoingMessages
     {
 
-        NetworkingNode_Id                       ChargeBoxIdentity    { get; }
+        OCPP.NetworkingNode_Id                  ChargeBoxIdentity    { get; }
         String                                  From                 { get; }
         String                                  To                   { get; }
 
@@ -44,7 +36,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Reset the given charge box.
         /// </summary>
         /// <param name="Request">A reset request.</param>
-        Task<ResetResponse> Reset(ResetRequest Request);
+        Task<CP.ResetResponse> Reset(ResetRequest Request);
 
         #endregion
 
@@ -54,7 +46,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Change the availability of the given charge box connector.
         /// </summary>
         /// <param name="Request">A change availability request.</param>
-        Task<ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request);
+        Task<CP.ChangeAvailabilityResponse> ChangeAvailability(ChangeAvailabilityRequest Request);
 
         #endregion
 
@@ -64,7 +56,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Get the configuration of the given charge box.
         /// </summary>
         /// <param name="Request">A get configuration request.</param>
-        Task<GetConfigurationResponse> GetConfiguration(GetConfigurationRequest Request);
+        Task<CP.GetConfigurationResponse> GetConfiguration(GetConfigurationRequest Request);
 
         #endregion
 
@@ -74,7 +66,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Change the configuration of the given charge box.
         /// </summary>
         /// <param name="Request">A change configuration request.</param>
-        Task<ChangeConfigurationResponse> ChangeConfiguration(ChangeConfigurationRequest Request);
+        Task<CP.ChangeConfigurationResponse> ChangeConfiguration(ChangeConfigurationRequest Request);
 
         #endregion
 
@@ -94,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Upload diagnostics data of the given charge box to the given file location.
         /// </summary>
         /// <param name="Request">A get diagnostics request.</param>
-        Task<GetDiagnosticsResponse> GetDiagnostics(GetDiagnosticsRequest Request);
+        Task<CP.GetDiagnosticsResponse> GetDiagnostics(GetDiagnosticsRequest Request);
 
         #endregion
 
@@ -104,7 +96,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a trigger for the given message at the given charge box connector.
         /// </summary>
         /// <param name="Request">A trigger message request.</param>
-        Task<TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request);
+        Task<CP.TriggerMessageResponse> TriggerMessage(TriggerMessageRequest Request);
 
         #endregion
 
@@ -114,7 +106,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Initiate a firmware download from the given location at the given charge box.
         /// </summary>
         /// <param name="Request">An update firmware request.</param>
-        Task<UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request);
+        Task<CP.UpdateFirmwareResponse> UpdateFirmware(UpdateFirmwareRequest Request);
 
         #endregion
 
@@ -125,7 +117,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Create a charging reservation at the given charge box connector.
         /// </summary>
         /// <param name="Request">A reserve now request.</param>
-        Task<ReserveNowResponse> ReserveNow(ReserveNowRequest  Request);
+        Task<CP.ReserveNowResponse> ReserveNow(ReserveNowRequest  Request);
 
         #endregion
 
@@ -135,7 +127,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Cancel the given charging reservation at the given charge box.
         /// </summary>
         /// <param name="Request">A cancel reservation request.</param>
-        Task<CancelReservationResponse> CancelReservation(CancelReservationRequest Request);
+        Task<CP.CancelReservationResponse> CancelReservation(CancelReservationRequest Request);
 
         #endregion
 
@@ -145,7 +137,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Start a charging session at the given charge box connector using the given charging profile.
         /// </summary>
         /// <param name="Request">A remote start transaction request.</param>
-        Task<RemoteStartTransactionResponse> RemoteStartTransaction(RemoteStartTransactionRequest Request);
+        Task<CP.RemoteStartTransactionResponse> RemoteStartTransaction(RemoteStartTransactionRequest Request);
 
         #endregion
 
@@ -155,7 +147,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Stop a charging session at the given charge box.
         /// </summary>
         /// <param name="Request">A remote stop transaction request.</param>
-        Task<RemoteStopTransactionResponse> RemoteStopTransaction(RemoteStopTransactionRequest Request);
+        Task<CP.RemoteStopTransactionResponse> RemoteStopTransaction(RemoteStopTransactionRequest Request);
 
         #endregion
 
@@ -165,7 +157,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Set the charging profile of the given charge box connector.
         /// </summary>
         /// <param name="Request">A set charging profile request.</param>
-        Task<SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request);
+        Task<CP.SetChargingProfileResponse> SetChargingProfile(SetChargingProfileRequest Request);
 
         #endregion
 
@@ -175,7 +167,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Remove the charging profile at the given charge box connector.
         /// </summary>
         /// <param name="Request">A clear charging profile request.</param>
-        Task<ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request);
+        Task<CP.ClearChargingProfileResponse> ClearChargingProfile(ClearChargingProfileRequest Request);
 
         #endregion
 
@@ -185,7 +177,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Return the charging schedule of the given charge box connector.
         /// </summary>
         /// <param name="Request">A get composite schedule request.</param>
-        Task<GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request);
+        Task<CP.GetCompositeScheduleResponse> GetCompositeSchedule(GetCompositeScheduleRequest Request);
 
         #endregion
 
@@ -195,7 +187,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Unlock the given charge box connector.
         /// </summary>
         /// <param name="Request">An unlock connector request.</param>
-        Task<UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request);
+        Task<CP.UnlockConnectorResponse> UnlockConnector(UnlockConnectorRequest Request);
 
         #endregion
 
@@ -206,7 +198,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Return the local white list of the given charge box.
         /// </summary>
         /// <param name="Request">A get local list version request.</param>
-        Task<GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request);
+        Task<CP.GetLocalListVersionResponse> GetLocalListVersion(GetLocalListVersionRequest Request);
 
         #endregion
 
@@ -216,7 +208,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Set the local white liste at the given charge box.
         /// </summary>
         /// <param name="Request">A send local list request.</param>
-        Task<SendLocalListResponse> SendLocalList(SendLocalListRequest Request);
+        Task<CP.SendLocalListResponse> SendLocalList(SendLocalListRequest Request);
 
         #endregion
 
@@ -226,7 +218,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Clear the local white liste cache of the given charge box.
         /// </summary>
         /// <param name="Request">A clear cache request.</param>
-        Task<ClearCacheResponse> ClearCache(ClearCacheRequest Request);
+        Task<CP.ClearCacheResponse> ClearCache(ClearCacheRequest Request);
 
         #endregion
 
@@ -240,7 +232,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Send the signed certificate to the charge point.
         /// </summary>
         /// <param name="Request">A certificate signed request.</param>
-        Task<CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request);
+        Task<CP.CertificateSignedResponse> CertificateSigned(CertificateSignedRequest Request);
 
         #endregion
 
@@ -250,7 +242,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Delete the given certificate on the charge point.
         /// </summary>
         /// <param name="Request">A delete certificate request.</param>
-        Task<DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request);
+        Task<CP.DeleteCertificateResponse> DeleteCertificate(DeleteCertificateRequest Request);
 
         #endregion
 
@@ -260,7 +252,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Send an extended trigger message to the charge point.
         /// </summary>
         /// <param name="Request">A extended trigger message request.</param>
-        Task<ExtendedTriggerMessageResponse> ExtendedTriggerMessage(ExtendedTriggerMessageRequest Request);
+        Task<CP.ExtendedTriggerMessageResponse> ExtendedTriggerMessage(ExtendedTriggerMessageRequest Request);
 
         #endregion
 
@@ -270,7 +262,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Retrieve a list of all installed certificates within the charge point.
         /// </summary>
         /// <param name="Request">A get installed certificate ids request.</param>
-        Task<GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request);
+        Task<CP.GetInstalledCertificateIdsResponse> GetInstalledCertificateIds(GetInstalledCertificateIdsRequest Request);
 
         #endregion
 
@@ -280,7 +272,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Retrieve log files from the charge point.
         /// </summary>
         /// <param name="Request">A get log request.</param>
-        Task<GetLogResponse> GetLog(GetLogRequest Request);
+        Task<CP.GetLogResponse> GetLog(GetLogRequest Request);
 
         #endregion
 
@@ -290,7 +282,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Install the given certificate within the charge point.
         /// </summary>
         /// <param name="Request">An install certificate request.</param>
-        Task<InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request);
+        Task<CP.InstallCertificateResponse> InstallCertificate(InstallCertificateRequest Request);
 
         #endregion
 
@@ -300,7 +292,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// Update the firmware of the charge point.
         /// </summary>
         /// <param name="Request">A signed update firmware request.</param>
-        Task<SignedUpdateFirmwareResponse> SignedUpdateFirmware(SignedUpdateFirmwareRequest Request);
+        Task<CP.SignedUpdateFirmwareResponse> SignedUpdateFirmware(SignedUpdateFirmwareRequest Request);
 
         #endregion
 

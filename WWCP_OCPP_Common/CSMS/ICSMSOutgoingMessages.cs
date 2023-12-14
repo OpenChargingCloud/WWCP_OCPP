@@ -15,21 +15,11 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using cloud.charging.open.protocols.OCPP.CS;
-using cloud.charging.open.protocols.OCPP.CSMS;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPP
 {
 
-    public interface ICSMSClient
+    public interface ICSMSOutgoingMessages
     {
-
 
         // Binary Data Streams Extensions
 
@@ -39,7 +29,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Send the given vendor-specific binary data.
         /// </summary>
         /// <param name="Request">A binary data transfer request.</param>
-        Task<OCPP.CS.BinaryDataTransferResponse> BinaryDataTransfer(OCPP.CSMS.BinaryDataTransferRequest Request);
+        Task<CS.BinaryDataTransferResponse> BinaryDataTransfer(CSMS.BinaryDataTransferRequest Request);
 
         #endregion
 
@@ -49,7 +39,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Request to download the specified file.
         /// </summary>
         /// <param name="Request">A GetFile request.</param>
-        Task<OCPP.CS.GetFileResponse> GetFile(GetFileRequest Request);
+        Task<CS.GetFileResponse> GetFile(CSMS.GetFileRequest Request);
 
         #endregion
 
@@ -59,7 +49,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Send the given file to the charging station.
         /// </summary>
         /// <param name="Request">A SendFile request.</param>
-        Task<OCPP.CS.SendFileResponse> SendFile(SendFileRequest Request);
+        Task<CS.SendFileResponse> SendFile(CSMS.SendFileRequest Request);
 
         #endregion
 
@@ -69,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Delete the given file from the charging station.
         /// </summary>
         /// <param name="Request">A DeleteFile request.</param>
-        Task<OCPP.CS.DeleteFileResponse> DeleteFile(DeleteFileRequest Request);
+        Task<CS.DeleteFileResponse> DeleteFile(CSMS.DeleteFileRequest Request);
 
         #endregion
 
@@ -82,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Add a signature policy.
         /// </summary>
         /// <param name="Request">An AddSignaturePolicy request.</param>
-        Task<AddSignaturePolicyResponse> AddSignaturePolicy(AddSignaturePolicyRequest Request);
+        Task<CS.AddSignaturePolicyResponse> AddSignaturePolicy(CSMS.AddSignaturePolicyRequest Request);
 
         #endregion
 
@@ -92,7 +82,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Update a signature policy.
         /// </summary>
         /// <param name="Request">An UpdateSignaturePolicy request.</param>
-        Task<UpdateSignaturePolicyResponse> UpdateSignaturePolicy(UpdateSignaturePolicyRequest Request);
+        Task<CS.UpdateSignaturePolicyResponse> UpdateSignaturePolicy(CSMS.UpdateSignaturePolicyRequest Request);
 
         #endregion
 
@@ -102,7 +92,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Delete a signature policy.
         /// </summary>
         /// <param name="Request">A DeleteSignaturePolicy request.</param>
-        Task<DeleteSignaturePolicyResponse> DeleteSignaturePolicy(DeleteSignaturePolicyRequest Request);
+        Task<CS.DeleteSignaturePolicyResponse> DeleteSignaturePolicy(CSMS.DeleteSignaturePolicyRequest Request);
 
         #endregion
 
@@ -112,7 +102,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Add a user role.
         /// </summary>
         /// <param name="Request">An AddUserRole request.</param>
-        Task<AddUserRoleResponse> AddUserRole(AddUserRoleRequest Request);
+        Task<CS.AddUserRoleResponse> AddUserRole(CSMS.AddUserRoleRequest Request);
 
         #endregion
 
@@ -122,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPP
         /// Update a user role.
         /// </summary>
         /// <param name="Request">An UpdateUserRole request.</param>
-        Task<UpdateUserRoleResponse> UpdateUserRole(UpdateUserRoleRequest Request);
+        Task<CS.UpdateUserRoleResponse> UpdateUserRole(CSMS.UpdateUserRoleRequest Request);
 
         #endregion
 
@@ -132,9 +122,10 @@ namespace cloud.charging.open.protocols.OCPP
         /// Delete a user role.
         /// </summary>
         /// <param name="Request">An DeleteUserRole request.</param>
-        Task<DeleteUserRoleResponse> DeleteUserRole(DeleteUserRoleRequest Request);
+        Task<CS.DeleteUserRoleResponse> DeleteUserRole(CSMS.DeleteUserRoleRequest Request);
 
         #endregion
+
 
     }
 

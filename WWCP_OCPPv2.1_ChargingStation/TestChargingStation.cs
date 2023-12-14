@@ -220,7 +220,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// The client connected to a CSMS.
         /// </summary>
-        public IChargingStationClient?   CSClient                    { get; private set; }
+        public ICSOutgoingMessages?   CSClient                    { get; private set; }
 
 
         public String? ClientCloseMessage
@@ -258,6 +258,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// </summary>
         [Optional]
         public I18NString?              Description                 { get; }
+
+        String? IHTTPClient.Description {
+            get => Description?.FirstText();
+            set => throw new NotImplementedException();
+        }
+
 
         /// <summary>
         /// The optional serial number of the charging station.
@@ -338,8 +344,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public URL RemoteURL => throw new NotImplementedException();
 
         public HTTPHostname? VirtualHostname => throw new NotImplementedException();
-
-        string? IHTTPClient.Description { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public RemoteCertificateValidationHandler? RemoteCertificateValidator => throw new NotImplementedException();
 
@@ -2276,7 +2280,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         private readonly ConcurrentDictionary<Transaction_Id,        Decimal>         totalCosts        = new ();
         private readonly ConcurrentDictionary<InstallCertificateUse, Certificate>     certificates      = new ();
 
-        public void WireEvents(IChargingStationServer ChargingStationServer)
+        public void WireEvents(ICSIncomingMessages ChargingStationServer)
         {
 
             #region OnReset
@@ -12495,7 +12499,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         #endregion
 
 
-        #region (private) NextRequestId
+        #region NextRequestId
 
         public Request_Id NextRequestId
         {

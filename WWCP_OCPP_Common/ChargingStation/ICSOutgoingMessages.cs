@@ -15,15 +15,23 @@
  * limitations under the License.
  */
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CS
+namespace cloud.charging.open.protocols.OCPP.CS
 {
 
-    /// <summary>
-    /// Extension methods for all charging station servers.
-    /// </summary>
-    public static class IChargingStationServerExtensions
+    public interface ICSOutgoingMessages
     {
 
+        // Binary Data Streams Extensions
+
+        #region TransferBinaryData                    (Request)
+
+        /// <summary>
+        /// Send the given vendor-specific binary data.
+        /// </summary>
+        /// <param name="Request">A binary data transfer request.</param>
+        public Task<CSMS.BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request);
+
+        #endregion
 
 
     }

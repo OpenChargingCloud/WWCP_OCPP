@@ -15,13 +15,49 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+
+using cloud.charging.open.protocols.OCPP;
+
+#endregion
+
 namespace cloud.charging.open.protocols.OCPPv1_6.CP
 {
 
     /// <summary>
     /// The common interface of all charge points.
     /// </summary>
-    public interface IChargePoint : IChargePointClient, IChargePointServer
-    { }
+    public interface IChargePoint : ICPOutgoingMessages,
+                                    ICPOutgoingMessagesEvents,
+                                    ICPIncomingMessages,
+                                    ICPIncomingMessagesEvents,
+                                    IHTTPClient
+    {
+
+        NetworkingNode_Id  Id                         { get; }
+
+        TimeSpan           DefaultRequestTimeout      { get; }
+
+        Request_Id         NextRequestId              { get; }
+
+        SignaturePolicy?   SignaturePolicy            { get; }
+
+
+        String             ChargePointVendor          { get; }
+        String             ChargePointModel           { get; }
+        String?            ChargePointSerialNumber    { get; }
+        String?            ChargeBoxSerialNumber      { get; }
+        String?            FirmwareVersion            { get; }
+        String?            Iccid                      { get; }
+        String?            IMSI                       { get; }
+        String?            MeterType                  { get; }
+        String?            MeterSerialNumber          { get; }
+        String?            MeterPublicKey             { get; }
+
+        CustomData         CustomData                 { get; }
+
+    }
 
 }

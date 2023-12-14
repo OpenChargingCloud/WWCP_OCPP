@@ -15,19 +15,13 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using cloud.charging.open.protocols.OCPP.CS;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_1.CS
 {
 
     /// <summary>
     /// The common interface of all charging station clients.
     /// </summary>
-    public interface IChargingStationClientEvents
+    public interface ICSOutgoingMessagesEvents : OCPP.CS.ICSOutgoingMessagesEvents
     {
 
         #region SendBootNotification                     (-Request/-Response)
@@ -161,12 +155,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// <summary>
         /// An event fired whenever a DataTransfer request will be sent to the CSMS.
         /// </summary>
-        event OnDataTransferRequestDelegate?   OnDataTransferRequest;
+        event OCPP.CS.OnDataTransferRequestDelegate?   OnDataTransferRequest;
 
         /// <summary>
         /// An event fired whenever a response to a DataTransfer request was received.
         /// </summary>
-        event OnDataTransferResponseDelegate?  OnDataTransferResponse;
+        event OCPP.CS.OnDataTransferResponseDelegate?  OnDataTransferResponse;
 
         #endregion
 
@@ -422,23 +416,6 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// An event fired whenever a response to a NotifyCustomerInformation request was received.
         /// </summary>
         event OnNotifyCustomerInformationResponseDelegate?  OnNotifyCustomerInformationResponse;
-
-        #endregion
-
-
-        // Binary Data Streams Extensions
-
-        #region TransferBinaryData                       (-Request/-Response)
-
-        /// <summary>
-        /// An event fired whenever a BinaryDataTransfer request will be sent to the CSMS.
-        /// </summary>
-        event OnBinaryDataTransferRequestDelegate?   OnBinaryDataTransferRequest;
-
-        /// <summary>
-        /// An event fired whenever a response to a BinaryDataTransfer request was received.
-        /// </summary>
-        event OnBinaryDataTransferResponseDelegate?  OnBinaryDataTransferResponse;
 
         #endregion
 

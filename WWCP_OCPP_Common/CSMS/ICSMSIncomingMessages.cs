@@ -18,7 +18,7 @@
 namespace cloud.charging.open.protocols.OCPP.CSMS
 {
 
-    public interface ICSMSServerEvents
+    public interface ICSMSIncomingMessages
     {
 
         #region HTTP Web Socket connection management

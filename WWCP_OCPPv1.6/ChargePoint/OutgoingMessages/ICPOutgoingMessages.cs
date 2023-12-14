@@ -17,8 +17,6 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
@@ -29,11 +27,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// The common interface of all charge point clients.
     /// </summary>
-    public interface IChargePointClient : IHTTPClient,
-                                          IChargePointClientEvents
+    public interface ICPOutgoingMessages : OCPP.CS.ICSOutgoingMessages
     {
 
-        String? ClientCloseMessage { get; }
+        String?  ClientCloseMessage    { get; }
 
 
         #region BootNotification

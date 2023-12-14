@@ -258,9 +258,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         public HTTPEventSource<JObject>                   EventLog            { get; }
 
 
-        private ConcurrentDictionary<CSMS_Id, ICSMSService> csmss = new();
+        private ConcurrentDictionary<CSMS_Id, ICSMSWebSocket> csmss = new();
 
-        public IEnumerable<ICSMSService> CSMSs
+        public IEnumerable<ICSMSWebSocket> CSMSs
             => csmss.Values;
 
 
@@ -578,7 +578,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #region AttachCSMS       (CSMS)
 
-        public void AttachCSMS(ICSMSService CSMS)
+        public void AttachCSMS(ICSMSWebSocket CSMS)
         {
 
             this.csmss.TryAdd(CSMS.Id, CSMS);
@@ -2762,9 +2762,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
         #endregion
 
-        #region AttachCSMSChannel(CSMSChannel)
+        // 
 
-        public void AttachCSMSChannel(ICSMSChannel CSMSChannel)
+
+
+        #region AttachWebsocketsCSMSChannel(CSMSChannel)
+
+        public void AttachWebsocketsCSMSChannel(ICSMSWebsocketsChannel CSMSChannel)
         {
 
             #region WebSocket connections
@@ -2859,6 +2863,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
             #endregion
 
+            AttachCSMSChannel(CSMSChannel);
+
+        }
+
+        #endregion
+
+        #region (private) AttachCSMSChannel(CSMSChannel)
+
+        private void AttachCSMSChannel(ICSMSChannel CSMSChannel)
+        {
 
             // HTTP-SSEs: CSMS -> ChargingStation
 

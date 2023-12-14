@@ -27,7 +27,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// <summary>
     /// The common interface of all HTTP web socket charge point clients.
     /// </summary>
-    public interface IChargePointWebSocketClient : IChargePointClient
+    public interface IChargePointWebSocketClient : ICPOutgoingMessages
     {
 
         #region OnBootNotificationRequest/-Response

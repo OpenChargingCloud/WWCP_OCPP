@@ -120,7 +120,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
                 var response1 = chargePoint1.ConnectWebSocket("From:GD001",
                                                                   "To:OCPPTest01",
-                                                                  URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargePoint1.ChargeBoxId)).Result;
+                                                                  URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargePoint1.Id)).Result;
 
                 Assert.IsNotNull(response1);
 

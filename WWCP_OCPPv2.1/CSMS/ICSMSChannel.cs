@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
-
-#endregion
-
 namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
@@ -28,11 +22,24 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
     /// The common interface of all central systems channels.
     /// CSMS might have multiple channels, e.g. a SOAP and a WebSockets channel.
     /// </summary>
-    public interface ICSMSChannel : IWebSocketServer,
-                                    ICSMSClient,
-                                    ICSMSServerEvents
+    public interface ICSMSChannel : ICSMSOutgoingMessages,
+                                    ICSMSOutgoingMessagesEvents,
+                                    ICSMSIncomingMessages,
+                                    ICSMSIncomingMessagesEvents
     {
 
+        /// <summary>
+        /// Start the HTTP web socket listener thread.
+        /// </summary>
+        void Start();
+
+        /// <summary>
+        /// Shutdown the HTTP web socket listener thread.
+        /// </summary>
+        /// <param name="Message">An optional shutdown message.</param>
+        /// <param name="Wait">Wait until the server finally shutted down.</param>
+        Task Shutdown(String?  Message   = null,
+                      Boolean  Wait      = true);
 
     }
 

@@ -17,24 +17,20 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Hermod.WebSocket;
 
-using cloud.charging.open.protocols.OCPPv2_1.CSMS;
+using cloud.charging.open.protocols.OCPPv1_6.CS;
 
 #endregion
 
-namespace cloud.charging.open.protocols.OCPPv2_1.CS
+namespace cloud.charging.open.protocols.OCPPv2_1.CSMS
 {
 
     /// <summary>
-    /// Extension methods for all charging station clients
+    /// The common interface of all central systems HTTP Web Sockets channels.
     /// </summary>
-    public static class IChargingStationClientExtensions
-    {
-
-        //ToDo: Implement IChargingStationClientExtensions!
-
-    }
+    public interface ICentralSystemWebsocketsChannel : ICentralSystemChannel,
+                                                       IWebSocketServer
+    { }
 
 }
