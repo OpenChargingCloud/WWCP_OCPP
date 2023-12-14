@@ -23,8 +23,10 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 namespace cloud.charging.open.protocols.OCPPv1_6.CS
 {
-    public interface ICentralSystemSOAPClient : IHTTPClient,
-                                                ICSOutgoingMessages
+
+    public interface ICentralSystemSOAPClient : ICSOutgoingMessages,
+                                                ICSOutgoingMessagesEvents,
+                                                IHTTPClient
     {
 
         event ClientRequestLogHandler?   OnResetSOAPRequest;

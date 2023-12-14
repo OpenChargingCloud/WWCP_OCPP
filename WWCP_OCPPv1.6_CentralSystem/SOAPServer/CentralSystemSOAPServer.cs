@@ -24,8 +24,8 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.SOAP;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPP.CSMS;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
@@ -44,7 +44,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The default HTTP/SOAP/XML server name.
         /// </summary>
-        public new const           String           DefaultHTTPServerName  = "GraphDefined OCPP " + Version.String + " HTTP/SOAP/XML Central System API";
+        public new const           String           DefaultHTTPServerName  = $"GraphDefined OCPP {Version.String} HTTP/SOAP/XML Central System API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server TCP port.
@@ -54,7 +54,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <summary>
         /// The default TCP service name shown e.g. on service startup.
         /// </summary>
-        public     const           String           DefaultServiceName     = "OCPP " + Version.String + " Central System API";
+        public     const           String           DefaultServiceName     = $"OCPP {Version.String} Central System API";
 
         /// <summary>
         /// The default HTTP/SOAP/XML server URI prefix.
@@ -80,7 +80,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// </summary>
         String IEventSender.Id
             => SOAPServer.HTTPServer.DefaultServerName;
-
 
         /// <summary>
         /// The unique identifications of all reachable charge boxes.
@@ -2146,6 +2145,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         }
 
         #endregion
+
 
     }
 
