@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -46,11 +47,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsE
         public async Task TransferBinaryData_Test()
         {
 
-            Assert.IsNotNull(testCentralSystem01);
-            Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargePoint1);
-            Assert.IsNotNull(chargePoint2);
-            Assert.IsNotNull(chargePoint3);
+            ClassicAssert.IsNotNull(testCentralSystem01);
+            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(chargePoint1);
+            ClassicAssert.IsNotNull(chargePoint2);
+            ClassicAssert.IsNotNull(chargePoint3);
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
@@ -79,14 +80,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsE
                                  );
 
 
-                Assert.AreEqual(ResultCode.OK,                   response.Result.ResultCode);
-                Assert.AreEqual(data.Reverse().ToUTF8String(),   response.Data?.ToUTF8String());
+                ClassicAssert.AreEqual(ResultCode.OK,                   response.Result.ResultCode);
+                ClassicAssert.AreEqual(data.Reverse().ToUTF8String(),   response.Data?.ToUTF8String());
 
-                Assert.AreEqual(1,                               binaryDataTransferRequests.Count);
-                Assert.AreEqual(chargePoint1.Id,        binaryDataTransferRequests.First().NetworkingNodeId);
-                Assert.AreEqual(vendorId,                        binaryDataTransferRequests.First().VendorId);
-                Assert.AreEqual(messageId,                       binaryDataTransferRequests.First().MessageId);
-                Assert.AreEqual(data,                            binaryDataTransferRequests.First().Data);
+                ClassicAssert.AreEqual(1,                               binaryDataTransferRequests.Count);
+                ClassicAssert.AreEqual(chargePoint1.Id,        binaryDataTransferRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(vendorId,                        binaryDataTransferRequests.First().VendorId);
+                ClassicAssert.AreEqual(messageId,                       binaryDataTransferRequests.First().MessageId);
+                ClassicAssert.AreEqual(data,                            binaryDataTransferRequests.First().Data);
 
             }
 

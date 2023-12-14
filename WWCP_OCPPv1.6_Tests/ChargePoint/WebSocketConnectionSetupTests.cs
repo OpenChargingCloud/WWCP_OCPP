@@ -42,11 +42,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         //public async Task CentralSystem_DataTransfer_Rejected_Test()
         //{
 
-        //    Assert.IsNotNull(testCentralSystem01);
-        //    Assert.IsNotNull(testBackendWebSockets01);
-        //    Assert.IsNotNull(chargingStation1);
-        //    Assert.IsNotNull(chargingStation2);
-        //    Assert.IsNotNull(chargingStation3);
+        //    ClassicAssert.IsNotNull(testCentralSystem01);
+        //    ClassicAssert.IsNotNull(testBackendWebSockets01);
+        //    ClassicAssert.IsNotNull(chargingStation1);
+        //    ClassicAssert.IsNotNull(chargingStation2);
+        //    ClassicAssert.IsNotNull(chargingStation3);
 
         //    if (testCentralSystem01     is not null &&
         //        testBackendWebSockets01 is not null &&
@@ -69,14 +69,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         //                                                                messageId,
         //                                                                data);
 
-        //        Assert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-        //        Assert.AreEqual(DataTransferStatus.Rejected,    response1.Status);
+        //        ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
+        //        ClassicAssert.AreEqual(DataTransferStatus.Rejected,    response1.Status);
 
-        //        Assert.AreEqual(1,                              dataTransferRequests.Count);
-        //        Assert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().NetworkingNodeId);
-        //        Assert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-        //        Assert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-        //        Assert.AreEqual(data,                           dataTransferRequests.First().Data);
+        //        ClassicAssert.AreEqual(1,                              dataTransferRequests.Count);
+        //        ClassicAssert.AreEqual(chargingStation1.ChargeBoxId,   dataTransferRequests.First().NetworkingNodeId);
+        //        ClassicAssert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
+        //        ClassicAssert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
+        //        ClassicAssert.AreEqual(data,                           dataTransferRequests.First().Data);
 
         //    }
 

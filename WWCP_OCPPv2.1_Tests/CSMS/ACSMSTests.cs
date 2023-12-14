@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using Newtonsoft.Json.Linq;
 
@@ -112,7 +113,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                                            )
                               );
 
-            Assert.IsNotNull(testCSMS01);
+            ClassicAssert.IsNotNull(testCSMS01);
 
             testBackendWebSockets01  = testCSMS01.AttachWebSocketService(
                                            TCPPort:                 IPPort.Parse(9101),
@@ -120,7 +121,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.CSMS
                                            AutoStart:               true
                                        );
 
-            Assert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testBackendWebSockets01);
 
 
             csms1WebSocketJSONMessagesReceived          = [];

@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 #endregion
 
@@ -83,15 +84,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             var providerId = Provider_Id.TryParse("DEGDF");
 
-            Assert.IsNotNull(providerId);
+            ClassicAssert.IsNotNull(providerId);
 
             if (providerId is not null)
             {
-                Assert.AreEqual("DE",     providerId.Value.CountryCode.Alpha2Code);
-                Assert.IsNull  (          providerId.Value.Separator);
-                Assert.AreEqual("GDF",    providerId.Value.Suffix);
-                Assert.AreEqual("DEGDF",  providerId.Value.ToString());
-                Assert.AreEqual(5,        providerId.Value.Length);
+                ClassicAssert.AreEqual("DE",     providerId.Value.CountryCode.Alpha2Code);
+                ClassicAssert.IsNull  (          providerId.Value.Separator);
+                ClassicAssert.AreEqual("GDF",    providerId.Value.Suffix);
+                ClassicAssert.AreEqual("DEGDF",  providerId.Value.ToString());
+                ClassicAssert.AreEqual(5,        providerId.Value.Length);
             }
 
         }
@@ -109,15 +110,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             var providerId = Provider_Id.TryParse("DE-GDF");
 
-            Assert.IsNotNull(providerId);
+            ClassicAssert.IsNotNull(providerId);
 
             if (providerId is not null)
             {
-                Assert.AreEqual("DE",      providerId.Value.CountryCode.Alpha2Code);
-                Assert.AreEqual('-',       providerId.Value.Separator);
-                Assert.AreEqual("GDF",     providerId.Value.Suffix);
-                Assert.AreEqual("DE-GDF",  providerId.Value.ToString());
-                Assert.AreEqual(6,         providerId.Value.Length);
+                ClassicAssert.AreEqual("DE",      providerId.Value.CountryCode.Alpha2Code);
+                ClassicAssert.AreEqual('-',       providerId.Value.Separator);
+                ClassicAssert.AreEqual("GDF",     providerId.Value.Suffix);
+                ClassicAssert.AreEqual("DE-GDF",  providerId.Value.ToString());
+                ClassicAssert.AreEqual(6,         providerId.Value.Length);
             }
 
         }
@@ -135,15 +136,15 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             var providerId = Provider_Id.TryParse("DE*GDF");
 
-            Assert.IsNotNull(providerId);
+            ClassicAssert.IsNotNull(providerId);
 
             if (providerId is not null)
             {
-                Assert.AreEqual("DE",      providerId.Value.CountryCode.Alpha2Code);
-                Assert.AreEqual('*',       providerId.Value.Separator);
-                Assert.AreEqual("GDF",     providerId.Value.Suffix);
-                Assert.AreEqual("DE*GDF",  providerId.Value.ToString());
-                Assert.AreEqual(6,         providerId.Value.Length);
+                ClassicAssert.AreEqual("DE",      providerId.Value.CountryCode.Alpha2Code);
+                ClassicAssert.AreEqual('*',       providerId.Value.Separator);
+                ClassicAssert.AreEqual("GDF",     providerId.Value.Suffix);
+                ClassicAssert.AreEqual("DE*GDF",  providerId.Value.ToString());
+                ClassicAssert.AreEqual(6,         providerId.Value.Length);
             }
 
         }
@@ -164,7 +165,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             var providerId = Provider_Id.TryParse(null);
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
-            Assert.IsNull(providerId);
+            ClassicAssert.IsNull(providerId);
 
         }
 
@@ -181,7 +182,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             var providerId = Provider_Id.TryParse("");
 
-            Assert.IsNull(providerId);
+            ClassicAssert.IsNull(providerId);
 
         }
 
@@ -201,9 +202,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             var operatorId1 = Provider_Id.TryParse("DE-GDF");
             var operatorId2 = Provider_Id.TryParse("DE-GDF");
 
-            Assert.AreEqual(operatorId1,       operatorId2);
-            Assert.IsTrue  (operatorId1.Equals(operatorId2));
-            Assert.IsTrue  (operatorId1 ==     operatorId2);
+            ClassicAssert.AreEqual(operatorId1,       operatorId2);
+            ClassicAssert.IsTrue  (operatorId1.Equals(operatorId2));
+            ClassicAssert.IsTrue  (operatorId1 ==     operatorId2);
 
         }
 
@@ -221,9 +222,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             var operatorId1 = Provider_Id.TryParse("DEGDF");
             var operatorId2 = Provider_Id.TryParse("DE-GDF");
 
-            Assert.AreEqual(operatorId1,       operatorId2);
-            Assert.IsTrue  (operatorId1.Equals(operatorId2));
-            Assert.IsTrue  (operatorId1 ==     operatorId2);
+            ClassicAssert.AreEqual(operatorId1,       operatorId2);
+            ClassicAssert.IsTrue  (operatorId1.Equals(operatorId2));
+            ClassicAssert.IsTrue  (operatorId1 ==     operatorId2);
 
         }
 
@@ -241,9 +242,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             var operatorId1 = Provider_Id.TryParse("DEGDF");
             var operatorId2 = Provider_Id.TryParse("DEGDF");
 
-            Assert.AreEqual(operatorId1,       operatorId2);
-            Assert.IsTrue  (operatorId1.Equals(operatorId2));
-            Assert.IsTrue  (operatorId1 ==     operatorId2);
+            ClassicAssert.AreEqual(operatorId1,       operatorId2);
+            ClassicAssert.IsTrue  (operatorId1.Equals(operatorId2));
+            ClassicAssert.IsTrue  (operatorId1 ==     operatorId2);
 
         }
 

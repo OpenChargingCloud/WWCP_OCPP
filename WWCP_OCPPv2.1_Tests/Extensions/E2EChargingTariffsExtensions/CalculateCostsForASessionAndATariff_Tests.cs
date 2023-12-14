@@ -18,12 +18,12 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CSMS;
 
 #endregion
 
@@ -138,7 +138,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      );
 
-            Assert.IsNotNull(chargingTariff);
+            ClassicAssert.IsNotNull(chargingTariff);
 
             #endregion
 
@@ -146,8 +146,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
-            Assert.IsNotNull(chargingStationId);
-            Assert.IsFalse  (chargingStationId.IsNullOrEmpty);
+            ClassicAssert.IsNotNull(chargingStationId);
+            ClassicAssert.IsFalse  (chargingStationId.IsNullOrEmpty);
 
             #endregion
 
@@ -159,7 +159,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            Assert.IsNotNull(evse);
+            ClassicAssert.IsNotNull(evse);
 
             #endregion
 
@@ -172,7 +172,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            Assert.IsNotNull(idToken);
+            ClassicAssert.IsNotNull(idToken);
 
             #endregion
 
@@ -310,8 +310,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      };
 
-            Assert.IsNotNull(transactionEvents);
-            Assert.AreEqual (2, transactionEvents.Length);
+            ClassicAssert.IsNotNull(transactionEvents);
+            ClassicAssert.AreEqual (2, transactionEvents.Length);
 
             #endregion
 
@@ -320,7 +320,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 transactionEvents is not null)
             {
 
-                Assert.IsTrue(CDR.CalculateCosts(
+                ClassicAssert.IsTrue(CDR.CalculateCosts(
 
                                   ProviderId:            Provider_Id.   Parse ("DE-GDF"),
                                   ProviderName:          DisplayTexts.  Create("GraphDefined EMP"),
@@ -337,21 +337,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                               ),
                               errorString);
-                Assert.IsNotNull(cdr);
+                ClassicAssert.IsNotNull(cdr);
 
                 if (cdr is not null)
                 {
 
-                    Assert.AreEqual(39M,      cdr.TotalTime.        TotalMinutes,   "Total time");
-                    Assert.AreEqual(0M,       cdr.BilledTime.       TotalMinutes,   "Billed time");
+                    ClassicAssert.AreEqual(39M,      cdr.TotalTime.        TotalMinutes,   "Total time");
+                    ClassicAssert.AreEqual(0M,       cdr.BilledTime.       TotalMinutes,   "Billed time");
 
-                    Assert.AreEqual(39M,      cdr.TotalChargingTime.TotalMinutes,   "Total charging time");
+                    ClassicAssert.AreEqual(39M,      cdr.TotalChargingTime.TotalMinutes,   "Total charging time");
 
-                    Assert.AreEqual(9999M,    cdr.TotalEnergy.      Value,          "Total energy");
-                    Assert.AreEqual(0M,       cdr.BilledEnergy.     Value,          "Billed energy");
+                    ClassicAssert.AreEqual(9999M,    cdr.TotalEnergy.      Value,          "Total energy");
+                    ClassicAssert.AreEqual(0M,       cdr.BilledEnergy.     Value,          "Billed energy");
 
-                    Assert.AreEqual(42.00M,   cdr.TotalCost.ExcludingVAT,           "Total cost excl. VAT");
-                    Assert.AreEqual(51.87M,   cdr.TotalCost.IncludingVAT,           "Total cost incl. VAT");
+                    ClassicAssert.AreEqual(42.00M,   cdr.TotalCost.ExcludingVAT,           "Total cost excl. VAT");
+                    ClassicAssert.AreEqual(51.87M,   cdr.TotalCost.IncludingVAT,           "Total cost incl. VAT");
 
                 }
 
@@ -422,7 +422,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      );
 
-            Assert.IsNotNull(chargingTariff);
+            ClassicAssert.IsNotNull(chargingTariff);
 
             #endregion
 
@@ -430,8 +430,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
-            Assert.IsNotNull(chargingStationId);
-            Assert.IsFalse  (chargingStationId.IsNullOrEmpty);
+            ClassicAssert.IsNotNull(chargingStationId);
+            ClassicAssert.IsFalse  (chargingStationId.IsNullOrEmpty);
 
             #endregion
 
@@ -443,7 +443,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            Assert.IsNotNull(evse);
+            ClassicAssert.IsNotNull(evse);
 
             #endregion
 
@@ -456,7 +456,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            Assert.IsNotNull(idToken);
+            ClassicAssert.IsNotNull(idToken);
 
             #endregion
 
@@ -594,8 +594,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      };
 
-            Assert.IsNotNull(transactionEvents);
-            Assert.AreEqual (2, transactionEvents.Length);
+            ClassicAssert.IsNotNull(transactionEvents);
+            ClassicAssert.AreEqual (2, transactionEvents.Length);
 
             #endregion
 
@@ -604,7 +604,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 transactionEvents is not null)
             {
 
-                Assert.IsTrue(CDR.CalculateCosts(
+                ClassicAssert.IsTrue(CDR.CalculateCosts(
 
                                   ProviderId:            Provider_Id.   Parse ("DE-GDF"),
                                   ProviderName:          DisplayTexts.  Create("GraphDefined EMP"),
@@ -621,26 +621,26 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                               ),
                               errorString);
-                Assert.IsNotNull(cdr);
+                ClassicAssert.IsNotNull(cdr);
 
                 if (cdr is not null)
                 {
 
-                    Assert.AreEqual(39M,        cdr.TotalTime.             TotalMinutes,   "Total time");
-                    Assert.AreEqual(45M,        cdr.BilledTime.            TotalMinutes,   "Billed time");
+                    ClassicAssert.AreEqual(39M,        cdr.TotalTime.             TotalMinutes,   "Total time");
+                    ClassicAssert.AreEqual(45M,        cdr.BilledTime.            TotalMinutes,   "Billed time");
 
-                    Assert.AreEqual(39M,        cdr.TotalChargingTime.     TotalMinutes,   "Total charging time");
-                    Assert.AreEqual(45M,        cdr.BilledChargingTime.    TotalMinutes,   "Billed charging time");
-                    Assert.AreEqual(4.875M,     cdr.BilledChargingTimeCost.ExcludingVAT,   "Billed charging time cost excl. VAT");
-                    Assert.AreEqual(5.80125M,   cdr.BilledChargingTimeCost.IncludingVAT,   "Billed charging time cost incl. VAT");
+                    ClassicAssert.AreEqual(39M,        cdr.TotalChargingTime.     TotalMinutes,   "Total charging time");
+                    ClassicAssert.AreEqual(45M,        cdr.BilledChargingTime.    TotalMinutes,   "Billed charging time");
+                    ClassicAssert.AreEqual(4.875M,     cdr.BilledChargingTimeCost.ExcludingVAT,   "Billed charging time cost excl. VAT");
+                    ClassicAssert.AreEqual(5.80125M,   cdr.BilledChargingTimeCost.IncludingVAT,   "Billed charging time cost incl. VAT");
 
-                    Assert.AreEqual(9999M,      cdr.TotalEnergy.           Value,          "Total energy");
-                    Assert.AreEqual(0M,         cdr.BilledEnergy.          Value,          "Billed energy");
-                    Assert.AreEqual(4.875M,     cdr.BilledEnergyCost.      ExcludingVAT,   "Billed energy cost excl. VAT");
-                    Assert.AreEqual(5.80125M,   cdr.BilledEnergyCost.      IncludingVAT,   "Billed energy cost incl. VAT");
+                    ClassicAssert.AreEqual(9999M,      cdr.TotalEnergy.           Value,          "Total energy");
+                    ClassicAssert.AreEqual(0M,         cdr.BilledEnergy.          Value,          "Billed energy");
+                    ClassicAssert.AreEqual(4.875M,     cdr.BilledEnergyCost.      ExcludingVAT,   "Billed energy cost excl. VAT");
+                    ClassicAssert.AreEqual(5.80125M,   cdr.BilledEnergyCost.      IncludingVAT,   "Billed energy cost incl. VAT");
 
-                    Assert.AreEqual(4.875M,     cdr.TotalCost.             ExcludingVAT,   "Total cost excl. VAT");
-                    Assert.AreEqual(5.80125M,   cdr.TotalCost.             IncludingVAT,   "Total cost incl. VAT");
+                    ClassicAssert.AreEqual(4.875M,     cdr.TotalCost.             ExcludingVAT,   "Total cost excl. VAT");
+                    ClassicAssert.AreEqual(5.80125M,   cdr.TotalCost.             IncludingVAT,   "Total cost incl. VAT");
 
                 }
 
@@ -710,7 +710,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      );
 
-            Assert.IsNotNull(chargingTariff);
+            ClassicAssert.IsNotNull(chargingTariff);
 
             #endregion
 
@@ -718,8 +718,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
-            Assert.IsNotNull(chargingStationId);
-            Assert.IsFalse  (chargingStationId.IsNullOrEmpty);
+            ClassicAssert.IsNotNull(chargingStationId);
+            ClassicAssert.IsFalse  (chargingStationId.IsNullOrEmpty);
 
             #endregion
 
@@ -731,7 +731,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            Assert.IsNotNull(evse);
+            ClassicAssert.IsNotNull(evse);
 
             #endregion
 
@@ -744,7 +744,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            Assert.IsNotNull(idToken);
+            ClassicAssert.IsNotNull(idToken);
 
             #endregion
 
@@ -882,8 +882,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      };
 
-            Assert.IsNotNull(transactionEvents);
-            Assert.AreEqual (2, transactionEvents.Length);
+            ClassicAssert.IsNotNull(transactionEvents);
+            ClassicAssert.AreEqual (2, transactionEvents.Length);
 
             #endregion
 
@@ -892,7 +892,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 transactionEvents is not null)
             {
 
-                Assert.IsTrue(CDR.CalculateCosts(
+                ClassicAssert.IsTrue(CDR.CalculateCosts(
 
                                   ProviderId:            Provider_Id.   Parse ("DE-GDF"),
                                   ProviderName:          DisplayTexts.  Create("GraphDefined EMP"),
@@ -909,21 +909,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                               ),
                               errorString);
-                Assert.IsNotNull(cdr);
+                ClassicAssert.IsNotNull(cdr);
 
                 if (cdr is not null)
                 {
 
-                    Assert.AreEqual(39M,      cdr.TotalTime.        TotalMinutes,   "Total time");
-                    Assert.AreEqual(0M,       cdr.BilledTime.       TotalMinutes,   "Billed time");
+                    ClassicAssert.AreEqual(39M,      cdr.TotalTime.        TotalMinutes,   "Total time");
+                    ClassicAssert.AreEqual(0M,       cdr.BilledTime.       TotalMinutes,   "Billed time");
 
-                    Assert.AreEqual(39M,      cdr.TotalChargingTime.TotalMinutes,   "Total charging time");
+                    ClassicAssert.AreEqual(39M,      cdr.TotalChargingTime.TotalMinutes,   "Total charging time");
 
-                    Assert.AreEqual(9999M,    cdr.TotalEnergy.      Value,          "Total energy");
-                    Assert.AreEqual(10000M,   cdr.BilledEnergy.     Value,          "Billed energy");
+                    ClassicAssert.AreEqual(9999M,    cdr.TotalEnergy.      Value,          "Total energy");
+                    ClassicAssert.AreEqual(10000M,   cdr.BilledEnergy.     Value,          "Billed energy");
 
-                    Assert.AreEqual(5.1M,     cdr.TotalCost.ExcludingVAT,           "Total cost excl. VAT");
-                    Assert.AreEqual(6.069M,   cdr.TotalCost.IncludingVAT,           "Total cost incl. VAT");
+                    ClassicAssert.AreEqual(5.1M,     cdr.TotalCost.ExcludingVAT,           "Total cost excl. VAT");
+                    ClassicAssert.AreEqual(6.069M,   cdr.TotalCost.IncludingVAT,           "Total cost incl. VAT");
 
                 }
 
@@ -1015,7 +1015,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      );
 
-            Assert.IsNotNull(chargingTariff);
+            ClassicAssert.IsNotNull(chargingTariff);
 
             #endregion
 
@@ -1023,8 +1023,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
-            Assert.IsNotNull(chargingStationId);
-            Assert.IsFalse  (chargingStationId.IsNullOrEmpty);
+            ClassicAssert.IsNotNull(chargingStationId);
+            ClassicAssert.IsFalse  (chargingStationId.IsNullOrEmpty);
 
             #endregion
 
@@ -1036,7 +1036,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            Assert.IsNotNull(evse);
+            ClassicAssert.IsNotNull(evse);
 
             #endregion
 
@@ -1049,7 +1049,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            Assert.IsNotNull(idToken);
+            ClassicAssert.IsNotNull(idToken);
 
             #endregion
 
@@ -1187,8 +1187,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      };
 
-            Assert.IsNotNull(transactionEvents);
-            Assert.AreEqual (2, transactionEvents.Length);
+            ClassicAssert.IsNotNull(transactionEvents);
+            ClassicAssert.AreEqual (2, transactionEvents.Length);
 
             #endregion
 
@@ -1197,7 +1197,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 transactionEvents is not null)
             {
 
-                Assert.IsTrue(CDR.CalculateCosts(
+                ClassicAssert.IsTrue(CDR.CalculateCosts(
 
                                   ProviderId:            Provider_Id.   Parse ("DE-GDF"),
                                   ProviderName:          DisplayTexts.  Create("GraphDefined EMP"),
@@ -1214,21 +1214,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                               ),
                               errorString);
-                Assert.IsNotNull(cdr);
+                ClassicAssert.IsNotNull(cdr);
 
                 if (cdr is not null)
                 {
 
-                    Assert.AreEqual(39,      cdr.TotalTime.        TotalMinutes);
-                    Assert.AreEqual(39,      cdr.BilledTime.       TotalMinutes);
+                    ClassicAssert.AreEqual(39,      cdr.TotalTime.        TotalMinutes);
+                    ClassicAssert.AreEqual(39,      cdr.BilledTime.       TotalMinutes);
 
-                    Assert.AreEqual(39,      cdr.TotalChargingTime.TotalMinutes);
+                    ClassicAssert.AreEqual(39,      cdr.TotalChargingTime.TotalMinutes);
 
-                    Assert.AreEqual(9999,    cdr.TotalEnergy.      Value);
-                    Assert.AreEqual(10000,   cdr.BilledEnergy.     Value);
+                    ClassicAssert.AreEqual(9999,    cdr.TotalEnergy.      Value);
+                    ClassicAssert.AreEqual(10000,   cdr.BilledEnergy.     Value);
 
-                    Assert.AreEqual(5.1,     cdr.TotalCost.ExcludingVAT);
-                    Assert.AreEqual(5.3,     cdr.TotalCost.IncludingVAT);
+                    ClassicAssert.AreEqual(5.1,     cdr.TotalCost.ExcludingVAT);
+                    ClassicAssert.AreEqual(5.3,     cdr.TotalCost.IncludingVAT);
 
                 }
 
@@ -1345,7 +1345,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      );
 
-            Assert.IsNotNull(chargingTariff);
+            ClassicAssert.IsNotNull(chargingTariff);
 
             #endregion
 
@@ -1353,8 +1353,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
-            Assert.IsNotNull(chargingStationId);
-            Assert.IsFalse  (chargingStationId.IsNullOrEmpty);
+            ClassicAssert.IsNotNull(chargingStationId);
+            ClassicAssert.IsFalse  (chargingStationId.IsNullOrEmpty);
 
             #endregion
 
@@ -1366,7 +1366,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            Assert.IsNotNull(evse);
+            ClassicAssert.IsNotNull(evse);
 
             #endregion
 
@@ -1379,7 +1379,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            Assert.IsNotNull(idToken);
+            ClassicAssert.IsNotNull(idToken);
 
             #endregion
 
@@ -1517,8 +1517,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      };
 
-            Assert.IsNotNull(transactionEvents);
-            Assert.AreEqual (2, transactionEvents.Length);
+            ClassicAssert.IsNotNull(transactionEvents);
+            ClassicAssert.AreEqual (2, transactionEvents.Length);
 
             #endregion
 
@@ -1527,7 +1527,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 transactionEvents is not null)
             {
 
-                Assert.IsTrue(CDR.CalculateCosts(
+                ClassicAssert.IsTrue(CDR.CalculateCosts(
 
                                   ProviderId:            Provider_Id.   Parse ("DE-GDF"),
                                   ProviderName:          DisplayTexts.  Create("GraphDefined EMP"),
@@ -1544,21 +1544,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                               ),
                               errorString);
-                Assert.IsNotNull(cdr);
+                ClassicAssert.IsNotNull(cdr);
 
                 if (cdr is not null)
                 {
 
-                    Assert.AreEqual(39,      cdr.TotalTime.        TotalMinutes);
-                    Assert.AreEqual(39,      cdr.BilledTime.       TotalMinutes);
+                    ClassicAssert.AreEqual(39,      cdr.TotalTime.        TotalMinutes);
+                    ClassicAssert.AreEqual(39,      cdr.BilledTime.       TotalMinutes);
 
-                    Assert.AreEqual(39,      cdr.TotalChargingTime.TotalMinutes);
+                    ClassicAssert.AreEqual(39,      cdr.TotalChargingTime.TotalMinutes);
 
-                    Assert.AreEqual(9999,    cdr.TotalEnergy.      Value);
-                    Assert.AreEqual(10000,   cdr.BilledEnergy.     Value);
+                    ClassicAssert.AreEqual(9999,    cdr.TotalEnergy.      Value);
+                    ClassicAssert.AreEqual(10000,   cdr.BilledEnergy.     Value);
 
-                    Assert.AreEqual(5.1,     cdr.TotalCost.ExcludingVAT);
-                    Assert.AreEqual(5.3,     cdr.TotalCost.IncludingVAT);
+                    ClassicAssert.AreEqual(5.1,     cdr.TotalCost.ExcludingVAT);
+                    ClassicAssert.AreEqual(5.3,     cdr.TotalCost.IncludingVAT);
 
                 }
 
@@ -1643,7 +1643,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      );
 
-            Assert.IsNotNull(chargingTariff);
+            ClassicAssert.IsNotNull(chargingTariff);
 
             #endregion
 
@@ -1651,8 +1651,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
             var chargingStationId  = NetworkingNode_Id.Parse("cp001");
 
-            Assert.IsNotNull(chargingStationId);
-            Assert.IsFalse  (chargingStationId.IsNullOrEmpty);
+            ClassicAssert.IsNotNull(chargingStationId);
+            ClassicAssert.IsFalse  (chargingStationId.IsNullOrEmpty);
 
             #endregion
 
@@ -1664,7 +1664,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            Assert.IsNotNull(evse);
+            ClassicAssert.IsNotNull(evse);
 
             #endregion
 
@@ -1677,7 +1677,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                                          CustomData:                null
                                      );
 
-            Assert.IsNotNull(idToken);
+            ClassicAssert.IsNotNull(idToken);
 
             #endregion
 
@@ -1815,8 +1815,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                                      };
 
-            Assert.IsNotNull(transactionEvents);
-            Assert.AreEqual (2, transactionEvents.Length);
+            ClassicAssert.IsNotNull(transactionEvents);
+            ClassicAssert.AreEqual (2, transactionEvents.Length);
 
             #endregion
 
@@ -1825,7 +1825,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
                 transactionEvents is not null)
             {
 
-                Assert.IsTrue(CDR.CalculateCosts(
+                ClassicAssert.IsTrue(CDR.CalculateCosts(
 
                                   ProviderId:            Provider_Id.   Parse ("DE-GDF"),
                                   ProviderName:          DisplayTexts.  Create("GraphDefined EMP"),
@@ -1842,21 +1842,21 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.E2EChargingTar
 
                               ),
                               errorString);
-                Assert.IsNotNull(cdr);
+                ClassicAssert.IsNotNull(cdr);
 
                 if (cdr is not null)
                 {
 
-                    Assert.AreEqual(39,      cdr.TotalTime.        TotalMinutes);
-                    Assert.AreEqual(39,      cdr.BilledTime.       TotalMinutes);
+                    ClassicAssert.AreEqual(39,      cdr.TotalTime.        TotalMinutes);
+                    ClassicAssert.AreEqual(39,      cdr.BilledTime.       TotalMinutes);
 
-                    Assert.AreEqual(39,      cdr.TotalChargingTime.TotalMinutes);
+                    ClassicAssert.AreEqual(39,      cdr.TotalChargingTime.TotalMinutes);
 
-                    Assert.AreEqual(9999,    cdr.TotalEnergy.      Value);
-                    Assert.AreEqual(10000,   cdr.BilledEnergy.     Value);
+                    ClassicAssert.AreEqual(9999,    cdr.TotalEnergy.      Value);
+                    ClassicAssert.AreEqual(10000,   cdr.BilledEnergy.     Value);
 
-                    Assert.AreEqual(5.1,     cdr.TotalCost.ExcludingVAT);
-                    Assert.AreEqual(5.3,     cdr.TotalCost.IncludingVAT);
+                    ClassicAssert.AreEqual(5.1,     cdr.TotalCost.ExcludingVAT);
+                    ClassicAssert.AreEqual(5.3,     cdr.TotalCost.IncludingVAT);
 
                 }
 

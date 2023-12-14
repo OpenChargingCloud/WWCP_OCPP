@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 #endregion
 
@@ -40,11 +41,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         public void ChargePoint_Init_Test()
         {
 
-            Assert.IsNotNull(testCentralSystem01);
-            Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargePoint1);
-            Assert.IsNotNull(chargePoint2);
-            Assert.IsNotNull(chargePoint3);
+            ClassicAssert.IsNotNull(testCentralSystem01);
+            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(chargePoint1);
+            ClassicAssert.IsNotNull(chargePoint2);
+            ClassicAssert.IsNotNull(chargePoint3);
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
@@ -53,9 +54,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 chargePoint3        is not null)
             {
 
-                Assert.AreEqual("GraphDefined OEM #1",  chargePoint1.ChargePointVendor);
-                Assert.AreEqual("GraphDefined OEM #2",  chargePoint2.ChargePointVendor);
-                Assert.AreEqual("GraphDefined OEM #3",  chargePoint3.ChargePointVendor);
+                ClassicAssert.AreEqual("GraphDefined OEM #1",  chargePoint1.ChargePointVendor);
+                ClassicAssert.AreEqual("GraphDefined OEM #2",  chargePoint2.ChargePointVendor);
+                ClassicAssert.AreEqual("GraphDefined OEM #3",  chargePoint3.ChargePointVendor);
 
             }
 

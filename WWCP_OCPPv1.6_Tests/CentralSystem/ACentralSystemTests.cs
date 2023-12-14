@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -72,14 +73,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                                                    )
                                        );
 
-            Assert.IsNotNull(testCentralSystem01);
+            ClassicAssert.IsNotNull(testCentralSystem01);
 
             testBackendWebSockets01  = testCentralSystem01.AttachWebSocketService(
                                            TCPPort:    IPPort.Parse(9101),
                                            AutoStart:  true
                                        );
 
-            Assert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testBackendWebSockets01);
 
             testCentralSystem01.AddHTTPBasicAuth(OCPP.NetworkingNode_Id.Parse("test01"), "1234abcd");
 

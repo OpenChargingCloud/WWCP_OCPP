@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Styx;
 using org.GraphDefined.Vanaheimr.Illias;
@@ -73,13 +74,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                                  Timestamp:     Timestamp.Now
                                              );
 
-            Assert.IsTrue(signSuccess);
-            Assert.IsNull(errorResponse1);
+            ClassicAssert.IsTrue(signSuccess);
+            ClassicAssert.IsNull(errorResponse1);
 
 
             var serializedRequest          = binaryDataTransferRequest.ToBinary();
 
-            Assert.IsNotNull(serializedRequest);
+            ClassicAssert.IsNotNull(serializedRequest);
 
 
             var success                    = BinaryDataTransferRequest.TryParse(
@@ -91,17 +92,17 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                                  out var errorResponse2
                                              );
 
-            Assert.IsTrue   (success);
-            Assert.IsNull   (errorResponse2);
-            Assert.IsNotNull(parsedBinaryDataTransferRequest);
+            ClassicAssert.IsTrue   (success);
+            ClassicAssert.IsNull   (errorResponse2);
+            ClassicAssert.IsNotNull(parsedBinaryDataTransferRequest);
 
             if (parsedBinaryDataTransferRequest is not null)
             {
 
-                Assert.AreEqual (vendorId,              parsedBinaryDataTransferRequest.VendorId);
-                Assert.AreEqual (messageId,             parsedBinaryDataTransferRequest.MessageId);
-                Assert.AreEqual (data.ToUTF8String(),   parsedBinaryDataTransferRequest.Data?.ToUTF8String());
-                Assert.AreEqual (1,                     parsedBinaryDataTransferRequest.Signatures.Count());
+                ClassicAssert.AreEqual (vendorId,              parsedBinaryDataTransferRequest.VendorId);
+                ClassicAssert.AreEqual (messageId,             parsedBinaryDataTransferRequest.MessageId);
+                ClassicAssert.AreEqual (data.ToUTF8String(),   parsedBinaryDataTransferRequest.Data?.ToUTF8String());
+                ClassicAssert.AreEqual (1,                     parsedBinaryDataTransferRequest.Signatures.Count());
 
                 var verifed = parsedBinaryDataTransferRequest.Verify(parsedBinaryDataTransferRequest.ToBinary(
                                                                          CustomBinaryDataTransferRequestSerializer:   null,
@@ -110,8 +111,8 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                                                                      out var errorResponse3,
                                                                      VerificationRuleActions.VerifyAll);
 
-                Assert.IsTrue(verifed);
-                Assert.IsNull(errorResponse3);
+                ClassicAssert.IsTrue(verifed);
+                ClassicAssert.IsNull(errorResponse3);
 
             }
 

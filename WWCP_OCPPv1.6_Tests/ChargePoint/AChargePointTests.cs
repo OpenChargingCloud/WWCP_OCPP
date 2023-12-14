@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
@@ -71,7 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                 DNSClient:                testCentralSystem01!.DNSClient
                             );
 
-            Assert.IsNotNull(chargePoint1);
+            ClassicAssert.IsNotNull(chargePoint1);
 
             chargePoint2  = new TestChargePoint(
                                 ChargeBoxId:              OCPP.NetworkingNode_Id.Parse("CP002"),
@@ -92,7 +93,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                 DNSClient:                testCentralSystem01!.DNSClient
                             );
 
-            Assert.IsNotNull(chargePoint2);
+            ClassicAssert.IsNotNull(chargePoint2);
 
             chargePoint3  = new TestChargePoint(
                                 ChargeBoxId:              OCPP.NetworkingNode_Id.Parse("CP003"),
@@ -113,7 +114,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                 DNSClient:                testCentralSystem01!.DNSClient
                             );
 
-            Assert.IsNotNull(chargePoint3);
+            ClassicAssert.IsNotNull(chargePoint3);
 
             if (testBackendWebSockets01 is not null)
             {
@@ -122,7 +123,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                                                   "To:OCPPTest01",
                                                                   URL.Parse("http://127.0.0.1:" + testBackendWebSockets01.IPPort.ToString() + "/" + chargePoint1.Id)).Result;
 
-                Assert.IsNotNull(response1);
+                ClassicAssert.IsNotNull(response1);
 
                 if (response1 is not null)
                 {
@@ -136,10 +137,10 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                     // Sec-WebSocket-Protocol:  ocpp1.6
                     // Sec-WebSocket-Version:   13
 
-                    Assert.AreEqual(HTTPStatusCode.SwitchingProtocols,  response1.HTTPStatusCode);
-                    Assert.AreEqual("Upgrade",                          response1.Connection);
-                    Assert.AreEqual("websocket",                        response1.Upgrade);
-                    Assert.AreEqual("ocpp1.6",                          response1.SecWebSocketProtocol.First());
+                    ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,  response1.HTTPStatusCode);
+                    ClassicAssert.AreEqual("Upgrade",                          response1.Connection);
+                    ClassicAssert.AreEqual("websocket",                        response1.Upgrade);
+                    ClassicAssert.AreEqual("ocpp1.6",                          response1.SecWebSocketProtocol.First());
 
                 }
 

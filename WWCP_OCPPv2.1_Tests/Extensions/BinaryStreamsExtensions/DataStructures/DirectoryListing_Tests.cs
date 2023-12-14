@@ -20,14 +20,9 @@
 using NUnit.Framework;
 
 using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Styx;
-using org.GraphDefined.Vanaheimr.Illias;
+using NUnit.Framework.Legacy;
 
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CSMS;
-
-using cloud.charging.open.protocols.OCPPv2_1.CS;
 
 #endregion
 
@@ -52,10 +47,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
 
             var jsonIn = JObject.Parse(@"{ ""file1"": null, ""file2"": null, ""dir1"": { ""file1_1"": null, ""file1_2"": null, ""dir1_1"": { ""file1_1_1"": null, ""file1_1_2"": null }}, ""file3"": null }");
 
-            Assert.IsTrue(DirectoryListing.TryParse(jsonIn, out var directoryListing, out var errorResponse));
+            ClassicAssert.IsTrue(DirectoryListing.TryParse(jsonIn, out var directoryListing, out var errorResponse));
 
-            Assert.IsNotNull(directoryListing);
-            Assert.IsNull   (errorResponse);
+            ClassicAssert.IsNotNull(directoryListing);
+            ClassicAssert.IsNull   (errorResponse);
 
             if (directoryListing is not null)
             {
@@ -64,7 +59,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.BinaryStreamsE
                 var jsonOut2 = directoryListing.ToJSON(IncludeMetadata: true);
                 var textOut2 = directoryListing.ToTreeView();
 
-                Assert.AreEqual(jsonIn.ToString(Newtonsoft.Json.Formatting.None), jsonOut1.ToString(Newtonsoft.Json.Formatting.None));
+                ClassicAssert.AreEqual(jsonIn.ToString(Newtonsoft.Json.Formatting.None), jsonOut1.ToString(Newtonsoft.Json.Formatting.None));
 
             }
 

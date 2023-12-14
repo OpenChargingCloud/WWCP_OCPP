@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 #endregion
 
@@ -77,20 +78,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                                         out var certificate,
                                                         out var errorResponse);
 
-            Assert.IsTrue   (parsed);
-            Assert.IsNotNull(certificate);
-            Assert.IsNull   (errorResponse);
+            ClassicAssert.IsTrue   (parsed);
+            ClassicAssert.IsNotNull(certificate);
+            ClassicAssert.IsNull   (errorResponse);
 
             if (certificate is not null)
             {
 
-                Assert.AreEqual(certificateText, certificate.ToString());
+                ClassicAssert.AreEqual(certificateText, certificate.ToString());
 
 
                 if (certificate.Parsed is not null)
                 {
 
-                    Assert.AreEqual("api1.ocpp.charging.cloud", certificate.Parsed.SubjectDN.GetValueList()[0]);
+                    ClassicAssert.AreEqual("api1.ocpp.charging.cloud", certificate.Parsed.SubjectDN.GetValueList()[0]);
 
                 }
 
@@ -177,14 +178,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                                                                   out var certificateChain,
                                                                   out var errorResponse);
 
-            Assert.IsTrue   (parsed);
-            Assert.IsNotNull(certificateChain);
-            Assert.IsNull   (errorResponse);
+            ClassicAssert.IsTrue   (parsed);
+            ClassicAssert.IsNotNull(certificateChain);
+            ClassicAssert.IsNull   (errorResponse);
 
             if (certificateChain is not null)
             {
 
-                Assert.AreEqual(certificateChainText, certificateChain.ToString());
+                ClassicAssert.AreEqual(certificateChainText, certificateChain.ToString());
 
                 var certificate1 = certificateChain.Certificates.ElementAt(0).Parsed;
                 var certificate2 = certificateChain.Certificates.ElementAt(1).Parsed;
@@ -193,8 +194,8 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests
                     certificate2 is not null)
                 {
 
-                    Assert.AreEqual("api1.ocpp.charging.cloud", certificate1.SubjectDN.GetValueList()[0]);
-                    Assert.AreEqual("api2.ocpp.charging.cloud", certificate2.SubjectDN.GetValueList()[0]);
+                    ClassicAssert.AreEqual("api1.ocpp.charging.cloud", certificate1.SubjectDN.GetValueList()[0]);
+                    ClassicAssert.AreEqual("api2.ocpp.charging.cloud", certificate2.SubjectDN.GetValueList()[0]);
 
                 }
 

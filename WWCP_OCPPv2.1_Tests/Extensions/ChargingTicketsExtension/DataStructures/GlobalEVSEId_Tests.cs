@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 #endregion
 
@@ -83,19 +84,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             var evseId = GlobalEVSE_Id.TryParse("DEGEFE12345678");
 
-            Assert.IsNotNull(evseId);
+            ClassicAssert.IsNotNull(evseId);
 
             if (evseId is not null)
             {
 
-                Assert.AreEqual("DE",              evseId.Value.OperatorId.CountryCode.Alpha2Code);
-                Assert.IsNull  (                   evseId.Value.OperatorId.Separator);
-                Assert.AreEqual("GEF",             evseId.Value.OperatorId.Suffix);
+                ClassicAssert.AreEqual("DE",              evseId.Value.OperatorId.CountryCode.Alpha2Code);
+                ClassicAssert.IsNull  (                   evseId.Value.OperatorId.Separator);
+                ClassicAssert.AreEqual("GEF",             evseId.Value.OperatorId.Suffix);
 
-                Assert.IsNull  (                   evseId.Value.Separator);
-                Assert.AreEqual("12345678",        evseId.Value.Suffix);
-                Assert.AreEqual("DEGEFE12345678",  evseId.Value.ToString());
-                Assert.AreEqual(14,                evseId.Value.Length);
+                ClassicAssert.IsNull  (                   evseId.Value.Separator);
+                ClassicAssert.AreEqual("12345678",        evseId.Value.Suffix);
+                ClassicAssert.AreEqual("DEGEFE12345678",  evseId.Value.ToString());
+                ClassicAssert.AreEqual(14,                evseId.Value.Length);
 
             }
 
@@ -114,19 +115,19 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             var evseId = GlobalEVSE_Id.TryParse("DE*GEF*E12345678*1");
 
-            Assert.IsNotNull(evseId);
+            ClassicAssert.IsNotNull(evseId);
 
             if (evseId is not null)
             {
 
-                Assert.AreEqual("DE",                  evseId.Value.OperatorId.CountryCode.Alpha2Code);
-                Assert.AreEqual('*',                   evseId.Value.OperatorId.Separator);
-                Assert.AreEqual("GEF",                 evseId.Value.OperatorId.Suffix);
+                ClassicAssert.AreEqual("DE",                  evseId.Value.OperatorId.CountryCode.Alpha2Code);
+                ClassicAssert.AreEqual('*',                   evseId.Value.OperatorId.Separator);
+                ClassicAssert.AreEqual("GEF",                 evseId.Value.OperatorId.Suffix);
 
-                Assert.AreEqual('*',                   evseId.Value.Separator);
-                Assert.AreEqual("12345678*1",          evseId.Value.Suffix);
-                Assert.AreEqual("DE*GEF*E12345678*1",  evseId.Value.ToString());
-                Assert.AreEqual(18,                    evseId.Value.Length);
+                ClassicAssert.AreEqual('*',                   evseId.Value.Separator);
+                ClassicAssert.AreEqual("12345678*1",          evseId.Value.Suffix);
+                ClassicAssert.AreEqual("DE*GEF*E12345678*1",  evseId.Value.ToString());
+                ClassicAssert.AreEqual(18,                    evseId.Value.Length);
 
             }
 
@@ -148,7 +149,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
             var operatorId = CSOOperator_Id.TryParse(null);
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
-            Assert.IsNull(operatorId);
+            ClassicAssert.IsNull(operatorId);
 
         }
 
@@ -165,7 +166,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.extensions.ChargingTicket
 
             var operatorId = CSOOperator_Id.TryParse("");
 
-            Assert.IsNull(operatorId);
+            ClassicAssert.IsNull(operatorId);
 
         }
 

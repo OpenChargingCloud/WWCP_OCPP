@@ -18,15 +18,12 @@
 #region Usings
 
 using NUnit.Framework;
-
-using Newtonsoft.Json.Linq;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv2_1.CSMS;
-using cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation;
 
 #endregion
 
@@ -49,12 +46,12 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
         public async Task Reset_ChargingStation_Test()
         {
 
-            Assert.IsNotNull(testCSMS01);
-            Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(networkingNode1);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            ClassicAssert.IsNotNull(testCSMS01);
+            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(networkingNode1);
+            ClassicAssert.IsNotNull(chargingStation1);
+            ClassicAssert.IsNotNull(chargingStation2);
+            ClassicAssert.IsNotNull(chargingStation3);
 
             if (testCSMS01              is not null &&
                 testBackendWebSockets01 is not null &&
@@ -84,16 +81,16 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.NetworkingNode.CSMS
                                      CustomData:          null
                                  );
 
-                Assert.AreEqual(ResultCode.OK,          response.Result.ResultCode);
-                Assert.AreEqual(ResetStatus.Accepted,   response.Status);
+                ClassicAssert.AreEqual(ResultCode.OK,          response.Result.ResultCode);
+                ClassicAssert.AreEqual(ResetStatus.Accepted,   response.Status);
 
-                Assert.AreEqual(1,                      nnResetRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,    nnResetRequests.First().NetworkingNodeId);
-                Assert.AreEqual(resetType,              nnResetRequests.First().ResetType);
+                ClassicAssert.AreEqual(1,                      nnResetRequests.Count);
+                ClassicAssert.AreEqual(chargingStation1.Id,    nnResetRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(resetType,              nnResetRequests.First().ResetType);
 
-                Assert.AreEqual(1,                      csResetRequests.Count);
-                Assert.AreEqual(chargingStation1.Id,    csResetRequests.First().NetworkingNodeId);
-                Assert.AreEqual(resetType,              csResetRequests.First().ResetType);
+                ClassicAssert.AreEqual(1,                      csResetRequests.Count);
+                ClassicAssert.AreEqual(chargingStation1.Id,    csResetRequests.First().NetworkingNodeId);
+                ClassicAssert.AreEqual(resetType,              csResetRequests.First().ResetType);
 
             }
 

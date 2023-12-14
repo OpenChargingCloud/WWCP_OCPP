@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using Newtonsoft.Json.Linq;
 
@@ -107,7 +108,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                                            )
                               );
 
-            Assert.IsNotNull(testCSMS01);
+            ClassicAssert.IsNotNull(testCSMS01);
 
             testBackendWebSockets01  = testCSMS01.AttachWebSocketService(
                                            TCPPort:                 IPPort.Parse(9101),
@@ -115,7 +116,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                            AutoStart:               true
                                        );
 
-            Assert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testBackendWebSockets01);
 
 
             csmsWebSocketTextMessagesReceived          = new ConcurrentList<LogJSONRequest>();
@@ -216,7 +217,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                     DNSClient:                testCSMS01!.DNSClient
                                 );
 
-            Assert.IsNotNull(chargingStation1);
+            ClassicAssert.IsNotNull(chargingStation1);
 
 
             if (testBackendWebSockets01 is not null)
@@ -232,7 +233,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                     DisableWebSocketPings:   true
                                 ).Result;
 
-                Assert.IsNotNull(response1);
+                ClassicAssert.IsNotNull(response1);
 
                 if (response1 is not null)
                 {
@@ -246,18 +247,18 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                     // Sec-WebSocket-Protocol:  ocpp2.0.1
                     // Sec-WebSocket-Version:   13
 
-                    Assert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    response1.HTTPStatusCode);
-                    Assert.AreEqual($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API",   response1.Server);
-                    Assert.AreEqual("Upgrade",                                                            response1.Connection);
-                    Assert.AreEqual("websocket",                                                          response1.Upgrade);
-                    Assert.IsTrue  (response1.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
-                    Assert.AreEqual("13",                                                                 response1.SecWebSocketVersion);
+                    ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    response1.HTTPStatusCode);
+                    ClassicAssert.AreEqual($"GraphDefined OCPP {Version.String} HTTP/WebSocket/JSON CSMS API",   response1.Server);
+                    ClassicAssert.AreEqual("Upgrade",                                                            response1.Connection);
+                    ClassicAssert.AreEqual("websocket",                                                          response1.Upgrade);
+                    ClassicAssert.IsTrue  (response1.SecWebSocketProtocol.Contains(Version.WebSocketSubProtocolId));
+                    ClassicAssert.AreEqual("13",                                                                 response1.SecWebSocketVersion);
 
                 }
 
 
                 var chargingStation1WebSocketClient = chargingStation1.CSClient as ChargingStationWSClient;
-                Assert.IsNotNull(chargingStation1WebSocketClient);
+                ClassicAssert.IsNotNull(chargingStation1WebSocketClient);
 
                 if (chargingStation1WebSocketClient is not null)
                 {
@@ -322,11 +323,11 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public void ChargingStation_Init_Test()
         {
 
-            Assert.IsNotNull(testCSMS01);
-            Assert.IsNotNull(testBackendWebSockets01);
-            Assert.IsNotNull(chargingStation1);
-            Assert.IsNotNull(chargingStation2);
-            Assert.IsNotNull(chargingStation3);
+            ClassicAssert.IsNotNull(testCSMS01);
+            ClassicAssert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(chargingStation1);
+            ClassicAssert.IsNotNull(chargingStation2);
+            ClassicAssert.IsNotNull(chargingStation3);
 
             if (testCSMS01              is not null &&
                 testBackendWebSockets01 is not null &&
@@ -335,9 +336,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                 chargingStation3        is not null)
             {
 
-                Assert.AreEqual("GraphDefined OEM #1",  chargingStation1.VendorName);
-                Assert.AreEqual("GraphDefined OEM #2",  chargingStation2.VendorName);
-                Assert.AreEqual("GraphDefined OEM #3",  chargingStation3.VendorName);
+                ClassicAssert.AreEqual("GraphDefined OEM #1",  chargingStation1.VendorName);
+                ClassicAssert.AreEqual("GraphDefined OEM #2",  chargingStation2.VendorName);
+                ClassicAssert.AreEqual("GraphDefined OEM #3",  chargingStation3.VendorName);
 
             }
 
