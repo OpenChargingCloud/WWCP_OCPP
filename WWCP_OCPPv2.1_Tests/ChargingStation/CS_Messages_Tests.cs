@@ -83,11 +83,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task SendBootNotifications_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.Multiple(() => {
+                Assert.That(testCSMS01,               Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargingStation1,         Is.Not.Null);
+                Assert.That(chargingStation2,         Is.Not.Null);
+                Assert.That(chargingStation3,         Is.Not.Null);
+            });
 
             if (testCSMS01              is not null &&
                 testBackendWebSockets01 is not null &&
@@ -109,31 +111,33 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                     CustomData:   null
                                 );
 
-                ClassicAssert.AreEqual (ResultCode.OK,                         response.Result.ResultCode);
-                ClassicAssert.AreEqual (RegistrationStatus.Accepted,            response.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual (1,                                      bootNotificationRequests.Count);
-                ClassicAssert.AreEqual (chargingStation1.Id,                    bootNotificationRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual (reason,                                 bootNotificationRequests.First().Reason);
+                    Assert.That(response.Result.ResultCode,                          Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                     Is.EqualTo(RegistrationStatus.Accepted));
+
+                    Assert.That(bootNotificationRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(bootNotificationRequests.First().NetworkingNodeId,   Is.EqualTo(chargingStation1.Id));
+                    Assert.That(bootNotificationRequests.First().Reason,             Is.EqualTo(reason));
+                    Assert.That(bootNotificationRequests.First().ChargingStation,    Is.Not.Null);
+
+                });
 
                 var chargingStation = bootNotificationRequests.First().ChargingStation;
-
-                ClassicAssert.IsNotNull(chargingStation);
                 if (chargingStation is not null)
                 {
 
-                    ClassicAssert.AreEqual(chargingStation1.Model,              chargingStation.Model);
-                    ClassicAssert.AreEqual(chargingStation1.VendorName,         chargingStation.VendorName);
-                    ClassicAssert.AreEqual(chargingStation1.SerialNumber,       chargingStation.SerialNumber);
-                    ClassicAssert.AreEqual(chargingStation1.FirmwareVersion,    chargingStation.FirmwareVersion);
+                    Assert.That(chargingStation.Model,                               Is.EqualTo(chargingStation1.Model));
+                    Assert.That(chargingStation.VendorName,                          Is.EqualTo(chargingStation1.VendorName));
+                    Assert.That(chargingStation.SerialNumber,                        Is.EqualTo(chargingStation1.SerialNumber));
+                    Assert.That(chargingStation.FirmwareVersion,                     Is.EqualTo(chargingStation1.FirmwareVersion));
+                    Assert.That(chargingStation.Modem,                               Is.Not.Null);
 
-                    var modem = chargingStation.Modem;
-
-                    ClassicAssert.IsNotNull(modem);
-                    if (modem is not null)
+                    if (chargingStation. Modem is not null &&
+                        chargingStation1.Modem is not null)
                     {
-                        ClassicAssert.AreEqual(chargingStation1.Modem!.ICCID,   modem.ICCID);
-                        ClassicAssert.AreEqual(chargingStation1.Modem!.IMSI,    modem.IMSI);
+                        Assert.That(chargingStation.Modem.ICCID,                     Is.EqualTo(chargingStation1.Modem.ICCID));
+                        Assert.That(chargingStation.Modem.IMSI,                      Is.EqualTo(chargingStation1.Modem.IMSI));
                     }
 
                 }
@@ -920,11 +924,13 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
         public async Task GetCertificateStatus_Test()
         {
 
-            ClassicAssert.IsNotNull(testCSMS01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargingStation1);
-            ClassicAssert.IsNotNull(chargingStation2);
-            ClassicAssert.IsNotNull(chargingStation3);
+            Assert.Multiple(() => {
+                Assert.That(testCSMS01,               Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargingStation1,         Is.Not.Null);
+                Assert.That(chargingStation2,         Is.Not.Null);
+                Assert.That(chargingStation3,         Is.Not.Null);
+            });
 
             if (testCSMS01              is not null &&
                 testBackendWebSockets01 is not null &&
@@ -952,11 +958,14 @@ namespace cloud.charging.open.protocols.OCPPv2_1.tests.ChargingStation
                                    CustomData:        null
                                );
 
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(ResultCode.OK,        response.Result.ResultCode);
+                    Assert.That(response.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
 
-                ClassicAssert.AreEqual(1,                     notifyReportRequests.Count);
-                ClassicAssert.AreEqual(chargingStation1.Id,   notifyReportRequests.First().NetworkingNodeId);
+                    Assert.That(notifyReportRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(notifyReportRequests.First().NetworkingNodeId,   Is.EqualTo(chargingStation1.Id));
+
+                });
 
             }
 
