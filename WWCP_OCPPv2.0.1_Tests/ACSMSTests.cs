@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -77,7 +78,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                                                            )
                               );
 
-            Assert.IsNotNull(testCSMS01);
+            ClassicAssert.IsNotNull(testCSMS01);
 
             testBackendWebSockets01  = testCSMS01.CreateWebSocketService(
                                            TCPPort:                 IPPort.Parse(9101),
@@ -85,7 +86,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                                            AutoStart:               true
                                        );
 
-            Assert.IsNotNull(testBackendWebSockets01);
+            ClassicAssert.IsNotNull(testBackendWebSockets01);
 
 
             csmsWebSocketTextMessagesReceived          = new List<LogData1>();

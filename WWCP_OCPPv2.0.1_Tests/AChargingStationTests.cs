@@ -18,6 +18,7 @@
 #region Usings
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
@@ -111,7 +112,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                                     DNSClient:                testCSMS01!.DNSClient
                                 );
 
-            Assert.IsNotNull(chargingStation1);
+            ClassicAssert.IsNotNull(chargingStation1);
 
 
             if (testBackendWebSockets01 is not null)
@@ -127,7 +128,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                                                      DisableWebSocketPings:   true
                                                  ).Result;
 
-                Assert.IsNotNull(response1);
+                ClassicAssert.IsNotNull(response1);
 
                 if (response1 is not null)
                 {
@@ -141,18 +142,18 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                     // Sec-WebSocket-Protocol:  ocpp2.0.1
                     // Sec-WebSocket-Version:   13
 
-                    Assert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    response1.HTTPStatusCode);
-                    Assert.AreEqual($"GraphDefined OCPP {Version.Number} HTTP/WebSocket/JSON CSMS API",   response1.Server);
-                    Assert.AreEqual("Upgrade",                                                            response1.Connection);
-                    Assert.AreEqual("websocket",                                                          response1.Upgrade);
-                    Assert.IsTrue  (response1.SecWebSocketProtocol.Contains($"ocpp{Version.Number[1..]}"));
-                    Assert.AreEqual("13",                                                                 response1.SecWebSocketVersion);
+                    ClassicAssert.AreEqual(HTTPStatusCode.SwitchingProtocols,                                    response1.HTTPStatusCode);
+                    ClassicAssert.AreEqual($"GraphDefined OCPP {Version.Number} HTTP/WebSocket/JSON CSMS API",   response1.Server);
+                    ClassicAssert.AreEqual("Upgrade",                                                            response1.Connection);
+                    ClassicAssert.AreEqual("websocket",                                                          response1.Upgrade);
+                    ClassicAssert.IsTrue  (response1.SecWebSocketProtocol.Contains($"ocpp{Version.Number[1..]}"));
+                    ClassicAssert.AreEqual("13",                                                                 response1.SecWebSocketVersion);
 
                 }
 
 
                 var chargingStation1WebSocketClient = chargingStation1.CSClient as ChargingStationWSClient;
-                Assert.IsNotNull(chargingStation1WebSocketClient);
+                ClassicAssert.IsNotNull(chargingStation1WebSocketClient);
 
                 if (chargingStation1WebSocketClient is not null)
                 {
@@ -220,7 +221,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                                     DNSClient:                testCSMS01!.DNSClient
                                 );
 
-            Assert.IsNotNull(chargingStation2);
+            ClassicAssert.IsNotNull(chargingStation2);
 
             #endregion
 
@@ -265,7 +266,7 @@ namespace cloud.charging.open.protocols.OCPPv2_0_1.tests
                                     DNSClient:                testCSMS01!.DNSClient
                                 );
 
-            Assert.IsNotNull(chargingStation3);
+            ClassicAssert.IsNotNull(chargingStation3);
 
             #endregion
 
