@@ -504,7 +504,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<OCPP.CSMS.BinaryDataTransferResponse>?                 CustomBinaryDataTransferResponseSerializer                   { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CSMS.BinaryDataTransferResponse>?                CustomBinaryDataTransferResponseSerializer                   { get; set; }
 
         #endregion
 
@@ -544,7 +544,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<OCPP.CS.BinaryDataTransferRequest>?                    CustomBinaryDataTransferRequestSerializer                    { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.CS.BinaryDataTransferRequest>?                   CustomBinaryDataTransferRequestSerializer                    { get; set; }
 
         #endregion
 
@@ -716,7 +716,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
 
 
         // Binary Data Streams Extensions
-        public CustomBinarySerializerDelegate<OCPP.Signature>?                                            CustomBinarySignatureSerializer                              { get; set; }
+        public CustomBinarySerializerDelegate <OCPP.Signature>?                                      CustomBinarySignatureSerializer                              { get; set; }
 
 
         // E2E Security Extensions
@@ -15594,16 +15594,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1
         /// <summary>
         /// Send the given vendor-specific binary data to the CSMS.
         /// </summary>
-        /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
-        /// <param name="MessageId">An optional message identification.</param>
-        /// <param name="BinaryData">A vendor-specific JSON token.</param>
-        /// <param name="CustomBinaryData">The custom data object to allow to store any kind of customer specific data.</param>
-        /// 
-        /// <param name="RequestId">An optional request identification.</param>
-        /// <param name="RequestTimestamp">An optional request timestamp.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="Request">A BinaryDataTransfer request.</param>
         public async Task<OCPP.CSMS.BinaryDataTransferResponse>
             BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request)
 
@@ -15673,10 +15664,10 @@ namespace cloud.charging.open.protocols.OCPPv2_1
             {
 
                 OnBinaryDataTransferResponse?.Invoke(endTime,
-                                               this,
-                                               Request,
-                                               response,
-                                               endTime - startTime);
+                                                     this,
+                                                     Request,
+                                                     response,
+                                                     endTime - startTime);
 
             }
             catch (Exception e)

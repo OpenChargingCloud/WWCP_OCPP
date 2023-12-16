@@ -41,6 +41,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
         /// Send a boot notification.
         /// </summary>
         /// <param name="BootReason">The the reason for sending this boot notification to the CSMS.</param>
+        /// 
         /// <param name="CustomData">The custom data object to allow to store any kind of customer specific data.</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
@@ -70,7 +71,9 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
 
                 => ChargingStation.BootNotification(
                        new BootNotificationRequest(
+
                            ChargingStation.Id,
+
                            new ChargingStation(
                                ChargingStation.Model,
                                ChargingStation.VendorName,
@@ -84,6 +87,7 @@ namespace cloud.charging.open.protocols.OCPPv2_1.CS
                            SignKeys,
                            SignInfos,
                            Signatures,
+
                            CustomData,
 
                            RequestId        ?? ChargingStation.NextRequestId,

@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -47,11 +46,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsE
         public async Task TransferBinaryData_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
@@ -71,25 +72,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.extensions.BinaryStreamsE
                 var messageId  = Message_Id.GraphDefined_TestMessage;
                 var data       = "Hello world!".ToUTF8Bytes();
 
-
                 var response   = await chargePoint1.TransferBinaryData(
-                                     VendorId:     vendorId,
-                                     MessageId:    messageId,
-                                     Data:         data,
-                                     Format:       BinaryFormats.TextIds
-                                 );
+                                           VendorId:    vendorId,
+                                           MessageId:   messageId,
+                                           Data:        data,
+                                           Format:      BinaryFormats.TextIds
+                                       );
 
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(ResultCode.OK,                   response.Result.ResultCode);
-                ClassicAssert.AreEqual(data.Reverse().ToUTF8String(),   response.Data?.ToUTF8String());
+                    Assert.That(response.Result.ResultCode,                            Is.EqualTo(ResultCode. OK));
+                    Assert.That(response.Status,                                       Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Data?.ToUTF8String(),                         Is.EqualTo(data.Reverse().ToUTF8String()));
 
-                ClassicAssert.AreEqual(1,                               binaryDataTransferRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,        binaryDataTransferRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(vendorId,                        binaryDataTransferRequests.First().VendorId);
-                ClassicAssert.AreEqual(messageId,                       binaryDataTransferRequests.First().MessageId);
-                ClassicAssert.AreEqual(data,                            binaryDataTransferRequests.First().Data);
+                    Assert.That(binaryDataTransferRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(binaryDataTransferRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(binaryDataTransferRequests.First().VendorId,           Is.EqualTo(vendorId));
+                    Assert.That(binaryDataTransferRequests.First().MessageId,          Is.EqualTo(messageId));
+                    Assert.That(binaryDataTransferRequests.First().Data,               Is.EqualTo(data));
 
-            }
+                });
+
+             }
 
         }
 

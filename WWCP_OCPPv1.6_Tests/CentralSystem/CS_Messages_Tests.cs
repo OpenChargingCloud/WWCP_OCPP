@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 using Newtonsoft.Json.Linq;
 
@@ -49,17 +48,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
         public async Task CentralSystem_Reset_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var resetRequests = new List<ResetRequest>();
@@ -69,14 +70,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 };
 
                 var resetType  = ResetTypes.Hard;
-                var response1  = await testCentralSystem01.Reset(chargePoint1.Id, resetType);
+                var response   = await testCentralSystem01.Reset(
+                                           NetworkingNodeId:   chargePoint1.Id,
+                                           ResetType:          resetType
+                                       );
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-                ClassicAssert.AreEqual(ResetStatus.Accepted,           response1.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              resetRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   resetRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(resetType,                      resetRequests.First().ResetType);
+                    Assert.That(response.Result.ResultCode,               Is.EqualTo(ResultCode. OK));
+                    Assert.That(response.Status,                          Is.EqualTo(ResetStatus.Accepted));
+
+                    Assert.That(resetRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(resetRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(resetRequests.First().ResetType,          Is.EqualTo(resetType));
+
+                });
 
             }
 
@@ -93,11 +101,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
         public async Task CentralSystem_Reset_UnknownChargeBox_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
@@ -113,13 +123,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 };
 
                 var resetType  = ResetTypes.Hard;
-                var response1  = await testCentralSystem01.Reset(chargePoint2.Id, resetType);
+                var response   = await testCentralSystem01.Reset(
+                                           NetworkingNodeId:   chargePoint2.Id,
+                                           ResetType:          resetType
+                                       );
 
-                ClassicAssert.AreEqual  (OCPP.ResultCode.NetworkError,   response1.Result.ResultCode);
-                ClassicAssert.IsNotEmpty(                                response1.Result.Description);
-                ClassicAssert.AreEqual  (ResetStatus.Unknown,            response1.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual  (0,                              resetRequests.Count);
+                    Assert.That(response.Result.ResultCode,   Is.EqualTo(ResultCode. NetworkError));
+                    Assert.That(response.Status,              Is.EqualTo(ResetStatus.Unknown));
+
+                    Assert.That(resetRequests.Count,          Is.EqualTo(0));
+
+                });
 
             }
 
@@ -137,17 +153,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
         public async Task CentralSystem_ChangeAvailability_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var changeAvailabilityRequests = new List<ChangeAvailabilityRequest>();
@@ -158,17 +176,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var connectorId   = Connector_Id.Parse(1);
                 var availability  = Availabilities.Operative;
-                var response1     = await testCentralSystem01.ChangeAvailability(chargePoint1.Id,
-                                                                                 connectorId,
-                                                                                 availability);
+                var response      = await testCentralSystem01.ChangeAvailability(
+                                              NetworkingNodeId:   chargePoint1.Id,
+                                              ConnectorId:        connectorId,
+                                              Availability:       availability
+                                          );
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-                ClassicAssert.AreEqual(AvailabilityStatus.Accepted,    response1.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              changeAvailabilityRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   changeAvailabilityRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(connectorId,                    changeAvailabilityRequests.First().ConnectorId);
-                ClassicAssert.AreEqual(availability,                   changeAvailabilityRequests.First().Availability);
+                    Assert.That(response.Result.ResultCode,                            Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                       Is.EqualTo(AvailabilityStatus.Accepted));
+
+                    Assert.That(changeAvailabilityRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(changeAvailabilityRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(changeAvailabilityRequests.First().ConnectorId,        Is.EqualTo(connectorId));
+                    Assert.That(changeAvailabilityRequests.First().Availability,       Is.EqualTo(availability));
+
+                });
 
             }
 
@@ -185,17 +209,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
         public async Task CentralSystem_ChangeAvailability_UnknownChargeBox_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var changeAvailabilityRequests = new List<ChangeAvailabilityRequest>();
@@ -206,15 +232,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var connectorId   = Connector_Id.Parse(1);
                 var availability  = Availabilities.Operative;
-                var response1     = await testCentralSystem01.ChangeAvailability(chargePoint2.Id,
-                                                                                 connectorId,
-                                                                                 availability);
+                var response      = await testCentralSystem01.ChangeAvailability(
+                                              NetworkingNodeId:   chargePoint2.Id,
+                                              ConnectorId:        connectorId,
+                                              Availability:       availability
+                                          );
 
-                ClassicAssert.AreEqual  (OCPP.ResultCode.NetworkError,   response1.Result.ResultCode);
-                ClassicAssert.IsNotEmpty(                                response1.Result.Description);
-                ClassicAssert.AreEqual  (AvailabilityStatus.Unknown,     response1.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual  (0,                              changeAvailabilityRequests.Count);
+                    Assert.That(response.Result.ResultCode,         Is.EqualTo(ResultCode.NetworkError));
+                    Assert.That(response.Status,                    Is.EqualTo(AvailabilityStatus.Unknown));
+
+                    Assert.That(changeAvailabilityRequests.Count,   Is.EqualTo(0));
+
+                });
 
             }
 
@@ -232,17 +263,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
         public async Task CentralSystem_GetConfiguration_All_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var getConfigurationRequests = new List<GetConfigurationRequest>();
@@ -251,14 +284,20 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
-                var response1 = await testCentralSystem01.GetConfiguration(chargePoint1.Id);
+                var response = await testCentralSystem01.GetConfiguration(
+                                         NetworkingNodeId:   chargePoint1.Id
+                                     );
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-                ClassicAssert.AreEqual(4,                              response1.ConfigurationKeys.Count());
-                ClassicAssert.AreEqual(0,                              response1.UnknownKeys.      Count());
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              getConfigurationRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   getConfigurationRequests.First().NetworkingNodeId);
+                    Assert.That(response.Result.ResultCode,                          Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.ConfigurationKeys.Count(),                  Is.EqualTo(4));
+                    Assert.That(response.UnknownKeys.      Count(),                  Is.EqualTo(0));
+
+                    Assert.That(getConfigurationRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(getConfigurationRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+
+                });
 
             }
 
@@ -275,17 +314,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
         public async Task CentralSystem_GetConfiguration_ValidKey_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var getConfigurationRequests = new List<GetConfigurationRequest>();
@@ -294,15 +335,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
-                var response1 = await testCentralSystem01.GetConfiguration(chargePoint1.Id,
-                                                                           new String[] { "hello" });
+                var response = await testCentralSystem01.GetConfiguration(
+                                         NetworkingNodeId:   chargePoint1.Id,
+                                         Keys:               new[] { "hello" }
+                                     );
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-                ClassicAssert.AreEqual(1,                              response1.ConfigurationKeys.Count());
-                ClassicAssert.AreEqual(0,                              response1.UnknownKeys.      Count());
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              getConfigurationRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   getConfigurationRequests.First().NetworkingNodeId);
+                    Assert.That(response.Result.ResultCode,                          Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.ConfigurationKeys.Count(),                  Is.EqualTo(1));
+                    Assert.That(response.UnknownKeys.      Count(),                  Is.EqualTo(0));
+
+                    Assert.That(getConfigurationRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(getConfigurationRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+
+                });
 
             }
 
@@ -319,17 +366,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
         public async Task CentralSystem_GetConfiguration_UnknownKeys_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var getConfigurationRequests = new List<GetConfigurationRequest>();
@@ -338,15 +387,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
-                var response1 = await testCentralSystem01.GetConfiguration(chargePoint1.Id,
-                                                                           new String[] { "ABCD", "BCDE" });
+                var response = await testCentralSystem01.GetConfiguration(
+                                         NetworkingNodeId:   chargePoint1.Id,
+                                         Keys:               new[] { "ABCD", "BCDE" }
+                                     );
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-                ClassicAssert.AreEqual(0,                              response1.ConfigurationKeys.Count());
-                ClassicAssert.AreEqual(2,                              response1.UnknownKeys.      Count());
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              getConfigurationRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   getConfigurationRequests.First().NetworkingNodeId);
+                    Assert.That(response.Result.ResultCode,                          Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.ConfigurationKeys.Count(),                  Is.EqualTo(0));
+                    Assert.That(response.UnknownKeys.      Count(),                  Is.EqualTo(2));
+
+                    Assert.That(getConfigurationRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(getConfigurationRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+
+                });
 
             }
 
@@ -364,17 +419,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
         public async Task CentralSystem_ChangeConfiguration_NoOverwrite_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var changeConfigurationRequests = new List<ChangeConfigurationRequest>();
@@ -383,19 +440,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     changeConfigurationRequests.Add(changeConfigurationRequest);
                 };
 
-                var key        = "hello";
-                var value      = "world!!!";
-                var response1  = await testCentralSystem01.ChangeConfiguration(chargePoint1.Id,
-                                                                               key,
-                                                                               value);
+                var key       = "hello";
+                var value     = "world!!!";
+                var response  = await testCentralSystem01.ChangeConfiguration(
+                                          NetworkingNodeId:   chargePoint1.Id,
+                                          Key:                key,
+                                          Value:              value
+                                      );
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-                ClassicAssert.AreEqual(ConfigurationStatus.Rejected,   response1.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              changeConfigurationRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   changeConfigurationRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(key,                            changeConfigurationRequests.First().Key);
-                ClassicAssert.AreEqual(value,                          changeConfigurationRequests.First().Value);
+                    Assert.That(response.Result.ResultCode,                             Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                        Is.EqualTo(ConfigurationStatus.Rejected));
+
+                    Assert.That(changeConfigurationRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(changeConfigurationRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(changeConfigurationRequests.First().Key,                Is.EqualTo(key));
+                    Assert.That(changeConfigurationRequests.First().Value,              Is.EqualTo(value));
+
+                });
 
             }
 
@@ -412,17 +475,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
         public async Task CentralSystem_ChangeConfiguration_Overwrite_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var changeConfigurationRequests = new List<ChangeConfigurationRequest>();
@@ -433,17 +498,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var key        = "changeMe";
                 var value      = "now!!!";
-                var response1  = await testCentralSystem01.ChangeConfiguration(chargePoint1.Id,
-                                                                               key,
-                                                                               value);
+                var response1  = await testCentralSystem01.ChangeConfiguration(
+                                           chargePoint1.Id,
+                                           key,
+                                           value
+                                       );
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-                ClassicAssert.AreEqual(ConfigurationStatus.Accepted,   response1.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              changeConfigurationRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   changeConfigurationRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(key,                            changeConfigurationRequests.First().Key);
-                ClassicAssert.AreEqual(value,                          changeConfigurationRequests.First().Value);
+                    Assert.That(response1.Result.ResultCode,                            Is.EqualTo(ResultCode.OK));
+                    Assert.That(response1.Status,                                       Is.EqualTo(ConfigurationStatus.Accepted));
+
+                    Assert.That(changeConfigurationRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(changeConfigurationRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(changeConfigurationRequests.First().Key,                Is.EqualTo(key));
+                    Assert.That(changeConfigurationRequests.First().Value,              Is.EqualTo(value));
+
+                });
 
 
                 // Validation...
@@ -454,16 +525,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
-                var response2 = await testCentralSystem01.GetConfiguration(chargePoint1.Id,
-                                                                           new String[] { key });
+                var response2 = await testCentralSystem01.GetConfiguration(
+                                          NetworkingNodeId:   chargePoint1.Id,
+                                          Keys:               new[] { key }
+                                      );
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response2.Result.ResultCode);
-                ClassicAssert.AreEqual(1,                              response2.ConfigurationKeys.Count());
-                ClassicAssert.AreEqual(0,                              response2.UnknownKeys.      Count());
-                ClassicAssert.AreEqual(value,                          response2.ConfigurationKeys.First().Value);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              getConfigurationRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   getConfigurationRequests.First().NetworkingNodeId);
+                    Assert.That(response2.Result.ResultCode,                            Is.EqualTo(ResultCode.OK));
+                    Assert.That(response2.ConfigurationKeys.Count(),                    Is.EqualTo(1));
+                    Assert.That(response2.UnknownKeys.      Count(),                    Is.EqualTo(0));
+                    Assert.That(response2.ConfigurationKeys.First().Value,              Is.EqualTo(value));
+
+                    Assert.That(getConfigurationRequests.Count,                         Is.EqualTo(1));
+                    Assert.That(getConfigurationRequests.First().NetworkingNodeId,      Is.EqualTo(chargePoint1.Id));
+
+                });
 
             }
 
@@ -509,13 +586,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                                            Value:              value
                                        );
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-                ClassicAssert.AreEqual(ConfigurationStatus.Rejected,   response1.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              changeConfigurationRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   changeConfigurationRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(key,                            changeConfigurationRequests.First().Key);
-                ClassicAssert.AreEqual(value,                          changeConfigurationRequests.First().Value);
+                    Assert.That(response1.Result.ResultCode,                            Is.EqualTo(ResultCode.OK));
+                    Assert.That(response1.Status,                                       Is.EqualTo(ConfigurationStatus.Rejected));
+
+                    Assert.That(changeConfigurationRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(changeConfigurationRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(changeConfigurationRequests.First().Key,                Is.EqualTo(key));
+                    Assert.That(changeConfigurationRequests.First().Value,              Is.EqualTo(value));
+
+                });
 
 
                 // Validation...
@@ -526,16 +607,23 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
-                var response2 = await testCentralSystem01.GetConfiguration(chargePoint1.Id,
-                                                                           new String[] { key });
+                var response2  = await testCentralSystem01.GetConfiguration(
+                                           NetworkingNodeId:   chargePoint1.Id,
+                                           Keys:               new[] { key }
+                                       );
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response2.Result.ResultCode);
-                ClassicAssert.AreEqual(1,                              response2.ConfigurationKeys.Count());
-                ClassicAssert.AreEqual(0,                              response2.UnknownKeys.      Count());
-                ClassicAssert.AreEqual("world",                        response2.ConfigurationKeys.First().Value);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              getConfigurationRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   getConfigurationRequests.First().NetworkingNodeId);
+                    Assert.That(response2.Result.ResultCode,                            Is.EqualTo(ResultCode.OK));
+                    Assert.That(response2.ConfigurationKeys.Count(),                    Is.EqualTo(1));
+                    Assert.That(response2.UnknownKeys.      Count(),                    Is.EqualTo(0));
+                    Assert.That(response2.ConfigurationKeys.First().Value,              Is.EqualTo("world"));
+
+                    Assert.That(getConfigurationRequests.Count,                         Is.EqualTo(1));
+                    Assert.That(getConfigurationRequests.First().NetworkingNodeId,      Is.EqualTo(chargePoint1.Id));
+
+                });
+
 
             }
 

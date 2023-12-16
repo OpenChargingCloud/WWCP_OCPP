@@ -121,12 +121,12 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
             {
 
                 if (OCPP.CS.BinaryDataTransferRequest.TryParse(BinaryRequest,
-                                                          RequestId,
-                                                          NetworkingNodeId,
-                                                          NetworkPath,
-                                                          out var request,
-                                                          out var errorResponse,
-                                                          CustomBinaryDataTransferRequestParser) && request is not null) {
+                                                               RequestId,
+                                                               NetworkingNodeId,
+                                                               NetworkPath,
+                                                               out var request,
+                                                               out var errorResponse,
+                                                               CustomBinaryDataTransferRequestParser) && request is not null) {
 
                     #region Send OnIncomingBinaryDataTransferRequest event
 

@@ -24,6 +24,7 @@ using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 using cloud.charging.open.protocols.OCPP;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
@@ -93,13 +94,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
         #endregion
 
-        #region ChargePoint_SendHeartbeats_Test()
+        #region ChargePoint_SendHeartbeat_Test()
 
         /// <summary>
         /// A test for sending heartbeats to the central system.
         /// </summary>
         [Test]
-        public async Task ChargePoint_SendHeartbeats_Test()
+        public async Task ChargePoint_SendHeartbeat_Test()
         {
 
             Assert.Multiple(() => {
@@ -133,6 +134,112 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
 
                     Assert.That(heartbeatRequests.Count,                      Is.EqualTo(1));
                     Assert.That(heartbeatRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargePoint_SendDiagnosticsStatusNotification_Test()
+
+        /// <summary>
+        /// A test for sending diagnostics status notifications to the central system.
+        /// </summary>
+        [Test]
+        public async Task ChargePoint_SendDiagnosticsStatusNotification_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
+            {
+
+                var diagnosticsStatusNotifications = new List<CP.DiagnosticsStatusNotificationRequest>();
+
+                testCentralSystem01.OnDiagnosticsStatusNotificationRequest += (timestamp, sender, connection, diagnosticsStatusNotification) => {
+                    diagnosticsStatusNotifications.Add(diagnosticsStatusNotification);
+                    return Task.CompletedTask;
+                };
+
+                var status    = DiagnosticsStatus.Uploaded;
+
+                var response  = await chargePoint1.SendDiagnosticsStatusNotification(
+                                          Status:   status
+                                      );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(diagnosticsStatusNotifications.Count,                      Is.EqualTo(1));
+                    Assert.That(diagnosticsStatusNotifications.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(diagnosticsStatusNotifications.First().Status,             Is.EqualTo(status));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargePoint_SendFirmwareStatusNotification_Test()
+
+        /// <summary>
+        /// A test for sending firmware status notifications to the central system.
+        /// </summary>
+        [Test]
+        public async Task ChargePoint_SendFirmwareStatusNotification_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
+            {
+
+                var firmwareStatusNotifications = new List<CP.FirmwareStatusNotificationRequest>();
+
+                testCentralSystem01.OnFirmwareStatusNotificationRequest += (timestamp, sender, connection, firmwareStatusNotification) => {
+                    firmwareStatusNotifications.Add(firmwareStatusNotification);
+                    return Task.CompletedTask;
+                };
+
+                var status    = FirmwareStatus.Installed;
+
+                var response  = await chargePoint1.SendFirmwareStatusNotification(
+                                          Status:   status
+                                      );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                             Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(firmwareStatusNotifications.Count,                      Is.EqualTo(1));
+                    Assert.That(firmwareStatusNotifications.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(firmwareStatusNotifications.First().Status,             Is.EqualTo(status));
 
                 });
 
@@ -231,13 +338,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 var meterStart      = 1234UL;
                 var reservationId   = Reservation_Id.NewRandom;
 
-                var response        = await chargePoint1.StartTransaction(
-                                          connectorId,
-                                          idToken,
-                                          startTimestamp,
-                                          meterStart,
-                                          reservationId
-                                      );
+                var response        = await chargePoint1.SendStartTransactionNotification(
+                                                connectorId,
+                                                idToken,
+                                                startTimestamp,
+                                                meterStart,
+                                                reservationId
+                                            );
 
                 Assert.Multiple(() => {
 
@@ -302,14 +409,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 var vendorErrorCode  = "E0001";
 
                 var response         = await chargePoint1.SendStatusNotification(
-                                           connectorId,
-                                           status,
-                                           errorCode,
-                                           info,
-                                           statusTimestamp,
-                                           vendorId,
-                                           vendorErrorCode
-                                       );
+                                                 connectorId,
+                                                 status,
+                                                 errorCode,
+                                                 info,
+                                                 statusTimestamp,
+                                                 vendorId,
+                                                 vendorErrorCode
+                                             );
 
                 Assert.Multiple(() => {
 
@@ -566,7 +673,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                            )
                                        };
 
-                var response         = await chargePoint1.StopTransaction(
+                var response         = await chargePoint1.SendStopTransactionNotification(
                                                  TransactionId:     transactionId,
                                                  StopTimestamp:     stopTimestamp,
                                                  MeterStop:         meterStop,
@@ -830,113 +937,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                     Assert.That(dataTransferRequests.First().MessageId,                   Is.EqualTo(messageId));
                     Assert.That(dataTransferRequests.First().Data?.Type,                  Is.EqualTo(JTokenType.Array));
                     Assert.That(dataTransferRequests.First().Data?[0]?.Value<String>(),   Is.EqualTo(data[0]?.Value<String>()));
-
-                });
-
-            }
-
-        }
-
-        #endregion
-
-
-        #region ChargePoint_SendDiagnosticsStatusNotification_Test()
-
-        /// <summary>
-        /// A test for sending diagnostics status notifications to the central system.
-        /// </summary>
-        [Test]
-        public async Task ChargePoint_SendDiagnosticsStatusNotification_Test()
-        {
-
-            Assert.Multiple(() => {
-                Assert.That(testCentralSystem01,      Is.Not.Null);
-                Assert.That(testBackendWebSockets01,  Is.Not.Null);
-                Assert.That(chargePoint1,             Is.Not.Null);
-                Assert.That(chargePoint2,             Is.Not.Null);
-                Assert.That(chargePoint3,             Is.Not.Null);
-            });
-
-            if (testCentralSystem01     is not null &&
-                testBackendWebSockets01 is not null &&
-                chargePoint1            is not null &&
-                chargePoint2            is not null &&
-                chargePoint3            is not null)
-            {
-
-                var diagnosticsStatusNotifications = new List<CP.DiagnosticsStatusNotificationRequest>();
-
-                testCentralSystem01.OnDiagnosticsStatusNotificationRequest += (timestamp, sender, connection, diagnosticsStatusNotification) => {
-                    diagnosticsStatusNotifications.Add(diagnosticsStatusNotification);
-                    return Task.CompletedTask;
-                };
-
-                var status    = DiagnosticsStatus.Uploaded;
-
-                var response  = await chargePoint1.SendDiagnosticsStatusNotification(
-                                          Status:   status
-                                      );
-
-                Assert.Multiple(() => {
-
-                    Assert.That(response.Result.ResultCode,                                Is.EqualTo(ResultCode.OK));
-
-                    Assert.That(diagnosticsStatusNotifications.Count,                      Is.EqualTo(1));
-                    Assert.That(diagnosticsStatusNotifications.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
-                    Assert.That(diagnosticsStatusNotifications.First().Status,             Is.EqualTo(status));
-
-                });
-
-            }
-
-        }
-
-        #endregion
-
-        #region ChargePoint_SendFirmwareStatusNotification_Test()
-
-        /// <summary>
-        /// A test for sending firmware status notifications to the central system.
-        /// </summary>
-        [Test]
-        public async Task ChargePoint_SendFirmwareStatusNotification_Test()
-        {
-
-            Assert.Multiple(() => {
-                Assert.That(testCentralSystem01,      Is.Not.Null);
-                Assert.That(testBackendWebSockets01,  Is.Not.Null);
-                Assert.That(chargePoint1,             Is.Not.Null);
-                Assert.That(chargePoint2,             Is.Not.Null);
-                Assert.That(chargePoint3,             Is.Not.Null);
-            });
-
-            if (testCentralSystem01     is not null &&
-                testBackendWebSockets01 is not null &&
-                chargePoint1            is not null &&
-                chargePoint2            is not null &&
-                chargePoint3            is not null)
-            {
-
-                var firmwareStatusNotifications = new List<CP.FirmwareStatusNotificationRequest>();
-
-                testCentralSystem01.OnFirmwareStatusNotificationRequest += (timestamp, sender, connection, firmwareStatusNotification) => {
-                    firmwareStatusNotifications.Add(firmwareStatusNotification);
-                    return Task.CompletedTask;
-                };
-
-                var status    = FirmwareStatus.Installed;
-
-                var response  = await chargePoint1.SendFirmwareStatusNotification(
-                                          Status:   status
-                                      );
-
-                Assert.Multiple(() => {
-
-                    Assert.That(response.Result.ResultCode,                             Is.EqualTo(ResultCode.OK));
-
-                    Assert.That(firmwareStatusNotifications.Count,                      Is.EqualTo(1));
-                    Assert.That(firmwareStatusNotifications.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
-                    Assert.That(firmwareStatusNotifications.First().Status,             Is.EqualTo(status));
 
                 });
 
