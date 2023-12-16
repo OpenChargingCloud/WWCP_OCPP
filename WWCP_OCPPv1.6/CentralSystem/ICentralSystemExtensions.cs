@@ -23,6 +23,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv1_6.CP;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -245,7 +246,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
 
         #endregion
 
-        #region DataTransfer           (NetworkingNodeId, VendorId, MessageId, Data, ...)
+        #region TransferData           (NetworkingNodeId, VendorId, MessageId, Data, ...)
 
         /// <summary>
         /// Transfer the given data to the given charge box.
@@ -254,16 +255,16 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CS
         /// <param name="NetworkingNodeId">The charge box identification.</param>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">An optional message identification field.</param>
-        /// <param name="Data">Optional message data as text without specified length or format.</param>
+        /// <param name="Data">Optional vendor-specific data (a JSON token).</param>
         /// 
         /// <param name="RequestId">An optional request identification.</param>
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional request timeout.</param>
-        public static Task<OCPP.CS.DataTransferResponse> DataTransfer(this ICentralSystem           ICentralSystem,
+        public static Task<OCPP.CS.DataTransferResponse> TransferData(this ICentralSystem           ICentralSystem,
                                                                       NetworkingNode_Id             NetworkingNodeId,
                                                                       Vendor_Id                     VendorId,
                                                                       Message_Id                    MessageId,
-                                                                      String                        Data,
+                                                                      JToken                        Data,
 
                                                                       IEnumerable<KeyPair>?         SignKeys            = null,
                                                                       IEnumerable<SignInfo>?        SignInfos           = null,

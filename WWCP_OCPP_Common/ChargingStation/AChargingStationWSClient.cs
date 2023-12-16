@@ -282,7 +282,8 @@ namespace cloud.charging.open.protocols.OCPP.CS
 
                             if (OCPPJSONResponse is not null)
                                 await SendText(
-                                          OCPPJSONResponse.ToJSON().ToString(JSONFormatting)
+                                          OCPPJSONResponse.ToJSON().ToString(JSONFormatting),
+                                          CancellationToken
                                       );
 
                             #endregion

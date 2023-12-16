@@ -20,6 +20,10 @@
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
+using Newtonsoft.Json.Linq;
+
+using org.GraphDefined.Vanaheimr.Illias;
+
 using cloud.charging.open.protocols.OCPP;
 using cloud.charging.open.protocols.OCPPv1_6.CS;
 using cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint;
@@ -476,17 +480,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
         public async Task CentralSystem_ChangeConfiguration_ReadOnly_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var changeConfigurationRequests = new List<ChangeConfigurationRequest>();
@@ -497,9 +503,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var key        = "hello";
                 var value      = "hell";
-                var response1  = await testCentralSystem01.ChangeConfiguration(chargePoint1.Id,
-                                                                               key,
-                                                                               value);
+                var response1  = await testCentralSystem01.ChangeConfiguration(
+                                           NetworkingNodeId:   chargePoint1.Id,
+                                           Key:                key,
+                                           Value:              value
+                                       );
 
                 ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
                 ClassicAssert.AreEqual(ConfigurationStatus.Rejected,   response1.Status);
@@ -536,26 +544,28 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
         #endregion
 
 
-        #region CentralSystem_DataTransfer_OK_Test()
+        #region CentralSystem_TransferTextData_OK_Test()
 
         /// <summary>
-        /// A test for sending data to a charge point.
+        /// A test for sending custom text data to a charge point.
         /// </summary>
         [Test]
-        public async Task CentralSystem_DataTransfer_OK_Test()
+        public async Task CentralSystem_TransferTextData_OK_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var dataTransferRequests = new List<OCPP.CSMS.DataTransferRequest>();
@@ -564,22 +574,170 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                     dataTransferRequests.Add(dataTransferRequest);
                 };
 
-                var vendorId   = Vendor_Id. Parse("graphdefined");
-                var messageId  = Message_Id.Parse("hello");
-                var data       = "world!";
-                var response1  = await testCentralSystem01.DataTransfer(chargePoint1.Id,
-                                                                        vendorId,
-                                                                        messageId,
-                                                                        data);
+                var vendorId   = Vendor_Id.       GraphDefined;
+                var messageId  = Message_Id.      Parse       (RandomExtensions.RandomString(10));
+                var data       = RandomExtensions.RandomString(40);
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-                ClassicAssert.AreEqual(OCPP.DataTransferStatus.Accepted,    response1.Status);
+                var response   = await testCentralSystem01.TransferData(
+                                     NetworkingNodeId:   chargePoint1.Id,
+                                     VendorId:           vendorId,
+                                     MessageId:          messageId,
+                                     Data:               data,
+                                     CustomData:         null
+                                 );
 
-                ClassicAssert.AreEqual(1,                              dataTransferRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   dataTransferRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                ClassicAssert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                ClassicAssert.AreEqual(data,                           dataTransferRequests.First().Data);
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                 Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Data,                                   Is.Not.Null);
+                    Assert.That(response.Data?.Type,                             Is.EqualTo(JTokenType.String));
+                    Assert.That(response.Data?.ToString(),                       Is.EqualTo(data.Reverse()));
+
+                    Assert.That(dataTransferRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(dataTransferRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(dataTransferRequests.First().VendorId,           Is.EqualTo(vendorId));
+                    Assert.That(dataTransferRequests.First().MessageId,          Is.EqualTo(messageId));
+                    Assert.That(dataTransferRequests.First().Data?.Type,         Is.EqualTo(JTokenType.String));
+                    Assert.That(dataTransferRequests.First().Data?.ToString(),   Is.EqualTo(data));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+        #region CentralSystem_TransferJObjectData_OK_Test()
+
+        /// <summary>
+        /// A test for sending custom JObject data to a charge point.
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_TransferJObjectData_OK_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
+            {
+
+                var dataTransferRequests = new List<OCPP.CSMS.DataTransferRequest>();
+
+                chargePoint1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                    dataTransferRequests.Add(dataTransferRequest);
+                };
+
+                var vendorId   = Vendor_Id. GraphDefined;
+                var messageId  = Message_Id.Parse(RandomExtensions.RandomString(10));
+                var data       = new JObject(
+                                     new JProperty(
+                                         "key",
+                                         RandomExtensions.RandomString(40)
+                                     )
+                                 );
+
+                var response   = await testCentralSystem01.TransferData(
+                                     NetworkingNodeId:   chargePoint1.Id,
+                                     VendorId:           vendorId,
+                                     MessageId:          messageId,
+                                     Data:               data
+                                 );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                   Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                              Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Data,                                                Is.Not.Null);
+                    Assert.That(response.Data?.Type,                                          Is.EqualTo(JTokenType.Object));
+                    Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),            Is.EqualTo(data["key"]?.Value<String>()));
+
+                    Assert.That(dataTransferRequests.Count,                                   Is.EqualTo(1));
+                    Assert.That(dataTransferRequests.First().NetworkingNodeId,                Is.EqualTo(chargePoint1.Id));
+                    Assert.That(dataTransferRequests.First().VendorId,                        Is.EqualTo(vendorId));
+                    Assert.That(dataTransferRequests.First().MessageId,                       Is.EqualTo(messageId));
+                    Assert.That(dataTransferRequests.First().Data?.Type,                      Is.EqualTo(JTokenType.Object));
+                    Assert.That(dataTransferRequests.First().Data?["key"]?.Value<String>(),   Is.EqualTo(data["key"]?.Value<String>()));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+        #region CentralSystem_TransferJArrayData_OK_Test()
+
+        /// <summary>
+        /// A test for sending custom JArray data to a charge point.
+        /// </summary>
+        [Test]
+        public async Task CentralSystem_TransferJArrayData_OK_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
+            {
+
+                var dataTransferRequests = new List<OCPP.CSMS.DataTransferRequest>();
+
+                chargePoint1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                    dataTransferRequests.Add(dataTransferRequest);
+                };
+
+                var vendorId   = Vendor_Id. GraphDefined;
+                var messageId  = Message_Id.Parse(RandomExtensions.RandomString(10));
+                var data       = new JArray(
+                                     RandomExtensions.RandomString(40)
+                                 );
+
+                var response   = await testCentralSystem01.TransferData(
+                                     NetworkingNodeId:   chargePoint1.Id,
+                                     VendorId:           vendorId,
+                                     MessageId:          messageId,
+                                     Data:               data,
+                                     CustomData:         null
+                                 );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                               Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                          Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Data,                                            Is.Not.Null);
+                    Assert.That(response.Data?.Type,                                      Is.EqualTo(JTokenType.Array));
+                    Assert.That(response.Data?[0]?.Value<String>()?.Reverse(),            Is.EqualTo(data[0]?.Value<String>()));
+
+                    Assert.That(dataTransferRequests.Count,                               Is.EqualTo(1));
+                    Assert.That(dataTransferRequests.First().NetworkingNodeId,            Is.EqualTo(chargePoint1.Id));
+                    Assert.That(dataTransferRequests.First().VendorId,                    Is.EqualTo(vendorId));
+                    Assert.That(dataTransferRequests.First().MessageId,                   Is.EqualTo(messageId));
+                    Assert.That(dataTransferRequests.First().Data?.Type,                  Is.EqualTo(JTokenType.Array));
+                    Assert.That(dataTransferRequests.First().Data?[0]?.Value<String>(),   Is.EqualTo(data[0]?.Value<String>()));
+
+                });
 
             }
 
@@ -590,17 +748,19 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
         #region CentralSystem_DataTransfer_Rejected_Test()
 
         /// <summary>
-        /// A test for sending data to a charge point.
+        /// A test for sending custom text data to a charge point, but it is rejected.
         /// </summary>
         [Test]
         public async Task CentralSystem_DataTransfer_Rejected_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
@@ -618,25 +778,35 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
                 var vendorId   = Vendor_Id. Parse("ACME Inc.");
                 var messageId  = Message_Id.Parse("hello");
                 var data       = "world!";
-                var response1  = await testCentralSystem01.DataTransfer(chargePoint1.Id,
-                                                                        vendorId,
-                                                                        messageId,
-                                                                        data);
+                var response   = await testCentralSystem01.TransferData(
+                                           NetworkingNodeId:   chargePoint1.Id,
+                                           VendorId:           vendorId,
+                                           MessageId:          messageId,
+                                           Data:               data,
+                                           CustomData:         null
+                                       );
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-                ClassicAssert.AreEqual(DataTransferStatus.Rejected,    response1.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                              dataTransferRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   dataTransferRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                ClassicAssert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                ClassicAssert.AreEqual(data,                           dataTransferRequests.First().Data);
+                    Assert.That(response.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                 Is.EqualTo(DataTransferStatus.Rejected));
+                    Assert.That(response.Data,                                   Is.Null);
+
+                    Assert.That(dataTransferRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(dataTransferRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(dataTransferRequests.First().VendorId,           Is.EqualTo(vendorId));
+                    Assert.That(dataTransferRequests.First().MessageId,          Is.EqualTo(messageId));
+                    Assert.That(dataTransferRequests.First().Data?.Type,         Is.EqualTo(JTokenType.String));
+                    Assert.That(dataTransferRequests.First().Data?.ToString(),   Is.EqualTo(data));
+
+                });
 
             }
 
         }
 
         #endregion
+
 
     }
 

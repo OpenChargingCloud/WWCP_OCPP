@@ -18,7 +18,8 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
+
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -45,39 +46,46 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         public async Task ChargePoint_SendBootNotifications_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var bootNotificationRequests = new List<CP.BootNotificationRequest>();
 
-                testCentralSystem01.OnBootNotificationRequest += async (timestamp, sender, connection, bootNotificationRequest) => {
+                testCentralSystem01.OnBootNotificationRequest += (timestamp, sender, connection, bootNotificationRequest) => {
                     bootNotificationRequests.Add(bootNotificationRequest);
+                    return Task.CompletedTask;
                 };
 
-                var response1 = await chargePoint1.SendBootNotification();
+                var response = await chargePoint1.SendBootNotification();
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,                        response1.Result.ResultCode);
-                ClassicAssert.AreEqual(RegistrationStatus.Accepted,               response1.Status);
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(1,                                         bootNotificationRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,              bootNotificationRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(chargePoint1.ChargePointVendor,        bootNotificationRequests.First().ChargePointVendor);
-                ClassicAssert.AreEqual(chargePoint1.ChargePointSerialNumber,  bootNotificationRequests.First().ChargePointSerialNumber);
-                ClassicAssert.AreEqual(chargePoint1.ChargeBoxSerialNumber,    bootNotificationRequests.First().ChargeBoxSerialNumber);
-                ClassicAssert.AreEqual(chargePoint1.Iccid,                    bootNotificationRequests.First().Iccid);
-                ClassicAssert.AreEqual(chargePoint1.IMSI,                     bootNotificationRequests.First().IMSI);
-                ClassicAssert.AreEqual(chargePoint1.MeterType,                bootNotificationRequests.First().MeterType);
-                ClassicAssert.AreEqual(chargePoint1.MeterSerialNumber,        bootNotificationRequests.First().MeterSerialNumber);
+                    Assert.That(response.Result.ResultCode,                                 Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                            Is.EqualTo(RegistrationStatus.Accepted));
+
+                    Assert.That(bootNotificationRequests.Count,                             Is.EqualTo(1));
+                    Assert.That(bootNotificationRequests.First().NetworkingNodeId,          Is.EqualTo(chargePoint1.Id));
+                    Assert.That(bootNotificationRequests.First().ChargePointVendor,         Is.EqualTo(chargePoint1.ChargePointVendor));
+                    Assert.That(bootNotificationRequests.First().ChargePointSerialNumber,   Is.EqualTo(chargePoint1.ChargePointSerialNumber));
+                    Assert.That(bootNotificationRequests.First().ChargeBoxSerialNumber,     Is.EqualTo(chargePoint1.ChargeBoxSerialNumber));
+                    Assert.That(bootNotificationRequests.First().Iccid,                     Is.EqualTo(chargePoint1.Iccid));
+                    Assert.That(bootNotificationRequests.First().IMSI,                      Is.EqualTo(chargePoint1.IMSI));
+                    Assert.That(bootNotificationRequests.First().MeterType,                 Is.EqualTo(chargePoint1.MeterType));
+                    Assert.That(bootNotificationRequests.First().MeterSerialNumber,         Is.EqualTo(chargePoint1.MeterSerialNumber));
+
+                });
 
             }
 
@@ -94,34 +102,39 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         public async Task ChargePoint_SendHeartbeats_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var heartbeatRequests = new List<CP.HeartbeatRequest>();
 
-                testCentralSystem01.OnHeartbeatRequest += async (timestamp, sender, connection, heartbeatRequest) => {
+                testCentralSystem01.OnHeartbeatRequest += (timestamp, sender, connection, heartbeatRequest) => {
                     heartbeatRequests.Add(heartbeatRequest);
+                    return Task.CompletedTask;
                 };
 
+                var response = await chargePoint1.SendHeartbeat();
 
-                var response1 = await chargePoint1.SendHeartbeat();
+                Assert.Multiple(() => {
 
+                    Assert.That(response.Result.ResultCode,                   Is.EqualTo(ResultCode.OK));
+                    Assert.That(Timestamp.Now - response.CurrentTime < TimeSpan.FromSeconds(10));
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-                ClassicAssert.IsTrue  (Timestamp.Now - response1.CurrentTime < TimeSpan.FromSeconds(10));
+                    Assert.That(heartbeatRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(heartbeatRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
 
-                ClassicAssert.AreEqual(1,                              heartbeatRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   heartbeatRequests.First().NetworkingNodeId);
+                });
 
             }
 
@@ -139,35 +152,41 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         public async Task ChargePoint_Authorize_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var authorizeRequests = new List<CP.AuthorizeRequest>();
 
-                testCentralSystem01.OnAuthorizeRequest += async (timestamp, sender, connection, authorizeRequest) => {
+                testCentralSystem01.OnAuthorizeRequest += (timestamp, sender, connection, authorizeRequest) => {
                     authorizeRequests.Add(authorizeRequest);
+                    return Task.CompletedTask;
                 };
 
                 var idToken   = IdToken.NewRandom();
-                var response1 = await chargePoint1.Authorize(idToken);
+                var response  = await chargePoint1.Authorize(idToken);
 
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-                ClassicAssert.AreEqual(AuthorizationStatus.Accepted,   response1.IdTagInfo.Status);
+                    Assert.That(response.Result.ResultCode,                   Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.IdTagInfo.Status,                    Is.EqualTo(AuthorizationStatus.Accepted));
 
-                ClassicAssert.AreEqual(1,                              authorizeRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   authorizeRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(idToken,                        authorizeRequests.First().IdTag);
+                    Assert.That(authorizeRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(authorizeRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(authorizeRequests.First().IdTag,              Is.EqualTo(idToken));
+
+                });
 
             }
 
@@ -184,23 +203,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         public async Task ChargePoint_StartTransaction_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var startTransactionRequests = new List<CP.StartTransactionRequest>();
 
-                testCentralSystem01.OnStartTransactionRequest += async (timestamp, sender, connection, startTransactionRequest) => {
+                testCentralSystem01.OnStartTransactionRequest += (timestamp, sender, connection, startTransactionRequest) => {
                     startTransactionRequests.Add(startTransactionRequest);
+                    return Task.CompletedTask;
                 };
 
                 var connectorId     = Connector_Id.Parse(1);
@@ -209,7 +231,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 var meterStart      = 1234UL;
                 var reservationId   = Reservation_Id.NewRandom;
 
-                var response1       = await chargePoint1.StartTransaction(
+                var response        = await chargePoint1.StartTransaction(
                                           connectorId,
                                           idToken,
                                           startTimestamp,
@@ -217,18 +239,22 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                           reservationId
                                       );
 
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-                ClassicAssert.AreEqual(AuthorizationStatus.Accepted,   response1.IdTagInfo.Status);
-                ClassicAssert.IsTrue  (response1.TransactionId.IsNotNullOrEmpty);
+                    Assert.That(response.Result.ResultCode,                                    Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.IdTagInfo.Status,                                     Is.EqualTo(AuthorizationStatus.Accepted));
+                    Assert.That(response.TransactionId,                                        Is.Not.Null);
 
-                ClassicAssert.AreEqual(1,                              startTransactionRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   startTransactionRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(connectorId,                    startTransactionRequests.First().ConnectorId);
-                ClassicAssert.AreEqual(idToken,                        startTransactionRequests.First().IdTag);
-                ClassicAssert.AreEqual(startTimestamp.ToIso8601(),     startTransactionRequests.First().StartTimestamp.ToIso8601());
-                ClassicAssert.AreEqual(meterStart,                     startTransactionRequests.First().MeterStart);
-                ClassicAssert.AreEqual(reservationId,                  startTransactionRequests.First().ReservationId);
+                    Assert.That(startTransactionRequests.Count,                                Is.EqualTo(1));
+                    Assert.That(startTransactionRequests.First().NetworkingNodeId,             Is.EqualTo(chargePoint1.Id));
+                    Assert.That(startTransactionRequests.First().IdTag,                        Is.EqualTo(idToken));
+                    Assert.That(startTransactionRequests.First().ConnectorId,                  Is.EqualTo(connectorId));
+                    Assert.That(startTransactionRequests.First().IdTag,                        Is.EqualTo(idToken));
+                    Assert.That(startTransactionRequests.First().StartTimestamp.ToIso8601(),   Is.EqualTo(startTimestamp.ToIso8601()));
+                    Assert.That(startTransactionRequests.First().MeterStart,                   Is.EqualTo(meterStart));
+                    Assert.That(startTransactionRequests.First().ReservationId,                Is.EqualTo(reservationId));
+
+                });
 
             }
 
@@ -245,23 +271,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         public async Task ChargePoint_StatusNotification_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var statusNotificationRequests = new List<CP.StatusNotificationRequest>();
 
-                testCentralSystem01.OnStatusNotificationRequest += async (timestamp, sender, connection, statusNotificationRequest) => {
+                testCentralSystem01.OnStatusNotificationRequest += (timestamp, sender, connection, statusNotificationRequest) => {
                     statusNotificationRequests.Add(statusNotificationRequest);
+                    return Task.CompletedTask;
                 };
 
                 var connectorId      = Connector_Id.Parse(1);
@@ -272,7 +301,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                 var vendorId         = "GraphDefined OEM";
                 var vendorErrorCode  = "E0001";
 
-                var response1        = await chargePoint1.SendStatusNotification(
+                var response         = await chargePoint1.SendStatusNotification(
                                            connectorId,
                                            status,
                                            errorCode,
@@ -282,18 +311,21 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                            vendorErrorCode
                                        );
 
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
+                    Assert.That(response.Result.ResultCode,                                        Is.EqualTo(ResultCode.OK));
 
-                ClassicAssert.AreEqual(1,                              statusNotificationRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   statusNotificationRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(connectorId,                    statusNotificationRequests.First().ConnectorId);
-                ClassicAssert.AreEqual(status,                         statusNotificationRequests.First().Status);
-                ClassicAssert.AreEqual(errorCode,                      statusNotificationRequests.First().ErrorCode);
-                ClassicAssert.AreEqual(info,                           statusNotificationRequests.First().Info);
-                ClassicAssert.AreEqual(statusTimestamp.ToIso8601(),    statusNotificationRequests.First().StatusTimestamp!.Value.ToIso8601());
-                ClassicAssert.AreEqual(vendorId,                       statusNotificationRequests.First().VendorId);
-                ClassicAssert.AreEqual(vendorErrorCode,                statusNotificationRequests.First().VendorErrorCode);
+                    Assert.That(statusNotificationRequests.Count,                                  Is.EqualTo(1));
+                    Assert.That(statusNotificationRequests.First().NetworkingNodeId,               Is.EqualTo(chargePoint1.Id));
+                    Assert.That(statusNotificationRequests.First().ConnectorId,                    Is.EqualTo(connectorId));
+                    Assert.That(statusNotificationRequests.First().Status,                         Is.EqualTo(status));
+                    Assert.That(statusNotificationRequests.First().ErrorCode,                      Is.EqualTo(errorCode));
+                    Assert.That(statusNotificationRequests.First().Info,                           Is.EqualTo(info));
+                    Assert.That(statusNotificationRequests.First().StatusTimestamp?.ToIso8601(),   Is.EqualTo(statusTimestamp.ToIso8601()));
+                    Assert.That(statusNotificationRequests.First().VendorId,                       Is.EqualTo(vendorId));
+                    Assert.That(statusNotificationRequests.First().VendorErrorCode,                Is.EqualTo(vendorErrorCode));
+
+                });
 
             }
 
@@ -310,23 +342,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         public async Task ChargePoint_SendMeterValues_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var meterValuesRequests = new List<CP.MeterValuesRequest>();
 
-                testCentralSystem01.OnMeterValuesRequest += async (timestamp, sender, connection, meterValuesRequest) => {
+                testCentralSystem01.OnMeterValuesRequest += (timestamp, sender, connection, meterValuesRequest) => {
                     meterValuesRequests.Add(meterValuesRequest);
+                    return Task.CompletedTask;
                 };
 
                 var connectorId     = Connector_Id.Parse(1);
@@ -380,61 +415,65 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                       };
                 var transactionId   = Transaction_Id.NewRandom;
 
-                var response1       = await chargePoint1.SendMeterValues(
-                                          connectorId,
-                                          meterValues,
-                                          transactionId
-                                      );
+                var response        = await chargePoint1.SendMeterValues(
+                                                ConnectorId:     connectorId,
+                                                MeterValues:     meterValues,
+                                                TransactionId:   transactionId
+                                            );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                                                  Is.EqualTo(ResultCode.OK));
+
+                    Assert.That(meterValuesRequests.Count,                                                                   Is.EqualTo(1));
+                    Assert.That(meterValuesRequests.First().NetworkingNodeId,                                                Is.EqualTo(chargePoint1.Id));
+                    Assert.That(meterValuesRequests.First().ConnectorId,                                                     Is.EqualTo(connectorId));
+                    Assert.That(meterValuesRequests.First().TransactionId,                                                   Is.EqualTo(transactionId));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.Count(),                                             Is.EqualTo(meterValues.Length));
+                    Assert.That(meterValues.ElementAt(0).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(0).Timestamp < TimeSpan.FromSeconds(2));
+                    Assert.That(meterValues.ElementAt(1).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(1).Timestamp < TimeSpan.FromSeconds(2));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.Count(),                  Is.EqualTo(meterValues.ElementAt(0).SampledValues.Count()));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.Count(),                  Is.EqualTo(meterValues.ElementAt(1).SampledValues.Count()));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Value,       Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Value));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Value,       Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Value));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Value,       Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Value));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Value,       Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Value));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Context,     Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Context));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Context,     Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Context));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Context,     Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Context));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Context,     Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Context));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Format,      Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Format));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Format,      Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Format));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Format,      Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Format));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Format,      Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Format));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Measurand,   Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Measurand));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Measurand,   Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Measurand));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Measurand,   Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Measurand));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Measurand,   Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Measurand));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Phase,       Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Phase));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Phase,       Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Phase));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Phase,       Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Phase));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Phase,       Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Phase));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Location,    Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Location));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Location,    Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Location));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Location,    Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Location));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Location,    Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Location));
+
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Unit,        Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(0).Unit));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Unit,        Is.EqualTo(meterValues.ElementAt(0).SampledValues.ElementAt(1).Unit));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Unit,        Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(0).Unit));
+                    Assert.That(meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Unit,        Is.EqualTo(meterValues.ElementAt(1).SampledValues.ElementAt(1).Unit));
 
 
-                ClassicAssert.AreEqual (OCPP.ResultCode.OK,                                              response1.Result.ResultCode);
-
-                ClassicAssert.AreEqual (1,                                                               meterValuesRequests.Count);
-                ClassicAssert.AreEqual (chargePoint1.Id,                                    meterValuesRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual (connectorId,                                                     meterValuesRequests.First().ConnectorId);
-                ClassicAssert.AreEqual (transactionId,                                                   meterValuesRequests.First().TransactionId);
-
-                ClassicAssert.AreEqual (meterValues.Length,                                              meterValuesRequests.First().MeterValues.Count());
-                ClassicAssert.IsTrue   (meterValues.ElementAt(0).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(0).Timestamp < TimeSpan.FromSeconds(2));
-                ClassicAssert.IsTrue   (meterValues.ElementAt(1).Timestamp - meterValuesRequests.First().MeterValues.ElementAt(1).Timestamp < TimeSpan.FromSeconds(2));
-
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.Count(),                  meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.Count());
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.Count(),                  meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.Count());
-
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Value,       meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Value);
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Value,       meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Value);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Value,       meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Value);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Value,       meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Value);
-
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Context,     meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Context);
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Context,     meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Context);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Context,     meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Context);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Context,     meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Context);
-
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Format,      meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Format);
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Format,      meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Format);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Format,      meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Format);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Format,      meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Format);
-
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Measurand,   meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Measurand);
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Measurand,   meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Measurand);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Measurand,   meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Measurand);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Measurand,   meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Measurand);
-
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Phase,       meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Phase);
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Phase,       meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Phase);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Phase,       meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Phase);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Phase,       meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Phase);
-
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Location,    meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Location);
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Location,    meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Location);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Location,    meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Location);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Location,    meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Location);
-
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(0).Unit,        meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(0).Unit);
-                ClassicAssert.AreEqual (meterValues.ElementAt(0).SampledValues.ElementAt(1).Unit,        meterValuesRequests.First().MeterValues.ElementAt(0).SampledValues.ElementAt(1).Unit);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(0).Unit,        meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(0).Unit);
-                ClassicAssert.AreEqual (meterValues.ElementAt(1).SampledValues.ElementAt(1).Unit,        meterValuesRequests.First().MeterValues.ElementAt(1).SampledValues.ElementAt(1).Unit);
+                });
 
             }
 
@@ -451,23 +490,26 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         public async Task ChargePoint_StopTransaction_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var stopTransactionRequests = new List<CP.StopTransactionRequest>();
 
-                testCentralSystem01.OnStopTransactionRequest += async (timestamp, sender, connection, stopTransactionRequest) => {
+                testCentralSystem01.OnStopTransactionRequest += (timestamp, sender, connection, stopTransactionRequest) => {
                     stopTransactionRequests.Add(stopTransactionRequest);
+                    return Task.CompletedTask;
                 };
 
                 var transactionId    = Transaction_Id.NewRandom;
@@ -524,69 +566,73 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
                                            )
                                        };
 
-                var response1        = await chargePoint1.StopTransaction(
-                                           transactionId,
-                                           stopTimestamp,
-                                           meterStop,
-                                           idToken,
-                                           reason,
-                                           transactionData
-                                       );
+                var response         = await chargePoint1.StopTransaction(
+                                                 TransactionId:     transactionId,
+                                                 StopTimestamp:     stopTimestamp,
+                                                 MeterStop:         meterStop,
+                                                 IdTag:             idToken,
+                                                 Reason:            reason,
+                                                 TransactionData:   transactionData
+                                             );
 
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual (OCPP.ResultCode.OK,                                                  response1.Result.ResultCode);
-                ClassicAssert.IsNotNull(response1.IdTagInfo);
-                ClassicAssert.AreEqual (AuthorizationStatus.Accepted,                                        response1.IdTagInfo!.Value.Status);
+                    Assert.That(response.Result.ResultCode,                                                                          Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.IdTagInfo,                                                                                  Is.Not.Null);
+                    Assert.That(response.IdTagInfo?.Status,                                                                          Is.EqualTo(AuthorizationStatus.Accepted));
 
-                ClassicAssert.AreEqual (1,                                                                   stopTransactionRequests.Count);
-                ClassicAssert.AreEqual (chargePoint1.Id,                                        stopTransactionRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual (transactionId,                                                       stopTransactionRequests.First().TransactionId);
-                ClassicAssert.AreEqual (stopTimestamp.ToIso8601(),                                           stopTransactionRequests.First().StopTimestamp.ToIso8601());
-                ClassicAssert.AreEqual (meterStop,                                                           stopTransactionRequests.First().MeterStop);
-                ClassicAssert.AreEqual (idToken,                                                             stopTransactionRequests.First().IdTag);
-                ClassicAssert.AreEqual (reason,                                                              stopTransactionRequests.First().Reason);
+                    Assert.That(stopTransactionRequests.Count,                                                                       Is.EqualTo(1));
+                    Assert.That(stopTransactionRequests.First().NetworkingNodeId,                                                    Is.EqualTo(chargePoint1.Id));
 
-                ClassicAssert.AreEqual (transactionData.Length,                                              stopTransactionRequests.First().TransactionData.Count());
-                ClassicAssert.IsTrue   (transactionData.ElementAt(0).Timestamp - stopTransactionRequests.First().TransactionData.ElementAt(0).Timestamp < TimeSpan.FromSeconds(2));
-                ClassicAssert.IsTrue   (transactionData.ElementAt(1).Timestamp - stopTransactionRequests.First().TransactionData.ElementAt(1).Timestamp < TimeSpan.FromSeconds(2));
+                    Assert.That(stopTransactionRequests.First().TransactionId,                                                       Is.EqualTo(transactionId));
+                    Assert.That(stopTransactionRequests.First().StopTimestamp.ToIso8601(),                                           Is.EqualTo(stopTimestamp.ToIso8601()));
+                    Assert.That(stopTransactionRequests.First().MeterStop,                                                           Is.EqualTo(meterStop));
+                    Assert.That(stopTransactionRequests.First().IdTag,                                                               Is.EqualTo(idToken));
+                    Assert.That(stopTransactionRequests.First().Reason,                                                              Is.EqualTo(reason));
 
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.Count(),                  stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.Count());
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.Count(),                  stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.Count());
+                    Assert.That(stopTransactionRequests.First().TransactionData.Count(),                                             Is.EqualTo(transactionData.Length));
+                    Assert.That(transactionData.ElementAt(0).Timestamp - stopTransactionRequests.First().TransactionData.ElementAt(0).Timestamp < TimeSpan.FromSeconds(2));
+                    Assert.That(transactionData.ElementAt(1).Timestamp - stopTransactionRequests.First().TransactionData.ElementAt(1).Timestamp < TimeSpan.FromSeconds(2));
 
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.ElementAt(0).Value,       stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Value);
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.ElementAt(1).Value,       stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Value);
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.ElementAt(0).Value,       stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Value);
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.ElementAt(1).Value,       stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Value);
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.Count(),                  Is.EqualTo(transactionData.ElementAt(0).SampledValues.Count()));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.Count(),                  Is.EqualTo(transactionData.ElementAt(1).SampledValues.Count()));
 
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.ElementAt(0).Context,     stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Context);
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.ElementAt(1).Context,     stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Context);
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.ElementAt(0).Context,     stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Context);
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.ElementAt(1).Context,     stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Context);
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Value,       Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Value));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Value,       Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Value));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Value,       Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Value));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Value,       Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Value));
 
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.ElementAt(0).Format,      stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Format);
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.ElementAt(1).Format,      stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Format);
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.ElementAt(0).Format,      stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Format);
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.ElementAt(1).Format,      stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Format);
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Context,     Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Context));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Context,     Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Context));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Context,     Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Context));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Context,     Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Context));
 
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.ElementAt(0).Measurand,   stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Measurand);
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.ElementAt(1).Measurand,   stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Measurand);
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.ElementAt(0).Measurand,   stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Measurand);
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.ElementAt(1).Measurand,   stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Measurand);
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Format,      Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Format));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Format,      Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Format));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Format,      Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Format));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Format,      Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Format));
 
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.ElementAt(0).Phase,       stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Phase);
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.ElementAt(1).Phase,       stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Phase);
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.ElementAt(0).Phase,       stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Phase);
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.ElementAt(1).Phase,       stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Phase);
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Measurand,   Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Measurand));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Measurand,   Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Measurand));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Measurand,   Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Measurand));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Measurand,   Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Measurand));
 
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.ElementAt(0).Location,    stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Location);
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.ElementAt(1).Location,    stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Location);
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.ElementAt(0).Location,    stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Location);
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.ElementAt(1).Location,    stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Location);
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Phase,       Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Phase));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Phase,       Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Phase));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Phase,       Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Phase));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Phase,       Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Phase));
 
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.ElementAt(0).Unit,        stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Unit);
-                ClassicAssert.AreEqual (transactionData.ElementAt(0).SampledValues.ElementAt(1).Unit,        stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Unit);
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.ElementAt(0).Unit,        stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Unit);
-                ClassicAssert.AreEqual (transactionData.ElementAt(1).SampledValues.ElementAt(1).Unit,        stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Unit);
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Location,    Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Location));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Location,    Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Location));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Location,    Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Location));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Location,    Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Location));
+
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(0).Unit,        Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(0).Unit));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(0).SampledValues.ElementAt(1).Unit,        Is.EqualTo(transactionData.ElementAt(0).SampledValues.ElementAt(1).Unit));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(0).Unit,        Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(0).Unit));
+                    Assert.That(stopTransactionRequests.First().TransactionData.ElementAt(1).SampledValues.ElementAt(1).Unit,        Is.EqualTo(transactionData.ElementAt(1).SampledValues.ElementAt(1).Unit));
+
+                });
 
             }
 
@@ -595,59 +641,204 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         #endregion
 
 
-        #region ChargePoint_TransferData_Test()
+        #region ChargePoint_TransferTextData_Test()
 
         /// <summary>
-        /// A test for transfering data to the central system.
+        /// A test for sending custom text data to the central system.
         /// </summary>
         [Test]
-        public async Task ChargePoint_TransferData_Test()
+        public async Task ChargePoint_TransferTextData_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var dataTransferRequests = new List<OCPP.CS.DataTransferRequest>();
 
-                testCentralSystem01.OnIncomingDataTransferRequest += async (timestamp, sender, connection, dataTransferRequest) => {
+                testCentralSystem01.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.Add(dataTransferRequest);
+                    return Task.CompletedTask;
                 };
 
-                var vendorId   = Vendor_Id. Parse("GraphDefined OEM");
+                var vendorId   = Vendor_Id. GraphDefined;
                 var messageId  = Message_Id.Parse(RandomExtensions.RandomString(10));
                 var data       = RandomExtensions.RandomString(40);
 
-                var response1  = await chargePoint1.TransferData(
-                                     vendorId,
-                                     messageId,
-                                     data
-                                 );
+                var response   = await chargePoint1.TransferData(
+                                           VendorId:    vendorId,
+                                           MessageId:   messageId,
+                                           Data:        data
+                                       );
 
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
-                ClassicAssert.AreEqual(data.Reverse(),                 response1.Data);
+                    Assert.That(response.Result.ResultCode,                      Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                 Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Data,                                   Is.Not.Null);
+                    Assert.That(response.Data?.Type,                             Is.EqualTo(JTokenType.String));
+                    Assert.That(response.Data?.ToString(),                       Is.EqualTo(data.Reverse()));
 
-                ClassicAssert.AreEqual(1,                              dataTransferRequests.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   dataTransferRequests.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(vendorId,                       dataTransferRequests.First().VendorId);
-                ClassicAssert.AreEqual(messageId,                      dataTransferRequests.First().MessageId);
-                ClassicAssert.AreEqual(data,                           dataTransferRequests.First().Data);
+                    Assert.That(dataTransferRequests.Count,                      Is.EqualTo(1));
+                    Assert.That(dataTransferRequests.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(dataTransferRequests.First().VendorId,           Is.EqualTo(vendorId));
+                    Assert.That(dataTransferRequests.First().MessageId,          Is.EqualTo(messageId));
+                    Assert.That(dataTransferRequests.First().Data?.ToString(),   Is.EqualTo(data));
+
+                });
 
             }
 
         }
 
         #endregion
+
+        #region ChargePoint_TransferJObjectData_Test()
+
+        /// <summary>
+        /// A test for sending custom JObject data to the central system.
+        /// </summary>
+        [Test]
+        public async Task ChargePoint_TransferJObjectData_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
+            {
+
+                var dataTransferRequests = new List<OCPP.CS.DataTransferRequest>();
+
+                testCentralSystem01.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
+                    dataTransferRequests.Add(dataTransferRequest);
+                    return Task.CompletedTask;
+                };
+
+                var vendorId   = Vendor_Id. GraphDefined;
+                var messageId  = Message_Id.Parse(RandomExtensions.RandomString(10));
+                var data       = new JObject(
+                                     new JProperty(
+                                         "key",
+                                         RandomExtensions.RandomString(40)
+                                     )
+                                 );
+
+                var response   = await chargePoint1.TransferData(
+                                           VendorId:    vendorId,
+                                           MessageId:   messageId,
+                                           Data:        data
+                                       );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                                   Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                              Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Data,                                                Is.Not.Null);
+                    Assert.That(response.Data?.Type,                                          Is.EqualTo(JTokenType.Object));
+                    Assert.That(response.Data?["key"]?.Value<String>()?.Reverse(),            Is.EqualTo(data["key"]?.Value<String>()));
+
+                    Assert.That(dataTransferRequests.Count,                                   Is.EqualTo(1));
+                    Assert.That(dataTransferRequests.First().NetworkingNodeId,                Is.EqualTo(chargePoint1.Id));
+                    Assert.That(dataTransferRequests.First().VendorId,                        Is.EqualTo(vendorId));
+                    Assert.That(dataTransferRequests.First().MessageId,                       Is.EqualTo(messageId));
+                    Assert.That(dataTransferRequests.First().Data?.Type,                      Is.EqualTo(JTokenType.Object));
+                    Assert.That(dataTransferRequests.First().Data?["key"]?.Value<String>(),   Is.EqualTo(data["key"]?.Value<String>()));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargePoint_TransferJArrayData_Test()
+
+        /// <summary>
+        /// A test for sending custom JArray data to the central system.
+        /// </summary>
+        [Test]
+        public async Task ChargePoint_TransferJArrayData_Test()
+        {
+
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
+
+            if (testCentralSystem01     is not null &&
+                testBackendWebSockets01 is not null &&
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
+            {
+
+                var dataTransferRequests = new List<OCPP.CS.DataTransferRequest>();
+
+                testCentralSystem01.OnIncomingDataTransferRequest += (timestamp, sender, connection, dataTransferRequest) => {
+                    dataTransferRequests.Add(dataTransferRequest);
+                    return Task.CompletedTask;
+                };
+
+                var vendorId   = Vendor_Id. GraphDefined;
+                var messageId  = Message_Id.Parse(RandomExtensions.RandomString(10));
+                var data       = new JArray(
+                                     RandomExtensions.RandomString(40)
+                                 );
+
+                var response   = await chargePoint1.TransferData(
+                                           VendorId:    vendorId,
+                                           MessageId:   messageId,
+                                           Data:        data
+                                       );
+
+                Assert.Multiple(() => {
+
+                    Assert.That(response.Result.ResultCode,                               Is.EqualTo(ResultCode.OK));
+                    Assert.That(response.Status,                                          Is.EqualTo(DataTransferStatus.Accepted));
+                    Assert.That(response.Data,                                            Is.Not.Null);
+                    Assert.That(response.Data?.Type,                                      Is.EqualTo(JTokenType.Array));
+                    Assert.That(response.Data?[0]?.Value<String>()?.Reverse(),            Is.EqualTo(data[0]?.Value<String>()));
+
+                    Assert.That(dataTransferRequests.Count,                               Is.EqualTo(1));
+                    Assert.That(dataTransferRequests.First().NetworkingNodeId,            Is.EqualTo(chargePoint1.Id));
+                    Assert.That(dataTransferRequests.First().VendorId,                    Is.EqualTo(vendorId));
+                    Assert.That(dataTransferRequests.First().MessageId,                   Is.EqualTo(messageId));
+                    Assert.That(dataTransferRequests.First().Data?.Type,                  Is.EqualTo(JTokenType.Array));
+                    Assert.That(dataTransferRequests.First().Data?[0]?.Value<String>(),   Is.EqualTo(data[0]?.Value<String>()));
+
+                });
+
+            }
+
+        }
+
+        #endregion
+
 
         #region ChargePoint_SendDiagnosticsStatusNotification_Test()
 
@@ -658,37 +849,43 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         public async Task ChargePoint_SendDiagnosticsStatusNotification_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var diagnosticsStatusNotifications = new List<CP.DiagnosticsStatusNotificationRequest>();
 
-                testCentralSystem01.OnDiagnosticsStatusNotificationRequest += async (timestamp, sender, connection, diagnosticsStatusNotification) => {
+                testCentralSystem01.OnDiagnosticsStatusNotificationRequest += (timestamp, sender, connection, diagnosticsStatusNotification) => {
                     diagnosticsStatusNotifications.Add(diagnosticsStatusNotification);
+                    return Task.CompletedTask;
                 };
 
-                var status     = DiagnosticsStatus.Uploaded;
+                var status    = DiagnosticsStatus.Uploaded;
 
-                var response1  = await chargePoint1.SendDiagnosticsStatusNotification(
-                                     status
-                                 );
+                var response  = await chargePoint1.SendDiagnosticsStatusNotification(
+                                          Status:   status
+                                      );
 
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
+                    Assert.That(response.Result.ResultCode,                                Is.EqualTo(ResultCode.OK));
 
-                ClassicAssert.AreEqual(1,                              diagnosticsStatusNotifications.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   diagnosticsStatusNotifications.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(status,                         diagnosticsStatusNotifications.First().Status);
+                    Assert.That(diagnosticsStatusNotifications.Count,                      Is.EqualTo(1));
+                    Assert.That(diagnosticsStatusNotifications.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(diagnosticsStatusNotifications.First().Status,             Is.EqualTo(status));
+
+                });
 
             }
 
@@ -705,37 +902,43 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.ChargePoint
         public async Task ChargePoint_SendFirmwareStatusNotification_Test()
         {
 
-            ClassicAssert.IsNotNull(testCentralSystem01);
-            ClassicAssert.IsNotNull(testBackendWebSockets01);
-            ClassicAssert.IsNotNull(chargePoint1);
-            ClassicAssert.IsNotNull(chargePoint2);
-            ClassicAssert.IsNotNull(chargePoint3);
+            Assert.Multiple(() => {
+                Assert.That(testCentralSystem01,      Is.Not.Null);
+                Assert.That(testBackendWebSockets01,  Is.Not.Null);
+                Assert.That(chargePoint1,             Is.Not.Null);
+                Assert.That(chargePoint2,             Is.Not.Null);
+                Assert.That(chargePoint3,             Is.Not.Null);
+            });
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var firmwareStatusNotifications = new List<CP.FirmwareStatusNotificationRequest>();
 
-                testCentralSystem01.OnFirmwareStatusNotificationRequest += async (timestamp, sender, connection, firmwareStatusNotification) => {
+                testCentralSystem01.OnFirmwareStatusNotificationRequest += (timestamp, sender, connection, firmwareStatusNotification) => {
                     firmwareStatusNotifications.Add(firmwareStatusNotification);
+                    return Task.CompletedTask;
                 };
 
-                var status     = FirmwareStatus.Installed;
+                var status    = FirmwareStatus.Installed;
 
-                var response1  = await chargePoint1.SendFirmwareStatusNotification(
-                                     status
-                                 );
+                var response  = await chargePoint1.SendFirmwareStatusNotification(
+                                          Status:   status
+                                      );
 
+                Assert.Multiple(() => {
 
-                ClassicAssert.AreEqual(OCPP.ResultCode.OK,             response1.Result.ResultCode);
+                    Assert.That(response.Result.ResultCode,                             Is.EqualTo(ResultCode.OK));
 
-                ClassicAssert.AreEqual(1,                              firmwareStatusNotifications.Count);
-                ClassicAssert.AreEqual(chargePoint1.Id,   firmwareStatusNotifications.First().NetworkingNodeId);
-                ClassicAssert.AreEqual(status,                         firmwareStatusNotifications.First().Status);
+                    Assert.That(firmwareStatusNotifications.Count,                      Is.EqualTo(1));
+                    Assert.That(firmwareStatusNotifications.First().NetworkingNodeId,   Is.EqualTo(chargePoint1.Id));
+                    Assert.That(firmwareStatusNotifications.First().Status,             Is.EqualTo(status));
+
+                });
 
             }
 

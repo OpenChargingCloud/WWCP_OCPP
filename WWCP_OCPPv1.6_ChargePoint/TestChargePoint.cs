@@ -28,9 +28,8 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using org.GraphDefined.Vanaheimr.Hermod.Logging;
 
-using cloud.charging.open.protocols.OCPPv1_6.CP;
 using cloud.charging.open.protocols.OCPP;
-using cloud.charging.open.protocols.OCPP.CS;
+using cloud.charging.open.protocols.OCPPv1_6.CP;
 
 #endregion
 
@@ -807,47 +806,66 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         public event OnClearCacheDelegate OnClearCache;
 
 
-        public event OnIncomingBinaryDataTransferRequestDelegate     OnIncomingBinaryDataTransferRequest;
-        public event OnIncomingBinaryDataTransferDelegate            OnIncomingBinaryDataTransfer;
-        public event OnIncomingBinaryDataTransferResponseDelegate    OnIncomingBinaryDataTransferResponse;
+        public event OCPP.CS.OnIncomingBinaryDataTransferRequestDelegate     OnIncomingBinaryDataTransferRequest;
+        public event OCPP.CS.OnIncomingBinaryDataTransferDelegate            OnIncomingBinaryDataTransfer;
+        public event OCPP.CS.OnIncomingBinaryDataTransferResponseDelegate    OnIncomingBinaryDataTransferResponse;
 
-        public event OnGetFileRequestDelegate                        OnGetFileRequest;
-        public event OnGetFileDelegate                               OnGetFile;
-        public event OnGetFileResponseDelegate                       OnGetFileResponse;
+        public event OCPP.CS.OnGetFileRequestDelegate                        OnGetFileRequest;
+        public event OCPP.CS.OnGetFileDelegate                               OnGetFile;
+        public event OCPP.CS.OnGetFileResponseDelegate                       OnGetFileResponse;
 
-        public event OnSendFileRequestDelegate                       OnSendFileRequest;
-        public event OnSendFileDelegate                              OnSendFile;
-        public event OnSendFileResponseDelegate                      OnSendFileResponse;
+        public event OCPP.CS.OnSendFileRequestDelegate                       OnSendFileRequest;
+        public event OCPP.CS.OnSendFileDelegate                              OnSendFile;
+        public event OCPP.CS.OnSendFileResponseDelegate                      OnSendFileResponse;
 
-        public event OnDeleteFileRequestDelegate                     OnDeleteFileRequest;
-        public event OnDeleteFileDelegate                            OnDeleteFile;
-        public event OnDeleteFileResponseDelegate                    OnDeleteFileResponse;
+        public event OCPP.CS.OnDeleteFileRequestDelegate                     OnDeleteFileRequest;
+        public event OCPP.CS.OnDeleteFileDelegate                            OnDeleteFile;
+        public event OCPP.CS.OnDeleteFileResponseDelegate                    OnDeleteFileResponse;
 
-        public event OnAddSignaturePolicyRequestDelegate             OnAddSignaturePolicyRequest;
-        public event OnAddSignaturePolicyDelegate                    OnAddSignaturePolicy;
-        public event OnAddSignaturePolicyResponseDelegate            OnAddSignaturePolicyResponse;
+        public event OCPP.CS.OnAddSignaturePolicyRequestDelegate             OnAddSignaturePolicyRequest;
+        public event OCPP.CS.OnAddSignaturePolicyDelegate                    OnAddSignaturePolicy;
+        public event OCPP.CS.OnAddSignaturePolicyResponseDelegate            OnAddSignaturePolicyResponse;
 
-        public event OnUpdateSignaturePolicyRequestDelegate          OnUpdateSignaturePolicyRequest;
-        public event OnUpdateSignaturePolicyDelegate                 OnUpdateSignaturePolicy;
-        public event OnUpdateSignaturePolicyResponseDelegate         OnUpdateSignaturePolicyResponse;
+        public event OCPP.CS.OnUpdateSignaturePolicyRequestDelegate          OnUpdateSignaturePolicyRequest;
+        public event OCPP.CS.OnUpdateSignaturePolicyDelegate                 OnUpdateSignaturePolicy;
+        public event OCPP.CS.OnUpdateSignaturePolicyResponseDelegate         OnUpdateSignaturePolicyResponse;
 
-        public event OnDeleteSignaturePolicyRequestDelegate          OnDeleteSignaturePolicyRequest;
-        public event OnDeleteSignaturePolicyDelegate                 OnDeleteSignaturePolicy;
-        public event OnDeleteSignaturePolicyResponseDelegate         OnDeleteSignaturePolicyResponse;
+        public event OCPP.CS.OnDeleteSignaturePolicyRequestDelegate          OnDeleteSignaturePolicyRequest;
+        public event OCPP.CS.OnDeleteSignaturePolicyDelegate                 OnDeleteSignaturePolicy;
+        public event OCPP.CS.OnDeleteSignaturePolicyResponseDelegate         OnDeleteSignaturePolicyResponse;
 
-        public event OnAddUserRoleRequestDelegate                    OnAddUserRoleRequest;
-        public event OnAddUserRoleDelegate                           OnAddUserRole;
-        public event OnAddUserRoleResponseDelegate                   OnAddUserRoleResponse;
+        public event OCPP.CS.OnAddUserRoleRequestDelegate                    OnAddUserRoleRequest;
+        public event OCPP.CS.OnAddUserRoleDelegate                           OnAddUserRole;
+        public event OCPP.CS.OnAddUserRoleResponseDelegate                   OnAddUserRoleResponse;
 
-        public event OnUpdateUserRoleRequestDelegate                 OnUpdateUserRoleRequest;
-        public event OnUpdateUserRoleDelegate                        OnUpdateUserRole;
-        public event OnUpdateUserRoleResponseDelegate                OnUpdateUserRoleResponse;
+        public event OCPP.CS.OnUpdateUserRoleRequestDelegate                 OnUpdateUserRoleRequest;
+        public event OCPP.CS.OnUpdateUserRoleDelegate                        OnUpdateUserRole;
+        public event OCPP.CS.OnUpdateUserRoleResponseDelegate                OnUpdateUserRoleResponse;
 
-        public event OnDeleteUserRoleRequestDelegate                 OnDeleteUserRoleRequest;
-        public event OnDeleteUserRoleDelegate                        OnDeleteUserRole;
-        public event OnDeleteUserRoleResponseDelegate                OnDeleteUserRoleResponse;
-        public event OnBinaryDataTransferRequestDelegate? OnBinaryDataTransferRequest;
-        public event OnBinaryDataTransferResponseDelegate? OnBinaryDataTransferResponse;
+        public event OCPP.CS.OnDeleteUserRoleRequestDelegate                 OnDeleteUserRoleRequest;
+        public event OCPP.CS.OnDeleteUserRoleDelegate                        OnDeleteUserRole;
+        public event OCPP.CS.OnDeleteUserRoleResponseDelegate                OnDeleteUserRoleResponse;
+
+
+        public event OCPP.CS.OnBinaryDataTransferRequestDelegate?            OnBinaryDataTransferRequest;
+        public event OCPP.CS.OnBinaryDataTransferResponseDelegate?           OnBinaryDataTransferResponse;
+
+        #endregion
+
+        #region Custom JSON serializer delegates
+
+        #region CSMS Request  Messages
+        public CustomJObjectSerializerDelegate<OCPP.CSMS.DataTransferRequest>?                       CustomIncomingDataTransferRequestSerializer                  { get; set; }
+        public CustomJObjectSerializerDelegate<OCPP.CS.DataTransferResponse>?                        CustomIncomingDataTransferResponseSerializer                 { get; set; }
+
+
+        #region Data Structures
+        public CustomJObjectSerializerDelegate<OCPP.Signature>?                                      CustomSignatureSerializer                                    { get; set; }
+        public CustomJObjectSerializerDelegate<CustomData>?                                          CustomCustomDataSerializer                                   { get; set; }
+
+        #endregion
+
+        #endregion
 
         #endregion
 
@@ -897,7 +915,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                                TimeSpan?             DefaultRequestTimeout     = null,
                                IHTTPAuthentication?  HTTPAuthentication        = null,
-                               DNSClient?            DNSClient                 = null)
+                               DNSClient?            DNSClient                 = null,
+
+                               SignaturePolicy?      SignaturePolicy           = null)
 
         {
 
@@ -927,7 +947,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 { "doNotChangeMe",  new ConfigurationData("never",    AccessRights.ReadOnly,  false) },
                 { "password",       new ConfigurationData("12345678", AccessRights.WriteOnly, false) }
             };
-            this.EnqueuedRequests           = new List<EnqueuedRequest>();
+            
 
             this.ChargePointVendor        = ChargePointVendor;
             this.ChargePointModel         = ChargePointModel;
@@ -965,9 +985,25 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             this.HTTPAuthentication       = HTTPAuthentication;
             this.DNSClient                = DNSClient;
 
+            this.signaturePolicies.Add(SignaturePolicy ?? new SignaturePolicy());
+
+            this.EnqueuedRequests         = [];
+
         }
 
         #endregion
+
+
+        private Task HandleErrors(String     Module,
+                                  String     Caller,
+                                  Exception  ExceptionOccured)
+        {
+
+            DebugX.LogException(ExceptionOccured, $"{Module}.{Caller}");
+
+            return Task.CompletedTask;
+
+        }
 
 
         #region InitSOAP(...)
@@ -1490,66 +1526,195 @@ namespace cloud.charging.open.protocols.OCPPv1_6
             CPServer.OnIncomingDataTransfer += async (LogTimestamp,
                                                       Sender,
                                                       connection,
-                                                      Request,
-                                                      CancellationToken) => {
+                                                      request,
+                                                      cancellationToken) => {
 
                 #region Send OnDataTransferRequest event
 
                 var startTime = Timestamp.Now;
 
-                try
+                var onIncomingDataTransferRequest = OnIncomingDataTransferRequest;
+                if (onIncomingDataTransferRequest is not null)
                 {
+                    try
+                    {
 
-                    OnIncomingDataTransferRequest?.Invoke(startTime,
-                                                          this,
-                                                          Request);
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnDataTransferRequest));
+                        await Task.WhenAll(onIncomingDataTransferRequest.GetInvocationList().
+                                               OfType <OCPP.CS.OnIncomingDataTransferRequestDelegate>().
+                                               Select (loggingDelegate => loggingDelegate.Invoke(startTime,
+                                                                                                 this,
+                                                                                                 request)).
+                                               ToArray());
+
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargePoint),
+                                  nameof(OnIncomingDataTransferRequest),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
 
 
-                await Task.Delay(10);
-
+                #region Check charging station identification
 
                 OCPP.CS.DataTransferResponse? response = null;
 
+                if (request.NetworkingNodeId != Id)
+                {
+                    response = new OCPP.CS.DataTransferResponse(
+                                   Request:  request,
+                                   Result:   Result.GenericError(
+                                                 $"Charging station '{Id}': Invalid DataTransfer request for charging station '{request.NetworkingNodeId}'!"
+                                             )
+                               );
+                }
 
-                    DebugX.Log(String.Concat("ChargeBox[", Id, "] Incoming data transfer request: ", Request.VendorId, ".", Request.MessageId?.ToString() ?? "-", ": ", Request.Data ?? "-"));
+                #endregion
 
-                    if (Request.VendorId.  ToString().ToLower() == "graphdefined" &&
-                        Request.MessageId?.ToString().ToLower() == "hello"        &&
-                        Request.Data?.ToString()?.    ToLower() == "world!")
+                #region Check request signature(s)
+
+                else
+                {
+
+                    if (!SignaturePolicy.VerifyRequestMessage(
+                             request,
+                             request.ToJSON(
+                                 CustomIncomingDataTransferRequestSerializer,
+                                 CustomSignatureSerializer,
+                                 CustomCustomDataSerializer
+                             ),
+                             out var errorResponse
+                         ))
                     {
-                        response = new OCPP.CS.DataTransferResponse(Request,
-                                                            OCPP.DataTransferStatus.Accepted,
-                                                            "Hello World!");
+
+                        response = new OCPP.CS.DataTransferResponse(
+                                       Request:  request,
+                                       Result:   Result.SignatureError(
+                                                     $"Invalid signature: {errorResponse}"
+                                                 )
+                                   );
+
                     }
+
+                #endregion
+
                     else
-                        response = new OCPP.CS.DataTransferResponse(Request,
-                                                            OCPP.DataTransferStatus.Rejected);
+                    {
+
+                        DebugX.Log($"Charging Station '{Id}': Incoming data transfer request: {request.VendorId}.{request.MessageId?.ToString() ?? "-"}: {request.Data ?? "-"}!");
+
+                        // VendorId
+                        // MessageId
+                        // Data
+
+                        var responseData = request.Data;
+
+                        if (request.Data is not null)
+                        {
+
+                            if      (request.Data.Type == JTokenType.String)
+                                responseData = request.Data.ToString().Reverse();
+
+                            else if (request.Data.Type == JTokenType.Object) {
+
+                                var responseObject = new JObject();
+
+                                foreach (var property in (request.Data as JObject)!)
+                                {
+                                    if (property.Value?.Type == JTokenType.String)
+                                        responseObject.Add(property.Key,
+                                                           property.Value.ToString().Reverse());
+                                }
+
+                                responseData = responseObject;
+
+                            }
+
+                            else if (request.Data.Type == JTokenType.Array) {
+
+                                var responseArray = new JArray();
+
+                                foreach (var element in (request.Data as JArray)!)
+                                {
+                                    if (element?.Type == JTokenType.String)
+                                        responseArray.Add(element.ToString().Reverse());
+                                }
+
+                                responseData = responseArray;
+
+                            }
+
+                        }
+
+                        if (request.VendorId == Vendor_Id.GraphDefined)
+                        {
+                            response = new OCPP.CS.DataTransferResponse(
+                                           request,
+                                           DataTransferStatus.Accepted,
+                                           responseData
+                                       );
+                        }
+                        else
+                            response = new OCPP.CS.DataTransferResponse(
+                                           request,
+                                           DataTransferStatus.Rejected
+                                       );
+
+                    }
+
+                }
+
+                #region Sign response message
+
+                SignaturePolicy.SignResponseMessage(
+                    response,
+                    response.ToJSON(
+                        CustomIncomingDataTransferResponseSerializer,
+                        null, //CustomStatusInfoSerializer,
+                        CustomSignatureSerializer,
+                        CustomCustomDataSerializer
+                    ),
+                    out var errorResponse2);
+
+                #endregion
 
 
                 #region Send OnDataTransferResponse event
 
-                try
+                var responseLogger = OnIncomingDataTransferResponse;
+                if (responseLogger is not null)
                 {
 
-                    var responseTimestamp = Timestamp.Now;
+                    var responseTime         = Timestamp.Now;
 
-                    OnIncomingDataTransferResponse?.Invoke(responseTimestamp,
-                                                           this,
-                                                           Request,
-                                                           response,
-                                                           responseTimestamp - startTime);
+                    var responseLoggerTasks  = responseLogger.GetInvocationList().
+                                                              OfType <OCPP.CS.OnIncomingDataTransferResponseDelegate>().
+                                                              Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
+                                                                                                                this,
+                                                                                                                request,
+                                                                                                                response,
+                                                                                                                responseTime - startTime)).
+                                                              ToArray();
 
-                }
-                catch (Exception e)
-                {
-                    DebugX.Log(e, nameof(TestChargePoint) + "." + nameof(OnDataTransferResponse));
+                    try
+                    {
+                        await Task.WhenAll(responseLoggerTasks);
+                    }
+                    catch (Exception e)
+                    {
+                        await HandleErrors(
+                                  nameof(TestChargePoint),
+                                  nameof(OnIncomingDataTransferResponse),
+                                  e
+                              );
+                    }
+
                 }
 
                 #endregion
@@ -3517,7 +3682,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
         /// </summary>
         /// <param name="VendorId">The vendor identification or namespace of the given message.</param>
         /// <param name="MessageId">The charge point model identification.</param>
-        /// <param name="Data">The serial number of the charge point.</param>
+        /// <param name="Data">Optional vendor-specific data (a JSON token).</param>
         /// 
         /// <param name="RequestTimestamp">An optional request timestamp.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
@@ -3527,7 +3692,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
             TransferData(Vendor_Id          VendorId,
                          Message_Id?        MessageId           = null,
-                         String?            Data                = null,
+                         JToken?            Data                = null,
 
                          DateTime?          RequestTimestamp    = null,
                          TimeSpan?          RequestTimeout      = null,
@@ -3862,7 +4027,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
 
-        public Task<OCPP.CSMS.BinaryDataTransferResponse> BinaryDataTransfer(BinaryDataTransferRequest Request)
+        public Task<OCPP.CSMS.BinaryDataTransferResponse> BinaryDataTransfer(OCPP.CS.BinaryDataTransferRequest Request)
         {
             throw new NotImplementedException();
         }
