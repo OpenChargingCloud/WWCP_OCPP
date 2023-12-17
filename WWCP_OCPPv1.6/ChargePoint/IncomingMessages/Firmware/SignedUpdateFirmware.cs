@@ -32,11 +32,13 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     public delegate Task
 
         OnSignedUpdateFirmwareRequestDelegate(DateTime                      Timestamp,
                                               IEventSender                  Sender,
+                                              WebSocketClientConnection     Connection,
                                               SignedUpdateFirmwareRequest   Request);
 
 
@@ -45,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<SignedUpdateFirmwareResponse>
@@ -61,6 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The reserve now request.</param>
     /// <param name="Response">The reserve now response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
@@ -68,6 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         OnSignedUpdateFirmwareResponseDelegate(DateTime                       Timestamp,
                                                IEventSender                   Sender,
+                                               WebSocketClientConnection      Connection,
                                                SignedUpdateFirmwareRequest    Request,
                                                SignedUpdateFirmwareResponse   Response,
                                                TimeSpan                       Runtime);

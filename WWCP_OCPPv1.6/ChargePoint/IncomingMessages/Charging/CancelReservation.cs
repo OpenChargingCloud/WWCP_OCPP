@@ -32,12 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The cancel reservation request.</param>
     public delegate Task
 
-        OnCancelReservationRequestDelegate(DateTime                   Timestamp,
-                                           IEventSender               Sender,
-                                           CancelReservationRequest   Request);
+        OnCancelReservationRequestDelegate(DateTime                    Timestamp,
+                                           IEventSender                Sender,
+                                           WebSocketClientConnection   Connection,
+                                           CancelReservationRequest    Request);
 
 
     /// <summary>
@@ -45,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The cancel reservation request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<CancelReservationResponse>
@@ -61,6 +64,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The cancel reservation request.</param>
     /// <param name="Response">The cancel reservation response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
@@ -68,6 +72,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
         OnCancelReservationResponseDelegate(DateTime                    Timestamp,
                                             IEventSender                Sender,
+                                            WebSocketClientConnection   Connection,
                                             CancelReservationRequest    Request,
                                             CancelReservationResponse   Response,
                                             TimeSpan                    Runtime);

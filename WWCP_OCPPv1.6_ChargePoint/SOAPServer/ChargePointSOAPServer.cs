@@ -813,6 +813,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                         OnResetRequest?.Invoke(request.RequestTimestamp,
                                                                                this,
+                                                                               null,
                                                                                request);
                                                     }
                                                     catch (Exception e)
@@ -861,6 +862,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                         OnResetResponse?.Invoke(responseTimestamp,
                                                                                 this,
+                                                                                null,
                                                                                 request,
                                                                                 response,
                                                                                 responseTimestamp - requestTimestamp);
@@ -978,6 +980,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                         OnReserveNowRequest?.Invoke(request.RequestTimestamp,
                                                                                     this,
+                                                                                    null,
                                                                                     request);
                                                     }
                                                     catch (Exception e)
@@ -1026,6 +1029,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                                                         OnReserveNowResponse?.Invoke(responseTimestamp,
                                                                                      this,
+                                                                                     null,
                                                                                      request,
                                                                                      response,
                                                                                      responseTimestamp - requestTimestamp);

@@ -32,12 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnGetConfigurationRequestDelegate(DateTime                  Timestamp,
-                                          IEventSender              Sender,
-                                          GetConfigurationRequest   Request);
+        OnGetConfigurationRequestDelegate(DateTime                    Timestamp,
+                                          IEventSender                Sender,
+                                          WebSocketClientConnection   Connection,
+                                          GetConfigurationRequest     Request);
 
 
     /// <summary>
@@ -45,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<GetConfigurationResponse>
@@ -61,15 +64,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The reserve now request.</param>
     /// <param name="Response">The reserve now response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetConfigurationResponseDelegate(DateTime                   Timestamp,
-                                           IEventSender               Sender,
-                                           GetConfigurationRequest    Request,
-                                           GetConfigurationResponse   Response,
-                                           TimeSpan                   Runtime);
+        OnGetConfigurationResponseDelegate(DateTime                    Timestamp,
+                                           IEventSender                Sender,
+                                           WebSocketClientConnection   Connection,
+                                           GetConfigurationRequest     Request,
+                                           GetConfigurationResponse    Response,
+                                           TimeSpan                    Runtime);
 
 }

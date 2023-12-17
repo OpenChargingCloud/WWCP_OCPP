@@ -65,7 +65,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var resetRequests = new List<ResetRequest>();
 
-                chargePoint1.OnResetRequest += async (timestamp, sender, resetRequest) => {
+                chargePoint1.OnResetRequest += async (timestamp, sender, connection, resetRequest) => {
                     resetRequests.Add(resetRequest);
                 };
 
@@ -111,14 +111,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var resetRequests = new List<ResetRequest>();
 
-                chargePoint2.OnResetRequest += async (timestamp, sender, resetRequest) => {
+                chargePoint2.OnResetRequest += async (timestamp, sender, connection, resetRequest) => {
                     resetRequests.Add(resetRequest);
                 };
 
@@ -170,7 +170,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var changeAvailabilityRequests = new List<ChangeAvailabilityRequest>();
 
-                chargePoint1.OnChangeAvailabilityRequest += async (timestamp, sender, changeAvailabilityRequest) => {
+                chargePoint1.OnChangeAvailabilityRequest += async (timestamp, sender, connection, changeAvailabilityRequest) => {
                     changeAvailabilityRequests.Add(changeAvailabilityRequest);
                 };
 
@@ -226,7 +226,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var changeAvailabilityRequests = new List<ChangeAvailabilityRequest>();
 
-                chargePoint2.OnChangeAvailabilityRequest += async (timestamp, sender, changeAvailabilityRequest) => {
+                chargePoint2.OnChangeAvailabilityRequest += async (timestamp, sender, connection, changeAvailabilityRequest) => {
                     changeAvailabilityRequests.Add(changeAvailabilityRequest);
                 };
 
@@ -280,7 +280,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var getConfigurationRequests = new List<GetConfigurationRequest>();
 
-                chargePoint1.OnGetConfigurationRequest += async (timestamp, sender, getConfigurationRequest) => {
+                chargePoint1.OnGetConfigurationRequest += async (timestamp, sender, connection, getConfigurationRequest) => {
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
@@ -331,7 +331,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var getConfigurationRequests = new List<GetConfigurationRequest>();
 
-                chargePoint1.OnGetConfigurationRequest += async (timestamp, sender, getConfigurationRequest) => {
+                chargePoint1.OnGetConfigurationRequest += async (timestamp, sender, connection, getConfigurationRequest) => {
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
@@ -383,7 +383,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var getConfigurationRequests = new List<GetConfigurationRequest>();
 
-                chargePoint1.OnGetConfigurationRequest += async (timestamp, sender, getConfigurationRequest) => {
+                chargePoint1.OnGetConfigurationRequest += async (timestamp, sender, connection, getConfigurationRequest) => {
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
@@ -436,7 +436,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var changeConfigurationRequests = new List<ChangeConfigurationRequest>();
 
-                chargePoint1.OnChangeConfigurationRequest += async (timestamp, sender, changeConfigurationRequest) => {
+                chargePoint1.OnChangeConfigurationRequest += async (timestamp, sender, connection, changeConfigurationRequest) => {
                     changeConfigurationRequests.Add(changeConfigurationRequest);
                 };
 
@@ -492,7 +492,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var changeConfigurationRequests = new List<ChangeConfigurationRequest>();
 
-                chargePoint1.OnChangeConfigurationRequest += async (timestamp, sender, changeConfigurationRequest) => {
+                chargePoint1.OnChangeConfigurationRequest += async (timestamp, sender, connection, changeConfigurationRequest) => {
                     changeConfigurationRequests.Add(changeConfigurationRequest);
                 };
 
@@ -521,7 +521,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var getConfigurationRequests = new List<GetConfigurationRequest>();
 
-                chargePoint1.OnGetConfigurationRequest += async (timestamp, sender, getConfigurationRequest) => {
+                chargePoint1.OnGetConfigurationRequest += async (timestamp, sender, connection, getConfigurationRequest) => {
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
@@ -574,7 +574,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var changeConfigurationRequests = new List<ChangeConfigurationRequest>();
 
-                chargePoint1.OnChangeConfigurationRequest += async (timestamp, sender, changeConfigurationRequest) => {
+                chargePoint1.OnChangeConfigurationRequest += async (timestamp, sender, connection, changeConfigurationRequest) => {
                     changeConfigurationRequests.Add(changeConfigurationRequest);
                 };
 
@@ -603,7 +603,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var getConfigurationRequests = new List<GetConfigurationRequest>();
 
-                chargePoint1.OnGetConfigurationRequest += async (timestamp, sender, getConfigurationRequest) => {
+                chargePoint1.OnGetConfigurationRequest += async (timestamp, sender, connection, getConfigurationRequest) => {
                     getConfigurationRequests.Add(getConfigurationRequest);
                 };
 
@@ -658,7 +658,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var dataTransferRequests = new List<DataTransferRequest>();
 
-                chargePoint1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                chargePoint1.OnIncomingDataTransferRequest += async (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.Add(dataTransferRequest);
                 };
 
@@ -723,7 +723,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var dataTransferRequests = new List<DataTransferRequest>();
 
-                chargePoint1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                chargePoint1.OnIncomingDataTransferRequest += async (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.Add(dataTransferRequest);
                 };
 
@@ -792,7 +792,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
                 var dataTransferRequests = new List<DataTransferRequest>();
 
-                chargePoint1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                chargePoint1.OnIncomingDataTransferRequest += async (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.Add(dataTransferRequest);
                 };
 
@@ -852,14 +852,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.tests.CentralSystem
 
             if (testCentralSystem01     is not null &&
                 testBackendWebSockets01 is not null &&
-                chargePoint1        is not null &&
-                chargePoint2        is not null &&
-                chargePoint3        is not null)
+                chargePoint1            is not null &&
+                chargePoint2            is not null &&
+                chargePoint3            is not null)
             {
 
                 var dataTransferRequests = new List<DataTransferRequest>();
 
-                chargePoint1.OnIncomingDataTransferRequest += async (timestamp, sender, dataTransferRequest) => {
+                chargePoint1.OnIncomingDataTransferRequest += async (timestamp, sender, connection, dataTransferRequest) => {
                     dataTransferRequests.Add(dataTransferRequest);
                 };
 

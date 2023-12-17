@@ -1250,6 +1250,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnResetRequest?.Invoke(startTime,
                                            this,
+                                           connection,
                                            Request);
                 }
                 catch (Exception e)
@@ -1280,6 +1281,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnResetResponse?.Invoke(responseTimestamp,
                                             this,
+                                            connection,
                                             Request,
                                             response,
                                             responseTimestamp - startTime);
@@ -1314,8 +1316,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 {
 
                     OnChangeAvailabilityRequest?.Invoke(startTime,
-                                           this,
-                                           Request);
+                                                        this,
+                                                        connection,
+                                                        Request);
                 }
                 catch (Exception e)
                 {
@@ -1355,10 +1358,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     var responseTimestamp = Timestamp.Now;
 
                     OnChangeAvailabilityResponse?.Invoke(responseTimestamp,
-                                            this,
-                                            Request,
-                                            response,
-                                            responseTimestamp - startTime);
+                                                         this,
+                                                         connection,
+                                                         Request,
+                                                         response,
+                                                         responseTimestamp - startTime);
 
                 }
                 catch (Exception e)
@@ -1391,6 +1395,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnGetConfigurationRequest?.Invoke(startTime,
                                                       this,
+                                                      connection,
                                                       Request);
                 }
                 catch (Exception e)
@@ -1405,8 +1410,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
 
                 GetConfigurationResponse? response = null;
-
-                
 
                 DebugX.Log(String.Concat("ChargeBox[", Id, "] Incoming get configuration request."));
 
@@ -1443,8 +1446,6 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                         configurationKeys,
                                                         unkownKeys);
 
-                
-
 
                 #region Send OnGetConfigurationResponse event
 
@@ -1455,6 +1456,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnGetConfigurationResponse?.Invoke(responseTimestamp,
                                                        this,
+                                                       connection,
                                                        Request,
                                                        response,
                                                        responseTimestamp - startTime);
@@ -1490,6 +1492,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnChangeConfigurationRequest?.Invoke(startTime,
                                                          this,
+                                                         connection,
                                                          Request);
                 }
                 catch (Exception e)
@@ -1554,6 +1557,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnChangeConfigurationResponse?.Invoke(responseTimestamp,
                                                           this,
+                                                          connection,
                                                           Request,
                                                           response,
                                                           responseTimestamp - startTime);
@@ -1594,6 +1598,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                OfType <OnIncomingDataTransferRequestDelegate>().
                                                Select (loggingDelegate => loggingDelegate.Invoke(startTime,
                                                                                                  this,
+                                                                                                 connection,
                                                                                                  request)).
                                                ToArray());
 
@@ -1748,6 +1753,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                                                               OfType <OnIncomingDataTransferResponseDelegate>().
                                                               Select (loggingDelegate => loggingDelegate.Invoke(responseTime,
                                                                                                                 this,
+                                                                                                                connection,
                                                                                                                 request,
                                                                                                                 response,
                                                                                                                 responseTime - startTime)).
@@ -1793,6 +1799,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnGetDiagnosticsRequest?.Invoke(startTime,
                                                     this,
+                                                    connection,
                                                     Request);
                 }
                 catch (Exception e)
@@ -1823,6 +1830,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnGetDiagnosticsResponse?.Invoke(responseTimestamp,
                                                      this,
+                                                     connection,
                                                      Request,
                                                      response,
                                                      responseTimestamp - startTime);
@@ -1858,6 +1866,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnTriggerMessageRequest?.Invoke(startTime,
                                                     this,
+                                                    connection,
                                                     Request);
                 }
                 catch (Exception e)
@@ -1888,6 +1897,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnTriggerMessageResponse?.Invoke(responseTimestamp,
                                                      this,
+                                                     connection,
                                                      Request,
                                                      response,
                                                      responseTimestamp - startTime);
@@ -1923,6 +1933,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnUpdateFirmwareRequest?.Invoke(startTime,
                                                     this,
+                                                    connection,
                                                     Request);
                 }
                 catch (Exception e)
@@ -1953,6 +1964,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnUpdateFirmwareResponse?.Invoke(responseTimestamp,
                                                      this,
+                                                     connection,
                                                      Request,
                                                      response,
                                                      responseTimestamp - startTime);
@@ -1989,6 +2001,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnReserveNowRequest?.Invoke(startTime,
                                                 this,
+                                                connection,
                                                 Request);
                 }
                 catch (Exception e)
@@ -2012,6 +2025,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnReserveNowResponse?.Invoke(responseTimestamp,
                                                  this,
+                                                 connection,
                                                  Request,
                                                  response,
                                                  responseTimestamp - startTime);
@@ -2047,6 +2061,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnCancelReservationRequest?.Invoke(startTime,
                                                        this,
+                                                       connection,
                                                        Request);
                 }
                 catch (Exception e)
@@ -2070,6 +2085,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnCancelReservationResponse?.Invoke(responseTimestamp,
                                                         this,
+                                                        connection,
                                                         Request,
                                                         response,
                                                         responseTimestamp - startTime);
@@ -2105,6 +2121,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnRemoteStartTransactionRequest?.Invoke(startTime,
                                                             this,
+                                                            connection,
                                                             Request);
                 }
                 catch (Exception e)
@@ -2218,6 +2235,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnRemoteStartTransactionResponse?.Invoke(responseTimestamp,
                                                              this,
+                                                             connection,
                                                              Request,
                                                              response,
                                                              responseTimestamp - startTime);
@@ -2253,6 +2271,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnRemoteStopTransactionRequest?.Invoke(startTime,
                                                            this,
+                                                           connection,
                                                            Request);
                 }
                 catch (Exception e)
@@ -2351,6 +2370,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnRemoteStopTransactionResponse?.Invoke(responseTimestamp,
                                                             this,
+                                                            connection,
                                                             Request,
                                                             response,
                                                             responseTimestamp - startTime);
@@ -2386,6 +2406,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnSetChargingProfileRequest?.Invoke(startTime,
                                                         this,
+                                                        connection,
                                                         Request);
                 }
                 catch (Exception e)
@@ -2453,6 +2474,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnSetChargingProfileResponse?.Invoke(responseTimestamp,
                                                          this,
+                                                         connection,
                                                          Request,
                                                          response,
                                                          responseTimestamp - startTime);
@@ -2487,8 +2509,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 {
 
                     OnClearChargingProfileRequest?.Invoke(startTime,
-                                           this,
-                                           Request);
+                                                          this,
+                                                          connection,
+                                                          Request);
                 }
                 catch (Exception e)
                 {
@@ -2510,10 +2533,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     var responseTimestamp = Timestamp.Now;
 
                     OnClearChargingProfileResponse?.Invoke(responseTimestamp,
-                                            this,
-                                            Request,
-                                            response,
-                                            responseTimestamp - startTime);
+                                                           this,
+                                                           connection,
+                                                           Request,
+                                                           response,
+                                                           responseTimestamp - startTime);
 
                 }
                 catch (Exception e)
@@ -2545,8 +2569,9 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                 {
 
                     OnGetCompositeScheduleRequest?.Invoke(startTime,
-                                           this,
-                                           Request);
+                                                          this,
+                                                          connection,
+                                                          Request);
                 }
                 catch (Exception e)
                 {
@@ -2568,10 +2593,11 @@ namespace cloud.charging.open.protocols.OCPPv1_6
                     var responseTimestamp = Timestamp.Now;
 
                     OnGetCompositeScheduleResponse?.Invoke(responseTimestamp,
-                                            this,
-                                            Request,
-                                            response,
-                                            responseTimestamp - startTime);
+                                                           this,
+                                                           connection,
+                                                           Request,
+                                                           response,
+                                                           responseTimestamp - startTime);
 
                 }
                 catch (Exception e)
@@ -2604,6 +2630,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnUnlockConnectorRequest?.Invoke(startTime,
                                                      this,
+                                                     connection,
                                                      Request);
                 }
                 catch (Exception e)
@@ -2647,6 +2674,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnUnlockConnectorResponse?.Invoke(responseTimestamp,
                                                       this,
+                                                      connection,
                                                       Request,
                                                       response,
                                                       responseTimestamp - startTime);
@@ -2683,6 +2711,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnGetLocalListVersionRequest?.Invoke(startTime,
                                                          this,
+                                                         connection,
                                                          Request);
                 }
                 catch (Exception e)
@@ -2715,6 +2744,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnGetLocalListVersionResponse?.Invoke(responseTimestamp,
                                                           this,
+                                                          connection,
                                                           Request,
                                                           response,
                                                           responseTimestamp - startTime);
@@ -2750,6 +2780,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnSendLocalListRequest?.Invoke(startTime,
                                                    this,
+                                                   connection,
                                                    Request);
                 }
                 catch (Exception e)
@@ -2781,6 +2812,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnSendLocalListResponse?.Invoke(responseTimestamp,
                                                     this,
+                                                    connection,
                                                     Request,
                                                     response,
                                                     responseTimestamp - startTime);
@@ -2816,6 +2848,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnClearCacheRequest?.Invoke(startTime,
                                                 this,
+                                                connection,
                                                 Request);
                 }
                 catch (Exception e)
@@ -2847,6 +2880,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6
 
                     OnClearCacheResponse?.Invoke(responseTimestamp,
                                                  this,
+                                                 connection,
                                                  Request,
                                                  response,
                                                  responseTimestamp - startTime);

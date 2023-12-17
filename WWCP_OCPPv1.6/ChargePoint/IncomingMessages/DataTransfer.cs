@@ -32,12 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The data transfer request.</param>
     public delegate Task
 
-        OnIncomingDataTransferRequestDelegate(DateTime                 Timestamp,
-                                              IEventSender             Sender,
-                                              CS.DataTransferRequest   Request);
+        OnIncomingDataTransferRequestDelegate(DateTime                    Timestamp,
+                                              IEventSender                Sender,
+                                              WebSocketClientConnection   Connection,
+                                              CS.DataTransferRequest      Request);
 
 
     /// <summary>
@@ -45,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The data transfer request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<DataTransferResponse>
@@ -61,16 +64,18 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The data transfer request.</param>
     /// <param name="Response">The data transfer response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnIncomingDataTransferResponseDelegate(DateTime                 Timestamp,
-                                               IEventSender             Sender,
-                                               CS.DataTransferRequest   Request,
-                                               DataTransferResponse     Response,
-                                               TimeSpan                 Runtime);
+        OnIncomingDataTransferResponseDelegate(DateTime                    Timestamp,
+                                               IEventSender                Sender,
+                                               WebSocketClientConnection   Connection,
+                                               CS.DataTransferRequest      Request,
+                                               DataTransferResponse        Response,
+                                               TimeSpan                    Runtime);
 
     #endregion
 

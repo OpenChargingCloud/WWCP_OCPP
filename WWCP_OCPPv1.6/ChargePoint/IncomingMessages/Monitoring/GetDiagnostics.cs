@@ -32,12 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnGetDiagnosticsRequestDelegate(DateTime                Timestamp,
-                                        IEventSender            Sender,
-                                        GetDiagnosticsRequest   Request);
+        OnGetDiagnosticsRequestDelegate(DateTime                    Timestamp,
+                                        IEventSender                Sender,
+                                        WebSocketClientConnection   Connection,
+                                        GetDiagnosticsRequest       Request);
 
 
     /// <summary>
@@ -45,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<GetDiagnosticsResponse>
@@ -61,15 +64,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The reserve now request.</param>
     /// <param name="Response">The reserve now response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnGetDiagnosticsResponseDelegate(DateTime                 Timestamp,
-                                         IEventSender             Sender,
-                                         GetDiagnosticsRequest    Request,
-                                         GetDiagnosticsResponse   Response,
-                                         TimeSpan                 Runtime);
+        OnGetDiagnosticsResponseDelegate(DateTime                    Timestamp,
+                                         IEventSender                Sender,
+                                         WebSocketClientConnection   Connection,
+                                         GetDiagnosticsRequest       Request,
+                                         GetDiagnosticsResponse      Response,
+                                         TimeSpan                    Runtime);
 
 }

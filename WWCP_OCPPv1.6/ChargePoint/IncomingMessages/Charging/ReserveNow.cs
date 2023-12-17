@@ -32,12 +32,14 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     public delegate Task
 
-        OnReserveNowRequestDelegate(DateTime            Timestamp,
-                                    IEventSender        Sender,
-                                    ReserveNowRequest   Request);
+        OnReserveNowRequestDelegate(DateTime                    Timestamp,
+                                    IEventSender                Sender,
+                                    WebSocketClientConnection   Connection,
+                                    ReserveNowRequest           Request);
 
 
     /// <summary>
@@ -45,6 +47,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     public delegate Task<ReserveNowResponse>
@@ -61,15 +64,17 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
     /// </summary>
     /// <param name="Timestamp">The log timestamp of the response.</param>
     /// <param name="Sender">The sender of the response.</param>
+    /// <param name="Connection">The HTTP Web Socket client connection.</param>
     /// <param name="Request">The request.</param>
     /// <param name="Response">The response.</param>
     /// <param name="Runtime">The runtime of this request.</param>
     public delegate Task
 
-        OnReserveNowResponseDelegate(DateTime             Timestamp,
-                                     IEventSender         Sender,
-                                     ReserveNowRequest    Request,
-                                     ReserveNowResponse   Response,
-                                     TimeSpan             Runtime);
+        OnReserveNowResponseDelegate(DateTime                    Timestamp,
+                                     IEventSender                Sender,
+                                     WebSocketClientConnection   Connection,
+                                     ReserveNowRequest           Request,
+                                     ReserveNowResponse          Response,
+                                     TimeSpan                    Runtime);
 
 }

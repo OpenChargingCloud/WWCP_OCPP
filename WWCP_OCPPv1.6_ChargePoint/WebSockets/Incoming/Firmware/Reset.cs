@@ -139,6 +139,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                         OnResetRequest?.Invoke(Timestamp.Now,
                                                this,
+                                               WebSocketConnection,
                                                request);
 
                     }
@@ -182,6 +183,7 @@ namespace cloud.charging.open.protocols.OCPPv1_6.CP
 
                         OnResetResponse?.Invoke(Timestamp.Now,
                                                 this,
+                                                WebSocketConnection,
                                                 request,
                                                 response,
                                                 response.Runtime);
